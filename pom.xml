@@ -15,6 +15,7 @@
         <module>IOC_IObject</module>
         <module>IScope</module>
         <module>IScopeProvider</module>
+        <module>RecurciveScope</module>
     </modules>
 
 
