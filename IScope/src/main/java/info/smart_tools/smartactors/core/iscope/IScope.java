@@ -4,6 +4,9 @@ import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 
 /**
  * Scope interface
+ *
+ * Scope is a key-value storage.
+ *
  */
 public interface IScope {
 
