@@ -33,7 +33,7 @@ public class ChangeValueException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public ChangeValueException(Throwable cause) {
+    public ChangeValueException(final Throwable cause) {
         super(cause);
     }
 }

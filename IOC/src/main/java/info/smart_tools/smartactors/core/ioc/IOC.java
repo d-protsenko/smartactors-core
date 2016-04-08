@@ -32,7 +32,7 @@ public final class IOC {
     /**
      * Resolve dependency by given given classId and args
      * @param classId unique class identifier
-     * @param arg needed arguments for resolve dependency
+     * @param args needed arguments for resolve dependency
      * @return instance of class with classId identifier
      * @throws ResolutionException when resolution is impossible because of any error
      */
@@ -53,6 +53,6 @@ public final class IOC {
     @Deprecated
     public static <T> T resolve(final Class<T> clazz, final Object... args)
             throws ResolutionException {
-        return (T)container.resolve(clazz.getClass(), args);
+        return (T) container.resolve(clazz.getClass(), args);
     }
 }

@@ -26,15 +26,15 @@ public interface IObjectIterator {
 
     /**
      * Returns name of field iterator currently points to.
-     *
+     * @throws NoSuchElementException when element is absent in current iterator position
      * @return name of field.
      */
     FieldName getName() throws NoSuchElementException;
 
     /**
      * Returns the value of field iterator currently points to.
-     *
-     * @return value of field.
+     * @throws NoSuchElementException when element is absent in current iterator position
+     * @return value of field
      */
     Object getValue() throws NoSuchElementException;
 }

@@ -33,7 +33,7 @@ public class DeleteValueException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public DeleteValueException(Throwable cause) {
+    public DeleteValueException(final Throwable cause) {
         super(cause);
     }
 }

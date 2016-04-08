@@ -13,6 +13,7 @@
         <module>IObject</module>
         <module>IContainer</module>
         <module>IOC_IObject</module>
+        <module>IScope</module>
     </modules>
 
 
