@@ -1,14 +1,14 @@
-package info.smart_tools.smartactors.core.iscope.exception;
+package info.smart_tools.smartactors.core.iscope_provider.exception;
 
 /**
- * Exception for runtime error in {@link info.smart_tools.scope_interface.IScope} methods
+ * Exception for runtime error in {@link info.smart_tools.smartactors.core.iscope_provider.IScopeProvider} methods
  */
-public class ScopeException extends RuntimeException {
+public class ScopeProviderException extends RuntimeException {
 
     /**
      * Default constructor
      */
-    private ScopeException() {
+    private ScopeProviderException() {
         super();
     }
 
@@ -16,7 +16,7 @@ public class ScopeException extends RuntimeException {
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public ScopeException(final String message) {
+    public ScopeProviderException(final String message) {
         super(message);
     }
 
@@ -25,8 +25,7 @@ public class ScopeException extends RuntimeException {
      * @param message specific error message
      * @param cause specific cause
      */
-
-    public ScopeException(final String message, final Throwable cause) {
+    public ScopeProviderException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -34,7 +33,9 @@ public class ScopeException extends RuntimeException {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public ScopeException(final Throwable cause) {
+    public ScopeProviderException(final Throwable cause) {
         super(cause);
     }
+
+
 }

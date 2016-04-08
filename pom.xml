@@ -16,6 +16,7 @@
         <module>IScope</module>
         <module>IScopeProvider</module>
         <module>RecurciveScope</module>
+        <module>ScopeProviderImplementation</module>
     </modules>
 
 
