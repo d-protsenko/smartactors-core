@@ -22,7 +22,7 @@ public interface IScope {
      * @param value given value
      * @throws ScopeException if error has been occurred
      */
-    void setValue(Object key, Object value)
+    void setValue(final Object key, final Object value)
             throws ScopeException;
 
     /**
@@ -30,6 +30,6 @@ public interface IScope {
      * @param key given key
      * @throws ScopeException if value is absent or other error has been occurred
      */
-    void deleteValue(Object key)
+    void deleteValue(final Object key)
             throws ScopeException;
 }

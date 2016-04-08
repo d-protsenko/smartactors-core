@@ -45,19 +45,19 @@ public class FieldName {
 
     /**
      * Initialize class property {@value FieldName}
-     * @param name name of field
+     * @param nameValue pretender name for {@value FieldName}
      */
-    protected void initialize(final String name) {
-        if (name == null) {
+    protected void initialize(final String nameValue) {
+        if (nameValue == null) {
             throw new IllegalArgumentException("Name parameter must not be null");
         }
-        if (name.isEmpty()) {
+        if (nameValue.isEmpty()) {
             throw new IllegalArgumentException("Name parameter must not be empty");
         }
-        if (!VALID_SYMBOLS.matcher(name).matches()) {
+        if (!VALID_SYMBOLS.matcher(nameValue).matches()) {
             throw new IllegalArgumentException("Name parameter contains illegal symbols");
         }
-        this.name = name;
+        this.name = nameValue;
     }
 }
 
