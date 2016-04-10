@@ -3,6 +3,6 @@
  *
  * This implementation has follow specific features:
  * - key-IScope storage;
- *
+ * - this implementation should be used from main manager thread
  */
 package info.smart_tools.smartactors.core.scope_provider_implementation;

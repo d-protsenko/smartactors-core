@@ -12,6 +12,9 @@ import java.util.Map;
  */
 public class ScopeProvider implements IScopeProvider {
 
+    /**
+     * Local storage of all {@link info.smart_tools.smartactors.core.iscope.IScope} instances by unique identifier
+     */
     private Map<Object, IScope> scopeStorage = new HashMap<Object, IScope>();
 
     /**
