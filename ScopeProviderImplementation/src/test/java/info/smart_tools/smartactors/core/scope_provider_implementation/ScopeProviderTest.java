@@ -24,7 +24,11 @@ public class ScopeProviderTest {
         assertEquals(scope, stored_scope);
     }
 
-    
+    @Test (expected = ScopeProviderException.class)
+    public void checkGettingAbsentScope() {
+        IScopeProvider scopeProvider = new ScopeProvider();
+        scopeProvider.getScope("scope_1");
+    }
 
     @Test (expected = ScopeProviderException.class)
     public void checkScopeDeletion() {
