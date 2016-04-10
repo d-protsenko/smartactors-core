@@ -31,7 +31,7 @@ public interface IScope {
     /**
      * Removes the value associated with key
      * @param key given key
-     * @throws ScopeException if value is absent or any error occurred
+     * @throws ScopeException if any error occurred
      */
     void deleteValue(final Object key)
             throws ScopeException;

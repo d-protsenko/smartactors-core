@@ -12,14 +12,14 @@ import java.util.Map;
  */
 public class Scope implements IScope {
 
-    private Map<Object, Object> scopeStorage = new HashMap<Object, Object>();
-    private Scope parent;
+    private Map<Object, Object> storage = new HashMap<Object, Object>();
+    private IScope parent;
 
     /**
      * Constructs new Scope with defined parent scope
      * @param parent the parent scope.
      */
-    public Scope(final Scope parent) {
+    public Scope(final IScope parent) {
         this.parent = parent;
     }
 
@@ -31,7 +31,7 @@ public class Scope implements IScope {
      */
     public Object getValue(final Object key)
             throws ScopeException {
-        Object value = scopeStorage.get(key);
+        Object value = storage.get(key);
 
         if (value == null) {
             try {
@@ -51,16 +51,24 @@ public class Scope implements IScope {
      */
     public void setValue(final Object key, final Object value)
             throws ScopeException {
-        scopeStorage.put(key, value);
+        try {
+            storage.put(key, value);
+        } catch (Exception e) {
+            throw new ScopeException("Error was occurred", e);
+        }
     }
 
     /**
      * Removes the value associated with key if any
      * @param key given key
-     * @throws ScopeException if value is not found or error was occurred
+     * @throws ScopeException if any error was occurred
      */
     public void deleteValue(final Object key)
             throws ScopeException {
-        scopeStorage.remove(key);
+        try {
+            storage.remove(key);
+        } catch (Exception e) {
+            throw new ScopeException("Error was occurred", e);
+        }
     }
 }

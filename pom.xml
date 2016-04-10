@@ -11,11 +11,10 @@
     <modules>
         <module>IOC</module>
         <module>IObject</module>
-        <module>IContainer</module>
         <module>IOC_IObject</module>
         <module>IScope</module>
         <module>IScopeProvider</module>
-        <module>RecurciveScope</module>
+        <module>RecursiveScope</module>
         <module>ScopeProviderImplementation</module>
     </modules>
 

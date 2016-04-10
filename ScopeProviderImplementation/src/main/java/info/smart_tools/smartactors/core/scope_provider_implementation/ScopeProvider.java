@@ -40,8 +40,13 @@ public class ScopeProvider implements IScopeProvider {
      * @param scope given instance of {@link info.smart_tools.smartactors.core.iscope.IScope}
      * @throws ScopeProviderException if any errors occurred
      */
-    public void setScope(final Object key, final IScope scope) throws ScopeProviderException {
-        scopeStorage.put(key, scope);
+    public void setScope(final Object key, final IScope scope)
+            throws ScopeProviderException {
+        try {
+            scopeStorage.put(key, scope);
+        } catch (Exception e) {
+            throw new ScopeProviderException("Error was occurred", e);
+        }
     }
 
     /**
@@ -50,7 +55,12 @@ public class ScopeProvider implements IScopeProvider {
      * @param key unique identifier for instance of an object
      * @throws ScopeProviderException if any errors occurred
      */
-    public void deleteScope(final Object key) throws ScopeProviderException {
-        scopeStorage.remove(key);
+    public void deleteScope(final Object key)
+            throws ScopeProviderException {
+        try {
+            scopeStorage.remove(key);
+        } catch (Exception e) {
+        throw new ScopeProviderException("Error was occurred", e);
+    }
     }
 }

@@ -9,14 +9,14 @@ import java.util.regex.Pattern;
 public class FieldName {
 
     /**
-     * Pattern with valid symbols for {@value FieldName}
+     * Pattern with valid symbols for {@code FieldName}
      */
     private static final Pattern VALID_SYMBOLS = Pattern.compile("[\\wа-яА-ЯёЁ\\-\\+=\\|!@#\\$%\\^&\\*:/\\., \\{\\}\\(\\)\\[\\]]+");
 
     private String name;
 
     /**
-     * Base constructor for {@value FieldName}
+     * Base constructor for {@code FieldName}
      * @param name is name of field, it must not be {@code null} and
      *             must contain at least one of the symbols from {@literal 0-9a-zA-Z_-+=|!@#$%^&*:/., {}()[]}
      * @throws IllegalArgumentException if name is not valid
@@ -44,8 +44,8 @@ public class FieldName {
     }
 
     /**
-     * Initialize class property {@value FieldName}
-     * @param nameValue pretender name for {@value FieldName}
+     * Initialize class property {@code FieldName}
+     * @param nameValue pretender name for {@code FieldName}
      */
     protected void initialize(final String nameValue) {
         if (nameValue == null) {

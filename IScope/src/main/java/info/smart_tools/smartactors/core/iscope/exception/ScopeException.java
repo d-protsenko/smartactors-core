@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.iscope.exception;
 
 /**
- * Exception for runtime error in {@link info.smart_tools.scope_interface.IScope} methods
+ * Exception for runtime error in {@link info.smart_tools.smartactors.core.iscope.IScope} methods
  */
 public class ScopeException extends RuntimeException {
 

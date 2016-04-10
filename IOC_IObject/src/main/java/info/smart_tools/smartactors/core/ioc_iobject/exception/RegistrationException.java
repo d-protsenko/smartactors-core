@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.ioc_iobject.exception;
 
 /**
- * Exception that occurs when registration of new {@link IGeneralStrategy} has been failed
+ * Exception that occurs when registration of new IGeneralStrategy has been failed
  */
 public class RegistrationException extends RuntimeException {
 
