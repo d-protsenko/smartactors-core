@@ -1,8 +1,8 @@
-package info.smart_tools.smartactors.core.ioc_iobject;
+package info.smart_tools.smartactors.core.ioc;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc_iobject.exception.RegistrationException;
-import info.smart_tools.smartactors.core.ioc_iobject.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
+import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
 
 /**
  * Realization of IOC Container by ServiceLocator pattern
@@ -54,7 +54,17 @@ public final class IOC {
     @Deprecated
     public static <T> T resolve(final Class<T> clazz, final Object... args)
             throws RegistrationException {
-        //TODO: need to add realization after all needed core components will be realized
+        //TODO: need to add realization after all needed core components will be implemented
         return null;
+    }
+
+    /**
+     * Register new dependency
+     * @param obj instance of IObject that contains needed parameters for resolve dependency
+     * @throws RegistrationException when registration is impossible because of any error
+     */
+    void register(final IObject obj)
+            throws RegistrationException {
+        container.register(obj);
     }
 }

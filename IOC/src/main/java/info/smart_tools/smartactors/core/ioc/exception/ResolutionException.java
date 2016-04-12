@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.ioc_iobject.exception;
+package info.smart_tools.smartactors.core.ioc.exception;
 
 import java.io.StringWriter;
 

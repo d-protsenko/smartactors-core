@@ -1,8 +1,8 @@
-package info.smart_tools.smartactors.core.ioc_iobject;
+package info.smart_tools.smartactors.core.ioc;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc_iobject.exception.RegistrationException;
-import info.smart_tools.smartactors.core.ioc_iobject.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
+import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
 
 /**
  * Interface of IOC
@@ -18,12 +18,10 @@ public interface IContainer {
             throws ResolutionException;
 
     /**
-     * Connect specific class with classId to specific strategy.
-     * After registration this class may be resolved with selected strategy
-     * @param classId unique class identifier
-     * @param strategyId unique strategy identifier
+     * Register new dependency
+     * @param obj instance of IObject that contains needed parameters for resolve dependency
      * @throws RegistrationException when registration is impossible because of any error
      */
-    void register(final Object classId, final Object strategyId)
+    void register(final IObject obj)
             throws RegistrationException;
 }
