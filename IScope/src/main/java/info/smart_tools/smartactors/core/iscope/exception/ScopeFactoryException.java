@@ -1,14 +1,14 @@
-package info.smart_tools.smartactors.core.ioc.exception;
+package info.smart_tools.smartactors.core.iscope.exception;
 
 /**
- * Exception that occurs when registration of new IGeneralStrategy has been failed
+ * Exception for error in {@link info.smart_tools.smartactors.core.iscope.IScopeFactory} methods
  */
-public class RegistrationException extends Exception {
+public class ScopeFactoryException extends Exception {
 
     /**
      * Default constructor
      */
-    private RegistrationException() {
+    private ScopeFactoryException() {
         super();
     }
 
@@ -16,7 +16,7 @@ public class RegistrationException extends Exception {
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public RegistrationException(final String message) {
+    public ScopeFactoryException(final String message) {
         super(message);
     }
 
@@ -25,7 +25,8 @@ public class RegistrationException extends Exception {
      * @param message specific error message
      * @param cause specific cause
      */
-    public RegistrationException(final String message, final Throwable cause) {
+
+    public ScopeFactoryException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -33,7 +34,7 @@ public class RegistrationException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public RegistrationException(final Throwable cause) {
+    public ScopeFactoryException(final Throwable cause) {
         super(cause);
     }
 }

@@ -5,7 +5,7 @@ import java.io.StringWriter;
 /**
  * Exception that occurs when resolution has been failed
  */
-public class ResolutionException extends RuntimeException {
+public class ResolutionException extends Exception {
 
     /**
      * Default constructor
