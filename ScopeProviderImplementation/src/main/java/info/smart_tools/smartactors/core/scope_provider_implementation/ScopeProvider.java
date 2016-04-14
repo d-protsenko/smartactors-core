@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.scope_provider_implementation;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider.IScopeProvider;
 import info.smart_tools.smartactors.core.iscope_provider.exception.ScopeProviderException;
 
@@ -16,6 +17,25 @@ public class ScopeProvider implements IScopeProvider {
      * Local storage of all {@link info.smart_tools.smartactors.core.iscope.IScope} instances by unique identifier
      */
     private Map<Object, IScope> scopeStorage = new HashMap<Object, IScope>();
+
+    /**
+     * Default constructor
+     */
+    private ScopeProvider() {
+    }
+
+    /**
+     * Instance of {@link IScopeFactory}
+     */
+    private IScopeFactory factory;
+
+    /**
+     * Constructor
+     * @param factory instance of {@link IScopeFactory}
+     */
+    public ScopeProvider(final IScopeFactory factory) {
+        this.factory = factory;
+    }
 
     /**
      * Realization of {@link info.smart_tools.smartactors.core.iscope_provider.IScopeProvider} getScope method
@@ -60,7 +80,21 @@ public class ScopeProvider implements IScopeProvider {
         try {
             scopeStorage.remove(key);
         } catch (Exception e) {
-        throw new ScopeProviderException("Error was occurred", e);
+            throw new ScopeProviderException("Error was occurred", e);
+        }
     }
+
+    /**
+     * Create new instance of {@link IScopeFactory}
+     * @param params needed parameters for creation
+     * @return new instance of {@link IScope}
+     * @throws ScopeProviderException if any errors occurred
+     */
+    public IScope createScope(final Object params) throws ScopeProviderException {
+        try {
+            return factory.createScope(params);
+        } catch (Exception e) {
+            throw new ScopeProviderException("Failed to create instance of IScope.", e);
+        }
     }
 }

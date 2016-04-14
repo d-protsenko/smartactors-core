@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.iscope_provider.exception;
 /**
  * Exception for runtime error in {@link info.smart_tools.smartactors.core.iscope_provider.IScopeProvider} methods
  */
-public class ScopeProviderException extends RuntimeException {
+public class ScopeProviderException extends Exception {
 
     /**
      * Default constructor

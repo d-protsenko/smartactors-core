@@ -10,7 +10,7 @@ import java.util.Map;
  * Implementation of {@link info.smart_tools.smartactors.core.iscope.IScope}
  * with recursive call method getValue of parent scope
  */
-public class Scope implements IScope {
+class Scope implements IScope {
 
     private Map<Object, Object> storage = new HashMap<Object, Object>();
     private IScope parent;
@@ -19,7 +19,7 @@ public class Scope implements IScope {
      * Constructs new Scope with defined parent scope
      * @param parent the parent scope.
      */
-    public Scope(final IScope parent) {
+    Scope(final IScope parent) {
         this.parent = parent;
     }
 

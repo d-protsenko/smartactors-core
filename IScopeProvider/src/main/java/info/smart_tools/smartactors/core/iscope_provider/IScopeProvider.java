@@ -30,9 +30,17 @@ public interface IScopeProvider {
     /**
      * Removes the value associated with key
      * @param key given key
-     * @throws ScopeProviderException if value is absent or any error occurred
+     * @throws ScopeProviderException if value is absent or any errors occurred
      */
     void deleteScope(final Object key)
             throws ScopeProviderException;
 
+    /**
+     * Create new instance of {@link IScope}
+     * @param params needed parameters for creation
+     * @return new instance of IScope
+     * @throws ScopeProviderException if any errors occurred
+     */
+    IScope createScope(final Object params)
+            throws ScopeProviderException;
 }
