@@ -34,10 +34,11 @@ public final class IOC {
     /**
      * Resolve dependency by given given IObject instance
      * @param obj instance of IObject that contains needed parameters for resolve dependency
+     * @param <T> type of class for resolution
      * @return instance of class with classId identifier
-     * @throws ResolutionException when resolution is impossible because of any error
+     * @throws ResolutionException if resolution is impossible because of any errors
      */
-    public static Object resolve(final IObject obj)
+    public static <T> T resolve(final IObject obj)
             throws ResolutionException {
         return container.resolve(obj);
     }

@@ -12,10 +12,12 @@
         <module>IObject</module>
         <module>IOC</module>
         <module>IScope</module>
-        <module>IScopeProvider</module>
+        <module>ScopeProvider</module>
         <module>RecursiveScope</module>
-        <module>ScopeProviderImplementation</module>
         <module>IContainerImplementation</module>
+        <module>ScopeContainerImplementation</module>
+        <module>IStrategyContainer</module>
+        <module>IResolveDependencyStrategy</module>
     </modules>
 
 
