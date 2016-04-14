@@ -15,6 +15,7 @@
         <module>IScopeProvider</module>
         <module>RecursiveScope</module>
         <module>ScopeProviderImplementation</module>
+        <module>IContainerImplementation</module>
     </modules>
 
 
