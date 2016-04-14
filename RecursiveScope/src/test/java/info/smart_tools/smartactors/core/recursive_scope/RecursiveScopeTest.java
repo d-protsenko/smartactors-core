@@ -22,7 +22,7 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkStoringAndGettingValue() {
+    public void checkStoringAndGettingValue() throws ScopeException {
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue("number", number);
@@ -36,7 +36,7 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkRecursiveLogic() {
+    public void checkRecursiveLogic() throws ScopeException{
         IScope parent = new Scope(null);
         assertNotNull(parent);
         IScope child = new Scope(parent);
@@ -47,7 +47,7 @@ public class RecursiveScopeTest {
     }
 
     @Test(expected = ScopeException.class)
-    public void checkValueDeletion() {
+    public void checkValueDeletion() throws ScopeException {
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue("number", number);
@@ -57,13 +57,13 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkAbsentValueDeletion() {
+    public void checkAbsentValueDeletion() throws ScopeException{
         IScope scope = new Scope(null);
         scope.deleteValue("number");
     }
 
     @Test
-    public void checkNullKeyUsage() {
+    public void checkNullKeyUsage() throws ScopeException{
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue(null, number);
@@ -71,7 +71,7 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkEqualKeysUsage() {
+    public void checkEqualKeysUsage() throws ScopeException{
         IScope scope = new Scope(null);
         Integer number1 = 1;
         Integer number2 = 2;

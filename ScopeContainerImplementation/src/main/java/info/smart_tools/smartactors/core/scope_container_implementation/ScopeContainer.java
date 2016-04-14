@@ -77,7 +77,7 @@ public class ScopeContainer implements IScopeContainer {
      * @param scope instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
      */
-    public void setScope(final Object key, final IScope scope)
+    public void addScope(final Object key, final IScope scope)
             throws ScopeProviderException {
         try {
             scopeStorage.put(key, scope);
