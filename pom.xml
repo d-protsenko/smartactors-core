@@ -14,12 +14,12 @@
         <module>IScope</module>
         <module>ScopeProvider</module>
         <module>RecursiveScope</module>
-        <module>IContainerImplementation</module>
-        <module>ScopeContainerImplementation</module>
+        <module>IocContainer</module>
+        <module>ScopeContainer</module>
         <module>IStrategyContainer</module>
         <module>IResolveDependencyStrategy</module>
-        <module>ScopeGuardJava6</module>
-        <module>ScopeGuardJava7</module>
+        <module>ScopeGuard</module>
+        <module>StrategyContainer</module>
     </modules>
 
 
