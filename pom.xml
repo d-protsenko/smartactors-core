@@ -19,6 +19,7 @@
         <module>IStrategyContainer</module>
         <module>IResolveDependencyStrategy</module>
         <module>ScopeGuardJava6</module>
+        <module>ScopeGuardJava7</module>
     </modules>
 
 
