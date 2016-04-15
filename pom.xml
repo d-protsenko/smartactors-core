@@ -18,6 +18,7 @@
         <module>ScopeContainerImplementation</module>
         <module>IStrategyContainer</module>
         <module>IResolveDependencyStrategy</module>
+        <module>ScopeGuardJava6</module>
     </modules>
 
 
