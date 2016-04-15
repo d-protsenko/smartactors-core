@@ -37,7 +37,7 @@ public final class ScopeProvider {
      * @return instance of {@link IScope}
      * @throws ScopeProviderException if value is not found or any errors occurred
      */
-    public static IScope get(final Object key)
+    public static IScope getScope(final Object key)
             throws ScopeProviderException {
         return container.getScope(key);
     }
@@ -58,7 +58,7 @@ public final class ScopeProvider {
      * @param scope instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
      */
-    public static void add(final Object key, final IScope scope)
+    public static void addScope(final Object key, final IScope scope)
             throws ScopeProviderException {
         container.addScope(key, scope);
     }
@@ -68,7 +68,7 @@ public final class ScopeProvider {
      * @param scope instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
      */
-    public static void setCurrent(final IScope scope)
+    public static void setCurrentScope(final IScope scope)
             throws ScopeProviderException {
         container.setCurrentScope(scope);
     }
@@ -78,7 +78,7 @@ public final class ScopeProvider {
      * @param key unique identifier {@link IScope} instance
      * @throws ScopeProviderException if any errors occurred
      */
-    public static void delete(final Object key)
+    public static void deleteScope(final Object key)
             throws ScopeProviderException {
         container.deleteScope(key);
     }
@@ -89,7 +89,7 @@ public final class ScopeProvider {
      * @return unique identifier of created instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
      */
-    public static Object create(final Object param)
+    public static Object createScope(final Object param)
             throws ScopeProviderException {
         return container.createScope(param);
     }
