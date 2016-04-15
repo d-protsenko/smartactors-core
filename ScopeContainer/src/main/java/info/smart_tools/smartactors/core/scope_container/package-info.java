@@ -1,5 +1,5 @@
 /**
- * Implementation of {@link info.smart_tools.smartactors.core.scope_provider.IScopeProvider}
+ * Implementation of {@link info.smart_tools.smartactors.core.scope_provider.IScopeContainer}
  *
  * This implementation has follow specific features:
  * - key-IScope storage;
