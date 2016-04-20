@@ -11,5 +11,6 @@
 
     <artifactId>core.iobject</artifactId>
 
+    <url>${project.artifactId}/</url>
 
 </project>

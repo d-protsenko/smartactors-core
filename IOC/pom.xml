@@ -11,6 +11,8 @@
 
     <artifactId>core.ioc</artifactId>
 
+    <url>${project.artifactId}/</url>
+
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
