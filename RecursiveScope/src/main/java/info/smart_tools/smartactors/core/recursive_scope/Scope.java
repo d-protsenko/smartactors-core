@@ -16,6 +16,11 @@ class Scope implements IScope {
     private IScope parent;
 
     /**
+     * Default constructor - prohibited
+     */
+    private Scope() {
+    }
+    /**
      * Constructs new Scope with defined parent scope
      * @param parent the parent scope.
      */

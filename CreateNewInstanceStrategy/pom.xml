@@ -9,32 +9,45 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.ioc_conrainer</artifactId>
+    <artifactId>core.create_new_instance_strategy</artifactId>
 
     <dependencies>
+
         <!-- Core Interfaces -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istrategy_container</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iresolve_dependency_strategy</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!-- Service Locators -->
+
+        <!-- Third-party libraries -->
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_provider</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.mdkt.compiler</groupId>
+            <artifactId>InMemoryJavaCompiler</artifactId>
+            <version>1.2</version>
         </dependency>
 
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.class_container</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

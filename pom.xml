@@ -20,6 +20,11 @@
         <module>IResolveDependencyStrategy</module>
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
+        <module>CreateNewInstanceStrategy</module>
+        <module>ClassStorage</module>
+        <module>ClassContainer</module>
+        <module>StrategyProvider</module>
+        <module>StrategyProviderContainer</module>
     </modules>
 
 
