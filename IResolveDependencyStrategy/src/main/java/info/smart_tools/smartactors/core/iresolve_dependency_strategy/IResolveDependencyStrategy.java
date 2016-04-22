@@ -10,10 +10,11 @@ public interface IResolveDependencyStrategy {
     /**
      * Resolve dependency by realized strategy
      * @param args array of needed parameters for resolve dependency
-     * @return T instance of object
+     * @param <T> type of object
+     * @return instance of type T object
      * @throws ResolveDependencyStrategyException if any errors occurred
      */
     //TODO: need change IObject by wrapper when needed code will be implemented
-    Object resolve(final Object ... args)
+    <T> T resolve(final Object ... args)
             throws ResolveDependencyStrategyException;
 }

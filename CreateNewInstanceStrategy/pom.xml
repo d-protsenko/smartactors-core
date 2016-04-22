@@ -31,8 +31,9 @@
         <!-- Tests -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.class_container</artifactId>
+            <artifactId>core.class_storage_container</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
         <!-- Tests -->
         <dependency>

@@ -39,10 +39,10 @@ class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
      * @return instance of object
      * @throws ResolveDependencyStrategyException if any errors occurred
      */
-    public Object resolve(final Object ... args)
+    public <T> T resolve(final Object ... args)
             throws ResolveDependencyStrategyException {
         try {
-            return creationFunction.apply(args);
+            return (T) creationFunction.apply(args);
         } catch (Exception e) {
             throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }

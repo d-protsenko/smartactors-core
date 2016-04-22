@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.class_container;
+package info.smart_tools.smartactors.core.class_storage_container;
 
 import info.smart_tools.smartactors.core.class_storage.IClassStorageContainer;
 import info.smart_tools.smartactors.core.class_storage.exception.ClassStorageException;

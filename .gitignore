@@ -18,3 +18,7 @@ hs_err_pid*
 #Maven
 targer/
 **/target/
+
+#Logs
+
+**/*.log
