@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderE
 public final class ScopeProvider {
 
     /**
-     * Implementation of {@link IScopeContainer}.
+     * Implementation of {@link IScopeProviderContainer}.
      * Must be initialized before ScopeProvider will be used.
      * Initialization possible only with using java reflection API
      * Example:
@@ -22,7 +22,7 @@ public final class ScopeProvider {
      * }
      * </pre>
      */
-    private static IScopeContainer container;
+    private static IScopeProviderContainer container;
 
     /**
      * Private default constructor
@@ -31,7 +31,7 @@ public final class ScopeProvider {
     }
 
     /**
-     * Get instance of {@link IScope} from local storage of {@link IScopeContainer} by unique
+     * Get instance of {@link IScope} from local storage of {@link IScopeProviderContainer} by unique
      * identifier of {@link IScope} instance
      * @param key unique identifier of {@link IScope} instance
      * @return instance of {@link IScope}
@@ -53,7 +53,7 @@ public final class ScopeProvider {
     }
 
     /**
-     * Add new dependency to the local storage of {@link IScopeContainer} by unique identifier
+     * Add new dependency to the local storage of {@link IScopeProviderContainer} by unique identifier
      * @param key unique identifier
      * @param scope instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
@@ -64,7 +64,7 @@ public final class ScopeProvider {
     }
 
     /**
-     * Set given instance of {@link IScope} as current to the {@link IScopeContainer}
+     * Set given instance of {@link IScope} as current to the {@link IScopeProviderContainer}
      * @param scope instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred
      */
@@ -74,7 +74,7 @@ public final class ScopeProvider {
     }
 
     /**
-     * Remove given instance of {@link IScope} from local storage of {@link IScopeContainer} by unique identifier
+     * Remove given instance of {@link IScope} from local storage of {@link IScopeProviderContainer} by unique identifier
      * @param key unique identifier {@link IScope} instance
      * @throws ScopeProviderException if any errors occurred
      */
@@ -84,7 +84,7 @@ public final class ScopeProvider {
     }
 
     /**
-     * Create new instance of {@link IScope} and store it to the local storage of {@link IScopeContainer}
+     * Create new instance of {@link IScope} and store it to the local storage of {@link IScopeProviderContainer}
      * @param param needed parameters for creation instance of {@link IScope}
      * @return unique identifier of created instance of {@link IScope}
      * @throws ScopeProviderException if any errors occurred

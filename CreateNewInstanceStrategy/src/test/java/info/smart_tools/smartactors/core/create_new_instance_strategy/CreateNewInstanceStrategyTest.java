@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.create_new_instance_strategy;
 
-import info.smart_tools.smartactors.core.class_container.ClassContainer;
+import info.smart_tools.smartactors.core.class_container.ClassStorageContainer;
 import info.smart_tools.smartactors.core.class_storage.ClassStorage;
-import info.smart_tools.smartactors.core.class_storage.IClassContainer;
+import info.smart_tools.smartactors.core.class_storage.IClassStorageContainer;
 import info.smart_tools.smartactors.core.iobject.FieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class CreateNewInstanceStrategyTest {
             throws Exception {
 
         // region Initialize ClassStorage service locator">
-        IClassContainer classContainer = new ClassContainer();
+        IClassStorageContainer classContainer = new ClassStorageContainer();
         Field field = ClassStorage.class.getDeclaredField("container");
         field.setAccessible(true);
         field.set(null, classContainer);

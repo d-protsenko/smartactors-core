@@ -14,7 +14,7 @@ public final class ClassStorage {
     }
 
     /**
-     * Implementation of {@link IClassContainer}.
+     * Implementation of {@link IClassStorageContainer}.
      * Must be initialized before ClassStorage will be used.
      * Initialization possible only with using java reflection API
      * Example:
@@ -27,7 +27,7 @@ public final class ClassStorage {
      * }
      * </pre>
      */
-    private static IClassContainer container;
+    private static IClassStorageContainer container;
 
     /**
      * Get {@link Class} from local key-value storage by given key
@@ -35,7 +35,7 @@ public final class ClassStorage {
      * @return specified {@link Class}
      * @throws ClassStorageException if any errors occurred
      */
-    public static Class getClass(final Object key)
+    public static Class<?> getClass(final Object key)
             throws ClassStorageException {
         return container.getClass(key);
     }
@@ -46,7 +46,7 @@ public final class ClassStorage {
      * @param clazz specified {@link Class}
      * @throws ClassStorageException if any errors occurred
      */
-    public static void addClass(final Object key, final Class clazz)
+    public static void addClass(final Object key, final Class<?> clazz)
             throws ClassStorageException {
         container.addClass(key, clazz);
     }

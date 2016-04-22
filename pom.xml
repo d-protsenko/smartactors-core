@@ -15,14 +15,14 @@
         <module>ScopeProvider</module>
         <module>RecursiveScope</module>
         <module>IocContainer</module>
-        <module>ScopeContainer</module>
+        <module>ScopeProviderContainer</module>
         <module>IStrategyContainer</module>
         <module>IResolveDependencyStrategy</module>
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
         <module>CreateNewInstanceStrategy</module>
         <module>ClassStorage</module>
-        <module>ClassContainer</module>
+        <module>ClassStorageContainer</module>
         <module>StrategyProvider</module>
         <module>StrategyProviderContainer</module>
     </modules>

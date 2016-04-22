@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.core.class_storage.exception;
 
+import info.smart_tools.smartactors.core.class_storage.IClassStorageContainer;
+
 /**
- * Exception for error in {@link info.smart_tools.smartactors.core.class_storage.IClassContainer} methods
+ * Exception for error in {@link IClassStorageContainer} methods
  */
 public class ClassStorageException extends Exception {
 

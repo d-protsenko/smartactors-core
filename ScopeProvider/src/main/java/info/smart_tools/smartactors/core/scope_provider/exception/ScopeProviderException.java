@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.scope_provider.exception;
 
 /**
- * Exception for runtime error in {@link info.smart_tools.smartactors.core.scope_provider.IScopeProvider} methods
+ * Exception for runtime error in {@link info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer} methods
  */
 public class ScopeProviderException extends Exception {
 
