@@ -3,6 +3,9 @@ package info.smart_tools.smartactors.core.recursive_scope;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+
 import static org.junit.Assert.*;
 
 public class RecursiveScopeTest {
@@ -22,7 +25,8 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkStoringAndGettingValue() throws ScopeException {
+    public void checkStoringAndGettingValue()
+            throws ScopeException {
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue("number", number);
@@ -30,13 +34,15 @@ public class RecursiveScopeTest {
     }
 
     @Test(expected = ScopeException.class)
-    public void checkGettingAbsentValue() throws ScopeException {
+    public void checkGettingAbsentValue()
+            throws ScopeException {
         IScope scope = new Scope(null);
         scope.getValue("number");
     }
 
     @Test
-    public void checkRecursiveLogic() throws ScopeException{
+    public void checkRecursiveLogic()
+            throws ScopeException{
         IScope parent = new Scope(null);
         assertNotNull(parent);
         IScope child = new Scope(parent);
@@ -47,7 +53,8 @@ public class RecursiveScopeTest {
     }
 
     @Test(expected = ScopeException.class)
-    public void checkValueDeletion() throws ScopeException {
+    public void checkValueDeletion()
+            throws ScopeException {
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue("number", number);
@@ -57,13 +64,25 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkAbsentValueDeletion() throws ScopeException{
+    public void checkAbsentValueDeletion()
+            throws ScopeException {
         IScope scope = new Scope(null);
         scope.deleteValue("number");
     }
 
+    @Test (expected = ScopeException.class)
+    public void checkScopeExceptionOnSet()
+            throws ScopeException, NoSuchFieldException, IllegalAccessException {
+        IScope scope = new Scope(null);
+        Field f = scope.getClass().getDeclaredField("storage");
+        f.setAccessible(true);
+        f.set(scope, null);
+        scope.setValue("some key", "some value");
+    }
+
     @Test
-    public void checkNullKeyUsage() throws ScopeException{
+    public void checkNullKeyUsage()
+            throws ScopeException {
         IScope scope = new Scope(null);
         Integer number = 1;
         scope.setValue(null, number);
@@ -71,12 +90,23 @@ public class RecursiveScopeTest {
     }
 
     @Test
-    public void checkEqualKeysUsage() throws ScopeException{
+    public void checkEqualKeysUsage()
+            throws ScopeException {
         IScope scope = new Scope(null);
         Integer number1 = 1;
         Integer number2 = 2;
         scope.setValue("number", number1);
         scope.setValue("number", number2);
         assertEquals(scope.getValue("number"), number2);
+    }
+
+    @Test (expected = ScopeException.class)
+    public void checkScopeExceptionOnDelete()
+            throws ScopeException, NoSuchFieldException, IllegalAccessException {
+        IScope scope = new Scope(null);
+        Field f = scope.getClass().getDeclaredField("storage");
+        f.setAccessible(true);
+        f.set(scope, null);
+        scope.deleteValue("some key");
     }
 }
