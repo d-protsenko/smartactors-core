@@ -25,6 +25,7 @@
         <module>ClassStorageContainer</module>
         <module>StrategyProvider</module>
         <module>StrategyProviderContainer</module>
+        <module>SingletonStrategy</module>
     </modules>
 
 

@@ -35,6 +35,7 @@ class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
 
     /**
      * Represent new instance of class by given param
+     * @param <T> type of object
      * @param args needed parameters for resolve dependency
      * @return instance of object
      * @throws ResolveDependencyStrategyException if any errors occurred

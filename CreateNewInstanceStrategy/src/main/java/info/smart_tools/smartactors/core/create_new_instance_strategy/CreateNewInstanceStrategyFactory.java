@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 /**
  * Implementation of {@link IStrategyFactory}
+ * for {@link CreateNewInstanceStrategy}
  */
 public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
 
@@ -19,7 +20,7 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
     private static final int MIN_ARGS_LENGTH = 3;
 
     /**
-     * Create instance of {@link IResolveDependencyStrategy}
+     * Create instance of {@link CreateNewInstanceStrategy}
      * <pre>
      *     For current implementation incoming object obj must have follow structure:
      *     {
@@ -40,7 +41,7 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
      *     }
      * </pre>
      * @param obj needed parameters for creation
-     * @return new instance of {@link IResolveDependencyStrategy}
+     * @return new instance of {@link CreateNewInstanceStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */
     public IResolveDependencyStrategy createStrategy(final Object obj)
@@ -58,7 +59,7 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
 
             return new CreateNewInstanceStrategy(f);
         } catch (Exception e) {
-            throw new StrategyFactoryException("Failed to create instance of IResolveDependencyStrategy.", e);
+            throw new StrategyFactoryException("Failed to create instance of CreateNewInstanceStrategy.", e);
         }
     }
 
