@@ -15,44 +15,29 @@ import java.util.function.Function;
 public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
 
     /**
-     * Minimum numbers of incoming args for creation class
-     */
-    private static final int MIN_ARGS_LENGTH = 3;
-
-    /**
      * Create instance of {@link CreateNewInstanceStrategy}
      * <pre>
      *     For current implementation incoming object obj must have follow structure:
      *     {
      *         {@link String} - class path,
-     *         {@link Object[]} - function parameters
-     *     }
-     *
-     *     Function parameters must have follow structure:
-     *     {
      *         {@link String} - package name,
      *         {@link String} - short name of class to be created,
      *         {@link String} - full name of class what will be created
      *             by instance of {@link IResolveDependencyStrategy},
-     *         {@link String} - type of first argument,
-     *         {@link String} - type of second argument,
-     *         ...
-     *         {@link String} - type of N argument
+     *         {@link int} - number of constructor arguments
      *     }
      * </pre>
-     * @param obj needed parameters for creation
+     * @param args needed parameters for creation
      * @return new instance of {@link CreateNewInstanceStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */
-    public IResolveDependencyStrategy createStrategy(final Object obj)
+    public IResolveDependencyStrategy createStrategy(final Object ... args)
             throws StrategyFactoryException {
         try {
-            Object [] args = (Object[]) obj;
             Object classPath = args[0];
-            Object[] funcParams = (Object[]) args[1];
-            String sourceCode = buildString(funcParams);
+            String sourceCode = buildString(args[1], args[2], args[3], args[4]);
 
-            String fullClassName = funcParams[0] + "." + funcParams[1];
+            String fullClassName = args[1] + "." + args[2];
             Class<?> func = InMemoryCodeCompiler.compile((String) classPath, fullClassName, sourceCode);
             Method m = func.getDeclaredMethod("createNewInstance");
             Function<Object[], Object> f = (Function<Object[], Object>) m.invoke(null);
@@ -79,17 +64,12 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
         sourceCode.append("        return (Object[] object) -> {\n");
         sourceCode.append("            return new ");
         sourceCode.append(args[2]); sourceCode.append("(");
-        int length = args.length;
-        for (int i = MIN_ARGS_LENGTH; i < length; i++) {
-            sourceCode.append("(");
-            sourceCode.append(args[i]);
-            sourceCode.append(")");
-            sourceCode.append("(");
+        int paramNumber = (int) args[3];
+        for (int i = 0; i < paramNumber; i++) {
             sourceCode.append("object[");
-            sourceCode.append(i - MIN_ARGS_LENGTH);
+            sourceCode.append(i);
             sourceCode.append("]");
-            sourceCode.append(")");
-            if (i + 1 < length) {
+            if (i + 1 < paramNumber) {
                 sourceCode.append(", ");
             }
         }

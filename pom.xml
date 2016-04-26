@@ -21,11 +21,10 @@
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
         <module>CreateNewInstanceStrategy</module>
-        <module>ClassStorage</module>
-        <module>ClassStorageContainer</module>
         <module>StrategyProvider</module>
         <module>StrategyProviderContainer</module>
         <module>SingletonStrategy</module>
+        <module>StringIocKey</module>
     </modules>
 
 

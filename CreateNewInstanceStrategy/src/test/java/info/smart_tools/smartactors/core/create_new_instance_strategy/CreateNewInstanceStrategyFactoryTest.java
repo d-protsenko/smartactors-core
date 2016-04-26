@@ -26,13 +26,12 @@ public class CreateNewInstanceStrategyFactoryTest {
                 "public class Func {\n" +
                 "    public static Function<Object[], Object> createNewInstance() {\n" +
                 "        return (Object[] object) -> {\n" +
-                "            return new Integer((int)(object[0]));\n" +
+                "            return new Integer(object[0]);\n" +
                 "        };\n" +
                 "    }\n" +
                 "}\n";
 
-        Object[] params = new Object[]{"it.sevenbits.sandbox.bootstrap", "Func", "Integer", "int"};
-        String builderResult = CreateNewInstanceStrategyFactory.buildString(params);
+        String builderResult = CreateNewInstanceStrategyFactory.buildString("it.sevenbits.sandbox.bootstrap", "Func", "Integer", 1);
         assertEquals(testSample, builderResult);
     }
 
@@ -43,13 +42,11 @@ public class CreateNewInstanceStrategyFactoryTest {
                 "public class Func {\n" +
                 "    public static Function<Object[], Object> createNewInstance() {\n" +
                 "        return (Object[] object) -> {\n" +
-                "            return new String((byte[])(object[0]), (int)(object[1]), (int)(object[2]));\n" +
+                "            return new String(object[0], object[1], object[2]);\n" +
                 "        };\n" +
                 "    }\n" +
                 "}\n";
-
-        Object[] params = new Object[]{"it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"};
-        String builderResult = CreateNewInstanceStrategyFactory.buildString(params);
+        String builderResult = CreateNewInstanceStrategyFactory.buildString("it.sevenbits.sandbox.bootstrap", "Func", "String", 3);
         assertEquals(testSample, builderResult);
     }
 
@@ -57,10 +54,7 @@ public class CreateNewInstanceStrategyFactoryTest {
     public void checkStrategyCreation()
             throws StrategyFactoryException {
         IStrategyFactory factory = new CreateNewInstanceStrategyFactory();
-        Object[] funcParams = new Object[]{"it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"};
-        Object[] factoryArgs = new Object[]{"", funcParams};
-
-        IResolveDependencyStrategy strategy = factory.createStrategy(factoryArgs);
+        IResolveDependencyStrategy strategy = factory.createStrategy("", "it.sevenbits.sandbox.bootstrap", "Func", "String", 3);
         assertNotNull(strategy);
     }
 

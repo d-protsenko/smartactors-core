@@ -9,9 +9,9 @@ public interface IStrategyFactory {
 
     /**
      * Factory method for create new instance if {@link IResolveDependencyStrategy}
-     * @param obj needed parameters for creation
+     * @param args needed parameters for creation
      * @return instance of {@link IResolveDependencyStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */
-    IResolveDependencyStrategy createStrategy(final Object obj) throws StrategyFactoryException;
+    IResolveDependencyStrategy createStrategy(final Object ... args) throws StrategyFactoryException;
 }
