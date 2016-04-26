@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IStrategyF
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.StrategyFactoryException;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -13,6 +14,11 @@ import java.util.function.Function;
  * for {@link CreateNewInstanceStrategy}
  */
 public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
+
+    /**
+     * Minimum numbers of incoming args for creation class
+     */
+    private static final int MIN_ARGS_LENGTH = 3;
 
     /**
      * Create instance of {@link CreateNewInstanceStrategy}
@@ -24,10 +30,13 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
      *         {@link String} - short name of class to be created,
      *         {@link String} - full name of class what will be created
      *             by instance of {@link IResolveDependencyStrategy},
-     *         {@link int} - number of constructor arguments
+     *         {@link String} - type of first argument,
+     *         {@link String} - type of second argument,
+     *         ...
+     *         {@link String} - type of N argument
      *     }
      * </pre>
-     * @param args needed parameters for creation
+     * @param obj needed parameters for creation
      * @return new instance of {@link CreateNewInstanceStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */
@@ -35,9 +44,10 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
             throws StrategyFactoryException {
         try {
             Object classPath = args[0];
-            String sourceCode = buildString(args[1], args[2], args[3], args[4]);
+            Object[] lessArray = Arrays.copyOfRange(args, 1, args.length);
+            String sourceCode = buildString(lessArray);
 
-            String fullClassName = args[1] + "." + args[2];
+            String fullClassName = lessArray[0] + "." + lessArray[1];
             Class<?> func = InMemoryCodeCompiler.compile((String) classPath, fullClassName, sourceCode);
             Method m = func.getDeclaredMethod("createNewInstance");
             Function<Object[], Object> f = (Function<Object[], Object>) m.invoke(null);
@@ -64,12 +74,17 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
         sourceCode.append("        return (Object[] object) -> {\n");
         sourceCode.append("            return new ");
         sourceCode.append(args[2]); sourceCode.append("(");
-        int paramNumber = (int) args[3];
-        for (int i = 0; i < paramNumber; i++) {
+        int length = args.length;
+        for (int i = MIN_ARGS_LENGTH; i < length; i++) {
+            sourceCode.append("(");
+            sourceCode.append(args[i]);
+            sourceCode.append(")");
+            sourceCode.append("(");
             sourceCode.append("object[");
-            sourceCode.append(i);
+            sourceCode.append(i - MIN_ARGS_LENGTH);
             sourceCode.append("]");
-            if (i + 1 < paramNumber) {
+            sourceCode.append(")");
+            if (i + 1 < length) {
                 sourceCode.append(", ");
             }
         }

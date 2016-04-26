@@ -17,8 +17,9 @@ public class CreateNewInstanceStrategyTest {
     public void checkStrategyCreation()
             throws StrategyFactoryException, ResolveDependencyStrategyException {
         IStrategyFactory factory = new CreateNewInstanceStrategyFactory();
-        Object[] funcParams = new Object[]{"it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"};
-        Object[] factoryArgs = new Object[]{"", funcParams};
+        Object[] factoryArgs = new Object[]{
+                "", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"
+        };
 
         IResolveDependencyStrategy strategy = factory.createStrategy(factoryArgs);
         Object[] objectArgs = new Object[]{new byte[]{'a','b','c'}, 1, 2};
@@ -29,8 +30,9 @@ public class CreateNewInstanceStrategyTest {
     @Test (expected = ResolveDependencyStrategyException.class)
     public void checkStrategyCreationException()
             throws StrategyFactoryException, ResolveDependencyStrategyException {
-        Object[] funcParams = new Object[]{"it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"};
-        Object[] factoryArgs = new Object[]{"", funcParams};
+        Object[] factoryArgs = new Object[]{
+                "", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"
+        };
         IStrategyFactory factory = new CreateNewInstanceStrategyFactory();
         IResolveDependencyStrategy strategy = factory.createStrategy(factoryArgs);
         // Absent one arg in objectArgs
