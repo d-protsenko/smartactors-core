@@ -12,15 +12,15 @@ public class SingletonStrategyFactory implements IStrategyFactory {
 
     /**
      * Create instance of {@link SingletonStrategy}
-     * @param obj singleton instance
+     * @param args singleton instance
      * @return new instance of {@link SingletonStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */
-    public IResolveDependencyStrategy createStrategy(final Object obj)
+    public IResolveDependencyStrategy createStrategy(final Object ... args)
             throws StrategyFactoryException {
         try {
 
-            return new SingletonStrategy(obj);
+            return new SingletonStrategy(args[0]);
         } catch (Exception e) {
             throw new StrategyFactoryException("Failed to create instance of SingletonStrategy.", e);
         }
