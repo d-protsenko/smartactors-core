@@ -74,19 +74,8 @@ public class RecursiveScopeTest {
     public void checkScopeExceptionOnSet()
             throws ScopeException, NoSuchFieldException, IllegalAccessException {
         IScope scope = new Scope(null);
-        Field f = scope.getClass().getDeclaredField("storage");
-        f.setAccessible(true);
-        f.set(scope, null);
-        scope.setValue("some key", "some value");
-    }
-
-    @Test
-    public void checkNullKeyUsage()
-            throws ScopeException {
-        IScope scope = new Scope(null);
-        Integer number = 1;
-        scope.setValue(null, number);
-        assertEquals(scope.getValue(null), number);
+        scope.setValue(null, "some value");
+        fail();
     }
 
     @Test
