@@ -93,11 +93,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      */
     public void setCurrentScope(final IScope scope)
             throws ScopeProviderException {
-        try {
-            currentScope.set(scope);
-        } catch (Exception e) {
-            throw new ScopeProviderException("Error was occurred", e);
-        }
+        currentScope.set(scope);
     }
 
     /**

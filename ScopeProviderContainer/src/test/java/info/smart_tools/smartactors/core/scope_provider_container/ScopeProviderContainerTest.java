@@ -3,13 +3,13 @@ package info.smart_tools.smartactors.core.scope_provider_container;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.assertEquals;
 
 public class ScopeProviderContainerTest {
 
@@ -20,7 +20,7 @@ public class ScopeProviderContainerTest {
     }
 
     @Test
-    public void checkScopeGetterSetterCreatorRemover()
+    public void checkGetterSetterCreator()
             throws Exception {
         IScope scope = mock(IScope.class);
         IScopeFactory factory = mock(IScopeFactory.class);
@@ -37,19 +37,73 @@ public class ScopeProviderContainerTest {
     }
 
     @Test (expected = ScopeProviderException.class)
-    public void checkGettingAbsentScope()
+    public void checkScopeProviderExceptionByGet()
             throws Exception {
         IScopeFactory factory = mock(IScopeFactory.class);
-        IScopeProviderContainer scopeProvider = new ScopeProviderContainer(factory);
-        scopeProvider.getScope("key1");
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.getScope("key1");
+        fail();
     }
-//
-//    @Test (expected = ScopeProviderException.class)
-//    public void checkScopeDeletion() {
-//        IScopeProviderContainer scopeProvider = new ScopeProviderContainer();
-//        IScope scope = new Scope(null);
-//        scopeProvider.setScope("scope_1", scope);
-//        scopeProvider.deleteScope("scope_1");
-//        scopeProvider.getScope("scope_1");
-//    }
+
+    @Test (expected = ScopeProviderException.class)
+    public void checkScopeProviderExceptionByAdd()
+            throws Exception {
+        IScope scope = mock(IScope.class);
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.addScope(null, scope);
+        fail();
+    }
+
+    @Test (expected = ScopeProviderException.class)
+    public void checkScopeProviderExceptionByCreate()
+            throws Exception {
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.createScope(null);
+        fail();
+    }
+
+    @Test  (expected = ScopeProviderException.class)
+    public void checkDeletion()
+            throws Exception {
+        Object param = new Object();
+        IScope scope = mock(IScope.class);
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        when(factory.createScope(param)).thenReturn(scope);
+        Object key = scopeProviderContainer.createScope(param);
+        scopeProviderContainer.deleteScope(key);
+        scopeProviderContainer.getScope(key);
+        fail();
+    }
+
+    @Test (expected = ScopeProviderException.class)
+    public void checkScopeProviderExceptionByDelete()
+            throws Exception {
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.deleteScope(null);
+        fail();
+    }
+
+    @Test
+    public void checkSetCurrentGetCurrent()
+            throws Exception {
+        IScope scope = mock(IScope.class);
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.setCurrentScope(scope);
+        IScope resultScope = scopeProviderContainer.getCurrentScope();
+        assertEquals(scope, resultScope);
+    }
+
+    @Test (expected = ScopeProviderException.class)
+    public void checkScopeProviderExceptionByGetCurrent()
+            throws Exception {
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.getCurrentScope();
+        fail();
+    }
 }
