@@ -5,9 +5,9 @@ import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer;
 import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link IScopeProviderContainer}
@@ -17,7 +17,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     /**
      * Local storage of all {@link IScope} instances by unique identifier
      */
-    private Map<Object, IScope> scopeStorage = new HashMap<Object, IScope>();
+    private Map<Object, IScope> scopeStorage = new ConcurrentHashMap<Object, IScope>();
     /**
      * Current instance of {@link IScope} for current thread
      */
@@ -117,7 +117,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     /**
      * Create new instance of {@link IScope} and put it to the local storage
      * @param params needed parameters for creation
-     * @return uniqte instance of {@link IScope} identifier
+     * @return unique instance of {@link IScope} identifier
      * @throws ScopeProviderException if any errors occurred
      */
     public Object createScope(final Object params) throws ScopeProviderException {
