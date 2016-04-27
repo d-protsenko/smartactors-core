@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.recursive_scope;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link info.smart_tools.smartactors.core.iscope.IScope}
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 class Scope implements IScope {
 
-    private Map<Object, Object> storage = new HashMap<Object, Object>();
+    private Map<Object, Object> storage = new ConcurrentHashMap<Object, Object>();
     private IScope parent;
 
     /**

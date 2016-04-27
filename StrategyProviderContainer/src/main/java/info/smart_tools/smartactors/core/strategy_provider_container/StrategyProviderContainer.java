@@ -5,8 +5,8 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IStrategyF
 import info.smart_tools.smartactors.core.strategy_provider.IStrategyProviderContainer;
 import info.smart_tools.smartactors.core.strategy_provider.exception.StrategyProviderException;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link IStrategyProviderContainer}
@@ -16,7 +16,7 @@ public class StrategyProviderContainer implements IStrategyProviderContainer {
     /**
      * Local storage of {@link IStrategyFactory} instances by unique identifier
      */
-    private Map<Object, IStrategyFactory> strategyFactories = new HashMap<Object, IStrategyFactory>();
+    private Map<Object, IStrategyFactory> strategyFactories = new ConcurrentHashMap<Object, IStrategyFactory>();
 
     /**
      * Create new instance of specific {@link IResolveDependencyStrategy}
