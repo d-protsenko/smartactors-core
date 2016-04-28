@@ -6,13 +6,6 @@ package info.smart_tools.smartactors.core.scope_provider.exception;
 public class ScopeProviderException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private ScopeProviderException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */

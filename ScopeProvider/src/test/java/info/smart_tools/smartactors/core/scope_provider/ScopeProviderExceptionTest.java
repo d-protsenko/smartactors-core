@@ -1,41 +1,40 @@
-package info.smart_tools.smartactors.core.ioc;
+package info.smart_tools.smartactors.core.scope_provider;
 
-import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
+import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for RegistrationException
+ * Tests for ScopeProviderException
  */
-public class RegistrationExceptionTest {
-
-    @Test(expected = RegistrationException.class)
+public class ScopeProviderExceptionTest {
+    @Test(expected = ScopeProviderException.class)
     public void checkMessageMethod()
-            throws RegistrationException {
+            throws ScopeProviderException {
         String str = "test";
-        RegistrationException exception = new RegistrationException(str);
+        ScopeProviderException exception = new ScopeProviderException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test (expected = RegistrationException.class)
+    @Test (expected = ScopeProviderException.class)
     public void checkCauseMethod()
-            throws RegistrationException {
+            throws ScopeProviderException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        RegistrationException exception = new RegistrationException(cause);
+        ScopeProviderException exception = new ScopeProviderException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test (expected = RegistrationException.class)
+    @Test (expected = ScopeProviderException.class)
     public void checkMessageAndCauseMethod()
-            throws RegistrationException {
+            throws ScopeProviderException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        RegistrationException exception = new RegistrationException(str, cause);
+        ScopeProviderException exception = new ScopeProviderException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;

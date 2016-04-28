@@ -28,12 +28,6 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     private IScopeFactory factory;
 
     /**
-     * Default constructor
-     */
-    private ScopeProviderContainer() {
-    }
-
-    /**
      * Constructor with {@link IScopeFactory}
      * @param factory instance of {@link IScopeFactory}
      */
