@@ -14,14 +14,21 @@ import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderE
 
 import info.smart_tools.smartactors.core.scope_provider_container.ScopeProviderContainer;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -41,6 +48,7 @@ public class ContainerTest {
     @Test
     public void checkResolve()
             throws Exception {
+        Long value = 1L;
         IContainer container = new Container();
         IScopeProviderContainer scopeContainer = new ScopeProviderContainer(mock(IScopeFactory.class));
 
@@ -58,10 +66,13 @@ public class ContainerTest {
 
         when(scope.getValue(STRATEGY_CONTAINER_KEY)).thenReturn(strategyContainer);
         when(strategyContainer.resolve(key)).thenReturn(strategy);
-        when(strategy.resolve(1L)).thenReturn(1L);
-        Object result = container.resolve(key, 1L);
+        when(strategy.resolve(value)).thenReturn(value);
+        Object result = container.resolve(key, value);
+        verify(scope, times(1)).getValue(STRATEGY_CONTAINER_KEY);
+        verify(strategyContainer, times(1)).resolve(key);
+        verify(strategy,times(1)).resolve(value);
         assertEquals(result.getClass(), Long.class);
-        assertEquals(1L , result);
+        assertEquals(value , result);
     }
 
     @Test (expected = ResolutionException.class)
@@ -78,6 +89,7 @@ public class ContainerTest {
         Long checkValue = 1L;
         IContainer container = new Container();
         IScopeProviderContainer scopeContainer = new ScopeProviderContainer(mock(IScopeFactory.class));
+        final Map<IKey, IResolveDependencyStrategy> testMap = new HashMap<IKey, IResolveDependencyStrategy>();
 
         Field field = ScopeProvider.class.getDeclaredField("container");
         field.setAccessible(true);
@@ -90,15 +102,18 @@ public class ContainerTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         ScopeProvider.setCurrentScope(scope);
         when(scope.getValue(STRATEGY_CONTAINER_KEY)).thenReturn(strategyContainer);
-        Mockito.doNothing().when(strategyContainer).register(key, strategy);
-
-        when(strategyContainer.resolve(key)).thenReturn(strategy);
-        when(strategy.resolve(1L)).thenReturn(checkValue);
-
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                IKey key = (IKey)invocationOnMock.getArguments()[0];
+                IResolveDependencyStrategy strategy = (IResolveDependencyStrategy)invocationOnMock.getArguments()[1];
+                testMap.put(key, strategy);
+                return null;
+            }
+        }).when(strategyContainer).register(key, strategy);
         container.register(key, strategy);
-        Object result = container.resolve(key, 1L);
-        assertEquals(result.getClass(), checkValue.getClass());
-        assertEquals(result, checkValue);
+        verify(scope, times(1)).getValue(STRATEGY_CONTAINER_KEY);
+        verify(strategyContainer, times(1)).register(key, strategy);
+        assertEquals(testMap.get(key), strategy);
     }
 
     @Test (expected = RegistrationException.class)

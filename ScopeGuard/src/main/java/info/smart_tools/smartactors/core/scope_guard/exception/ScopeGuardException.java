@@ -6,13 +6,6 @@ package info.smart_tools.smartactors.core.scope_guard.exception;
 public class ScopeGuardException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private ScopeGuardException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */

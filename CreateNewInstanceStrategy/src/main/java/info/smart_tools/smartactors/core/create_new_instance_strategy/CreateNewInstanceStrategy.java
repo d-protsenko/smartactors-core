@@ -19,12 +19,6 @@ class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
     private Function<Object[], Object> creationFunction;
 
     /**
-     * Default constructor - prohibited
-     */
-    private CreateNewInstanceStrategy() {
-    }
-
-    /**
      * Class constructor
      * Create class instance with initialize private function property
      * @param func function for creation new instances of classes

@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link SingletonStrategyFactory}
@@ -36,7 +38,6 @@ public class SingletonStrategyFactoryTest {
     public void checkExceptionOnCreation()
             throws StrategyFactoryException {
         IStrategyFactory factory = new SingletonStrategyFactory();
-
         factory.createStrategy(null);
         fail();
     }

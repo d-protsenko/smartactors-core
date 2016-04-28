@@ -49,7 +49,6 @@ public class IocTest {
         IContainer container = mock(IContainer.class);
         IKey<Integer> key = mock(IKey.class);
         doAnswer(new Answer() {
-            private Map<IKey, IResolveDependencyStrategy> map = new HashMap<IKey, IResolveDependencyStrategy>();
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 IKey key = (IKey)invocationOnMock.getArguments()[0];
                 IResolveDependencyStrategy strategy = (IResolveDependencyStrategy)invocationOnMock.getArguments()[1];

@@ -6,13 +6,6 @@ package info.smart_tools.smartactors.core.istrategy_container.exception;
 public class StrategyContainerException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private StrategyContainerException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */

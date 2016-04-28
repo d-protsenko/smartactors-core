@@ -6,13 +6,6 @@ package info.smart_tools.smartactors.core.iscope.exception;
 public class ScopeFactoryException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private ScopeFactoryException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */

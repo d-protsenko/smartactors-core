@@ -17,12 +17,6 @@ class SingletonStrategy implements IResolveDependencyStrategy {
     private Object classInstance;
 
     /**
-     * Default constructor - prohibited
-     */
-    private SingletonStrategy() {
-    }
-
-    /**
      * Class constructor
      * Create strategy instance with initialized object
      * @param classInstance initialized object

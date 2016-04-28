@@ -6,13 +6,6 @@ package info.smart_tools.smartactors.core.ioc.exception;
 public class RegistrationException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private RegistrationException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */

@@ -25,6 +25,9 @@ public class ScopeGuard implements IScopeGuard {
             throws ScopeGuardException {
         try {
             previousScope = ScopeProvider.getCurrentScope();
+            if (previousScope == null) {
+                throw new Exception();
+            }
             ScopeProvider.setCurrentScope(ScopeProvider.getScope(key));
         } catch (Exception e) {
             throw new ScopeGuardException("ScopeGuard could not to switch scope.", e);
@@ -33,12 +36,14 @@ public class ScopeGuard implements IScopeGuard {
 
     /**
      * Set locally saved {@link IScope} as current
-     * @throws  ScopeGuardException if any errors occurred
+     * @throws ScopeGuardException if any errors occurred
      */
     public void close() throws ScopeGuardException {
         try {
             if (previousScope != null) {
                 ScopeProvider.setCurrentScope(previousScope);
+            } else {
+                throw new Exception();
             }
         } catch (Exception e) {
             throw new ScopeGuardException("ScopeGuard could not restore original state.", e);

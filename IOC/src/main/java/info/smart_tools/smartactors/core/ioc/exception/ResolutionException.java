@@ -8,13 +8,6 @@ import java.io.StringWriter;
 public class ResolutionException extends Exception {
 
     /**
-     * Default constructor
-     */
-    private ResolutionException() {
-        super();
-    }
-
-    /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */
