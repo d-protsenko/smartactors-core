@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.ioc.IKey;
 public class Key<T> implements IKey<T> {
 
     private String identifier;
+    private Class<T> clazz;
 
     /**
      * Constructor with string unique identifier
@@ -32,6 +33,7 @@ public class Key<T> implements IKey<T> {
      */
     public Key(final Class<T> clazz, final String identifier) {
         this(identifier);
+        this.clazz = clazz;
     }
 
     @Override
@@ -45,11 +47,16 @@ public class Key<T> implements IKey<T> {
 
         Key<?> key = (Key<?>) o;
 
-        return identifier.equals(key.identifier);
+        if (identifier != null ? !identifier.equals(key.identifier) : key.identifier != null) {
+            return false;
+        }
+        return !(clazz != null ? !clazz.equals(key.clazz) : key.clazz != null);
     }
 
     @Override
     public int hashCode() {
-        return identifier.hashCode();
+        int result = identifier != null ? identifier.hashCode() : 0;
+        result = 31 * result + (clazz != null ? clazz.hashCode() : 0);
+        return result;
     }
 }

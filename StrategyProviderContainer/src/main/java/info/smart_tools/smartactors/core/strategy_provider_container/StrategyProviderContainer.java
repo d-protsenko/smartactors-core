@@ -25,7 +25,7 @@ public class StrategyProviderContainer implements IStrategyProviderContainer {
      * @return new instance of {@link IResolveDependencyStrategy}
      * @throws StrategyProviderException if any errors occurred
      */
-    public IResolveDependencyStrategy createStrategy(final Object key, final Object args)
+    public IResolveDependencyStrategy createStrategy(final Object key, final Object ... args)
             throws StrategyProviderException {
         try {
             return strategyFactories.get(key).createStrategy(args);

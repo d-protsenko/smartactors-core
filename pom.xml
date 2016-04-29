@@ -25,6 +25,8 @@
         <module>StrategyProviderContainer</module>
         <module>SingletonStrategy</module>
         <module>StringIocKey</module>
+        <module>IServer</module>
+        <module>ServerWithIoc</module>
     </modules>
 
 

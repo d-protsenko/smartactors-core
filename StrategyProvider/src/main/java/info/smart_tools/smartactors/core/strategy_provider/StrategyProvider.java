@@ -38,7 +38,7 @@ public final class StrategyProvider {
      * @return new instance of {@link IResolveDependencyStrategy}
      * @throws StrategyProviderException if any errors occurred
      */
-    public static IResolveDependencyStrategy createStrategy(final Object key, final Object args)
+    public static IResolveDependencyStrategy createStrategy(final Object key, final Object ... args)
             throws StrategyProviderException {
 
         return container.createStrategy(key, args);
@@ -50,7 +50,7 @@ public final class StrategyProvider {
      * @param factory instance of {@link IStrategyFactory}
      * @throws StrategyProviderException if any errors occurred
      */
-    void addStrategyFactory(final Object key, final IStrategyFactory factory)
+    public static void addStrategyFactory(final Object key, final IStrategyFactory factory)
             throws StrategyProviderException {
         container.addStrategyFactory(key, factory);
     }
@@ -60,7 +60,7 @@ public final class StrategyProvider {
      * @param key unique identifier of {@link IStrategyFactory}
      * @throws StrategyProviderException if any errors occurred
      */
-    void removeStrategyFactory(final Object key)
+    public static void removeStrategyFactory(final Object key)
             throws StrategyProviderException {
         container.removeStrategyFactory(key);
     }

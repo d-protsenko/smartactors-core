@@ -16,7 +16,7 @@ public interface IStrategyProviderContainer {
      * @return new instance of {@link IResolveDependencyStrategy}
      * @throws StrategyProviderException if any errors occurred
      */
-    IResolveDependencyStrategy createStrategy(final Object key, final Object args)
+    IResolveDependencyStrategy createStrategy(final Object key, final Object ... args)
             throws StrategyProviderException;
 
     /**
