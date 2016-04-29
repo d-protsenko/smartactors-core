@@ -28,4 +28,12 @@ public interface IStrategyContainer {
      */
     void register(final Object key, final IResolveDependencyStrategy strategy)
             throws StrategyContainerException;
+
+    /**
+     * Remove existing dependency of {@link IResolveDependencyStrategy} by unique object identifier
+     * @param key unique object identifier
+     * @throws StrategyContainerException  if any error occurred
+     */
+    void remove(final Object key)
+            throws StrategyContainerException;
 }

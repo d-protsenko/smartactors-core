@@ -28,7 +28,8 @@ public class StrategyContainer implements IStrategyContainer {
      * @return instance of {@link IResolveDependencyStrategy}
      * @throws StrategyContainerException if any errors occurred
      */
-    public IResolveDependencyStrategy resolve(final Object key) throws StrategyContainerException {
+    public IResolveDependencyStrategy resolve(final Object key)
+            throws StrategyContainerException {
         return strategyStorage.get(key);
     }
 
@@ -38,7 +39,18 @@ public class StrategyContainer implements IStrategyContainer {
      * @param strategy instance of {@link IResolveDependencyStrategy}
      * @throws StrategyContainerException if any error occurred
      */
-    public void register(final Object key, final IResolveDependencyStrategy strategy) throws StrategyContainerException {
+    public void register(final Object key, final IResolveDependencyStrategy strategy)
+            throws StrategyContainerException {
         strategyStorage.put(key, strategy);
+    }
+
+    /**
+     * Remove existing dependency of {@link IResolveDependencyStrategy} by unique object identifier
+     * @param key unique object identifier
+     * @throws StrategyContainerException  if any error occurred
+     */
+    public void remove(final Object key)
+            throws StrategyContainerException {
+        strategyStorage.remove(key);
     }
 }
