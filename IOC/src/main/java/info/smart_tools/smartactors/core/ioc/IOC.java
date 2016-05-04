@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.ioc;
 
+import info.smart_tools.smartactors.core.ioc.exception.DeletionException;
 import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
 import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
@@ -32,6 +33,14 @@ public final class IOC {
     private static IContainer container;
 
     /**
+     * Return specific container ID
+     * @return specific container ID
+     */
+    public static IKey getIocKey() {
+        return container.getIocKey();
+    }
+
+    /**
      * Resolve dependency by given given {@link IKey} instance and args
      * @param key instance of {@link IKey}
      * @param args needed parameters for resolve dependency
@@ -54,4 +63,10 @@ public final class IOC {
             throws RegistrationException {
         container.register(key, strategy);
     }
+
+    public static void remove(final IKey key)
+            throws DeletionException {
+        container.remove(key);
+    }
+
 }

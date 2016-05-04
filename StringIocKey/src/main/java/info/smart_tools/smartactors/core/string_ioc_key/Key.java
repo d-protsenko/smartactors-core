@@ -23,6 +23,9 @@ public class Key<T> implements IKey<T> {
      * @param identifier string unique identifier
      */
     public Key(final String identifier) {
+        if (identifier == null || identifier.isEmpty()) {
+            throw new IllegalArgumentException("Value should not be empty or null.");
+        }
         this.identifier = identifier;
     }
 
@@ -58,5 +61,10 @@ public class Key<T> implements IKey<T> {
         int result = identifier != null ? identifier.hashCode() : 0;
         result = 31 * result + (clazz != null ? clazz.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return identifier;
     }
 }

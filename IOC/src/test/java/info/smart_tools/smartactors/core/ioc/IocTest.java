@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,6 +40,8 @@ public class IocTest {
         Integer result = IOC.resolve(key, args);
         verify(container, times(1)).resolve(key, args);
         assertEquals(result, value);
+        reset(key);
+        reset(container);
     }
 
     @Test
@@ -65,5 +68,57 @@ public class IocTest {
         IOC.register(key, strategy);
         verify(container, times(1)).register(key, strategy);
         assertEquals(testMap.get(key), strategy);
+        reset(key);
+        reset(container);
+        reset(strategy);
+    }
+
+    @Test
+    public void checkDeletion()
+            throws Exception {
+        final Map<IKey, IResolveDependencyStrategy> testMap = new HashMap<IKey, IResolveDependencyStrategy>();
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IContainer container = mock(IContainer.class);
+        IKey<Integer> key = mock(IKey.class);
+        testMap.put(key, strategy);
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                IKey key = (IKey)invocationOnMock.getArguments()[0];
+                testMap.remove(key);
+                return null;
+            }
+        }).when(container).remove(key);
+
+        Field field = IOC.class.getDeclaredField("container");
+        field.setAccessible(true);
+        field.set(null, container);
+        field.setAccessible(false);
+
+        IOC.remove(key);
+        verify(container, times(1)).remove(key);
+        assertEquals(testMap.size(), 0);
+        reset(key);
+        reset(container);
+        reset(strategy);
+    }
+
+    @Test
+    public void checkGetIocGuid()
+            throws Exception {
+        IKey key = mock(IKey.class);
+        IContainer container = mock(IContainer.class);
+        when(container.getIocKey()).thenReturn(key);
+
+        Field field = IOC.class.getDeclaredField("container");
+        field.setAccessible(true);
+        field.set(null, container);
+        field.setAccessible(false);
+
+        IKey resultKey = IOC.getIocKey();
+        verify(container, times(1)).getIocKey();
+        assertEquals(resultKey, key);
+
+        reset(container);
+        reset(key);
     }
 }

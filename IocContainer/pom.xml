@@ -41,6 +41,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Implementations -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.string_ioc_key</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
