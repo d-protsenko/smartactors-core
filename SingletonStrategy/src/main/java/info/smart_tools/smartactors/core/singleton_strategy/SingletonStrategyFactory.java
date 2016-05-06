@@ -19,7 +19,6 @@ public class SingletonStrategyFactory implements IStrategyFactory {
     public IResolveDependencyStrategy createStrategy(final Object ... args)
             throws StrategyFactoryException {
         try {
-
             return new SingletonStrategy(args[0]);
         } catch (Exception e) {
             throw new StrategyFactoryException("Failed to create instance of SingletonStrategy.", e);
