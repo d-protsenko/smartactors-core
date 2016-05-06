@@ -40,8 +40,8 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         try {
-            initializeScopeProvider();
             initializeIoc();
+            initializeScopeProvider();
             initializeStrategyProvider();
             registerCreateNewInstanceStrategy();
             registerSingletonStrategy();
@@ -84,7 +84,7 @@ public class Server implements IServer {
 
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
-        mainScope.setValue(STRATEGY_CONTAINER_KEY, strategyContainer);
+        mainScope.setValue(IOC.getIocKey(), strategyContainer);
         ScopeProvider.setCurrentScope(mainScope);
     }
 

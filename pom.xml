@@ -27,6 +27,7 @@
         <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
+        <module>ProofOfAssumtion</module>
     </modules>
 
 
