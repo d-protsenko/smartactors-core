@@ -21,13 +21,15 @@
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
         <module>CreateNewInstanceStrategy</module>
-        <module>StrategyProvider</module>
-        <module>StrategyProviderContainer</module>
         <module>SingletonStrategy</module>
         <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
-        <module>ProofOfAssumtion</module>
+        <module>ProofOfAssumption</module>
+        <module>IKey</module>
+        <module>IIocContainer</module>
+        <module>IocContainerSimpleImplementation</module>
+        <module>IScopeProviderContainer</module>
     </modules>
 
 

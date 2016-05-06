@@ -2,11 +2,9 @@ package info.smart_tools.smartactors.core.scope_provider_container;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
-import info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

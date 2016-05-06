@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

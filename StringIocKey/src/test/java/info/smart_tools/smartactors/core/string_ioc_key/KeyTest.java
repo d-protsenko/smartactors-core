@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.string_ioc_key;
 
-import info.smart_tools.smartactors.core.ioc.IKey;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import org.junit.Test;
 
 import java.util.HashMap;

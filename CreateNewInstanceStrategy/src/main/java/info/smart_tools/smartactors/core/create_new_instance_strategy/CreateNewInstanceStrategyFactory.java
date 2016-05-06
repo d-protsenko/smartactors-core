@@ -36,7 +36,7 @@ public class CreateNewInstanceStrategyFactory implements IStrategyFactory {
      *         {@link String} - type of N argument
      *     }
      * </pre>
-     * @param obj needed parameters for creation
+     * @param args needed parameters for creation
      * @return new instance of {@link CreateNewInstanceStrategy}
      * @throws StrategyFactoryException if any errors occurred
      */

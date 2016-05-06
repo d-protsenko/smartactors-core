@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.scope_provider_container;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
-import info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer;
-import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 
 import java.util.Map;
 import java.util.UUID;

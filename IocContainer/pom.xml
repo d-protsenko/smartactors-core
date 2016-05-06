@@ -23,25 +23,25 @@
             <artifactId>core.iresolve_dependency_strategy</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <!-- Service Locators -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>core.ikey</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iioccontainer</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Service Locator -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.scope_provider</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_provider</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
 
-        <!-- Implementations -->
+        <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.string_ioc_key</artifactId>
@@ -61,13 +61,6 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider_container</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
 
     </dependencies>
 

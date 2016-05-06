@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.ioc_container;
 
-import info.smart_tools.smartactors.core.ioc.IContainer;
-import info.smart_tools.smartactors.core.ioc.IKey;
-import info.smart_tools.smartactors.core.ioc.exception.DeletionException;
-import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
-import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iioccontainer.IContainer;
+import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;

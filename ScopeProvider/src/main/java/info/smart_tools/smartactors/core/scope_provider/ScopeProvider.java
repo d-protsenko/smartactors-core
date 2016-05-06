@@ -1,7 +1,11 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.scope_provider.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.iscope.IScopeFactory;
+import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.recursive_scope.ScopeFactory;
+import info.smart_tools.smartactors.core.scope_provider_container.ScopeProviderContainer;
 
 /**
  * Realization of ScopeProvider by ServiceLocator pattern
@@ -10,8 +14,8 @@ public final class ScopeProvider {
 
     /**
      * Implementation of {@link IScopeProviderContainer}.
-     * Must be initialized before ScopeProvider will be used.
-     * Initialization possible only with using java reflection API
+     * Will be initialized by default implementation of {@link IScopeProviderContainer}
+     * ReInitialization possible only with using java reflection API
      * Example:
      * <pre>
      * {@code
@@ -24,10 +28,9 @@ public final class ScopeProvider {
      */
     private static IScopeProviderContainer container;
 
-    /**
-     * Private default constructor
-     */
-    private ScopeProvider() {
+    static {
+        IScopeFactory factory = new ScopeFactory();
+        container = new ScopeProviderContainer(factory);
     }
 
     /**

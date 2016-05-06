@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.scope_guard;
 
 import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
 import info.smart_tools.smartactors.core.scope_guard.exception.ScopeGuardException;
-import info.smart_tools.smartactors.core.scope_provider.IScopeProviderContainer;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import org.junit.Test;
 

@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.core.ioc;
 
-import info.smart_tools.smartactors.core.ioc.exception.DeletionException;
-import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
-import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iioccontainer.IContainer;
+import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ioc_container.Container;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 
 /**
@@ -11,15 +14,9 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDe
 public final class IOC {
 
     /**
-     * Private default constructor
-     */
-    private IOC() {
-    }
-
-    /**
      * Implementation of {@link IContainer}.
-     * Must be initialized before IOC will be used.
-     * Initialization possible only with using java reflection API
+     * Will be initialized by default implementation of {@link IContainer}
+     * ReInitialization possible only with using java reflection API
      * Example:
      * <pre>
      * {@code
@@ -31,6 +28,14 @@ public final class IOC {
      * </pre>
      */
     private static IContainer container;
+
+    /**
+     * Initialize IOC by default implementation of {@link IContainer}
+     */
+
+    static {
+        container = new Container();
+    }
 
     /**
      * Return specific container ID
@@ -64,6 +69,11 @@ public final class IOC {
         container.register(key, strategy);
     }
 
+    /**
+     * Remove dependency with given key
+     * @param key instance of {@link IKey}
+     * @throws DeletionException if any errors occurred
+     */
     public static void remove(final IKey key)
             throws DeletionException {
         container.remove(key);

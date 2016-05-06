@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.string_ioc_key;
 
-import info.smart_tools.smartactors.core.ioc.IKey;
+import info.smart_tools.smartactors.core.ikey.IKey;
 
 /**
- * Implementation of {@link info.smart_tools.smartactors.core.ioc.IKey}
+ * Implementation of {@link info.smart_tools.smartactors.core.ikey.IKey}
  *
  * <pre>
  * This implementation has follow specific features:
