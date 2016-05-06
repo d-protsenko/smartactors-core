@@ -20,5 +20,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <url>${project.artifactId}/</url>
 
 </project>

@@ -11,6 +11,8 @@
 
     <artifactId>core.proof_of_assumption</artifactId>
 
+    <url>${project.artifactId}/</url>
+
     <dependencies>
         <!-- Tests -->
         <dependency>

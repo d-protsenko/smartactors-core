@@ -11,6 +11,8 @@
 
     <artifactId>core.iioccontainer</artifactId>
 
+    <url>${project.artifactId}/</url>
+
     <dependencies>
         <!-- Core interfaces -->
         <dependency>
