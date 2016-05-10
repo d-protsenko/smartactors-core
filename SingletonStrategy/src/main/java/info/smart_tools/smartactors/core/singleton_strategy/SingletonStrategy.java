@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
  * This strategy realize singletone pattern for resolving class
  * </pre>
  */
-class SingletonStrategy implements IResolveDependencyStrategy {
+public class SingletonStrategy implements IResolveDependencyStrategy {
 
     /**
      * instance of Object
@@ -19,10 +19,13 @@ class SingletonStrategy implements IResolveDependencyStrategy {
     /**
      * Class constructor
      * Create strategy instance with initialized object
-     * @param classInstance initialized object
+     * @param args singleton instance
      */
-    SingletonStrategy(final Object classInstance) {
-        this.classInstance = classInstance;
+    public SingletonStrategy(final Object ... args) {
+        if (args.length != 1) {
+            throw new IllegalArgumentException("Singleton constructor should has only one arg.");
+        }
+        this.classInstance = args[0];
     }
 
     /**

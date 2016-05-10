@@ -38,11 +38,19 @@ public final class IOC {
     }
 
     /**
-     * Return specific container ID
-     * @return specific container ID
+     * Return specific instance of {@link IKey} for container ID
+     * @return instance of {@link IKey}
      */
     public static IKey getIocKey() {
         return container.getIocKey();
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @return instance of {@link IKey}
+     */
+    public static IKey<IKey> getKeyForKeyStorage() {
+        return container.getKeyForKeyStorage();
     }
 
     /**
@@ -78,5 +86,4 @@ public final class IOC {
             throws DeletionException {
         container.remove(key);
     }
-
 }

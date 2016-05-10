@@ -13,6 +13,8 @@ import org.mdkt.compiler.SourceCode;
 /**
  * Class for compile string with java code to byte code
  * in memory
+ *
+ * @since 1.8
  */
 final class InMemoryCodeCompiler {
 

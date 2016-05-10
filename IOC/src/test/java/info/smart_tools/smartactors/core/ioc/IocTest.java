@@ -123,4 +123,24 @@ public class IocTest {
         reset(container);
         reset(key);
     }
+
+    @Test
+    public void checkGetKeyForKeyStorage()
+            throws Exception {
+        IKey key = mock(IKey.class);
+        IContainer container = mock(IContainer.class);
+        when(container.getKeyForKeyStorage()).thenReturn(key);
+
+        Field field = IOC.class.getDeclaredField("container");
+        field.setAccessible(true);
+        field.set(null, container);
+        field.setAccessible(false);
+
+        IKey resultKey = IOC.getKeyForKeyStorage();
+        verify(container, times(1)).getKeyForKeyStorage();
+        assertEquals(resultKey, key);
+
+        reset(container);
+        reset(key);
+    }
 }

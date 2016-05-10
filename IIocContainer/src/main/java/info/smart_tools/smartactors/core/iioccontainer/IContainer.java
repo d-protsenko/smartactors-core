@@ -13,10 +13,16 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDe
 public interface IContainer {
 
     /**
-     * Return specific container ID
-     * @return specific container ID
+     * Return specific instance of {@link IKey} for container ID
+     * @return instance of {@link IKey}
      */
     IKey getIocKey();
+
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @return instance of {@link IKey}
+     */
+    IKey<IKey> getKeyForKeyStorage();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args

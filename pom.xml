@@ -31,6 +31,8 @@
         <module>IIocContainer</module>
         <module>IocContainerSimpleImplementation</module>
         <module>IScopeProviderContainer</module>
+        <module>ResolveByNameIocStrategy</module>
+        <module>ResolveByNameIocWithLambdaStrategy</module>
     </modules>
 
     <properties>

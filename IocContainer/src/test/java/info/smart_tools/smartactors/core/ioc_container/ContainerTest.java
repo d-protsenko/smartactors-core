@@ -151,6 +151,16 @@ public class ContainerTest {
     }
 
     @Test
+    public void checkGetKeyForKeyStorage() {
+        IContainer container = new Container();
+        assertNotNull(container.getKeyForKeyStorage());
+        assertNotNull(container.getKeyForKeyStorage().toString());
+        IContainer container1 = new Container();
+        assertNotEquals(container.getKeyForKeyStorage(), container1.getKeyForKeyStorage());
+        assertNotEquals(container.getKeyForKeyStorage().toString(), container1.getKeyForKeyStorage().toString());
+    }
+
+    @Test
     public void checkRemove()
             throws Exception {
         IContainer container = new Container();

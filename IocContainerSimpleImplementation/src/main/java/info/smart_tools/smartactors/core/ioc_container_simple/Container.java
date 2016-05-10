@@ -22,10 +22,20 @@ public class Container implements IContainer {
     private Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<IKey, IResolveDependencyStrategy>();
 
     /**
-     * Return specific container ID
-     * @return specific container ID
+     * Return specific instance of {@link IKey} for container ID
+     * @return instance of {@link IKey}
      */
+    @Override
     public IKey getIocKey() {
+        return null;
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @return instance of {@link IKey}
+     */
+    @Override
+    public IKey<IKey> getKeyForKeyStorage() {
         return null;
     }
 
@@ -37,6 +47,7 @@ public class Container implements IContainer {
      * @return instance of class with classId identifier
      * @throws ResolutionException if resolution is impossible because of any errors
      */
+    @Override
     public <T> T resolve(final IKey<T> key, final Object ... args)
             throws ResolutionException {
         try {
@@ -53,6 +64,7 @@ public class Container implements IContainer {
      * @param strategy instance of {@link IResolveDependencyStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
+    @Override
     public void register(final IKey key, final IResolveDependencyStrategy strategy)
             throws RegistrationException {
         try {
@@ -68,6 +80,7 @@ public class Container implements IContainer {
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
+    @Override
     public void remove(final IKey key)
             throws DeletionException {
         try {

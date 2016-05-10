@@ -22,19 +22,33 @@ public class Container implements IContainer {
     /** Key for getting instance of {@link IStrategyContainer} from current scope */
     private IKey strategyContainerKey;
 
+    /** */
+    private IKey keyForKeyStorage;
+
     /**
      * Default constructor
      */
     public Container() {
         strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
+        keyForKeyStorage = new Key(java.util.UUID.randomUUID().toString());
     }
 
     /**
-     * Return specific container ID
-     * @return specific container ID
+     * Return specific instance of {@link IKey} for container ID
+     * @return instance of {@link IKey}
      */
+    @Override
     public IKey getIocKey() {
         return this.strategyContainerKey;
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @return instance of {@link IKey}
+     */
+    @Override
+    public IKey<IKey> getKeyForKeyStorage() {
+        return this.keyForKeyStorage;
     }
 
     /**
@@ -45,6 +59,7 @@ public class Container implements IContainer {
      * @return instance of class with classId identifier
      * @throws ResolutionException if resolution is impossible because of any errors
      */
+    @Override
     public <T> T resolve(final IKey<T> key, final Object ... args)
             throws ResolutionException {
         try {
@@ -62,6 +77,7 @@ public class Container implements IContainer {
      * @param strategy instance of {@link IResolveDependencyStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
+    @Override
     public void register(final IKey key, final IResolveDependencyStrategy strategy)
             throws RegistrationException {
         try {
@@ -78,6 +94,7 @@ public class Container implements IContainer {
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
+    @Override
     public void remove(final IKey key)
             throws DeletionException {
         try {
