@@ -28,6 +28,18 @@ public class KeyTest {
         static Key notxInt = new Key<Integer>(Integer.class, "a");
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void checkIllegalArgumentExceptionOnNull()
+            throws Exception {
+        IKey key = new Key(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void checkIllegalArgumentExceptionOnEmpty()
+            throws Exception {
+        IKey key = new Key("");
+    }
+
     @Test
     public void testEqual_ToSelf() {
         assertTrue("Class equal to itself.", Fixture.x.equals(Fixture.x));
@@ -128,5 +140,12 @@ public class KeyTest {
         Object resultA = map.get(Fixture.xInt);
         assertEquals(resultA.getClass(), Integer.class);
         assertEquals(resultA, b);
+    }
+
+    @Test
+    public void checkToString() {
+        String value = "key";
+        IKey key = new Key(value);
+        assertEquals(key.toString(), value);
     }
 }

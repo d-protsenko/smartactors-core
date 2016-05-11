@@ -1,10 +1,13 @@
 package info.smart_tools.smartactors.core.scope_provider_container;
 
+import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,14 +21,21 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      * Local storage of all {@link IScope} instances by unique identifier
      */
     private Map<Object, IScope> scopeStorage = new ConcurrentHashMap<Object, IScope>();
+
     /**
      * Current instance of {@link IScope} for current thread
      */
     private ThreadLocal<IScope> currentScope = new ThreadLocal<IScope>();
+
     /**
      * Instance of {@link IScopeFactory}
      */
     private IScopeFactory factory;
+
+    /**
+     * Local storage for create scope event handlers
+     */
+    private List<IObserver<IScope>> handlerStorage = new ArrayList<>();
 
     /**
      * Constructor with {@link IScopeFactory}
@@ -110,15 +120,48 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      * @return unique instance of {@link IScope} identifier
      * @throws ScopeProviderException if any errors occurred
      */
-    public Object createScope(final Object params) throws ScopeProviderException {
+    public Object createScope(final Object params)
+            throws ScopeProviderException {
         try {
             IScope newScope = factory.createScope(params);
+            for (IObserver <IScope> handler : handlerStorage) {
+                handler.execute(newScope);
+            }
             Object uuid = UUID.randomUUID();
             scopeStorage.put(uuid, newScope);
 
             return uuid;
         } catch (Exception e) {
             throw new ScopeProviderException("Failed to create instance of IScope.", e);
+        }
+    }
+
+    /**
+     * Register event handler (action) to the local action storage
+     * @param handler handler for execute when event will be happened
+     * @throws ScopeProviderException if any errors occurred
+     */
+    @Override
+    public void subscribeOnCreationNewScope(final IObserver<IScope> handler)
+            throws ScopeProviderException {
+        try {
+                handlerStorage.add(handler);
+        } catch (Exception e) {
+            throw new ScopeProviderException("Subscribing has been failed", e);
+        }
+    }
+
+    /**
+     * Clear local action storage
+     * @throws ScopeProviderException if any errors occurred
+     */
+    @Override
+    public void clearEventHandlerList()
+            throws ScopeProviderException {
+        try {
+            handlerStorage.clear();
+        } catch (Exception e) {
+            throw new ScopeProviderException("Clearing of action storage has been failed.", e);
         }
     }
 }

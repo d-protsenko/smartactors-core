@@ -38,6 +38,12 @@ public final class IOC {
     }
 
     /**
+     * Default private constructor
+     */
+    private IOC() {
+    }
+
+    /**
      * Return specific instance of {@link IKey} for container ID
      * @return instance of {@link IKey}
      */

@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.singleton_strategy;
 
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

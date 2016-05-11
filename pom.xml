@@ -33,6 +33,9 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>IObserver</module>
+        <module>ScopeCreationEventHandler</module>
+        <module>CheckedFunctionalInterfaces</module>
     </modules>
 
     <properties>

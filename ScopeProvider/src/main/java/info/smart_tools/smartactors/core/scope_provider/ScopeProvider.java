@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
@@ -27,6 +29,12 @@ public final class ScopeProvider {
      * </pre>
      */
     private static IScopeProviderContainer container;
+
+    /**
+     * Default private constructor
+     */
+    private ScopeProvider() {
+    }
 
     static {
         IScopeFactory factory = new ScopeFactory();
@@ -95,5 +103,24 @@ public final class ScopeProvider {
     public static Object createScope(final Object param)
             throws ScopeProviderException {
         return container.createScope(param);
+    }
+
+    /**
+     * Register event handler (action) to the local action storage
+     * @param handler handler for execute when event will be happened
+     * @throws ScopeProviderException if any errors occurred
+     */
+    public static void subscribeOnCreationNewScope(final IObserver<IScope> handler)
+            throws ScopeProviderException {
+        container.subscribeOnCreationNewScope(handler);
+    }
+
+    /**
+     * Clear local action storage
+     * @throws ScopeProviderException if any errors occurred
+     */
+    public static void clearEventHandlerList()
+            throws ScopeProviderException {
+        container.clearEventHandlerList();
     }
 }

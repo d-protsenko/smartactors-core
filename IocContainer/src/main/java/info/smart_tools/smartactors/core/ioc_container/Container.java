@@ -21,7 +21,6 @@ public class Container implements IContainer {
 
     /** Key for getting instance of {@link IStrategyContainer} from current scope */
     private IKey strategyContainerKey;
-
     /** */
     private IKey keyForKeyStorage;
 
