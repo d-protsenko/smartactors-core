@@ -1,5 +1,6 @@
 package info.smart_tools.actorsystem.core.scope_creation_event_handler;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iobserver.exception.ObserverExecuteException;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -15,13 +16,13 @@ public class ScopeCreationEventHandler implements IObserver<IScope> {
     /**
      * ID of current handler
      */
-    private String id;
+    private IKey id;
 
     /**
      * Constructor by unique handler identifier
      * @param id unique handler identifier
      */
-    public ScopeCreationEventHandler(final String id) {
+    public ScopeCreationEventHandler(final IKey id) {
         this.id = id;
     }
 

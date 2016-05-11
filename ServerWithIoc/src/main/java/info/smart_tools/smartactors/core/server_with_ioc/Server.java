@@ -71,7 +71,7 @@ public class Server implements IServer {
 
     private void initializeScopeProvider()
             throws Exception {
-            ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey().toString()));
+            ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
             Object keyOfMainScope = ScopeProvider.createScope(null);
             IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
             ScopeProvider.setCurrentScope(mainScope);
