@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
+import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -21,19 +23,11 @@ public class ScopeProviderTest {
     @Test
     public void checkGetScope()
             throws Exception {
-        IScope scope = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
         Object key = mock(Object.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        when(container.getScope(key)).thenReturn(scope);
         IScope result = ScopeProvider.getScope(key);
-        assertEquals(result, scope);
+        assertNotNull(result);
         verify(container, times(1)).getScope(key);
         reset(scope);
-        reset(container);
         reset(key);
     }
 
@@ -150,5 +144,29 @@ public class ScopeProviderTest {
         verify(container, times(1)).createScope(args);
         assertEquals(testMap.size(), 1);
         reset(container);
+    }
+
+    @Test
+    public void checkSubscribeOnCreationNewScope()
+            throws Exception {
+        IObserver observer = mock(IObserver.class);
+        doNothing().when(observer).execute(any(IScope.class));
+        ScopeProvider.subscribeOnCreationNewScope(observer);
+        ScopeProvider.createScope(null);
+        verify(observer, times(1)).execute(any(IScope.class));
+        reset(observer);
+    }
+
+    @Test
+    public void checkClearListOfSubscribers()
+            throws Exception {
+        IObserver observer = mock(IObserver.class);
+        doNothing().when(observer).execute(any(IScope.class));
+        ScopeProvider.subscribeOnCreationNewScope(observer);
+        ScopeProvider.createScope(null);
+        ScopeProvider.clearListOfSubscribers();
+        ScopeProvider.createScope(null);
+        verify(observer, times(1)).execute(any(IScope.class));
+        reset(observer);
     }
 }

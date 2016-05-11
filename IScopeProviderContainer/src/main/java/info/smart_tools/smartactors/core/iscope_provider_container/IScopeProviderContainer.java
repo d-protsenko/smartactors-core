@@ -72,7 +72,7 @@ public interface IScopeProviderContainer {
      * Clear local event handler storage
      * @throws ScopeProviderException if any errors occurred
      */
-    void clearEventHandlerList()
+    void clearListOfSubscribers()
             throws ScopeProviderException;
 
 }

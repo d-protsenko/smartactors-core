@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
@@ -119,8 +118,8 @@ public final class ScopeProvider {
      * Clear local action storage
      * @throws ScopeProviderException if any errors occurred
      */
-    public static void clearEventHandlerList()
+    public static void clearListOfSubscribers()
             throws ScopeProviderException {
-        container.clearEventHandlerList();
+        container.clearListOfSubscribers();
     }
 }

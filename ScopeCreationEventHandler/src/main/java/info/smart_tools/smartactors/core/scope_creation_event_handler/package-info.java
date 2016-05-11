@@ -6,4 +6,4 @@
  *     -
  * </pre>
  */
-package info.smart_tools.actorsystem.core.scope_creation_event_handler;
+package info.smart_tools.smartactors.core.scope_creation_event_handler;

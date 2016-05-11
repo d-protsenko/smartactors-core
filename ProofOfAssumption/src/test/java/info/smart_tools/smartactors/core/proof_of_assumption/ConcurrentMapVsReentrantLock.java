@@ -19,7 +19,7 @@ public class ConcurrentMapVsReentrantLock {
     private final int SIZE = 1000000;
     private final int COUNT = 100;
 
-    @Test
+//    @Test
     public void performanceHashMap() {
         long startTime;
         long writeTime;
@@ -50,7 +50,7 @@ public class ConcurrentMapVsReentrantLock {
 
     }
 
-    @Test
+//    @Test
     public void performanceConcurrentHashMap() {
         long startTime;
         long writeTime;
@@ -80,7 +80,7 @@ public class ConcurrentMapVsReentrantLock {
         System.out.printf("None threadsafe\nWrite time: %s\nReadTime: %s\nAll time: %s\n", averageW / COUNT, averageR / COUNT, average / COUNT);
     }
 
-    @Test
+//    @Test
     public void performanceHashMapWithLock() {
         long startTime;
         long writeTime;
@@ -121,7 +121,7 @@ public class ConcurrentMapVsReentrantLock {
         System.out.printf("None threadsafe\nWrite time: %s\nReadTime: %s\nAll time: %s\n", averageW / COUNT, averageR / COUNT, average / COUNT);
     }
 
-    @Test
+//    @Test
     public void performanceHashMapWithReadWriteLock() {
         long startTime;
         long writeTime;

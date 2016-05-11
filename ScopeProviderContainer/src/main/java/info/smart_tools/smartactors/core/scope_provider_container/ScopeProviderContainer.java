@@ -144,24 +144,17 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     @Override
     public void subscribeOnCreationNewScope(final IObserver<IScope> handler)
             throws ScopeProviderException {
-        try {
-                handlerStorage.add(handler);
-        } catch (Exception e) {
-            throw new ScopeProviderException("Subscribing has been failed", e);
+        if (handler == null) {
+            throw new ScopeProviderException("Incoming argument should not be null");
         }
+        handlerStorage.add(handler);
     }
 
     /**
      * Clear local action storage
-     * @throws ScopeProviderException if any errors occurred
      */
     @Override
-    public void clearEventHandlerList()
-            throws ScopeProviderException {
-        try {
-            handlerStorage.clear();
-        } catch (Exception e) {
-            throw new ScopeProviderException("Clearing of action storage has been failed.", e);
-        }
+    public void clearListOfSubscribers() {
+        handlerStorage.clear();
     }
 }

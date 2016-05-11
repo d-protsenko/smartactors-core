@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.scope_provider_container;
 
+import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
@@ -103,5 +104,44 @@ public class ScopeProviderContainerTest {
         IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
         scopeProviderContainer.getCurrentScope();
         fail();
+    }
+
+    @Test
+    public void checkSubscribeOnCreationNewScope()
+            throws Exception {
+        IScope scope = mock(IScope.class);
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        IObserver observer = mock(IObserver.class);
+        Object param = new Object();
+        when(factory.createScope(param)).thenReturn(scope);
+        doNothing().when(observer).execute(scope);
+        scopeProviderContainer.subscribeOnCreationNewScope(observer);
+        scopeProviderContainer.createScope(param);
+        verify(observer, times(1)).execute(scope);
+    }
+
+    @Test (expected = ScopeProviderException.class)
+    public void checkScopeProviderExceptionOnSubscribeOnCreationNewScope()
+            throws Exception {
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        scopeProviderContainer.subscribeOnCreationNewScope(null);
+    }
+
+    @Test
+    public void checkClearListOfSubscribers() throws Exception {
+        IScope scope = mock(IScope.class);
+        IScopeFactory factory = mock(IScopeFactory.class);
+        IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
+        IObserver observer = mock(IObserver.class);
+        Object param = new Object();
+        when(factory.createScope(param)).thenReturn(scope);
+        doNothing().when(observer).execute(scope);
+        scopeProviderContainer.subscribeOnCreationNewScope(observer);
+        scopeProviderContainer.createScope(param);
+        scopeProviderContainer.clearListOfSubscribers();
+        scopeProviderContainer.createScope(param);
+        verify(observer, times(1)).execute(scope);
     }
 }
