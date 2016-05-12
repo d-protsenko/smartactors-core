@@ -25,9 +25,13 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,102 +46,81 @@ public class ContainerTest {
     public void checkContainerCreation() {
         IContainer container = new Container();
         assertNotNull(container);
+        IKey key1 = container.getIocKey();
+        IKey key2 = container.getKeyForKeyStorage();
+        assertNotNull(key1);
+        assertNotNull(key2);
+        assertNotEquals(key1, key2);
+        IContainer otherContainer = new Container();
+        IKey otherKey1 = otherContainer.getIocKey();
+        IKey otherKey2 = otherContainer.getKeyForKeyStorage();
+        assertNotNull(otherKey1);
+        assertNotNull(otherKey2);
+        assertNotEquals(otherKey1, otherKey2);
+        assertNotEquals(key1, otherKey1);
+        assertNotEquals(key2, otherKey2);
     }
 
     @Test
     public void checkResolve()
             throws Exception {
-        Long value = 1L;
         IContainer container = new Container();
-        IScopeProviderContainer scopeContainer = new ScopeProviderContainer(mock(IScopeFactory.class));
-
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, scopeContainer);
-        field.setAccessible(false);
-
+        Object value = new Object();
         IScope scope = mock(IScope.class);
+        IKey strategyKey = mock(IKey.class);
+        Object[] param = new Object[]{};
+        ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IKey<Long> key = mock(IKey.class);
-
-        ScopeProvider.setCurrentScope(scope);
-
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        when(strategyContainer.resolve(key)).thenReturn(strategy);
-        when(strategy.resolve(value)).thenReturn(value);
-        Object result = container.resolve(key, value);
+        when(strategyContainer.resolve(strategyKey)).thenReturn(strategy);
+        when(strategy.resolve(param)).thenReturn(value);
+
+
+        Object result = container.resolve(strategyKey);
+
         verify(scope, times(1)).getValue(container.getIocKey());
-        verify(strategyContainer, times(1)).resolve(key);
-        verify(strategy,times(1)).resolve(value);
-        assertEquals(result.getClass(), Long.class);
-        assertEquals(value , result);
+        verify(strategyContainer, times(1)).resolve(strategyKey);
+        verify(strategy, times(1)).resolve(param);
+        assertSame(value, result);
+
         reset(scope);
         reset(strategyContainer);
         reset(strategy);
-        reset(key);
+        reset(strategyKey);
     }
 
     @Test (expected = ResolutionException.class)
     public void checkResolutionException()
             throws ResolutionException {
         IContainer container = new Container();
-        IKey<Long> key = mock(IKey.class);
-        container.resolve(key, 1L);
-        reset(key);
+        container.resolve(null, null);
     }
 
     @Test
     public void checkRegistration()
             throws Exception {
         IContainer container = new Container();
-        IScopeProviderContainer scopeContainer = new ScopeProviderContainer(mock(IScopeFactory.class));
-        final Map<IKey, IResolveDependencyStrategy> testMap = new HashMap<IKey, IResolveDependencyStrategy>();
-
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, scopeContainer);
-        field.setAccessible(false);
-
-        IKey<Long> key = mock(IKey.class);
-        IScope scope = mock(IScope.class);
-        IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
+        IKey key = mock(IKey.class);
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
+        IScope scope = mock(IScope.class);
         ScopeProvider.setCurrentScope(scope);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                IKey key = (IKey)invocationOnMock.getArguments()[0];
-                IResolveDependencyStrategy strategy = (IResolveDependencyStrategy)invocationOnMock.getArguments()[1];
-                testMap.put(key, strategy);
-                return null;
-            }
-        }).when(strategyContainer).register(key, strategy);
+        doNothing().when(strategyContainer).register(key, strategy);
         container.register(key, strategy);
         verify(scope, times(1)).getValue(container.getIocKey());
         verify(strategyContainer, times(1)).register(key, strategy);
-        assertEquals(testMap.get(key), strategy);
-        reset(scope);
-        reset(strategyContainer);
-        reset(strategy);
         reset(key);
+        reset(strategy);
+        reset(strategyContainer);
+        reset(scope);
     }
 
     @Test (expected = RegistrationException.class)
     public void checkRegistrationException() throws Exception {
         IContainer container = new Container();
-        IScopeProviderContainer scopeContainer = mock(IScopeProviderContainer.class);
-
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, scopeContainer);
-        field.setAccessible(false);
-
-        IKey<Long> key = mock(IKey.class);
-
-        doThrow(new ScopeProviderException("ScopeProviderException")).when(scopeContainer).getCurrentScope();
-        container.register(key, null);
-        reset(key);
+        container.register(null, null);
     }
 
     @Test
@@ -164,52 +147,25 @@ public class ContainerTest {
     public void checkRemove()
             throws Exception {
         IContainer container = new Container();
-        IScopeProviderContainer scopeContainer = new ScopeProviderContainer(mock(IScopeFactory.class));
-        final Map<IKey, IResolveDependencyStrategy> testMap = new HashMap<IKey, IResolveDependencyStrategy>();
-
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, scopeContainer);
-        field.setAccessible(false);
-
-        IKey<Long> key = mock(IKey.class);
         IScope scope = mock(IScope.class);
-        IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IKey strategyKey = mock(IKey.class);
         ScopeProvider.setCurrentScope(scope);
-        testMap.put(key, strategy);
+        IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                IKey key = (IKey)invocationOnMock.getArguments()[0];
-                testMap.remove(key);
-                return null;
-            }
-        }).when(strategyContainer).remove(key);
-        container.remove(key);
+        doNothing().when(strategyContainer).remove(strategyKey);
+
+        container.remove(strategyKey);
+
         verify(scope, times(1)).getValue(container.getIocKey());
-        verify(strategyContainer, times(1)).remove(key);
-        assertEquals(testMap.size(), 0);
+        verify(strategyContainer, times(1)).remove(strategyKey);
         reset(scope);
+        reset(strategyKey);
         reset(strategyContainer);
-        reset(strategy);
-        reset(key);
     }
 
     @Test (expected = DeletionException.class)
     public void checkDeletionException() throws Exception {
         IContainer container = new Container();
-        IScopeProviderContainer scopeContainer = mock(IScopeProviderContainer.class);
-
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, scopeContainer);
-        field.setAccessible(false);
-
-        IKey<Long> key = mock(IKey.class);
-
-        doThrow(new ScopeProviderException("ScopeProviderException")).when(scopeContainer).getCurrentScope();
-        container.remove(key);
-        reset(key);
+        container.remove(null);
     }
 }

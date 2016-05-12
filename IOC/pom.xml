@@ -14,23 +14,6 @@
     <url>${project.artifactId}/</url>
 
     <dependencies>
-        <!-- Interfaces -->
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>core.iresolve_dependency_strategy</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>core.ikey</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>core.iioccontainer</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-
         <!-- Default container -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

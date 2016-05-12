@@ -23,6 +23,9 @@ public class ScopeCreationEventHandler implements IObserver<IScope> {
      * @param id unique handler identifier
      */
     public ScopeCreationEventHandler(final IKey id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Key should not be null.");
+        }
         this.id = id;
     }
 
@@ -34,10 +37,12 @@ public class ScopeCreationEventHandler implements IObserver<IScope> {
     @Override
     public void execute(final IScope createdScope)
             throws ObserverExecuteException {
+        if (createdScope == null) {
+            throw new IllegalArgumentException("Argument should not be null.");
+        }
         try {
             IStrategyContainer container = new StrategyContainer();
             createdScope.setValue(this.id, container);
-
         } catch (Exception e) {
             throw new ObserverExecuteException("Execution error.", e);
         }

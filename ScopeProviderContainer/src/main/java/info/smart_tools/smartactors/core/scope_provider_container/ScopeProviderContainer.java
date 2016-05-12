@@ -131,7 +131,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
             scopeStorage.put(uuid, newScope);
 
             return uuid;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScopeProviderException("Failed to create instance of IScope.", e);
         }
     }

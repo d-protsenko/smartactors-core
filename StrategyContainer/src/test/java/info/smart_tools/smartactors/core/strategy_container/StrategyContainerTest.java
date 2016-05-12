@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
@@ -18,56 +19,17 @@ import static org.mockito.Mockito.reset;
 public class StrategyContainerTest {
 
     @Test
-    public void checkResolution()
+    public void checkRegistrationResolutionDeletion()
             throws Exception {
         IStrategyContainer container = new StrategyContainer();
-        Map<Object, IResolveDependencyStrategy> strategyStorage = new ConcurrentHashMap<Object, IResolveDependencyStrategy>();
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         Object key = new Object();
-        strategyStorage.put(key, strategy);
-        Field field = container.getClass().getDeclaredField("strategyStorage");
-        field.setAccessible(true);
-        field.set(container, strategyStorage);
-        field.setAccessible(false);
-
+        container.register(key, strategy);
         IResolveDependencyStrategy result = container.resolve(key);
         assertEquals(result, strategy);
-        reset(strategy);
-    }
-
-    @Test
-    public void checkRegistration()
-            throws Exception {
-        IStrategyContainer container = new StrategyContainer();
-        Map<Object, IResolveDependencyStrategy> strategyStorage = new ConcurrentHashMap<Object, IResolveDependencyStrategy>();
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        Object key = new Object();
-        Field field = container.getClass().getDeclaredField("strategyStorage");
-        field.setAccessible(true);
-        field.set(container, strategyStorage);
-        field.setAccessible(false);
-        assertEquals(strategyStorage.size(), 0);
-        container.register(key, strategy);
-        assertEquals(strategyStorage.get(key), strategy);
-        assertEquals(strategyStorage.size(), 1);
-        reset(strategy);
-    }
-
-    @Test
-    public void checkDeletion()
-            throws Exception {
-        IStrategyContainer container = new StrategyContainer();
-        Map<Object, IResolveDependencyStrategy> strategyStorage = new ConcurrentHashMap<Object, IResolveDependencyStrategy>();
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        Object key = new Object();
-        strategyStorage.put(key, strategy);
-        Field field = container.getClass().getDeclaredField("strategyStorage");
-        field.setAccessible(true);
-        field.set(container, strategyStorage);
-        field.setAccessible(false);
-        assertEquals(strategyStorage.size(), 1);
         container.remove(key);
-        assertEquals(strategyStorage.size(), 0);
+        result = container.resolve(key);
+        assertNull(result);
         reset(strategy);
     }
 }

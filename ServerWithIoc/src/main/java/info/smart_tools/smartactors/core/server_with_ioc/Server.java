@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
@@ -70,21 +69,17 @@ public class Server implements IServer {
     private void initializeScopeProvider()
             throws Exception {
         //ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
-        try {
-            ScopeProvider.subscribeOnCreationNewScope(
-                    scope -> {
-                        try {
-                            scope.setValue(IOC.getIocKey(), new StrategyContainer());
-                        } catch (ScopeException e) {
-                            e.printStackTrace();
-                        }
+        ScopeProvider.subscribeOnCreationNewScope(
+                scope -> {
+                    try {
+                        scope.setValue(IOC.getIocKey(), new StrategyContainer());
+                    } catch (Exception e) {
+                        throw new Error(e);
                     }
-            );
-            Object keyOfMainScope = ScopeProvider.createScope(null);
-            IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
-            ScopeProvider.setCurrentScope(mainScope);
-        } catch (RuntimeException e) {
-            throw new Exception();
-        }
+                }
+        );
+        Object keyOfMainScope = ScopeProvider.createScope(null);
+        IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
+        ScopeProvider.setCurrentScope(mainScope);
     }
 }

@@ -1,19 +1,21 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobserver.IObserver;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests for ScopeProvider
@@ -21,129 +23,51 @@ import static org.mockito.Mockito.*;
 public class ScopeProviderTest {
 
     @Test
-    public void checkGetScope()
+    public void checkAddScopeAndGetScope()
             throws Exception {
         Object key = mock(Object.class);
+        IScope scope = mock(IScope.class);
+        ScopeProvider.addScope(key, scope);
         IScope result = ScopeProvider.getScope(key);
         assertNotNull(result);
-        verify(container, times(1)).getScope(key);
+        assertSame(result, scope);
         reset(scope);
         reset(key);
     }
 
     @Test
-    public void checkGetCurrentScope()
+    public void checkGetCurrentScopeSetCurrentScope()
             throws Exception {
         IScope scope = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        when(container.getCurrentScope()).thenReturn(scope);
-        IScope result = ScopeProvider.getCurrentScope();
-        assertEquals(result, scope);
-        verify(container, times(1)).getCurrentScope();
-        reset(scope);
-        reset(container);
-    }
-
-    @Test
-    public void checkAddScope()
-            throws Exception {
-        final Map<Object, IScope> testMap = new HashMap<Object, IScope>();
-        Object key = new Object();
-        IScope scope = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Object key = invocationOnMock.getArguments()[0];
-                IScope scope = (IScope)invocationOnMock.getArguments()[1];
-                testMap.put(key, scope);
-                return null;
-            }
-        }).when(container).addScope(key, scope);
-        ScopeProvider.addScope(key, scope);
-        verify(container, times(1)).addScope(key, scope);
-        assertEquals(testMap.get(key), scope);
-        reset(scope);
-        reset(container);
-    }
-
-    @Test
-    public void checkSetCurrentScope()
-            throws Exception {
-        final Map<Object, IScope> testMap = new HashMap<Object, IScope>();
-        IScope scope = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                testMap.put(0,(IScope)invocationOnMock.getArguments()[0]);
-                return null;
-            }
-        }).when(container).setCurrentScope(scope);
         ScopeProvider.setCurrentScope(scope);
-        verify(container, times(1)).setCurrentScope(scope);
-        assertEquals(testMap.get(0), scope);
+        IScope result = ScopeProvider.getCurrentScope();
+        assertSame(result, scope);
         reset(scope);
-        reset(container);
     }
 
-    @Test
+    @Test (expected = ScopeProviderException.class)
     public void checkDeleteScope()
             throws Exception {
-        final Map<Object, IScope> testMap = new HashMap<Object, IScope>();
-        Object key = new Object();
         IScope scope = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        testMap.put(key, scope);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                testMap.remove(invocationOnMock.getArguments()[0]);
-                return null;
-            }
-        }).when(container).deleteScope(key);
+        IKey key = mock(IKey.class);
+        ScopeProvider.addScope(key, scope);
+        IScope result = ScopeProvider.getScope(key);
+        assertSame(result, scope);
         ScopeProvider.deleteScope(key);
-        verify(container, times(1)).deleteScope(key);
-        assertEquals(testMap.size(), 0);
-        reset(scope);
-        reset(container);
+        ScopeProvider.getScope(key);
+        fail();
     }
 
     @Test
     public void checkCreateScope()
             throws Exception {
-        final Map<Object, IScope> testMap = new HashMap<Object, IScope>();
-        Object args = new Object();
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                IScope scope = mock(IScope.class);
-                testMap.put(0, scope);
-                return null;
-            }
-        }).when(container).createScope(args);
-        assertEquals(testMap.size(), 0);
-        ScopeProvider.createScope(args);
-        verify(container, times(1)).createScope(args);
-        assertEquals(testMap.size(), 1);
-        reset(container);
+        Object key1 = ScopeProvider.createScope(null);
+        Object key2 = ScopeProvider.createScope(null);
+        IScope result1 = ScopeProvider.getScope(key1);
+        IScope result2 = ScopeProvider.getScope(key2);
+        assertNotNull(result1);
+        assertNotNull(result2);
+        assertNotSame(result1, result2);
     }
 
     @Test

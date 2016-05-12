@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -25,30 +26,17 @@ public class ScopeGuardTest {
     @Test
     public void checkGuard()
             throws Exception {
-        IScope scope1 = mock(IScope.class);
-        IScope scope2 = mock(IScope.class);
-        IScopeProviderContainer container = mock(IScopeProviderContainer.class);
-        Field field = ScopeProvider.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, container);
-        field.setAccessible(false);
-
-        when(container.getCurrentScope()).thenReturn(scope1).thenReturn(scope2).thenReturn(scope1);
-        doNothing().when(container).setCurrentScope(scope1);
-        doNothing().when(container).setCurrentScope(scope2);
+        Object key1 = ScopeProvider.createScope(null);
+        Object key2 = ScopeProvider.createScope(null);
+        IScope scope1 = ScopeProvider.getScope(key1);
+        IScope scope2 = ScopeProvider.getScope(key2);
+        assertNotSame(scope1, scope2);
         ScopeProvider.setCurrentScope(scope1);
-        Object key = new Object();
-        when(container.getScope(key)).thenReturn(scope2);
-
         ScopeGuard guard = new ScopeGuard();
-        guard.guard(key);
+        guard.guard(key2);
         assertEquals(scope2, ScopeProvider.getCurrentScope());
         guard.close();
         assertEquals(scope1, ScopeProvider.getCurrentScope());
-        verify(container, times(3)).getCurrentScope();
-        verify(container, times(2)).setCurrentScope(scope1);
-        verify(container, times(1)).setCurrentScope(scope2);
-        reset(container);
     }
 
     @Test (expected = ScopeGuardException.class)

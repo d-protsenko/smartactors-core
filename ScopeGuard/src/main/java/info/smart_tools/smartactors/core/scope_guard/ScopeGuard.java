@@ -25,9 +25,6 @@ public class ScopeGuard implements IScopeGuard {
             throws ScopeGuardException {
         try {
             previousScope = ScopeProvider.getCurrentScope();
-            if (previousScope == null) {
-                throw new Exception();
-            }
             ScopeProvider.setCurrentScope(ScopeProvider.getScope(key));
         } catch (Exception e) {
             throw new ScopeGuardException("ScopeGuard could not to switch scope.", e);
