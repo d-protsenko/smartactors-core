@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 public interface IObject {
     /**
      * Returns named field value from this object.
-     *
      * @param name is name of field
      * @return named field value object
      *         or {@code null} if field does not exist
@@ -18,19 +17,19 @@ public interface IObject {
      *
      * @see FieldName
      */
-    Object getValue(FieldName name) throws ReadValueException;
+    Object getValue(IFieldName name) throws ReadValueException;
 
     /**
      * Sets new value for named field.
      * Or creates new field with given name and value.
      *
      * @param name is name of field
-     * @param newValue is new value of field, it can be any Java object or {@code null}
+     * @param value is new value of field, it can be any Java object or {@code null}
      * @throws ChangeValueException in case of underlying exceptions
      *
      * @see FieldName
      */
-    void setValue(FieldName name, Object newValue) throws ChangeValueException;
+    void setValue(IFieldName name, Object value) throws ChangeValueException;
 
     /**
      * Delete object with note fieldname
@@ -38,7 +37,7 @@ public interface IObject {
      * @param name is name of field.
      * @throws DeleteValueException if object couldn't delete value with note fieldname.
      */
-    void deleteField(FieldName name) throws DeleteValueException;
+    void deleteField(IFieldName name) throws DeleteValueException;
 
     /**
      * Returns new iterator over set of fields of the object.

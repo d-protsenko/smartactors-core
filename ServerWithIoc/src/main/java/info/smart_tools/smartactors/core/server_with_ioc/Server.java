@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDe
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
@@ -19,9 +18,6 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
  * Implementation {@link IServer} with scoped IOC
  */
 public class Server implements IServer {
-
-    /** Key for getting instance of {@link IStrategyContainer} from current scope */
-    private static final String STRATEGY_CONTAINER_KEY = "strategy_container";
 
     /**
      * Initialize service locators

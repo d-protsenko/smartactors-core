@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
  * A {@code FieldName} passed to {@code IObject} methods
  * as name of needed field. This class checks the validity of the name.
  */
-public class FieldName {
+public class FieldName implements IFieldName {
 
     /**
      * Pattern with valid symbols for {@code FieldName}
