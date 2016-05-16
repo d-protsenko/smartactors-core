@@ -24,6 +24,7 @@ public class BootstrapItem implements IBootstrapItem {
     @Override
     public BootstrapItem after(final String itemName) {
         item.addAfter(itemName);
+        return this;
     }
 
     @Override

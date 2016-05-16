@@ -41,7 +41,7 @@ public class Server implements IServer {
         try {
 
             IBootstrapItem item = new BootstrapItem("as");
-            item.after("a1").after("a2").after("a3").before("b1").process(
+            item.after("a1").after("a2").after("a3").before("b1").before("b2").process(
                     (process) -> {
                         return null;
                     }
