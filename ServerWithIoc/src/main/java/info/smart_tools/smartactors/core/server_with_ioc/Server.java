@@ -38,33 +38,32 @@ public class Server implements IServer {
             throws ServerExecutionException {
         try {
 
-            // Example of registration the Singleton strategy
+            /** Example of registration the Singleton strategy */
             Key<String> key1 = new Key<String>(String.class, "a");
             IResolveDependencyStrategy strategy = new SingletonStrategy("abcd");
             IOC.register(key1, strategy);
-            // Example of usage the Singleton strategy
+            /** Example of usage the Singleton strategy */
             String result1 = IOC.resolve(key1);
 
-            // Example of registration the ResolveByNameIoc strategy
+            /** Example of registration the ResolveByNameIoc strategy */
             IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
                     (a) -> new Key<IKey>((String) a[0]))
             );
-            // Example of usage the ResolveByNameIoc strategy
+            /** Example of usage the ResolveByNameIoc strategy */
             IKey key2 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");
             IKey key3 = IOC.resolve(IOC.getKeyForKeyStorage(), "key3");
             IKey key4 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");  // Should be same as key2
 
-            // Example of registration the CreateNewInstance strategy
+            /** Example of registration the CreateNewInstance strategy */
             IKey<IObject> key5 = new Key<IObject>("create_new");
             IOC.register(key5, new CreateNewInstanceStrategy(
                             (a) -> new IObjectImpl())
             );
-            // Example of usage the CreateNewInstance strategy
+            /** Example of usage the CreateNewInstance strategy */
             IObject test = IOC.resolve(key5);
 
 
-            // Example of registration and usage CreateNewInstance strategy by named key
-
+            /** Example of registration and usage CreateNewInstance strategy by named key */
             Object param = new Object();
             IKey key6 = IOC.resolve(IOC.getKeyForKeyStorage(), "key6");
             IOC.register(key6, new CreateNewInstanceStrategy(
@@ -80,10 +79,10 @@ public class Server implements IServer {
 
     private void initializeScopeProvider()
             throws Exception {
-        //// Subscribe for java 1.7 or less
+        // /** Subscribe for java 1.7 or less */
         // ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
 
-        // Subscribe for java 1.8 or high
+        /** Subscribe for java 1.8 or high */
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
