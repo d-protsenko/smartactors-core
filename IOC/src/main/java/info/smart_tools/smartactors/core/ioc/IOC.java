@@ -55,7 +55,7 @@ public final class IOC {
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
      * @return instance of {@link IKey}
      */
-    public static IKey<IKey> getKeyForKeyStorage() {
+    public static <T> IKey<IKey<T>> getKeyForKeyStorage() {
         return container.getKeyForKeyStorage();
     }
 

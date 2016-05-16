@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.core.server_with_ioc;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -35,30 +37,45 @@ public class Server implements IServer {
     public void start()
             throws ServerExecutionException {
         try {
+
+            // Example of registration the Singleton strategy
             Key<String> key1 = new Key<String>(String.class, "a");
             IResolveDependencyStrategy strategy = new SingletonStrategy("abcd");
             IOC.register(key1, strategy);
+            // Example of usage the Singleton strategy
             String result1 = IOC.resolve(key1);
 
-            Key<String> key2 = new Key<String>("b");
-            Object[] args = new Object[]{"", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"};
-            strategy = new CreateNewInstanceStrategy(args);
-            IOC.register(key2, strategy);
-            String result2 = IOC.resolve(key2, new byte[]{'a', 'b', 'c'}, 1, 2);
-
+            // Example of registration the ResolveByNameIoc strategy
             IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
                     (a) -> new Key<IKey>((String) a[0]))
             );
-
+            // Example of usage the ResolveByNameIoc strategy
+            IKey key2 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");
             IKey key3 = IOC.resolve(IOC.getKeyForKeyStorage(), "key3");
-            IKey key4 = IOC.resolve(IOC.getKeyForKeyStorage(), "key3");
-            IKey key5 = IOC.resolve(IOC.getKeyForKeyStorage(), "key5");
+            IKey key4 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");  // Should be same as key2
 
-            System.out.println(result1 + "     -      " + result2);
+            // Example of registration the CreateNewInstance strategy
+            IKey<IObject> key5 = new Key<IObject>("create_new");
+            IOC.register(key5, new CreateNewInstanceStrategy(
+                            (a) -> new IObjectImpl())
+            );
+            // Example of usage the CreateNewInstance strategy
+            IObject test = IOC.resolve(key5);
+
+
+            // Example of registration and usage CreateNewInstance strategy by named key
+
+            Object param = new Object();
+            IKey key6 = IOC.resolve(IOC.getKeyForKeyStorage(), "key6");
+            IOC.register(key6, new CreateNewInstanceStrategy(
+                            (a) -> new IObjectImpl())
+            );
+            IObject obj = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "key6"), param);
+
         } catch (Exception e) {
-
+            System.out.println(e);
         } catch (Error er) {
-
+            System.out.println(er);
         }
     }
 
@@ -78,4 +95,6 @@ public class Server implements IServer {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
     }
+
 }
+

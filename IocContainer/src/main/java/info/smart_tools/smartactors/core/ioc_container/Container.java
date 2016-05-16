@@ -22,14 +22,14 @@ public class Container implements IContainer {
     /** Key for getting instance of {@link IStrategyContainer} from current scope */
     private IKey strategyContainerKey;
     /** */
-    private IKey keyForKeyStorage;
+    private IKey<IKey<?>> keyForKeyStorage;
 
     /**
      * Default constructor
      */
     public Container() {
         strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
-        keyForKeyStorage = new Key(java.util.UUID.randomUUID().toString());
+        keyForKeyStorage = new Key<>(java.util.UUID.randomUUID().toString());
     }
 
     /**
@@ -46,7 +46,7 @@ public class Container implements IContainer {
      * @return instance of {@link IKey}
      */
     @Override
-    public IKey<IKey> getKeyForKeyStorage() {
+    public IKey<IKey<?>> getKeyForKeyStorage() {
         return this.keyForKeyStorage;
     }
 

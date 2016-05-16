@@ -22,7 +22,7 @@ public interface IContainer {
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
      * @return instance of {@link IKey}
      */
-    IKey<IKey> getKeyForKeyStorage();
+    <T> IKey<IKey<T>> getKeyForKeyStorage();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args

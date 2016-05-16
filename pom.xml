@@ -37,6 +37,7 @@
         <module>ScopeCreationEventHandler</module>
         <module>CheckedFunctionalInterfaces</module>
         <module>IObserverWithFunction</module>
+        <module>IObjectSimpleImplementation</module>
     </modules>
 
     <properties>
