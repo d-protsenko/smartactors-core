@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.core.server_with_ioc;
 
+import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
@@ -37,6 +39,13 @@ public class Server implements IServer {
     public void start()
             throws ServerExecutionException {
         try {
+
+            IBootstrapItem item = new BootstrapItem("as");
+            item.after("a1").after("a2").after("a3").before("b1").process(
+                    (process) -> {
+                        return null;
+                    }
+            );
 
             /** Example of registration the Singleton strategy */
             Key<String> key1 = new Key<String>(String.class, "a");
