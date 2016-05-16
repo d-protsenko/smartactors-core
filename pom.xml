@@ -36,6 +36,8 @@
         <module>IObserver</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>BootstrapItem</module>
+        <module>IBootstrapItem</module>
     </modules>
 
     <properties>
