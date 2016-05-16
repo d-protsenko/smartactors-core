@@ -71,18 +71,17 @@ public class Server implements IServer {
                             (a) -> new IObjectImpl())
             );
             IObject obj = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "key6"), param);
+            System.out.print("Did it.");
 
-        } catch (Exception e) {
+        } catch (Exception | Error e) {
             System.out.println(e);
-        } catch (Error er) {
-            System.out.println(er);
         }
     }
 
     private void initializeScopeProvider()
             throws Exception {
-        // Subscribe for java 1.7 or less
-//        ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
+        //// Subscribe for java 1.7 or less
+        // ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
 
         // Subscribe for java 1.8 or high
         ScopeProvider.subscribeOnCreationNewScope(
