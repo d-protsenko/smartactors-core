@@ -53,6 +53,7 @@ public final class IOC {
 
     /**
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @param <T> type of returned value of inserted key
      * @return instance of {@link IKey}
      */
     public static <T> IKey<IKey<T>> getKeyForKeyStorage() {

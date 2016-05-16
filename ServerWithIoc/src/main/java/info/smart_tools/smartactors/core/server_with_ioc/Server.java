@@ -81,7 +81,10 @@ public class Server implements IServer {
 
     private void initializeScopeProvider()
             throws Exception {
-        //ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
+        // Subscribe for java 1.7 or less
+//        ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
+
+        // Subscribe for java 1.8 or high
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -91,6 +94,8 @@ public class Server implements IServer {
                     }
                 }
         );
+
+
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);

@@ -6,54 +6,70 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for CreateNewInstanceStrategy
  */
 public class CreateNewInstanceStrategyTest {
 
-//    @Test
-//    public void checkCreateNewInstanceStrategyCreation() {
-//        Object[] args = new Object[]{
-//                "", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"
-//        };
-//        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(args);
-//        assertNotNull(strategy);
-//    }
-//
-//    @Test (expected = IllegalArgumentException.class)
-//    public void checkStrategyCreationException()
-//            throws Exception {
-//        // Wrong arg "Str"
-//        Object[] args = new Object[]{
-//                "", "it.sevenbits.sandbox.bootstrap", "Func", "Str", "byte[]", "int", "int"
-//        };
-//        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(args);
-//    }
-//
-//
-//    @Test
-//    public void checkStrategyResolution()
-//            throws Exception {
-//        Object[] factoryArgs = new Object[]{
-//                "", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"
-//        };
-//
-//        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(factoryArgs);
-//        Object[] objectArgs = new Object[]{new byte[]{'a','b','c'}, 1, 2};
-//        String result = strategy.resolve(objectArgs);
-//        assertEquals("bc", result);
-//    }
-//
-//    @Test (expected = ResolveDependencyStrategyException.class)
-//    public void checkStrategyResolutionException()
-//            throws Exception {
-//        Object[] factoryArgs = new Object[]{
-//                "", "it.sevenbits.sandbox.bootstrap", "Func", "String", "byte[]", "int", "int"
-//        };
-//        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(factoryArgs);
-//        // Absent one arg in objectArgs
-//        Object[] objectArgs = new Object[]{new byte[]{'a','b','c'}, 1};
-//        String result = strategy.resolve(objectArgs);
-//    }
+    @Test (expected = IllegalArgumentException.class)
+    public void checkIllegalArgumentExceptionOnNull() {
+        new CreateNewInstanceStrategy(null);
+        fail();
+    }
+
+    @Test
+    public void checkStrategyCreation() throws Exception {
+        Checker checker = new Checker();
+        Object value = new Object();
+
+        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+                (args) ->{
+                    checker.wasCalled = true;
+                    return value;
+                }
+        );
+        Object result = strategy.resolve();
+
+        assertEquals(value, result);
+        assertSame(value, result);
+        assertTrue(checker.wasCalled);
+    }
+
+    @Test
+    public void checkStrategyCreationWithArgs()
+            throws Exception {
+        Checker checker = new Checker();
+        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+                (args) -> {
+                    checker.wasCalled = true;
+                    assertEquals(2, args.length);
+                    assertEquals(1, args[0]);
+                    assertEquals("test", args[1]);
+
+                    return null;
+                }
+        );
+        strategy.resolve(1, "test");
+    }
+
+    @Test (expected = ResolveDependencyStrategyException.class)
+    public void checkResolveDependencyStrategyExceptionOnWrongArgs()
+            throws Exception {
+        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+                (args) -> {
+                    Integer a = (Integer) args[0];
+                    return null;
+                }
+        );
+
+        strategy.resolve();
+    }
+}
+
+class Checker {
+    public Boolean wasCalled = false;
 }
