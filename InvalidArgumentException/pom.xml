@@ -9,24 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.bootstrap_item</artifactId>
+    <artifactId>core.invalid_argument_exception</artifactId>
 
     <dependencies>
-
-        <!-- Core interfaces -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap_item</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Core exceptions -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

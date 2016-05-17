@@ -39,13 +39,36 @@ public class Server implements IServer {
     public void start()
             throws ServerExecutionException {
         try {
+            /*
 
-            IBootstrapItem item = new BootstrapItem("as");
-            item.after("a1").after("a2").after("a3").before("b1").before("b2").process(
-                    (process) -> {
-                        return null;
-                    }
-            );
+            FeatureManager fm = new FeatureManager();
+            ConfigReader cr = new ConfigReader(fm.addNewFeature(listOfPlugins), PATH_TO_CONFIG);
+            cr.read();
+            DirectoryListener pluginLoader = new DirectoryListener(fm., PATH_TO_PLUGINS);
+            pluginLoader.loadAllInDir();
+            pluginLoader.listen();
+
+             */
+            IBootstrapItem item = new BootstrapItem("as")
+                    .after("a1")
+                    .after("a2")
+                    .after("a2")
+                    .after("a3")
+                    .before("b1")
+                    .before("b2")
+                    .process(
+                            (process) -> {
+                                //;
+                            }
+                    )
+                    .revertProcess(
+                            (process) -> {
+                                //;
+                            }
+                    );
+            item.executeProcess(new Object());
+            item.executeRevertProcess(new Object());
+
 
             /** Example of registration the Singleton strategy */
             Key<String> key1 = new Key<String>(String.class, "a");

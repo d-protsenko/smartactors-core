@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.scope_provider;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobserver.IObserver;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class ScopeProviderTest {
     @Test
     public void checkSubscribeOnCreationNewScope()
             throws Exception {
-        IObserver observer = mock(IObserver.class);
+        IAction observer = mock(IAction.class);
         doNothing().when(observer).execute(any(IScope.class));
         ScopeProvider.subscribeOnCreationNewScope(observer);
         ScopeProvider.createScope(null);
@@ -84,7 +84,7 @@ public class ScopeProviderTest {
     @Test
     public void checkClearListOfSubscribers()
             throws Exception {
-        IObserver observer = mock(IObserver.class);
+        IAction observer = mock(IAction.class);
         doNothing().when(observer).execute(any(IScope.class));
         ScopeProvider.subscribeOnCreationNewScope(observer);
         ScopeProvider.createScope(null);

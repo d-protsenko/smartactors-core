@@ -33,11 +33,12 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>IObserver</module>
+        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
+        <module>InvalidArgumentException</module>
     </modules>
 
     <properties>

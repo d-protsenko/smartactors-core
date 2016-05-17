@@ -11,5 +11,12 @@
 
     <artifactId>core.ibootstrap_item</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iaction</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

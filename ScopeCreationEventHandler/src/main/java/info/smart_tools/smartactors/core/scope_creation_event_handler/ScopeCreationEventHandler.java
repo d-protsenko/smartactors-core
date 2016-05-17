@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.core.scope_creation_event_handler;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobserver.IObserver;
-import info.smart_tools.smartactors.core.iobserver.exception.ObserverExecuteException;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 
 /**
- * Implementation of {@link IObserver}
+ * Implementation of {@link IAction}
  *
  */
-public class ScopeCreationEventHandler implements IObserver<IScope> {
+public class ScopeCreationEventHandler implements IAction<IScope> {
 
     /**
      * ID of current handler
@@ -32,11 +32,11 @@ public class ScopeCreationEventHandler implements IObserver<IScope> {
     /**
      * Add instance of {@link IStrategyContainer}
      * @param createdScope instance of {@link IScope}
-     * @throws ObserverExecuteException if any errors occurred
+     * @throws ActionExecuteException if any errors occurred
      */
     @Override
     public void execute(final IScope createdScope)
-            throws ObserverExecuteException {
+            throws ActionExecuteException {
         if (createdScope == null) {
             throw new IllegalArgumentException("Argument should not be null.");
         }
@@ -44,7 +44,7 @@ public class ScopeCreationEventHandler implements IObserver<IScope> {
             IStrategyContainer container = new StrategyContainer();
             createdScope.setValue(this.id, container);
         } catch (Exception e) {
-            throw new ObserverExecuteException("Execution error.", e);
+            throw new ActionExecuteException("Execution error.", e);
         }
     }
 }
