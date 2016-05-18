@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
  * <pre>
  * This implementation has follow specific features:
  * - string unique identifier;
- * - two constructors (<T>, String) and (String);
+ * - two constructors (&lt;T&gt;, String) and (String);
  * - overridden equals and hashCode method based on string property;
  * </pre>
  * @param <T> class type

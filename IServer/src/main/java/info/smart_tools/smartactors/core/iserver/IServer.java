@@ -17,7 +17,7 @@ public interface IServer {
 
     /**
      * Launch main server components for execute assigned tasks
-     * * @throws ServerExecutionException if any errors occurred
+     * @throws ServerExecutionException if any errors occurred
      */
     void start()
             throws ServerExecutionException;
