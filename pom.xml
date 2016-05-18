@@ -39,6 +39,8 @@
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
         <module>InvalidArgumentException</module>
+        <module>FilesystemTracker</module>
+        <module>IFilesystemTracker</module>
     </modules>
 
     <properties>
