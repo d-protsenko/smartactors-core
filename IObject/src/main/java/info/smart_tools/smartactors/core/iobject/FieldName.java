@@ -53,7 +53,7 @@ public class FieldName implements IFieldName {
      */
     protected void initialize(final String nameValue)
             throws InvalidArgumentException {
-        if (nameValue == null) {
+        if (null == nameValue) {
             throw new InvalidArgumentException("Name parameter must not be null");
         }
         if (nameValue.isEmpty()) {

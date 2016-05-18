@@ -26,7 +26,7 @@ public class Key<T> implements IKey<T> {
      */
     public Key(final String identifier)
             throws InvalidArgumentException {
-        if (identifier == null || identifier.isEmpty()) {
+        if (null == identifier || identifier.isEmpty()) {
             throw new InvalidArgumentException("Value should not be empty or null.");
         }
         this.identifier = identifier;
@@ -49,7 +49,7 @@ public class Key<T> implements IKey<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (null == o || getClass() != o.getClass()) {
             return false;
         }
 

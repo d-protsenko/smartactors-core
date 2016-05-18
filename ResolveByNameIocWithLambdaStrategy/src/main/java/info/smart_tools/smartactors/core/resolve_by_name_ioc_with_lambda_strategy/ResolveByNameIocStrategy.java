@@ -36,7 +36,7 @@ public class ResolveByNameIocStrategy implements IResolveDependencyStrategy {
      */
     public ResolveByNameIocStrategy(final Function<Object[], Object> strategy)
             throws InvalidArgumentException {
-        if (strategy == null) {
+        if (null == strategy) {
             throw new InvalidArgumentException("Strategy should not be null");
         }
         this.strategy = strategy;
@@ -55,7 +55,7 @@ public class ResolveByNameIocStrategy implements IResolveDependencyStrategy {
             throws ResolveDependencyStrategyException {
         try {
             Object result = storage.get((String) args[0]);
-            if (result == null) {
+            if (null == result) {
                 result = strategy.apply(args);
                 storage.put((String) args[0], result);
             }

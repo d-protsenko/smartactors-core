@@ -31,7 +31,7 @@ class ItemCore {
      */
     ItemCore(final String name)
             throws InvalidArgumentException {
-        if (name == null) {
+        if (null == name) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
         this.itemName = name;

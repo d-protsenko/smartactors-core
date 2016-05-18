@@ -29,7 +29,7 @@ public class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
      */
     public CreateNewInstanceStrategy(final Function<Object[], Object> func)
             throws InvalidArgumentException {
-        if (func == null) {
+        if (null == func) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
         this.creationFunction = func;

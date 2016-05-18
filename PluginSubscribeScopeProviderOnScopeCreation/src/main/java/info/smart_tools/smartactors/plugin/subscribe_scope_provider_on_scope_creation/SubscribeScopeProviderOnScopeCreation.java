@@ -18,7 +18,7 @@ public class SubscribeScopeProviderOnScopeCreation implements IPlugin {
     private IBootstrap bootstrap;
 
     public SubscribeScopeProviderOnScopeCreation(final IBootstrap bootstrap) throws InvalidArgumentException {
-        if (bootstrap == null) {
+        if (null == bootstrap) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
         this.bootstrap = bootstrap;

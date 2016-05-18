@@ -26,7 +26,7 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
      */
     public ScopeCreationEventHandler(final IKey id)
             throws InvalidArgumentException {
-        if (id == null) {
+        if (null == id) {
             throw new InvalidArgumentException("Key should not be null.");
         }
         this.id = id;
@@ -41,7 +41,7 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
     @Override
     public void execute(final IScope createdScope)
             throws ActionExecuteException, InvalidArgumentException {
-        if (createdScope == null) {
+        if (null == createdScope) {
             throw new InvalidArgumentException("Argument should not be null.");
         }
         try {

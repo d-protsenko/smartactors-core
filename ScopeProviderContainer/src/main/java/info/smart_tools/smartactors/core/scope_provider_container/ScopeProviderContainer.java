@@ -53,7 +53,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      */
     public IScope getScope(final Object key) throws ScopeProviderException {
         IScope scope = scopeStorage.get(key);
-        if (scope == null) {
+        if (null == scope) {
             throw new ScopeProviderException("Scope not found.");
         }
 
@@ -68,7 +68,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     public IScope getCurrentScope()
             throws ScopeProviderException {
         IScope scope = currentScope.get();
-        if (scope == null) {
+        if (null == scope) {
             throw new ScopeProviderException("Current Scope is null.");
         }
 
@@ -144,7 +144,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     @Override
     public void subscribeOnCreationNewScope(final IAction<IScope> handler)
             throws ScopeProviderException {
-        if (handler == null) {
+        if (null == handler) {
             throw new ScopeProviderException("Incoming argument should not be null");
         }
         handlerStorage.add(handler);
