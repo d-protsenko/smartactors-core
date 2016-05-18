@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.bootstrap_item;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -16,9 +16,9 @@ class ItemCore {
     /** Item name */
     private String itemName;
     /** Action for loading plugin chain element to the system */
-    private IAction process;
+    private IPoorAction process;
     /** Action for unloading plugin chain element to the system */
-    private IAction revertProcess;
+    private IPoorAction revertProcess;
     /** List of dependencies current plugin from other plugins */
     private List<String> afterList = new ArrayList<>();
     /** List of dependencies other plugins from current */
@@ -55,29 +55,28 @@ class ItemCore {
 
     /**
      * Add action for loading current item to the server
-     * @param action implementation of {@link IAction}
+     * @param action implementation of {@link IPoorAction}
      */
-    void setProcess(final IAction action) {
+    void setProcess(final IPoorAction action) {
         this.process = action;
     }
 
     /**
      * Add action for unloading current item from the server
-     * @param action implementation of {@link IAction}
+     * @param action implementation of {@link IPoorAction}
      */
-    void setRevertProcess(final IAction action) {
+    void setRevertProcess(final IPoorAction action) {
         this.revertProcess = action;
     }
 
     /**
      * Execute process action
-     * @param obj acting object
      * @throws ProcessExecutionException if any errors occurred
      */
-    void executeProcess(final Object obj)
+    void executeProcess()
             throws ProcessExecutionException {
         try {
-            this.process.execute(obj);
+            this.process.execute();
         } catch (Throwable e) {
             throw new ProcessExecutionException("Process execution failed.", e);
         }
@@ -85,13 +84,12 @@ class ItemCore {
 
     /**
      * Execute revert process action
-     * @param obj acting object
      * @throws RevertProcessExecutionException if any errors occurred
      */
-    void executeRevertProcess(final Object obj)
+    void executeRevertProcess()
             throws RevertProcessExecutionException {
         try {
-            this.revertProcess.execute(obj);
+            this.revertProcess.execute();
         } catch (Throwable e) {
             throw new RevertProcessExecutionException("Revert process execution failed.", e);
         }

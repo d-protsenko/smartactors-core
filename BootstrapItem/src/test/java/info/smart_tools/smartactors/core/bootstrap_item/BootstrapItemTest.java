@@ -43,13 +43,13 @@ public class BootstrapItemTest {
                 .before("b2")
                 .before("b3")
                 .process(
-                        (args) -> ckr1.wasCalled = true
+                        () -> ckr1.wasCalled = true
                 )
                 .revertProcess(
-                        (args) -> ckr2.wasCalled = true
+                        () -> ckr2.wasCalled = true
                 );
-        item.executeProcess(null);
-        item.executeRevertProcess(null);
+        item.executeProcess();
+        item.executeRevertProcess();
         assertTrue(ckr1.wasCalled);
         assertTrue(ckr2.wasCalled);
         assertEquals(item.getAfterItems().size(), 2);
@@ -66,22 +66,22 @@ public class BootstrapItemTest {
     public void checkProcessExecutionException() throws Exception {
         IBootstrapItem item = new BootstrapItem("name")
                 .process(
-                        (args) -> {
+                        () -> {
                             throw new RuntimeException();
                         }
                 );
-        item.executeProcess(null);
+        item.executeProcess();
         fail();
     }
     @Test (expected = RevertProcessExecutionException.class)
     public void checkRevertProcessExecutionException() throws Exception {
         IBootstrapItem item = new BootstrapItem("name")
                 .revertProcess(
-                        (args) -> {
+                        () -> {
                             throw new RuntimeException();
                         }
                 );
-        item.executeRevertProcess(null);
+        item.executeRevertProcess();
         fail();
     }
 }

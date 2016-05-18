@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.ibootstrap_item;
 
 
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
 
@@ -9,8 +9,9 @@ import java.util.List;
 
 /**
  * Interface for atomic step of plugin loading chain
+ * @param <T> type of item name
  */
-public interface IBootstrapItem {
+public interface IBootstrapItem <T> {
 
     /**
      * Add name of {@link IBootstrapItem} instance what should be loaded before current item
@@ -18,7 +19,7 @@ public interface IBootstrapItem {
      * @param itemName name of {@link IBootstrapItem} instance what should be loaded before current item
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem before(String itemName);
+    IBootstrapItem before(T itemName);
 
     /**
      * Add name of {@link IBootstrapItem} instance what should be loaded after current item
@@ -26,44 +27,42 @@ public interface IBootstrapItem {
      * @param itemName name of {@link IBootstrapItem} instance what should be loaded after current item
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem after(String itemName);
+    IBootstrapItem after(T itemName);
 
     /**
      * Action for execution for loading current item to the system
      * Must support fluent interface
-     * @param process instance of {@link IAction} or function
+     * @param process instance of {@link IPoorAction} or function
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem process(IAction process);
+    IBootstrapItem process(IPoorAction process);
 
     /**
      * Action for revert process action (unload current item from the server)
      * Must support fluent interface
-     * @param process instance of {@link IAction} or function
+     * @param process instance of {@link IPoorAction} or function
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem revertProcess(IAction process);
+    IBootstrapItem revertProcess(IPoorAction process);
 
     /**
      * Execute process action
-     * @param object action object
      * @throws ProcessExecutionException if any error occurred
      */
-    void executeProcess(Object object) throws ProcessExecutionException;
+    void executeProcess() throws ProcessExecutionException;
 
     /**
      * Execute revert process action
-     * @param object acting object
      * @throws RevertProcessExecutionException if any error occurred
      */
-    void executeRevertProcess(Object object) throws RevertProcessExecutionException;
+    void executeRevertProcess() throws RevertProcessExecutionException;
 
     /**
      * Get all names of dependencies that should be loaded before current
      * @param <T> type of item name
      * @return list of names
      */
-    <T> List<T> getBeforeItems();
+    List<T> getBeforeItems();
 
     /**
      * Get all names of dependencies that should be loaded after current

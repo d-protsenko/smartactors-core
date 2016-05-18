@@ -39,6 +39,7 @@
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
         <module>InvalidArgumentException</module>
+        <module>IBootstrap</module>
     </modules>
 
     <properties>

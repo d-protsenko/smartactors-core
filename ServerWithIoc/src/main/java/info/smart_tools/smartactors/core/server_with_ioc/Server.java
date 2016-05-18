@@ -57,17 +57,17 @@ public class Server implements IServer {
                     .before("b1")
                     .before("b2")
                     .process(
-                            (process) -> {
+                            () -> {
                                 //;
                             }
                     )
                     .revertProcess(
-                            (process) -> {
+                            () -> {
                                 //;
                             }
                     );
-            item.executeProcess(new Object());
-            item.executeRevertProcess(new Object());
+            item.executeProcess();
+            item.executeRevertProcess();
 
 
             /** Example of registration the Singleton strategy */

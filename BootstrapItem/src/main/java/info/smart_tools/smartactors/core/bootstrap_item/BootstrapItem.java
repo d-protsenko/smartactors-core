@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.bootstrap_item;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Implementation of {@link IBootstrapItem}
  */
-public class BootstrapItem implements IBootstrapItem {
+public class BootstrapItem implements IBootstrapItem<String> {
 
     private ItemCore item;
 
@@ -37,27 +37,27 @@ public class BootstrapItem implements IBootstrapItem {
     }
 
     @Override
-    public BootstrapItem process(final IAction action) {
+    public BootstrapItem process(final IPoorAction action) {
         item.setProcess(action);
         return this;
     }
 
     @Override
-    public BootstrapItem revertProcess(final IAction action) {
+    public BootstrapItem revertProcess(final IPoorAction action) {
         item.setRevertProcess(action);
         return this;
     }
 
     @Override
-    public void executeProcess(final Object object)
+    public void executeProcess()
             throws ProcessExecutionException {
-        item.executeProcess(object);
+        item.executeProcess();
     }
 
     @Override
-    public void executeRevertProcess(final Object object)
+    public void executeRevertProcess()
             throws RevertProcessExecutionException {
-        item.executeRevertProcess(object);
+        item.executeRevertProcess();
     }
 
     @Override
