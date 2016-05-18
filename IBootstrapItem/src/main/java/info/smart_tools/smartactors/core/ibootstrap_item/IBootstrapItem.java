@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
 
+import java.util.List;
+
 /**
  * Interface for atomic step of plugin loading chain
  */
@@ -55,4 +57,25 @@ public interface IBootstrapItem {
      * @throws RevertProcessExecutionException if any error occurred
      */
     void executeRevertProcess(Object object) throws RevertProcessExecutionException;
+
+    /**
+     * Get all names of dependencies that should be loaded before current
+     * @param <T> type of item name
+     * @return list of names
+     */
+    <T> List<T> getBeforeItems();
+
+    /**
+     * Get all names of dependencies that should be loaded after current
+     * @param <T> type of item name
+     * @return list of names
+     */
+    <T> List<T> getAfterItems();
+
+    /**
+     * Rreturn name of current item
+     * @param <T> type of item name
+     * @return name of current item
+     */
+    <T> T getItemName();
 }

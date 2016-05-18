@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecut
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
+import java.util.List;
+
 /**
  * Implementation of {@link IBootstrapItem}
  */
@@ -56,5 +58,20 @@ public class BootstrapItem implements IBootstrapItem {
     public void executeRevertProcess(final Object object)
             throws RevertProcessExecutionException {
         item.executeRevertProcess(object);
+    }
+
+    @Override
+    public List<String> getBeforeItems() {
+        return this.item.getBeforeList();
+    }
+
+    @Override
+    public List<String> getAfterItems() {
+        return this.item.getAfterList();
+    }
+
+    @Override
+    public String getItemName() {
+        return item.getItemName();
     }
 }

@@ -36,6 +36,7 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
      * Add instance of {@link IStrategyContainer}
      * @param createdScope instance of {@link IScope}
      * @throws ActionExecuteException if any errors occurred
+     * @throws InvalidArgumentException if incoming argument are null
      */
     @Override
     public void execute(final IScope createdScope)

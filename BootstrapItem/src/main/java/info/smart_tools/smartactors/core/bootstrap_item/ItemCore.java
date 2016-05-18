@@ -38,62 +38,87 @@ class ItemCore {
     }
 
     /**
-     * Add
-     * @param after
+     * Add new 'after' dependency to the dependencies list
+     * @param after 'after' dependency
      */
     void addAfter(final String after) {
         this.afterList.add(after);
     }
 
     /**
-     *
-     * @param before
+     * Add new 'before' dependency to the dependencies list
+     * @param before 'before' dependency
      */
     void addBefore(final String before) {
         this.beforeList.add(before);
     }
 
     /**
-     *
-     * @param action
+     * Add action for loading current item to the server
+     * @param action implementation of {@link IAction}
      */
     void setProcess(final IAction action) {
         this.process = action;
     }
 
     /**
-     *
-     * @param action
+     * Add action for unloading current item from the server
+     * @param action implementation of {@link IAction}
      */
     void setRevertProcess(final IAction action) {
         this.revertProcess = action;
     }
 
     /**
-     *
-     * @param obj
-     * @throws ProcessExecutionException
+     * Execute process action
+     * @param obj acting object
+     * @throws ProcessExecutionException if any errors occurred
      */
     void executeProcess(final Object obj)
             throws ProcessExecutionException {
         try {
             this.process.execute(obj);
         } catch (Throwable e) {
-            throw new ProcessExecutionException("", e);
+            throw new ProcessExecutionException("Process execution failed.", e);
         }
     }
 
     /**
-     *
-     * @param obj
-     * @throws RevertProcessExecutionException
+     * Execute revert process action
+     * @param obj acting object
+     * @throws RevertProcessExecutionException if any errors occurred
      */
     void executeRevertProcess(final Object obj)
             throws RevertProcessExecutionException {
         try {
             this.revertProcess.execute(obj);
         } catch (Throwable e) {
-            throw new RevertProcessExecutionException("", e);
+            throw new RevertProcessExecutionException("Revert process execution failed.", e);
         }
     }
+
+    /**
+     * Returns list of 'after' dependencies
+     * @return list of 'after' dependencies
+     */
+    List<String> getAfterList() {
+        return this.afterList;
+    }
+
+    /**
+     * Returns list of 'before' dependencies
+     * @return list of 'before' dependencies
+     */
+    List<String> getBeforeList() {
+        return this.beforeList;
+    }
+
+    /**
+     * Return current item name
+     * @return name of item
+     */
+    String getItemName() {
+        return this.itemName;
+    }
+
 }
