@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.scope_creation_event_handler;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
@@ -21,10 +22,12 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
     /**
      * Constructor by unique handler identifier
      * @param id unique handler identifier
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public ScopeCreationEventHandler(final IKey id) {
+    public ScopeCreationEventHandler(final IKey id)
+            throws InvalidArgumentException {
         if (id == null) {
-            throw new IllegalArgumentException("Key should not be null.");
+            throw new InvalidArgumentException("Key should not be null.");
         }
         this.id = id;
     }
@@ -36,9 +39,9 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
      */
     @Override
     public void execute(final IScope createdScope)
-            throws ActionExecuteException {
+            throws ActionExecuteException, InvalidArgumentException {
         if (createdScope == null) {
-            throw new IllegalArgumentException("Argument should not be null.");
+            throw new InvalidArgumentException("Argument should not be null.");
         }
         try {
             IStrategyContainer container = new StrategyContainer();

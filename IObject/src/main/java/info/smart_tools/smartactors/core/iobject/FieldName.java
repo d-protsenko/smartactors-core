@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.core.iobject;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+
 import java.util.regex.Pattern;
 
 /**
@@ -19,9 +21,10 @@ public class FieldName implements IFieldName {
      * Base constructor for {@code FieldName}
      * @param name is name of field, it must not be {@code null} and
      *             must contain at least one of the symbols from {@literal 0-9a-zA-Z_-+=|!@#$%^&*:/., {}()[]}
-     * @throws IllegalArgumentException if name is not valid
+     * @throws InvalidArgumentException if name is not valid
      */
-    public FieldName(final String name) {
+    public FieldName(final String name)
+            throws InvalidArgumentException {
         initialize(name);
     }
 
@@ -46,16 +49,18 @@ public class FieldName implements IFieldName {
     /**
      * Initialize class property {@code FieldName}
      * @param nameValue pretender name for {@code FieldName}
+     * @throws InvalidArgumentException if any errors occurred
      */
-    protected void initialize(final String nameValue) {
+    protected void initialize(final String nameValue)
+            throws InvalidArgumentException {
         if (nameValue == null) {
-            throw new IllegalArgumentException("Name parameter must not be null");
+            throw new InvalidArgumentException("Name parameter must not be null");
         }
         if (nameValue.isEmpty()) {
-            throw new IllegalArgumentException("Name parameter must not be empty");
+            throw new InvalidArgumentException("Name parameter must not be empty");
         }
         if (!VALID_SYMBOLS.matcher(nameValue).matches()) {
-            throw new IllegalArgumentException("Name parameter contains illegal symbols");
+            throw new InvalidArgumentException("Name parameter contains illegal symbols");
         }
         this.name = nameValue;
     }

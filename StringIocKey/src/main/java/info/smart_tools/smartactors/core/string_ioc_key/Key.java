@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.string_ioc_key;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
 /**
  * Implementation of {@link info.smart_tools.smartactors.core.ikey.IKey}
@@ -21,10 +22,12 @@ public class Key<T> implements IKey<T> {
     /**
      * Constructor with string unique identifier
      * @param identifier string unique identifier
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public Key(final String identifier) {
+    public Key(final String identifier)
+            throws InvalidArgumentException {
         if (identifier == null || identifier.isEmpty()) {
-            throw new IllegalArgumentException("Value should not be empty or null.");
+            throw new InvalidArgumentException("Value should not be empty or null.");
         }
         this.identifier = identifier;
     }
@@ -33,8 +36,10 @@ public class Key<T> implements IKey<T> {
      * Constructor with string unique identifier and class type
      * @param clazz class type
      * @param identifier string unique identifier
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public Key(final Class<T> clazz, final String identifier) {
+    public Key(final Class<T> clazz, final String identifier)
+            throws InvalidArgumentException {
         this(identifier);
         this.clazz = clazz;
     }

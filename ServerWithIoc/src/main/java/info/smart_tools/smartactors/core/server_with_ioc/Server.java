@@ -79,7 +79,13 @@ public class Server implements IServer {
 
             /** Example of registration the ResolveByNameIoc strategy */
             IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
-                    (a) -> new Key<IKey>((String) a[0]))
+                    (a) -> {
+                        try {
+                            return new Key<IKey>((String) a[0]);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
             );
             /** Example of usage the ResolveByNameIoc strategy */
             IKey key2 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");

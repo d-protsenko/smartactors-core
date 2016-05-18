@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.scope_creation_event_handler;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import org.junit.Test;
@@ -22,14 +23,16 @@ import static org.mockito.Mockito.verify;
 public class ScopeCreationEventHandlerTest {
 
     @Test
-    public void checkHandlerCreation() {
+    public void checkHandlerCreation()
+            throws InvalidArgumentException{
         IKey key = mock(IKey.class);
         IAction handler = new ScopeCreationEventHandler(key);
         assertNotNull(handler);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalExceptionOnHandlerCreation() {
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnHandlerCreation()
+            throws InvalidArgumentException {
         IAction handler = new ScopeCreationEventHandler(null);
         fail();
     }
@@ -45,8 +48,8 @@ public class ScopeCreationEventHandlerTest {
         verify(scope, times(1)).setValue(any(IKey.class), any(IStrategyContainer.class));
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentExceptionOnHandlerExecution()
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnHandlerExecution()
             throws Exception {
         IKey key = mock(IKey.class);
         IAction handler = new ScopeCreationEventHandler(key);
