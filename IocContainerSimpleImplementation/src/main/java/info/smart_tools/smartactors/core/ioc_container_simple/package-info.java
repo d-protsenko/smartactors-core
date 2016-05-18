@@ -1,5 +1,5 @@
 /**
- * Package contains simple implementation of {@link info.smart_tools.smartactors.core.ii.IContainer}
+ * Package contains simple implementation of {@link info.smart_tools.smartactors.core.iioccontainer.IContainer}
  * <pre>
  * Implementation features:
  * - support IScope;
