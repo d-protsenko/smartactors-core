@@ -1,8 +1,12 @@
 package info.smart_tools.smartactors.core.ioc;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.exception.RegistrationException;
-import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iioccontainer.IContainer;
+import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ioc_container.Container;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 
 /**
  * Realization of IOC Container by ServiceLocator pattern
@@ -10,15 +14,9 @@ import info.smart_tools.smartactors.core.ioc.exception.ResolutionException;
 public final class IOC {
 
     /**
-     * Private default constructor
-     */
-    private IOC() {
-    }
-
-    /**
      * Implementation of {@link IContainer}.
-     * Must be initialized before IOC will be used.
-     * Initialization possible only with using java reflection API
+     * Will be initialized by default implementation of {@link IContainer}
+     * ReInitialization possible only with using java reflection API
      * Example:
      * <pre>
      * {@code
@@ -32,39 +30,67 @@ public final class IOC {
     private static IContainer container;
 
     /**
-     * Resolve dependency by given given IObject instance
-     * @param obj instance of IObject that contains needed parameters for resolve dependency
+     * Initialize IOC by default implementation of {@link IContainer}
+     */
+
+    static {
+        container = new Container();
+    }
+
+    /**
+     * Default private constructor
+     */
+    private IOC() {
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for container ID
+     * @return instance of {@link IKey}
+     */
+    public static IKey getIocKey() {
+        return container.getIocKey();
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @param <T> type of returned value of inserted key
+     * @return instance of {@link IKey}
+     */
+    public static <T> IKey<IKey<T>> getKeyForKeyStorage() {
+        return container.getKeyForKeyStorage();
+    }
+
+    /**
+     * Resolve dependency by given given {@link IKey} instance and args
+     * @param key instance of {@link IKey}
+     * @param args needed parameters for resolve dependency
+     * @param <T> type of class for resolution
      * @return instance of class with classId identifier
-     * @throws ResolutionException when resolution is impossible because of any error
+     * @throws ResolutionException if resolution is impossible because of any errors
      */
-    public static Object resolve(final IObject obj)
+    public static <T> T resolve(final IKey<T> key, final Object ... args)
             throws ResolutionException {
-        return container.resolve(obj);
+        return container.resolve(key, args);
     }
 
     /**
-     * Resolve instance of class {@link T} using given arguments
-     * Deprecated method can be used if clazz.getClass() equals classId
-     * @param clazz the class to resolve
-     * @param args the arguments
-     * @param <T> the class to resolve
-     * @return resolved instance of class {@link T}
-     * @throws RegistrationException when resolution is impossible because of any error
-     */
-    @Deprecated
-    public static <T> T resolve(final Class<T> clazz, final Object... args)
-            throws RegistrationException {
-        //TODO: need to add realization after all needed core components will be implemented
-        return null;
-    }
-
-    /**
-     * Register new dependency
-     * @param obj instance of IObject that contains needed parameters for resolve dependency
+     * Register new dependency by instance of {@link IKey}
+     * @param key instance of {@link IKey}
+     * @param strategy instance of {@link IResolveDependencyStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
-    void register(final IObject obj)
+    public static void register(final IKey key, final IResolveDependencyStrategy strategy)
             throws RegistrationException {
-        container.register(obj);
+        container.register(key, strategy);
+    }
+
+    /**
+     * Remove dependency with given key
+     * @param key instance of {@link IKey}
+     * @throws DeletionException if any errors occurred
+     */
+    public static void remove(final IKey key)
+            throws DeletionException {
+        container.remove(key);
     }
 }

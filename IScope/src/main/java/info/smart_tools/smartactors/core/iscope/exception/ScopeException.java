@@ -1,16 +1,9 @@
 package info.smart_tools.smartactors.core.iscope.exception;
 
 /**
- * Exception for runtime error in {@link info.smart_tools.smartactors.core.iscope.IScope} methods
+ * Exception for error in {@link info.smart_tools.smartactors.core.iscope.IScope} methods
  */
-public class ScopeException extends RuntimeException {
-
-    /**
-     * Default constructor
-     */
-    private ScopeException() {
-        super();
-    }
+public class ScopeException extends Exception {
 
     /**
      * Constructor with specific error message as argument

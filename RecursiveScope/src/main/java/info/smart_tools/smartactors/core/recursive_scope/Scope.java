@@ -3,23 +3,23 @@ package info.smart_tools.smartactors.core.recursive_scope;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link info.smart_tools.smartactors.core.iscope.IScope}
  * with recursive call method getValue of parent scope
  */
-public class Scope implements IScope {
+class Scope implements IScope {
 
-    private Map<Object, Object> storage = new HashMap<Object, Object>();
+    private Map<Object, Object> storage = new ConcurrentHashMap<Object, Object>();
     private IScope parent;
 
     /**
      * Constructs new Scope with defined parent scope
      * @param parent the parent scope.
      */
-    public Scope(final IScope parent) {
+    Scope(final IScope parent) {
         this.parent = parent;
     }
 
