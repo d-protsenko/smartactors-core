@@ -41,6 +41,7 @@
         <module>InvalidArgumentException</module>
         <module>IBootstrap</module>
         <module>IPlugin</module>
+        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
     </modules>
 
     <properties>
