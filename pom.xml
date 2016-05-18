@@ -40,6 +40,7 @@
         <module>IBootstrapItem</module>
         <module>InvalidArgumentException</module>
         <module>IBootstrap</module>
+        <module>IPlugin</module>
     </modules>
 
     <properties>
