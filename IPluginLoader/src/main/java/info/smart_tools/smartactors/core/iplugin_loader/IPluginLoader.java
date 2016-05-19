@@ -1,14 +1,17 @@
 package info.smart_tools.smartactors.core.iplugin_loader;
 
+import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
+
 /**
  * Interface IPluginLoader
+ * @param <T> type of plugin package
  */
-public interface IPluginLoader {
+public interface IPluginLoader<T> {
 
     /**
      * Load plugin to the system
      * @param plugin plugin package (for example, jar file)
-     * @param <T> type of plugin package
      */
-    <T> void loadPlugin(T plugin);
+    void loadPlugin(T plugin)
+            throws PluginLoaderException;
 }

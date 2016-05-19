@@ -45,6 +45,7 @@
         <module>IPluginLoader</module>
         <module>IPluginLoaderVisitor</module>
         <module>PluginLoaderVisitorEmptyImplementation</module>
+        <module>PluginLoaderFormJar</module>
     </modules>
 
     <properties>

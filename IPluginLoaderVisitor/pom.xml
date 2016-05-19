@@ -12,12 +12,6 @@
     <artifactId>core.iplugin_loader_visitor</artifactId>
 
     <dependencies>
-        <!-- Core interfaces -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 </project>

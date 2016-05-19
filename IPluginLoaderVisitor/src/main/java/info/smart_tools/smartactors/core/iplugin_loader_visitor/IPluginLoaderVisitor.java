@@ -1,34 +1,35 @@
 package info.smart_tools.smartactors.core.iplugin_loader_visitor;
 
-import info.smart_tools.smartactors.core.iaction.IBiAction;
-
 /**
  * Interface IPluginLoaderVisitor
  * for implements pattern visitor
+ * @param <V> type of inspected object
  */
-public interface IPluginLoaderVisitor {
+public interface IPluginLoaderVisitor<V> {
 
     /**
-     * Handler for plugin loading fail
-     * @param action action with two parameters
+     * Handler for failed plugin loading
+     * @param value value of inspected object
+     * @param e instance of {@link Throwable}
      */
-    void pluginLoadingFail(IBiAction action);
+    void pluginLoadingFail(V value, Throwable e);
 
     /**
-     * Handler for package loading fail
-     * @param action action with two parameters
+     * Handler for failed package loading
+     * @param value value of inspected object
+     * @param e instance of {@link Throwable}
      */
-    void packageLoadingFail(IBiAction action);
+    void packageLoadingFail(V value, Throwable e);
 
     /**
-     * Handler for plugin loading success
-     * @param action action with two parameters
+     * Handler for successful plugin loading
+     * @param value value of inspected object
      */
-    void pluginLoadingSuccess(IBiAction action);
+    void pluginLoadingSuccess(V value);
 
     /**
-     * Handler for package loading success
-     * @param action action with two parameters
+     * Handler for successful package loading
+     * @param value value of inspected object
      */
-    void packageLoadingSuccess(IBiAction action);
+    void packageLoadingSuccess(V value);
 }
