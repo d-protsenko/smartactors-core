@@ -43,6 +43,7 @@
         <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
         <module>IPluginLoader</module>
+        <module>IPluginLoaderVisitor</module>
     </modules>
 
     <properties>
