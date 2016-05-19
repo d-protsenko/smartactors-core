@@ -3,13 +3,13 @@ package info.smart_tools.smartactors.core.iplugin.exception;
 /**
  * Exception for error in {@link info.smart_tools.smartactors.core.iplugin.IPlugin} methods
  */
-public class PluginLoadingException extends Exception {
+public class PluginException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public PluginLoadingException(final String message) {
+    public PluginException(final String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class PluginLoadingException extends Exception {
      * @param cause specific cause
      */
 
-    public PluginLoadingException(final String message, final Throwable cause) {
+    public PluginException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -27,7 +27,7 @@ public class PluginLoadingException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public PluginLoadingException(final Throwable cause) {
+    public PluginException(final Throwable cause) {
         super(cause);
     }
 }

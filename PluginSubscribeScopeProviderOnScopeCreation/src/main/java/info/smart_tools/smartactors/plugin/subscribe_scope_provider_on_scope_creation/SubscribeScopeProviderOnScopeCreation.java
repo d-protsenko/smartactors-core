@@ -6,18 +6,26 @@ import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginLoadingException;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 
 /**
- * Created by sevenbits on 5/18/16.
+ * Plugin.
+ * Implements {@link IPlugin}
+ * Subscribe ScopeProvider on a Scope creation.
  */
 public class SubscribeScopeProviderOnScopeCreation implements IPlugin {
 
-    private IBootstrap bootstrap;
+    /** Local storage for instance of {@link IBootstrap}*/
+    private IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public SubscribeScopeProviderOnScopeCreation(final IBootstrap bootstrap) throws InvalidArgumentException {
+    /**
+     * Constructor with single argument
+     * @param bootstrap instance of {@link IBootstrap}
+     * @throws InvalidArgumentException if any errors occurred
+     */
+    public SubscribeScopeProviderOnScopeCreation(final IBootstrap<IBootstrapItem<String>> bootstrap) throws InvalidArgumentException {
         if (null == bootstrap) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
@@ -26,9 +34,9 @@ public class SubscribeScopeProviderOnScopeCreation implements IPlugin {
 
     @Override
     public void load()
-            throws PluginLoadingException {
+            throws PluginException {
         try {
-            IBootstrapItem item = new BootstrapItem("SubscribeScopeProviderOnScopeCreation");
+            IBootstrapItem<String> item = new BootstrapItem("SubscribeScopeProviderOnScopeCreation");
             item
                     .before("CreateNewScope")
                     .process(
@@ -50,7 +58,7 @@ public class SubscribeScopeProviderOnScopeCreation implements IPlugin {
                     );
             this.bootstrap.add(item);
         } catch (Throwable e) {
-            throw new PluginLoadingException("Load plugin execution has been failed.", e);
+            throw new PluginException("Load plugin execution has been failed.", e);
         }
     }
 }

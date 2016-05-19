@@ -59,22 +59,19 @@ public interface IBootstrapItem <T> {
 
     /**
      * Get all names of dependencies that should be loaded before current
-     * @param <T> type of item name
      * @return list of names
      */
     List<T> getBeforeItems();
 
     /**
      * Get all names of dependencies that should be loaded after current
-     * @param <T> type of item name
      * @return list of names
      */
-    <T> List<T> getAfterItems();
+    List<T> getAfterItems();
 
     /**
      * Rreturn name of current item
-     * @param <T> type of item name
      * @return name of current item
      */
-    <T> T getItemName();
+    T getItemName();
 }

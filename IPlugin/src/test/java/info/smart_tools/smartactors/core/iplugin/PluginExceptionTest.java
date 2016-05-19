@@ -1,40 +1,40 @@
 package info.smart_tools.smartactors.core.iplugin;
 
-import info.smart_tools.smartactors.core.iplugin.exception.PluginLoadingException;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for PluginLoadingException
+ * Tests for PluginException
  */
-public class PluginLoadingExceptionTest {
-    @Test(expected = PluginLoadingException.class)
+public class PluginExceptionTest {
+    @Test(expected = PluginException.class)
     public void checkMessageMethod()
-            throws PluginLoadingException {
+            throws PluginException {
         String str = "test";
-        PluginLoadingException exception = new PluginLoadingException(str);
+        PluginException exception = new PluginException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test(expected = PluginLoadingException.class)
+    @Test(expected = PluginException.class)
     public void checkCauseMethod()
-            throws PluginLoadingException {
+            throws PluginException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PluginLoadingException exception = new PluginLoadingException(cause);
+        PluginException exception = new PluginException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test (expected = PluginLoadingException.class)
+    @Test (expected = PluginException.class)
     public void checkMessageAndCauseMethod()
-            throws PluginLoadingException {
+            throws PluginException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PluginLoadingException exception = new PluginLoadingException(str, cause);
+        PluginException exception = new PluginException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;

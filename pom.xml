@@ -42,6 +42,7 @@
         <module>IBootstrap</module>
         <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
+        <module>IPluginLoader</module>
     </modules>
 
     <properties>

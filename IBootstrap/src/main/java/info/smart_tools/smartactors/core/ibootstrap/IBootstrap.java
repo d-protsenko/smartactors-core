@@ -27,6 +27,7 @@ public interface IBootstrap <T> {
 
     /**
      * Revert changes that was doing after execution start method
+     * @throws RevertProcessExecutionException if any errors occurred
      */
     void revert()
             throws RevertProcessExecutionException;
