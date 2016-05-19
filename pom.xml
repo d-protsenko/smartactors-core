@@ -44,6 +44,7 @@
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
         <module>IPluginLoader</module>
         <module>IPluginLoaderVisitor</module>
+        <module>PluginLoaderVisitorEmptyImplementation</module>
     </modules>
 
     <properties>
