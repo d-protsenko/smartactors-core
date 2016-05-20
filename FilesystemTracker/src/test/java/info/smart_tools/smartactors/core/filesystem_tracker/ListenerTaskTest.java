@@ -18,7 +18,7 @@ public class ListenerTaskTest {
     private File directoryMock;
     private WatchService watchServiceMock;
     private WatchKey watchKeyMock;
-    private WatchEvent<?> event1Mock, event2Mock;
+    private WatchEvent event1Mock, event2Mock;
 
     @Before
     public void setUp()

@@ -5,14 +5,28 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.WatchService;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchEvent;
 
-class ListenerTask implements Runnable {
+/**
+ * Implementation of {@link Runnable} that may be created by {@link ListeningTaskFactory}.
+ */
+public class ListenerTask implements Runnable {
     private WatchService watchService;
     private IAction<File> newFileAction;
     private File directory;
 
-    public ListenerTask(File directory, IAction<File> newFileAction)
+    /**
+     * The constructor.
+     *
+     * @param directory the directory to listen
+     * @param newFileAction action to execute when new file detected
+     * @throws IOException when I/O errors happens during initialization
+     */
+    public ListenerTask(final File directory, final IAction<File> newFileAction)
             throws IOException {
         this.directory = directory;
         this.newFileAction = newFileAction;
@@ -38,8 +52,9 @@ class ListenerTask implements Runnable {
                     }
                 }
 
-                if (!key.reset())
+                if (!key.reset()) {
                     break;
+                }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -50,7 +65,8 @@ class ListenerTask implements Runnable {
 
     private void scanExistFiles()
             throws ActionExecuteException {
-        for (File file : directory.listFiles())
+        for (File file : directory.listFiles()) {
             newFileAction.execute(file);
+        }
     }
 }

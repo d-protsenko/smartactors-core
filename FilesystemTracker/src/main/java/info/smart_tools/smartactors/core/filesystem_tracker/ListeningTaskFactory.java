@@ -16,7 +16,7 @@ public interface ListeningTaskFactory {
      * @param directory the directory that the {@link Runnable} should listen
      * @param handler the action that should be executed for all files in the directory
      * @return a runnable as described in {@link ListeningTaskFactory}
-     * @throws IOException
+     * @throws IOException if I/O error occurs during creation of a {@code Runnable}
      * @see ListeningTaskFactory
      */
     Runnable createRunnable(File directory, IAction<File> handler) throws IOException;

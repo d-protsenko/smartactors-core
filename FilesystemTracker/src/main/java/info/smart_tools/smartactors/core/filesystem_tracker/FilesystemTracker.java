@@ -28,15 +28,20 @@ public class FilesystemTracker implements IFilesystemTracker {
     private FilenameFilter filter;
     private ListeningTaskFactory taskFactory;
 
+    /**
+     * The action executed by {@link ListenerTask} to notify {@code FilesystemTracker} about new file.
+     */
     private class FileCreationHandler implements IAction<File> {
         @Override
-        public void execute(File file) throws ActionExecuteException {
+        public void execute(final File file) throws ActionExecuteException {
             synchronized (knownFilesLock) {
-                if (!filter.accept(file.getParentFile(), file.getName()))
+                if (!filter.accept(file.getParentFile(), file.getName())) {
                     return;
+                }
 
-                if (knownFiles.contains(file))
+                if (knownFiles.contains(file)) {
                     return;
+                }
 
                 invokeAllHandlers(file);
                 knownFiles.add(file);
@@ -44,20 +49,31 @@ public class FilesystemTracker implements IFilesystemTracker {
         }
     }
 
-    public FilesystemTracker(FilenameFilter filter, ListeningTaskFactory taskFactory)
+    /**
+     * The constructor.
+     *
+     * @param filter a filter that should be used to choose files on which should actions added using {@link
+     *               #addFileHandler(IAction)} be executed.
+     * @param taskFactory a {@link ListeningTaskFactory} instance that should be used to create a {@link ListenerTask}
+     *                    for this {@code FilesystemTracker}.
+     * @throws InvalidArgumentException if {@code filter} is {@code null} or {@code taskFactory} is {@code null}
+     */
+    public FilesystemTracker(final FilenameFilter filter, final ListeningTaskFactory taskFactory)
             throws InvalidArgumentException {
-        if (null == filter)
+        if (null == filter) {
             throw new InvalidArgumentException("Filter should not be null.");
+        }
 
-        if (null == taskFactory)
+        if (null == taskFactory) {
             throw new InvalidArgumentException("Task factory should not be null.");
+        }
 
         this.filter = filter;
         this.taskFactory = taskFactory;
     }
 
     @Override
-    public void start(File directory)
+    public void start(final File directory)
             throws FilesystemTrackerStartupException, InvalidArgumentException {
         if (started) {
             throw new FilesystemTrackerStartupException("Filesystem tracker is already started.");
@@ -83,31 +99,33 @@ public class FilesystemTracker implements IFilesystemTracker {
     }
 
     @Override
-    public void addFileHandler(IAction<File> handler) {
+    public void addFileHandler(final IAction<File> handler) {
         synchronized (knownFilesLock) {
-            for (File file : knownFiles)
+            for (File file : knownFiles) {
                 invokeHandler(handler, file);
+            }
 
             handlers.add(handler);
         }
     }
 
     @Override
-    public void removeFileHandler(IAction<File> handler) {
+    public void removeFileHandler(final IAction<File> handler) {
         handlers.remove(handler);
     }
 
     @Override
-    public void addErrorHandler(IAction<Throwable> handler) {
+    public void addErrorHandler(final IAction<Throwable> handler) {
         errorHandlers.add(handler);
     }
 
-    private void invokeAllHandlers(File file) {
-        for (IAction<File> handler : handlers)
+    private void invokeAllHandlers(final File file) {
+        for (IAction<File> handler : handlers) {
             invokeHandler(handler, file);
+        }
     }
 
-    private void invokeHandler(IAction<File> handler, File file) {
+    private void invokeHandler(final IAction<File> handler, final File file) {
         try {
             handler.execute(file);
         } catch (Throwable e) {
@@ -115,11 +133,12 @@ public class FilesystemTracker implements IFilesystemTracker {
         }
     }
 
-    private void invokeErrorHandlers(Throwable error) {
+    private void invokeErrorHandlers(final Throwable error) {
         for (IAction<Throwable> errorHandler : errorHandlers) {
             try {
                 errorHandler.execute(error);
-            } catch (ActionExecuteException ignore) {}
+            } catch (ActionExecuteException ignore) {
+            }
         }
     }
 }
