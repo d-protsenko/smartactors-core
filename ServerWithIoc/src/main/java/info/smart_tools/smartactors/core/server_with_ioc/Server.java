@@ -41,6 +41,33 @@ public class Server implements IServer {
         try {
             /*
 
+            // FS listener creation
+            String coreJarsDir = "."; // TODO: Get from configuration
+
+            IFilesystemTracker jarFilesTracker = new FilesystemTracker(
+                    (dir, name) -> name.endsWith(".jar"),
+                    ListenerTask::new);
+
+            jarFilesTracker.start(new File(coreJarsDir));
+
+            // FeatureManager & Feature creation
+            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+
+            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            coreFeature.whenPresent(files -> {
+                // TODO: Load JAR's
+            });
+
+            String[] coreJars = {}; // TODO: Get from configuration
+            for (String jarName : coreJars) {
+                coreFeature.requireFile(jarName);
+            }
+
+            coreFeature.listen();
+
+            */
+            /*
+
             FeatureManager fm = new FeatureManager();
             ConfigReader cr = new ConfigReader(fm.addNewFeature(listOfPlugins), PATH_TO_CONFIG);
             cr.read();
