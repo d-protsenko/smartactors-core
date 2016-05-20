@@ -18,6 +18,15 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
     }
 
     /**
+     * Redefined constructor
+     * @param urls the URLs from which to load classes and resources
+     * @param parent the parent class loader for delegation
+     */
+    public ExpansibleURLClassLoader(final URL[] urls, final ClassLoader parent) {
+        super(urls, parent);
+    }
+
+    /**
      * Add new instance of {@link URL} to the current url class loader
      * @param url instance of {@link URL}
      */

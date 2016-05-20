@@ -46,6 +46,11 @@
         <module>IPluginLoaderVisitor</module>
         <module>PluginLoaderVisitorEmptyImplementation</module>
         <module>PluginLoaderFormJar</module>
+        <module>Bootstrap</module>
+        <module>IPluginCreator</module>
+        <module>PluginCreator</module>
+        <module>ServerWithPluginLoader</module>
+        <module>PluginLoadScopeProvider</module>
     </modules>
 
     <properties>

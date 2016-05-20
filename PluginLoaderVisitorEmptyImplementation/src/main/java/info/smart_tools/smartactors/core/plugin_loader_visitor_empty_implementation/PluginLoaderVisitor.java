@@ -4,12 +4,13 @@ import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVis
 
 /**
  * Empty implementation of {@link IPluginLoaderVisitor}
+ * @param <String> type of inspected object
  */
-public class PluginLoaderVisitor implements IPluginLoaderVisitor<String> {
+public class PluginLoaderVisitor<String> implements IPluginLoaderVisitor<String> {
 
     @Override
     public void pluginLoadingFail(final String str, final Throwable e) {
-
+        System.out.println("Could not load " + str);
     }
 
     @Override

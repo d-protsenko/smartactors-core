@@ -9,16 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.iplugin_loader</artifactId>
+    <artifactId>core.plugin_creator</artifactId>
 
     <dependencies>
 
-        <!-- Tests -->
+        <!-- Core interfaces -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iplugin_creator</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ibootstrap</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

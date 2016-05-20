@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderEx
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -28,8 +29,8 @@ public class PluginLoader implements IPluginLoader<String> {
     /** ClassLoader for load classes*/
     private ExpansibleURLClassLoader classLoader;
 
-    /** Action that should be executed in loadPlugin method */
-    private IAction action;
+    /** Action to create instance of given class */
+    private IAction<Class> creator;
 
     /** Visitor contains some handlers to handle success or fail loading execution */
     private IPluginLoaderVisitor<String> visitor;
@@ -41,12 +42,12 @@ public class PluginLoader implements IPluginLoader<String> {
      * @param visitor instance of {@link IPluginLoaderVisitor}
      * @throws InvalidArgumentException if incoming argument are wrong
      */
-    public PluginLoader(final ClassLoader classLoader, final IAction action, final IPluginLoaderVisitor<String> visitor)
+    public PluginLoader(final ClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
             throws InvalidArgumentException {
         if (null == action || null == classLoader) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
-        this.action = action;
+        this.creator = action;
         this.visitor = visitor;
         try {
             this.classLoader = (ExpansibleURLClassLoader) classLoader;
@@ -72,9 +73,10 @@ public class PluginLoader implements IPluginLoader<String> {
                 String className = je.getName().substring(0, je.getName().length() - CLASS_EXTENSION.length());
                 className = className.replace('/', '.');
                 Class clazz = classLoader.loadClass(className);
-                if (clazz.isInstance(IPlugin.class)) {
-                    action.execute(clazz);
+                if (Arrays.asList(clazz.getInterfaces()).contains(IPlugin.class)) {
+                    creator.execute(clazz);
                 }
+
             }
 
         } catch (Throwable e) {

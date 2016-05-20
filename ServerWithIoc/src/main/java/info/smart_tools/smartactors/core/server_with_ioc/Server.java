@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.core.server_with_ioc;
 
-import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
@@ -11,12 +9,14 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDe
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
+import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
+
+import java.net.URL;
 
 /**
  * Implementation {@link IServer} with scoped IOC
@@ -39,35 +39,6 @@ public class Server implements IServer {
     public void start()
             throws ServerExecutionException {
         try {
-            /*
-
-            FeatureManager fm = new FeatureManager();
-            ConfigReader cr = new ConfigReader(fm.addNewFeature(listOfPlugins), PATH_TO_CONFIG);
-            cr.read();
-            DirectoryListener pluginLoader = new DirectoryListener(fm., PATH_TO_PLUGINS);
-            pluginLoader.loadAllInDir();
-            pluginLoader.listen();
-
-             */
-            IBootstrapItem item = new BootstrapItem("as")
-                    .after("a1")
-                    .after("a2")
-                    .after("a2")
-                    .after("a3")
-                    .before("b1")
-                    .before("b2")
-                    .process(
-                            () -> {
-                                //;
-                            }
-                    )
-                    .revertProcess(
-                            () -> {
-                                //;
-                            }
-                    );
-            item.executeProcess();
-            item.executeRevertProcess();
 
 
             /** Example of registration the Singleton strategy */
@@ -117,8 +88,8 @@ public class Server implements IServer {
 
     private void initializeScopeProvider()
             throws Exception {
-        // /** Subscribe for java 1.7 or less */
-        // ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
+//         /** Subscribe for java 1.7 or less */
+//         ScopeProvider.subscribeOnCreationNewScope(new ScopeCreationEventHandler(IOC.getIocKey()));
 
         /** Subscribe for java 1.8 or high */
         ScopeProvider.subscribeOnCreationNewScope(
@@ -135,6 +106,7 @@ public class Server implements IServer {
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
+
     }
 
 }

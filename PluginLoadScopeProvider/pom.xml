@@ -9,21 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.plugin_loader_from_jar</artifactId>
+    <artifactId>plugin.load_scope_provider</artifactId>
 
     <dependencies>
 
         <!-- Core interfaces -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_loader</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
@@ -31,12 +21,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_loader_visitor</artifactId>
+            <artifactId>core.ibootstrap_item</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_creator</artifactId>
+            <artifactId>core.ibootstrap</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -46,6 +36,21 @@
             <artifactId>core.invalid_argument_exception</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Service locator -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.scope_provider</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Implementations -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.bootstrap_item</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>

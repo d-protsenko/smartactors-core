@@ -9,66 +9,41 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.server_with_ioc</artifactId>
+    <artifactId>core.server_with_plugin_loader</artifactId>
 
     <dependencies>
-        <!-- Interfaces -->
+
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iserver</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Service locator -->
+        <!-- Needed implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>core.bootstrap_item</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Implementations of containers -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Other implementations -->
-
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_guard</artifactId>
+            <artifactId>core.plugin_loader_from_jar</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.create_new_instance_strategy</artifactId>
+            <artifactId>core.plugin_loader_visitor_empty_implementation</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
+            <artifactId>core.bootstrap</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>core.scope_creation_event_handler</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject_simple_implementation</artifactId>
+            <artifactId>core.plugin_creator</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -79,6 +54,7 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>
