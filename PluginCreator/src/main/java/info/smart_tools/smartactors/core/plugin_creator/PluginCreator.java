@@ -17,7 +17,6 @@ public class PluginCreator implements IPluginCreator {
             throws PluginCreationException {
         try {
             Constructor c = clazz.getDeclaredConstructor(new Class[]{IBootstrap.class});
-            IPlugin plugin = (IPlugin) c.newInstance(new Object[]{bootstrap});
             return (IPlugin) c.newInstance(new Object[]{bootstrap});
         } catch (Throwable e) {
             throw new PluginCreationException("Could not create instance of IPlugin", e);

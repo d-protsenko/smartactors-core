@@ -44,7 +44,7 @@ public class PluginLoader implements IPluginLoader<String> {
      */
     public PluginLoader(final ClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
             throws InvalidArgumentException {
-        if (null == action || null == classLoader) {
+        if (null == action || null == classLoader || null == visitor) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
         }
         this.creator = action;
@@ -76,7 +76,6 @@ public class PluginLoader implements IPluginLoader<String> {
                 if (Arrays.asList(clazz.getInterfaces()).contains(IPlugin.class)) {
                     creator.execute(clazz);
                 }
-
             }
 
         } catch (Throwable e) {

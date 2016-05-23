@@ -27,7 +27,7 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
     }
 
     /**
-     * Add new instance of {@link URL} to the current url class loader
+     * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
      * @param url instance of {@link URL}
      */
     public void addUrl(final URL url) {

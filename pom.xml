@@ -51,6 +51,7 @@
         <module>PluginCreator</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
+        <module>PluginTestJar</module>
     </modules>
 
     <properties>

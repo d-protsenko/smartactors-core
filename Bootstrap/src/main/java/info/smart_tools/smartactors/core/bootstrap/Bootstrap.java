@@ -7,12 +7,12 @@ import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
- * Created by sevenbits on 5/20/16.
+ * Implementation of {@link IBootstrap}
  */
 public class Bootstrap implements IBootstrap<IBootstrapItem> {
-
 
     private List<IBootstrapItem> itemStorage = new ArrayList<>();
 
@@ -36,6 +36,13 @@ public class Bootstrap implements IBootstrap<IBootstrapItem> {
     @Override
     public void revert()
             throws RevertProcessExecutionException {
-
+        try {
+            ListIterator iterator = itemStorage.listIterator(itemStorage.size());
+            while (iterator.hasPrevious()) {
+                ((IBootstrapItem) iterator.previous()).executeRevertProcess();
+            }
+        } catch (Throwable e) {
+            throw new RevertProcessExecutionException("Could not execute plugin revert process.", e);
+        }
     }
 }
