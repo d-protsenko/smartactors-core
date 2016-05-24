@@ -38,7 +38,6 @@ public class LoadScopeProvider implements IPlugin {
             item
                     .process(
                             () -> {
-
                             }
                     );
             this.bootstrap.add(item);

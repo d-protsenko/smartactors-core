@@ -10,7 +10,7 @@ public class PluginLoaderVisitor<String> implements IPluginLoaderVisitor<String>
 
     @Override
     public void pluginLoadingFail(final String str, final Throwable e) {
-        System.out.println("Could not load " + str);
+
     }
 
     @Override

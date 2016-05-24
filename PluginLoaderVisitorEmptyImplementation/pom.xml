@@ -12,10 +12,26 @@
     <artifactId>core.plugin_loader_visitor_empty_implementation</artifactId>
 
     <dependencies>
+
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin_loader_visitor</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
