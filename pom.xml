@@ -36,6 +36,9 @@
         <module>IObserver</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>IMessage</module>
+        <module>IQueue</module>
+        <module>BlockingQueue</module>
     </modules>
 
     <properties>
