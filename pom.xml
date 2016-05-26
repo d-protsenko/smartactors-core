@@ -33,9 +33,10 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>IObserver</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>NamedKeysStorage</module>
+        <module>IObserver</module>
     </modules>
 
     <properties>
