@@ -52,6 +52,7 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>PluginTestJar</module>
+        <module>NamedKeysStorage</module>
     </modules>
 
     <properties>
