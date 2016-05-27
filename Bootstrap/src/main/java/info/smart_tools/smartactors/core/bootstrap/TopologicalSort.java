@@ -30,7 +30,7 @@ class TopologicalSort {
      * @param items map of depended instances of {@link IBootstrapItem}
      * @throws Exception throws if graph has cycle or any errors occurred
      */
-    public TopologicalSort(final List<IBootstrapItem<String>> items)
+    TopologicalSort(final List<IBootstrapItem<String>> items)
             throws Exception {
         this.items = items;
         this.size = items.size();
