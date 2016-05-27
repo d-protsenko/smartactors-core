@@ -22,7 +22,7 @@ public class BootstrapTest {
     @Test
     public void checkAdditionExecutionAndRevertingBootstrapItem()
             throws Exception {
-        IBootstrap<IBootstrapItem> bootstrap = new Bootstrap();
+        IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
         assertNotNull(bootstrap);
         IBootstrapItem item = mock(IBootstrapItem.class);
         doNothing().when(item).executeProcess();
@@ -37,7 +37,7 @@ public class BootstrapTest {
     @Test (expected = ProcessExecutionException.class)
     public void checkProcessExecutionException()
             throws Exception {
-        IBootstrap<IBootstrapItem> bootstrap = new Bootstrap();
+        IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
         IBootstrapItem item = mock(IBootstrapItem.class);
         bootstrap.add(item);
         doThrow(ProcessExecutionException.class).when(item).executeProcess();
@@ -48,7 +48,7 @@ public class BootstrapTest {
     @Test (expected = RevertProcessExecutionException.class)
     public void checkRevertProcessExecutionException()
             throws Exception {
-        IBootstrap<IBootstrapItem> bootstrap = new Bootstrap();
+        IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
         IBootstrapItem item = mock(IBootstrapItem.class);
         bootstrap.add(item);
         doThrow(RevertProcessExecutionException.class).when(item).executeRevertProcess();
