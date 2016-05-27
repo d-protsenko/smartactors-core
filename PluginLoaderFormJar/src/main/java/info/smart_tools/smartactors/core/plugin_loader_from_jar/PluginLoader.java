@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -59,8 +60,9 @@ public class PluginLoader implements IPluginLoader<String> {
     @Override
     public void loadPlugin(final String pathToJar)
             throws PluginLoaderException {
+        JarFile jarFile = null;
         try {
-            JarFile jarFile = new JarFile(pathToJar);
+            jarFile = new JarFile(pathToJar);
             Enumeration<JarEntry> iterator = jarFile.entries();
             URL url = new URL("jar:file:" + pathToJar + "!/");
             this.classLoader.addUrl(url);
@@ -77,10 +79,17 @@ public class PluginLoader implements IPluginLoader<String> {
                     creator.execute(clazz);
                 }
             }
-
         } catch (Throwable e) {
             visitor.pluginLoadingFail(pathToJar, e);
             throw new PluginLoaderException("Plugin loading failed.", e);
+        } finally {
+            if (null != jarFile) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    throw new PluginLoaderException("Error on close instance of JarFile .", e);
+                }
+            }
         }
     }
 }

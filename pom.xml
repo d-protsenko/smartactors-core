@@ -53,6 +53,10 @@
         <module>PluginLoadScopeProvider</module>
         <module>PluginTestJar</module>
         <module>NamedKeysStorage</module>
+        <module>FilesystemTracker</module>
+        <module>IFilesystemTracker</module>
+        <module>IFeatureManager</module>
+        <module>FeatureManager</module>
     </modules>
 
     <properties>

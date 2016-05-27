@@ -1,7 +1,13 @@
 package info.smart_tools.smartactors.core.server_with_plugin_loader;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
+import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
+import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
+import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
+import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -14,6 +20,7 @@ import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLCla
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -24,18 +31,9 @@ public class Server implements IServer {
     @Override
     public void initialize()
             throws ServerInitializeException {
-        /*
-
-            FeatureManager fm = new FeatureManager();
-            ConfigReader cr = new ConfigReader(fm, PATH_TO_CONFIG);
-            cr.read();
-            DirectoryListener pluginLoader = new DirectoryListener(fm, PATH_TO_PLUGINS);
-            pluginLoader.loadAllInDir();
-            pluginLoader.listen();
-
-             */
-
         try {
+
+            // Initialize plugin infrastructure
             IBootstrap bootstrap = new Bootstrap();
             IPluginCreator creator = new PluginCreator();
             IPluginLoaderVisitor<String> visitor = new PluginLoaderVisitor<>();
@@ -53,9 +51,46 @@ public class Server implements IServer {
                     visitor
             );
 
-            pluginLoader.loadPlugin("/home/sevenbits/Projects/libs/ScopeProvider.jar");
-            pluginLoader.loadPlugin("/home/sevenbits/Projects/libs/PluginSubscribeScopeProviderOnScopeCreation.jar");
-            bootstrap.start();
+
+            // FS listener creation
+            // TODO: Get from configuration
+            String coreJarsDir = "/home/sevenbits/Projects/libs/";
+
+            IFilesystemTracker jarFilesTracker = new FilesystemTracker(
+                    (dir, name) -> name.endsWith(".jar"),
+                    ListenerTask::new);
+
+            jarFilesTracker.start(new File(coreJarsDir));
+
+            // FeatureManager & Feature creation
+            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+
+            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            coreFeature.whenPresent(files -> {
+                for (File file : files) {
+                    try {
+                        pluginLoader.loadPlugin(file.getAbsolutePath());
+                    } catch (Throwable e) {
+                        throw new RuntimeException("Plugin loading failed.");
+                    }
+                }
+                try {
+                    bootstrap.start();
+                } catch (Throwable e) {
+                    throw new RuntimeException("Could not execute plugin process");
+                }
+            });
+
+            String[] coreJars = {
+                    "ScopeProvider.jar",
+                    "PluginSubscribeScopeProviderOnScopeCreation.jar"
+            };
+            for (String jarName : coreJars) {
+                coreFeature.requireFile(jarName);
+            }
+
+            coreFeature.listen();
+
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed.");
         }

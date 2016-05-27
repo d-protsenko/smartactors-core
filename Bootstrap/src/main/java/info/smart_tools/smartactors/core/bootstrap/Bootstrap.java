@@ -30,7 +30,7 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                 item.executeProcess();
             }
         } catch (Throwable e) {
-            throw  new ProcessExecutionException("Could not execute plugin process.", e);
+            throw new ProcessExecutionException("Could not execute plugin process.", e);
         }
     }
 

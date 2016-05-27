@@ -41,7 +41,6 @@ public class Server implements IServer {
             throws ServerExecutionException {
         try {
 
-
             /** Example of registration the Singleton strategy */
             Key<String> key1 = new Key<String>(String.class, "a");
             IResolveDependencyStrategy strategy = new SingletonStrategy("abcd");

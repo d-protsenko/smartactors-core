@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.server_with_plugin_loader;
 import org.junit.Test;
 
 /**
- * Created by sevenbits on 4/29/16.
+ * Tests for implementation of {@link info.smart_tools.smartactors.core.iserver.IServer}
  */
 public class ServerTest {
 
