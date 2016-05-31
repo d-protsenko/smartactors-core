@@ -42,6 +42,10 @@
         <module>IMessageReceiver</module>
         <module>TargetBasedRouter</module>
         <module>MessageQueueListener</module>
+        <module>ITask</module>
+        <module>IThreadPool</module>
+        <module>ThreadPool</module>
+        <module>TaskQueueListener</module>
     </modules>
 
     <properties>
