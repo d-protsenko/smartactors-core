@@ -14,9 +14,10 @@ public class BlockingQueueTest {
     public void Should_BlockingQueueCallMethodsOfUnderlyingQueue()
             throws Exception {
         java.util.concurrent.BlockingQueue underlying = mock(java.util.concurrent.BlockingQueue.class);
-        Object object1 = new Object(), object2 = new Object();
+        Object object1 = new Object(), object2 = new Object(), object3 = new Object();
 
         when(underlying.take()).thenReturn(object2);
+        when(underlying.poll()).thenReturn(object3);
 
         IQueue queue = new BlockingQueue<>(underlying);
 
@@ -25,5 +26,6 @@ public class BlockingQueueTest {
         verify(underlying).put(same(object1));
 
         assertSame(object2, queue.take());
+        assertSame(object3, queue.tryTake());
     }
 }

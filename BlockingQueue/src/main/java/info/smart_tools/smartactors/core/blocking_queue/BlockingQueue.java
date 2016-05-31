@@ -28,4 +28,9 @@ public class BlockingQueue <T> implements IQueue <T> {
     public T take() throws InterruptedException {
         return queue.take();
     }
+
+    @Override
+    public T tryTake() {
+        return queue.poll();
+    }
 }
