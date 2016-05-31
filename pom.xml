@@ -39,6 +39,9 @@
         <module>IMessage</module>
         <module>IQueue</module>
         <module>BlockingQueue</module>
+        <module>IMessageReceiver</module>
+        <module>TargetBasedRouter</module>
+        <module>MessageQueueListener</module>
     </modules>
 
     <properties>
