@@ -1,19 +1,15 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
-import info.smart_tools.smartactors.core.iobject.FieldName;
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FieldAccessor;
 import net.bytebuddy.implementation.FixedValue;
-import net.bytebuddy.implementation.MethodDelegation;
-import org.junit.Test;
 
 import java.lang.reflect.Modifier;
 
-import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

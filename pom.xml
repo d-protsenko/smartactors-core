@@ -57,6 +57,7 @@
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
+        <module>DSObject</module>
     </modules>
 
     <properties>
