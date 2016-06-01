@@ -35,8 +35,9 @@ public class DSObject implements IObject {
             public void serialize(
                     final IObject iObject,
                     final JsonGenerator jsonGenerator,
-                    final SerializerProvider serializerProvider)
-                        throws IOException {
+                    final SerializerProvider serializerProvider
+            )
+                    throws IOException {
                 jsonGenerator.writeRawValue(iObject.toString());
             }
         });

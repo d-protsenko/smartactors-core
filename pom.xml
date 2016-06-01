@@ -58,6 +58,8 @@
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
         <module>DSObject</module>
+        <module>ISerializer</module>
+        <module>JsonSerializer</module>
     </modules>
 
     <properties>
