@@ -107,10 +107,10 @@ public class DSObject implements IObject {
     }
 
     @Override
-    public String serialize()
+    public <T> T serialize()
             throws SerializeException {
         try {
-            return OBJECT_MAPPER.writer().writeValueAsString(body);
+            return (T) OBJECT_MAPPER.writer().writeValueAsString(body);
         } catch (Throwable e) {
             throw new SerializeException();
         }

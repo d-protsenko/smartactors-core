@@ -117,4 +117,14 @@ public class DSObjectTest {
         obj.serialize();
         fail();
     }
+
+    @Test
+    public void checkSerializationWithNestedIObject()
+            throws Exception {
+        IObject obj = new DSObject();
+        IFieldName fieldName = mock(IFieldName.class);
+        obj.setValue(fieldName, new DSObject());
+        String result = obj.serialize();
+        assertNotNull(result);
+    }
 }
