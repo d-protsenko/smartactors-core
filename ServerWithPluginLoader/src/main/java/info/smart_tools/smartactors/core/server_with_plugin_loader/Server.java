@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementat
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Server with PluginLoader
@@ -62,21 +61,22 @@ public class Server implements IServer {
                     ListenerTask::new);
 
             jarFilesTracker.start(new File(coreJarsDir));
+            jarFilesTracker.addErrorHandler((e) -> {
+                System.out.println("Server initialization failed!");
+                throw new RuntimeException(e);
+            });
 
             // FeatureManager & Feature creation
             IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+
 
             IFeature coreFeature = featureManager.newFeature("smartactors.core");
             coreFeature.whenPresent(files -> {
                 try {
                     pluginLoader.loadPlugin(files);
-                } catch (Throwable e) {
-                    throw new RuntimeException("Plugin loading failed.");
-                }
-                try {
                     bootstrap.start();
                 } catch (Throwable e) {
-                    throw new RuntimeException("Could not execute plugin process");
+                    throw new RuntimeException("Plugin loading failed.", e);
                 }
             });
 
@@ -93,8 +93,6 @@ public class Server implements IServer {
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed.");
         }
-
-
     }
 
     @Override
