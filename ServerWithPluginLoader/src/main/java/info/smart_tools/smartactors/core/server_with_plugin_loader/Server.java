@@ -22,6 +22,8 @@ import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementat
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Server with PluginLoader
@@ -38,7 +40,7 @@ public class Server implements IServer {
             IPluginCreator creator = new PluginCreator();
             IPluginLoaderVisitor<String> visitor = new PluginLoaderVisitor<>();
             ExpansibleURLClassLoader urlClassLoader = new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
-            IPluginLoader<String> pluginLoader = new PluginLoader(
+            IPluginLoader<Collection<File>> pluginLoader = new PluginLoader(
                     urlClassLoader,
                     (t) -> {
                         try {
@@ -50,7 +52,6 @@ public class Server implements IServer {
                     },
                     visitor
             );
-
 
             // FS listener creation
             // TODO: Get from configuration
@@ -67,12 +68,10 @@ public class Server implements IServer {
 
             IFeature coreFeature = featureManager.newFeature("smartactors.core");
             coreFeature.whenPresent(files -> {
-                for (File file : files) {
-                    try {
-                        pluginLoader.loadPlugin(file.getAbsolutePath());
-                    } catch (Throwable e) {
-                        throw new RuntimeException("Plugin loading failed.");
-                    }
+                try {
+                    pluginLoader.loadPlugin(files);
+                } catch (Throwable e) {
+                    throw new RuntimeException("Plugin loading failed.");
                 }
                 try {
                     bootstrap.start();
