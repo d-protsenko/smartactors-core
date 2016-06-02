@@ -74,7 +74,7 @@ public class PluginLoaderTest {
     }
 
     @Test (expected = PluginLoaderException.class)
-    public void checkPluginLoaderExceptionOnJarFileClose()
+    public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
@@ -95,6 +95,32 @@ public class PluginLoaderTest {
         }
         String jarPath = url.getPath();
         pl.loadPlugin(jarPath);
+        assertTrue(checker.wasCalled);
+        fail();
+    }
+
+    @Test (expected = PluginLoaderException.class)
+    public void checkPluginLoaderOnLoadJarWithBrokenClassFile()
+            throws Exception {
+        Checker checker = new Checker();
+        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
+        IPluginLoader<Collection<File>> pl = new PluginLoader(
+                cl,
+                (t) -> {
+                    try {
+                        checker.wasCalled = true;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Could not create instance of IPlugin");
+                    }
+                },
+                visitor);
+        URL url = this.getClass().getClassLoader().getResource("test_jar_package_with_broken_class.jar");
+        if (null == url) {
+            fail();
+        }
+        Collection<File> files = new ArrayList<File>(){{add(new File(url.getPath()));}};
+        pl.loadPlugin(files);
         assertTrue(checker.wasCalled);
         fail();
     }
