@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.exception;
+package info.smart_tools.smartactors.core.idatabase_task.exception;
 
 public class TaskPrepareException extends Exception {
 

@@ -1,9 +1,8 @@
-package info.smart_tools.smartactors.core.exception;
+package info.smart_tools.smartactors.core.itask.exception;
 
 /**
  * Exception thrown in case of error occurred in process of task execution.
  */
-//TODO:: remove this dup, when ITask would be merged into develop
 public class TaskExecutionException extends Exception {
     /**
      * Constructor with specific error message as argument
