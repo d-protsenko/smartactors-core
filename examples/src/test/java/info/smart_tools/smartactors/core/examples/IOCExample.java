@@ -68,6 +68,7 @@ public class IOCExample {
     public void keyExample() throws ResolutionException {
         IKey<MyClass> myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
         IKey<MyClass> myNewKey = new Key<>("myKey");
+        IKey<MyClass> myTypedKey = new Key<>(MyClass.class, "myKey");
         assertEquals("new differs from resolve", myNewKey, myResolveKey);
     }
 
