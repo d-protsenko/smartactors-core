@@ -36,6 +36,7 @@
         <module>IObserver</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>examples</module>
     </modules>
 
     <properties>
