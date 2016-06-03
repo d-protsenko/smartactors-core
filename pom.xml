@@ -39,6 +39,7 @@
         <module>ITask</module>
         <module>IDatabaseTask</module>
         <module>DataBaseStorage</module>
+        <module>SqlCommons</module>
     </modules>
 
     <properties>
