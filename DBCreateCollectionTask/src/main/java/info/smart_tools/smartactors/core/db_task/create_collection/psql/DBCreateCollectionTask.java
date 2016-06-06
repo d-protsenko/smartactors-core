@@ -24,6 +24,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Task for create collection with predefined indexes
+ */
 public class DBCreateCollectionTask implements IDatabaseTask {
 
     private CompiledQuery compiledQuery;

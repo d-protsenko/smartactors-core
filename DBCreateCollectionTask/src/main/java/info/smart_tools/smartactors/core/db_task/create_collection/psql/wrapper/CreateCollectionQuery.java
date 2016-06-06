@@ -17,5 +17,5 @@ public interface CreateCollectionQuery {
      *  tags        - for search by tags (tags field should be an JSON array).
      *
      */
-    Map<String,String> getIndexes() throws ReadValueException, ChangeValueException;;
+    Map<String, String> getIndexes() throws ReadValueException, ChangeValueException;;
 }
