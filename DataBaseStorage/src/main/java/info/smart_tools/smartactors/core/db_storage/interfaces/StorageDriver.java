@@ -14,7 +14,7 @@ public interface StorageDriver {
      */
     StorageConnection openConnection(IObject options) throws StorageException;
 
-    default void performOperation(StorageConnection connection, StorageExecutor executor, CompiledQuery query, IObject message)
+    default void performOperation(StorageExecutor executor, CompiledQuery query, IObject message)
         throws StorageException {
         executor.executeQuery(query, message);
     }
