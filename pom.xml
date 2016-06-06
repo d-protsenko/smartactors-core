@@ -40,6 +40,7 @@
         <module>IDatabaseTask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <module>DBCreateCollectionTask</module>
     </modules>
 
     <properties>
