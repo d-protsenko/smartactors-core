@@ -69,7 +69,7 @@ public final class IOC {
      */
     public static <T> T resolve(final IKey key, final Object ... args)
             throws ResolutionException {
-        return (T)container.resolve(key, args);
+        return (T) container.resolve(key, args);
     }
 
     /**
