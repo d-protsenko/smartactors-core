@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.plugin_loader_from_jar;
 
-import com.sun.org.apache.bcel.internal.util.*;
 import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -89,7 +88,7 @@ public class PluginLoaderTest {
                     }
                 },
                 visitor);
-        URL url = this.getClass().getClassLoader().getResource("test_jar_package.jar");
+        URL url = this.getClass().getClassLoader().getResource("broken.jar");
         if (null == url) {
             fail();
         }
@@ -105,7 +104,7 @@ public class PluginLoaderTest {
         Checker checker = new Checker();
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
-        IPluginLoader<Collection<File>> pl = new PluginLoader(
+        IPluginLoader<String> pl = new PluginLoader(
                 cl,
                 (t) -> {
                     try {
@@ -119,8 +118,8 @@ public class PluginLoaderTest {
         if (null == url) {
             fail();
         }
-        Collection<File> files = new ArrayList<File>(){{add(new File(url.getPath()));}};
-        pl.loadPlugin(files);
+        String jarPath = url.getPath();
+        pl.loadPlugin(jarPath);
         assertTrue(checker.wasCalled);
         fail();
     }
