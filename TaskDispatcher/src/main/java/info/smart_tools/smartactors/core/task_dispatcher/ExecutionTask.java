@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.task_dispatcher;
 
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.ithread_pool.IThread;
 
 /**
  * The task that is started by {@link TaskDispatcher}. It takes tasks from queue and executes them trying to start
@@ -34,11 +33,7 @@ class ExecutionTask implements ITask {
 
                 taskDispatcher.notifyTaskTaken();
 
-                IThread thread = taskDispatcher.getThreadPool().getThread();
-
-                if (null != thread) {
-                    thread.execute(this);
-                }
+                taskDispatcher.getThreadPool().tryExecute(this);
 
                 task.execute();
             }

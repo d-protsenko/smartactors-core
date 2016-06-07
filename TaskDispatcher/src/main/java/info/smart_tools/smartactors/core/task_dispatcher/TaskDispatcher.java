@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThread;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -87,14 +86,8 @@ public class TaskDispatcher implements ITaskDispatcher {
             return;
         }
 
-        IThread thread = threadPool.getThread();
-
-        if (null == thread) {
-            return;
-        }
-
         try {
-            thread.execute(executionTask);
+            threadPool.tryExecute(executionTask);
         } catch (final TaskExecutionException e) {
             // TODO: Handle?
         }

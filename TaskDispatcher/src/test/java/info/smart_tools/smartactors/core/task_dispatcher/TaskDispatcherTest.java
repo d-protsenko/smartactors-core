@@ -2,8 +2,6 @@ package info.smart_tools.smartactors.core.task_dispatcher;
 
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThread;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,10 +57,7 @@ public class TaskDispatcherTest {
     @Test
     public void Should_tryToStartNewThreadIfNecessary()
             throws Exception {
-        IThread threadMock = mock(IThread.class);
         ArgumentCaptor<ITask> taskCaptor = ArgumentCaptor.forClass(ITask.class);
-
-        when(threadPoolMock.getThread()).thenReturn(threadMock);
 
         TaskDispatcher dispatcher = new TaskDispatcher(queueMock, threadPoolMock, 1000L, 8);
 
@@ -74,8 +69,7 @@ public class TaskDispatcherTest {
 
         dispatcher.tryStartNewThread();
 
-        verify(threadPoolMock).getThread();
-        verify(threadMock).execute(taskCaptor.capture());
+        verify(threadPoolMock).tryExecute(taskCaptor.capture());
         assertNotNull(taskCaptor.getValue());
         assertTrue(taskCaptor.getValue() instanceof ExecutionTask);
     }
@@ -92,18 +86,6 @@ public class TaskDispatcherTest {
 
         dispatcher.tryStartNewThread();
 
-        verify(threadPoolMock, never()).getThread();
-    }
-
-    @Test
-    public void Should_notFailWhenThereIsNoThreadsAvailable()
-            throws Exception {
-        when(threadPoolMock.getThread()).thenReturn(null);
-
-        TaskDispatcher dispatcher = new TaskDispatcher(queueMock, threadPoolMock, 1000L, 8);
-
-        dispatcher.tryStartNewThread();
-
-        verify(threadPoolMock).getThread();
+        verify(threadPoolMock, never()).tryExecute(any());
     }
 }

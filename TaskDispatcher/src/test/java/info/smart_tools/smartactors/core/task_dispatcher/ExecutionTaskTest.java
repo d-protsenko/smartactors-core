@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.task_dispatcher;
 
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.ithread_pool.IThread;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,21 +69,20 @@ public class ExecutionTaskTest {
     public void Should_executeItselfOnNewThreadIfCanGetOne()
             throws Exception {
         ITask taskMock = mock(ITask.class);
-        IThread threadMock = mock(IThread.class);
+
+        ExecutionTask executionTask = new ExecutionTask(dispatcherMock);
 
         when(queueMock.tryTake())
                 .thenReturn(taskMock)
                 .thenReturn(null);
 
-        when(threadPoolMock.getThread())
-                .thenReturn(threadMock)
-                .thenReturn(null);
-
-        ExecutionTask executionTask = new ExecutionTask(dispatcherMock);
+        when(threadPoolMock.tryExecute(same(executionTask)))
+                .thenReturn(true)
+                .thenReturn(false);
 
         executionTask.execute();
 
         verify(taskMock).execute();
-        verify(threadMock).execute(same(executionTask));
+        verify(threadPoolMock).tryExecute(same(executionTask));
     }
 }
