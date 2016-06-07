@@ -1,9 +1,8 @@
 package info.smart_tools.smartactors.core.pool;
 
 import info.smart_tools.smartactors.core.pool.exception.PoolException;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 
@@ -11,8 +10,8 @@ import java.util.function.Supplier;
  * Pool
  */
 public class Pool {
-    private final Set<Object> freeItems = new HashSet<>();
-    private final Integer maxFreeItems;
+    private final CopyOnWriteArrayList<Object> freeItems = new CopyOnWriteArrayList<>();
+    private AtomicInteger freeItemsCounter = new AtomicInteger();
 
     /**
      * Local function for creation new instances of items
@@ -24,8 +23,8 @@ public class Pool {
      * @param maxItems the maximum of active items.
      * @param func the function for creating new instances of items
      */
-    public Pool(final Integer maxItems, final Supplier<Object> func) {
-        this.maxFreeItems = maxItems;
+    public Pool(final Integer maxItems, final Supplier<Object>  func) {
+        this.freeItemsCounter.set(maxItems);
         if (func == null) {
             throw new IllegalArgumentException("Incoming argument should not be null.");
         }
@@ -37,19 +36,18 @@ public class Pool {
      * @throws PoolException if error was occurred
      */
     public Object tryTake() throws PoolException {
-        Object result = null;
-        synchronized (freeItems) {
-            for (Object item : freeItems) {
-                freeItems.remove(item);
-                result = item;
-            }
+        if (freeItemsCounter.getAndDecrement() <= 0) {
+            freeItemsCounter.incrementAndGet();
+            return null;
         }
 
-        if (result == null) {
-            result =  creationFunction.get();
+        if (freeItems.isEmpty()) {
+            return creationFunction.get();
         }
 
-        return result;
+        Object item = freeItems.get(0);
+        freeItems.remove(item);
+        return item;
     }
 
     /**
@@ -58,10 +56,7 @@ public class Pool {
      * @throws PoolException if any error occured
      */
     public void put(final Object item) throws PoolException {
-        synchronized (freeItems) {
-            if (freeItems.size() < maxFreeItems) {
-                freeItems.add(item);
-            }
-        }
+        freeItems.add(item);
+        freeItemsCounter.getAndIncrement();
     }
 }
