@@ -46,11 +46,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.task_queue_listener</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.thread_pool</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

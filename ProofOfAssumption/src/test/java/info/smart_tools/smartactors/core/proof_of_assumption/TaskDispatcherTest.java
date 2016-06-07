@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.core.task_queue_listener.MasterTaskQueueListener;
 import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Performance test for {@link MasterTaskQueueListener} and related components.
+ * Performance test for {@link TaskDispatcher} and related components.
  */
 public class TaskDispatcherTest {
     @Test
@@ -27,7 +26,7 @@ public class TaskDispatcherTest {
             throws Exception {
         IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(10000500));
         IThreadPool threadPool = new ThreadPool(8);
-        ITaskDispatcher dispatcher = new TaskDispatcher(taskQueue, threadPool);
+        ITaskDispatcher dispatcher = new TaskDispatcher(taskQueue, threadPool, 1000L, 8);
         final Thread mainThread = Thread.currentThread();
         final AtomicLong startNanoTime = new AtomicLong();
         final AtomicBoolean done = new AtomicBoolean(false);
