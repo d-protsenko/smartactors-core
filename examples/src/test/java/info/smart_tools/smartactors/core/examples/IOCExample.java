@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
@@ -54,18 +55,24 @@ public class IOCExample {
     }
 
     @Before
-    public void IOCInitialization() throws RegistrationException, ScopeProviderException, ScopeException {
+    public void IOCInitialization() throws RegistrationException, ScopeProviderException, ScopeException, InvalidArgumentException {
         Object scopeKey = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(scopeKey);
         ScopeProvider.setCurrentScope(scope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
-                (a) -> new Key((String) a[0]))
+                (a) -> {
+                    try {
+                        return new Key((String) a[0]);
+                    } catch (InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
         );
     }
     
     @Test
-    public void keyExample() throws ResolutionException {
+    public void keyExample() throws ResolutionException, InvalidArgumentException {
         IKey<MyClass> myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
         IKey<MyClass> myNewKey = new Key<>("myKey");
         IKey<MyClass> myTypedKey = new Key<>(MyClass.class, "myKey");
@@ -73,7 +80,7 @@ public class IOCExample {
     }
 
     @Test
-    public void singletonStrategyExample() throws ResolutionException, RegistrationException {
+    public void singletonStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "singleton");
         MyClass myObject = new MyClass("singleton");
         IOC.register(key, new SingletonStrategy(myObject));
@@ -86,7 +93,7 @@ public class IOCExample {
     }
 
     @Test
-    public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException {
+    public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "new");
         IOC.register(key, new CreateNewInstanceStrategy(
                 (args) -> new MyClass((String) args[0])));

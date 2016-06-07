@@ -20,6 +20,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Core exception -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Third-party libraries -->
         <dependency>
             <groupId>org.mdkt.compiler</groupId>

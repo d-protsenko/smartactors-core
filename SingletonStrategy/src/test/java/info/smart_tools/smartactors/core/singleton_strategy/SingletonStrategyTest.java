@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.singleton_strategy;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import static org.junit.Assert.fail;
  */
 public class SingletonStrategyTest {
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = InvalidArgumentException.class)
     public void checkSingletonStrategyCreation()
             throws Exception {
         IResolveDependencyStrategy strategy = new SingletonStrategy();
