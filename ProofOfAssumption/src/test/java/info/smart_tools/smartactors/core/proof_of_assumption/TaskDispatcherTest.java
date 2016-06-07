@@ -4,7 +4,9 @@ package info.smart_tools.smartactors.core.proof_of_assumption;
 import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
 import info.smart_tools.smartactors.core.task_queue_listener.MasterTaskQueueListener;
 import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
 import org.junit.Test;
@@ -13,20 +15,22 @@ import java.text.MessageFormat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Performance test for {@link MasterTaskQueueListener} and related components.
  */
-public class TaskQueueListeners {
+public class TaskDispatcherTest {
     @Test
     public void test_taskQueuePerformance()
             throws Exception {
         IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(10000500));
         IThreadPool threadPool = new ThreadPool(8);
-        ITask listeningTask = new MasterTaskQueueListener(taskQueue, threadPool);
+        ITaskDispatcher dispatcher = new TaskDispatcher(taskQueue, threadPool);
         final Thread mainThread = Thread.currentThread();
         final AtomicLong startNanoTime = new AtomicLong();
+        final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
 
         ITask countTask = () -> {
@@ -65,10 +69,19 @@ public class TaskQueueListeners {
         taskQueue.put(() -> {
             long deltaTime = System.nanoTime() - startNanoTime.get();
             System.out.println(MessageFormat.format("Tasks handled in {0}ns ({1}s)", deltaTime, 0.000000001*(double)deltaTime));
-            mainThread.interrupt();
+            done.set(true);
+            synchronized (done) {
+                done.notifyAll();
+            }
         });
 
-        listeningTask.execute();
+        dispatcher.start();
+
+        synchronized (done) {
+            while (!done.get()) {
+                done.wait();
+            }
+        }
 
         long totalTasks = 0;
 

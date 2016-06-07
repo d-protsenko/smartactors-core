@@ -46,6 +46,8 @@
         <module>IThreadPool</module>
         <module>ThreadPool</module>
         <module>TaskQueueListener</module>
+        <module>ITaskDispatcher</module>
+        <module>TaskDispatcher</module>
     </modules>
 
     <properties>
