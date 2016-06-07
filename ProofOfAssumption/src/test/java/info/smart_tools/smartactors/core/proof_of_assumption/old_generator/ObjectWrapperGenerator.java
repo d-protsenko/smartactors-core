@@ -175,7 +175,8 @@ public class ObjectWrapperGenerator {
         resultClass.addInterface(targetInterface);
         resultClass.addConstructor(CtNewConstructor.defaultConstructor(resultClass));
         resultClass.addField(CtField
-                .make(MessageFormat
+                .make(
+                        MessageFormat
                                 .format(properties.getProperty("clazz.field"),
                                         IObject.class.getName(),
                                         properties.getProperty("field.iobject.name")),

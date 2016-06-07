@@ -43,7 +43,7 @@ public class Field<T> {
             return (T) value;
 
         try {
-            T converted = IOC.resolve(Keys.getOrAdd(targetClass.toString()), value);
+            T converted = IOC.resolve(Keys.getOrAdd(value.getClass().toString()), targetClass, value);
             object.setValue(name, converted);
             return converted;
         } catch (ResolutionException e) {
@@ -70,7 +70,7 @@ public class Field<T> {
      */
     public void inject(IObject object, Object value, Class<? extends T> targetClass)
             throws ChangeValueException, InvalidArgumentException, ResolutionException {
-        T converted = IOC.resolve(Keys.getOrAdd(targetClass.toString()), value);
+        T converted = IOC.resolve(Keys.getOrAdd(value.getClass().toString()), targetClass.toString(), value);
         object.setValue(name, converted);
     }
 

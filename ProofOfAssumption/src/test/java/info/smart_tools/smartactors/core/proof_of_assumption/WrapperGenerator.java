@@ -16,12 +16,15 @@ import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by sevenbits on 6/6/16.
@@ -49,6 +52,17 @@ final class WrapperGenerator {
         mapPrimitivePostfixes.put(double.class.getName(), ").doubleValue()");
         mapPrimitivePostfixes.put(char.class.getName(), ").charValue()");
         mapPrimitivePostfixes.put(short.class.getName(), ").shortValue()");
+    }
+
+    private static Properties properties = new Properties();
+
+    static {
+        try(InputStream stream = WrapperGenerator.class
+                .getResourceAsStream("/wrapperGenerator.properties")) {
+            properties.load(stream);
+        } catch (IOException e) {
+
+        }
     }
 
     static public <T> Class<? extends T> generate(Class<T> targetInterface)
@@ -87,7 +101,7 @@ final class WrapperGenerator {
         CtClass resultClass = pool.makeClass(
                 MessageFormat
                         .format(
-                                "{0}.Generated{1}Impl",
+                                properties.getProperty("clazz.name"),
                                 targetInterface.getPackage().getName(),
                                 targetInterface.getSimpleName()
                         )
@@ -99,9 +113,9 @@ final class WrapperGenerator {
                         .make(
                                 MessageFormat
                                         .format(
-                                                "private {0} {1};",
+                                                properties.getProperty("clazz.field"),
                                                 IObject.class.getName(),
-                                                "wrapped"
+                                                properties.getProperty("field.iobject.name")
                                         ),
                                 resultClass)
         );
@@ -129,9 +143,11 @@ final class WrapperGenerator {
             }
             resultClass.addField(CtField
                     .make(MessageFormat
-                                    .format("private {0} {1};",
+                                    .format(
+                                            properties.getProperty("clazz.field"),
                                             fieldClassName,
-                                            fieldNameByMethod),
+                                            fieldNameByMethod
+                                    ),
                             resultClass));
             constructorBuilder.append("this.").append(fieldNameByMethod).append(" = new ").append(fieldClassName)
                     .append("(new ").append(FieldName.class.getName()).append("(\"").append(getNameByMethod(m)).append("\"));");
@@ -143,10 +159,10 @@ final class WrapperGenerator {
     private static void handleWrapperSpecialMethods(CtClass resultClass) throws NoSuchMethodException, CannotCompileException {
 
         Method method = IObjectWrapper.class.getMethod("extractWrapped");
-        String methodBody = "return " + "wrapped" + ";";
+        String methodBody = "return " + properties.getProperty("field.iobject.name") + ";";
         String methodStr = MessageFormat
                 .format(
-                        "public {0} {1}({2}) '{'\\n{3}\\n'}'",
+                        properties.getProperty("method.wrapper"),
                         method.getReturnType().getName(),
                         method.getName(),
                         method.getParameterCount() > 0 ? getParamsString(method) : "",
@@ -155,11 +171,11 @@ final class WrapperGenerator {
         resultClass.addMethod(ctMethod);
 
         method = IObjectWrapper.class.getMethod("init", IObject.class);
-        methodBody = "this." + "wrapped" +
+        methodBody = "this." + properties.getProperty("field.iobject.name") +
                 " = " + method.getParameters()[0].getName() + ";";
         methodStr = MessageFormat
                 .format(
-                        "public {0} {1}({2}) '{'\\n{3}\\n'}'",
+                        properties.getProperty("method.wrapper"),
                         method.getReturnType().getName(),
                         method.getName(),
                         method.getParameterCount() > 0 ? getParamsString(method) : "",
@@ -174,7 +190,7 @@ final class WrapperGenerator {
         boolean hasParams = method.getParameterCount() > 0;
         return MessageFormat
                 .format(
-                        "public {0} {1}({2}) '{'\\n {3} \\n'}'",
+                        properties.getProperty("method.wrapper"),
                         returnTypeName,
                         method.getName(),
                         hasParams ? getParamsString(method) : "",
@@ -185,14 +201,14 @@ final class WrapperGenerator {
     private static String getCtClassMethodBody(Method method) {
         Class<?> returnType = method.getReturnType();
 
-        String fieldNameIObject = "wrapped";
+        String fieldNameIObject = properties.getProperty("field.iobject.name");
         String fieldNameByMethod = getFieldNameByMethod(method);
-        if (method.getName().matches("(^set){1}\\\\w+")) {
+        if (method.getName().matches(properties.getProperty("regexp.setter"))) {
             //TODO: refactor this if-else. There are two types of setter: for Field and listField
             if (method.getParameterTypes()[0].equals(Iterable.class)) {
                 return MessageFormat
                         .format(
-                                "{0}.inject({1}, {2}.newArrayList({3}));",
+                                properties.getProperty("method.body.setter.list"),
                                 fieldNameByMethod,
                                 fieldNameIObject,
                                 CollectionUtils.class.getName(),
@@ -201,16 +217,16 @@ final class WrapperGenerator {
             } else {
                 return MessageFormat
                         .format(
-                                "{0}.inject({1}, {2});",
+                                properties.getProperty("method.body.setter"),
                                 fieldNameByMethod,
                                 fieldNameIObject,
                                 getPrimitiveToNewObjectString(method.getParameters()[0].getType())
                         );
             }
-        } else if (method.getName().matches("((^get)|(^is)|(^has)){1}\\\\w+")) {
+        } else if (method.getName().matches(properties.getProperty("regexp.getter"))) {
             return MessageFormat
                     .format(
-                            "return ({0}) {1}.from({2}, {3}){4}{5};",
+                            properties.getProperty("method.body.getter"),
                             returnType.getName(),
                             getPrimitiveFromObjectPrefix(returnType) + fieldNameByMethod,
                             fieldNameIObject,
@@ -218,10 +234,10 @@ final class WrapperGenerator {
                             method.getParameters().length == 0 ? "" : ".get(arg0)",
                             getPrimitiveFromObjectPostfix(returnType)
                     );
-        } else if (method.getName().matches("(^count){1}\\\\w+")) {
+        } else if (method.getName().matches(properties.getProperty("regexp.counter"))) {
             return MessageFormat
                     .format(
-                            "return {0}.from({1}, {2}){3};",
+                            properties.getProperty("method.body.counter"),
                             fieldNameByMethod,
                             fieldNameIObject,
                             "Object.class",
@@ -239,17 +255,17 @@ final class WrapperGenerator {
     private static String getNameByMethod(Method method) {
         String methodName = method.getName();
         String result = methodName.replaceAll(
-                "(^get)|(^is)|(^has)|(^set)|(^count)",
-                ""
+                properties.getProperty("regexp.method.to.field.replace"),
+                properties.getProperty("regexp.method.to.field.replacement")
         );
         return result.length() > 1 ? result.substring(0,1).toLowerCase() + result.substring(1)
                 : result.toLowerCase();
     }
 
     private static Boolean isListField(Method m) {
-        return (m.getName().matches("((^get)|(^is)|(^has)){1}\\\\w+") && (m.getParameterCount() == 1))
-                || m.getName().matches("(^count){1}\\\\w+")
-                || (m.getName().matches("(^set){1}\\\\w+") && (m.getParameterTypes()[0].equals(Iterable.class)));
+        return (m.getName().matches(properties.getProperty("regexp.getter")) && (m.getParameterCount() == 1))
+                || m.getName().matches(properties.getProperty("regexp.counter"))
+                || (m.getName().matches(properties.getProperty("regexp.setter")) && (m.getParameterTypes()[0].equals(Iterable.class)));
     }
 
     private static String getParamsString(Method m) {
