@@ -28,4 +28,61 @@ public class BlockingQueueTest {
         assertSame(object2, queue.take());
         assertSame(object3, queue.tryTake());
     }
+
+    @Test
+    public void Should_CallCallbacksWhenNewItemAdded()
+            throws Exception {
+        java.util.concurrent.BlockingQueue underlying = mock(java.util.concurrent.BlockingQueue.class);
+
+        Runnable callback1 = mock(Runnable.class), callback2 = mock(Runnable.class);
+
+        when(underlying.isEmpty()).thenReturn(true);
+
+        IQueue queue = new BlockingQueue<>(underlying);
+
+        queue.addNewItemCallback(callback1);
+        queue.addNewItemCallback(callback2);
+
+        verifyZeroInteractions(callback1, callback2);
+
+        queue.put(new Object());
+
+        verify(callback1).run();
+        verify(callback2).run();
+    }
+
+    @Test
+    public void Should_callCallbackImmediately_When_thereAlreadyAreElementsInQueue()
+            throws Exception {
+        java.util.concurrent.BlockingQueue underlying = mock(java.util.concurrent.BlockingQueue.class);
+
+        Runnable callback = mock(Runnable.class);
+
+        when(underlying.isEmpty()).thenReturn(false);
+
+        IQueue queue = new BlockingQueue<>(underlying);
+
+        queue.addNewItemCallback(callback);
+
+        verify(callback).run();
+    }
+
+    @Test
+    public void Should_notCallCallbackRemoved_When_itIsRemoved()
+            throws Exception {
+        java.util.concurrent.BlockingQueue underlying = mock(java.util.concurrent.BlockingQueue.class);
+
+        Runnable callback = mock(Runnable.class);
+
+        when(underlying.isEmpty()).thenReturn(true);
+
+        IQueue queue = new BlockingQueue<>(underlying);
+
+        queue.addNewItemCallback(callback);
+        queue.removeNewItemCallback(callback);
+
+        queue.put(new Object());
+
+        verify(callback, never()).run();
+    }
 }

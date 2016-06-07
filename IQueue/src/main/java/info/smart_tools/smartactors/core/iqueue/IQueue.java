@@ -28,4 +28,20 @@ public interface IQueue <T> {
      * @return the element from head of queue or {@code null} if queue is empty
      */
     T tryTake();
+
+    /**
+     * Add a {@link Runnable} to run when new item appears in queue. The runnable will be executed immediately if there
+     * is any item in queue.
+     *
+     * @param callback the runnable to execute when new element is added to queue
+     */
+    void addNewItemCallback(Runnable callback);
+
+    /**
+     * Remove a {@link Runnable} added by {@link #addNewItemCallback(Runnable)}.
+     *
+     * @param callback the runnable that should no more be run when new element is added to queue
+     * @see #addNewItemCallback(Runnable)
+     */
+    void removeNewItemCallback(Runnable callback);
 }
