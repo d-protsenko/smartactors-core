@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import info.smart_tools.smartactors.core.ipool.exception.PoolException;
 
 /**
- * Tests for ScopeException
+ * Tests for PoolException
  */
 public class PoolExceptionTest {
     @Test(expected = PoolException.class)
