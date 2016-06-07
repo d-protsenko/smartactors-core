@@ -33,12 +33,33 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>IObserver</module>
+        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
         <module>IDatabaseTask</module>
         <module>examples</module>
+        <module>BootstrapItem</module>
+        <module>IBootstrapItem</module>
+        <module>InvalidArgumentException</module>
+        <module>IBootstrap</module>
+        <module>IPlugin</module>
+        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
+        <module>IPluginLoader</module>
+        <module>IPluginLoaderVisitor</module>
+        <module>PluginLoaderVisitorEmptyImplementation</module>
+        <module>PluginLoaderFormJar</module>
+        <module>Bootstrap</module>
+        <module>IPluginCreator</module>
+        <module>PluginCreator</module>
+        <module>ServerWithPluginLoader</module>
+        <module>PluginLoadScopeProvider</module>
+        <module>PluginTestJar</module>
+        <module>NamedKeysStorage</module>
+        <module>FilesystemTracker</module>
+        <module>IFilesystemTracker</module>
+        <module>IFeatureManager</module>
+        <module>FeatureManager</module>
     </modules>
 
     <properties>

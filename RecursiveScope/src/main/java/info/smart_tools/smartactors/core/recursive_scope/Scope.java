@@ -33,7 +33,7 @@ class Scope implements IScope {
             throws ScopeException {
         Object value = storage.get(key);
 
-        if (value == null) {
+        if (null == value) {
             try {
                 return parent.getValue(key);
             } catch (NullPointerException e) {

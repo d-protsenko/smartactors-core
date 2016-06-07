@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.create_new_instance_strategy;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
@@ -15,8 +16,9 @@ import static org.junit.Assert.fail;
  */
 public class CreateNewInstanceStrategyTest {
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentExceptionOnNull() {
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnNull()
+            throws InvalidArgumentException {
         new CreateNewInstanceStrategy(null);
         fail();
     }
