@@ -6,6 +6,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 /**
  * Wrapper for SearchById message
  */
-public interface SearchMessage {
+public interface SearchByIdQuery {
     String getCollectionName() throws ReadValueException, ChangeValueException;
 }
