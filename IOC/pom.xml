@@ -14,6 +14,7 @@
     <url>${project.artifactId}/</url>
 
     <dependencies>
+
         <!-- Default container -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

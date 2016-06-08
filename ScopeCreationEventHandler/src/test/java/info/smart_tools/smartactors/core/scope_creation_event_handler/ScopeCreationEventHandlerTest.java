@@ -1,8 +1,9 @@
 package info.smart_tools.smartactors.core.scope_creation_event_handler;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobserver.IObserver;
-import info.smart_tools.smartactors.core.iobserver.exception.ObserverExecuteException;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import org.junit.Test;
@@ -22,15 +23,17 @@ import static org.mockito.Mockito.verify;
 public class ScopeCreationEventHandlerTest {
 
     @Test
-    public void checkHandlerCreation() {
+    public void checkHandlerCreation()
+            throws InvalidArgumentException{
         IKey key = mock(IKey.class);
-        IObserver handler = new ScopeCreationEventHandler(key);
+        IAction handler = new ScopeCreationEventHandler(key);
         assertNotNull(handler);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalExceptionOnHandlerCreation() {
-        IObserver handler = new ScopeCreationEventHandler(null);
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnHandlerCreation()
+            throws InvalidArgumentException {
+        IAction handler = new ScopeCreationEventHandler(null);
         fail();
     }
 
@@ -39,28 +42,28 @@ public class ScopeCreationEventHandlerTest {
             throws Exception {
         IKey key = mock(IKey.class);
         IScope scope = mock(IScope.class);
-        IObserver handler = new ScopeCreationEventHandler(key);
+        IAction handler = new ScopeCreationEventHandler(key);
         doNothing().when(scope).setValue(any(IKey.class), any(IStrategyContainer.class));
         handler.execute(scope);
         verify(scope, times(1)).setValue(any(IKey.class), any(IStrategyContainer.class));
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentExceptionOnHandlerExecution()
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnHandlerExecution()
             throws Exception {
         IKey key = mock(IKey.class);
-        IObserver handler = new ScopeCreationEventHandler(key);
+        IAction handler = new ScopeCreationEventHandler(key);
         handler.execute(null);
         fail();
     }
 
-    @Test (expected = ObserverExecuteException.class)
+    @Test (expected = ActionExecuteException.class)
     public void checkObserverExecuteExceptionOnHandlerExecution()
             throws Exception {
         IKey key = mock(IKey.class);
         IScope scope = mock(IScope.class);
-        IObserver handler = new ScopeCreationEventHandler(key);
-        doThrow(ObserverExecuteException.class).when(scope).setValue(any(IKey.class), any(IStrategyContainer.class));
+        IAction handler = new ScopeCreationEventHandler(key);
+        doThrow(ActionExecuteException.class).when(scope).setValue(any(IKey.class), any(IStrategyContainer.class));
         handler.execute(scope);
         fail();
     }

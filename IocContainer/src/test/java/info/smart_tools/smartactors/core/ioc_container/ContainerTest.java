@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
@@ -43,7 +44,8 @@ import static org.mockito.Mockito.when;
 public class ContainerTest {
 
     @Test
-    public void checkContainerCreation() {
+    public void checkContainerCreation()
+            throws InvalidArgumentException {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
@@ -92,7 +94,7 @@ public class ContainerTest {
 
     @Test (expected = ResolutionException.class)
     public void checkResolutionException()
-            throws ResolutionException {
+            throws Exception {
         IContainer container = new Container();
         container.resolve(null, null);
     }
@@ -124,7 +126,8 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkGetIocGuid() {
+    public void checkGetIocGuid()
+            throws InvalidArgumentException {
         IContainer container = new Container();
         assertNotNull(container.getIocKey());
         assertNotNull(container.getIocKey().toString());
@@ -134,7 +137,8 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkGetKeyForKeyStorage() {
+    public void checkGetKeyForKeyStorage()
+            throws InvalidArgumentException {
         IContainer container = new Container();
         assertNotNull(container.getKeyForKeyStorage());
         assertNotNull(container.getKeyForKeyStorage().toString());
