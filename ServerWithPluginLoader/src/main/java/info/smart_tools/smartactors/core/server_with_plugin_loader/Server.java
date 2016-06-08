@@ -54,13 +54,14 @@ public class Server implements IServer {
 
             // FS listener creation
             // TODO: Get from configuration
-            String coreJarsDir = "/home/sevenbits/Projects/libs/";
+            File coreJarsDir = new File("libs");
+            coreJarsDir.mkdirs();
 
             IFilesystemTracker jarFilesTracker = new FilesystemTracker(
                     (dir, name) -> name.endsWith(".jar"),
                     ListenerTask::new);
 
-            jarFilesTracker.start(new File(coreJarsDir));
+            jarFilesTracker.start(coreJarsDir);
 
             // FeatureManager & Feature creation
             IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
@@ -92,7 +93,7 @@ public class Server implements IServer {
             coreFeature.listen();
 
         } catch (Throwable e) {
-            throw new ServerInitializeException("Server initialization failed.");
+            throw new ServerInitializeException("Server initialization failed.", e);
         }
 
 
