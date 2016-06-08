@@ -61,6 +61,7 @@
         <module>ISerializer</module>
         <module>JsonSerializer</module>
         <module>IWrapperGenerator</module>
+        <module>WrapperGenerator</module>
     </modules>
 
     <properties>
