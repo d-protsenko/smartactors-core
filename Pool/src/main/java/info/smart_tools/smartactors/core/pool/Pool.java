@@ -23,7 +23,7 @@ public class Pool implements IPool {
     private Supplier<Object> creationFunction;
 
     /**
-     * Constructs new Scope with defined parent scope
+     * Constructs new Pool
      * @param maxItems the maximum of active items.
      * @param func the function for creating new instances of items
      */
@@ -45,7 +45,7 @@ public class Pool implements IPool {
      */
     public Object take() throws PoolTakeException {
         if (freeItemsCounter.getAndDecrement() <= 0) {
-            freeItemsCounter.incrementAndGet();
+            freeItemsCounter.getAndIncrement();
             throw new PoolTakeException("Reached limit of items for this pool.");
         }
 
