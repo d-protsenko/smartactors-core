@@ -63,6 +63,7 @@
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
+        <module>IPool</module>
     </modules>
 
     <properties>
