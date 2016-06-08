@@ -71,7 +71,7 @@ public class WrapperGenerator implements IWrapperGenerator {
     }
 
     @Override
-    public <T> Class<? extends T> generate(final Class<T> targetInterface)
+    public <T> T generate(final Class<T> targetInterface)
             throws InvalidArgumentException, WrapperGeneratorException {
         if (targetInterface == null) {
             throw new InvalidArgumentException("Target interface must not be null!");
@@ -91,7 +91,8 @@ public class WrapperGenerator implements IWrapperGenerator {
             addConstructor(resultClass, constructorBuilder.toString());
 
             Class<? extends T> toClass = resultClass.toClass();
-            return toClass;
+
+            return toClass.newInstance();
         } catch (Throwable e) {
             throw new WrapperGeneratorException("Could not generate wrapper for target interface.", e);
         }

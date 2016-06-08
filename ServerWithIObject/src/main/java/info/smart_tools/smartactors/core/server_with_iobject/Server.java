@@ -60,10 +60,8 @@ public class Server implements IServer {
 
             /** Get wrapper generator by IOC.resolve */
             IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.toString()));
-            /** Generate wrapper class by given interface */
-            Class<? extends DemonstrationInterface> a = wg.generate(DemonstrationInterface.class);
-            /** Create instance of generated class */
-            DemonstrationInterface ins = a.newInstance();
+            /** Generate wrapper class by given interface and create instance of generated class */
+            DemonstrationInterface ins = wg.generate(DemonstrationInterface.class);
             /** Initialize instance of generated class by IObject */
             ((IObjectWrapper) (ins)).init(obj);
 
@@ -127,7 +125,7 @@ public class Server implements IServer {
                         (arg) -> {
                             /** It's demonstration realization of type convert strategy.
                              * Current realization has bad pattern (switch). Don't repeat that.
-                             * Batter, realize separated inplementation of IResolveDependencyStrategy
+                             * Batter, realize separated implementation of IResolveDependencyStrategy
                              * with HashMap of (TargetType, TransformRule) pairs
                              **/
                             if (((Class) arg[0]).equals(Integer.class)) {
