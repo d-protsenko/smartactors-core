@@ -40,7 +40,6 @@
         <module>IQueue</module>
         <module>BlockingQueue</module>
         <module>IMessageReceiver</module>
-        <module>ITask</module>
         <module>IThreadPool</module>
         <module>ThreadPool</module>
         <module>ITaskDispatcher</module>
