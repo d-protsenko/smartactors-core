@@ -74,8 +74,7 @@ public class DBUpsertTask implements IDatabaseTask {
 
         this.rawUpsertQuery = upsertMessage;
         try {
-            //TODO:: replace by field.from()
-            String id = String.valueOf(upsertMessage.getValue(idFieldName));
+            String id = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString()), upsertMessage.getValue(idFieldName));
             if (id != null) {
 
                 isUpdate = true;
@@ -102,7 +101,7 @@ public class DBUpsertTask implements IDatabaseTask {
 
                 this.compiledQuery = dbInsertTask.getCompiledQuery();
             }
-        } catch (ReadValueException | StorageException e) {
+        } catch (ReadValueException | StorageException | ResolutionException e) {
             throw new TaskPrepareException("Error while writing update query statement.",e);
         }
     }
