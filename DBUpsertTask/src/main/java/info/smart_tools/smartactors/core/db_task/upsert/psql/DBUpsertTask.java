@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertT
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.FieldName;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -61,7 +62,11 @@ public class DBUpsertTask implements IDatabaseTask {
         initInsertQuery();
         isUpdate = false;
         //TODO:: replace new call by IOC.resolve
-        idFieldName = new FieldName(collectionName + "ID");
+        try {
+            idFieldName = new FieldName(collectionName + "ID");
+        } catch (InvalidArgumentException e) {
+            throw new DBUpsertTaskException("Can't create idFieldName.", e);
+        }
     }
 
     @Override
