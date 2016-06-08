@@ -11,8 +11,6 @@ import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertT
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.FieldName;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -49,22 +47,20 @@ public class DBUpsertTask implements IDatabaseTask {
 
         this.collectionName = collectionName;
         this.connectionPool = connectionPool;
-        //TODO:: replace new call by IOC.resolve
-        this.dbInsertTask = new DBInsertTask(connectionPool, collectionName);
         try {
-            updateQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
-            insertQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
+            this.dbInsertTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString()), connectionPool, collectionName);
+            this.updateQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
+            this.insertQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
         } catch (ResolutionException e) {
             throw new DBUpsertTaskException("Error while resolving query statement.", e);
         }
         initUpdateQuery();
         //TODO:: move to DBInsertTask constructor or to the separate class
         initInsertQuery();
-        isUpdate = false;
-        //TODO:: replace new call by IOC.resolve
+        this.isUpdate = false;
         try {
-            idFieldName = new FieldName(collectionName + "ID");
-        } catch (InvalidArgumentException e) {
+            this.idFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), collectionName + "ID");
+        } catch (ResolutionException e) {
             throw new DBUpsertTaskException("Can't create idFieldName.", e);
         }
     }
