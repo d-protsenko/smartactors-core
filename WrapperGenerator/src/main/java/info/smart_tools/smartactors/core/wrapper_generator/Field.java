@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  * Class that contains rule for convert
- * @param <T>
+ * @param <T> the type to cast FieldName value to
  */
 public class Field<T> {
     private IFieldName name;
@@ -25,10 +25,19 @@ public class Field<T> {
         this.name = name;
     }
 
+    /**
+     *
+     * @param object
+     * @param targetClass
+     * @return
+     * @throws ReadValueException
+     * @throws ChangeValueException
+     * @throws InvalidArgumentException
+     */
     public T from(final IObject object, final Class<T> targetClass)
             throws ReadValueException, ChangeValueException, InvalidArgumentException {
         if (object == null)
-            throw new IllegalArgumentException("Input IObject in Field.from(IObject, Class) is null");
+            throw new InvalidArgumentException("Input IObject in Field.from(IObject, Class) is null");
 
         return _from(object, targetClass);
     }
@@ -36,7 +45,7 @@ public class Field<T> {
     public T from(final IObject object, final TypeDef<T> target)
             throws ReadValueException, ChangeValueException, InvalidArgumentException {
         if (object == null || target == null)
-            throw new IllegalArgumentException("Input parameters in Field.from(IObject, TypeDef) method are null");
+            throw new InvalidArgumentException("Input parameters in Field.from(IObject, TypeDef) method are null");
 
         return _from(object, target.getTypeAsClass());
     }
@@ -57,7 +66,7 @@ public class Field<T> {
             object.setValue(name, converted);
             return converted;
         } catch (ResolutionException e) {
-            throw new IllegalArgumentException("Passed object with value of field which is impossible to resolve to expected type", e);
+            throw new InvalidArgumentException("Passed object with value of field which is impossible to resolve to expected type", e);
         }
     }
 

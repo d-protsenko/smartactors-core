@@ -66,7 +66,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .getResourceAsStream("/wrapperGenerator.properties")) {
             properties.load(stream);
         } catch (IOException e) {
-
+            throw new RuntimeException("Could not initialize WrapperGenerator.");
         }
     }
 
