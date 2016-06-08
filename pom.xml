@@ -62,6 +62,7 @@
         <module>FeatureManager</module>
         <module>IPool</module>
         <module>Pool</module>
+        <module>PoolGuard</module>
     </modules>
 
     <properties>
