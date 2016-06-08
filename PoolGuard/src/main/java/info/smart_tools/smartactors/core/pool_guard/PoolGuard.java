@@ -3,11 +3,20 @@ package info.smart_tools.smartactors.core.pool_guard;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 
-public class PoolGuard implements IPoolGuard{
-    /**
-     * Local storage for instance of {@link IPool}
-     */
+/**
+ * Implementation of {@link IPoolGuard}
+ */
+public class PoolGuard implements IPoolGuard {
     private IPool pool;
+    private Object currentObject;
+
+    /**
+     * Constructor for PoolGuard
+     * @param pool the using pool
+     */
+    public PoolGuard(final IPool pool) {
+        this.pool = pool;
+    }
 
 
     /**
@@ -17,9 +26,10 @@ public class PoolGuard implements IPoolGuard{
      */
     public Object getObject() throws PoolGuardException {
         try {
-            return pool.tryTake();
+            currentObject = pool.tryTake();
+            return currentObject;
         } catch (Exception e) {
-            throw new PoolGuardException(e);
+            throw new PoolGuardException("PoolGuard could not get the free item", e);
         }
     }
 
@@ -28,6 +38,14 @@ public class PoolGuard implements IPoolGuard{
      * @throws PoolGuardException if any errors occurred
      */
     public void close() throws PoolGuardException {
-
+        try {
+            if (currentObject != null) {
+                pool.put(currentObject);
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            throw new PoolGuardException("PoolGuard could not restore current item.", e);
+        }
     }
 }
