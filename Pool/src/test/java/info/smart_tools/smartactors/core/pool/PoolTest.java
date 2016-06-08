@@ -15,13 +15,15 @@ import static org.mockito.Mockito.when;
  */
 
 public class PoolTest {
-    @Test
+    @Test(expected = PoolTakeException.class)
     public void Should_getItemsWhenRequired()
             throws Exception {
         Pool pool = new Pool(3, Object::new);
         assertNotNull(pool.take());
         assertNotNull(pool.take());
         assertNotNull(pool.take());
+        pool.take();
+        fail();
     }
 
     @Test
@@ -47,5 +49,17 @@ public class PoolTest {
         pool.put(obj2);
         assertEquals(pool.take(), obj1);
         assertEquals(pool.take(), obj2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void Should_throwExceptionWhenFunctionIsNull()
+            throws Exception {
+        Pool pool = new Pool(1, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void Should_throwExceptionWhenMaxItemsCountLessZero()
+            throws Exception {
+        Pool pool = new Pool(-1, Object::new);
     }
 }

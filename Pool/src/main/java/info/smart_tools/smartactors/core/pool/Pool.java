@@ -28,11 +28,11 @@ public class Pool implements IPool {
      * @param func the function for creating new instances of items
      */
     public Pool(final Integer maxItems, final Supplier<Object>  func) {
+        if (func == null || maxItems <= 0) {
+            throw new IllegalArgumentException("Wrong Incoming argument");
+        }
         this.freeItems = new ArrayBlockingQueue<>(maxItems);
         this.freeItemsCounter.set(maxItems);
-        if (func == null) {
-            throw new IllegalArgumentException("Incoming argument should not be null.");
-        }
         this.creationFunction = func;
     }
 
@@ -43,7 +43,7 @@ public class Pool implements IPool {
     public Object take() throws PoolTakeException {
         if (freeItemsCounter.getAndDecrement() <= 0) {
             freeItemsCounter.incrementAndGet();
-            return null;
+            throw new PoolTakeException("Reached limit of items for this pool.");
         }
 
         try {
