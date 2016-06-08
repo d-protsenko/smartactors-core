@@ -13,24 +13,23 @@ public class PoolGuard implements IPoolGuard {
     /**
      * Constructor for PoolGuard
      * @param pool the using pool
+     * @throws PoolGuardException if any errors occurred
      */
-    public PoolGuard(final IPool pool) {
-        this.pool = pool;
+    public PoolGuard(final IPool pool) throws PoolGuardException {
+        try {
+            this.pool = pool;
+            this.currentObject = pool.take();
+        } catch (Exception e) {
+            throw new PoolGuardException("PoolGuard cannot be initialized", e);
+        }
     }
 
 
     /**
-     * Get the free item from pool and remove him from pool,
-     * or create the new instance if its possible
-     * @throws  PoolGuardException if any errors occurred
+     * Get the free item from pool
      */
-    public Object getObject() throws PoolGuardException {
-        try {
-            currentObject = pool.take();
-            return currentObject;
-        } catch (Exception e) {
-            throw new PoolGuardException("PoolGuard could not get the free item", e);
-        }
+    public Object getObject() {
+        return currentObject;
     }
 
     /**
@@ -39,11 +38,7 @@ public class PoolGuard implements IPoolGuard {
      */
     public void close() throws PoolGuardException {
         try {
-            if (currentObject != null) {
-                pool.put(currentObject);
-            } else {
-                throw new Exception();
-            }
+            pool.put(currentObject);
         } catch (Exception e) {
             throw new PoolGuardException("PoolGuard could not restore current item.", e);
         }

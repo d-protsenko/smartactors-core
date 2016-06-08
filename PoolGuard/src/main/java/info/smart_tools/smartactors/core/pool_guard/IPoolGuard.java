@@ -11,15 +11,14 @@ import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException
 public interface IPoolGuard extends AutoCloseable {
 
     /**
-     * Get the free item from pool and remove him from pool,
-     * or create the new instance if its possible
-     * @throws  PoolGuardException if any errors occurred
+     * Get the free item from pool
+     * @return object
      */
-    Object getObject() throws PoolGuardException;
+    Object getObject();
 
     /**
      * Return object to pool if object is no needed more
-     * @throws  PoolGuardException if any errors occurred
+     * @throws PoolGuardException if any errors occurred
      */
     void close() throws PoolGuardException;
 }
