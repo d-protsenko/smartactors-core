@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.ipool.exception;
 
 /**
- * Exception for error in {@link info.smart_tools.smartactors.core.ipool.IPool} methods
+ * Exception for error in {@link info.smart_tools.smartactors.core.ipool.IPool} method put
  */
-public class PoolException extends Exception {
+public class PoolPutException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public PoolException(final String message) {
+    public PoolPutException(final String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class PoolException extends Exception {
      * @param cause specific cause
      */
 
-    public PoolException(final String message, final Throwable cause) {
+    public PoolPutException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -27,7 +27,7 @@ public class PoolException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public PoolException(final Throwable cause) {
+    public PoolPutException(final Throwable cause) {
         super(cause);
     }
 }
