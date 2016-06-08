@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.core.pool;
 
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.ipool.exception.PoolException;
+import info.smart_tools.smartactors.core.ipool.exception.PoolPutException;
+import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,28 +38,38 @@ public class Pool implements IPool {
 
     /**
      * Get a value by the key from the scope.
-     * @throws PoolException if error was occurred
+     * @throws PoolTakeException if error was occurred
      */
-    public Object tryTake() throws PoolException {
+    public Object take() throws PoolTakeException {
         if (freeItemsCounter.getAndDecrement() <= 0) {
             freeItemsCounter.incrementAndGet();
             return null;
         }
 
-        if (freeItems.isEmpty()) {
-            return creationFunction.get();
-        }
+        try {
+            Object result = freeItems.poll();
+            if (result == null) {
+                result = creationFunction.get();
+            }
 
-        return freeItems.remove();
+            return result;
+        } catch (Exception e) {
+            freeItemsCounter.getAndIncrement();
+            throw new PoolTakeException("Failed to get item", e);
+        }
     }
 
     /**
      * Stores a value to the pool.
      * @param item the item that now free.
-     * @throws PoolException if any error occurred
+     * @throws PoolPutException if any error occurred
      */
-    public void put(final Object item) throws PoolException {
-        freeItems.add(item);
-        freeItemsCounter.getAndIncrement();
+    public void put(final Object item) throws PoolPutException {
+        try {
+            freeItems.add(item);
+            freeItemsCounter.getAndIncrement();
+        } catch (Exception e) {
+            throw new PoolPutException("Error was occurred", e);
+        }
     }
 }
