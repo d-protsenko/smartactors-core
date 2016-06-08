@@ -35,7 +35,7 @@ public class PoolTest {
         try {
             pool.take();
             fail();
-        } catch (Exception ignored) {}
+        } catch (PoolTakeException ignored) {}
         assertNotNull(pool.take());
     }
 
@@ -43,8 +43,8 @@ public class PoolTest {
     public void Should_returnConnectionSecondTime_WhenItIsReturnedToPool()
             throws Exception {
         Pool pool = new Pool(2, Object::new);
-        Object obj1 = mock(Object.class);
-        Object obj2 = mock(Object.class);
+        Object obj1 = pool.take();
+        Object obj2 = pool.take();
         pool.put(obj1);
         pool.put(obj2);
         assertEquals(pool.take(), obj1);

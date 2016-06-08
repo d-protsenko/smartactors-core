@@ -66,8 +66,10 @@ public class Pool implements IPool {
      */
     public void put(final Object item) throws PoolPutException {
         try {
-            freeItems.add(item);
-            freeItemsCounter.getAndIncrement();
+            if (freeItems.size() >= freeItemsCounter.get()) {
+                freeItems.add(item);
+                freeItemsCounter.getAndIncrement();
+            }
         } catch (Exception e) {
             throw new PoolPutException("Error was occurred", e);
         }
