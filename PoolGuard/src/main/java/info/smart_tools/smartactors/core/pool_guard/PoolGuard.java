@@ -26,7 +26,7 @@ public class PoolGuard implements IPoolGuard {
      */
     public Object getObject() throws PoolGuardException {
         try {
-            currentObject = pool.tryTake();
+            currentObject = pool.take();
             return currentObject;
         } catch (Exception e) {
             throw new PoolGuardException("PoolGuard could not get the free item", e);
