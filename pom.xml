@@ -60,6 +60,7 @@
         <module>DSObject</module>
         <module>ISerializer</module>
         <module>JsonSerializer</module>
+        <module>IWrapperGenerator</module>
     </modules>
 
     <properties>

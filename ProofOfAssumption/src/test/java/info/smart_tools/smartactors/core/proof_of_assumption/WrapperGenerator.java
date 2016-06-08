@@ -97,6 +97,7 @@ final class WrapperGenerator {
             throws NotFoundException, CannotCompileException {
         ClassPool pool = ClassPool.getDefault();
         CtClass createdInterface = pool.get(targetInterface.getName());
+        CtClass basisInterface = pool.get(IObjectWrapper.class.getName());
 
         CtClass resultClass = pool.makeClass(
                 MessageFormat
@@ -107,6 +108,7 @@ final class WrapperGenerator {
                         )
         );
         resultClass.addInterface(createdInterface);
+        resultClass.addInterface(basisInterface);
         resultClass.addConstructor(CtNewConstructor.defaultConstructor(resultClass));
         resultClass.addField(
                 CtField

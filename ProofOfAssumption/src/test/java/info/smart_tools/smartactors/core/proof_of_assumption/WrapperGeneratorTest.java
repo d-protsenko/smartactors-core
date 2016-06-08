@@ -96,18 +96,17 @@ public class WrapperGeneratorTest {
 
         Class<? extends TestInterface> a = WrapperGenerator.generate(TestInterface.class);
         TestInterface ins = a.newInstance();
-        ins.init(obj);
+        ((IObjectWrapper)(ins)).init(obj);
 
         int a1 = ins.getA();
         String b1 = ins.getB();
         char c1 = ins.getC();
         ins.setD(1);
         int bb1 = ins.getBB();
-        ins.setE(cc);
     }
 }
 
-interface TestInterface extends IObjectWrapper {
+interface TestInterface {
     Integer getA();
     String getB();
     char getC();
