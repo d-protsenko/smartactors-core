@@ -37,15 +37,6 @@ public class PoolGuardTest {
         IPool pool = mock(IPool.class);
         when(pool.take()).thenThrow(new PoolTakeException(""));
         PoolGuard guard = new PoolGuard(pool);
-        guard.getObject();
-        fail();
-    }
-
-    @Test (expected = PoolGuardException.class)
-    public void checkScopeGuardExceptionOnClose() throws PoolGuardException {
-        IPool pool = mock(IPool.class);
-        PoolGuard guard = new PoolGuard(pool);
-        guard.close();
         fail();
     }
 }

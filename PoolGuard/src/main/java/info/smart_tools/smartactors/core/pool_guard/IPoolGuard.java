@@ -18,7 +18,6 @@ public interface IPoolGuard extends AutoCloseable {
 
     /**
      * Return object to pool if object is no needed more
-     * @throws PoolGuardException if any errors occurred
      */
-    void close() throws PoolGuardException;
+    void close();
 }

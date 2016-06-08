@@ -34,13 +34,12 @@ public class PoolGuard implements IPoolGuard {
 
     /**
      * Return object to pool if object is no needed more
-     * @throws PoolGuardException if any errors occurred
      */
-    public void close() throws PoolGuardException {
+    public void close() {
         try {
             pool.put(currentObject);
         } catch (Exception e) {
-            throw new PoolGuardException("PoolGuard could not restore current item.", e);
+            throw new RuntimeException("PoolGuard could not restore current item.", e);
         }
     }
 }
