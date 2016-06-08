@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
@@ -13,7 +14,8 @@ import static org.junit.Assert.assertNotNull;
 public class ResolveByNameIocStrategyTest {
 
     @Test
-    public void checkStrategyCreation() {
+    public void checkStrategyCreation()
+            throws InvalidArgumentException {
         IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy(
                 (args)-> {
                     return null;
@@ -53,8 +55,8 @@ public class ResolveByNameIocStrategyTest {
         assertEquals(counter.times, 1);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentException()
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentException()
             throws Exception {
         new ResolveByNameIocStrategy(null);
     }
