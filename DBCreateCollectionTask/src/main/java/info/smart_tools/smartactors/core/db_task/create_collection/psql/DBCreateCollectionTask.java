@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 import info.smart_tools.smartactors.core.db_storage.DataBaseStorage;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.CreateCollectionQuery;
@@ -32,7 +31,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     private CompiledQuery compiledQuery;
     private ConnectionPool connectionPool;
 
-    private static Map<String,String> indexCreationTemplates = new HashMap<String,String>() {{
+    private static Map<String,String> indexCreationTemplates = new HashMap<String, String>() {{
         put("ordered","CREATE INDEX ON %s USING BTREE ((%s));\n");
         put("tags","CREATE INDEX ON %s USING GIN ((%s));\n");
         put("fulltext",String.format("CREATE INDEX ON %%s USING GIN ((to_tsvector('%s',(%%s)::text)));\n",Schema.FTS_DICTIONARY));
@@ -49,7 +48,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
 
         try {
             CreateCollectionQuery message = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), CreateCollectionQuery.class.toString()), createCollectionMessage);
-            QueryStatement preparedQuery = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), PreparedQuery.class.toString()));
+            QueryStatement preparedQuery = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
             CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
 
             Writer writer = preparedQuery.getBodyWriter();
