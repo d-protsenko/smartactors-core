@@ -1,22 +1,33 @@
 package info.smart_tools.smartactors.core.pool_guard;
 
-public class PoolGuard implements AutoCloseable {
+import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+
+public class PoolGuard implements IPoolGuard{
     /**
-     * Local storage for instance of {@link IScope}
+     * Local storage for instance of {@link IPool}
      */
-    private Pool pool;
+    private IPool pool;
+
 
     /**
-     * Locally save and substitute current instance of {@link IScope} by
-     * other
-     * @param key unique identifier for find {@link IScope}
-     * @throws  ScopeGuardException if any errors occurred
+     * Get the free item from pool and remove him from pool,
+     * or create the new instance if its possible
+     * @throws  PoolGuardException if any errors occurred
      */
-    public Object getObject() {return null;}
+    public Object getObject() throws PoolGuardException {
+        try {
+            return pool.tryTake();
+        } catch (Exception e) {
+            throw new PoolGuardException(e);
+        }
+    }
 
-
-    @Override
-    public void close() throws Exception {
+    /**
+     * Return object to pool if object is no needed more
+     * @throws PoolGuardException if any errors occurred
+     */
+    public void close() throws PoolGuardException {
 
     }
 }
