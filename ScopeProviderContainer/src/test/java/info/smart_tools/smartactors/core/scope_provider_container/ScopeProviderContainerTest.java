@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.scope_provider_container;
 
-import info.smart_tools.smartactors.core.iobserver.IObserver;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
@@ -112,7 +112,7 @@ public class ScopeProviderContainerTest {
         IScope scope = mock(IScope.class);
         IScopeFactory factory = mock(IScopeFactory.class);
         IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
-        IObserver observer = mock(IObserver.class);
+        IAction observer = mock(IAction.class);
         Object param = new Object();
         when(factory.createScope(param)).thenReturn(scope);
         doNothing().when(observer).execute(scope);
@@ -134,7 +134,7 @@ public class ScopeProviderContainerTest {
         IScope scope = mock(IScope.class);
         IScopeFactory factory = mock(IScopeFactory.class);
         IScopeProviderContainer scopeProviderContainer = new ScopeProviderContainer(factory);
-        IObserver observer = mock(IObserver.class);
+        IAction observer = mock(IAction.class);
         Object param = new Object();
         when(factory.createScope(param)).thenReturn(scope);
         doNothing().when(observer).execute(scope);

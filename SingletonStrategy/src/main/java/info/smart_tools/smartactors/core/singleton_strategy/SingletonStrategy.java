@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.singleton_strategy;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -20,10 +21,11 @@ public class SingletonStrategy implements IResolveDependencyStrategy {
      * Class constructor
      * Create strategy instance with initialized object
      * @param args singleton instance
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public SingletonStrategy(final Object ... args) {
+    public SingletonStrategy(final Object ... args) throws InvalidArgumentException {
         if (args.length != 1) {
-            throw new IllegalArgumentException("Singleton constructor should has only one arg.");
+            throw new InvalidArgumentException("Singleton constructor should has only one arg.");
         }
         this.classInstance = args[0];
     }
