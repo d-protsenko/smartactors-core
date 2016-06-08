@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  * Class that contains rule for convert
- * @param <T> 
+ * @param <T>
  */
 public class Field<T> {
     private IFieldName name;

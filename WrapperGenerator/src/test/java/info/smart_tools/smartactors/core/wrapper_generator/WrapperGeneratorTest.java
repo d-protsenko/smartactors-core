@@ -6,5 +6,4 @@ package info.smart_tools.smartactors.core.wrapper_generator;
  */
 public class WrapperGeneratorTest {
 
-
 }
