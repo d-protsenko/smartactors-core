@@ -28,8 +28,11 @@ public class Pool implements IPool {
      * @param func the function for creating new instances of items
      */
     public Pool(final Integer maxItems, final Supplier<Object>  func) {
-        if (func == null || maxItems <= 0) {
-            throw new IllegalArgumentException("Wrong Incoming argument");
+        if (func == null) {
+            throw new IllegalArgumentException("Function must be not null");
+        }
+        if (maxItems <= 0) {
+            throw new IllegalArgumentException("Count of max items mast be more 0");
         }
         this.freeItems = new ArrayBlockingQueue<>(maxItems);
         this.freeItemsCounter.set(maxItems);
