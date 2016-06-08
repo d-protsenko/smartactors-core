@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.string_ioc_key;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -16,26 +17,39 @@ import static org.junit.Assert.assertTrue;
 public class KeyTest {
 
     static final class Fixture {
+        static Key x;
+        static Key y;
+        static Key z;
+        static Key notx;
+        static Key xInt;
+        static Key yInt;
+        static Key zInt;
+        static Key notxInt;
 
-        static Key x = new Key("abc");
-        static Key y = new Key("abc");
-        static Key z = new Key("abc");
-        static Key notx = new Key("a");
+        static {
+            try {
+                x = new Key("abc");
+                y = new Key("abc");
+                z = new Key("abc");
+                notx = new Key("a");
+                xInt = new Key<Integer>(Integer.class, "abc");
+                yInt = new Key<Integer>(Integer.class, "abc");
+                zInt = new Key<Integer>(Integer.class, "abc");
+                notxInt = new Key<Integer>(Integer.class, "a");
+            } catch(Exception e) {
 
-        static Key xInt = new Key<Integer>(Integer.class, "abc");
-        static Key yInt = new Key<Integer>(Integer.class, "abc");
-        static Key zInt = new Key<Integer>(Integer.class, "abc");
-        static Key notxInt = new Key<Integer>(Integer.class, "a");
+            }
+        }
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentExceptionOnNull()
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnNull()
             throws Exception {
         IKey key = new Key(null);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void checkIllegalArgumentExceptionOnEmpty()
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnEmpty()
             throws Exception {
         IKey key = new Key("");
     }
@@ -143,7 +157,8 @@ public class KeyTest {
     }
 
     @Test
-    public void checkToString() {
+    public void checkToString()
+            throws InvalidArgumentException {
         String value = "key";
         IKey key = new Key(value);
         assertEquals(key.toString(), value);

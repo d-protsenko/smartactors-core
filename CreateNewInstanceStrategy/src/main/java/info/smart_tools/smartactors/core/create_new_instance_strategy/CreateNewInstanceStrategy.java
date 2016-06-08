@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.create_new_instance_strategy;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -24,11 +25,12 @@ public class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
      * Class constructor
      * Create instance of {@link CreateNewInstanceStrategy}
      * @param func function to create new object instance
-     * @throws IllegalArgumentException if any errors occurred
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public CreateNewInstanceStrategy(final Function<Object[], Object> func) {
-        if (func == null) {
-            throw new IllegalArgumentException("Incoming argument should not be null.");
+    public CreateNewInstanceStrategy(final Function<Object[], Object> func)
+            throws InvalidArgumentException {
+        if (null == func) {
+            throw new InvalidArgumentException("Incoming argument should not be null.");
         }
         this.creationFunction = func;
     }
