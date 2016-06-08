@@ -1,16 +1,18 @@
 package info.smart_tools.smartactors.core.pool;
 
-import info.smart_tools.smartactors.core.pool.exception.PoolException;
-import java.util.concurrent.CopyOnWriteArrayList;
+import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.ipool.exception.PoolException;
+
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 
 /**
- * Pool
+ * Implementation of {@link info.smart_tools.smartactors.core.ipool.IPool}
  */
-public class Pool {
-    private final CopyOnWriteArrayList<Object> freeItems = new CopyOnWriteArrayList<>();
+public class Pool implements IPool {
+    private final ArrayBlockingQueue<Object> freeItems;
     private AtomicInteger freeItemsCounter = new AtomicInteger();
 
     /**
@@ -24,6 +26,7 @@ public class Pool {
      * @param func the function for creating new instances of items
      */
     public Pool(final Integer maxItems, final Supplier<Object>  func) {
+        this.freeItems = new ArrayBlockingQueue<>(maxItems);
         this.freeItemsCounter.set(maxItems);
         if (func == null) {
             throw new IllegalArgumentException("Incoming argument should not be null.");
@@ -45,15 +48,13 @@ public class Pool {
             return creationFunction.get();
         }
 
-        Object item = freeItems.get(0);
-        freeItems.remove(item);
-        return item;
+        return freeItems.remove();
     }
 
     /**
      * Stores a value to the pool.
      * @param item the item that now free.
-     * @throws PoolException if any error occured
+     * @throws PoolException if any error occurred
      */
     public void put(final Object item) throws PoolException {
         freeItems.add(item);

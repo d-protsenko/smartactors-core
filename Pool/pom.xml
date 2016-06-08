@@ -11,6 +11,13 @@
     <artifactId>core.pool</artifactId>
 
     <dependencies>
+        <!-- Core interfaces -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ipool</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
