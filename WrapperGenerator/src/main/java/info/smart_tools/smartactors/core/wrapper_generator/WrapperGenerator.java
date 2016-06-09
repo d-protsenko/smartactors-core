@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of {@link IWrapperGenerator}.
@@ -36,6 +38,7 @@ public class WrapperGenerator implements IWrapperGenerator {
 
     private static final int NUMBER_OF_PRIMITIVES = 8;
     private static Map<String, String> mapPrimitiveToClass = new HashMap<>(NUMBER_OF_PRIMITIVES);
+    private static ConcurrentMap<Class<?>, Class<?>> generatedClassesPool = new ConcurrentHashMap<>();
 
     static {
         mapPrimitiveToClass.put(int.class.getName(), "Integer");
@@ -81,6 +84,9 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
+            if (generatedClassesPool.get(targetInterface) != null) {
+                return (T) generatedClassesPool.get(targetInterface).newInstance();
+            }
             CtClass resultClass = getCtClass(targetInterface);
 
             StringBuilder constructorBuilder = new StringBuilder();
@@ -91,6 +97,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             addConstructor(resultClass, constructorBuilder.toString());
 
             Class<? extends T> toClass = resultClass.toClass();
+            generatedClassesPool.put(targetInterface, toClass);
 
             return toClass.newInstance();
         } catch (Throwable e) {
