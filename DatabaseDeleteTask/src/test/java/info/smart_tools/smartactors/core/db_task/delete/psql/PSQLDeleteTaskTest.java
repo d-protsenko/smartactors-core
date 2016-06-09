@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.delete.psql;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.delete.DBDeleteTask;
 import info.smart_tools.smartactors.core.db_task.delete.wrappers.DeletionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -39,8 +38,10 @@ public class PSQLDeleteTaskTest {
 
     @Test
     public void should_PrepareAndExecuteDeletionQuery() throws Exception {
-        ConnectionPool connectionPool = mock(ConnectionPool.class);
-        DBDeleteTask deleteTask = PSQLDeleteTask.create(connectionPool, collectionName);
+        StorageConnection connection = mock(StorageConnection.class);
+        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        deleteTask.setConnection(connection);
+
 
         DeletionQuery message = mock(DeletionQuery.class);
         when(message.getCollectionName()).thenReturn(collectionName);
@@ -63,10 +64,8 @@ public class PSQLDeleteTaskTest {
 
         JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
         PreparedStatement prepareStatement = mock(PreparedStatement.class);
-        StorageConnection storageConnection = mock(StorageConnection.class);
 
-        when(connectionPool.getConnection()).thenReturn(storageConnection);
-        when(storageConnection.compileQuery(any())).thenReturn(compiledQuery);
+        when(connection.compileQuery(any())).thenReturn(compiledQuery);
         when(compiledQuery.getPreparedStatement()).thenReturn(prepareStatement);
         when(prepareStatement.executeUpdate()).thenReturn(3);
 
@@ -74,17 +73,17 @@ public class PSQLDeleteTaskTest {
 
         verify(compiledQuery, times(1)).getPreparedStatement();
         verify(prepareStatement, times(1)).executeUpdate();
-        verify(storageConnection, times(1)).commit();
-        verify(storageConnection, times(1)).compileQuery(anyObject());
-        verify(connectionPool, times(1)).returnConnection(storageConnection);
+        verify(connection, times(1)).compileQuery(anyObject());
     }
 
     @Test(expected = TaskPrepareException.class)
     public void should_ThrowsTaskPrepareException() throws Exception {
-        ConnectionPool connectionPool = mock(ConnectionPool.class);
-        DBDeleteTask deleteTask = PSQLDeleteTask.create(connectionPool, collectionName);
+        StorageConnection connection = mock(StorageConnection.class);
+        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        deleteTask.setConnection(connection);
 
         DeletionQuery message = mock(DeletionQuery.class);
+        when(message.getCollectionName()).thenReturn(collectionName);
         when(message.countDocumentIds()).thenReturn(0);
 
         IKey keyWrapper = mock(IKey.class);
@@ -97,15 +96,14 @@ public class PSQLDeleteTaskTest {
 
     @Test(expected = TaskExecutionException.class)
     public void should_ThrowsTaskExecutionException() throws Exception {
-        ConnectionPool connectionPool = mock(ConnectionPool.class);
-        DBDeleteTask deleteTask = PSQLDeleteTask.create(connectionPool, collectionName);
+        StorageConnection connection = mock(StorageConnection.class);
+        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        deleteTask.setConnection(connection);
 
         JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
         PreparedStatement prepareStatement = mock(PreparedStatement.class);
-        StorageConnection storageConnection = mock(StorageConnection.class);
 
-        when(connectionPool.getConnection()).thenReturn(storageConnection);
-        when(storageConnection.compileQuery(any())).thenReturn(compiledQuery);
+        when(connection.compileQuery(any())).thenReturn(compiledQuery);
         when(compiledQuery.getPreparedStatement()).thenReturn(prepareStatement);
         when(prepareStatement.executeUpdate()).thenReturn(3);
 
