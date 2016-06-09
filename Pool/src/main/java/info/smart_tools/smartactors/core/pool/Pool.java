@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.pool;
 
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.ipool.exception.PoolException;
 import info.smart_tools.smartactors.core.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 
