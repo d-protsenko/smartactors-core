@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -31,10 +32,12 @@ public class ResolveByNameIocStrategy implements IResolveDependencyStrategy {
     /**
      * Strategy constructor
      * @param strategy function to create object for storing
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public ResolveByNameIocStrategy(final Function<Object[], Object> strategy) {
-        if (strategy == null) {
-            throw new IllegalArgumentException();
+    public ResolveByNameIocStrategy(final Function<Object[], Object> strategy)
+            throws InvalidArgumentException {
+        if (null == strategy) {
+            throw new InvalidArgumentException("Strategy should not be null");
         }
         this.strategy = strategy;
     }
@@ -52,7 +55,7 @@ public class ResolveByNameIocStrategy implements IResolveDependencyStrategy {
             throws ResolveDependencyStrategyException {
         try {
             Object result = storage.get((String) args[0]);
-            if (result == null) {
+            if (null == result) {
                 result = strategy.apply(args);
                 storage.put((String) args[0], result);
             }

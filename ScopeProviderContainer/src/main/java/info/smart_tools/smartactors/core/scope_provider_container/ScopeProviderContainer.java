@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.scope_provider_container;
 
-import info.smart_tools.smartactors.core.iobserver.IObserver;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.IScopeFactory;
 import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
@@ -35,7 +35,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     /**
      * Local storage for create scope event handlers
      */
-    private List<IObserver<IScope>> handlerStorage = new ArrayList<>();
+    private List<IAction<IScope>> handlerStorage = new ArrayList<>();
 
     /**
      * Constructor with {@link IScopeFactory}
@@ -53,7 +53,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      */
     public IScope getScope(final Object key) throws ScopeProviderException {
         IScope scope = scopeStorage.get(key);
-        if (scope == null) {
+        if (null == scope) {
             throw new ScopeProviderException("Scope not found.");
         }
 
@@ -68,7 +68,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
     public IScope getCurrentScope()
             throws ScopeProviderException {
         IScope scope = currentScope.get();
-        if (scope == null) {
+        if (null == scope) {
             throw new ScopeProviderException("Current Scope is null.");
         }
 
@@ -124,7 +124,7 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
             throws ScopeProviderException {
         try {
             IScope newScope = factory.createScope(params);
-            for (IObserver <IScope> handler : handlerStorage) {
+            for (IAction<IScope> handler : handlerStorage) {
                 handler.execute(newScope);
             }
             Object uuid = UUID.randomUUID();
@@ -142,9 +142,9 @@ public class ScopeProviderContainer implements IScopeProviderContainer {
      * @throws ScopeProviderException if any errors occurred
      */
     @Override
-    public void subscribeOnCreationNewScope(final IObserver<IScope> handler)
+    public void subscribeOnCreationNewScope(final IAction<IScope> handler)
             throws ScopeProviderException {
-        if (handler == null) {
+        if (null == handler) {
             throw new ScopeProviderException("Incoming argument should not be null");
         }
         handlerStorage.add(handler);
