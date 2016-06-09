@@ -20,7 +20,8 @@ public interface IObject {
      *
      * @see IFieldName
      */
-    Object getValue(IFieldName name) throws ReadValueException, InvalidArgumentException;
+    Object getValue(IFieldName name)
+            throws ReadValueException, InvalidArgumentException;
 
     /**
      * Sets new value for named field.
@@ -33,7 +34,8 @@ public interface IObject {
      *
      * @see IFieldName
      */
-    void setValue(IFieldName name, Object value) throws ChangeValueException, InvalidArgumentException;
+    void setValue(IFieldName name, Object value)
+            throws ChangeValueException, InvalidArgumentException;
 
     /**
      * Delete object with note fieldname
@@ -42,7 +44,8 @@ public interface IObject {
      * @throws DeleteValueException if object couldn't delete value with note fieldname.
      * @throws InvalidArgumentException if incoming argument is null
      */
-    void deleteField(IFieldName name) throws DeleteValueException, InvalidArgumentException;
+    void deleteField(IFieldName name)
+            throws DeleteValueException, InvalidArgumentException;
 
     /**
      * Serialize instance of {@link IObject} to
@@ -50,5 +53,6 @@ public interface IObject {
      * @return serialized instance of {@link IObject}
      * @throws SerializeException if any errors occurred on serialization
      */
-    <T> T serialize() throws SerializeException;
+    <T> T serialize()
+            throws SerializeException;
 }

@@ -26,31 +26,25 @@ public class Field<T> {
     }
 
     /**
-     *
-     * @param object
-     * @param targetClass
-     * @return
-     * @throws ReadValueException
-     * @throws ChangeValueException
-     * @throws InvalidArgumentException
+     * Get value from instance of {@link IObject} by {@link IFieldName}
+     * and cast it to {@code targetClass}
+     * @param object instance of {@link IObject}
+     * @param targetClass class to cast to
+     * @return converted value
+     * @throws ReadValueException if any errors occurred on reading value from object
+     * @throws ChangeValueException if any errors occurred on changing value in object
+     * @throws InvalidArgumentException if object are null
      */
     public T from(final IObject object, final Class<T> targetClass)
             throws ReadValueException, ChangeValueException, InvalidArgumentException {
-        if (object == null)
+        if (object == null) {
             throw new InvalidArgumentException("Input IObject in Field.from(IObject, Class) is null");
+        }
 
-        return _from(object, targetClass);
+        return convert(object, targetClass);
     }
 
-    public T from(final IObject object, final TypeDef<T> target)
-            throws ReadValueException, ChangeValueException, InvalidArgumentException {
-        if (object == null || target == null)
-            throw new InvalidArgumentException("Input parameters in Field.from(IObject, TypeDef) method are null");
-
-        return _from(object, target.getTypeAsClass());
-    }
-
-    private T _from(final IObject object, final Class<T> targetClass)
+    private T convert(final IObject object, final Class<T> targetClass)
             throws ReadValueException, ChangeValueException, InvalidArgumentException {
         Object value = object.getValue(name);
         if (value == null) {
@@ -74,8 +68,8 @@ public class Field<T> {
      * Insert into {@link IObject} value-object that casts to target class.
      * @param object IObject that wil be contain value
      * @param value value object
-     * @throws ChangeValueException
-     * @throws InvalidArgumentException
+     * @throws ChangeValueException if any errors occurred on changing value in object
+     * @throws InvalidArgumentException if incoming arguments are null or invalid
      */
     public void inject(final IObject object, final T value)
             throws ChangeValueException, InvalidArgumentException {
@@ -87,9 +81,9 @@ public class Field<T> {
      * @param object IObject that wil be contain value
      * @param value value object
      * @param targetClass final conversion class type
-     * @throws ChangeValueException
-     * @throws InvalidArgumentException
-     * @throws ResolutionException
+     * @throws ChangeValueException if any errors occurred on changing value in object
+     * @throws InvalidArgumentException if incoming arguments are null or invalid
+     * @throws ResolutionException if resolution was failed
      */
     public void inject(final IObject object, final Object value, final Class<? extends T> targetClass)
             throws ChangeValueException, InvalidArgumentException, ResolutionException {
@@ -100,8 +94,8 @@ public class Field<T> {
     /**
      * Delete from input {@link IObject} field {@link Field#name}
      * @param object input object
-     * @throws DeleteValueException
-     * @throws InvalidArgumentException
+     * @throws DeleteValueException if any errors occurred on deleting value from object
+     * @throws InvalidArgumentException if incoming arguments are null or invalid
      */
     public void delete(final IObject object)
             throws DeleteValueException, InvalidArgumentException {
