@@ -28,8 +28,8 @@ public class MyServer implements IServer {
             IPluginCreator creator = new PluginCreator();   // instantiates the plugin correctly
             IPluginLoaderVisitor<String> visitor = new MyPluginVisitor();   // checks the plugin loadings
 
-                ClassLoader urlClassLoader =
-                        new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
+            ClassLoader urlClassLoader =
+                    new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
 
             IPluginLoader<String> pluginLoader = new PluginLoader(          // loads plugins to classloader
                     urlClassLoader,
@@ -38,7 +38,7 @@ public class MyServer implements IServer {
                             IPlugin plugin = creator.create(t, bootstrap);  // creates the plugin instance
                             plugin.load();                                  // loads the plugin
                         } catch (Exception e) {
-                            throw new RuntimeException("Could not create instance of IPlugin");
+                            throw new RuntimeException("Could not create instance of IPlugin", e);
                         }
                     },
                     visitor
@@ -48,7 +48,6 @@ public class MyServer implements IServer {
                     "core.examples/1.0-SNAPSHOT/core.examples-1.0-SNAPSHOT.jar");
             pluginLoader.loadPlugin(examplesJar.getAbsolutePath());     // loads plugins
             bootstrap.start();                                          // starts initialization
-
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed.", e);
         }

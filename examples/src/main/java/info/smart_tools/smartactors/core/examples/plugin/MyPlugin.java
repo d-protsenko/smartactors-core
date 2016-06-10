@@ -15,28 +15,28 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
  */
 public class MyPlugin implements IPlugin {
 
-    private final IBootstrap<IBootstrapItem<String>> bootstrap;
+    private final IBootstrap<IBootstrapItem<String>> bootstrap;             // to register our BootstrapItem
 
-    public MyPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public MyPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {   // this constructor signature is required
         this.bootstrap = bootstrap;
     }
 
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("MyPlugin");
-            item.after("IOC");
+            IBootstrapItem<String> item = new BootstrapItem("MyPlugin");    // our item name
+            item.after("IOC");                                              // dependency, we need IOC
             item.process(() -> {
                 try {
                     IKey<MyClass>key = IOC.resolve(IOC.getKeyForKeyStorage(), "new MyClass");
-                    IOC.register(key, new CreateNewInstanceStrategy(
+                    IOC.register(key, new CreateNewInstanceStrategy(        // it's the initialization action of our plugin
                             (args) -> new MyClass((String) args[0])));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
                 System.out.println("MyPlugin initialized");
             });
-            bootstrap.add(item);
+            bootstrap.add(item);                                            // tell server about our intents
         } catch (Exception e) {
             throw new PluginException("Could not load MyPlugin", e);
         }
