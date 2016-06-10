@@ -69,15 +69,14 @@ public class DBUpsertTask implements IDatabaseTask {
         executionMap.put(INSERT_MODE, () -> {
             try {
                 ResultSet resultSet = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeQuery();
-                if (resultSet.first()) {
-                    try {
-                        //TODO:: replace by field.inject()
-                        rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
-                    } catch (ChangeValueException e) {
-                        throw new TaskExecutionException("Could not set new id on inserted document.");
-                    }
-                } else {
+                if (resultSet == null || !resultSet.first()) {
                     throw new TaskExecutionException("Database returned not enough of generated ids.");
+                }
+                try {
+                    //TODO:: replace by field.inject()
+                    rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
+                } catch (ChangeValueException e) {
+                    throw new TaskExecutionException("Could not set new id on inserted document.");
                 }
             } catch (SQLException e) {
                 throw new TaskExecutionException("Insertion query execution failed because of SQL exception.",e);
@@ -107,7 +106,6 @@ public class DBUpsertTask implements IDatabaseTask {
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create idFieldName.", e);
         }
-
 
         this.rawUpsertQuery = upsertObject;
         try {

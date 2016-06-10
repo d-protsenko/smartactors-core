@@ -23,17 +23,24 @@ import info.smart_tools.smartactors.core.iscope_provider_container.exception.Sco
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.powermock.api.support.membermodification.MemberModifier;
 
+import java.io.StringWriter;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
@@ -42,8 +49,6 @@ public class DBUpsertTaskTest {
 
     private DBUpsertTask task;
     private JDBCCompiledQuery compiledQuery;
-    private UpsertMessage upsertMessage;
-    private String collectionName;
 
     @BeforeClass
     public static void before() throws ScopeProviderException {
@@ -67,8 +72,8 @@ public class DBUpsertTaskTest {
         throws DBUpsertTaskException, InvalidArgumentException, RegistrationException, ResolutionException, ReadValueException, ChangeValueException {
 
         compiledQuery = mock(JDBCCompiledQuery.class);
-        collectionName = "collection";
-        upsertMessage = mock(UpsertMessage.class);
+        String collectionName = "collection";
+        UpsertMessage upsertMessage = mock(UpsertMessage.class);
         when(upsertMessage.getCollectionName()).thenReturn(collectionName);
 
         IOC.register(
@@ -86,24 +91,19 @@ public class DBUpsertTaskTest {
         IKey<UpsertMessage> keyUpsertMessage= IOC.resolve(IOC.getKeyForKeyStorage(), UpsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString());
-        IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
         IOC.register(
             keyDBInsertTask,
-            new CreateNewInstanceStrategy(
-                (args) -> new DBInsertTask()
-            )
+            new SingletonStrategy(mock(DBInsertTask.class))
         );
         IOC.register(
             keyUpsertMessage,
-            new CreateNewInstanceStrategy(
-                (args) -> upsertMessage
-            )
+            new SingletonStrategy(upsertMessage)
         );
+        QueryStatement queryStatement = mock(QueryStatement.class);
+        when(queryStatement.getBodyWriter()).thenReturn(new StringWriter());
         IOC.register(
             keyQueryStatement,
-            new CreateNewInstanceStrategy(
-                (arg) -> new QueryStatement()
-            )
+            new SingletonStrategy(queryStatement)
         );
         IOC.register(
             keyFieldName,
@@ -116,19 +116,20 @@ public class DBUpsertTaskTest {
                 }
             )
         );
-        IOC.register(
-            keyString,
-            new CreateNewInstanceStrategy(
-                String::valueOf
-            )
-        );
 
         task = new DBUpsertTask();
     }
 
     @Test
-    public void ShouldPrepareQuery()
-        throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, TaskSetConnectionException {
+    public void ShouldPrepareInsertQuery_When_IdIsNull()
+        throws Exception {
+
+        IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
+        IOC.register(
+            keyString,
+            new CreateNewInstanceStrategy(
+                (arg) -> null)
+        );
 
         IObject upsertMessage = mock(IObject.class);
         StorageConnection connection = mock(StorageConnection.class);
@@ -136,6 +137,79 @@ public class DBUpsertTaskTest {
 
         task.setConnection(connection);
         task.prepare(upsertMessage);
+
+        DBInsertTask dbInsertTask = (DBInsertTask) MemberModifier.field(DBUpsertTask.class, "dbInsertTask").get(task);
+
+        verify(dbInsertTask).setConnection(connection);
+        verify(dbInsertTask).prepare(upsertMessage);
+    }
+
+    @Test
+    public void ShouldPrepareUpdateQuery_When_IdIsGiven()
+        throws Exception {
+
+        IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
+        IOC.register(
+            keyString,
+            new CreateNewInstanceStrategy(String::valueOf));
+
+        IObject upsertMessage = mock(IObject.class);
+        StorageConnection connection = mock(StorageConnection.class);
+        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+
+        task.setConnection(connection);
+        task.prepare(upsertMessage);
+
+        QueryStatement updateQueryStatement = (QueryStatement) MemberModifier.field(DBUpsertTask.class, "updateQueryStatement").get(task);
+
+        verify(updateQueryStatement).pushParameterSetter(any(SQLQueryParameterSetter.class));
+        verify(connection).compileQuery(eq(updateQueryStatement));
+    }
+
+    @Test
+    public void ShouldExecuteUpdate_When_ModeIsSetToUpdate()
+        throws Exception {
+
+        StorageConnection connection = mock(StorageConnection.class);
+        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(DBUpsertTask.class, "mode").set(task, "update");
+
+        task.setConnection(connection);
+        task.execute();
+
+        verify(preparedStatement).executeUpdate();
+    }
+
+    @Test
+    public void ShouldExecuteUpdate_When_ModeIsSetToInsert()
+        throws Exception {
+
+        StorageConnection connection = mock(StorageConnection.class);
+        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(DBUpsertTask.class, "mode").set(task, "insert");
+        IObject rawUpsertQuery = mock(IObject.class);
+        field(DBUpsertTask.class, "rawUpsertQuery").set(task, rawUpsertQuery);
+        IFieldName fieldName = mock(IFieldName.class);
+        field(DBUpsertTask.class, "idFieldName").set(task, fieldName);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.first()).thenReturn(true);
+        when(resultSet.getLong("id")).thenReturn(123L);
+
+        task.setConnection(connection);
+        task.execute();
+
+        verify(preparedStatement).executeQuery();
+        verify(rawUpsertQuery).setValue(eq(fieldName), eq(123L));
     }
 
     @Test(expected = TaskExecutionException.class)
@@ -149,6 +223,22 @@ public class DBUpsertTaskTest {
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
         field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
         field(DBUpsertTask.class, "mode").set(task, "update");
+
+        task.setConnection(connection);
+        task.execute();
+    }
+
+    @Test(expected = TaskExecutionException.class)
+    public void ShouldThrowException_When_NoDocumentsHaveBeenInserted()
+        throws ResolutionException, ReadValueException, ChangeValueException, StorageException, TaskSetConnectionException, TaskExecutionException, TaskPrepareException, IllegalAccessException {
+
+        StorageConnection connection = mock(StorageConnection.class);
+        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(DBUpsertTask.class, "mode").set(task, "insert");
 
         task.setConnection(connection);
         task.execute();
