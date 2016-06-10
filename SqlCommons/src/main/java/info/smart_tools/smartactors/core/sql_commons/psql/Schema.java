@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.sql_commons.psql;
 
-class Schema {
+public class Schema {
     public static final String ID_COLUMN_NAME = "id";
     public static final String DOCUMENT_COLUMN_NAME = "document";
 
