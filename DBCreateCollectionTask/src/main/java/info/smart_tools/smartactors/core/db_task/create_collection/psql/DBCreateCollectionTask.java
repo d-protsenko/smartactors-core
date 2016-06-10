@@ -14,9 +14,11 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +36,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     private static Map<String,String> indexCreationTemplates = new HashMap<String, String>() {{
         put("ordered","CREATE INDEX ON %s USING BTREE ((%s));\n");
         put("tags","CREATE INDEX ON %s USING GIN ((%s));\n");
-        put("fulltext",String.format("CREATE INDEX ON %%s USING GIN ((to_tsvector('%s',(%%s)::text)));\n",Schema.FTS_DICTIONARY));
+        put("fulltext",String.format("CREATE INDEX ON %%s USING GIN ((to_tsvector('%s',(%%s)::text)));\n", Schema.FTS_DICTIONARY));
         put("datetime","CREATE INDEX ON %s USING BTREE ((parse_timestamp_immutable(%s)));\n");
         put("id","CREATE INDEX ON %1$s USING BTREE ((%2$s));\nCREATE INDEX ON %1$s USING HASH ((%2$s));\n");
     }};
@@ -45,8 +47,8 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     public void prepare(final IObject createCollectionMessage) throws TaskPrepareException {
 
         try {
-            CreateCollectionQuery message = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), CreateCollectionQuery.class.toString()), createCollectionMessage);
-            QueryStatement preparedQuery = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
+            CreateCollectionQuery message = IOC.resolve(Keys.getOrAdd(CreateCollectionQuery.class.toString()), createCollectionMessage);
+            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
             CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
 
             Writer writer = preparedQuery.getBodyWriter();
@@ -59,7 +61,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                 message.getIndexes().put("id","id");
             }
             for (Map.Entry<String, String> entry : message.getIndexes().entrySet()) {
-                FieldPath field = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), FieldPath.class.toString()), entry.getKey());
+                FieldPath field = IOC.resolve(Keys.getOrAdd(FieldPath.class.toString()), entry.getKey());
                 String indexType = entry.getValue();
                 String tpl = indexCreationTemplates.get(indexType);
 
