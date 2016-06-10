@@ -103,8 +103,8 @@ public class DBUpsertTask implements IDatabaseTask {
             throw new TaskPrepareException("Error while get collection name.", e);
         }
         initUpdateQuery();
-        //TODO:: move to DBInsertTask constructor or to the separate class
-        initInsertQuery();
+        //TODO:: move to DBInsertTask prepare() or to the separate class
+//        initInsertQuery();
         try {
             this.idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collectionName + "Id");
         } catch (ResolutionException e) {
@@ -130,14 +130,6 @@ public class DBUpsertTask implements IDatabaseTask {
                 this.mode = INSERT_MODE;
                 dbInsertTask.setConnection(connection);
                 dbInsertTask.prepare(upsertObject);
-
-                //TODO:: move to DBInsertTask prepare() or to the separate class
-//                insertQueryStatement.pushParameterSetter((statement, index) -> {
-//
-//                    statement.setString(index++, message.toString());
-//                    return index;
-//                });
-
 
                 this.compiledQuery = dbInsertTask.getCompiledQuery();
             }
