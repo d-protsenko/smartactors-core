@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertTaskException;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -17,6 +16,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
@@ -50,12 +50,16 @@ public class DBUpsertTask implements IDatabaseTask {
 
     private interface UpsertExecution {
         void upsert() throws TaskExecutionException;
-
     }
 
-    public DBUpsertTask() throws DBUpsertTaskException {
+    public DBUpsertTask() {
 
         executionMap = new HashMap<>();
+        try {
+            this.dbInsertTask = IOC.resolve(Keys.getOrAdd(DBInsertTask.class.toString()));
+        } catch (ResolutionException e) {
+            //TODO:: throw smth like TaskCreateException("Error while resolving insert task.", e); when standard exception would be added
+        }
         executionMap.put(UPDATE_MODE, () -> {
             try {
                 int nUpdated = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeUpdate();
@@ -88,11 +92,10 @@ public class DBUpsertTask implements IDatabaseTask {
     public void prepare(final IObject upsertObject) throws TaskPrepareException {
 
         try {
-            UpsertMessage upsertMessage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), UpsertMessage.class.toString()), upsertObject);
+            UpsertMessage upsertMessage = IOC.resolve(Keys.getOrAdd(UpsertMessage.class.toString()), upsertObject);
             this.collectionName = upsertMessage.getCollectionName();
-            this.dbInsertTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString()));
-            this.updateQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
-            this.insertQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
+            this.updateQueryStatement = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
+            this.insertQueryStatement = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Error while resolving query statement.", e);
         } catch (ReadValueException | ChangeValueException e) {
@@ -102,14 +105,14 @@ public class DBUpsertTask implements IDatabaseTask {
         //TODO:: move to DBInsertTask constructor or to the separate class
         initInsertQuery();
         try {
-            this.idFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), collectionName + "Id");
+            this.idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collectionName + "Id");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create idFieldName.", e);
         }
 
         this.rawUpsertQuery = upsertObject;
         try {
-            String id = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString()), upsertObject.getValue(idFieldName));
+            String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), upsertObject.getValue(idFieldName));
             if (id != null) {
                 this.mode = UPDATE_MODE;
                 updateQueryStatement.pushParameterSetter((statement, index) -> {

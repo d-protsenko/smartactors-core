@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertTaskException;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -21,6 +20,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
@@ -69,7 +69,7 @@ public class DBUpsertTaskTest {
 
     @Before
     public void setUp()
-        throws DBUpsertTaskException, InvalidArgumentException, RegistrationException, ResolutionException, ReadValueException, ChangeValueException {
+        throws InvalidArgumentException, RegistrationException, ResolutionException, ReadValueException, ChangeValueException {
 
         compiledQuery = mock(JDBCCompiledQuery.class);
         String collectionName = "collection";
@@ -87,10 +87,10 @@ public class DBUpsertTaskTest {
                     }
                 })
         );
-        IKey<DBInsertTask> keyDBInsertTask = IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString());
-        IKey<UpsertMessage> keyUpsertMessage= IOC.resolve(IOC.getKeyForKeyStorage(), UpsertMessage.class.toString());
-        IKey<QueryStatement> keyQueryStatement = IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString());
-        IKey<IFieldName> keyFieldName = IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString());
+        IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
+        IKey<UpsertMessage> keyUpsertMessage= Keys.getOrAdd(UpsertMessage.class.toString());
+        IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
+        IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IOC.register(
             keyDBInsertTask,
             new SingletonStrategy(mock(DBInsertTask.class))
@@ -124,7 +124,7 @@ public class DBUpsertTaskTest {
     public void ShouldPrepareInsertQuery_When_IdIsNull()
         throws Exception {
 
-        IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
+        IKey<String> keyString = Keys.getOrAdd(String.class.toString());
         IOC.register(
             keyString,
             new CreateNewInstanceStrategy(
@@ -148,7 +148,7 @@ public class DBUpsertTaskTest {
     public void ShouldPrepareUpdateQuery_When_IdIsGiven()
         throws Exception {
 
-        IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
+        IKey<String> keyString = Keys.getOrAdd(String.class.toString());
         IOC.register(
             keyString,
             new CreateNewInstanceStrategy(String::valueOf));
