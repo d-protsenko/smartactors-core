@@ -40,7 +40,6 @@ public class DBInsertTask implements IDatabaseTask {
     public void prepare(final IObject insertQuery) throws TaskPrepareException {
         try {
             InsertMessage message = IOC.resolve(Keys.getOrAdd(InsertMessage.class.getName()), insertQuery);
-            //InsertMessage message = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), InsertMessage.class.toString()), insertQuery);
             QueryStatement preparedQuery = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
             this.collectionName = message.getCollectionName();
             this.idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collectionName + "Id");
@@ -67,7 +66,7 @@ public class DBInsertTask implements IDatabaseTask {
             } else {
                 throw new TaskPrepareException("This object already exists/was in a collection");
             }
-            compiledQuery = connectionPool.getConnection().compileQuery(preparedQuery);
+            compiledQuery = connection.compileQuery(preparedQuery);
         } catch (ChangeValueException | ReadValueException | ResolutionException | StorageException | IOException e) {
             throw new TaskPrepareException("Can't prepare insert query");
         }
@@ -75,7 +74,7 @@ public class DBInsertTask implements IDatabaseTask {
 
     @Override
     public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
-
+        this.connection = connection;
     }
 
     @Override

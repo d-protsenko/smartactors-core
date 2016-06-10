@@ -22,12 +22,4 @@ public interface InsertMessage {
      */
     String getCollectionName() throws ChangeValueException, ReadValueException;
 
-    /**
-     * Get document Id
-     * @return returns query id
-     * @throws ChangeValueException
-     * @throws ReadValueException
-     */
-    String getId() throws ChangeValueException, ReadValueException;
-
 }
