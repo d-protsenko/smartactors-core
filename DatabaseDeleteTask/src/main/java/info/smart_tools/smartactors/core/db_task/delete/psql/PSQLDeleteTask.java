@@ -21,8 +21,11 @@ import java.io.Writer;
  * Task for deletion documents from database.
  */
 public class PSQLDeleteTask extends DBDeleteTask {
+    /** Current connection to database. */
     private StorageConnection connection;
+    /** Compiled deletion query. */
     private CompiledQuery query;
+    /** {@see DeletionQuery} {@link DeletionQuery} */
     private DeletionQuery message;
 
     /**

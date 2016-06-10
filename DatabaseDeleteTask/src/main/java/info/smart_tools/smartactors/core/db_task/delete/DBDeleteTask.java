@@ -9,8 +9,14 @@ import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
 
+/**
+ * Common deletion task executor.
+ */
 public abstract class DBDeleteTask implements IDatabaseTask {
 
+    /**
+     * Default constructor.
+     */
     protected DBDeleteTask() {}
 
     /**
