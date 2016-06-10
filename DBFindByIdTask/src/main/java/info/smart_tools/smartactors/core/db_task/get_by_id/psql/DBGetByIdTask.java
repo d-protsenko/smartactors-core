@@ -59,7 +59,7 @@ public class DBGetByIdTask implements IDatabaseTask {
             ResultSet resultSet = ((JDBCCompiledQuery) compiledQuery).getPreparedStatement().executeQuery();
             if (resultSet.first()) {
                 try {
-                    message.setSearchResult(resultSet.getObject(0));
+                    message.setSearchResult((IObject) resultSet.getObject(0));
                 } catch (ChangeValueException e) {
                     throw new StorageException("Could not set the document.");
                 }

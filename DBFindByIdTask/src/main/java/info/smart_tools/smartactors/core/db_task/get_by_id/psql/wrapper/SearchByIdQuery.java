@@ -26,9 +26,9 @@ public interface SearchByIdQuery {
 
     /**
      * Set the found object to message
-     * @param object
+     * @param object the found document
      * @throws ReadValueException
      * @throws ChangeValueException
      */
-    void setSearchResult(Object object) throws ReadValueException, ChangeValueException;
+    void setSearchResult(IObject object) throws ReadValueException, ChangeValueException;
 }
