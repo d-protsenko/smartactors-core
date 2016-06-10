@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -161,10 +162,10 @@ public class DBUpsertTask implements IDatabaseTask {
         Writer writer = updateQueryStatement.getBodyWriter();
         try {
             writer.write(String.format(
-                "UPDATE %s AS tab SET %s = docs.document FROM (VALUES", CollectionName.fromString(collectionName).toString(), "document"
+                "UPDATE %s AS tab SET %s = docs.document FROM (VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
             ));
             writer.write("(?,?::jsonb)");
-            writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", "id"));
+            writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", Schema.ID_COLUMN_NAME));
         } catch (IOException | QueryBuildException e) {
             throw new TaskPrepareException("Error while initialize update query.", e);
         }
@@ -175,10 +176,10 @@ public class DBUpsertTask implements IDatabaseTask {
         Writer writer = insertQueryStatement.getBodyWriter();
         try {
             writer.write(String.format(
-                "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), "document"
+                "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
             ));
             writer.write("(?::jsonb)");
-            writer.write(String.format(" RETURNING %s AS id;", "id"));
+            writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
         } catch (IOException | QueryBuildException e) {
             throw new TaskPrepareException("Error while initialize insert query.", e);
         }
