@@ -33,7 +33,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>IAction</module>
+        <module>IObserver</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
@@ -63,6 +63,8 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>DataBaseStorage</module>
+        <module>SqlCommons</module>
     </modules>
 
     <properties>
