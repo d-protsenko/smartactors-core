@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.db_task.upsert.psql;
 
-import info.smart_tools.smartactors.core.db_storage.DataBaseStorage;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertTaskException;
+import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -32,7 +32,6 @@ import java.sql.SQLException;
  */
 public class DBUpsertTask implements IDatabaseTask {
 
-    private ConnectionPool connectionPool;
     private String collectionName;
     private DBInsertTask dbInsertTask;
     private IObject rawUpsertQuery;
@@ -40,52 +39,55 @@ public class DBUpsertTask implements IDatabaseTask {
     private CompiledQuery compiledQuery;
     private QueryStatement updateQueryStatement;
     private QueryStatement insertQueryStatement;
+    private StorageConnection connection;
 
     private IFieldName idFieldName;
 
-    public DBUpsertTask(ConnectionPool connectionPool, String collectionName) throws DBUpsertTaskException {
+    public DBUpsertTask() throws DBUpsertTaskException {}
 
-        this.collectionName = collectionName;
-        this.connectionPool = connectionPool;
+    @Override
+    public void prepare(final IObject upsertObject) throws TaskPrepareException {
+
         try {
-            this.dbInsertTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString()), connectionPool, collectionName);
+            UpsertMessage upsertMessage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), UpsertMessage.class.toString()), upsertObject);
+            this.collectionName = upsertMessage.getCollectionName();
+            this.dbInsertTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString()));
             this.updateQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
             this.insertQueryStatement = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
         } catch (ResolutionException e) {
-            throw new DBUpsertTaskException("Error while resolving query statement.", e);
+            throw new TaskPrepareException("Error while resolving query statement.", e);
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new TaskPrepareException("Error while get collection name.", e);
         }
         initUpdateQuery();
         //TODO:: move to DBInsertTask constructor or to the separate class
         initInsertQuery();
         this.isUpdate = false;
         try {
-            this.idFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), collectionName + "ID");
+            this.idFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), collectionName + "Id");
         } catch (ResolutionException e) {
-            throw new DBUpsertTaskException("Can't create idFieldName.", e);
+            throw new TaskPrepareException("Can't create idFieldName.", e);
         }
-    }
 
-    @Override
-    public void prepare(final IObject upsertMessage) throws TaskPrepareException {
 
-        this.rawUpsertQuery = upsertMessage;
+        this.rawUpsertQuery = upsertObject;
         try {
-            String id = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString()), upsertMessage.getValue(idFieldName));
+            String id = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString()), upsertObject.getValue(idFieldName));
             if (id != null) {
 
                 isUpdate = true;
                 updateQueryStatement.pushParameterSetter((statement, index) -> {
                     try {
                         statement.setLong(index++, Long.parseLong(id));
-                        statement.setString(index++, upsertMessage.toString());
+                        statement.setString(index++, upsertObject.toString());
                     } catch (NullPointerException | NumberFormatException e) {
                         throw new QueryBuildException("Error while writing update query statement: ", e);
                     }
                     return index;
                 });
-                this.compiledQuery = connectionPool.getConnection().compileQuery(updateQueryStatement);
+                this.compiledQuery = connection.compileQuery(updateQueryStatement);
             } else {
-                dbInsertTask.prepare(upsertMessage);
+                dbInsertTask.prepare(upsertObject);
 
                 //TODO:: move to DBInsertTask prepare() or to the separate class
 //                insertQueryStatement.pushParameterSetter((statement, index) -> {
@@ -103,22 +105,21 @@ public class DBUpsertTask implements IDatabaseTask {
     }
 
     @Override
+    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
+        this.connection = connection;
+    }
+
+    @Override
     public void execute() throws TaskExecutionException {
 
         if (isUpdate) {
             try {
-                DataBaseStorage.executeTransaction(connectionPool, (connection) -> {
-                    try {
-                        int nUpdated = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeUpdate();
-                        if (nUpdated == 0) {
-                            throw new QueryExecutionException("Update query failed: wrong count of documents is updated.");
-                        }
-                    } catch (Exception e) {
-                        throw new StorageException("Collection creation query execution failed because of SQL exception.",e);
-                    }
-                });
+                int nUpdated = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeUpdate();
+                if (nUpdated == 0) {
+                    throw new TaskExecutionException("Update query failed: wrong count of documents is updated.");
+                }
                 return;
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 throw new TaskExecutionException("Transaction execution has been failed.", e);
             }
         }
@@ -129,17 +130,17 @@ public class DBUpsertTask implements IDatabaseTask {
                     //TODO:: replace by field.inject()
                     rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
-                    throw new StorageException("Could not set new id on inserted document.");
+                    throw new TaskExecutionException("Could not set new id on inserted document.");
                 }
             } else {
                 throw new TaskExecutionException("Database returned not enough of generated ids.");
             }
-        } catch (StorageException | SQLException e) {
+        } catch (SQLException e) {
             throw new TaskExecutionException("Insertion query execution failed because of SQL exception.",e);
         }
     }
 
-    private void initUpdateQuery() throws DBUpsertTaskException {
+    private void initUpdateQuery() throws TaskPrepareException {
 
         Writer writer = updateQueryStatement.getBodyWriter();
         try {
@@ -149,11 +150,11 @@ public class DBUpsertTask implements IDatabaseTask {
             writer.write("(?,?::jsonb)");
             writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", "id"));
         } catch (IOException | QueryBuildException e) {
-            throw new DBUpsertTaskException("Error while initialize update query.", e);
+            throw new TaskPrepareException("Error while initialize update query.", e);
         }
     }
 
-    private void initInsertQuery() throws DBUpsertTaskException {
+    private void initInsertQuery() throws TaskPrepareException {
 
         Writer writer = insertQueryStatement.getBodyWriter();
         try {
@@ -163,7 +164,7 @@ public class DBUpsertTask implements IDatabaseTask {
             writer.write("(?::jsonb)");
             writer.write(String.format(" RETURNING %s AS id;", "id"));
         } catch (IOException | QueryBuildException e) {
-            throw new DBUpsertTaskException("Error while initialize insert query.", e);
+            throw new TaskPrepareException("Error while initialize insert query.", e);
         }
     }
 }

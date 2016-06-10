@@ -5,9 +5,10 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertTaskException;
+import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -37,7 +38,7 @@ public class DBUpsertTaskTest {
 
     private DBUpsertTask task;
     private CompiledQuery compiledQuery;
-    private ConnectionPool connectionPool;
+    private UpsertMessage upsertMessage;
     private String collectionName;
 
     @BeforeClass
@@ -59,11 +60,12 @@ public class DBUpsertTaskTest {
 
     @Before
     public void setUp()
-        throws DBUpsertTaskException, InvalidArgumentException, RegistrationException, ResolutionException {
+        throws DBUpsertTaskException, InvalidArgumentException, RegistrationException, ResolutionException, ReadValueException, ChangeValueException {
 
         compiledQuery = mock(CompiledQuery.class);
-        connectionPool = mock(ConnectionPool.class);
         collectionName = "collection";
+        upsertMessage = mock(UpsertMessage.class);
+        when(upsertMessage.getCollectionName()).thenReturn(collectionName);
 
         IOC.register(
             IOC.getKeyForKeyStorage(),
@@ -77,13 +79,20 @@ public class DBUpsertTaskTest {
                 })
         );
         IKey<DBInsertTask> keyDBInsertTask = IOC.resolve(IOC.getKeyForKeyStorage(), DBInsertTask.class.toString());
+        IKey<UpsertMessage> keyUpsertMessage= IOC.resolve(IOC.getKeyForKeyStorage(), UpsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString());
         IKey<String> keyString = IOC.resolve(IOC.getKeyForKeyStorage(), String.class.toString());
         IOC.register(
             keyDBInsertTask,
             new CreateNewInstanceStrategy(
-                (args) -> new DBInsertTask((ConnectionPool) args[0], String.valueOf(args[1]))
+                (args) -> new DBInsertTask()
+            )
+        );
+        IOC.register(
+            keyUpsertMessage,
+            new CreateNewInstanceStrategy(
+                (args) -> upsertMessage
             )
         );
         IOC.register(
@@ -110,17 +119,18 @@ public class DBUpsertTaskTest {
             )
         );
 
-        task = new DBUpsertTask(connectionPool, collectionName);
+        task = new DBUpsertTask();
     }
 
     @Test
-    public void ShouldPrepareQuery() throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException {
+    public void ShouldPrepareQuery()
+        throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, TaskSetConnectionException {
 
         IObject upsertMessage = mock(IObject.class);
         StorageConnection connection = mock(StorageConnection.class);
-        when(connectionPool.getConnection()).thenReturn(connection);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
+        task.setConnection(connection);
         task.prepare(upsertMessage);
     }
 }
