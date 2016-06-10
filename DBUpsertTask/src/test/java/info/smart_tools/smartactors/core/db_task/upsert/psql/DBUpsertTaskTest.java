@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.db_task.upsert.psql;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.exception.DBUpsertTaskException;
@@ -21,8 +20,10 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
@@ -30,14 +31,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.sql.PreparedStatement;
+
 import static org.mockito.Matchers.any;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 public class DBUpsertTaskTest {
 
     private DBUpsertTask task;
-    private CompiledQuery compiledQuery;
+    private JDBCCompiledQuery compiledQuery;
     private UpsertMessage upsertMessage;
     private String collectionName;
 
@@ -62,7 +66,7 @@ public class DBUpsertTaskTest {
     public void setUp()
         throws DBUpsertTaskException, InvalidArgumentException, RegistrationException, ResolutionException, ReadValueException, ChangeValueException {
 
-        compiledQuery = mock(CompiledQuery.class);
+        compiledQuery = mock(JDBCCompiledQuery.class);
         collectionName = "collection";
         upsertMessage = mock(UpsertMessage.class);
         when(upsertMessage.getCollectionName()).thenReturn(collectionName);
@@ -132,5 +136,21 @@ public class DBUpsertTaskTest {
 
         task.setConnection(connection);
         task.prepare(upsertMessage);
+    }
+
+    @Test(expected = TaskExecutionException.class)
+    public void ShouldThrowException_When_NoDocumentsHaveBeenUpdated()
+        throws ResolutionException, ReadValueException, ChangeValueException, StorageException, TaskSetConnectionException, TaskExecutionException, TaskPrepareException, IllegalAccessException {
+
+        StorageConnection connection = mock(StorageConnection.class);
+        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(DBUpsertTask.class, "mode").set(task, "update");
+
+        task.setConnection(connection);
+        task.execute();
     }
 }
