@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
-public interface InsertQuery {
+public interface InsertMessage {
 
     /**
      * Get document-object
