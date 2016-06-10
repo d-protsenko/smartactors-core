@@ -1,9 +1,13 @@
 package info.smart_tools.smartactors.core.db_task.search.psql;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
+import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
+import info.smart_tools.smartactors.core.db_task.search.utils.sql.GeneralSQLOrderWriter;
+import info.smart_tools.smartactors.core.db_task.search.utils.sql.GeneralSQLPagingWriter;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -16,7 +20,6 @@ import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolve
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 
 /**
  * Task for searching documents in database.
@@ -29,18 +32,18 @@ public class PSQLSearchTask extends DBSearchTask {
     /** {@see SearchQuery} {@link SearchQuery} */
     private SearchQuery message;
 
-    /**  */
-    private static final int MAX_PAGE_SIZE = 10000;
-    private static final int MIN_PAGE_SIZE = 1;
-
+    /** Modules for building a searching query. */
     private QueryConditionWriterResolver conditionsWriterResolver;
-    private OrderWriter orderWriter;
+    private SearchQueryWriter orderWriter;
+    private SearchQueryWriter pagingWriter;
 
     /**
      * A single constructor for creation {@link PSQLSearchTask}
      */
     private PSQLSearchTask() {
-        conditionsWriterResolver = new ConditionsWriterResolver();
+        conditionsWriterResolver = ConditionsWriterResolver.create();
+        orderWriter = GeneralSQLOrderWriter.create();
+        pagingWriter = GeneralSQLPagingWriter.create();
     }
 
     /**
@@ -54,10 +57,11 @@ public class PSQLSearchTask extends DBSearchTask {
      * {@see IDatabaseTask} {@link info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask}
      * Prepare query for searching documents in database by some criteria.
      *
-     * @param message
+     * @param message {@see SearchQuery} {@link SearchQuery}
      *
      * @throws TaskPrepareException when:
-     *
+     *                1. IOC resolution error;
+     *                2. Error building a searching query statement.
      */
     @Override
     public void prepare(@Nonnull final IObject message) throws TaskPrepareException {
@@ -69,6 +73,12 @@ public class PSQLSearchTask extends DBSearchTask {
         }
     }
 
+    /**
+     * {@see ITask} {@link info.smart_tools.smartactors.core.itask.ITask}
+     * Executes searching documents by criteria from database.
+     *
+     * @throws TaskExecutionException when error in execution process.
+     */
     @Override
     public void execute() throws TaskExecutionException {
         execute(query, message);
@@ -79,35 +89,22 @@ public class PSQLSearchTask extends DBSearchTask {
         this.connection = storageConnection;
     }
 
-    private CompiledQuery createQuery(final SearchQuery searchMessage) throws TaskPrepareException {
+    private CompiledQuery createQuery(final SearchQuery queryMessage) throws TaskPrepareException {
         QueryStatement queryStatement = new QueryStatement();
         try {
             queryStatement.getBodyWriter().write(String.format("SELECT * FROM %s WHERE",
-                    CollectionName.fromString(searchMessage.getCollectionName()).toString()));
+                    CollectionName.fromString(queryMessage.getCollectionName()).toString()));
 
             conditionsWriterResolver
                     .resolve(null)
-                    .write(queryStatement, conditionsWriterResolver, null, searchMessage.getCriteria());
+                    .write(queryStatement, conditionsWriterResolver, null, queryMessage.getCriteria());
 
-            orderWriter.writeOrderByStatement(queryStatement, searchMessage);
-
-            queryStatement.getBodyWriter().write("LIMIT(?)OFFSET(?)");
-            queryStatement.pushParameterSetter((statement, index) -> {
-                int pageSize = searchMessage.getPageSize();
-                int pageNumber = searchMessage.getPageNumber() - 1;
-
-                pageNumber = (pageNumber < 0) ? 0 : pageNumber;
-                pageSize = (pageSize > MAX_PAGE_SIZE) ?
-                        MAX_PAGE_SIZE : ((pageSize < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : pageSize);
-
-                statement.setInt(index++, pageSize);
-                statement.setInt(index++, pageSize * pageNumber);
-                return index;
-            });
+            orderWriter.write(queryStatement, queryMessage);
+            pagingWriter.write(queryStatement, queryMessage);
 
             return connection.compileQuery(queryStatement);
-        } catch (IOException e) {
-            throw new TaskPrepareException("Error while writing search query statement.",e);
+        } catch (QueryBuildException e) {
+            throw new TaskPrepareException("Error while writing search query statement.", e);
         } catch (Exception e) {
             throw new TaskPrepareException(e.getMessage(), e);
         }

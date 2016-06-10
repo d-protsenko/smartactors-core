@@ -1,11 +1,8 @@
 package info.smart_tools.smartactors.core.db_task.search.psql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolver;
-import info.smart_tools.smartactors.core.sql_commons.FieldPath;
-import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriter;
-import info.smart_tools.smartactors.core.sql_commons.ConditionsResolverBase;
+import info.smart_tools.smartactors.core.sql_commons.*;
+import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -45,7 +42,7 @@ final class Operators {
                 return index;
             });
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.",e);
+            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
     }
 
@@ -77,7 +74,7 @@ final class Operators {
             String condition = isNull ? "(%s) is null" : "(%s) is not null";
             query.getBodyWriter().write(String.format(condition, contextFieldPath.getSQLRepresentation()));
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.",e);
+            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
     }
 
@@ -167,6 +164,6 @@ final class Operators {
         // Fulltext search
         resolver.addOperator("$fulltext", formattedCheckWriter(
                 String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
-                        "russian", "russian")));
+                        Schema.FTS_DICTIONARY, Schema.FTS_DICTIONARY)));
     }
 }

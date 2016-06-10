@@ -19,19 +19,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Common a searching task executor.
  */
 public abstract class DBSearchTask implements IDatabaseTask {
     /**
-     *
+     * Default constructor.
      */
     protected DBSearchTask() {}
 
     /**
+     * Executes a searching query of rows to database and pushes the result in the incoming message.
      *
-     * @param query
-     * @param message
-     * @throws TaskExecutionException
+     * @param query - a compiled executable query to database.
+     * @param message - source message with parameters for query.
+     *
+     * @throws TaskExecutionException when :
+     *                1. IOC resolution error;
+     *                2. Error change a value into {@link IObject};
+     *                3. Error during search query execution.
      */
     protected void execute(@Nonnull final CompiledQuery query, @Nonnull final SearchQuery message)
             throws TaskExecutionException {

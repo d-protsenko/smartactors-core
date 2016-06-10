@@ -1,7 +1,9 @@
-package info.smart_tools.smartactors.core.db_task.search.psql;
+package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
+import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -11,9 +13,13 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
-final class OrderWriter {
+/**
+ *
+ */
+public class GeneralSQLOrderWriter implements SearchQueryWriter {
     private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
     private static final IFieldName ORDER_DIRECTION_ORDER_BY_ITEM_FN;
 
@@ -28,8 +34,27 @@ final class OrderWriter {
         }
     }
 
-    public void writeOrderByStatement(final QueryStatement queryStatement, final SearchQuery queryMessage)
-            throws TaskPrepareException {
+    private GeneralSQLOrderWriter() {}
+
+    /**
+     *
+     * @return
+     */
+    public static GeneralSQLOrderWriter create() {
+        return new GeneralSQLOrderWriter();
+    }
+
+    /**
+     *
+     * @param queryStatement
+     * @param queryMessage
+     * @throws QueryBuildException
+     */
+    @Override
+    public void write(
+            @Nonnull final QueryStatement queryStatement,
+            @Nonnull final SearchQuery queryMessage
+    ) throws QueryBuildException {
         if (queryMessage.countOrderBy() == 0) {
             return;
         }
@@ -56,7 +81,7 @@ final class OrderWriter {
 
             queryStatement.getBodyWriter().write("(1)");
         } catch (IOException | ResolutionException | ReadValueException e) {
-            throw new TaskPrepareException("Error while writing ORDER BY clause of search query SQL.", e);
+            throw new QueryBuildException("Error while writing ORDER BY clause of search query SQL.", e);
         }
     }
 }

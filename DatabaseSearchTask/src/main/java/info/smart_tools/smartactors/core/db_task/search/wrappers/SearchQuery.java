@@ -30,31 +30,29 @@ import info.smart_tools.smartactors.core.iobject.IObject;
  * </pre>
  */
 public interface SearchQuery {
-    /**  */
+    /** The name of the collection to which the query is executed. */
     String getCollectionName();
     void setCollectionName(String collectionName);
 
-    /**  */
+    /** Criteria for searching query. */
     Object getCriteria();
     void setCriteria(Object criteria);
 
-    /**  */
+    /** Number of pages in searching query. */
     Integer getPageSize();
     void setPageSize(Integer size);
 
-    /**  */
+    /** A Page number at which to start searching. */
     Integer getPageNumber();
     void setPageNumber(Integer number);
 
-    /**  */
+    /** A search result with found objects. */
     IObject getSearchResult(int index);
-    /**  */
-    int countSearchResult();
     void setSearchResult(Iterable<IObject> documents);
+    int countSearchResult();
 
-    /**  */
+    /** Order of search result list. */
     IObject getOrderBy(int n);
-    /**  */
     int countOrderBy();
     void setOrderBy(Iterable<IObject> order);
 }
