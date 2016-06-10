@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 
-import info.smart_tools.smartactors.core.db_storage.DataBaseStorage;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.CreateCollectionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class DBCreateCollectionTask implements IDatabaseTask {
 
     private CompiledQuery compiledQuery;
-    private ConnectionPool connectionPool;
+    private StorageConnection connection;
 
     private static Map<String,String> indexCreationTemplates = new HashMap<String, String>() {{
         put("ordered","CREATE INDEX ON %s USING BTREE ((%s));\n");
@@ -39,9 +39,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
         put("id","CREATE INDEX ON %1$s USING BTREE ((%2$s));\nCREATE INDEX ON %1$s USING HASH ((%2$s));\n");
     }};
 
-    public DBCreateCollectionTask(ConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
-    }
+    public DBCreateCollectionTask() {}
 
     @Override
     public void prepare(final IObject createCollectionMessage) throws TaskPrepareException {
@@ -71,7 +69,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
 
                 preparedQuery.getBodyWriter().write(String.format(tpl, collectionName.toString(), field.getSQLRepresentation()));
             }
-            this.compiledQuery = connectionPool.getConnection().compileQuery(preparedQuery);
+            this.compiledQuery = connection.compileQuery(preparedQuery);
         } catch (ReadValueException | ChangeValueException| ResolutionException | StorageException | IOException e) {
             throw new TaskPrepareException("Error while writing collection creation statement.",e);
         }
@@ -81,15 +79,14 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
 
         try {
-            DataBaseStorage.executeTransaction(connectionPool, (connection) -> {
-                try {
-                    ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().execute();
-                } catch (Exception e) {
-                    throw new StorageException("Collection creation query execution failed because of SQL exception.",e);
-                }
-            });
+            ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().execute();
         } catch (Exception e) {
-            throw new TaskExecutionException("Transaction execution has been failed.", e);
+            throw new TaskExecutionException("Collection creation query execution failed because of SQL exception.",e);
         }
+    }
+
+    @Override
+    public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
+        this.connection = connection;
     }
 }

@@ -1,31 +1,36 @@
 package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 
-import info.smart_tools.smartactors.core.db_storage.DataBaseStorage;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.ConnectionPool;
 import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.CreateCollectionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
+import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -33,26 +38,26 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
-@PrepareForTest({IOC.class, DataBaseStorage.class})
+@PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
 public class DBCreateCollectionTaskTest {
 
     private DBCreateCollectionTask task;
-    private CompiledQuery compiledQuery;
-    private ConnectionPool connectionPool;
+    private JDBCCompiledQuery compiledQuery;
+    private StorageConnection connection;
 
     @Before
     public void setUp() throws StorageException, IllegalAccessException {
 
-        compiledQuery = mock(CompiledQuery.class);
-        connectionPool = mock(ConnectionPool.class);
-
-        task = new DBCreateCollectionTask(connectionPool);
+        compiledQuery = mock(JDBCCompiledQuery.class);
+        task = new DBCreateCollectionTask();
     }
 
     @Test
-    public void ShouldPrepareQuery() throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException {
+    public void ShouldPrepareQuery()
+        throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
         CreateCollectionQuery message = mock(CreateCollectionQuery.class);
@@ -62,17 +67,16 @@ public class DBCreateCollectionTaskTest {
         indexes.put("meta.tags", "tags");
         when(message.getIndexes()).thenReturn(indexes);
         StorageConnection connection = mock(StorageConnection.class);
-        when(connectionPool.getConnection()).thenReturn(connection);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
+        task.setConnection(connection);
         task.prepare(createCollectionMessage);
-        verify(connectionPool).getConnection();
         verify(connection).compileQuery(eq(preparedQuery));
     }
 
     @Test(expected = TaskPrepareException.class)
-    public void ShouldThrowException_When_IndexIsInvalid() throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException {
-
+    public void ShouldThrowException_When_IndexIsInvalid()
+        throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
         CreateCollectionQuery message = mock(CreateCollectionQuery.class);
@@ -81,23 +85,37 @@ public class DBCreateCollectionTaskTest {
         Map<String, String> indexes = new HashMap<>();
         indexes.put("meta.tags", "invalid");
         when(message.getIndexes()).thenReturn(indexes);
-        StorageConnection connection = mock(StorageConnection.class);
-        when(connectionPool.getConnection()).thenReturn(connection);
+        connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
+        task.setConnection(connection);
         task.prepare(createCollectionMessage);
-        verify(connectionPool).getConnection();
-        verify(connection).compileQuery(eq(preparedQuery));
+        fail();
     }
 
     @Test
     public void ShouldExecuteQuery() throws Exception {
 
-        mockStatic(DataBaseStorage.class);
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        field(DBCreateCollectionTask.class, "compiledQuery").set(task, compiledQuery);
         task.execute();
 
-        PowerMockito.verifyStatic();
-        DataBaseStorage.executeTransaction(eq(connectionPool), any());
+        verify(compiledQuery).getPreparedStatement();
+        verify(preparedStatement).execute();
+    }
+
+    @Test
+    public void ShouldSetConnection() throws Exception {
+
+        StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
+        connection = mock(StorageConnection.class);
+        task.setConnection(connection);
+        StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
+
+        assertNull(storageConnectionBefore);
+        assertNotNull(storageConnectionAfter);
+        assertEquals(connection, storageConnectionAfter);
     }
 
     private void initDataForPrepare(PreparedQuery preparedQuery, CreateCollectionQuery message, IObject createCollectionMessage)
