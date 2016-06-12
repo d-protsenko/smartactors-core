@@ -24,6 +24,9 @@ import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 
 public class DBInsertTask implements IDatabaseTask {
 
@@ -31,6 +34,7 @@ public class DBInsertTask implements IDatabaseTask {
     private String collectionName;
     private StorageConnection connection;
     private IFieldName idFieldName;
+    private QueryStatement preparedQuery;
 
     public DBInsertTask() {
 
@@ -40,21 +44,15 @@ public class DBInsertTask implements IDatabaseTask {
     public void prepare(final IObject insertQuery) throws TaskPrepareException {
         try {
             InsertMessage message = IOC.resolve(Keys.getOrAdd(InsertMessage.class.getName()), insertQuery);
-            QueryStatement preparedQuery = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), QueryStatement.class.toString()));
+            this.preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
             this.collectionName = message.getCollectionName();
             this.idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collectionName + "Id");
 
             String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), insertQuery.getValue(idFieldName));
 
+            initPreparedQuery(message);
 
             if (id == null){
-                Writer writer = preparedQuery.getBodyWriter();
-                writer.write(String.format("INSERT %s AS tab SET %s = docs.document FROM (VALUES",
-                        CollectionName.fromString(message.getCollectionName()).toString(),
-                        Schema.DOCUMENT_COLUMN_NAME));
-                writer.write("(?::jsonb)");
-                writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
-
                 preparedQuery.pushParameterSetter((statement, index) -> {
                     try {
                         statement.setString(index++ , message.toString());
@@ -81,16 +79,33 @@ public class DBInsertTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
         try {
             try {
-                int nUpdate = ((JDBCCompiledQuery) compiledQuery).getPreparedStatement().executeUpdate();
+                ResultSet resultSet;
+                try {
+                    resultSet = ((JDBCCompiledQuery) compiledQuery).getPreparedStatement().executeQuery();
+                } catch (SQLTimeoutException e){
+                    throw new Exception("Timeout DB access", e);
+                } catch (SQLException e){
+                    throw new Exception("DataBase access error ", e);
+                }
 
-                if (nUpdate == 0)
-                    throw new QueryExecutionException("Insert query failed: wrong count of documents added");
-
+                if (resultSet == null || !resultSet.first()){
+                    throw new QueryExecutionException("Database returned not enough generated ids");
+                }
             } catch (Exception e){
                 throw new StorageException("Collection creation query execution failed because of SQL exception.",e);
             }
         } catch (Exception e) {
             throw new TaskExecutionException("Query execution has been failed", e);
         }
+    }
+
+    private void initPreparedQuery(InsertMessage message) throws ChangeValueException, ReadValueException, QueryBuildException, IOException {
+        Writer writer = preparedQuery.getBodyWriter();
+        writer.write(String.format("INSERT %s AS tab SET %s = docs.document FROM (VALUES",
+                CollectionName.fromString(message.getCollectionName()).toString(),
+                Schema.DOCUMENT_COLUMN_NAME));
+        writer.write("(?::jsonb)");
+        writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
+
     }
 }
