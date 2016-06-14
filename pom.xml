@@ -69,6 +69,7 @@
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
         <module>IPool</module>
+        <module>IResourceSource</module>
     </modules>
 
     <properties>
