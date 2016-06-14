@@ -9,28 +9,32 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
- *
+ * {@see SearchQueryWriter} {@link SearchQueryWriter}.
+ * General writer a PAGING(LIMIT and OFFSET) clause for psql db.
  */
 public class GeneralSQLPagingWriter implements SearchQueryWriter {
-    /**  */
+    /** Const param for paging */
     private static final int MAX_PAGE_SIZE = 10000;
     private static final int MIN_PAGE_SIZE = 1;
 
     private GeneralSQLPagingWriter() {}
 
     /**
+     * Factory method for creation a new instance of <pre>GeneralSQLPagingWriter</pre>.
      *
-     * @return
+     * @return a new instance of <pre>GeneralSQLPagingWriter</pre>.
      */
     public static GeneralSQLPagingWriter create() {
         return new GeneralSQLPagingWriter();
     }
 
     /**
+     * Writes a PAGING(LIMIT and OFFSET) clause into the query statement.
      *
-     * @param queryStatement
-     * @param queryMessage
-     * @throws QueryBuildException
+     * @param queryStatement - a compiled statement of query.
+     * @param queryMessage - message with parameters for query.
+     *
+     * @throws QueryBuildException when writing body of query error.
      */
     public void write(
             @Nonnull final QueryStatement queryStatement,

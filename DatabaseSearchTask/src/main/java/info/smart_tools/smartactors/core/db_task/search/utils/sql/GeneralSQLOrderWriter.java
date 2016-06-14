@@ -17,7 +17,8 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
- *
+ * {@see SearchQueryWriter} {@link SearchQueryWriter}.
+ * General writer an ORDER clause for psql db.
  */
 public class GeneralSQLOrderWriter implements SearchQueryWriter {
     private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
@@ -37,18 +38,24 @@ public class GeneralSQLOrderWriter implements SearchQueryWriter {
     private GeneralSQLOrderWriter() {}
 
     /**
+     * Factory method for creation a new instance of <pre>GeneralSQLOrderWriter</pre>.
      *
-     * @return
+     * @return new instance of <pre>GeneralSQLOrderWriter</pre>.
      */
     public static GeneralSQLOrderWriter create() {
         return new GeneralSQLOrderWriter();
     }
 
     /**
+     * Writes an ORDER clause into the query statement.
      *
-     * @param queryStatement
-     * @param queryMessage
-     * @throws QueryBuildException
+     * @param queryStatement - a compiled statement of query.
+     * @param queryMessage - message with parameters for query.
+     *
+     * @throws QueryBuildException when:
+     *              1. Writing body of query error;
+     *              2. IOC resolution error object;
+     *              3. Reading field from <pre>queryMessage</pre> error.
      */
     @Override
     public void write(
@@ -70,7 +77,7 @@ public class GeneralSQLOrderWriter implements SearchQueryWriter {
                         orderItem.getValue(ORDER_FIELD_ORDER_BY_ITEM_FN));
 
                 String sortDirection = IOC.resolve(
-                        Keys.getOrAdd(PSQLFieldPath.class.toString()),
+                        Keys.getOrAdd(String.class.toString()),
                         orderItem.getValue(ORDER_DIRECTION_ORDER_BY_ITEM_FN));
 
                 sortDirection = ("DESC".equalsIgnoreCase(String.valueOf(sortDirection))) ? "DESC" : "ASC";
