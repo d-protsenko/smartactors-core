@@ -70,6 +70,7 @@
         <module>FeatureManager</module>
         <module>IPool</module>
         <module>IResourceSource</module>
+        <module>MessageProcessor</module>
     </modules>
 
     <properties>
