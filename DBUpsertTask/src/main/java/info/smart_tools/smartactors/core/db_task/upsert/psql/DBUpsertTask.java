@@ -19,13 +19,16 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +44,7 @@ public class DBUpsertTask implements IDatabaseTask {
     private String collectionName;
     private DBInsertTask dbInsertTask;
     private IObject rawUpsertQuery;
-    private CompiledQuery compiledQuery;
+    private JDBCCompiledQuery compiledQuery;
     private QueryStatement updateQueryStatement;
     private QueryStatement insertQueryStatement;
     private StorageConnection connection;
@@ -63,7 +66,7 @@ public class DBUpsertTask implements IDatabaseTask {
         }
         executionMap.put(UPDATE_MODE, () -> {
             try {
-                int nUpdated = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeUpdate();
+                int nUpdated = compiledQuery.getPreparedStatement().executeUpdate();
                 if (nUpdated == 0) {
                     throw new TaskExecutionException("Update query failed: wrong count of documents is updated.");
                 }
@@ -73,7 +76,7 @@ public class DBUpsertTask implements IDatabaseTask {
         });
         executionMap.put(INSERT_MODE, () -> {
             try {
-                ResultSet resultSet = ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().executeQuery();
+                ResultSet resultSet = compiledQuery.getPreparedStatement().executeQuery();
                 if (resultSet == null || !resultSet.first()) {
                     throw new TaskExecutionException("Database returned not enough of generated ids.");
                 }
@@ -116,7 +119,10 @@ public class DBUpsertTask implements IDatabaseTask {
             String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), upsertObject.getValue(idFieldName));
             if (id != null) {
                 this.mode = UPDATE_MODE;
-                updateQueryStatement.pushParameterSetter((statement, index) -> {
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, updateQueryStatement);
+
+                List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
+                parameterSetters.add((statement, index) -> {
                     try {
                         statement.setLong(index++, Long.parseLong(id));
                         statement.setString(index++, upsertObject.toString());
@@ -125,16 +131,18 @@ public class DBUpsertTask implements IDatabaseTask {
                     }
                     return index;
                 });
-                this.compiledQuery = connection.compileQuery(updateQueryStatement);
+                this.compiledQuery.setParameters(parameterSetters);
             } else {
                 this.mode = INSERT_MODE;
                 dbInsertTask.setConnection(connection);
                 dbInsertTask.prepare(upsertObject);
 
-                this.compiledQuery = dbInsertTask.getCompiledQuery();
+                this.compiledQuery = (JDBCCompiledQuery) dbInsertTask.getCompiledQuery();
             }
         } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException e) {
             throw new TaskPrepareException("Error while writing update query statement.",e);
+        } catch (SQLException e) {
+
         }
     }
 

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.db_task.upsert.psql;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
@@ -26,7 +27,6 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
@@ -91,6 +91,7 @@ public class DBUpsertTaskTest {
         IKey<UpsertMessage> keyUpsertMessage= Keys.getOrAdd(UpsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
+        IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
         IOC.register(
             keyDBInsertTask,
             new SingletonStrategy(mock(DBInsertTask.class))
@@ -107,6 +108,17 @@ public class DBUpsertTaskTest {
         );
         IOC.register(
             keyFieldName,
+            new CreateNewInstanceStrategy(
+                (arg) -> {
+                    try {
+                        return new FieldName(String.valueOf(arg[0]));
+                    } catch (InvalidArgumentException ignored) {}
+                    return null;
+                }
+            )
+        );
+        IOC.register(
+            keyCompiledQuery,
             new CreateNewInstanceStrategy(
                 (arg) -> {
                     try {
@@ -162,7 +174,7 @@ public class DBUpsertTaskTest {
 
         QueryStatement updateQueryStatement = (QueryStatement) MemberModifier.field(DBUpsertTask.class, "updateQueryStatement").get(task);
 
-        verify(updateQueryStatement).pushParameterSetter(any(SQLQueryParameterSetter.class));
+//        verify(updateQueryStatement).pushParameterSetter(any(SQLQueryParameterSetter.class));
         verify(connection).compileQuery(eq(updateQueryStatement));
     }
 
