@@ -4,6 +4,8 @@ import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
+import info.smart_tools.smartactors.core.imessage_processing_sequence.IMessageProcessingSequence;
+import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -13,13 +15,17 @@ import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 /**
+ * Task that performs on a message actions defined by a message processing sequence.
  *
+ * @see IMessageProcessingSequence
+ * @see ITask
  */
 public class MessageProcessor implements ITask {
     private IObject context;
     private IMessage message;
 
     private final IQueue<ITask> taskQueue;
+    private final IMessageProcessingSequence messageProcessingSequence;
 
     private final ReceiverCallback receiverCallback;
     private final ReEnqueueAction reEnqueueAction;
@@ -42,9 +48,13 @@ public class MessageProcessor implements ITask {
         public void execute(final Throwable exception)
                 throws ActionExecuteException, InvalidArgumentException {
             if (null != exception) {
-                handleCompletedExceptionally(exception);
+                try {
+                    handleCompletedExceptionally(exception);
+                } catch (NoExceptionHandleChainException e) {
+                    throw new ActionExecuteException("Exception occurred while handling exception occurred in message receiver.", e);
+                }
             } else {
-                if (nextReceiver()) {
+                if (messageProcessingSequence.next()) {
                     MessageProcessor.this.enqueue();
                 }
             }
@@ -52,10 +62,25 @@ public class MessageProcessor implements ITask {
     }
 
     /**
-     * @param taskQueue the queue to be executed from
+     * The constructor.
+     *
+     * @param taskQueue                    the queue to be executed from
+     * @param messageProcessingSequence    a {@link IMessageProcessingSequence} to use
+     * @throws InvalidArgumentException if taskQueue is {@code null}
+     * @throws InvalidArgumentException if messageProcessingSequence is {@code null}
      */
-    public MessageProcessor(final IQueue<ITask> taskQueue) {
+    public MessageProcessor(final IQueue<ITask> taskQueue, final IMessageProcessingSequence messageProcessingSequence)
+            throws InvalidArgumentException {
+        if (null == taskQueue) {
+            throw new InvalidArgumentException("Task queue should not be null.");
+        }
+
+        if (null == messageProcessingSequence) {
+            throw new InvalidArgumentException("Message processing sequence should not be null.");
+        }
+
         this.taskQueue = taskQueue;
+        this.messageProcessingSequence = messageProcessingSequence;
 
         this.receiverCallback = new ReceiverCallback();
         this.reEnqueueAction = new ReEnqueueAction();
@@ -74,7 +99,7 @@ public class MessageProcessor implements ITask {
         // TODO: Ensure that there is no process in progress
         this.message = theMessage;
         this.context = theContext;
-        resetSequence();
+        messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -82,13 +107,18 @@ public class MessageProcessor implements ITask {
     public void execute() throws TaskExecutionException {
         try {
             // TODO: Setup context.
-            getCurrentReceiver().receive(message, receiverCallback);
+            messageProcessingSequence.getCurrentReceiver().receive(message, receiverCallback);
         } catch (Throwable e) {
-            handleCompletedExceptionally(e);
+            try {
+                handleCompletedExceptionally(e);
+            } catch (final NoExceptionHandleChainException e1) {
+                throw new TaskExecutionException("Exception occurred while handling exception occurred in message receiver.", e1);
+            }
         }
     }
 
-    private void handleCompletedExceptionally(final Throwable exception) {
+    private void handleCompletedExceptionally(final Throwable exception)
+            throws NoExceptionHandleChainException {
         OutOfResourceException outOfResourceException = getOutOfResourcesCause(exception);
 
         if (null != outOfResourceException) {
@@ -96,7 +126,9 @@ public class MessageProcessor implements ITask {
             return;
         }
 
-        // TODO: Handle operation completed exceptionally (but not because of resource unavailability)
+        // TODO: Store exception in message/context
+        messageProcessingSequence.catchException(exception);
+        enqueue();
     }
 
     private void enqueue() {
@@ -105,25 +137,6 @@ public class MessageProcessor implements ITask {
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-
-    private void resetSequence() {
-        // TODO: Implement
-    }
-
-    private IMessageReceiver getCurrentReceiver() {
-        // TODO: Implement
-        return null;
-    }
-
-    /**
-     * Move to next message receiver.
-     *
-     * @return {@code true} if there is a receiver, {@code false} if there is no more receivers
-     */
-    private boolean nextReceiver() {
-        // TODO: Implement
-        return true;
     }
 
     private static OutOfResourceException getOutOfResourcesCause(final Throwable exception) {
