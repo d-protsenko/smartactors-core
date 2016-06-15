@@ -63,6 +63,8 @@
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
+        <module>IClassGenerator</module>
+        <module>ClassGeneratorJavaCompileAPI</module>
     </modules>
 
     <properties>
