@@ -2,14 +2,14 @@ package info.smart_tools.smartactors.core.sql_commons.exception;
 
 import java.security.PrivilegedActionException;
 
-public class CompiledQueryResolverException extends Exception {
+public class QueryStatementFactoryException extends Exception {
 
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public CompiledQueryResolverException() {
+    public QueryStatementFactoryException() {
     }
 
     /**
@@ -20,7 +20,7 @@ public class CompiledQueryResolverException extends Exception {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public CompiledQueryResolverException(final String message) {
+    public QueryStatementFactoryException(final String message) {
         super(message);
     }
 
@@ -38,7 +38,7 @@ public class CompiledQueryResolverException extends Exception {
      *                unknown.)
      * @since 1.4
      */
-    public CompiledQueryResolverException(final String message, final Throwable cause) {
+    public QueryStatementFactoryException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -56,7 +56,7 @@ public class CompiledQueryResolverException extends Exception {
      *              unknown.)
      * @since 1.4
      */
-    public CompiledQueryResolverException(final Throwable cause) {
+    public QueryStatementFactoryException(final Throwable cause) {
         super(cause);
     }
 }
