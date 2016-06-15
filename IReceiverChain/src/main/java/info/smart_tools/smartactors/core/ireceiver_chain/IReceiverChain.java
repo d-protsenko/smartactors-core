@@ -24,8 +24,9 @@ public interface IReceiverChain {
     /**
      * Get the chin of receivers that has to be executed if exception occurs during execution of this chain.
      *
+     * @param exception the exception occurred
      * @return the chin of receivers that has to be executed if exception occurs during execution of this chain or
      *         {@code null} if no such chain defined for this one
      */
-    IReceiverChain getExceptionalChain();
+    IReceiverChain getExceptionalChain(Throwable exception);
 }

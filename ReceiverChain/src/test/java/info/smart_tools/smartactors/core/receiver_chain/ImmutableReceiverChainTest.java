@@ -42,7 +42,7 @@ public class ImmutableReceiverChainTest {
         IReceiverChain chain = new ImmutableReceiverChain("theChain", receivers, exceptionalChain);
 
         assertEquals("theChain", chain.getName());
-        assertSame(exceptionalChain, chain.getExceptionalChain());
+        assertSame(exceptionalChain, chain.getExceptionalChain(mock(Throwable.class)));
     }
 
     @Test

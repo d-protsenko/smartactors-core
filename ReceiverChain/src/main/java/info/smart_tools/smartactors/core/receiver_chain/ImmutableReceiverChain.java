@@ -17,7 +17,8 @@ public class ImmutableReceiverChain implements IReceiverChain {
      *
      * @param name                        name of the chain
      * @param receivers                   sequence (array) of receivers
-     * @param exceptionalReceiverChain    chain that should be returned by {@link IReceiverChain#getExceptionalChain()}
+     * @param exceptionalReceiverChain    chain that should be returned by {@link IReceiverChain#getExceptionalChain(Throwable)}
+     *                                    on any exception
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      */
@@ -51,7 +52,7 @@ public class ImmutableReceiverChain implements IReceiverChain {
     }
 
     @Override
-    public IReceiverChain getExceptionalChain() {
+    public IReceiverChain getExceptionalChain(final Throwable exception) {
         return exceptionalReceiverChain;
     }
 }
