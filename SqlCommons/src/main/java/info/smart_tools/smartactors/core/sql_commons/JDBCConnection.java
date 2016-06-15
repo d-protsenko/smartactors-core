@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link StorageConnection} wrapping the {@link Connection}.
@@ -16,9 +17,12 @@ public class JDBCConnection implements StorageConnection {
     protected Connection connection;
     protected JDBCConnectionOptions options;
 
+    private String id;
+
     public JDBCConnection(Connection connection, JDBCConnectionOptions options) {
         this.connection = connection;
         this.options = options;
+        this.id = String.valueOf(UUID.randomUUID());
     }
 
     @Override
@@ -70,5 +74,10 @@ public class JDBCConnection implements StorageConnection {
         } catch (SQLException e) {
             throw new StorageException("Error rolling back SQL transaction: ", e);
         }
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 }
