@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.db_task.upsert.psql;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
@@ -19,7 +20,8 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
@@ -45,8 +47,6 @@ public class DBUpsertTask implements IDatabaseTask {
     private DBInsertTask dbInsertTask;
     private IObject rawUpsertQuery;
     private JDBCCompiledQuery compiledQuery;
-    private QueryStatement updateQueryStatement;
-    private QueryStatement insertQueryStatement;
     private StorageConnection connection;
     private Map<String, UpsertExecution> executionMap;
     private String mode;
@@ -98,16 +98,11 @@ public class DBUpsertTask implements IDatabaseTask {
         try {
             UpsertMessage upsertMessage = IOC.resolve(Keys.getOrAdd(UpsertMessage.class.toString()), upsertObject);
             this.collectionName = upsertMessage.getCollectionName();
-            this.updateQueryStatement = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
-            this.insertQueryStatement = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
         } catch (ResolutionException e) {
-            throw new TaskPrepareException("Error while resolving query statement.", e);
+            throw new TaskPrepareException("Error while resolving upsert message.", e);
         } catch (ReadValueException | ChangeValueException e) {
             throw new TaskPrepareException("Error while get collection name.", e);
         }
-        initUpdateQuery();
-        //TODO:: move to DBInsertTask prepare() or to the separate class
-//        initInsertQuery();
         try {
             this.idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collectionName + "Id");
         } catch (ResolutionException e) {
@@ -119,7 +114,21 @@ public class DBUpsertTask implements IDatabaseTask {
             String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), upsertObject.getValue(idFieldName));
             if (id != null) {
                 this.mode = UPDATE_MODE;
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, updateQueryStatement);
+                QueryStatementFactory factory = () -> {
+                    QueryStatement updateQueryStatement = new QueryStatement();
+                    Writer writer = updateQueryStatement.getBodyWriter();
+                    try {
+                        writer.write(String.format(
+                            "UPDATE %s AS tab SET %s = docs.document FROM (VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
+                        ));
+                        writer.write("(?,?::jsonb)");
+                        writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", Schema.ID_COLUMN_NAME));
+                    } catch (IOException | QueryBuildException e) {
+                        throw new QueryStatementFactoryException("Error while initialize update query.", e);
+                    }
+                    return updateQueryStatement;
+                };
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, factory);
 
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
@@ -135,6 +144,23 @@ public class DBUpsertTask implements IDatabaseTask {
             } else {
                 this.mode = INSERT_MODE;
                 dbInsertTask.setConnection(connection);
+
+                //TODO:: move to DBInsertTask prepare() or to the separate class
+                QueryStatementFactory factory = () -> {
+                    QueryStatement insertQueryStatement = new QueryStatement();
+                    Writer writer = insertQueryStatement.getBodyWriter();
+                    try {
+                        writer.write(String.format(
+                            "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
+                        ));
+                        writer.write("(?::jsonb)");
+                        writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
+                    } catch (IOException | QueryBuildException e) {
+                        throw new QueryStatementFactoryException("Error while initialize insert query.", e);
+                    }
+                    return insertQueryStatement;
+                };
+
                 dbInsertTask.prepare(upsertObject);
 
                 this.compiledQuery = (JDBCCompiledQuery) dbInsertTask.getCompiledQuery();
@@ -155,33 +181,5 @@ public class DBUpsertTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
 
         executionMap.get(mode).upsert();
-    }
-
-    private void initUpdateQuery() throws TaskPrepareException {
-
-        Writer writer = updateQueryStatement.getBodyWriter();
-        try {
-            writer.write(String.format(
-                "UPDATE %s AS tab SET %s = docs.document FROM (VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
-            ));
-            writer.write("(?,?::jsonb)");
-            writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", Schema.ID_COLUMN_NAME));
-        } catch (IOException | QueryBuildException e) {
-            throw new TaskPrepareException("Error while initialize update query.", e);
-        }
-    }
-
-    private void initInsertQuery() throws TaskPrepareException {
-
-        Writer writer = insertQueryStatement.getBodyWriter();
-        try {
-            writer.write(String.format(
-                "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
-            ));
-            writer.write("(?::jsonb)");
-            writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
-        } catch (IOException | QueryBuildException e) {
-            throw new TaskPrepareException("Error while initialize insert query.", e);
-        }
     }
 }

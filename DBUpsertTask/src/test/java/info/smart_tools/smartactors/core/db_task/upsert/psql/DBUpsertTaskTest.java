@@ -122,8 +122,9 @@ public class DBUpsertTaskTest {
             new CreateNewInstanceStrategy(
                 (arg) -> {
                     try {
-                        return new FieldName(String.valueOf(arg[0]));
-                    } catch (InvalidArgumentException ignored) {}
+                        StorageConnection connection = (StorageConnection) arg[0];
+                        return connection.compileQuery(new QueryStatement());
+                    } catch (StorageException ignored) {}
                     return null;
                 }
             )
@@ -172,10 +173,7 @@ public class DBUpsertTaskTest {
         task.setConnection(connection);
         task.prepare(upsertMessage);
 
-        QueryStatement updateQueryStatement = (QueryStatement) MemberModifier.field(DBUpsertTask.class, "updateQueryStatement").get(task);
-
-//        verify(updateQueryStatement).pushParameterSetter(any(SQLQueryParameterSetter.class));
-        verify(connection).compileQuery(eq(updateQueryStatement));
+        //TODO:: verify static IOC.resolve etc
     }
 
     @Test

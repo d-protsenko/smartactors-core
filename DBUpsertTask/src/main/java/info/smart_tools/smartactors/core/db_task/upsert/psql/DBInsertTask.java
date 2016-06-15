@@ -46,10 +46,6 @@ public class DBInsertTask implements IDatabaseTask {
             writer.write("(?::jsonb)");
             writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
 
-//            queryStatement.pushParameterSetter((statement, index) -> {
-//                statement.setString(index++, query.toString());
-//                return index;
-//            });
             this.compiledQuery = connection.compileQuery(queryStatement);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Error while resolving insert query statement.", e);
