@@ -71,6 +71,8 @@
         <module>IPool</module>
         <module>IResourceSource</module>
         <module>MessageProcessor</module>
+        <module>IReceiverChain</module>
+        <module>ReceiverChain</module>
     </modules>
 
     <properties>
