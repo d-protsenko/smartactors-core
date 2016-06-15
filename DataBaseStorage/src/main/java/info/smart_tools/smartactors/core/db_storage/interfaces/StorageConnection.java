@@ -42,4 +42,10 @@ public interface StorageConnection {
      */
     void rollback() throws StorageException;
 
+    /**
+     * Returns connection identification
+     * @return id
+     */
+    String getId();
+
 }

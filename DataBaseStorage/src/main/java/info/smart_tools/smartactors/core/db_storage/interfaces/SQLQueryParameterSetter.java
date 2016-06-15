@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.sql_commons;
+package info.smart_tools.smartactors.core.db_storage.interfaces;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 
