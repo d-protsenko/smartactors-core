@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.delete.psql;
 
+import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.delete.DBDeleteTask;
 import info.smart_tools.smartactors.core.db_task.delete.wrappers.DeletionQuery;
@@ -9,6 +10,7 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +41,7 @@ public class PSQLDeleteTaskTest {
     @Test
     public void should_PrepareAndExecuteDeletionQuery() throws Exception {
         StorageConnection connection = mock(StorageConnection.class);
+        JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
         deleteTask.setConnection(connection);
 
@@ -50,9 +53,12 @@ public class PSQLDeleteTaskTest {
         when(message.getDocumentIds(1)).thenReturn(1L);
         when(message.getDocumentIds(2)).thenReturn(2L);
 
-        IKey keyWrapper = mock(IKey.class);
-        when(IOC.resolve(IOC.getKeyForKeyStorage(), DeletionQuery.class)).thenReturn(keyWrapper);
-        when(IOC.resolve(eq(keyWrapper), anyObject())).thenReturn(message);
+        IKey wrapperKey = mock(IKey.class);
+        IKey queryKey = mock(IKey.class);
+        when(Keys.getOrAdd(DeletionQuery.class.toString())).thenReturn(wrapperKey);
+        when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(queryKey);
+        when(IOC.resolve(eq(wrapperKey), anyObject())).thenReturn(message);
+        when(IOC.resolve(eq(queryKey), eq(connection), anyObject())).thenReturn(compiledQuery);
 
         IObject deletionQuery = mock(IObject.class);
         deleteTask.prepare(deletionQuery);
@@ -60,12 +66,10 @@ public class PSQLDeleteTaskTest {
         verify(message, times(2)).countDocumentIds();
 
         verifyStatic(times(1));
-        IOC.resolve(eq(keyWrapper), eq(deletionQuery));
+        IOC.resolve(eq(wrapperKey), eq(deletionQuery));
 
-        JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
         PreparedStatement prepareStatement = mock(PreparedStatement.class);
 
-        when(connection.compileQuery(any())).thenReturn(compiledQuery);
         when(compiledQuery.getPreparedStatement()).thenReturn(prepareStatement);
         when(prepareStatement.executeUpdate()).thenReturn(3);
 
@@ -73,7 +77,6 @@ public class PSQLDeleteTaskTest {
 
         verify(compiledQuery, times(1)).getPreparedStatement();
         verify(prepareStatement, times(1)).executeUpdate();
-        verify(connection, times(1)).compileQuery(anyObject());
     }
 
     @Test(expected = TaskPrepareException.class)
@@ -86,9 +89,9 @@ public class PSQLDeleteTaskTest {
         when(message.getCollectionName()).thenReturn(collectionName);
         when(message.countDocumentIds()).thenReturn(0);
 
-        IKey keyWrapper = mock(IKey.class);
-        when(IOC.resolve(IOC.getKeyForKeyStorage(), DeletionQuery.class)).thenReturn(keyWrapper);
-        when(IOC.resolve(eq(keyWrapper), anyObject())).thenReturn(message);
+        IKey wrapperKey = mock(IKey.class);
+        when(Keys.getOrAdd(DeletionQuery.class.toString())).thenReturn(wrapperKey);
+        when(IOC.resolve(eq(wrapperKey), anyObject())).thenReturn(message);
 
         IObject deletionQuery = mock(IObject.class);
         deleteTask.prepare(deletionQuery);
@@ -99,13 +102,6 @@ public class PSQLDeleteTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
         deleteTask.setConnection(connection);
-
-        JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
-        PreparedStatement prepareStatement = mock(PreparedStatement.class);
-
-        when(connection.compileQuery(any())).thenReturn(compiledQuery);
-        when(compiledQuery.getPreparedStatement()).thenReturn(prepareStatement);
-        when(prepareStatement.executeUpdate()).thenReturn(3);
 
         deleteTask.execute();
     }
