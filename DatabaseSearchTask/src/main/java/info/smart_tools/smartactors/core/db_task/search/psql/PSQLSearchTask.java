@@ -18,6 +18,8 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolver;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
 
@@ -96,23 +98,31 @@ public class PSQLSearchTask extends DBSearchTask {
         this.connection = storageConnection;
     }
 
-    private CompiledQuery createQuery(final SearchQuery queryMessage) throws TaskPrepareException {
-        QueryStatement queryStatement = new QueryStatement();
-        try {
-            queryStatement.getBodyWriter().write(String.format("SELECT * FROM %s WHERE",
-                    CollectionName.fromString(queryMessage.getCollectionName()).toString()));
+    private QueryStatementFactory getQueryStatementFactory(final SearchQuery queryMessage) {
+        return () -> {
+            QueryStatement queryStatement = new QueryStatement();
+            try {
+                queryStatement.getBodyWriter().write(String.format("SELECT * FROM %s WHERE",
+                        CollectionName.fromString(queryMessage.getCollectionName()).toString()));
 
-            conditionsWriterResolver
-                    .resolve(null)
-                    .write(queryStatement, conditionsWriterResolver, null, queryMessage.getCriteria());
-            orderWriter.write(queryStatement, queryMessage);
-            pagingWriter.write(queryStatement, queryMessage);
+                conditionsWriterResolver
+                        .resolve(null)
+                        .write(queryStatement, conditionsWriterResolver, null, queryMessage.getCriteria());
+                orderWriter.write(queryStatement, queryMessage);
+                pagingWriter.write(queryStatement, queryMessage);
+            } catch (QueryBuildException e) {
+                throw new QueryStatementFactoryException("Error while writing search query statement.", e);
+            } catch (Exception e) {
+                throw new QueryStatementFactoryException(e.getMessage(), e);
+            }
 
-            return connection.compileQuery(queryStatement);
-        } catch (QueryBuildException e) {
-            throw new TaskPrepareException("Error while writing search query statement.", e);
-        } catch (Exception e) {
-            throw new TaskPrepareException(e.getMessage(), e);
-        }
+            return queryStatement;
+        };
+    }
+
+    private CompiledQuery createQuery(final CompiledQuery compiledQuery, final SearchQuery queryMessage)
+            throws TaskPrepareException {
+
+
     }
 }

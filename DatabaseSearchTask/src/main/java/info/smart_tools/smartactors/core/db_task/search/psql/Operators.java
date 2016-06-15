@@ -20,14 +20,12 @@ final class Operators {
      * @param format Sql string for condition. Contains '%s' for field path and '?' for parameters
      * @param query Query statement object with part of sql query (select...) and parameter setters
      * @param contextFieldPath Field path, for example document#>'{field}'
-     * @param queryParameter Parameter value.
      * @throws QueryBuildException
      */
     private static void writeFieldCheckCondition(
             final String format,
             final QueryStatement query,
-            final FieldPath contextFieldPath,
-            final Object queryParameter
+            final FieldPath contextFieldPath
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -131,7 +129,7 @@ final class Operators {
 
     private static QueryConditionWriter formattedCheckWriter(final String format) {
         return (query, resolver, contextFieldPath, queryParameter) ->
-            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter);
+            writeFieldCheckCondition(format, query, contextFieldPath);
     }
 
     /**
