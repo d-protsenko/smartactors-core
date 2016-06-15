@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.sql_commons;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 
 import java.io.StringWriter;
 import java.io.Writer;
