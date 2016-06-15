@@ -16,6 +16,8 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,15 +49,16 @@ public class PluginCompileQuery implements IPlugin {
                             String id = connection.getId();
                             CompiledQuery query = queryMap.get(id);
                             if (query == null) {
-                                QueryStatement queryStatement = (QueryStatement) args[1];
-                                if (queryStatement == null) {
+                                QueryStatementFactory factory = (QueryStatementFactory) args[1];
+                                if (factory == null) {
                                     throw new RuntimeException("Can't resolve compiled query: query statement is null");
                                 }
                                 try {
+                                    QueryStatement queryStatement = factory.create();
                                     query = connection.compileQuery(queryStatement);
                                     queryMap.put(id, query);
                                     //TODO:: how to remove old queries from map?
-                                } catch (StorageException e) {
+                                } catch (QueryStatementFactoryException | StorageException e) {
                                     throw new RuntimeException("Can't resolve compiled query: ", e);
                                 }
                             }
