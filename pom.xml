@@ -73,6 +73,8 @@
         <module>MessageProcessor</module>
         <module>IReceiverChain</module>
         <module>ReceiverChain</module>
+        <module>IMessageProcessingSequence</module>
+        <module>MessageProcessingSequence</module>
     </modules>
 
     <properties>
