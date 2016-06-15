@@ -22,11 +22,14 @@ import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFac
 import java.util.HashMap;
 import java.util.Map;
 
-public class PluginCompileQuery implements IPlugin {
+/**
+ *
+ */
+public class CompileQueryPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public PluginCompileQuery(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public CompileQueryPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -66,12 +69,12 @@ public class PluginCompileQuery implements IPlugin {
                             return query;
                         }));
                 } catch (RegistrationException | InvalidArgumentException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             });
             bootstrap.add(item);
         } catch (ResolutionException | InvalidArgumentException e) {
-            e.printStackTrace();
+            throw new PluginException("Can't load compile query plugin", e);
         }
     }
 }
