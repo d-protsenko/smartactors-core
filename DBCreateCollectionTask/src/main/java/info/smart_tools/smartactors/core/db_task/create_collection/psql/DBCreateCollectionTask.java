@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -18,6 +18,8 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
@@ -47,32 +49,41 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     public void prepare(final IObject createCollectionMessage) throws TaskPrepareException {
 
         try {
-            CreateCollectionQuery message = IOC.resolve(Keys.getOrAdd(CreateCollectionQuery.class.toString()), createCollectionMessage);
-            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
-            CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
+            QueryStatementFactory factory = () -> {
+                QueryStatement preparedQuery = new QueryStatement();
+                Writer writer = preparedQuery.getBodyWriter();
+                try {
+                    CreateCollectionQuery message = IOC.resolve(Keys.getOrAdd(CreateCollectionQuery.class.toString()), createCollectionMessage);
+                    CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
+                    writer.write(String.format(
+                        "CREATE TABLE %s (%s %s PRIMARY KEY, %s JSONB NOT NULL);\n",
+                        collectionName.toString(),
+                        Schema.ID_COLUMN_NAME ,Schema.ID_COLUMN_SQL_TYPE, Schema.DOCUMENT_COLUMN_NAME)
+                    );
+                    if (!message.getIndexes().containsKey("id")) {
+                        message.getIndexes().put("id","id");
+                    }
+                    for (Map.Entry<String, String> entry : message.getIndexes().entrySet()) {
+                        FieldPath field = IOC.resolve(Keys.getOrAdd(FieldPath.class.toString()), entry.getKey());
+                        String indexType = entry.getValue();
+                        String tpl = indexCreationTemplates.get(indexType);
 
-            Writer writer = preparedQuery.getBodyWriter();
-            writer.write(String.format(
-                "CREATE TABLE %s (%s %s PRIMARY KEY, %s JSONB NOT NULL);\n",
-                collectionName.toString(),
-                Schema.ID_COLUMN_NAME ,Schema.ID_COLUMN_SQL_TYPE, Schema.DOCUMENT_COLUMN_NAME)
-            );
-            if (!message.getIndexes().containsKey("id")) {
-                message.getIndexes().put("id","id");
-            }
-            for (Map.Entry<String, String> entry : message.getIndexes().entrySet()) {
-                FieldPath field = IOC.resolve(Keys.getOrAdd(FieldPath.class.toString()), entry.getKey());
-                String indexType = entry.getValue();
-                String tpl = indexCreationTemplates.get(indexType);
+                        if (tpl == null) {
+                            throw new TaskPrepareException("Invalid index type: " + indexType);
+                        }
 
-                if (tpl == null) {
-                    throw new TaskPrepareException("Invalid index type: " + indexType);
+                        preparedQuery.getBodyWriter().write(String.format(tpl, collectionName.toString(), field.getSQLRepresentation()));
+                    }
+                } catch (IOException | TaskPrepareException | ResolutionException | ChangeValueException | ReadValueException e) {
+                    throw new QueryStatementFactoryException("Error while initialize update query.", e);
+                } catch (QueryBuildException e) {
+                    e.printStackTrace();
                 }
+                return preparedQuery;
+            };
 
-                preparedQuery.getBodyWriter().write(String.format(tpl, collectionName.toString(), field.getSQLRepresentation()));
-            }
-            this.compiledQuery = connection.compileQuery(preparedQuery);
-        } catch (ReadValueException | ChangeValueException| ResolutionException | StorageException | IOException e) {
+            this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, factory);
+        } catch (ResolutionException e) {
             throw new TaskPrepareException("Error while writing collection creation statement.",e);
         }
     }

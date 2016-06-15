@@ -16,9 +16,11 @@ import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,7 +32,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -71,26 +72,9 @@ public class DBCreateCollectionTaskTest {
 
         task.setConnection(connection);
         task.prepare(createCollectionMessage);
-        verify(connection).compileQuery(eq(preparedQuery));
-    }
 
-    @Test(expected = TaskPrepareException.class)
-    public void ShouldThrowException_When_IndexIsInvalid()
-        throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
-
-        IObject createCollectionMessage = mock(IObject.class);
-        CreateCollectionQuery message = mock(CreateCollectionQuery.class);
-        PreparedQuery preparedQuery = new QueryStatement();
-        initDataForPrepare(preparedQuery, message, createCollectionMessage);
-        Map<String, String> indexes = new HashMap<>();
-        indexes.put("meta.tags", "invalid");
-        when(message.getIndexes()).thenReturn(indexes);
-        connection = mock(StorageConnection.class);
-        when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
-
-        task.setConnection(connection);
-        task.prepare(createCollectionMessage);
-        fail();
+        PowerMockito.verifyStatic();
+        IOC.resolve(any(IKey.class), eq(connection), any(QueryStatementFactory.class));
     }
 
     @Test
