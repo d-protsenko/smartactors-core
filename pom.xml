@@ -75,6 +75,8 @@
         <module>ReceiverChain</module>
         <module>IMessageProcessingSequence</module>
         <module>MessageProcessingSequence</module>
+        <module>MessageContext</module>
+        <module>ScopeMessageContxtContainer</module>
     </modules>
 
     <properties>
