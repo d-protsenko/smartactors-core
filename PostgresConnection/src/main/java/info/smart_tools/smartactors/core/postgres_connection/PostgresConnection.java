@@ -6,35 +6,75 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Implementation of {@link IStorageConnection}
  */
 public class PostgresConnection implements IStorageConnection {
+    private static final  String POSTGRESQL_JDBC_DRIVER_NAME = "org.postgresql.Driver";
     private Connection connection;
-    private ConnectionOptions options;
     private PreparedStatement validationQueryStatement;
+    private static final Properties initProps = new Properties();
+
+    static {
+        try (InputStream src = PostgresConnection.class.getResourceAsStream("db-init.properties")) {
+            initProps.load(src);
+        } catch (IOException e) {
+        }
+    }
 
     /**
      * Constructor by sql connection and options
-     * @param connection the JDBC connection
      * @param options is options for connection
      * @throws StorageException
      */
-     public PostgresConnection(final Connection connection, final ConnectionOptions options)
-             throws StorageException {
-         this.connection = connection;
-         this.options = options;
+    public PostgresConnection(final ConnectionOptions options) throws StorageException {
+        try {
+            Connection connection;
 
-         try {
-             this.validationQueryStatement = connection.prepareStatement("SELECT(1);");
-         } catch (SQLException e) {
-             throw new StorageException("Error creating validation query for PostgreSQL database connection: ", e);
-         }
-     }
+            try {
+                Class.forName(POSTGRESQL_JDBC_DRIVER_NAME);
+            } catch (ClassNotFoundException e) {
+                throw new StorageException("Could not load JDBC driver.", e);
+            }
+
+            try {
+                connection = DriverManager.getConnection(
+                        options.getUrl(),
+                        options.getUsername(),
+                        options.getPassword());
+            } catch (SQLException e) {
+                throw new StorageException("Could not get JDBC connection.", e);
+            }
+
+            try {
+                for (Object key : initProps.keySet()) {
+                    connection.createStatement().execute(initProps.getProperty((String) key));
+                }
+
+                connection.setAutoCommit(false);
+            } catch (SQLException e) {
+                throw new StorageException("Error configuring JDBC connection: ", e);
+            }
+
+            this.connection = connection;
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            this.validationQueryStatement = connection.prepareStatement("SELECT(1);");
+        } catch (SQLException e) {
+            throw new StorageException("Error creating validation query for PostgreSQL database connection: ", e);
+        }
+    }
 
     /**
      *
