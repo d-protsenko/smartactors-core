@@ -10,19 +10,24 @@ The object resolving is delegated to a [`IResolveDependencyStrategy`](http://sma
 There are a couple of predefined strategies.
 
 First of all, you need a key to register your strategy and resolve objects.
-The simplest way is to use `new` operator:
+The simplest way is to use the `new` operator.
 
     IKey<MyClass> myNewKey = new Key<>("myKey");
     
-If your strategy requires more type validation of the resolving objects, you can pass the `Class` to the key:
+If your strategy requires more type validation of the resolving objects, you can pass the `Class` to the key.
 
     IKey<MyClass> myTypedKey = new Key<>(MyClass.class, "myKey");
         
-However, the recommended way to get the key is to resolve it with IOC:
+However, the recommended way to get the key is to resolve it with IOC.
 
     IKey<MyClass> myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
-    
+
 `IOC.getKeyForKeyStorage()` produces the key to get the key.
+    
+This magic is hidden in `Keys` class, so it's necessary just to call `Keys.getOrAdd()`.
+
+    IKey<MyClass> myKey = Keys.getOrAdd("myKey");
+
 To resolve the key, the corresponding strategy should be registered before.
 Also, the default IoC implementation requires the [`Scope`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iscope/IScope.html) to be initialized.
 So this initialization code is required (usually it's already called by the server implementation):
@@ -40,11 +45,11 @@ The [`ResolveByNameIocStrategy`](http://smarttools.github.io/smartactors-core/ap
 When you have a key, you can register the resolving strategy.
 For example, [`SingletonStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/singleton_strategy/SingletonStrategy.html):
 
-    IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "singleton");
+    IKey<MyClass> key = Keys.getOrAdd("singleton");
     MyClass myObject = new MyClass("singleton");
     IOC.register(key, new SingletonStrategy(myObject));
     
-This strategy always returns the object instance, given to it's constructor.
+This strategy always returns the same object instance, given to it's constructor.
 
     MyClass resolveObject1 = IOC.resolve(key);
     MyClass resolveObject2 = IOC.resolve(key);
@@ -52,17 +57,17 @@ This strategy always returns the object instance, given to it's constructor.
 Both these variables point to the same object.
 
 The [`CreateNewInstanceStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/create_new_instance_strategy/CreateNewInstanceStrategy.html) creates a new object for each call to `resolve()`.
-You should define a [lambda expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) to create your objects and pass it to the strategy constructor:
+You should define a [lambda expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) to create your objects and pass it to the strategy constructor.
  
-    IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "new");
+    IKey<MyClass> key = Keys.getOrAdd("new");
     IOC.register(key, new CreateNewInstanceStrategy(
             (args) -> new MyClass((String) args[0])));
             
-Then you can resolve instances of your class:
+Then you can resolve instances of your class.
 
     MyClass resolveObject1 = IOC.resolve(key, "id1");
     MyClass resolveObject2 = IOC.resolve(key, "id1");
     MyClass resolveObject3 = IOC.resolve(key, "id3");
     
 All returned objects are different objects. 
-However, these objects can be equal (but not the same), if you pass the same parameters to the `resolve()` method (string id in this example).
+However, these objects can be equal (but not the same) if you pass the same parameters to the `resolve()` method (string id in this example).
