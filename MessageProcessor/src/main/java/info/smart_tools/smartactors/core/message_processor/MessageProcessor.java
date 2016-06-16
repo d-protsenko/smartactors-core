@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.message_context.MessageContext;
 
 /**
  * Task that performs on a message actions defined by a message processing sequence.
@@ -106,7 +107,7 @@ public class MessageProcessor implements ITask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            // TODO: Setup context.
+            MessageContext.set(context);
             messageProcessingSequence.getCurrentReceiver().receive(message, receiverCallback);
         } catch (Throwable e) {
             try {
