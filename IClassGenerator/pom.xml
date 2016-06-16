@@ -13,6 +13,13 @@
 
     <dependencies>
 
+        <!--Core exception -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

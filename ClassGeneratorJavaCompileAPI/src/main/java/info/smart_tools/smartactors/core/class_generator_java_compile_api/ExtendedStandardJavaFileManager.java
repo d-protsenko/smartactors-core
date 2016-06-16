@@ -1,8 +1,5 @@
 package info.smart_tools.smartactors.core.class_generator_java_compile_api;
 
-import org.mdkt.compiler.CompiledCode;
-import org.mdkt.compiler.DynamicClassLoader;
-
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
@@ -13,18 +10,23 @@ import java.io.IOException;
 /**
  * Class extends StandardJavaFileManager
  */
-public class ExtendedStandardJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+class ExtendedStandardJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+
     private CompiledCode compiledCode;
     private DynamicClassLoader cl;
 
     /**
-     * Constructor
+     * Constructor.
+     * Creates instance of {@link ExtendedStandardJavaFileManager} by given
+     * instances of {@link JavaFileManager}, {@link CompiledCode}, {@link DynamicClassLoader}
      * @param fileManager instance of {@link JavaFileManager}
      * @param compiledCode instance of {@link CompiledCode}
      * @param cl instance of {@link DynamicClassLoader}
      */
-    protected ExtendedStandardJavaFileManager(
-            final JavaFileManager fileManager, final CompiledCode compiledCode, final DynamicClassLoader cl
+    ExtendedStandardJavaFileManager(
+            final JavaFileManager fileManager,
+            final CompiledCode compiledCode,
+            final DynamicClassLoader cl
     ) {
         super(fileManager);
         this.compiledCode = compiledCode;

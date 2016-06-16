@@ -10,14 +10,17 @@ public class ClassGeneratorTest {
     @Test
     public void check()
             throws Exception {
-        ClassGenerator cl = new ClassGenerator();
+        ClassGenerator cl = new ClassGenerator(null);
         String testSample = "package info.smart_tools.smartactors.core.test_class;\n" +
-                "public class TestClass{\n" +
+                "import info.smart_tools.smartactors.core.class_generator_java_compile_api.TestInterface;\n" +
+                "public class TestClass implements TestInterface {\n" +
                 "    private int a;\n" +
-                "    Integer getA() {\n" +
+                "    public Integer getA() {\n" +
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        cl.generate(testSample, ClassLoader.getSystemClassLoader());
+        Class<?> clazz = cl.generate(testSample);
+        TestInterface inst = (TestInterface) clazz.newInstance();
     }
 }
+

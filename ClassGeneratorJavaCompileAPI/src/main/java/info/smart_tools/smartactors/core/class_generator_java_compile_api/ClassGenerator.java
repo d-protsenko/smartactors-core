@@ -2,9 +2,8 @@ package info.smart_tools.smartactors.core.class_generator_java_compile_api;
 
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.iclass_generator.exception.ClassGenerationException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,29 +12,40 @@ import java.util.regex.Pattern;
  */
 public class ClassGenerator implements IClassGenerator<String> {
 
-    @Override
-    public Class<?> generate(final String source, final ClassLoader classLoader) throws ClassGenerationException {
-        try {
+    private InMemoryCodeCompiler compiler;
 
-            String packageName = getFirstSubstringByPattern(source, Pattern.compile("package (.*?);"));
-            String className = getFirstSubstringByPattern(source, Pattern.compile("class (.*?)(\\s)|(\\{)}"));
+    /**
+     * Constructor.
+     * Creates new instance of {@link ClassGenerator} by given class loader
+     * @param classLoader instance of {@link ClassLoader}
+     */
+    public ClassGenerator(final ClassLoader classLoader) {
+        compiler = new InMemoryCodeCompiler(classLoader);
+    }
+
+    @Override
+    public Class<?> generate(final String source)
+            throws ClassGenerationException, InvalidArgumentException {
+
+        if (null == source || source.isEmpty()) {
+            throw new InvalidArgumentException("Source code should not be null or empty.");
+        }
+        String packageName = getFirstSubstringByPattern(source, Pattern.compile("package\\s+([\\w\\.]+)"));
+        String className = getFirstSubstringByPattern(source, Pattern.compile("(?:class|interface)\\s+(\\w+)"));
+        if (null == packageName || packageName.isEmpty()) {
+            throw new InvalidArgumentException("Source code doesn't contain package name.");
+        }
+        if (null == className || className.isEmpty()) {
+            throw new InvalidArgumentException("Source code doesn't contain class.");
+        }
+        try {
             String fullClassName = packageName + "." + className;
-            return InMemoryCodeCompiler.compile(getClassPath(classLoader), fullClassName, source);
+            Class<?> compiledClass = this.compiler.compile(fullClassName, source, null);
+            //classLoader.
+            return compiledClass;
         } catch (Throwable e) {
             throw new ClassGenerationException("Could not generate class.", e);
         }
-    }
-
-    private String getClassPath(final ClassLoader classLoader) {
-        URL[] urls = ((URLClassLoader) classLoader).getURLs();
-        StringBuilder buf = new StringBuilder();
-        buf.append(".");
-        String separator = System.getProperty("path.separator");
-        for (URL url : urls) {
-            buf.append(separator).append(url.getFile());
-        }
-
-        return buf.toString();
     }
 
     private String getFirstSubstringByPattern(final String source, final Pattern pattern) {

@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.core.class_generator_java_compile_api;
 
-import org.mdkt.compiler.CompiledCode;
-import org.mdkt.compiler.DynamicClassLoader;
-import org.mdkt.compiler.SourceCode;
-
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.ToolProvider;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,41 +16,53 @@ import java.util.List;
  *
  * @since 1.8
  */
-final class InMemoryCodeCompiler {
+class InMemoryCodeCompiler {
 
     /**
      * System java compiler
      */
     private static JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+    private DynamicClassLoader classLoader;
 
     /**
-     * Constructor - prohibited
+     * Constructor.
+     * Creates instance of {@link InMemoryCodeCompiler} by given class loader
+     * @param classLoader instance of {@link ClassLoader}
      */
-    private InMemoryCodeCompiler() {
+    InMemoryCodeCompiler(final ClassLoader classLoader) {
+        this.classLoader = new DynamicClassLoader(
+                null != classLoader ? classLoader : ClassLoader.getSystemClassLoader()
+        );
     }
 
     /**
      * Compile {@link String} with custom class to java byte code and represent
      * compiled class
-     * @param classPath location of classes
      * @param className full name of future class
      * @param sourceCodeInText code source
+     * @param additionalClassPaths additional class paths
      * @return compiled class
      * @throws Exception if any errors occurred
      */
-    static Class<?> compile(final String classPath, final String className, final String sourceCodeInText)
+    Class<?> compile(
+            final String className,
+            final String sourceCodeInText,
+            final String additionalClassPaths
+    )
             throws Exception {
         try {
+            return this.classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) { }
+        try {
             List<String> optionList = new ArrayList<>();
-            // set compiler's classpath to be same as the runtime's
-            optionList.addAll(Arrays.asList("-classpath", classPath));
-
+            if (null != this.classLoader) {
+                optionList.addAll(Arrays.asList("-classpath", getClassPath(this.classLoader, additionalClassPaths)));
+            }
             SourceCode sourceCode = new SourceCode(className, sourceCodeInText);
             CompiledCode compiledCode = new CompiledCode(className);
             List compilationUnits = Collections.singletonList(sourceCode);
-            DynamicClassLoader cl = new DynamicClassLoader(ClassLoader.getSystemClassLoader());
             ExtendedStandardJavaFileManager fileManager = new ExtendedStandardJavaFileManager(
-                    javac.getStandardFileManager(null, null, null), compiledCode, cl
+                    javac.getStandardFileManager(null, null, null), compiledCode, this.classLoader
             );
 
             CompilationTask task = javac.getTask(
@@ -64,9 +74,41 @@ final class InMemoryCodeCompiler {
                     compilationUnits
             );
             task.call();
-            return cl.loadClass(className);
+            return this.classLoader.loadClass(className);
         } catch (Throwable e) {
             throw new Exception(e);
         }
+    }
+
+    /**
+     * Return all class paths as instance of {@link String} form given instance of {@link ClassLoader}
+     * @param classLoader instance of {@link ClassLoader}
+     * @param additionalClassPaths additional class paths
+     * @return all class paths
+     */
+    private static String getClassPath(final ClassLoader classLoader, final String additionalClassPaths) {
+        ClassLoader cl = classLoader;
+        StringBuilder buf = new StringBuilder();
+        buf.append(".");
+        String separator = System.getProperty("path.separator");
+        while (null != cl) {
+            try {
+                URLClassLoader ucl = (URLClassLoader) cl;
+
+                URL[] urls = ucl.getURLs();
+                for (URL url : urls) {
+                    buf.append(separator).append(url.getFile());
+                }
+            } catch (Exception e) {
+                // do nothing
+                // because this try-catch check cast ClassLoader to URLClassLoader
+            }
+            cl = cl.getParent();
+        }
+        if (null != additionalClassPaths && !additionalClassPaths.isEmpty()) {
+            buf.append(separator).append(additionalClassPaths);
+        }
+
+        return buf.toString();
     }
 }
