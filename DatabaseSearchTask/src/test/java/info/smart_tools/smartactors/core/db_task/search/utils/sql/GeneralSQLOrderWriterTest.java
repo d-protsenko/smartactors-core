@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
 import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
@@ -15,8 +16,13 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
@@ -58,7 +64,8 @@ public class GeneralSQLOrderWriterTest {
         when(IOC.resolve(eq(fieldPathKey), anyString())).thenReturn(fieldPath).thenReturn(sortDirection);
 
         QueryStatement queryStatement = new QueryStatement();
-        orderWriter.write(queryStatement, searchQuery);
+        List<SQLQueryParameterSetter> setters = new LinkedList<>();
+        orderWriter.write(queryStatement, searchQuery, setters);
 
         assertTrue("ORDER BY(testSQLStrField)ASC,(1)".equals(queryStatement.getBodyWriter().toString()));
 

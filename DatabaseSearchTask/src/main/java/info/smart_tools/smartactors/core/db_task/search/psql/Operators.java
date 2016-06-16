@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_task.search.psql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.sql_commons.*;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
@@ -25,7 +26,9 @@ final class Operators {
     private static void writeFieldCheckCondition(
             final String format,
             final QueryStatement query,
-            final FieldPath contextFieldPath
+            final FieldPath contextFieldPath,
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -35,7 +38,7 @@ final class Operators {
         try {
             query.getBodyWriter().write(String.format(format, contextFieldPath.getSQLRepresentation()));
 
-            query.pushParameterSetter((statement, index) -> {
+            setters.add((statement, index) -> {
                 statement.setObject(index++, queryParameter);
                 return index;
             });
@@ -56,7 +59,8 @@ final class Operators {
             final QueryStatement query,
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -88,7 +92,8 @@ final class Operators {
             final QueryStatement query,
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -116,7 +121,7 @@ final class Operators {
 
             writer.write("))");
 
-            query.pushParameterSetter((statement, index) -> {
+            setters.add((statement, index) -> {
                 for (Object obj : paramAsList) {
                     statement.setObject(index++, obj);
                 }
@@ -128,8 +133,8 @@ final class Operators {
     }
 
     private static QueryConditionWriter formattedCheckWriter(final String format) {
-        return (query, resolver, contextFieldPath, queryParameter) ->
-            writeFieldCheckCondition(format, query, contextFieldPath);
+        return (query, resolver, contextFieldPath, queryParameter, setters) ->
+            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
     }
 
     /**

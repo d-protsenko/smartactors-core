@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
 import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
@@ -15,6 +16,7 @@ import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * {@see SearchQueryWriter} {@link SearchQueryWriter}.
@@ -51,6 +53,8 @@ public class GeneralSQLOrderWriter implements SearchQueryWriter {
      *
      * @param queryStatement - a compiled statement of query.
      * @param queryMessage - message with parameters for query.
+     * @param setters - list of query parameters setter.
+     *                Any setter sets some parameter into query.
      *
      * @throws QueryBuildException when:
      *              1. Writing body of query error;
@@ -60,7 +64,8 @@ public class GeneralSQLOrderWriter implements SearchQueryWriter {
     @Override
     public void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final SearchQuery queryMessage
+            @Nonnull final SearchQuery queryMessage,
+            @Nonnull final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         if (queryMessage.countOrderBy() == 0) {
             return;
