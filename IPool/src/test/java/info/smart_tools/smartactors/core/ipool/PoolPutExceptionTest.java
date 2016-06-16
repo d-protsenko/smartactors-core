@@ -1,39 +1,40 @@
 package info.smart_tools.smartactors.core.ipool;
 
+
+import info.smart_tools.smartactors.core.ipool.exception.PoolPutException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import info.smart_tools.smartactors.core.ipool.exception.PoolException;
 
 /**
- * Tests for PoolException
+ * Tests for PoolPutException
  */
-public class PoolExceptionTest {
-    @Test(expected = PoolException.class)
-    public void checkMessageMethod() throws PoolException {
+public class PoolPutExceptionTest {
+    @Test(expected = PoolPutException.class)
+    public void checkMessageMethod() throws PoolPutException {
         String str = "test";
-        PoolException exception = new PoolException(str);
+        PoolPutException exception = new PoolPutException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test(expected = PoolException.class)
+    @Test(expected = PoolPutException.class)
     public void checkCauseMethod()
-            throws PoolException {
+            throws PoolPutException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PoolException exception = new PoolException(cause);
+        PoolPutException exception = new PoolPutException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test(expected = PoolException.class)
+    @Test(expected = PoolPutException.class)
     public void checkMessageAndCauseMethod()
-            throws PoolException {
+            throws PoolPutException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PoolException exception = new PoolException(str, cause);
+        PoolPutException exception = new PoolPutException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;
