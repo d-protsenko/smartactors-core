@@ -69,15 +69,12 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                         String tpl = indexCreationTemplates.get(indexType);
 
                         if (tpl == null) {
-                            throw new TaskPrepareException("Invalid index type: " + indexType);
+                            throw new QueryStatementFactoryException("Invalid index type: " + indexType);
                         }
-
                         preparedQuery.getBodyWriter().write(String.format(tpl, collectionName.toString(), field.getSQLRepresentation()));
                     }
-                } catch (IOException | TaskPrepareException | ResolutionException | ChangeValueException | ReadValueException e) {
+                } catch (IOException | QueryBuildException | ResolutionException | ChangeValueException | ReadValueException e) {
                     throw new QueryStatementFactoryException("Error while initialize update query.", e);
-                } catch (QueryBuildException e) {
-                    e.printStackTrace();
                 }
                 return preparedQuery;
             };
