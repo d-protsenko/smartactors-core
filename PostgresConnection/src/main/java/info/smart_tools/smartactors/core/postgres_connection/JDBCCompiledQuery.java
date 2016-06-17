@@ -9,7 +9,11 @@ import java.sql.PreparedStatement;
 public class JDBCCompiledQuery implements ICompiledQuery {
     private final PreparedStatement preparedStatement;
 
-    public JDBCCompiledQuery(PreparedStatement preparedStatement) {
+    /**
+     * default constructor
+     * @param preparedStatement the statement for current connection
+     */
+    public JDBCCompiledQuery(final PreparedStatement preparedStatement) {
         this.preparedStatement = preparedStatement;
     }
 
