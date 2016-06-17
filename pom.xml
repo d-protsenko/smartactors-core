@@ -65,6 +65,7 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>PostgresConnection</module>
     </modules>
 
     <properties>
