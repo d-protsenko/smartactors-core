@@ -128,7 +128,7 @@ public class DBUpsertTask implements IDatabaseTask {
                     }
                     return updateQueryStatement;
                 };
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString(), factory);
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("update"), factory);
 
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
@@ -161,7 +161,7 @@ public class DBUpsertTask implements IDatabaseTask {
                     return insertQueryStatement;
                 };
 
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString(), factory);
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("insert"), factory);
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
                     try {

@@ -32,7 +32,10 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.api.support.membermodification.MemberModifier;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.StringWriter;
 import java.sql.PreparedStatement;
@@ -42,9 +45,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
+@PrepareForTest(IOC.class)
+@RunWith(PowerMockRunner.class)
 public class DBUpsertTaskTest {
 
     private DBUpsertTask task;
@@ -154,7 +160,8 @@ public class DBUpsertTaskTest {
         DBInsertTask dbInsertTask = (DBInsertTask) MemberModifier.field(DBUpsertTask.class, "dbInsertTask").get(task);
 
         verify(dbInsertTask).setConnection(connection);
-        verify(dbInsertTask).prepare(upsertMessage);
+        verifyStatic();
+        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("insert"), null);
     }
 
     @Test
@@ -173,7 +180,8 @@ public class DBUpsertTaskTest {
         task.setConnection(connection);
         task.prepare(upsertMessage);
 
-        //TODO:: verify static IOC.resolve etc
+        verifyStatic();
+        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("update"), null);
     }
 
     @Test
