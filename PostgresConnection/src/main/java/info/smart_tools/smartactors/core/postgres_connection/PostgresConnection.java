@@ -27,6 +27,7 @@ public class PostgresConnection implements IStorageConnection {
         try (InputStream src = PostgresConnection.class.getResourceAsStream("db-init.properties")) {
             initProps.load(src);
         } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -78,7 +79,7 @@ public class PostgresConnection implements IStorageConnection {
 
     /**
      *
-     * @param preparedQuery
+     * @param preparedQuery the instance of IPreparedQuery
      * @return CompiledQuery
      * @throws StorageException
      */
@@ -92,6 +93,12 @@ public class PostgresConnection implements IStorageConnection {
         }
     }
 
+    /**
+     * Check if the connection is valid.
+     *
+     * @return {@code true} if the connection is valid
+     * @throws StorageException
+     */
     public boolean validate() throws StorageException {
         try {
             if (connection.isClosed()) {
@@ -118,6 +125,11 @@ public class PostgresConnection implements IStorageConnection {
         }
     }
 
+    /**
+     * Close the connection
+     *
+     * @throws StorageException
+     */
     public void close()
             throws StorageException {
         try {
@@ -127,6 +139,11 @@ public class PostgresConnection implements IStorageConnection {
         }
     }
 
+    /**
+     * Commit the current transaction.
+     *
+     * @throws StorageException
+     */
     public void commit()
             throws StorageException {
         try {
@@ -136,6 +153,11 @@ public class PostgresConnection implements IStorageConnection {
         }
     }
 
+    /**
+     * Rollback the current  transaction.
+     *
+     * @throws StorageException
+     */
     public void rollback()
             throws StorageException {
         try {
