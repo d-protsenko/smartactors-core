@@ -64,6 +64,7 @@
         <module>Pool</module>
         <module>PoolGuard</module>
         <module>PostgresConnection</module>
+        <module>PluginPostgresConnectionPool</module>
     </modules>
 
     <properties>
