@@ -66,6 +66,7 @@
         <module>Pool</module>
         <module>PoolGuard</module>
         <module>PostgresConnection</module>
+        <module>DBFindByIdTask</module>
     </modules>
 
     <properties>
