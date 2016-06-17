@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Plugin for load IOC-strategy for compiling queries
  */
 public class CompileQueryPlugin implements IPlugin {
 
