@@ -18,6 +18,6 @@ public class PSQLFieldPathTest {
     @Test(expected = QueryBuildException.class)
     public void should_ThrowsException() throws QueryBuildException {
         String path = "tes!t#%Incorrect_Path@#%$";
-        FieldPath fieldPath = PSQLFieldPath.fromString(path);
+        PSQLFieldPath.fromString(path);
     }
 }
