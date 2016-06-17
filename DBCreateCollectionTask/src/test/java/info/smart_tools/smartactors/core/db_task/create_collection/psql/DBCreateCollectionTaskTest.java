@@ -74,7 +74,7 @@ public class DBCreateCollectionTaskTest {
         task.prepare(createCollectionMessage);
 
         PowerMockito.verifyStatic();
-        IOC.resolve(any(IKey.class), eq(connection), any(QueryStatementFactory.class));
+        IOC.resolve(any(IKey.class), eq(connection), eq(DBCreateCollectionTask.class.toString()), any(QueryStatementFactory.class));
     }
 
     @Test

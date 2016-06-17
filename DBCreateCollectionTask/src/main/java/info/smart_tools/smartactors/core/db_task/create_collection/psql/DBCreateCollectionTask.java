@@ -82,7 +82,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                 return preparedQuery;
             };
 
-            this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, factory);
+            this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBCreateCollectionTask.class.toString(), factory);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Error while writing collection creation statement.",e);
         }
