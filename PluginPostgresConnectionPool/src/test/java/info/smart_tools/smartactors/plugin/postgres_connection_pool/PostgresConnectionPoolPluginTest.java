@@ -26,7 +26,7 @@ public class PostgresConnectionPoolPluginTest {
     private IBootstrap bootstrap;
 
     @Before
-    public void setUp() throws ResolutionException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
 

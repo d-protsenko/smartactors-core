@@ -17,16 +17,31 @@ import info.smart_tools.smartactors.core.pool.Pool;
 import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
+/**
+ * Plugin.
+ * Implements {@link IPlugin}
+ * Load connection pool for postgres.
+ */
 public class PostgresConnectionPoolPlugin implements IPlugin {
+
+    /** Local storage for instance of {@link IBootstrap}*/
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public PostgresConnectionPoolPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    /**
+     * Constructor with single argument
+     * @param bootstrap instance of {@link IBootstrap}
+     * @throws InvalidArgumentException if any errors occurred
+     */
+    public PostgresConnectionPoolPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap)
+            throws InvalidArgumentException {
+        if (null == bootstrap) {
+            throw new InvalidArgumentException("Incoming argument should not be null.");
+        }
         this.bootstrap = bootstrap;
     }
 
     @Override
     public void load() throws PluginException {
-
         try {
             IKey<Pool> postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
