@@ -3,19 +3,33 @@ package info.smart_tools.smartactors.core.wrapper_generator;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
- * Interface for all wrappers for IMessage
+ * Common wrappers interface
  */
 public interface IObjectWrapper {
 
     /**
-     * Get wrapped object
+     * Get IObject message
      * @return message
      */
-    IObject extractWrapped();
+    IObject getMessage();
 
     /**
-     * Init wrapper with object
-     * @param message init parameter
+     * Get IObject context
+     * @return context
      */
-    void init(IObject message);
+    IObject getContext();
+
+    /**
+     * Get IObject response
+     * @return response
+     */
+    IObject getResponse();
+
+    /**
+     * Init wrapper by message, context and response
+     * @param message message
+     * @param context context
+     * @param response response
+     */
+    void init(IObject message, IObject context, IObject response);
 }
