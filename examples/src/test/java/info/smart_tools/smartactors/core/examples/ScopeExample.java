@@ -86,26 +86,26 @@ public class ScopeExample {
         IScope mainScope = ScopeProvider.getScope(mainScopeKey);
         Object key = new Key(java.util.UUID.randomUUID().toString());
         ScopeProvider.setCurrentScope(mainScope);
-        Object mainValue = new Object();
-        IScope currentScope = ScopeProvider.getCurrentScope();
-        assertSame(mainScope, currentScope);
-        currentScope.setValue(key, mainValue);
-        assertSame(mainValue, currentScope.getValue(key));
 
-        Object nestedScopeKey = ScopeProvider.createScope(currentScope);
+        Object mainValue = new Object();
+        assertSame(mainScope, ScopeProvider.getCurrentScope());
+        ScopeProvider.getCurrentScope().setValue(key, mainValue);
+        assertSame(mainValue, ScopeProvider.getCurrentScope().getValue(key));
+
+        Object nestedScopeKey = ScopeProvider.createScope(mainScope);
         IScope nestedScope = ScopeProvider.getScope(nestedScopeKey);
         ScopeProvider.setCurrentScope(nestedScope);
-        currentScope = ScopeProvider.getCurrentScope();
-        assertSame(nestedScope, currentScope);
-        assertSame(mainValue, currentScope.getValue(key));
+
+        assertSame(nestedScope, ScopeProvider.getCurrentScope());
+        assertSame(mainValue, ScopeProvider.getCurrentScope().getValue(key));
+
         Object nestedValue = new Object();
-        currentScope.setValue(key, nestedValue);
-        assertSame(nestedValue, currentScope.getValue(key));
+        ScopeProvider.getCurrentScope().setValue(key, nestedValue);
+        assertSame(nestedValue, ScopeProvider.getCurrentScope().getValue(key));
 
         ScopeProvider.setCurrentScope(mainScope);
-        currentScope = ScopeProvider.getCurrentScope();
-        assertSame(mainScope, currentScope);
-        assertSame(mainValue, currentScope.getValue(key));
+        assertSame(mainScope, ScopeProvider.getCurrentScope());
+        assertSame(mainValue, ScopeProvider.getCurrentScope().getValue(key));
     }
 
     @Test
