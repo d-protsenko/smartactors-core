@@ -44,7 +44,7 @@ public class DBUpsertTask implements IDatabaseTask {
     private static final String UPDATE_MODE = "update";
 
     private String collectionName;
-    private DBInsertTask dbInsertTask;
+    private IDatabaseTask dbInsertTask;
     private IObject rawUpsertQuery;
     private JDBCCompiledQuery compiledQuery;
     private StorageConnection connection;
@@ -128,7 +128,7 @@ public class DBUpsertTask implements IDatabaseTask {
                     }
                     return updateQueryStatement;
                 };
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, factory);
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString(), factory);
 
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
@@ -161,14 +161,20 @@ public class DBUpsertTask implements IDatabaseTask {
                     return insertQueryStatement;
                 };
 
-                dbInsertTask.prepare(upsertObject);
-
-                this.compiledQuery = (JDBCCompiledQuery) dbInsertTask.getCompiledQuery();
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString(), factory);
+                List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
+                parameterSetters.add((statement, index) -> {
+                    try {
+                        statement.setString(index++, upsertObject.toString());
+                    } catch (NullPointerException e) {
+                        throw new QueryBuildException("Error while writing update query statement: ", e);
+                    }
+                    return index;
+                });
+                this.compiledQuery.setParameters(parameterSetters);
             }
-        } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException e) {
+        } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException | SQLException e) {
             throw new TaskPrepareException("Error while writing update query statement.",e);
-        } catch (SQLException e) {
-
         }
     }
 
