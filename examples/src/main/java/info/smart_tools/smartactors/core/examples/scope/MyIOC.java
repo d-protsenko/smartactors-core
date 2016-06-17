@@ -2,15 +2,10 @@ package info.smart_tools.smartactors.core.examples.scope;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  A sample of scope based IoC.
@@ -24,16 +19,15 @@ public class MyIOC {
         try {
             STORAGE_KEY = new Key(java.util.UUID.randomUUID().toString());
             ScopeProvider.subscribeOnCreationNewScope(
-                    newScope -> {
+                    scope -> {
                         try {
-                            Map<IKey, Object> currentStorage = Collections.emptyMap();
+                            MyRecursiveContainer<IKey, Object> parentStorage = null;
                             try {
-                                IScope currentScope = ScopeProvider.getCurrentScope();
-                                currentStorage = (Map<IKey, Object>) currentScope.getValue(STORAGE_KEY);
-                            } catch (ScopeException | ScopeProviderException e) {
-                                // current storage does not exists, create an empty one
+                                parentStorage = (MyRecursiveContainer<IKey, Object>) scope.getValue(STORAGE_KEY);
+                            } catch (ScopeException e) {
+                                // parent storage does not exists, create a new with null parent
                             }
-                            newScope.setValue(STORAGE_KEY, new ConcurrentHashMap<IKey, Object>(currentStorage));
+                            scope.setValue(STORAGE_KEY, new MyRecursiveContainer<>(parentStorage));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -54,7 +48,8 @@ public class MyIOC {
 
     public static void register(final IKey key, final Object value) throws MyIOCException {
         try {
-            Map<IKey, Object> storage = (Map<IKey, Object>) ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
+            MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
+                    ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
             storage.put(key, value);
         } catch (Throwable e) {
             throw new MyIOCException(e);
@@ -63,7 +58,8 @@ public class MyIOC {
 
     public static <T> T resolve(final IKey<T> key) throws MyIOCException {
         try {
-            Map<IKey, Object> storage = (Map<IKey, Object>) ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
+            MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
+                    ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
             return (T) storage.get(key);
         } catch (Throwable e) {
             throw new MyIOCException(e);
