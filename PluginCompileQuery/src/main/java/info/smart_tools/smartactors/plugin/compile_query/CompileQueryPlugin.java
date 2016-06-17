@@ -39,27 +39,29 @@ public class CompileQueryPlugin implements IPlugin {
         try {
             //Note:: resolve by name strategy for keys should be defined
             IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
-            Map<String, CompiledQuery> queryMap = new HashMap<>();
+            Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
             item.process(() -> {
                 try {
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
                         (args) -> {
                             StorageConnection connection = (StorageConnection) args[0];
-                            if (connection == null) {
-                                throw new RuntimeException("Can't resolve compiled query: connection is null");
+                            String task = String.valueOf(args[1]);
+                            if (connection == null || task == null) {
+                                throw new RuntimeException("Can't resolve compiled query: key parameter is null");
                             }
                             String id = connection.getId();
-                            CompiledQuery query = queryMap.get(id);
+                            QueryKey queryKey = QueryKey.create(task, id);
+                            CompiledQuery query = queryMap.get(queryKey);
                             if (query == null) {
-                                QueryStatementFactory factory = (QueryStatementFactory) args[1];
+                                QueryStatementFactory factory = (QueryStatementFactory) args[2];
                                 if (factory == null) {
                                     throw new RuntimeException("Can't resolve compiled query: query statement is null");
                                 }
                                 try {
                                     QueryStatement queryStatement = factory.create();
                                     query = connection.compileQuery(queryStatement);
-                                    queryMap.put(id, query);
+                                    queryMap.put(queryKey, query);
                                     //TODO:: how to remove old queries from map?
                                 } catch (QueryStatementFactoryException | StorageException e) {
                                     throw new RuntimeException("Can't resolve compiled query: ", e);

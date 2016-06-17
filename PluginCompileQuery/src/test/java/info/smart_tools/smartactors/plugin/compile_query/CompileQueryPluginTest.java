@@ -42,7 +42,7 @@ public class CompileQueryPluginTest {
     }
 
     @Test
-    public void Should() throws Exception {
+    public void ShouldAddNewItemDuringLoad() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CompileQueryPlugin").thenReturn(bootstrapItem);
