@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
-import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
+import info.smart_tools.smartactors.core.db_task.search.utils.ISearchQueryWriter;
+import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * {@see SearchQueryWriter} {@link SearchQueryWriter}.
+ * {@see SearchQueryWriter} {@link ISearchQueryWriter}.
  * General writer an ORDER clause for psql db.
  */
-public class GeneralSQLOrderWriter implements SearchQueryWriter {
+public class GeneralSQLOrderWriter implements ISearchQueryWriter {
     private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
     private static final IFieldName ORDER_DIRECTION_ORDER_BY_ITEM_FN;
 
@@ -64,7 +64,7 @@ public class GeneralSQLOrderWriter implements SearchQueryWriter {
     @Override
     public void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final SearchQuery queryMessage,
+            @Nonnull final ISearchQuery queryMessage,
             @Nonnull final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         if (queryMessage.countOrderBy() == 0) {

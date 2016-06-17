@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
-import info.smart_tools.smartactors.core.db_task.search.utils.SearchQueryWriter;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
+import info.smart_tools.smartactors.core.db_task.search.utils.ISearchQueryWriter;
+import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 @PrepareForTest({ IOC.class, Keys.class })
 @SuppressWarnings("unchecked")
 public class GeneralSQLOrderWriterTest {
-    private SearchQueryWriter orderWriter;
+    private ISearchQueryWriter orderWriter;
 
     @Before
     public void setUp() {
@@ -43,14 +43,14 @@ public class GeneralSQLOrderWriterTest {
 
     @Test
     public void should_WritesORDERClauseIntoQueryStatement() throws Exception {
-        SearchQuery searchQuery = mock(SearchQuery.class);
+        ISearchQuery ISearchQuery = mock(ISearchQuery.class);
         IObject orderItem = mock(IObject.class);
 
         FieldPath fieldPath = mock(FieldPath.class);
         String sortDirection = "testSQLStrDirection";
 
-        when(searchQuery.countOrderBy()).thenReturn(1);
-        when(searchQuery.getOrderBy(0)).thenReturn(orderItem);
+        when(ISearchQuery.countOrderBy()).thenReturn(1);
+        when(ISearchQuery.getOrderBy(0)).thenReturn(orderItem);
         when(orderItem.getValue(anyObject())).thenReturn("testOrderField").thenReturn("testOrderDirection");
 
         when(fieldPath.getSQLRepresentation()).thenReturn("testSQLStrField");
@@ -65,7 +65,7 @@ public class GeneralSQLOrderWriterTest {
 
         QueryStatement queryStatement = new QueryStatement();
         List<SQLQueryParameterSetter> setters = new LinkedList<>();
-        orderWriter.write(queryStatement, searchQuery, setters);
+        orderWriter.write(queryStatement, ISearchQuery, setters);
 
         assertTrue("ORDER BY(testSQLStrField)ASC,(1)".equals(queryStatement.getBodyWriter().toString()));
 

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_task.search;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
+import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -38,7 +38,7 @@ public abstract class DBSearchTask implements IDatabaseTask {
      *                2. Error change a value into {@link IObject};
      *                3. Error during search query execution.
      */
-    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final SearchQuery message)
+    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final ISearchQuery message)
             throws TaskExecutionException {
 
         try {

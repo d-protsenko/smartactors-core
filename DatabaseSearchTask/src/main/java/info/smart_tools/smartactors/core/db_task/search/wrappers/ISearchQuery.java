@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.core.db_task.search.wrappers;
 
+import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.iobject.IObject;
+
+import java.util.Optional;
 
 /**
  * Interface for message containing incoming search request.
@@ -29,7 +32,10 @@ import info.smart_tools.smartactors.core.iobject.IObject;
  *     compositionType ::= "$or" | "$and" | "$not"
  * </pre>
  */
-public interface SearchQuery {
+public interface ISearchQuery {
+    void setQuery(CompiledQuery query);
+    Optional<CompiledQuery> getQuery();
+
     /** The name of the collection to which the query is executed. */
     String getCollectionName();
     void setCollectionName(String collectionName);

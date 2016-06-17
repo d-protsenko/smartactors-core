@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.db_task.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.SearchQuery;
+import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Writer for a some clause of a searching query.
  */
-public interface SearchQueryWriter {
+public interface ISearchQueryWriter {
     /**
      * Writes a some clause in the searching query.
      *
@@ -24,6 +24,6 @@ public interface SearchQueryWriter {
      */
     void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final SearchQuery queryMessage,
+            @Nonnull final ISearchQuery queryMessage,
             @Nonnull final List<SQLQueryParameterSetter> setters) throws QueryBuildException;
 }
