@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.sql_commons;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.IObjectIterator;
 
@@ -19,10 +20,15 @@ public class Conditions {
         query.getBodyWriter().write("(true)");
     }
 
-    private static void writeCompositeCondition(String prefix,String postfix,String delimiter,
-        QueryStatement query,QueryConditionWriterResolver resolver,
-        FieldPath contextFieldPath,Object queryParameter)
-        throws QueryBuildException {
+    private static void writeCompositeCondition(
+            String prefix,String postfix,
+            String delimiter,
+            QueryStatement query,
+            QueryConditionWriterResolver resolver,
+            FieldPath contextFieldPath,
+            Object queryParameter,
+            List<SQLQueryParameterSetter> setters
+    ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
         try {
@@ -42,7 +48,7 @@ public class Conditions {
 
                 while (entry != null) {
                     String key = (String) entry.getKey();
-                    resolver.resolve(key).write(query, resolver, contextFieldPath, entry.getValue());
+                    resolver.resolve(key).write(query, resolver, contextFieldPath, entry.getValue(), setters);
 
                     if(!iterator.hasNext()) {
                         break;
@@ -63,7 +69,7 @@ public class Conditions {
 
                 do {
                     String key = paramIterator.getName().toString();
-                    resolver.resolve(key).write(query, resolver, contextFieldPath, paramIterator.getValue());
+                    resolver.resolve(key).write(query, resolver, contextFieldPath, paramIterator.getValue(), setters);
 
                     if(!paramIterator.next()) {
                         break;
@@ -87,7 +93,7 @@ public class Conditions {
                 Object entry = iterator.next();
 
                 while (entry != null) {
-                    resolved.write(query, resolver, contextFieldPath, entry);
+                    resolved.write(query, resolver, contextFieldPath, entry, setters);
 
                     if(!iterator.hasNext()) {
                         break;
@@ -106,21 +112,33 @@ public class Conditions {
         }
     }
 
-    public static void writeAndCondition(QueryStatement query,QueryConditionWriterResolver resolver,
-                                         FieldPath contextFieldPath,Object queryParameter)
-            throws QueryBuildException {
-        writeCompositeCondition("(",")","AND",query,resolver,contextFieldPath,queryParameter);
+    public static void writeAndCondition(
+            QueryStatement query,
+            QueryConditionWriterResolver resolver,
+            FieldPath contextFieldPath,
+            Object queryParameter,
+            List<SQLQueryParameterSetter> setters
+    ) throws QueryBuildException {
+        writeCompositeCondition("(",")","AND",query,resolver,contextFieldPath,queryParameter, setters);
     }
 
-    public static void writeOrCondition(QueryStatement query,QueryConditionWriterResolver resolver,
-                                         FieldPath contextFieldPath,Object queryParameter)
-            throws QueryBuildException {
-        writeCompositeCondition("(",")","OR",query,resolver,contextFieldPath,queryParameter);
+    public static void writeOrCondition(
+            QueryStatement query,
+            QueryConditionWriterResolver resolver,
+            FieldPath contextFieldPath,
+            Object queryParameter,
+            List<SQLQueryParameterSetter> setters
+    ) throws QueryBuildException {
+        writeCompositeCondition("(",")","OR",query,resolver,contextFieldPath,queryParameter, setters);
     }
 
-    public static void writeNotCondition(QueryStatement query,QueryConditionWriterResolver resolver,
-                                         FieldPath contextFieldPath,Object queryParameter)
-            throws QueryBuildException {
-        writeCompositeCondition("(NOT(","))","AND",query,resolver,contextFieldPath,queryParameter);
+    public static void writeNotCondition(
+            QueryStatement query,
+            QueryConditionWriterResolver resolver,
+            FieldPath contextFieldPath,
+            Object queryParameter,
+            List<SQLQueryParameterSetter> setters
+    ) throws QueryBuildException {
+        writeCompositeCondition("(NOT(","))","AND",query,resolver,contextFieldPath,queryParameter, setters);
     }
 }
