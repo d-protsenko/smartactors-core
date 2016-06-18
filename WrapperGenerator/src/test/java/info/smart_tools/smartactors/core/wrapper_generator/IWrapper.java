@@ -21,9 +21,9 @@ public interface IWrapper {
 
     void setStringValue(String s);
 
-    TestClass getTestClass();
+    TestClass getTestClassValue();
 
-    void setTestClass(TestClass t);
+    void setTestClassValue(TestClass t);
 
     List<Integer> getListOfInt();
 
