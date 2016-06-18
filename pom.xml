@@ -65,8 +65,6 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
-        <module>DataBaseStorage</module>
-        <module>SqlCommons</module>
     </modules>
 
     <properties>
