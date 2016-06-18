@@ -72,6 +72,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
             CompiledQuery compiledQuery = IOC.resolve(
                     Keys.getOrAdd(CompiledQuery.class.toString()),
                     connection,
+                    PSQLDeleteTask.class.toString(),
                     getQueryStatementFactory(collectionName));
 
             this.query = formatQuery(compiledQuery, queryMessage);
