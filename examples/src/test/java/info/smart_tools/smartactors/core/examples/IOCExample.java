@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
@@ -37,14 +38,16 @@ public class IOCExample {
     @Test
     public void keyExample() throws ResolutionException {
         IKey<MyClass> myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
+        IKey<MyClass> myKey = Keys.getOrAdd("myKey");
         IKey<MyClass> myNewKey = new Key<>("myKey");
         IKey<MyClass> myTypedKey = new Key<>(MyClass.class, "myKey");
+        assertEquals("resolve differs from got from Keys", myResolveKey, myKey);
         assertEquals("new differs from resolve", myNewKey, myResolveKey);
     }
 
     @Test
     public void singletonStrategyExample() throws ResolutionException, RegistrationException {
-        IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "singleton");
+        IKey<MyClass> key = Keys.getOrAdd("singleton");
         MyClass myObject = new MyClass("singleton");
         IOC.register(key, new SingletonStrategy(myObject));
         MyClass resolveObject1 = IOC.resolve(key);
@@ -57,7 +60,7 @@ public class IOCExample {
 
     @Test
     public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException {
-        IKey<MyClass> key = IOC.resolve(IOC.getKeyForKeyStorage(), "new");
+        IKey<MyClass> key = Keys.getOrAdd("new");
         IOC.register(key, new CreateNewInstanceStrategy(
                 (args) -> new MyClass((String) args[0])));
         MyClass resolveObject1 = IOC.resolve(key, "id1");
