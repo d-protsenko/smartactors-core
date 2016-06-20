@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
  */
 public interface IWrapper {
 
-    List<Map<String,List<TestClass>>> getIntValue();
+    Integer getIntValue();
 
     void setIntValue(int a);
 

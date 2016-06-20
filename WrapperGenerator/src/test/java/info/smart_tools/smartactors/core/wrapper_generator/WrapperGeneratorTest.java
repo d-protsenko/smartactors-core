@@ -1,11 +1,20 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 
+import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link WrapperGenerator}
@@ -37,7 +46,21 @@ public class WrapperGeneratorTest {
         binding.put("getIObject", "message.IObject");
         binding.put("setIObject", "response.IObject");
         binding.put("countCValue", "message.CValue");
-        wg.generate(IWrapper.class, binding);
+        IWrapper inst = wg.generate(IWrapper.class, binding);
+
+        IObject message = mock(IObject.class);
+        IObject context = mock(IObject.class);
+        IObject response = mock(IObject.class);
+
+        List<Integer> list = new ArrayList<Integer>(){{add(1);add(3);}};
+
+        when(message.getValue(new FieldName("IntValue"))).thenReturn(1);
+        when(message.getValue(new FieldName("ListOfInt"))).thenReturn(list);
+
+        ((IObjectWrapper)inst).init(message, context, response);
+        inst.getListOfInt();
+
+
     }
 }
 

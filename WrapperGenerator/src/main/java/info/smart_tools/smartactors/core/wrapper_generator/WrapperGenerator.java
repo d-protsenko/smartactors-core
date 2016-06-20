@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -30,14 +31,11 @@ import java.util.regex.Pattern;
 public class WrapperGenerator implements IWrapperGenerator {
 
     private static Pattern fieldNameSeparationPattern = Pattern.compile("(get|is|has|set|count)");
-    private static Pattern sourceSelectorPattern = Pattern.compile("(message.)|(context.)|(response.)");
-    private static Pattern getterDetectionPattern = Pattern.compile("((^get)|(^is)|(^has))\\w+");
-    private static Pattern setterDetectionPattern = Pattern.compile("(^set)\\w+");
-    private static Pattern counterDetectionPattern = Pattern.compile("(^count)\\w+");
+    private static Pattern sourceSelectorPattern = Pattern.compile("(message.|context.|response.)");
 
     private static Map<String, Function<Method, String>> writersForMethods = new HashMap<>();
     private static Map<String, Function<Method, String>> writersForFields = new HashMap<>();
-    private static Map<String, String> mapPrimitiveToClass = new HashMap<>(8);
+    private static Map<String, String> mapPrimitiveToClass = new HashMap<>();
     static {
         mapPrimitiveToClass.put(int.class.getName(), "Integer");
         mapPrimitiveToClass.put(long.class.getName(), "Long");
@@ -60,11 +58,26 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(m.getName())
                     .append("() {\n")
                     .append("\t\t")
-                    .append("return null;\n")
+                    .append("try {\n")
+                    .append("\t\t\t")
+                    .append("return fieldFor_")
+                    .append(m.getName())
+                    .append(".from(")
+                    // TODO change to message, context, response
+                    .append("message")
+                    .append(");\n")
+                    .append("\t\t")
+                    .append("} catch(Throwable e) { \n")
+                    .append("\t\t\t")
+                    .append("throw new RuntimeException(\"Could not get value from iobject.\", e);\n")
+                    .append("\t\t")
+                    .append("\t\t")
+                    .append("}\n")
                     .append("\t}\n");
 
             return builder.toString();
         });
+
         writersForMethods.put("has", (m) -> {
             StringBuilder builder = new StringBuilder();
             Type returnType = m.getGenericReturnType();
@@ -199,21 +212,33 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         try {
             Class<T> clazz = generateClass(targetInterface, binding);
-            // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
-            IOC.register(
-                    Keys.getOrAdd(targetInterface.getClass().toString()),
-                    new CreateNewInstanceStrategy(
-                            (arg) ->  {
-                                try {
-                                    return clazz.newInstance();
-                                } catch (Throwable e) {
-                                    throw new RuntimeException("Error on creation new instance.", e);
-                                }
-                            }
-                    )
-            );
 
-            return IOC.resolve(Keys.getOrAdd(targetInterface.getClass().toString()));
+
+            //Tests
+
+
+
+
+
+            // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
+//            IOC.register(
+//                    Keys.getOrAdd(targetInterface.getClass().toString()),
+//                    new CreateNewInstanceStrategy(
+//                            (arg) ->  {
+//                                try {
+//                                    return clazz.newInstance();
+//                                } catch (Throwable e) {
+//                                    throw new RuntimeException("Error on creation new instance.", e);
+//                                }
+//                            }
+//                    )
+//            );
+//
+//            return IOC.resolve(Keys.getOrAdd(targetInterface.getClass().toString()));
+
+
+            return clazz.newInstance();
+
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",
@@ -230,6 +255,7 @@ public class WrapperGenerator implements IWrapperGenerator {
         builder.append("package ").append(targetInterface.getPackage().getName()).append(";\n");
         // Add imports
         builder.append("import ").append(Field.class.getCanonicalName()).append(";\n");
+        builder.append("import ").append(Method.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(FieldName.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(InvalidArgumentException.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(targetInterface.getCanonicalName()).append(";\n");
@@ -275,15 +301,32 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .append(targetInterface.getSimpleName())
                 .append("Impl")
                 .append("() throws InvalidArgumentException {\n");
+        builder
+                .append("\t\t")
+                .append("try {\n");
         for (Method m : targetInterface.getMethods()) {
             builder
-                    .append("\t\t")
+                    .append("\t\t\t")
                     .append("this.fieldFor_")
                     .append(m.getName())
                     .append(" = new Field<>(new FieldName(\"")
                     .append(sourceSelectorPattern.matcher(binding.get(m.getName())).replaceAll(""))
-                    .append("\"));\n");
+                    .append("\"), ")
+                    .append(targetInterface.getSimpleName())
+                    .append(".class.getMethod(\"")
+                    .append(m.getName())
+                    .append("\", ")
+                    .append(m.getParameterTypes()[0].getName())
+                    .append(")")
+                    .append(");\n");
         }
+        builder
+                .append("\t\t")
+                .append("} catch (Exception e) {\n")
+                .append("\t\t\t")
+                .append("throw new InvalidArgumentException(\"\", e);\n")
+                .append("\t\t")
+                .append("}\n");
         builder.append("}\n");
 
         // Add private field - message
