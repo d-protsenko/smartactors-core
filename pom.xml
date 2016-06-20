@@ -38,6 +38,8 @@
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
         <module>IDatabaseTask</module>
+        <module>DataBaseStorage</module>
+        <module>SqlCommons</module>
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -63,6 +65,7 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>IStorageConnection</module>
         <module>CachedCollection</module>
     </modules>
 
