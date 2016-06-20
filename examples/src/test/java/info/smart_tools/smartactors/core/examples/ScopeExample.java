@@ -39,7 +39,7 @@ public class ScopeExample {
 
         Object systemScopeKey = ScopeProvider.createScope(null);
         systemScope = ScopeProvider.getScope(systemScopeKey);
-        ScopeProvider.setCurrentScope(systemScope); // unfortunately, the creation of the new scope now is sensible to the current scope
+        ScopeProvider.setCurrentScope(systemScope);
         Object workerScopeKey = ScopeProvider.createScope(systemScope);
         workerScope = ScopeProvider.getScope(workerScopeKey);
 

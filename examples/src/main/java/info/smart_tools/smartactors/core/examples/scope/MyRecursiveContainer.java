@@ -18,7 +18,12 @@ public class MyRecursiveContainer<K, V> {
     }
 
     public V get(final K key) {
-        return storage.getOrDefault(key, null == parent ? null : parent.get(key));
+        V result = null;
+        result = storage.get(key);
+        if (result == null && parent != null) {
+            result = parent.get(key);
+        }
+        return result;
     }
 
     public void put(final K key, final V value) {
