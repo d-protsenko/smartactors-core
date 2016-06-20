@@ -7,10 +7,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameter
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
-import info.smart_tools.smartactors.core.db_task.search.utils.IPageBuffer;
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.db_task.search.utils.ISearchQueryWriter;
-import info.smart_tools.smartactors.core.db_task.search.utils.PageBuffer;
 import info.smart_tools.smartactors.core.db_task.search.utils.sql.GeneralSQLOrderWriter;
 import info.smart_tools.smartactors.core.db_task.search.utils.sql.GeneralSQLPagingWriter;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
@@ -27,7 +25,6 @@ import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -46,30 +43,24 @@ public class PSQLSearchTask extends DBSearchTask {
     private ISearchQueryWriter orderWriter;
     private ISearchQueryWriter pagingWriter;
 
-    /** A buffer for query to special collection by same criteria. */
-    private IPageBuffer pageBuffer;
-
     /**
      * A single constructor for creation {@link PSQLSearchTask}
      */
     private PSQLSearchTask(
             final QueryConditionWriterResolver conditionsWriterResolver,
             final ISearchQueryWriter orderWriter,
-            final ISearchQueryWriter pagingWriter,
-            final IPageBuffer pageBuffer
+            final ISearchQueryWriter pagingWriter
     ) {
         this.conditionsWriterResolver = conditionsWriterResolver;
         this.orderWriter = orderWriter;
         this.pagingWriter = pagingWriter;
-        this.pageBuffer = pageBuffer;
     }
 
     public static PSQLSearchTask create() {
         return new PSQLSearchTask(
                 ConditionsWriterResolver.create(),
                 GeneralSQLOrderWriter.create(),
-                GeneralSQLPagingWriter.create(),
-                PageBuffer.create(3));
+                GeneralSQLPagingWriter.create());
     }
 
     /**
@@ -81,8 +72,7 @@ public class PSQLSearchTask extends DBSearchTask {
         return new PSQLSearchTask(
                 ConditionsWriterResolver.create(),
                 GeneralSQLOrderWriter.create(),
-                GeneralSQLPagingWriter.create(),
-                PageBuffer.create(bufferMaxSize));
+                GeneralSQLPagingWriter.create());
     }
 
     /**
@@ -121,11 +111,7 @@ public class PSQLSearchTask extends DBSearchTask {
      */
     @Override
     public void execute() throws TaskExecutionException {
-        List<IObject> bufResult = pageBuffer.get(message.getPageNumber());
-        if (bufResult == null) {
-            executeQuery(query, message);
-        }
-        message.setSearchResult(bufResult);
+        super.execute(query, message);
     }
 
     @Override
@@ -133,7 +119,7 @@ public class PSQLSearchTask extends DBSearchTask {
         this.connection = storageConnection;
     }
 
-    private IBufferedQuery createSearchQuery(ISearchQuery queryMessage)
+    private IBufferedQuery createSearchQuery(final ISearchQuery queryMessage)
             throws TaskPrepareException, StorageException, ResolutionException {
         List<SQLQueryParameterSetter> setters = new ArrayList<>();
         CompiledQuery compiledQuery = connection.compileQuery(createQueryStatement(queryMessage, setters));
@@ -153,13 +139,7 @@ public class PSQLSearchTask extends DBSearchTask {
                     .resolve(null)
                     .write(queryStatement, conditionsWriterResolver, null, queryMessage.getCriteria(), setters);
             orderWriter.write(queryStatement, queryMessage, setters);
-
-            int srcPageSize = queryMessage.getPageSize();
-            int pageCount = pageBuffer.size() < pageBuffer.maxSize() ?
-                    pageBuffer.maxSize() - pageBuffer.size() : (int) Math.ceil((double) pageBuffer.size() / 2) + 1;
-            queryMessage.setPageSize(srcPageSize * pageCount);
             pagingWriter.write(queryStatement, queryMessage, setters);
-            queryMessage.setPageSize(srcPageSize);
         } catch (QueryBuildException e) {
             throw new TaskPrepareException("Error writing query statement: " + e.getMessage(), e);
         } catch (Exception e) {
@@ -180,33 +160,6 @@ public class PSQLSearchTask extends DBSearchTask {
         }
 
         return compiledQuery;
-    }
-
-    private void executeQuery(final CompiledQuery compiledQuery, final ISearchQuery queryMessage)
-            throws TaskExecutionException {
-        super.execute(compiledQuery, queryMessage);
-        updateBuffer(queryMessage);
-        updateSearchResult(queryMessage);
-    }
-
-    private void updateBuffer(final ISearchQuery queryMessage) {
-        int pageCount = pageBuffer.size() < pageBuffer.maxSize() ?
-                pageBuffer.maxSize() - pageBuffer.size() : (int) Math.ceil((double) pageBuffer.size() / 2) + 1;
-        int pageSize = queryMessage.getPageSize();
-        int pageNumber = queryMessage.getPageNumber();
-
-        List<IObject> resultPart;
-        for (int i = 0; i < pageCount; ++i) {
-            resultPart = new LinkedList<>();
-            for (int j = 0; j < pageSize; ++j)
-                resultPart.add(queryMessage.getSearchResult(i * pageSize + j));
-
-            pageBuffer.save(pageNumber + i, resultPart);
-        }
-    }
-
-    private void updateSearchResult(final ISearchQuery queryMessage) {
-        queryMessage.setSearchResult(pageBuffer.get(queryMessage.getPageNumber()));
     }
 }
 

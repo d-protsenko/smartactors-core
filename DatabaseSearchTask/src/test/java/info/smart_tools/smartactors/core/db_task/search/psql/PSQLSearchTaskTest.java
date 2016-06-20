@@ -3,9 +3,7 @@ package info.smart_tools.smartactors.core.db_task.search.psql;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
-import info.smart_tools.smartactors.core.db_task.search.utils.IPageBuffer;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -22,9 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
@@ -46,13 +42,6 @@ public class PSQLSearchTaskTest {
 
     private IKey wrapperKey;
     private IKey bufferedQueryKey;
-
-    // For execute.
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
-    private String json = "testJSON";
-    private IKey iObjectKey;
-    private IKey fieldNameKey;
 
     @Before
     public void setUp() throws Exception {
@@ -89,24 +78,7 @@ public class PSQLSearchTaskTest {
         when(IOC.resolve(eq(bufferedQueryKey), eq(compiledQuery), anyObject())).thenReturn(bufferedQuery);
 
         // For execute.
-        preparedStatement = mock(PreparedStatement.class);
-        resultSet = mock(ResultSet.class);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getString(eq("document"))).thenReturn(json);
-        when(resultSet.getLong(eq("id"))).thenReturn(123L);
 
-        iObjectKey = mock(IKey.class);
-        fieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(iObjectKey);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
-
-        IObject convertJson = mock(IObject.class);
-        when(IOC.resolve(eq(iObjectKey), eq(json))).thenReturn(convertJson);
-
-        IFieldName idFN = mock(IFieldName.class);
-        when(IOC.resolve(eq(fieldNameKey), eq("id"))).thenReturn(idFN);
     }
 
     @Test
@@ -126,25 +98,28 @@ public class PSQLSearchTaskTest {
     }
 
     @Test
-    public void executeSearchQueryTest_WithoutBufferTest() throws Exception {
+    public void executeSearchQueryTest() throws Exception {
         DBSearchTask searchTask = prepareSearchTask();
 
-//        IObject objectFirstExec = mock(IObject.class);
-//        IObject objectSecondExec = mock(IObject.class);
-//        IObject objectThirdExec = mock(IObject.class);
-//        IFieldName fieldName = mock(IFieldName.class);
-//        when(fieldName.toString()).thenReturn("testFN");
-//
-//        when(objectFirstExec.getValue(fieldName)).thenReturn("first exec");
-//        when(objectSecondExec.getValue(fieldName)).thenReturn("second exec");
-//        when(objectThirdExec.getValue(fieldName)).thenReturn("third exec");
-//
-//        when(queryMessage.getSearchResult(0)).thenReturn(objectFirstExec);
-//        when(queryMessage.getSearchResult(1)).thenReturn(objectFirstExec);
-//        when(queryMessage.getSearchResult(2)).thenReturn(objectSecondExec);
-//        when(queryMessage.getSearchResult(3)).thenReturn(objectSecondExec);
-//        when(queryMessage.getSearchResult(4)).thenReturn(objectThirdExec);
-//        when(queryMessage.getSearchResult(5)).thenReturn(objectThirdExec);
+        String json = "testJSON";
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(eq("document"))).thenReturn(json);
+        when(resultSet.getLong(eq("id"))).thenReturn(123L);
+
+        IKey iObjectKey = mock(IKey.class);
+        IKey fieldNameKey = mock(IKey.class);
+        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(iObjectKey);
+        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+
+        IObject searchResultObj = mock(IObject.class);
+        when(IOC.resolve(eq(iObjectKey), eq(json))).thenReturn(searchResultObj);
+
+        IFieldName idFN = mock(IFieldName.class);
+        when(IOC.resolve(eq(fieldNameKey), eq("id"))).thenReturn(idFN);
 
         searchTask.execute();
 
@@ -153,32 +128,13 @@ public class PSQLSearchTaskTest {
         verify(resultSet, times(2)).next();
         verify(resultSet, times(1)).getString(eq("document"));
         verify(resultSet, times(1)).getLong(eq("id"));
+        verify(queryMessage).setSearchResult(Collections.singletonList(searchResultObj));
 
         verifyStatic(times(1));
         IOC.resolve(eq(iObjectKey), eq(json));
         verifyStatic(times(1));
         IOC.resolve(eq(fieldNameKey), eq("id"));
-
-//        Field pageBufferField = searchTask.getClass().getDeclaredField("pageBuffer");
-//        pageBufferField.setAccessible(true);
-//        IPageBuffer pageBuffer = (IPageBuffer) pageBufferField.get(searchTask);
-//
-//        assertEquals(pageBuffer.get(1), Arrays.asList(objectFirstExec, objectFirstExec));
-//        assertEquals(pageBuffer.get(2), Arrays.asList(objectSecondExec, objectSecondExec));
-//        assertEquals(pageBuffer.get(3), Arrays.asList(objectThirdExec, objectThirdExec));
     }
-
-//    @Test
-//    public void executeSearchQueryTest_WhenPageBufferIsNotEmpty() throws Exception {
-//        DBSearchTask searchTask = prepareSearchTask();
-//        searchTask.execute();
-//
-//        Field pageBufferField = searchTask.getClass().getDeclaredField("pageBuffer");
-//        pageBufferField.setAccessible(true);
-//        IPageBuffer pageBuffer = (IPageBuffer) pageBufferField.get(searchTask);
-//
-//        assertEquals(pageBuffer.get(0), );
-//    }
 
     private void prepareSearchQueryTest(DBSearchTask searchTask) throws Exception {
         searchTask.setConnection(connection);
