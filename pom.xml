@@ -40,6 +40,8 @@
         <module>IDatabaseTask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <module>DBCreateCollectionTask</module>
+        <module>DBUpsertTask</module>
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -67,6 +69,7 @@
         <module>PoolGuard</module>
         <module>PostgresConnection</module>
         <module>DBFindByIdTask</module>
+        <module>IStorageConnection</module>
     </modules>
 
     <properties>
