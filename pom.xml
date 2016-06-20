@@ -41,6 +41,7 @@
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
         <module>DBCreateCollectionTask</module>
+        <module>DBUpsertTask</module>
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -66,6 +67,7 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>IStorageConnection</module>
     </modules>
 
     <properties>
