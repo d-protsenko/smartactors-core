@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.ioc_conrainer</artifactId>
+    <artifactId>core.ioc_container</artifactId>
 
     <dependencies>
         <!-- Core Interfaces -->
