@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
 import info.smart_tools.smartactors.core.db_task.search.utils.IPageBuffer;
+import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.db_task.search.utils.ISearchQueryWriter;
 import info.smart_tools.smartactors.core.db_task.search.utils.PageBuffer;
 import info.smart_tools.smartactors.core.db_task.search.utils.sql.GeneralSQLOrderWriter;
@@ -25,6 +26,7 @@ import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class PSQLSearchTask extends DBSearchTask {
     private ISearchQueryWriter orderWriter;
     private ISearchQueryWriter pagingWriter;
 
+    /** A buffer for query to special collection by same criteria. */
     private IPageBuffer pageBuffer;
 
     /**
@@ -96,10 +99,12 @@ public class PSQLSearchTask extends DBSearchTask {
     public void prepare(@Nonnull final IObject prepareMessage) throws TaskPrepareException {
         try {
             ISearchQuery queryMessage = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()), prepareMessage);
-            List<SQLQueryParameterSetter> setters = new LinkedList<>();
-            CompiledQuery compiledQuery = connection.compileQuery(createQueryStatement(queryMessage, setters));
+            IBufferedQuery searchQuery = queryMessage
+                    .getBufferedQuery()
+                    .orElse(createSearchQuery(queryMessage));
+            queryMessage.setBufferedQuery(searchQuery);
 
-            query = setQueryParameters(compiledQuery, setters);
+            query = setQueryParameters(searchQuery.getCompiledQuery(), searchQuery.getParametersSetters());
             message = queryMessage;
         } catch (ResolutionException e) {
             throw new TaskPrepareException(e.getMessage(), e);
@@ -126,6 +131,13 @@ public class PSQLSearchTask extends DBSearchTask {
     @Override
     public void setConnection(@Nonnull final StorageConnection storageConnection) throws TaskSetConnectionException {
         this.connection = storageConnection;
+    }
+
+    private IBufferedQuery createSearchQuery(ISearchQuery queryMessage)
+            throws TaskPrepareException, StorageException, ResolutionException {
+        List<SQLQueryParameterSetter> setters = new ArrayList<>();
+        CompiledQuery compiledQuery = connection.compileQuery(createQueryStatement(queryMessage, setters));
+        return IOC.resolve(Keys.getOrAdd(IBufferedQuery.class.toString()), compiledQuery, setters);
     }
 
     private QueryStatement createQueryStatement(

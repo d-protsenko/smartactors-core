@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.search.wrappers;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 import java.util.Optional;
@@ -33,8 +33,8 @@ import java.util.Optional;
  * </pre>
  */
 public interface ISearchQuery {
-    void setQuery(CompiledQuery query);
-    Optional<CompiledQuery> getQuery();
+    void setBufferedQuery(IBufferedQuery query);
+    Optional<IBufferedQuery> getBufferedQuery();
 
     /** The name of the collection to which the query is executed. */
     String getCollectionName();
