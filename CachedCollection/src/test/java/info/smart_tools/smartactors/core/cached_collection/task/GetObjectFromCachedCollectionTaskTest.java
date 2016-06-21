@@ -2,15 +2,18 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.SearchCachedCollectionQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
@@ -119,7 +122,23 @@ public class GetObjectFromCachedCollectionTaskTest {
         verify(iSearchQuery).setCriteria(testIObject);
 
         verify(targetTask).prepare(query);
+    }
 
+    @Test
+    public void MustCorrectExecuteQuery() throws TaskExecutionException {
+        testTask.execute();
+
+        verify(targetTask).execute();
+    }
+
+    @Test
+    public void MostCorrectlySetConnectionToNestedTask() throws TaskSetConnectionException {
+
+        StorageConnection connection = mock(StorageConnection.class);
+
+        testTask.setConnection(connection);
+
+        verify(targetTask).setConnection(eq(connection));
     }
 
 }
