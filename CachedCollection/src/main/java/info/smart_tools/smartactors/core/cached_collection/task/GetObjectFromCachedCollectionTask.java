@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
@@ -45,8 +44,6 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
         try {
             IObject criteriaIObject = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
 
-            SearchCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(SearchCachedCollectionQuery.class.toString()), criteriaIObject);
-
             try {
                 String key = query.getValue(keyFieldName).toString();
                 IObject keyCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
@@ -55,6 +52,8 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             } catch (ReadValueException e) {
                 throw new TaskPrepareException("Can't get required parameter: " + keyFieldName.toString(), e);
             }
+
+            SearchCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(SearchCachedCollectionQuery.class.toString()), criteriaIObject);
 
             IObject isActiveCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
             isActiveCriteria.setValue(eqFieldName, true);
