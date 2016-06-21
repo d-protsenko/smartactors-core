@@ -38,24 +38,21 @@ public class WrapperGeneratorTest {
         binding.put("setListOfString", "response.ListOfString");
         binding.put("getListOfTestClasses", "message.ListOfTestClasses");
         binding.put("setListOfTestClasses", "response.ListOfTestClasses");
-        binding.put("isBoolValue", "message.BoolValue");
+        binding.put("getBoolValue", "message.BoolValue");
         binding.put("setBoolValue", "response.BoolValue");
-        binding.put("hasValue", "message.Value");
         binding.put("getWrappedIObject", "message.WrappedIObject");
         binding.put("setWrappedIObject", "response.WrappedIObject");
         binding.put("getIObject", "message.IObject");
         binding.put("setIObject", "response.IObject");
-        binding.put("countCValue", "message.CValue");
+        binding.put("getStringIInnerMap", "context.StringIInnerMap");
+        binding.put("setStringIInnerMap", "context.StringIInnerMap");
         IWrapper inst = wg.generate(IWrapper.class, binding);
 
         IObject message = mock(IObject.class);
         IObject context = mock(IObject.class);
         IObject response = mock(IObject.class);
 
-        List<Integer> list = new ArrayList<Integer>(){{add(1);add(3);}};
-
-        when(message.getValue(new FieldName("IntValue"))).thenReturn(1);
-        when(message.getValue(new FieldName("ListOfInt"))).thenReturn(list);
+        //List<Integer> list = new ArrayList<Integer>(){{add(1);add(3);}};
 
         ((IObjectWrapper)inst).init(message, context, response);
         inst.getListOfInt();

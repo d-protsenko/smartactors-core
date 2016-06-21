@@ -5,9 +5,6 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import java.util.List;
 import java.util.Map;
 
-import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
-import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
-
 /**
  * Test interface for generation wrapper
  */
@@ -37,11 +34,9 @@ public interface IWrapper {
 
     void setListOfTestClasses(List<TestClass> list);
 
-    Boolean isBoolValue();
+    Boolean getBoolValue();
 
     void setBoolValue(boolean value);
-
-    Boolean hasValue();
 
     IInnerWrapper getWrappedIObject();
 
@@ -51,5 +46,7 @@ public interface IWrapper {
 
     void setIObject(IObject iObject);
 
-    Integer countCValue();
+    Map<String, IInnerWrapper> getStringIInnerMap();
+
+    void setStringIInnerMap(Map<String, IInnerWrapper> map);
 }

@@ -14,7 +14,6 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -78,38 +77,6 @@ public class WrapperGenerator implements IWrapperGenerator {
             return builder.toString();
         });
 
-        writersForMethods.put("has", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type returnType = m.getGenericReturnType();
-            builder
-                    .append("\t")
-                    .append("public ")
-                    .append(returnType.getTypeName())
-                    .append(" ")
-                    .append(m.getName())
-                    .append("() {\n")
-                    .append("\t\t")
-                    .append("return null;\n")
-                    .append("\t}\n");
-
-            return builder.toString();
-        });
-        writersForMethods.put("is", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type returnType = m.getGenericReturnType();
-            builder
-                    .append("\t")
-                    .append("public ")
-                    .append(returnType.getTypeName())
-                    .append(" ")
-                    .append(m.getName())
-                    .append("() {\n")
-                    .append("\t\t")
-                    .append("return null;\n")
-                    .append("\t}\n");
-
-            return builder.toString();
-        });
         writersForMethods.put("set", (m) -> {
             StringBuilder builder = new StringBuilder();
             Type[] args = m.getGenericParameterTypes();
@@ -122,22 +89,6 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(args[0].getTypeName())
                     .append(" value")
                     .append(") {\n")
-                    .append("\t}\n");
-
-            return builder.toString();
-        });
-        writersForMethods.put("count", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type returnType = m.getGenericReturnType();
-            builder
-                    .append("\t")
-                    .append("public ")
-                    .append(returnType.getTypeName())
-                    .append(" ")
-                    .append(m.getName())
-                    .append("() {\n")
-                    .append("\t\t")
-                    .append("return null;\n")
                     .append("\t}\n");
 
             return builder.toString();
@@ -213,13 +164,6 @@ public class WrapperGenerator implements IWrapperGenerator {
         try {
             Class<T> clazz = generateClass(targetInterface, binding);
 
-
-            //Tests
-
-
-
-
-
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
 //            IOC.register(
 //                    Keys.getOrAdd(targetInterface.getClass().toString()),
@@ -255,7 +199,6 @@ public class WrapperGenerator implements IWrapperGenerator {
         builder.append("package ").append(targetInterface.getPackage().getName()).append(";\n");
         // Add imports
         builder.append("import ").append(Field.class.getCanonicalName()).append(";\n");
-        builder.append("import ").append(Method.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(FieldName.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(InvalidArgumentException.class.getCanonicalName()).append(";\n");
         builder.append("import ").append(targetInterface.getCanonicalName()).append(";\n");
@@ -311,13 +254,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(m.getName())
                     .append(" = new Field<>(new FieldName(\"")
                     .append(sourceSelectorPattern.matcher(binding.get(m.getName())).replaceAll(""))
-                    .append("\"), ")
-                    .append(targetInterface.getSimpleName())
-                    .append(".class.getMethod(\"")
-                    .append(m.getName())
-                    .append("\", ")
-                    .append(m.getParameterTypes()[0].getName())
-                    .append(")")
+                    .append("\")")
                     .append(");\n");
         }
         builder
