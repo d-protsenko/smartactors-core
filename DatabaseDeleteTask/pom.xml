@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>db-delete-task</artifactId>
+    <artifactId>core.db_delete_task</artifactId>
 
     <properties>
         <junit.version>4.12</junit.version>

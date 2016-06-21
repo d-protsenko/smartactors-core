@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.db_task.create_collection.psql;
+package info.smart_tools.smartactors.core.db_task.search_by_id.psql;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -10,10 +10,6 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.eq;
@@ -23,13 +19,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
-@SuppressWarnings("unchecked")
 public class QueryStatementBuilderTest {
 
     @Before
     public void setUp() throws Exception {
         mockStatic(IOC.class);
-
         QueryStatement queryStatement = new QueryStatement();
         IKey queryStatementKey = mock(IKey.class);
         when(Keys.getOrAdd(QueryStatement.class.toString())).thenReturn(queryStatementKey);
@@ -39,14 +33,13 @@ public class QueryStatementBuilderTest {
     @Test
     public void buildQueryStatementTest() throws Exception {
         String collection = "testCollection";
-        Map<String, String> indexes = new HashMap<>(1);
-        String validationStr = "CREATE TABLE " + collection +
-                " (id BIGSERIAL PRIMARY KEY, document JSONB NOT NULL);\n";
+        String id = "testId";
+        String validationStr = "SELECT * FROM " + collection + " WHERE token = " + id + ";";
 
         QueryStatement queryStatement = QueryStatementBuilder
                 .create()
                 .withCollection(collection)
-                .withIndexes(indexes)
+                .withId(id)
                 .build();
 
         assertNotEquals(queryStatement, null);
@@ -57,12 +50,12 @@ public class QueryStatementBuilderTest {
     public void should_ThrowsException_WithReason_CollectionFieldNotSet() throws BuildingException {
         QueryStatementBuilder
                 .create()
-                .withIndexes(Collections.emptyMap())
+                .withId("id")
                 .build();
     }
 
     @Test(expected = BuildingException.class)
-    public void should_ThrowsException_WithReason_IndexesFieldNotSet() throws BuildingException {
+    public void should_ThrowsException_WithReason_IdFieldNotSet() throws BuildingException {
         QueryStatementBuilder
                 .create()
                 .withCollection("collection")

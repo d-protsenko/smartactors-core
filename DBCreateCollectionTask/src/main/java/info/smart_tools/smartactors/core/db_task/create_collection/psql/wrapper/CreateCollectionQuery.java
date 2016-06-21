@@ -7,8 +7,8 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import java.util.Map;
 
 public interface CreateCollectionQuery {
-    CollectionName getCollectionName() throws ReadValueException, ChangeValueException;
-    void setCollectionName(CollectionName collectionName);
+    CollectionName getCollectionName() throws ReadValueException;
+    void setCollectionName(CollectionName collectionName) throws ChangeValueException;
     /**
      *  What indexes to create on collection.
      *  @return map filedName->indexType
@@ -18,6 +18,6 @@ public interface CreateCollectionQuery {
      *  tags        - for search by tags (tags field should be an JSON array).
      *
      */
-    Map<String, String> getIndexes() throws ReadValueException, ChangeValueException;
-    void setIndexes(Map<String, String> indexes);
+    Map<String, String> getIndexes() throws ReadValueException;
+    void setIndexes(Map<String, String> indexes) throws ChangeValueException;
 }

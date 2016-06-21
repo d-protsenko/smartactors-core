@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_task.delete.wrappers.DeletionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public abstract class DBDeleteTask implements IDatabaseTask {
     protected void execute(@Nonnull CompiledQuery query, @Nonnull DeletionQuery message)
             throws TaskExecutionException {
         try {
-            int nDeleted = ((JDBCCompiledQuery)query).getPreparedStatement().executeUpdate();
+            int nDeleted = query.executeUpdate();
 
             if(nDeleted != message.countDocumentIds()) {
                 throw new TaskExecutionException("Delete query failed: wrong count of documents is deleted.");

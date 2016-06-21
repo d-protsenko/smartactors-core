@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
@@ -63,7 +62,7 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                             .withCollection(message.getCollectionName().toString())
                             .withIndexes(message.getIndexes())
                             .build();
-                } catch (BuildingException| ResolutionException | ChangeValueException | ReadValueException  e) {
+                } catch (BuildingException| ResolutionException | ReadValueException  e) {
                     throw new QueryStatementFactoryException("Error while initialize update query.", e);
                 }
             };

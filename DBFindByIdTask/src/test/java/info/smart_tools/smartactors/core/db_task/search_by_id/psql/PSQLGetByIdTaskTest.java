@@ -1,9 +1,10 @@
-package info.smart_tools.smartactors.core.db_task.get_by_id.psql;
+package info.smart_tools.smartactors.core.db_task.search_by_id.psql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.get_by_id.psql.wrapper.SearchByIdQuery;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.SearchByIdQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -44,16 +45,16 @@ import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
-public class DBGetByIdTaskTest {
+public class PSQLGetByIdTaskTest {
 
-    private DBGetByIdTask task;
+    private PSQLSearchByIdTask task;
     private JDBCCompiledQuery compiledQuery;
     private StorageConnection connection;
 
     @Before
     public void setUp() throws StorageException, IllegalAccessException {
         compiledQuery = mock(JDBCCompiledQuery.class);
-        task = new DBGetByIdTask();
+        task = new PSQLSearchByIdTask();
     }
 
     @Test
@@ -81,21 +82,20 @@ public class DBGetByIdTaskTest {
     public void ShouldExecuteQueryAndThrowTaskException() throws Exception {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        field(DBGetByIdTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLSearchByIdTask.class, "compiledQuery").set(task, compiledQuery);
         task.execute();
 
-        verify(compiledQuery).getPreparedStatement();
+        verify(compiledQuery).executeQuery();
         verify(preparedStatement).execute();
     }
 
     @Test
     public void ShouldSetConnection() throws Exception {
 
-        StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(DBGetByIdTask.class, "connection").get(task);
+        StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
         connection = mock(StorageConnection.class);
         task.setConnection(connection);
-        StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(DBGetByIdTask.class, "connection").get(task);
+        StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
 
         assertNull(storageConnectionBefore);
         assertNotNull(storageConnectionAfter);
@@ -123,6 +123,8 @@ public class DBGetByIdTaskTest {
         when(IOC.resolve(eq(keyFieldPath), anyString())).thenReturn(fieldPath);
         when(fieldPath.getSQLRepresentation()).thenReturn("");
 
-        when(message.getCollectionName()).thenReturn("collection");
+        CollectionName collectionName = mock(CollectionName.class);
+        when(collectionName.toString()).thenReturn("collection");
+        when(message.getCollectionName()).thenReturn(collectionName);
     }
 }

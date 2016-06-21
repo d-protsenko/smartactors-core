@@ -59,24 +59,19 @@ public class PSQLDeleteTask extends DBDeleteTask {
      *                3. Error writing deletion query statement.
      */
     @Override
-    public void prepare(@Nonnull final IObject message) throws TaskPrepareException {
-        CollectionName collectionName;
+    public void prepare(@Nonnull IObject message) throws TaskPrepareException {
         try {
             DeletionQuery queryMessage = IOC.resolve(Keys.getOrAdd(DeletionQuery.class.toString()), message);
+            this.message = queryMessage;
+            if(queryMessage.countDocumentIds() == 0) return;
 
-            if(queryMessage.countDocumentIds() == 0) {
-                throw new TaskPrepareException("List of id's to delete should not be empty.");
-            }
-
-            collectionName = CollectionName.fromString(queryMessage.getCollectionName());
             CompiledQuery compiledQuery = IOC.resolve(
                     Keys.getOrAdd(CompiledQuery.class.toString()),
                     connection,
                     PSQLDeleteTask.class.toString(),
-                    getQueryStatementFactory(collectionName));
+                    getQueryStatementFactory(queryMessage.getCollectionName()));
 
             this.query = formatQuery(compiledQuery, queryMessage);
-            this.message = queryMessage;
         } catch (ResolutionException | QueryBuildException e) {
             throw new TaskPrepareException(e.getMessage(), e);
         }
@@ -90,6 +85,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
      */
     @Override
     public void execute() throws TaskExecutionException {
+        if (message != null && message.countDocumentIds() == 0) return;
         if (query == null || message == null)
             throw new TaskExecutionException("Should first prepare the task.");
 
@@ -97,7 +93,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
     }
 
     @Override
-    public void setConnection(@Nonnull final StorageConnection connection) {
+    public void setConnection(@Nonnull StorageConnection connection) {
         this.connection = connection;
     }
 
@@ -123,7 +119,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
         };
     }
 
-    private CompiledQuery formatQuery(final CompiledQuery compiledQuery, final DeletionQuery queryMessage)
+    private CompiledQuery formatQuery(CompiledQuery compiledQuery, final DeletionQuery queryMessage)
             throws QueryBuildException {
 
         int documentsIdsSize = queryMessage.countDocumentIds();

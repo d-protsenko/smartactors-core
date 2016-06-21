@@ -43,7 +43,7 @@ class QueryStatementBuilder {
     }
 
     /**
-     * Appends collection name.
+     * Appends collection name to final query.
      *
      * @param collection - a collection name for which to create query statement.
      *
@@ -113,13 +113,13 @@ class QueryStatementBuilder {
         }
     }
 
-    private void requiresNonnull(String str, String message) {
+    private void requiresNonnull(String str, String message) throws BuildingException {
         if (str == null || str.isEmpty())
-            throw new IllegalArgumentException(message);
+            throw new BuildingException(message);
     }
 
-    private void requiresNonnull(Map map, String message) {
+    private void requiresNonnull(Map map, String message) throws BuildingException {
         if (map == null)
-            throw new IllegalArgumentException(message);
+            throw new BuildingException(message);
     }
 }
