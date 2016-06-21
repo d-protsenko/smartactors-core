@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public class GetObjectFromCachedCollection implements IDatabaseTask {
+public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
     private String key;
     private String collectionName;
@@ -27,7 +27,7 @@ public class GetObjectFromCachedCollection implements IDatabaseTask {
     private IFieldName eqFieldName;
     private IFieldName dateToFieldName;
 
-    public GetObjectFromCachedCollection(final GetObjectsFromCachedCollectionParameters params) {
+    public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) {
         try {
             this.targetTask = params.getTask();
             this.key = params.getKey();
