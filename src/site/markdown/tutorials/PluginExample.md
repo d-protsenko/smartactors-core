@@ -1,7 +1,11 @@
 # How to use Plugins
 
+## Overview
+
 Plugin is a set of functionality, i.e. Java classes packed into one or multiple JAR files.
 The Server loads and initializes such JARs.
+
+## Loading and initialization steps
 
 Loading and initializing are two separate steps of the process.
 
@@ -16,9 +20,13 @@ This is the second step of the initialization.
 
 ![Plugins and Bootstrap](http://www.plantuml.com/plantuml/img/IyxFBSZFIyqhKGXEBIfBBU9AXWi4v9IcP-OX2JZbvvSKbnGb5c0Jyon9pUNYWXYYaA-hQwUWfAK4DKF1IY4dFp6b65KUhXKedLgHcbnQaWfK0TMX1JC1nGAWoeAY_BBC591AX7wSYfFpSt9IaqkG5ODba6s7AarAJSilIYMiBZ6j11XA0000)
 
+## Sample plugin
+
 Let create a sample plugin.
 
     public class MyPlugin implements IPlugin {
+
+### Bootstrap reference    
     
 It must contain a reference to `Bootstrap` provided during initialization process.
 
@@ -29,6 +37,8 @@ The `Bootstrap` must be injected into the plugin's constructor.
     public MyPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
+
+### Load method    
     
 You have to define the `load()` method.
 
@@ -42,6 +52,8 @@ In the method at the first you should declare the `BootstrapItem` provided by yo
 Here you declare that your item must be initialized after initialization of 'IOC' item.
  
     item.after("IOC");
+
+### Initialization callback    
     
 Then you define your plugin initialization code.
 For example, let register some new strategy in IOC.
@@ -55,29 +67,43 @@ For example, let register some new strategy in IOC.
             throw new RuntimeException(e);
         }
     });
+
+### Registering the callback    
     
 Finally you should add your bootstrap item into `Bootstrap`: 
 
     bootstrap.add(item);
-    
+
+## How plugins are loaded
+
 On the server side the loading of the plugin may looks as the following.
 
+### Bootstrap    
+    
 The server initializes the `Bootstrap` to handle the initialization sequence.
 
     IBootstrap bootstrap = new Bootstrap();
+
+### PluginCreator
     
 Also it uses `PluginCreator` to find and call the correct constructor of `IPlugin`.
 
     IPluginCreator creator = new PluginCreator();
+
+### PluginLoaderVisitor    
     
 A `IPluginLoaderVisitor` is necessary to track plugins loading process.
 
     IPluginLoaderVisitor<String> visitor = new MyPluginVisitor();
+
+### ClassLoader    
     
 Because the plugin jars can be located in different directories and can be added dynamically, the special kind of [ClassLoader](http://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html) is required.
     
     ClassLoader urlClassLoader =
                     new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
+
+### PluginLoader
                     
 Then the `PluginLoader` is created.
 It's second constructor parameter is the code to load each plugin.
@@ -94,14 +120,20 @@ It's second constructor parameter is the code to load each plugin.
             },
             visitor
     );
+
+### Loading    
     
 The server scans the jar file for `IPlugin` instances.
 
     pluginLoader.loadPlugin("examples.jar");
+
+### Initialization    
     
 And then calls the initialization code of `BootstrapItem`s in the sequence according to their dependencies.
 
     bootstrap.start();
+
+## Initialization order    
     
 In this example, when we have two plugins: 'MyPlugin' following _after_ 'IOC' â€” the loading and initialization sequence is like this:
  
@@ -111,5 +143,7 @@ In this example, when we have two plugins: 'MyPlugin' following _after_ 'IOC' â€
 4. initialization code of bootstrap item of 'MyPlugin' because it asked to be after 'IOC'
 
 Note the order of first two steps is not defined, while the order of execution of bootstrap items is defined by their dependencies.
+
+## Code of the example
 
 You can check the full source codes of this example [here](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/plugin/package-summary.html).
