@@ -38,6 +38,10 @@
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
         <module>IDatabaseTask</module>
+        <module>DataBaseStorage</module>
+        <module>SqlCommons</module>
+        <module>DBCreateCollectionTask</module>
+        <module>DBUpsertTask</module>
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -63,8 +67,11 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
+        <module>DBFindByIdTask</module>
+        <module>IStorageConnection</module>
     </modules>
 
     <properties>
