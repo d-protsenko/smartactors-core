@@ -79,6 +79,7 @@
         <module>MessageProcessingSequence</module>
         <module>MessageContext</module>
         <module>ScopeMessageContxtContainer</module>
+        <module>IMessageProcessor</module>
     </modules>
 
     <properties>
