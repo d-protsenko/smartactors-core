@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 public class CachedCollection implements ICachedCollection {
 
     @Override
-    public IObject getItem() throws GetCacheItemException {
+    public IObject getItem(IObject query) throws GetCacheItemException {
         return null;
     }
 }

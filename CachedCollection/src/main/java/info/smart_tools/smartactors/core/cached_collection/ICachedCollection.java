@@ -5,5 +5,5 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 
 public interface ICachedCollection {
 
-    IObject getItem() throws GetCacheItemException;
+    IObject getItem(IObject query) throws GetCacheItemException;
 }
