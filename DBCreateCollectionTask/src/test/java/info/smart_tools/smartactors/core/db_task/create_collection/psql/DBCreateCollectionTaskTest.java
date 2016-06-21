@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.CreateCollectionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -51,9 +52,8 @@ public class DBCreateCollectionTaskTest {
 
     @Before
     public void setUp() throws StorageException, IllegalAccessException {
-
         compiledQuery = mock(JDBCCompiledQuery.class);
-        task = new DBCreateCollectionTask();
+        task = DBCreateCollectionTask.create();
     }
 
     @Test
@@ -79,14 +79,12 @@ public class DBCreateCollectionTaskTest {
 
     @Test
     public void ShouldExecuteQuery() throws Exception {
-
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        when(compiledQuery.execute()).thenReturn(true);
         field(DBCreateCollectionTask.class, "compiledQuery").set(task, compiledQuery);
         task.execute();
 
-        verify(compiledQuery).getPreparedStatement();
-        verify(preparedStatement).execute();
+        verify(compiledQuery).execute();
     }
 
     @Test
@@ -123,6 +121,8 @@ public class DBCreateCollectionTaskTest {
         when(IOC.resolve(eq(keyFieldPath), anyString())).thenReturn(fieldPath);
         when(fieldPath.getSQLRepresentation()).thenReturn("");
 
-        when(message.getCollectionName()).thenReturn("collection");
+        CollectionName collectionName = mock(CollectionName.class);
+        when(collectionName.toString()).thenReturn("collection");
+        when(message.getCollectionName()).thenReturn(collectionName);
     }
 }
