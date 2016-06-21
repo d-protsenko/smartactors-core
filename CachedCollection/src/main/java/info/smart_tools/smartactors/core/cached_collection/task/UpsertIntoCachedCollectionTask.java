@@ -46,8 +46,8 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
         try {
             UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
             IFieldName keyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), key);
-            String key = IOC.resolve(Keys.getOrAdd(String.class.toString()), query.getValue(keyFieldName));
-            if (key == null || key.isEmpty()) {
+            String keyValue = IOC.resolve(Keys.getOrAdd(String.class.toString()), query.getValue(keyFieldName));
+            if (keyValue == null || keyValue.isEmpty()) {
                 throw new TaskPrepareException("Key field should be present.");
             }
             if (message.getStartDateTime() == null) {
