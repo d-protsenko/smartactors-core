@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.message_processor;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.imessage_processing_sequence.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NoExceptionHandleChainException;
@@ -10,32 +11,39 @@ import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
 import info.smart_tools.smartactors.core.imessage_receiver.exception.MessageReceiveException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresource_source.IResourceSource;
 import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.message_context.IMessageContextContainer;
-import info.smart_tools.smartactors.core.message_context.MessageContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-
-import java.lang.reflect.Field;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Tests for {@link MessageProcessor}.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({IOC.class})
 public class MessageProcessorTest {
     private IQueue<ITask> taskQueueMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
     private IMessage messageMock;
     private IObject contextMock;
-    private IMessageContextContainer messageContextContainerMock;
+    private IObject responseMock;
+
+    private final IKey KEY_FOR_KEY_STORAGE = mock(IKey.class);
+    private final IKey KEY_FOR_NEW_IOBJECT = mock(IKey.class);
 
     @Before
     public void setUp()
@@ -44,12 +52,13 @@ public class MessageProcessorTest {
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
         messageMock = mock(IMessage.class);
         contextMock = mock(IObject.class);
-        messageContextContainerMock = mock(IMessageContextContainer.class);
+        responseMock = mock(IObject.class);
 
-        Field field = MessageContext.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, messageContextContainerMock);
-        field.setAccessible(false);
+        mockStatic(IOC.class);
+
+        when(IOC.getKeyForKeyStorage()).thenReturn(KEY_FOR_KEY_STORAGE);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, IObject.class)).thenReturn(KEY_FOR_NEW_IOBJECT);
+        when(IOC.resolve(KEY_FOR_NEW_IOBJECT)).thenReturn(responseMock).thenReturn(null);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -63,6 +72,7 @@ public class MessageProcessorTest {
             throws Exception {
         assertNotNull(new MessageProcessor(taskQueueMock, null));
     }
+
     @Test
     public void Should_interruptThread_When_putToQueueIsInterrupted()
             throws Exception {
@@ -79,16 +89,23 @@ public class MessageProcessorTest {
     }
 
     @Test
+    public void Should_storeAndReturnMessageAndContextAndSequenceAndCreateResponse()
+            throws Exception {
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        messageProcessor.process(messageMock, contextMock);
+
+        assertSame(messageProcessingSequenceMock, messageProcessor.getSequence());
+        assertSame(messageMock, messageProcessor.getMessage());
+        assertSame(contextMock, messageProcessor.getContext());
+        assertSame(responseMock, messageProcessor.getResponse());
+    }
+
+    @Test
     public void Should_workWhenNoExceptionsOccurs()
             throws Exception {
         IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
         IMessageReceiver messageReceiverMock2 = mock(IMessageReceiver.class);
         ArgumentCaptor<IAction> actionArgumentCaptor = ArgumentCaptor.forClass(IAction.class);
-
-        doAnswer(invocation -> {
-            verify(messageContextContainerMock).setCurrentContext(contextMock);
-            return null;
-        }).when(messageReceiverMock1).receive(same(messageMock), any());
 
         MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
 
