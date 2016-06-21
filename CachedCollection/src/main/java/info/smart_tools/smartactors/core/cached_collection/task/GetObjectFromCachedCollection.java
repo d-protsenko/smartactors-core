@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.SearchCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
@@ -22,18 +23,15 @@ public class GetObjectFromCachedCollection implements IDatabaseTask {
     private String key;
     private String collectionName;
 
-    private IFieldName startDateTimeFieldName;
-
     private IFieldName eqFieldName;
-    private IFieldName ltFieldName;
+    private IFieldName dateToFieldName;
 
-    public GetObjectFromCachedCollection(IDatabaseTask targetTask, String key, String collectionName) throws ResolutionException {
-        this.targetTask = targetTask;
-        this.key = key;
-        this.collectionName = collectionName;
+    public GetObjectFromCachedCollection(final GetObjectsFromCachedCollectionParameters params) throws ResolutionException {
+        this.targetTask = params.getTask();
+        this.key = params.getKey();
+        this.collectionName = params.getCollectionName();
         eqFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$eq");
-        ltFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$lt");
-        startDateTimeFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "startDateTime");
+        dateToFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$date-to");
     }
 
     @Override
@@ -52,19 +50,15 @@ public class GetObjectFromCachedCollection implements IDatabaseTask {
             criteriaQuery.setIsActive(isActiveCriteria);
 
             IObject startDateTimeCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-            startDateTimeCriteria.setValue(ltFieldName, LocalDateTime.now());
+            startDateTimeCriteria.setValue(dateToFieldName, LocalDateTime.now());
             criteriaQuery.setStartDateTime(startDateTimeCriteria);
-
-            IObject startDateTimeOrder = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-            startDateTimeOrder.setValue(startDateTimeFieldName, "DESC");
 
             ISearchQuery iSearchQuery = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()), query);
 
             iSearchQuery.setCollectionName(collectionName);
             iSearchQuery.setPageNumber(0);
-            iSearchQuery.setPageSize(1);
+            iSearchQuery.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
             iSearchQuery.setCriteria(criteriaIObject);
-            iSearchQuery.setOrderBy(Arrays.asList(startDateTimeOrder));
 
             targetTask.prepare(query);
         } catch (ResolutionException e) {
