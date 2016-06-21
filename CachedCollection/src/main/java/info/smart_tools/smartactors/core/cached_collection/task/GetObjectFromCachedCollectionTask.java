@@ -21,24 +21,21 @@ import java.util.Arrays;
 
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
-    private String key;
     private String collectionName;
 
     private IFieldName eqFieldName;
     private IFieldName dateToFieldName;
+    private IFieldName keyFieldName;
 
     public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) {
         try {
             this.targetTask = params.getTask();
-            this.key = params.getKey();
             this.collectionName = params.getCollectionName();
-        } catch (ReadValueException | ChangeValueException e) {
-            // TODO: Throwing standardInitialisationException
-        }
-        try {
+
             eqFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$eq");
             dateToFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$date-to");
-        } catch (ResolutionException e) {
+            keyFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), params.getKey());
+        } catch (ReadValueException | ChangeValueException | ResolutionException e) {
             // TODO: Throwing standardInitialisationException
         }
     }
@@ -50,9 +47,14 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
 
             SearchCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(SearchCachedCollectionQuery.class.toString()), criteriaIObject);
 
-            IObject keyCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-            keyCriteria.setValue(eqFieldName, key);
-            criteriaQuery.setKey(keyCriteria);
+            try {
+                String key = query.getValue(keyFieldName).toString();
+                IObject keyCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
+                keyCriteria.setValue(eqFieldName, key);
+                criteriaIObject.setValue(keyFieldName, keyCriteria);
+            } catch (ReadValueException e) {
+                throw new TaskPrepareException("Can't get required parameter: " + keyFieldName.toString(), e);
+            }
 
             IObject isActiveCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
             isActiveCriteria.setValue(eqFieldName, true);
