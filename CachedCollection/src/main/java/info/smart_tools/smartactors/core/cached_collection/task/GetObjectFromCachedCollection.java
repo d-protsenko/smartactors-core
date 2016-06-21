@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -26,12 +27,20 @@ public class GetObjectFromCachedCollection implements IDatabaseTask {
     private IFieldName eqFieldName;
     private IFieldName dateToFieldName;
 
-    public GetObjectFromCachedCollection(final GetObjectsFromCachedCollectionParameters params) throws ResolutionException {
-        this.targetTask = params.getTask();
-        this.key = params.getKey();
-        this.collectionName = params.getCollectionName();
-        eqFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$eq");
-        dateToFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$date-to");
+    public GetObjectFromCachedCollection(final GetObjectsFromCachedCollectionParameters params) {
+        try {
+            this.targetTask = params.getTask();
+            this.key = params.getKey();
+            this.collectionName = params.getCollectionName();
+        } catch (ReadValueException | ChangeValueException e) {
+            // TODO: Throwing standardInitialisationException
+        }
+        try {
+            eqFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$eq");
+            dateToFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$date-to");
+        } catch (ResolutionException e) {
+            // TODO: Throwing standardInitialisationException
+        }
     }
 
     @Override
