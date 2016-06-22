@@ -9,11 +9,12 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.core.recursive_strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -49,9 +50,15 @@ public class ScopeExample {
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
-                        scope.setValue(IOC.getIocKey(), new StrategyContainer());
+                        IStrategyContainer parentContainer = null;
+                        try {
+                            parentContainer = (IStrategyContainer) scope.getValue(IOC.getIocKey());
+                        } catch (ScopeException e) {
+                            // parent container does not exists, create a new with null parent
+                        }
+                        scope.setValue(IOC.getIocKey(), new StrategyContainer(parentContainer));
                     } catch (Exception e) {
-                        throw new Error(e);
+                        throw new RuntimeException(e);
                     }
                 }
         );
@@ -145,7 +152,6 @@ public class ScopeExample {
         assertEquals(main, MyIOC.resolve(key));
     }
 
-    @Ignore("Cannot pass while system StrategyContainer is not recursive")
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, RegistrationException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());

@@ -66,7 +66,7 @@ public class Container implements IContainer {
             IResolveDependencyStrategy strategy = strategyContainer.resolve(key);
             return (T) strategy.resolve(args);
         } catch (Throwable e) {
-            throw new ResolutionException("Resolution of dependency failed.");
+            throw new ResolutionException("Resolution of dependency failed.", e);
         }
     }
 
