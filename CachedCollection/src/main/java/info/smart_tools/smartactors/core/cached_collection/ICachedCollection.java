@@ -5,9 +5,11 @@ import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheIte
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
+import java.util.List;
+
 public interface ICachedCollection {
 
-    IObject getItem(IObject query) throws GetCacheItemException;
+    List<IObject> getItem(IObject query) throws GetCacheItemException;
     void delete(IObject query) throws DeleteCacheItemException;
     void upsert(IObject query) throws UpsertCacheItemException;
 }

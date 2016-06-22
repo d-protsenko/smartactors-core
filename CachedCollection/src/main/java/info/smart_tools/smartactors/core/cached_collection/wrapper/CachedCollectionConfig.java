@@ -10,5 +10,4 @@ public interface CachedCollectionConfig {
     IDatabaseTask getReadTask() throws ReadValueException, ChangeValueException;
     IDatabaseTask getUpsertTask() throws ReadValueException, ChangeValueException;
     IDatabaseTask getDeleteTask() throws ReadValueException, ChangeValueException;
-    GetItemStrategy getStrategy() throws ReadValueException, ChangeValueException;
 }

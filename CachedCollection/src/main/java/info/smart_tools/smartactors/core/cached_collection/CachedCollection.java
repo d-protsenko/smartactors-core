@@ -27,7 +27,6 @@ public class CachedCollection implements ICachedCollection {
     private IDatabaseTask readTask;
     private IDatabaseTask upsertTask;
     private IDatabaseTask deleteTask;
-    private GetItemStrategy strategy;
 
     private ConcurrentMap<String, List<IObject>> map;
 
@@ -37,7 +36,6 @@ public class CachedCollection implements ICachedCollection {
             this.readTask = config.getReadTask();
             this.upsertTask = config.getUpsertTask();
             this.deleteTask = config.getDeleteTask();
-            this.strategy = config.getStrategy();
             map = new ConcurrentHashMap<>();
         } catch (ReadValueException | ChangeValueException e) {
             //TODO:: throw create cache collection exception
@@ -45,7 +43,7 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public IObject getItem(IObject query) throws GetCacheItemException {
+    public List<IObject> getItem(IObject query) throws GetCacheItemException {
 
         try {
             //TODO:: use wrapper and real key from it, when read task would be added
@@ -53,16 +51,28 @@ public class CachedCollection implements ICachedCollection {
 //            String key = message.getKey();
             String key = "";
             List<IObject> items = map.get(key);
-            CachedItem cachedItem = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), strategy.getItem(items));
-            Boolean isActive = cachedItem.isActive().orElse(false);
-            if (!isActive) {
+            List<IObject> result = Collections.emptyList();
+            if (items != null) {
+                for (IObject obj : items) {
+                    //TODO:: check this
+                    CachedItem cachedItem = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
+                    Boolean isActive = cachedItem.isActive().orElse(false);
+                    if (isActive) {
+                        result.add(cachedItem.wrapped());
+
+
+                        cachedItem = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), query);
+                    }
+                }
+            }
+            if (result.isEmpty()) {
                 readTask.prepare(query);
                 readTask.execute();
-
-                cachedItem = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), query);
+                //TODO:: uncomment when read task would be added
+//                result = message.getSearchResult();
             }
 
-            return cachedItem.wrapped();
+            return result;
         } catch (TaskPrepareException e) {
             throw new GetCacheItemException("Error during preparing read task.", e);
         } catch (TaskExecutionException e) {
