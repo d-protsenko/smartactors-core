@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.core.cached_collection.exception;
 
+/**
+ * Exception for error in {@link info.smart_tools.smartactors.core.cached_collection.ICachedCollection} upsert method
+ */
 public class UpsertCacheItemException extends Exception {
 
     public UpsertCacheItemException() {
