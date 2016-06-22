@@ -41,6 +41,7 @@
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
         <module>DBCreateCollectionTask</module>
+        <module>DatabaseSearchTask</module>
         <module>DBUpsertTask</module>
         <module>examples</module>
         <module>BootstrapItem</module>
