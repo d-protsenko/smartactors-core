@@ -10,10 +10,9 @@ public class ConstructorInfo {
 
     private ClassBuilder builder;
     private Modifiers modifier;
-    private String name;
     private List<ConstructorParameterInfo> parameters = new ArrayList<>();
     private List<String> exceptions = new ArrayList<>();
-    private String body;
+    private List<String> body = new ArrayList<>();
 
     public ConstructorInfo(final ClassBuilder builder) {
         this.builder = builder;
@@ -25,16 +24,6 @@ public class ConstructorInfo {
 
     public ConstructorInfo setModifier(final Modifiers modifier) {
         this.modifier = modifier;
-
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ConstructorInfo setName(final String name) {
-        this.name = name;
 
         return this;
     }
@@ -60,12 +49,12 @@ public class ConstructorInfo {
         return this;
     }
 
-    public String getBody() {
+    public List<String> getBody() {
         return body;
     }
 
-    public ConstructorInfo setBody(final String body) {
-        this.body = body;
+    public ConstructorInfo addStringToBody(final String string) {
+        this.body.add(string);
 
         return this;
     }

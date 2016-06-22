@@ -6,10 +6,14 @@ import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.wrapper_generator.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.core.wrapper_generator.class_builder.MethodInfo;
+import info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -29,106 +33,6 @@ import java.util.regex.Pattern;
  */
 public class WrapperGenerator implements IWrapperGenerator {
 
-    private static Pattern fieldNameSeparationPattern = Pattern.compile("(get|is|has|set|count)");
-    private static Pattern sourceSelectorPattern = Pattern.compile("(message.|context.|response.)");
-
-    private static Map<String, Function<Method, String>> writersForMethods = new HashMap<>();
-    private static Map<String, Function<Method, String>> writersForFields = new HashMap<>();
-    private static Map<String, String> mapPrimitiveToClass = new HashMap<>();
-    static {
-        mapPrimitiveToClass.put(int.class.getName(), "Integer");
-        mapPrimitiveToClass.put(long.class.getName(), "Long");
-        mapPrimitiveToClass.put(float.class.getName(), "Float");
-        mapPrimitiveToClass.put(double.class.getName(), "Double");
-        mapPrimitiveToClass.put(byte.class.getName(), "Byte");
-        mapPrimitiveToClass.put(boolean.class.getName(), "Boolean");
-        mapPrimitiveToClass.put(char.class.getName(), "Character");
-        mapPrimitiveToClass.put(short.class.getName(), "Short");
-    }
-    static {
-        writersForMethods.put("get", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type returnType = m.getGenericReturnType();
-            builder
-                    .append("\t")
-                    .append("public ")
-                    .append(returnType.getTypeName())
-                    .append(" ")
-                    .append(m.getName())
-                    .append("() {\n")
-                    .append("\t\t")
-                    .append("try {\n")
-                    .append("\t\t\t")
-                    .append("return fieldFor_")
-                    .append(m.getName())
-                    .append(".from(")
-                    // TODO change to message, context, response
-                    .append("message")
-                    .append(");\n")
-                    .append("\t\t")
-                    .append("} catch(Throwable e) { \n")
-                    .append("\t\t\t")
-                    .append("throw new RuntimeException(\"Could not get value from iobject.\", e);\n")
-                    .append("\t\t")
-                    .append("\t\t")
-                    .append("}\n")
-                    .append("\t}\n");
-
-            return builder.toString();
-        });
-
-        writersForMethods.put("set", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type[] args = m.getGenericParameterTypes();
-            builder
-                    .append("\t")
-                    .append("public void")
-                    .append(" ")
-                    .append(m.getName())
-                    .append("(")
-                    .append(args[0].getTypeName())
-                    .append(" value")
-                    .append(") {\n")
-                    .append("\t}\n");
-
-            return builder.toString();
-        });
-        writersForFields.put("void", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type[] parametersTypes = m.getGenericParameterTypes();
-            builder
-                    .append("\t")
-                    .append("private Field<")
-                    .append(
-                            null != mapPrimitiveToClass.get(parametersTypes[0].getTypeName()) ?
-                            mapPrimitiveToClass.get(parametersTypes[0].getTypeName())    :
-                            parametersTypes[0].getTypeName())
-                    .append("> ")
-                    .append("fieldFor_")
-                    .append(m.getName())
-                    .append(";\n");
-
-            return builder.toString();
-        });
-        writersForFields.put("notvoid", (m) -> {
-            StringBuilder builder = new StringBuilder();
-            Type returnType = m.getGenericReturnType();
-            builder
-                    .append("\t")
-                    .append("private Field<")
-                    .append(
-                            null != mapPrimitiveToClass.get(returnType.getTypeName()) ?
-                            mapPrimitiveToClass.get(returnType.getTypeName())    :
-                            returnType.getTypeName())
-                    .append("> ")
-                    .append("fieldFor_")
-                    .append(m.getName())
-                    .append(";\n");
-
-            return builder.toString();
-        });
-    }
-
     private IClassGenerator<String> classGenerator;
 
     /**
@@ -141,7 +45,7 @@ public class WrapperGenerator implements IWrapperGenerator {
     }
 
     @Override
-    public <T> T generate(final Class<T> targetInterface, final Map<String, String> binding)
+    public <T> T generate(final Class<T> targetInterface, final IObject binding)
             throws InvalidArgumentException, WrapperGeneratorException {
         T instance = null;
 
@@ -180,7 +84,6 @@ public class WrapperGenerator implements IWrapperGenerator {
 //
 //            return IOC.resolve(Keys.getOrAdd(targetInterface.getClass().toString()));
 
-
             return clazz.newInstance();
 
         } catch (Throwable e) {
@@ -191,17 +94,18 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
     }
 
-    private <T> Class<T> generateClass(final Class<T> targetInterface, final Map<String, String> binding)
+    private <T> Class<T> generateClass(final Class<T> targetInterface, final IObject binding)
             throws Exception {
-        StringBuilder builder = new StringBuilder();
 
-        // Add package name
-        builder.append("package ").append(targetInterface.getPackage().getName()).append(";\n");
-        // Add imports
-        builder.append("import ").append(Field.class.getCanonicalName()).append(";\n");
-        builder.append("import ").append(FieldName.class.getCanonicalName()).append(";\n");
-        builder.append("import ").append(InvalidArgumentException.class.getCanonicalName()).append(";\n");
-        builder.append("import ").append(targetInterface.getCanonicalName()).append(";\n");
+        ClassBuilder cb = new ClassBuilder("\t", "\n");
+
+        cb
+                .addPackageName(targetInterface.getPackage().getName())
+                .addImport(Field.class.getCanonicalName())
+                .addImport(FieldName.class.getCanonicalName())
+                .addImport(InvalidArgumentException.class.getCanonicalName())
+                .addImport(targetInterface.getCanonicalName());
+
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
             Class<?> returnType = m.getReturnType();
@@ -217,43 +121,39 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
         for (Object o : types.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
-            builder.append("import ").append(entry.getValue()).append(";\n");
+            cb.addImport((String) entry.getValue());
         }
-
-        // Add 'public class targetInterfaceImpl implements IObjectWrapper {'
-        builder
-                .append("public class ")
-                .append(targetInterface.getSimpleName())
-                .append("Impl ")
-                .append("implements IObjectWrapper, ")
-                .append(targetInterface.getSimpleName())
-                .append(" { \n");
-        // Add private Field properties
+        cb
+                .addClass()
+                .setClassModifier(Modifiers.PUBLIC)
+                .setClassName(targetInterface.getSimpleName() + "Impl")
+                .setInterfaces("IObjectWrapper")
+                .setInterfaces(targetInterface.getSimpleName());
         for (Method m : targetInterface.getMethods()) {
-            if (Void.TYPE == m.getGenericReturnType()) {
-                builder.append(writersForFields.get("void").apply(m));
-            } else {
-                builder.append(writersForFields.get("notvoid").apply(m));
-            }
+            String genericType =
+                    Void.TYPE == m.getGenericReturnType() ?
+                            m.getGenericParameterTypes()[0].getTypeName() :
+                            m.getReturnType().getTypeName();
+            cb
+                    .addField()
+                    .setModifier(Modifiers.PRIVATE)
+                    .setType("Field")
+                    .setInnerGenericType(genericType)
+                    .setName("fieldFor_" + m.getName());
         }
 
-        //Add default constructor
-        builder
-                .append("\t")
-                .append("public ")
-                .append(targetInterface.getSimpleName())
-                .append("Impl")
-                .append("() throws InvalidArgumentException {\n");
+        StringBuilder builder = new StringBuilder();
         builder
                 .append("\t\t")
                 .append("try {\n");
         for (Method m : targetInterface.getMethods()) {
+            IObject methodBinding = (IObject) binding.getValue(new FieldName(m.getName()));
             builder
                     .append("\t\t\t")
                     .append("this.fieldFor_")
                     .append(m.getName())
                     .append(" = new Field<>(new FieldName(\"")
-                    .append(sourceSelectorPattern.matcher(binding.get(m.getName())).replaceAll(""))
+                    .append((String) methodBinding.getValue(new FieldName("ValueName")))
                     .append("\")")
                     .append(");\n");
         }
@@ -263,68 +163,111 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .append("\t\t\t")
                 .append("throw new InvalidArgumentException(\"\", e);\n")
                 .append("\t\t")
-                .append("}\n");
-        builder.append("}\n");
-
-        // Add private field - message
-        builder
-                .append("\t")
-                .append("private IObject message;\n");
-        // Add getter for message
-        builder
-                .append("\t")
-                .append("public IObject getMessage() {\n")
-                .append("\t\t")
-                .append("return message;\n")
-                .append("\t}").append("\n");
-        // Add private field - context
-        builder
-                .append("\t")
-                .append("private IObject context;\n");
-        // Add getter for context
-        builder
-                .append("\t")
-                .append("public IObject getContext() {\n")
-                .append("\t\t")
-                .append("return context;\n")
-                .append("\t}").append("\n");
-        // Add private field - response
-        builder
-                .append("\t")
-                .append("private IObject response;\n");
-        // Add getter for response
-        builder
-                .append("\t")
-                .append("public IObject getResponse() {\n")
-                .append("\t\t")
-                .append("return response;\n")
-                .append("\t}").append("\n");
-        // Add implementation for 'init' method
-        builder
-                .append("\t")
-                .append("public void init(IObject message, IObject context, IObject response) {\n")
-                .append("\t\t")
-                .append("this.message = message;\n")
-                .append("\t\t")
-                .append("this.context = context;\n")
-                .append("\t\t")
-                .append("this.response = response;\n")
-                .append("\t}\n");
+                .append("}");
+        cb
+                .addConstructor()
+                .setModifier(Modifiers.PUBLIC)
+                .setExceptions("InvalidArgumentException")
+                .addStringToBody(builder.toString());
+        cb
+                .addField()
+                .setModifier(Modifiers.PRIVATE)
+                .setType("IObject")
+                .setName("message");
+        cb
+                .addField()
+                .setModifier(Modifiers.PRIVATE)
+                .setType("IObject")
+                .setName("context");
+        cb
+                .addField()
+                .setModifier(Modifiers.PRIVATE)
+                .setType("IObject")
+                .setName("response");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("IObject")
+                .setName("getMessage")
+                .addStringToBody("return this.message;");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("IObject")
+                .setName("getContext")
+                .addStringToBody("return this.context;");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("IObject")
+                .setName("getResponse")
+                .addStringToBody("return this.response;");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("void")
+                .setName("init")
+                .addParameter()
+                        .setType("IObject")
+                        .setName("message")
+                        .next()
+                .addParameter()
+                    .setType("IObject")
+                    .setName("context")
+                    .next()
+                .addParameter()
+                        .setType("IObject")
+                        .setName("response")
+                        .next()
+                .addStringToBody("this.message = message;")
+                .addStringToBody("this.context = context;")
+                .addStringToBody("this.response = response;");
 
         for (Method m : targetInterface.getMethods()) {
-            Matcher matcher = fieldNameSeparationPattern.matcher(m.getName());
-            if (matcher.find()) {
-                builder.append(writersForMethods.get(matcher.group(1)).apply(m));
+            IObject methodBinding = (IObject) binding.getValue(new FieldName(m.getName()));
+            String methodType = (String) methodBinding.getValue(new FieldName("MethodType"));
+            String resource = (String) methodBinding.getValue(new FieldName("Resource"));
+            String strategy = (String) methodBinding.getValue(new FieldName("UseStrategy"));
+            String typeTo = m.getReturnType().getSimpleName();
+            if (null != methodType && methodType.equals("get")) {
+                cb
+                        .addMethod()
+                        .setModifier(Modifiers.PUBLIC)
+                        .setReturnType(m.getGenericReturnType().getTypeName())
+                        .setName(m.getName())
+                        .addStringToBody("try {")
+                        .addStringToBody(
+                                "\treturn fieldFor_" +
+                                m.getName() +
+                                ".from(" +
+                                resource +
+                                ", " +
+                                (null == strategy || strategy.isEmpty() ? typeTo + ".class" : "\"" + strategy + "\"") +
+                                ");"
+                        )
+                        .addStringToBody("} catch(Throwable e) {")
+                        .addStringToBody("\tthrow new RuntimeException(\"Could not get value from iobject.\", e);")
+                        .addStringToBody("}");
             }
-
-
+            if (null != methodType && methodType.equals("set")) {
+                cb
+                        .addMethod()
+                        .setModifier(Modifiers.PUBLIC)
+                        .setReturnType("void")
+                        .setName(m.getName())
+                        .addParameter()
+                                .setType(m.getGenericParameterTypes()[0].getTypeName())
+                                .setName("value")
+                                .next()
+                        .addStringToBody("try {")
+                        .addStringToBody("\tthis.fieldFor_" + m.getName() + ".inject(" + resource + ", value);")
+                        .addStringToBody("} catch (Throwable e) {")
+                        .addStringToBody("\tthrow new RuntimeException(\"Could not set value from iobject.\", e);")
+                        .addStringToBody("}");
+            }
         }
 
-        // Add end of class
-        builder.append("}");
-
-
-        return (Class<T>) classGenerator.generate(builder.toString());
+        return (Class<T>) classGenerator.generate(cb.buildClass().toString());
     }
 
 

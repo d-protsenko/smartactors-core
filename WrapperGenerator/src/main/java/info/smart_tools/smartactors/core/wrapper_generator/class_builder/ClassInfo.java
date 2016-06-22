@@ -9,7 +9,7 @@ import java.util.List;
 public class ClassInfo {
 
     private ClassBuilder builder;
-    private String ClassName;
+    private String className;
     private Modifiers classModifier;
     private String inheritableClass;
     private List<String> interfaces = new ArrayList<>();
@@ -25,7 +25,7 @@ public class ClassInfo {
     }
 
     public ClassInfo setClassName(final String className) {
-        this.ClassName = className;
+        this.className = className;
 
         return this;
     }
@@ -43,7 +43,7 @@ public class ClassInfo {
     }
 
     public String getClassName() {
-        return ClassName;
+        return className;
     }
 
     public Modifiers getClassModifier() {

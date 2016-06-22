@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.iwrapper_generator;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 
 import java.util.Map;
@@ -19,6 +20,6 @@ public interface IWrapperGenerator {
      * @throws InvalidArgumentException if target == null or if target is not an interface
      * @throws WrapperGeneratorException if class could not be generated
      */
-    <T> T generate(Class<T> targetInterface, Map<String, String> binding)
+    <T> T generate(Class<T> targetInterface, IObject binding)
             throws InvalidArgumentException, WrapperGeneratorException;
 }

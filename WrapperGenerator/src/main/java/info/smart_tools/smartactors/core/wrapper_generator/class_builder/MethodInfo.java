@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.wrapper_generator.class_builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +11,10 @@ public class MethodInfo {
     private ClassBuilder builder;
     private Modifiers modifier;
     private String name;
-    private List<MethodParameterInfo> parameters;
-    private List<String> exceptions;
-    private String body;
+    private List<MethodParameterInfo> parameters = new ArrayList<>();
+    private List<String> exceptions = new ArrayList<>();
+    private List<String> body = new ArrayList<>();
+    private String returnType;
 
     public MethodInfo(final ClassBuilder builder) {
         this.builder = builder;
@@ -43,23 +45,37 @@ public class MethodInfo {
     }
 
     public MethodParameterInfo addParameter() {
-        return new MethodParameterInfo(this);
+        MethodParameterInfo parameterInfo = new MethodParameterInfo(this);
+        this.parameters.add(parameterInfo);
+        return parameterInfo;
     }
 
     public List<String> getExceptions() {
         return exceptions;
     }
 
-    public void setExceptions(final String exception) {
+    public MethodInfo setExceptions(final String exception) {
         this.exceptions.add(exception);
+
+        return this;
     }
 
-    public String getBody() {
+    public List<String> getBody() {
         return body;
     }
 
-    public MethodInfo setBody(final String body) {
-        this.body = body;
+    public MethodInfo addStringToBody(final String body) {
+        this.body.add(body);
+
+        return this;
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
+
+    public MethodInfo setReturnType(final String returnType) {
+        this.returnType = returnType;
 
         return this;
     }

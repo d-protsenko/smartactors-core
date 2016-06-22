@@ -10,6 +10,7 @@ public class FieldInfo {
     private Modifiers modifier;
     private String name;
     private String type;
+    private String innerGenericType;
 
     public FieldInfo(final ClassBuilder classBuilder) {
         this.classBuilder = classBuilder;
@@ -41,6 +42,16 @@ public class FieldInfo {
 
     public FieldInfo setType(final String type) {
         this.type = type;
+
+        return this;
+    }
+
+    public String getInnerGenericType() {
+        return innerGenericType;
+    }
+
+    public FieldInfo setInnerGenericType(final String innerGenericType) {
+        this.innerGenericType = innerGenericType;
 
         return this;
     }
