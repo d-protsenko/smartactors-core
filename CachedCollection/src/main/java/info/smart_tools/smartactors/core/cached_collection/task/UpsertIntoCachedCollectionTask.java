@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -25,12 +26,12 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask upsertTask;
     private String key;
 
-    public UpsertIntoCachedCollectionTask(UpsertIntoCachedCollectionConfig config) {
+    public UpsertIntoCachedCollectionTask(UpsertIntoCachedCollectionConfig config) throws InvalidArgumentException {
         try {
             this.upsertTask = config.getUpsertTask();
             this.key = config.getKey();
         } catch (ReadValueException | ChangeValueException e) {
-            //TODO:: throw some standard create task exception
+            throw new InvalidArgumentException("Can't create UpsertIntoCachedCollectionTask.", e);
         }
     }
 
