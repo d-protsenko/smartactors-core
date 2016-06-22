@@ -71,6 +71,7 @@
         <module>PostgresConnection</module>
         <module>DBFindByIdTask</module>
         <module>IStorageConnection</module>
+        <module>RecursiveStrategyContainer</module>
     </modules>
 
     <properties>
