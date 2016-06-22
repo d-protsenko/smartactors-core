@@ -9,46 +9,50 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.ioc_container</artifactId>
+    <artifactId>plugin.compile_query</artifactId>
 
     <dependencies>
-        <!-- Core Interfaces -->
+
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istrategy_container</artifactId>
+            <artifactId>core.iplugin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresolve_dependency_strategy</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iioccontainer</artifactId>
+            <artifactId>core.ibootstrap</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Service Locator -->
+        <!-- Other implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
+            <artifactId>core.bootstrap_item</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.sql_commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.db_storage</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.named_keys_storage</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.create_new_instance_strategy</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Implementation -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.string_ioc_key</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Tests -->
+        <!--testing-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -56,12 +60,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>1.10.19</version>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
 
+
     </dependencies>
+
 
 </project>
