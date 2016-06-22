@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 public interface UpsertIntoCachedCollectionQuery {
 
+    String getId() throws ReadValueException, ChangeValueException;
+    Boolean isActive() throws ReadValueException, ChangeValueException;
+    void setIsActive(Boolean isActive) throws ReadValueException, ChangeValueException;
+    String getKey() throws ReadValueException, ChangeValueException;
     LocalDateTime getStartDateTime() throws ReadValueException, ChangeValueException;
     void setStartDateTime(LocalDateTime startDateTime) throws ReadValueException, ChangeValueException;
 
