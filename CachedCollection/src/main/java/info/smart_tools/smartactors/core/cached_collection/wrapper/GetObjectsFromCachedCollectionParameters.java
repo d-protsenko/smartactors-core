@@ -6,6 +6,5 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 public interface GetObjectsFromCachedCollectionParameters {
     IDatabaseTask getTask() throws ReadValueException, ChangeValueException;
-    String getKey() throws ReadValueException, ChangeValueException;
     String getCollectionName() throws ReadValueException, ChangeValueException;
 }

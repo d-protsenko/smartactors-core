@@ -1,14 +1,15 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.DateToMessage;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.EQMessage;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.SearchCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -22,19 +23,11 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
     private String collectionName;
 
-    private IFieldName eqFieldName;
-    private IFieldName dateToFieldName;
-    private IFieldName keyFieldName;
-
     public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) {
         try {
             this.targetTask = params.getTask();
             this.collectionName = params.getCollectionName();
-
-            eqFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$eq");
-            dateToFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "$date-to");
-            keyFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), params.getKey());
-        } catch (ReadValueException | ChangeValueException | ResolutionException e) {
+        } catch (ReadValueException | ChangeValueException e) {
             // TODO: Throwing standardInitialisationException
         }
     }
@@ -42,38 +35,31 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     @Override
     public void prepare(IObject query) throws TaskPrepareException {
         try {
-            IObject criteriaIObject = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
+            GetObjectFromCachedCollectionQuery srcQueryObject = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
 
-            try {
-                String key = query.getValue(keyFieldName).toString();
-                IObject keyCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-                keyCriteria.setValue(eqFieldName, key);
-                criteriaIObject.setValue(keyFieldName, keyCriteria);
-            } catch (ReadValueException e) {
-                throw new TaskPrepareException("Can't get required parameter: " + keyFieldName.toString(), e);
-            }
+            CriteriaCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(CriteriaCachedCollectionQuery.class.toString()), getResolvedIObject());
 
-            SearchCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(SearchCachedCollectionQuery.class.toString()), criteriaIObject);
+            EQMessage keyEQ = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()), getResolvedIObject());
+            keyEQ.setEq(srcQueryObject.getKey());
+            criteriaQuery.setIsActive(keyEQ);
 
-            IObject isActiveCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-            isActiveCriteria.setValue(eqFieldName, true);
-            criteriaQuery.setIsActive(isActiveCriteria);
+            EQMessage isActiveEQ = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()), getResolvedIObject());
+            isActiveEQ.setEq(Boolean.toString(true));
+            criteriaQuery.setIsActive(isActiveEQ);
 
-            IObject startDateTimeCriteria = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
-            startDateTimeCriteria.setValue(dateToFieldName, LocalDateTime.now());
-            criteriaQuery.setStartDateTime(startDateTimeCriteria);
+            DateToMessage startDateTimeDateTo = IOC.resolve(Keys.getOrAdd(DateToMessage.class.toString()), getResolvedIObject());
+            startDateTimeDateTo.setDateTo(LocalDateTime.now().toString());
+            criteriaQuery.setStartDateTime(startDateTimeDateTo);
 
-            ISearchQuery iSearchQuery = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()), query);
-
-            iSearchQuery.setCollectionName(collectionName);
-            iSearchQuery.setPageNumber(0);
-            iSearchQuery.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
-            iSearchQuery.setCriteria(criteriaIObject);
+            srcQueryObject.setCollectionName(collectionName);
+            srcQueryObject.setPageNumber(0);
+            srcQueryObject.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
+            srcQueryObject.setCriteria(criteriaQuery);
 
             targetTask.prepare(query);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create ISearchQuery from input query", e);
-        } catch (ChangeValueException e) {
+        } catch (ChangeValueException | ReadValueException e) {
             throw new TaskPrepareException("Can't change value in one of IObjects", e);
         }
     }
@@ -86,5 +72,9 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         targetTask.execute();
+    }
+
+    public static IObject getResolvedIObject() throws ResolutionException {
+        return IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
     }
 }
