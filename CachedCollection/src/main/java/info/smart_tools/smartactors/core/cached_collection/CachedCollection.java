@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollect
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedItem;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of cached collection
@@ -36,11 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class CachedCollection implements ICachedCollection {
 
-//    private IDatabaseTask readTask;
-//    private IDatabaseTask upsertTask;
-//    private IDatabaseTask deleteTask;
     private IPool connectionPool;
-
     private ConcurrentMap<String, List<IObject>> map;
 
     /**
@@ -50,9 +48,6 @@ public class CachedCollection implements ICachedCollection {
      */
     public CachedCollection(CachedCollectionConfig config) throws InvalidArgumentException {
         try {
-//            this.readTask = config.getReadTask();
-//            this.upsertTask = config.getUpsertTask();
-//            this.deleteTask = config.getDeleteTask();
             this.connectionPool = config.getConnectionPool();
             map = new ConcurrentHashMap<>();
         } catch (ReadValueException | ChangeValueException e) {
@@ -66,10 +61,8 @@ public class CachedCollection implements ICachedCollection {
         try {
             IDatabaseTask readTask = params.getTask();
             IObject query = params.getQuery();
-            //TODO:: use wrapper and real key from it, when read task would be added
-//            GetItemFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(GetItemFromCachedCollectionQuery.class.toString()), query);
-//            String key = message.getKey();
-            String key = "";
+            GetObjectFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
+            String key = message.getKey();
             List<IObject> items = map.get(key);
             List<IObject> result = Collections.emptyList();
             if (items != null) {
@@ -89,8 +82,7 @@ public class CachedCollection implements ICachedCollection {
                 }
                 readTask.prepare(query);
                 readTask.execute();
-                //TODO:: uncomment when read task would be added
-//                result = message.getSearchResult();
+                result = message.getSearchResult().collect(Collectors.toList());
             }
             return result;
         } catch (TaskSetConnectionException e) {

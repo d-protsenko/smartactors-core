@@ -5,7 +5,10 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
+import java.util.stream.Stream;
+
 public interface GetObjectFromCachedCollectionQuery extends ISearchQuery {
     String getKey() throws ReadValueException, ChangeValueException;// TODO: write custom name for field
     IObject wrapped() throws ReadValueException, ChangeValueException;
+    Stream<IObject> getSearchResult() throws ReadValueException, ChangeValueException;
 }

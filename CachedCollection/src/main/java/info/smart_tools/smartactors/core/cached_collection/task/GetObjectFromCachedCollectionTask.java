@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -22,11 +23,11 @@ import java.time.LocalDateTime;
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
 
-    public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) {
+    public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) throws InvalidArgumentException {
         try {
             this.targetTask = params.getTask();
         } catch (ReadValueException | ChangeValueException e) {
-            // TODO: Throwing standardInitialisationException
+            throw new InvalidArgumentException("Can't create GetObjectFromCachedCollectionTask.", e);
         }
     }
 
