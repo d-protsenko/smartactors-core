@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.CreateCollectionQuery;
+import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.ICreateCollectionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -17,11 +17,9 @@ import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,20 +28,15 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
+@SuppressWarnings("unchecked")
 public class DBCreateCollectionTaskTest {
 
     private DBCreateCollectionTask task;
@@ -61,7 +54,7 @@ public class DBCreateCollectionTaskTest {
         throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
-        CreateCollectionQuery message = mock(CreateCollectionQuery.class);
+        ICreateCollectionQuery message = mock(ICreateCollectionQuery.class);
         PreparedQuery preparedQuery = new QueryStatement();
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
@@ -69,19 +62,19 @@ public class DBCreateCollectionTaskTest {
         when(message.getIndexes()).thenReturn(indexes);
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+        when(connection.getId()).thenReturn("testConnectionId");
 
         task.setConnection(connection);
         task.prepare(createCollectionMessage);
 
-        PowerMockito.verifyStatic();
-        IOC.resolve(any(IKey.class), eq(connection), eq(DBCreateCollectionTask.class.toString()), any(QueryStatementFactory.class));
+        verify(connection).compileQuery(eq(preparedQuery));
     }
 
     @Test
     public void ShouldExecuteQuery() throws Exception {
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.execute()).thenReturn(true);
-        field(DBCreateCollectionTask.class, "compiledQuery").set(task, compiledQuery);
+        field(DBCreateCollectionTask.class, "query").set(task, compiledQuery);
         task.execute();
 
         verify(compiledQuery).execute();
@@ -92,6 +85,8 @@ public class DBCreateCollectionTaskTest {
 
         StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
         connection = mock(StorageConnection.class);
+        when(connection.getId()).thenReturn("testConnectionId");
+
         task.setConnection(connection);
         StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
 
@@ -100,26 +95,24 @@ public class DBCreateCollectionTaskTest {
         assertEquals(connection, storageConnectionAfter);
     }
 
-    private void initDataForPrepare(PreparedQuery preparedQuery, CreateCollectionQuery message, IObject createCollectionMessage)
+    private void initDataForPrepare(PreparedQuery preparedQuery, ICreateCollectionQuery message, IObject createCollectionMessage)
         throws ResolutionException, ReadValueException, ChangeValueException {
 
         mockStatic(IOC.class);
 
         IKey key1 = mock(IKey.class);
-        IKey keyQuery = mock(IKey.class);
         IKey keyMessage = mock(IKey.class);
-        IKey keyFieldPath = mock(IKey.class);
+        IKey keyFieldPath = mock(IKey.class);IKey keyQuery = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq(QueryStatement.class.toString()))).thenReturn(keyQuery);
-        when(IOC.resolve(eq(key1), eq(CreateCollectionQuery.class.toString()))).thenReturn(keyMessage);
+        when(IOC.resolve(eq(key1), eq(ICreateCollectionQuery.class.toString()))).thenReturn(keyMessage);
         when(IOC.resolve(eq(key1), eq(FieldPath.class.toString()))).thenReturn(keyFieldPath);
-
+        when(IOC.resolve(eq(keyQuery))).thenReturn(preparedQuery);
 
         FieldPath fieldPath = mock(FieldPath.class);
-        when(IOC.resolve(eq(keyQuery))).thenReturn(preparedQuery);
         when(IOC.resolve(eq(keyMessage), eq(createCollectionMessage))).thenReturn(message);
         when(IOC.resolve(eq(keyFieldPath), anyString())).thenReturn(fieldPath);
-        when(fieldPath.getSQLRepresentation()).thenReturn("");
+        when(fieldPath.getSQLRepresentation()).thenReturn("testField");
 
         CollectionName collectionName = mock(CollectionName.class);
         when(collectionName.toString()).thenReturn("collection");

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 /**
  * Wrapper for SearchById message
  */
-public interface SearchByIdQuery {
+public interface ISearchByIdQuery {
     /**
      * Return the collectionName
      * @return String the name of collection where object is stored

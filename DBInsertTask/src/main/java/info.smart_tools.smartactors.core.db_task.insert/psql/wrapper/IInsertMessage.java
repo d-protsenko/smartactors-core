@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.core.db_task.insert.psql.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
-public interface InsertMessage {
+public interface IInsertMessage {
 
     /**
      * Get document-object
      * @return returns document-object to be used
-     * @throws ChangeValueException
      * @throws ReadValueException
      */
-    IObject getDocuments() throws ChangeValueException, ReadValueException;
+    IDocument getDocument() throws ReadValueException;
+    void setDocument(IDocument document) throws ChangeValueException;
 
     /**
      * Get collection name
@@ -20,6 +20,7 @@ public interface InsertMessage {
      * @throws ChangeValueException
      * @throws ReadValueException
      */
-    String getCollectionName() throws ChangeValueException, ReadValueException;
+    CollectionName getCollectionName() throws ChangeValueException, ReadValueException;
+    void setCollectionName(CollectionName collectionName);
 
 }

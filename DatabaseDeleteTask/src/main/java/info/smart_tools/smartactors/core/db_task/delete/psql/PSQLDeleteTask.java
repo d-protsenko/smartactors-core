@@ -3,23 +3,19 @@ package info.smart_tools.smartactors.core.db_task.delete.psql;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.delete.DBDeleteTask;
-import info.smart_tools.smartactors.core.db_task.delete.wrappers.DeletionQuery;
+import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.Writer;
-import java.sql.SQLException;
 import java.util.Collections;
 
 /**
@@ -30,8 +26,8 @@ public class PSQLDeleteTask extends DBDeleteTask {
     private StorageConnection connection;
     /** Compiled deletion query. */
     private CompiledQuery query;
-    /** {@see DeletionQuery} {@link DeletionQuery} */
-    private DeletionQuery message;
+    /** {@see DeletionQuery} {@link IDeletionQuery} */
+    private IDeletionQuery message;
 
     /**
      * A single constructor for creation {@link PSQLDeleteTask}
@@ -50,7 +46,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
      * {@see IDatabaseTask} {@link info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask}
      * Prepare query for deletion documents from database by ids.
      *
-     * @param message contains parameters for deletion query.
+     * @param deleteMessage contains parameters for deletion query.
      *                Should contains list of documents ids deleted objects.
      *
      * @throws TaskPrepareException when:
@@ -59,21 +55,21 @@ public class PSQLDeleteTask extends DBDeleteTask {
      *                3. Error writing deletion query statement.
      */
     @Override
-    public void prepare(@Nonnull IObject message) throws TaskPrepareException {
+    public void prepare(@Nonnull IObject deleteMessage) throws TaskPrepareException {
         try {
-            DeletionQuery queryMessage = IOC.resolve(Keys.getOrAdd(DeletionQuery.class.toString()), message);
-            this.message = queryMessage;
-            if(queryMessage.countDocumentIds() == 0) return;
-
-            CompiledQuery compiledQuery = IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString()),
-                    connection,
-                    PSQLDeleteTask.class.toString(),
-                    getQueryStatementFactory(queryMessage.getCollectionName()));
-
-            this.query = formatQuery(compiledQuery, queryMessage);
-        } catch (ResolutionException | QueryBuildException e) {
-            throw new TaskPrepareException(e.getMessage(), e);
+            verify(connection);
+            IDeletionQuery messageWrapper = takeQueryMessage(deleteMessage);
+            if(messageWrapper.countDocumentIds() == 0) {
+                setInternalState(null, messageWrapper);
+                return;
+            }
+            CompiledQuery compiledQuery = takeQuery(
+                    messageWrapper.getCollectionName().toString(),
+                    messageWrapper.countDocumentIds(),
+                    connection);
+            setInternalState(formatQuery(compiledQuery, messageWrapper), messageWrapper);
+        } catch (ResolutionException | QueryBuildException | TaskSetConnectionException e) {
+            throw new TaskPrepareException("'Delete task' preparation has been failed because: " + e.getMessage(), e);
         }
     }
 
@@ -93,46 +89,68 @@ public class PSQLDeleteTask extends DBDeleteTask {
     }
 
     @Override
-    public void setConnection(@Nonnull StorageConnection connection) {
+    public void setConnection(@Nonnull StorageConnection connection) throws TaskSetConnectionException {
+        verify(connection);
         this.connection = connection;
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final CollectionName collectionName) {
-        return () -> {
-            QueryStatement queryStatement = new QueryStatement();
-            Writer writer = queryStatement.getBodyWriter();
-            try {
-                int documentsIdsSize = message.countDocumentIds();
-                queryStatement.getBodyWriter().write(String.format("DELETE FROM %s WHERE %s IN (",
-                        collectionName, "id"));
-                for (int i = documentsIdsSize; i > 0; --i) {
-                    writer.write("?" + ((i == 1) ? "" : ","));
-                }
-                writer.write(")");
-            } catch (IOException e) {
-                throw new QueryStatementFactoryException("Error while writing deletion query statement.", e);
-            } catch (Exception e) {
-                throw new QueryStatementFactoryException(e.getMessage(), e);
-            }
+    private CompiledQuery takeQuery(
+            String collection,
+            int documentsIdsNumber,
+            StorageConnection connection
+    ) throws ResolutionException {
+        return IOC.resolve(
+                Keys.getOrAdd(CompiledQuery.class.toString()),
+                connection,
+                PSQLDeleteTask.class.toString(),
+                getQueryStatementFactory(collection, documentsIdsNumber));
+    }
 
-            return queryStatement;
+    private IDeletionQuery takeQueryMessage(IObject object) throws ResolutionException {
+        return IOC.resolve(
+                Keys.getOrAdd(IDeletionQuery.class.toString()),
+                object);
+    }
+
+    private void setInternalState(CompiledQuery query, IDeletionQuery message) {
+        this.query = query;
+        this.message = message;
+    }
+
+    private QueryStatementFactory getQueryStatementFactory(String collection, int documentsIdsNumber) {
+        return () -> {
+            try {
+                return QueryStatementBuilder
+                        .create()
+                        .withCollection(collection)
+                        .withIdsNumber(documentsIdsNumber)
+                        .build();
+            } catch (BuildingException e) {
+                throw new QueryStatementFactoryException("Error while initialize update query.", e);
+            }
         };
     }
 
-    private CompiledQuery formatQuery(CompiledQuery compiledQuery, final DeletionQuery queryMessage)
+    private CompiledQuery formatQuery(CompiledQuery compiledQuery, final IDeletionQuery queryMessage)
             throws QueryBuildException {
-
-        int documentsIdsSize = queryMessage.countDocumentIds();
         try {
+            int documentsIdsSize = queryMessage.countDocumentIds();
             compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
                 for (int i = 0; i < documentsIdsSize; ++i)
                     statement.setLong(index++, queryMessage.getDocumentIds(i));
                 return index;
             }));
-        } catch (SQLException e) {
+
+            return compiledQuery;
+        } catch (QueryBuildException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
+    }
 
-        return compiledQuery;
+    private void verify(StorageConnection connection) throws TaskSetConnectionException {
+        if (connection == null)
+            throw new TaskSetConnectionException("Connection should not be a null or empty!");
+        if (connection.getId() == null || connection.getId().isEmpty())
+            throw new TaskSetConnectionException("Connection should have an id!");
     }
 }

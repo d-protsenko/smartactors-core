@@ -43,7 +43,7 @@ class QueryStatementBuilder {
     }
 
     /**
-     * Appends collection name to final query.
+     * Appends collection name to final query statement.
      *
      * @param collection - a collection name for which to create query statement.
      *

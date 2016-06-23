@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolve
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,7 +154,7 @@ public class PSQLSearchTask extends DBSearchTask {
     ) throws TaskPrepareException {
         try {
             compiledQuery.setParameters(setters);
-        } catch (SQLException | QueryBuildException e) {
+        } catch (QueryBuildException e) {
             throw new TaskPrepareException("Error setting query parameters: " + e.getMessage(), e);
         }
 

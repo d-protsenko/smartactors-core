@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_task.search_by_id;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.SearchByIdQuery;
+import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.ISearchByIdQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -16,7 +16,6 @@ import java.sql.SQLException;
  * Common search by id task executor.
  */
 public abstract class DBSearchByIdTask implements IDatabaseTask {
-
     /**
      * Default constructor.
      */
@@ -30,7 +29,7 @@ public abstract class DBSearchByIdTask implements IDatabaseTask {
      *
      * @throws TaskExecutionException when the result set has more than one document.
      */
-    protected void execute(@Nonnull CompiledQuery compiledQuery, @Nonnull SearchByIdQuery message)
+    protected void execute(@Nonnull CompiledQuery compiledQuery, @Nonnull ISearchByIdQuery message)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = compiledQuery.executeQuery();
@@ -38,13 +37,13 @@ public abstract class DBSearchByIdTask implements IDatabaseTask {
                 try {
                     message.setSearchResult((IObject) resultSet.getObject(0));
                 } catch (ChangeValueException e) {
-                    throw new StorageException("Could not set the document.");
+                    throw new TaskExecutionException("Could not set the document.");
                 }
             } else {
                 throw new TaskExecutionException("Not found document with this id.");
             }
-        } catch (SQLException e) {
-            throw new TaskExecutionException("Insertion query execution failed because of SQL exception.", e);
+        } catch (QueryExecutionException | SQLException e) {
+            throw new TaskExecutionException("'Search by id task' execution has been failed because:", e);
         }
     }
 }

@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 import java.util.Map;
 
-public interface CreateCollectionQuery {
+public interface ICreateCollectionQuery {
     CollectionName getCollectionName() throws ReadValueException;
     void setCollectionName(CollectionName collectionName) throws ChangeValueException;
     /**

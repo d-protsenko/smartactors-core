@@ -91,7 +91,7 @@ class IndexBuilder {
     String build() throws BuildingException {
         requiresNonnull(index, "The index should not be a null or empty, should try invoke 'withIndex'.");
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
-        requiresNonnull(field, "The field should not be a null or empty, should try  invoke 'withField'.");
+        requiresNonnull(field, "The field should not be a null or empty, should try invoke 'withField'.");
 
         StringBuilder indexBuilder = new StringBuilder(indexTemplatesLength.get(index) +
                 collection.length() + field.length());

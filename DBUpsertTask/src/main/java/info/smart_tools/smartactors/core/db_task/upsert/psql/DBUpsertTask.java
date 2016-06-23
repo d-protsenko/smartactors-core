@@ -143,37 +143,8 @@ public class DBUpsertTask implements IDatabaseTask {
                 this.compiledQuery.setParameters(parameterSetters);
             } else {
                 this.mode = INSERT_MODE;
-                dbInsertTask.setConnection(connection);
-
-                //TODO:: move to DBInsertTask prepare() or to the separate class
-                QueryStatementFactory factory = () -> {
-                    QueryStatement insertQueryStatement = new QueryStatement();
-                    Writer writer = insertQueryStatement.getBodyWriter();
-                    try {
-                        writer.write(String.format(
-                            "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
-                        ));
-                        writer.write("(?::jsonb)");
-                        writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
-                    } catch (IOException | QueryBuildException e) {
-                        throw new QueryStatementFactoryException("Error while initialize insert query.", e);
-                    }
-                    return insertQueryStatement;
-                };
-
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("insert"), factory);
-                List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
-                parameterSetters.add((statement, index) -> {
-                    try {
-                        statement.setString(index++, upsertObject.toString());
-                    } catch (NullPointerException e) {
-                        throw new QueryBuildException("Error while writing update query statement: ", e);
-                    }
-                    return index;
-                });
-                this.compiledQuery.setParameters(parameterSetters);
             }
-        } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException | SQLException e) {
+        } catch (ReadValueException | StorageException | ResolutionException e) {
             throw new TaskPrepareException("Error while writing update query statement.",e);
         }
     }
@@ -185,7 +156,6 @@ public class DBUpsertTask implements IDatabaseTask {
 
     @Override
     public void execute() throws TaskExecutionException {
-
         executionMap.get(mode).upsert();
     }
 }

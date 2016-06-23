@@ -1,10 +1,11 @@
 package info.smart_tools.smartactors.core.db_task.search_by_id.psql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.SearchByIdQuery;
+import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.ISearchByIdQuery;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -15,6 +16,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
@@ -34,9 +36,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -45,7 +45,8 @@ import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
-public class PSQLGetByIdTaskTest {
+@SuppressWarnings("unchecked")
+public class PSQLSearchByIdTaskTest {
 
     private PSQLSearchByIdTask task;
     private JDBCCompiledQuery compiledQuery;
@@ -62,7 +63,7 @@ public class PSQLGetByIdTaskTest {
             throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
-        SearchByIdQuery message = mock(SearchByIdQuery.class);
+        ISearchByIdQuery message = mock(ISearchByIdQuery.class);
         PreparedQuery preparedQuery = new QueryStatement();
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
@@ -70,6 +71,11 @@ public class PSQLGetByIdTaskTest {
         when(message.getId()).thenReturn("123");
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
+        when(connection.getId()).thenReturn("testConnectionId");
+
+        IKey compiledQueryKey = mock(IKey.class);
+        when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(compiledQueryKey);
+        when(IOC.resolve(eq(compiledQueryKey), eq(connection), anyObject())).thenReturn(compiledQuery);
 
         task.setConnection(connection);
         task.prepare(createCollectionMessage);
@@ -82,7 +88,7 @@ public class PSQLGetByIdTaskTest {
     public void ShouldExecuteQueryAndThrowTaskException() throws Exception {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
-        field(PSQLSearchByIdTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLSearchByIdTask.class, "query").set(task, compiledQuery);
         task.execute();
 
         verify(compiledQuery).executeQuery();
@@ -94,6 +100,7 @@ public class PSQLGetByIdTaskTest {
 
         StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
         connection = mock(StorageConnection.class);
+        when(connection.getId()).thenReturn("testConnectionId");
         task.setConnection(connection);
         StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
 
@@ -102,7 +109,7 @@ public class PSQLGetByIdTaskTest {
         assertEquals(connection, storageConnectionAfter);
     }
 
-    private void initDataForPrepare(PreparedQuery preparedQuery, SearchByIdQuery message, IObject createCollectionMessage)
+    private void initDataForPrepare(PreparedQuery preparedQuery, ISearchByIdQuery message, IObject createCollectionMessage)
             throws ResolutionException, ReadValueException, ChangeValueException {
 
         mockStatic(IOC.class);
@@ -113,7 +120,7 @@ public class PSQLGetByIdTaskTest {
         IKey keyFieldPath = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq(QueryStatement.class.toString()))).thenReturn(keyQuery);
-        when(IOC.resolve(eq(key1), eq(SearchByIdQuery.class.toString()))).thenReturn(keyMessage);
+        when(IOC.resolve(eq(key1), eq(ISearchByIdQuery.class.toString()))).thenReturn(keyMessage);
         when(IOC.resolve(eq(key1), eq(FieldPath.class.toString()))).thenReturn(keyFieldPath);
 
 

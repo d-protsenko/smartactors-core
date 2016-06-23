@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.db_task.search_by_id.psql;
+package info.smart_tools.smartactors.core.db_task.delete.psql;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -23,9 +23,16 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @SuppressWarnings("unchecked")
 public class QueryStatementBuilderTest {
+    private QueryStatementBuilder builder;
+    private String collection;
 
     @Before
     public void setUp() throws Exception {
+        collection = "testCollection";
+        builder = QueryStatementBuilder
+                .create()
+                .withCollection(collection);
+
         mockStatic(IOC.class);
         QueryStatement queryStatement = new QueryStatement();
         IKey queryStatementKey = mock(IKey.class);
@@ -35,12 +42,14 @@ public class QueryStatementBuilderTest {
 
     @Test
     public void buildQueryStatementTest() throws Exception {
-        String collection = "testCollection";
-        String validationStr = "SELECT * FROM " + collection + " WHERE id=?;";
+        int idsNumber = 4;
+        String validationStr = "DELETE FROM " + collection + " WHERE id IN (";
+        for (int i = idsNumber; i > 0; --i) {
+            validationStr += "?" + ((i == 1) ? ");" : ",");
+        }
 
-        QueryStatement queryStatement = QueryStatementBuilder
-                .create()
-                .withCollection(collection)
+        QueryStatement queryStatement = builder
+                .withIdsNumber(idsNumber)
                 .build();
 
         assertNotEquals(queryStatement, null);
@@ -48,16 +57,9 @@ public class QueryStatementBuilderTest {
 
         Field templateSizeField = QueryStatementBuilder.class.getDeclaredField("TEMPLATE_SIZE");
         templateSizeField.setAccessible(true);
-        int expectedTemplateSize = (int) templateSizeField.get(null) + collection.length();
+        int expectedTemplateSize = (int) templateSizeField.get(null) + collection.length() + (idsNumber * 2 + 1);
         int actualTemplateSize = queryStatement.getBodyWriter().toString().length();
 
         assertEquals(expectedTemplateSize, actualTemplateSize);
-    }
-
-    @Test(expected = BuildingException.class)
-    public void should_ThrowsException_WithReason_CollectionFieldNotSet() throws BuildingException {
-        QueryStatementBuilder
-                .create()
-                .build();
     }
 }

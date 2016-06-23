@@ -8,7 +8,7 @@ import java.util.List;
  * Message with parameters for deletion query.
  * Should contains a collection name and a list of documents ids.
  */
-public interface DeletionQuery {
+public interface IDeletionQuery {
     /** The name of the collection to which the query is executed. */
     CollectionName getCollectionName();
     void setCollectionName(String CollectionName);

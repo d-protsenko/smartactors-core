@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,24 @@ public class QueryStatementBuilderTest {
 
         assertNotEquals(queryStatement, null);
         assertEquals(queryStatement.getBodyWriter().toString(), validationStr);
+    }
+
+    @Test
+    public void checkSizeCreateCollectionQueryTest() throws Exception {
+        String collection = "testCollection";
+        QueryStatementBuilder builder = QueryStatementBuilder
+                .create()
+                .withCollection(collection);
+
+        Field templateSizeField = QueryStatementBuilder.class.getDeclaredField("TEMPLATE_SIZE");
+        templateSizeField.setAccessible(true);
+        int expectedTemplateSize = (int) templateSizeField.get(null) + collection.length();
+
+        Field queryField = QueryStatementBuilder.class.getDeclaredField("createCollectionQuery");
+        queryField.setAccessible(true);
+        int actualTemplateSize = queryField.get(builder).toString().length();
+
+        assertEquals(expectedTemplateSize, actualTemplateSize);
     }
 
     @Test(expected = BuildingException.class)

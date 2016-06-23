@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.insert.psql.wrapper.InsertMessage;
+import info.smart_tools.smartactors.core.db_task.insert.psql.wrapper.IInsertMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -39,10 +39,10 @@ import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest()
-public class DBInsertTaskTest {
+public class PSQLInsertTaskTest {
 
     private JDBCCompiledQuery compiledQuery;
-    private DBInsertTask task = new DBInsertTask();
+    private PSQLInsertTask task = new PSQLInsertTask();
 
     @BeforeClass
     public static void before() throws ScopeProviderException {
@@ -65,8 +65,8 @@ public class DBInsertTaskTest {
     public void setUp() throws Exception {
         compiledQuery = mock(JDBCCompiledQuery.class);
         String collectionName = "collection";
-        InsertMessage insertMessage = mock(InsertMessage.class);
-        when(insertMessage.getCollectionName()).thenReturn(collectionName);
+        IInsertMessage IInsertMessage = mock(IInsertMessage.class);
+        when(IInsertMessage.getCollectionName()).thenReturn(collectionName);
 
         IOC.register(
                 IOC.getKeyForKeyStorage(),
@@ -81,18 +81,18 @@ public class DBInsertTaskTest {
                 )
         );
 
-        IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
-        IKey<InsertMessage> keyInsertMessage = Keys.getOrAdd(InsertMessage.class.toString());
+        IKey<PSQLInsertTask> keyDBInsertTask = Keys.getOrAdd(PSQLInsertTask.class.toString());
+        IKey<IInsertMessage> keyInsertMessage = Keys.getOrAdd(IInsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
         IOC.register(
                 keyDBInsertTask,
-                new SingletonStrategy(mock(DBInsertTask.class))
+                new SingletonStrategy(mock(PSQLInsertTask.class))
         );
         IOC.register(
                 keyInsertMessage,
-                new SingletonStrategy(insertMessage)
+                new SingletonStrategy(IInsertMessage)
         );
         QueryStatement queryStatement = mock(QueryStatement.class);
         when(queryStatement.getBodyWriter()).thenReturn(new StringWriter());
@@ -127,7 +127,7 @@ public class DBInsertTaskTest {
                 )
         );
 
-        task = new DBInsertTask();
+        task = new PSQLInsertTask();
     }
 
     @Test(expected = TaskPrepareException.class)
@@ -155,7 +155,7 @@ public class DBInsertTaskTest {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        field(DBInsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLInsertTask.class, "compiledQuery").set(task, compiledQuery);
 
         task.setConnection(connection);
         task.execute();

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.db_task.create_collection.psql;
+package info.smart_tools.smartactors.core.db_task.delete.psql;
 
 class BuildingException extends Exception {
     BuildingException(String message) {

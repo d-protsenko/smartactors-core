@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.db_task.delete;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_task.delete.wrappers.DeletionQuery;
+import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
-import java.sql.SQLException;
 
 /**
  * Common deletion task executor.
@@ -26,16 +26,14 @@ public abstract class DBDeleteTask implements IDatabaseTask {
      *
      * @throws TaskExecutionException when number of deleted rows not equals of number of rows which had to be removed.
      */
-    protected void execute(@Nonnull CompiledQuery query, @Nonnull DeletionQuery message)
+    protected void execute(@Nonnull CompiledQuery query, @Nonnull IDeletionQuery message)
             throws TaskExecutionException {
         try {
             int nDeleted = query.executeUpdate();
-
-            if(nDeleted != message.countDocumentIds()) {
-                throw new TaskExecutionException("Delete query failed: wrong count of documents is deleted.");
-            }
-        } catch (SQLException e) {
-            throw new TaskExecutionException("Deletion query execution failed because of SQL exception.",e);
+            if(nDeleted != message.countDocumentIds())
+                throw new TaskExecutionException("'Delete task' has been failed: wrong count of documents is deleted.");
+        } catch (QueryExecutionException e) {
+            throw new TaskExecutionException("'Delete task' execution has been failed because:", e);
         }
     }
 }
