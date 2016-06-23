@@ -21,12 +21,10 @@ import java.time.LocalDateTime;
 
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask targetTask;
-    private String collectionName;
 
     public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) {
         try {
             this.targetTask = params.getTask();
-            this.collectionName = params.getCollectionName();
         } catch (ReadValueException | ChangeValueException e) {
             // TODO: Throwing standardInitialisationException
         }
@@ -41,7 +39,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
 
             EQMessage keyEQ = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()), getResolvedIObject());
             keyEQ.setEq(srcQueryObject.getKey());
-            criteriaQuery.setIsActive(keyEQ);
+            criteriaQuery.setKey(keyEQ);
 
             EQMessage isActiveEQ = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()), getResolvedIObject());
             isActiveEQ.setEq(Boolean.toString(true));
@@ -51,7 +49,6 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             startDateTimeDateTo.setDateTo(LocalDateTime.now().toString());
             criteriaQuery.setStartDateTime(startDateTimeDateTo);
 
-            srcQueryObject.setCollectionName(collectionName);
             srcQueryObject.setPageNumber(0);
             srcQueryObject.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
             srcQueryObject.setCriteria(criteriaQuery);
@@ -74,7 +71,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
         targetTask.execute();
     }
 
-    public static IObject getResolvedIObject() throws ResolutionException {
+    private static IObject getResolvedIObject() throws ResolutionException {
         return IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
     }
 }

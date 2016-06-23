@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -40,41 +39,19 @@ public class GetObjectFromCachedCollectionTaskTest {
     private GetObjectFromCachedCollectionTask testTask;
     private IDatabaseTask targetTask;
 
-    private String collectionName = "collectionName";
     private String key = "key";
-
-    private Key keyForKeyStorage;
-    private Key fieldNameKey;
-
-    private IFieldName eqFieldName;
-    private IFieldName dateToFieldName;
-    private IFieldName keyFieldName;
 
     @Before
     public void prepare () throws ResolutionException, ReadValueException, ChangeValueException {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
+        mockStatic(LocalDateTime.class);
 
         GetObjectsFromCachedCollectionParameters params = mock(GetObjectsFromCachedCollectionParameters.class);
 
         targetTask = mock(IDatabaseTask.class);
 
-        when(params.getCollectionName()).thenReturn(collectionName);
         when(params.getTask()).thenReturn(targetTask);
-
-        keyForKeyStorage = mock(Key.class);
-        fieldNameKey = mock(Key.class);
-
-        eqFieldName = mock(IFieldName.class);
-        dateToFieldName = mock(IFieldName.class);
-        keyFieldName = mock(IFieldName.class);
-
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyForKeyStorage);
-        when(IOC.resolve(keyForKeyStorage, IFieldName.class.toString())).thenReturn(fieldNameKey);
-
-        when(IOC.resolve(fieldNameKey, "$eq")).thenReturn(eqFieldName);
-        when(IOC.resolve(fieldNameKey, "$date-to")).thenReturn(dateToFieldName);
-        when(IOC.resolve(fieldNameKey, key)).thenReturn(keyFieldName);
 
         testTask = new GetObjectFromCachedCollectionTask(params);
     }
@@ -105,7 +82,6 @@ public class GetObjectFromCachedCollectionTaskTest {
 
         GetObjectFromCachedCollectionQuery srcQueryObject = mock(GetObjectFromCachedCollectionQuery.class);
         IObject query = mock(IObject.class);
-        String key = "keyasd";
         when(srcQueryObject.getKey()).thenReturn(key);
         when(srcQueryObject.wrapped()).thenReturn(query);
 
@@ -116,22 +92,19 @@ public class GetObjectFromCachedCollectionTaskTest {
 
         testTask.prepare(query);
 
+        verify(srcQueryObject).getKey();
+        verify(eqMessage).setEq(key);
+        verify(criteriaQuery).setKey(eqMessage);
 
+        verify(eqMessage).setEq(Boolean.toString(true));
+        verify(criteriaQuery).setIsActive(eqMessage);
 
-//        verify(query).getValue(keyFieldName);
-//        verify(testIObject).setValue(eqFieldName, key);
-//        verify(testIObject).setValue(eq(keyFieldName), eq(testIObject));
-//
-//        verify(testIObject).setValue(eqFieldName, true);
-//        verify(criteriaQuery).setIsActive(testIObject);
-//
-//        verify(testIObject).setValue(eq(dateToFieldName), any());// FIXME: 6/21/16 must test time
-//        verify(criteriaQuery).setIsActive(testIObject);
-//
-//        verify(iSearchQuery).setCollectionName(collectionName);
-//        verify(iSearchQuery).setPageNumber(0);
-//        verify(iSearchQuery).setPageSize(any());// FIXME: 6/21/16 hardcode count must be fixed
-//        verify(iSearchQuery).setCriteria(testIObject);
+        verify(dateToMessage).setDateTo(any());// FIXME: 6/23/16 must test time
+        verify(criteriaQuery).setStartDateTime(dateToMessage);
+
+        verify(srcQueryObject).setPageNumber(0);
+        verify(srcQueryObject).setPageSize(100);// FIXME: 6/23/16 must test time with @GetObjectFromCachedCollectionTask
+        verify(srcQueryObject).setCriteria(criteriaQuery);
 
         verify(targetTask).prepare(query);
     }
