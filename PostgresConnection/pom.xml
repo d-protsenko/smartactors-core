@@ -7,7 +7,7 @@
     <parent>
         <artifactId>core</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${core.version}</version>
     </parent>
 
     <artifactId>core.postgres_connection</artifactId>
@@ -17,12 +17,12 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.istorage_connection</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.pool</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 </project>
