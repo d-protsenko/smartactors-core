@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import com.sun.istack.internal.Nullable;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -48,6 +47,13 @@ public class Field<T> {
         if (value.getClass().equals(targetClass)) {
             return (T) value;
         }
+
+        for (Class classInterface : value.getClass().getInterfaces()) {
+            if (classInterface.equals(targetClass)) {
+                return (T) value;
+            }
+        }
+
         try {
             T convertedValue;
             convertedValue = IOC.resolve(Keys.getOrAdd(targetClass.toString()), value);

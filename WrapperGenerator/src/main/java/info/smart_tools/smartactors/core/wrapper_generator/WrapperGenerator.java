@@ -12,16 +12,11 @@ import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wrapper_generator.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.core.wrapper_generator.class_builder.MethodInfo;
 import info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Implementation of {@link IWrapperGenerator}.
@@ -50,14 +45,17 @@ public class WrapperGenerator implements IWrapperGenerator {
         T instance = null;
 
         if (null == targetInterface) {
-            throw new InvalidArgumentException("Target class must not be null!");
+            throw new InvalidArgumentException("Target class should not be null!");
         }
         if (!targetInterface.isInterface()) {
-            throw new InvalidArgumentException("Target class must be an interface!");
+            throw new InvalidArgumentException("Target class should be an interface!");
+        }
+        if (null == binding) {
+            throw new InvalidArgumentException("Binding object should be null!");
         }
 
         try {
-            instance = IOC.resolve(Keys.getOrAdd(targetInterface.getClass().toString()));
+            instance = IOC.resolve(Keys.getOrAdd(targetInterface.toString()));
         } catch (ResolutionException e) {
             // do nothing
         }
@@ -69,23 +67,20 @@ public class WrapperGenerator implements IWrapperGenerator {
             Class<T> clazz = generateClass(targetInterface, binding);
 
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
-//            IOC.register(
-//                    Keys.getOrAdd(targetInterface.getClass().toString()),
-//                    new CreateNewInstanceStrategy(
-//                            (arg) ->  {
-//                                try {
-//                                    return clazz.newInstance();
-//                                } catch (Throwable e) {
-//                                    throw new RuntimeException("Error on creation new instance.", e);
-//                                }
-//                            }
-//                    )
-//            );
-//
-//            return IOC.resolve(Keys.getOrAdd(targetInterface.getClass().toString()));
+            IOC.register(
+                    Keys.getOrAdd(targetInterface.toString()),
+                    new CreateNewInstanceStrategy(
+                            (arg) ->  {
+                                try {
+                                    return clazz.newInstance();
+                                } catch (Throwable e) {
+                                    throw new RuntimeException("Error on creation new instance.", e);
+                                }
+                            }
+                    )
+            );
 
-            return clazz.newInstance();
-
+            return IOC.resolve(Keys.getOrAdd(targetInterface.toString()));
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",
@@ -96,6 +91,7 @@ public class WrapperGenerator implements IWrapperGenerator {
 
     private <T> Class<T> generateClass(final Class<T> targetInterface, final IObject binding)
             throws Exception {
+        IObject currentBinding = (IObject) binding.getValue(new FieldName(targetInterface.toString()));
 
         ClassBuilder cb = new ClassBuilder("\t", "\n");
 
@@ -104,7 +100,8 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addImport(Field.class.getCanonicalName())
                 .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
-                .addImport(targetInterface.getCanonicalName());
+                .addImport(targetInterface.getCanonicalName())
+                .addImport(IObject.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
@@ -147,7 +144,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .append("\t\t")
                 .append("try {\n");
         for (Method m : targetInterface.getMethods()) {
-            IObject methodBinding = (IObject) binding.getValue(new FieldName(m.getName()));
+            IObject methodBinding = (IObject) currentBinding.getValue(new FieldName(m.getName()));
             builder
                     .append("\t\t\t")
                     .append("this.fieldFor_")
@@ -224,12 +221,16 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addStringToBody("this.response = response;");
 
         for (Method m : targetInterface.getMethods()) {
-            IObject methodBinding = (IObject) binding.getValue(new FieldName(m.getName()));
+            IObject methodBinding = (IObject) currentBinding.getValue(new FieldName(m.getName()));
             String methodType = (String) methodBinding.getValue(new FieldName("MethodType"));
             String resource = (String) methodBinding.getValue(new FieldName("Resource"));
             String strategy = (String) methodBinding.getValue(new FieldName("UseStrategy"));
             String typeTo = m.getReturnType().getSimpleName();
+            boolean checkOrGenerate = (boolean) methodBinding.getValue(new FieldName("CheckWrapper"));
             if (null != methodType && methodType.equals("get")) {
+                if (checkOrGenerate) {
+                    this.generate(m.getReturnType(), binding);
+                }
                 cb
                         .addMethod()
                         .setModifier(Modifiers.PUBLIC)
@@ -250,6 +251,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody("}");
             }
             if (null != methodType && methodType.equals("set")) {
+                if (checkOrGenerate) {
+                    this.generate(m.getParameterTypes()[0], binding);
+                }
                 cb
                         .addMethod()
                         .setModifier(Modifiers.PUBLIC)
