@@ -26,6 +26,10 @@ public class CreateCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask createCollectionTask;
 
+    /**
+     * Constructor
+     * @param createCollectionTask nested task for creating collection
+     */
     public CreateCachedCollectionTask(final IDatabaseTask createCollectionTask) {
         this.createCollectionTask = createCollectionTask;
     }
