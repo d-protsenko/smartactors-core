@@ -68,6 +68,7 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>DBFindByIdTask</module>
         <module>IStorageConnection</module>

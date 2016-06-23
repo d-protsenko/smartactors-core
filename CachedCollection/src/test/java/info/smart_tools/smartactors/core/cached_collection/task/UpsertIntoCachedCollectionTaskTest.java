@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -16,7 +17,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,20 +38,16 @@ public class UpsertIntoCachedCollectionTaskTest {
 
     private UpsertIntoCachedCollectionTask task;
     private IDatabaseTask upsertTask;
-    private static IKey iocKey;
+    private IKey iocKey;
 
-    @BeforeClass
-    public static void setUpBefore() throws Exception {
+    @Before
+    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, ResolutionException {
+
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
         iocKey = mock(IKey.class);
         when(Keys.getOrAdd(anyString())).thenReturn(iocKey);
-
-    }
-
-    @Before
-    public void setUp() throws ReadValueException, ChangeValueException {
 
         upsertTask = mock(IDatabaseTask.class);
         UpsertIntoCachedCollectionConfig cachedCollectionConfig = mock(UpsertIntoCachedCollectionConfig.class);
@@ -59,9 +55,6 @@ public class UpsertIntoCachedCollectionTaskTest {
         when(cachedCollectionConfig.getUpsertTask()).thenReturn(upsertTask);
 
         task = new UpsertIntoCachedCollectionTask(cachedCollectionConfig);
-
-
-
     }
 
     @Test
