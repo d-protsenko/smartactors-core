@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.cached_collection;
 
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionConfig;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -36,9 +37,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class CachedCollectionTest {
 
     private ICachedCollection collection;
-    private IDatabaseTask readTask;
-    private IDatabaseTask deleteTask;
-    private IDatabaseTask upsertTask;
     private StorageConnection connection;
 
     @BeforeClass
@@ -50,17 +48,11 @@ public class CachedCollectionTest {
     @Before
     public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException {
 
-        readTask = mock(IDatabaseTask.class);
-        deleteTask = mock(IDatabaseTask.class);
-        upsertTask = mock(IDatabaseTask.class);
         IPool connectionPool = mock(IPool.class);
         connection = mock(StorageConnection.class);
         when(connectionPool.take()).thenReturn(connection);
         CachedCollectionConfig config = mock(CachedCollectionConfig.class);
         when(config.getConnectionPool()).thenReturn(connectionPool);
-        when(config.getReadTask()).thenReturn(readTask);
-        when(config.getDeleteTask()).thenReturn(deleteTask);
-        when(config.getUpsertTask()).thenReturn(upsertTask);
         collection = new CachedCollection(config);
     }
 
@@ -72,7 +64,11 @@ public class CachedCollectionTest {
         IKey keyConnection = mock(IKey.class);
         when(Keys.getOrAdd(StorageConnection.class.toString())).thenReturn(keyConnection);
         when(IOC.resolve(keyConnection, connection)).thenReturn(connection);
+        IDatabaseTask deleteTask = mock(IDatabaseTask.class);
         IObject query = mock(IObject.class);
+        CachedCollectionParameters parameters = mock(CachedCollectionParameters.class);
+        when(parameters.getQuery()).thenReturn(query);
+        when(parameters.getTask()).thenReturn(deleteTask);
 
         DeleteFromCachedCollectionQuery message = mock(DeleteFromCachedCollectionQuery.class);
         when(message.getKey()).thenReturn("key");
@@ -80,7 +76,7 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(keyMessage);
         when(IOC.resolve(keyMessage, query)).thenReturn(message);
 
-        collection.delete(query);
+        collection.delete(parameters);
 
         verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(query));

@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionParameters;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 import java.util.List;
@@ -18,19 +19,19 @@ public interface ICachedCollection {
      * @return list with found objects
      * @throws GetCacheItemException
      */
-    List<IObject> getItems(IObject query) throws GetCacheItemException;
+    List<IObject> getItems(CachedCollectionParameters query) throws GetCacheItemException;
 
     /**
      * Deletes object from memory and set active flag to false for object into DB
      * @param query deletion query
      * @throws DeleteCacheItemException
      */
-    void delete(IObject query) throws DeleteCacheItemException;
+    void delete(CachedCollectionParameters query) throws DeleteCacheItemException;
 
     /**
      * Add or update object in memory and DB
      * @param query upsert query
      * @throws UpsertCacheItemException
      */
-    void upsert(IObject query) throws UpsertCacheItemException;
+    void upsert(CachedCollectionParameters query) throws UpsertCacheItemException;
 }

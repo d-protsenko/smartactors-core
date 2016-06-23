@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCache
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionConfig;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedItem;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionQuery;
@@ -35,9 +36,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class CachedCollection implements ICachedCollection {
 
-    private IDatabaseTask readTask;
-    private IDatabaseTask upsertTask;
-    private IDatabaseTask deleteTask;
+//    private IDatabaseTask readTask;
+//    private IDatabaseTask upsertTask;
+//    private IDatabaseTask deleteTask;
     private IPool connectionPool;
 
     private ConcurrentMap<String, List<IObject>> map;
@@ -49,9 +50,9 @@ public class CachedCollection implements ICachedCollection {
      */
     public CachedCollection(CachedCollectionConfig config) throws InvalidArgumentException {
         try {
-            this.readTask = config.getReadTask();
-            this.upsertTask = config.getUpsertTask();
-            this.deleteTask = config.getDeleteTask();
+//            this.readTask = config.getReadTask();
+//            this.upsertTask = config.getUpsertTask();
+//            this.deleteTask = config.getDeleteTask();
             this.connectionPool = config.getConnectionPool();
             map = new ConcurrentHashMap<>();
         } catch (ReadValueException | ChangeValueException e) {
@@ -60,9 +61,11 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public List<IObject> getItems(IObject query) throws GetCacheItemException {
+    public List<IObject> getItems(CachedCollectionParameters params) throws GetCacheItemException {
 
         try {
+            IDatabaseTask readTask = params.getTask();
+            IObject query = params.getQuery();
             //TODO:: use wrapper and real key from it, when read task would be added
 //            GetItemFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(GetItemFromCachedCollectionQuery.class.toString()), query);
 //            String key = message.getKey();
@@ -104,8 +107,10 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void delete(final IObject query) throws DeleteCacheItemException {
+    public void delete(final CachedCollectionParameters params) throws DeleteCacheItemException {
         try {
+            IObject query = params.getQuery();
+            IDatabaseTask deleteTask = params.getTask();
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
                 deleteTask.prepare(query);
@@ -141,45 +146,45 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void upsert(final IObject query) throws UpsertCacheItemException {
+    public void upsert(final CachedCollectionParameters params) throws UpsertCacheItemException {
 
         try {
+            IObject query = params.getQuery();
+            IDatabaseTask upsertTask = params.getTask();
             UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
-            try {
-                Boolean isActive = message.isActive();
-                message.setIsActive(true);
-                try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-                    upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-                    upsertTask.prepare(query);
-                    upsertTask.execute();
-                } catch (PoolGuardException e) {
-                    throw new UpsertCacheItemException("Can't get connection from pool.", e);
-                } catch (TaskSetConnectionException e) {
-                    throw new UpsertCacheItemException("Can't set connection to upsert task.", e);
-                } catch (TaskPrepareException e) {
-                    throw new UpsertCacheItemException("Error during preparing upsert task.", e);
-                } catch (TaskExecutionException e) {
-                    message.setIsActive(isActive);
-                    throw new UpsertCacheItemException("Error during execution upsert task.", e);
-                }
-                String key = message.getKey();
-                List<IObject> items = map.get(key);
-                if (items != null && !items.isEmpty()) {
-                    CachedItem item;
-                    for (IObject obj : items) {
-                        item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                        if (item.getId().equals(message.getId())) {
-                            items.remove(obj);
-                            items.add(query);
-                            break;
-                        }
-                    }
-                } else {
-                    map.put(key, Collections.singletonList(query));
-                }
-            } catch (ReadValueException | ChangeValueException e) {
-                throw new UpsertCacheItemException("Can't add or update cached object.", e);
+            Boolean isActive = message.isActive();
+            message.setIsActive(true);
+            try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
+                upsertTask.prepare(query);
+                upsertTask.execute();
+            } catch (PoolGuardException e) {
+                throw new UpsertCacheItemException("Can't get connection from pool.", e);
+            } catch (TaskSetConnectionException e) {
+                throw new UpsertCacheItemException("Can't set connection to upsert task.", e);
+            } catch (TaskPrepareException e) {
+                throw new UpsertCacheItemException("Error during preparing upsert task.", e);
+            } catch (TaskExecutionException e) {
+                message.setIsActive(isActive);
+                throw new UpsertCacheItemException("Error during execution upsert task.", e);
             }
+            String key = message.getKey();
+            List<IObject> items = map.get(key);
+            if (items != null && !items.isEmpty()) {
+                CachedItem item;
+                for (IObject obj : items) {
+                    item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
+                    if (item.getId().equals(message.getId())) {
+                        items.remove(obj);
+                        items.add(query);
+                        break;
+                    }
+                }
+            } else {
+                map.put(key, Collections.singletonList(query));
+            }
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new UpsertCacheItemException("Can't add or update cached object.", e);
         } catch (ResolutionException e) {
             throw new UpsertCacheItemException("Can't resolve cached object.", e);
         }

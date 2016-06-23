@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.core.cached_collection.wrapper;
 
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 
 public interface CachedCollectionConfig {
 
-    IDatabaseTask getReadTask() throws ReadValueException, ChangeValueException;
-    IDatabaseTask getUpsertTask() throws ReadValueException, ChangeValueException;
-    IDatabaseTask getDeleteTask() throws ReadValueException, ChangeValueException;
     IPool getConnectionPool() throws ReadValueException, ChangeValueException;
+
+    //TODO:: Should be in another wrapper?
+    void setConnectionPool(IPool connectionPool) throws ReadValueException, ChangeValueException;
 }
