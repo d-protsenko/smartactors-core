@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionConfig;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionConfig;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -21,8 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.time.LocalDateTime;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -88,7 +86,7 @@ public class UpsertIntoCachedCollectionTaskTest {
 
         task.prepare(rawQuery);
 
-        verify(query).setStartDateTime(any(LocalDateTime.class));
+//        verify(query).setStartDateTime(any(LocalDateTime.class));
         verify(upsertTask).prepare(eq(wrapped));
     }
 

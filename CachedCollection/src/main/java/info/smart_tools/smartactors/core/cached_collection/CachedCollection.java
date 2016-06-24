@@ -3,13 +3,17 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
+import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
+import info.smart_tools.smartactors.core.cached_collection.task.GetObjectFromCachedCollectionTask;
+import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionConfig;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedCollectionParameters;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.CachedItem;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteItem;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -39,6 +43,7 @@ import java.util.stream.Collectors;
 public class CachedCollection implements ICachedCollection {
 
     private IPool connectionPool;
+    private CollectionName collectionName;
     private ConcurrentMap<String, List<IObject>> map;
 
     /**
@@ -48,6 +53,7 @@ public class CachedCollection implements ICachedCollection {
      */
     public CachedCollection(CachedCollectionConfig config) throws InvalidArgumentException {
         try {
+            this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
             map = new ConcurrentHashMap<>();
         } catch (ReadValueException | ChangeValueException e) {
@@ -56,36 +62,26 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public List<IObject> getItems(IObject message) throws GetCacheItemException {
+    public List<IObject> getItems(String key) throws GetCacheItemException {
 
         try {
-            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
-            IDatabaseTask readTask = params.getTask();
-            IObject query = params.getQuery();
-            GetObjectFromCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
-            String key = wrappedQuery.getKey();
             List<IObject> items = map.get(key);
-            List<IObject> result = Collections.emptyList();
-            if (items != null) {
-                for (IObject obj : items) {
-                    CachedItem cachedItem = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                    Boolean isActive = cachedItem.isActive().orElse(false);
-                    if (isActive) {
-                        result.add(cachedItem.wrapped());
-                    }
-                }
-            }
-            if (result.isEmpty()) {
+            if (items == null || items.isEmpty()) {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                    GetObjectFromCachedCollectionQuery getItemQuery = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()));
+                    getItemQuery.setCollectionName(this.collectionName);
+                    getItemQuery.setKey(key);
+                    IDatabaseTask readTask = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString()));
                     readTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
+                    readTask.prepare(getItemQuery.wrapped());
+                    readTask.execute();
+                    items = getItemQuery.getSearchResult().collect(Collectors.toList());
                 } catch (PoolGuardException e) {
                     throw new GetCacheItemException("Can't get connection from pool.", e);
                 }
-                readTask.prepare(query);
-                readTask.execute();
-                result = wrappedQuery.getSearchResult().collect(Collectors.toList());
             }
-            return result;
+
+            return items;
         } catch (TaskSetConnectionException e) {
             throw new GetCacheItemException("Can't set connection to read task.", e);
         } catch (TaskPrepareException e) {
@@ -102,12 +98,17 @@ public class CachedCollection implements ICachedCollection {
     @Override
     public void delete(IObject message) throws DeleteCacheItemException {
         try {
-            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
-            IObject query = params.getQuery();
-            IDatabaseTask deleteTask = params.getTask();
+            DeleteItem deleteItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                deleteItem = IOC.resolve(Keys.getOrAdd(DeleteItem.class.toString()), message);
+                //TODO:: use connection as a part of key
+                IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString()));
+                //TODO:: if deleteTask is null, create and register it into IOC
+                DeleteFromCachedCollectionQuery deleteQuery = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()));
+                deleteQuery.setCollectionName(this.collectionName);
+                deleteQuery.setDeleteItem(deleteItem);
                 deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-                deleteTask.prepare(query);
+                deleteTask.prepare(deleteQuery.wrapped());
                 deleteTask.execute();
             } catch (PoolGuardException e) {
                 throw new DeleteCacheItemException("Can't get connection from pool.", e);
@@ -119,14 +120,13 @@ public class CachedCollection implements ICachedCollection {
                 throw new DeleteCacheItemException("Error during execution delete task.", e);
             }
 
-            DeleteFromCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()), query);
-            String key = wrappedQuery.getKey();
+            String key = deleteItem.getKey();
             List<IObject> items = map.get(key);
             if (items != null) {
-                CachedItem item;
+                DeleteItem item;
                 for (IObject obj : items) {
-                    item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                    if (item.getId().equals(wrappedQuery.getId())) {
+                    item = IOC.resolve(Keys.getOrAdd(DeleteItem.class.toString()), obj);
+                    if (item.getId().equals(deleteItem.getId())) {
                         items.remove(obj);
                         break;
                     }
@@ -143,40 +143,47 @@ public class CachedCollection implements ICachedCollection {
     public void upsert(IObject message) throws UpsertCacheItemException {
 
         try {
-            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
-            IObject query = params.getQuery();
-            IDatabaseTask upsertTask = params.getTask();
-            UpsertIntoCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
-            Boolean isActive = wrappedQuery.isActive();
-            wrappedQuery.setIsActive(true);
+            UpsertItem upsertItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                upsertItem = IOC.resolve(Keys.getOrAdd(UpsertItem.class.toString()), message);
+                //TODO:: use connection as a part of key
+                IDatabaseTask upsertTask = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionTask.class.toString()));
+                //TODO:: if upsertTask is null, create and register it into IOC
+                Boolean isActive = upsertItem.isActive();
+                upsertItem.setIsActive(true);
+                UpsertIntoCachedCollectionQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()));
+                upsertQuery.setCollectionName(this.collectionName);
+                upsertQuery.setUpsertItem(upsertItem);
+
                 upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-                upsertTask.prepare(query);
-                upsertTask.execute();
+                upsertTask.prepare(upsertQuery.wrapped());
+                try {
+                    upsertTask.execute();
+                } catch (TaskExecutionException e) {
+                    upsertItem.setIsActive(isActive);
+                    throw new UpsertCacheItemException("Error during execution upsert task.", e);
+                }
             } catch (PoolGuardException e) {
                 throw new UpsertCacheItemException("Can't get connection from pool.", e);
             } catch (TaskSetConnectionException e) {
                 throw new UpsertCacheItemException("Can't set connection to upsert task.", e);
             } catch (TaskPrepareException e) {
                 throw new UpsertCacheItemException("Error during preparing upsert task.", e);
-            } catch (TaskExecutionException e) {
-                wrappedQuery.setIsActive(isActive);
-                throw new UpsertCacheItemException("Error during execution upsert task.", e);
             }
-            String key = wrappedQuery.getKey();
+            String key = upsertItem.getKey();
             List<IObject> items = map.get(key);
             if (items != null && !items.isEmpty()) {
-                CachedItem item;
+                UpsertItem item;
                 for (IObject obj : items) {
-                    item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                    if (item.getId().equals(wrappedQuery.getId())) {
+                    item = IOC.resolve(Keys.getOrAdd(UpsertItem.class.toString()), obj);
+                    if (item.getId().equals(upsertItem.getId())) {
                         items.remove(obj);
-                        items.add(query);
+                        items.add(upsertItem.wrapped());
                         break;
                     }
                 }
             } else {
-                map.put(key, Collections.singletonList(query));
+                map.put(key, Collections.singletonList(upsertItem.wrapped()));
             }
         } catch (ReadValueException | ChangeValueException e) {
             throw new UpsertCacheItemException("Can't add or update cached object.", e);

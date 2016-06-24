@@ -1,8 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.wrapper;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.DateToMessage;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.EQMessage;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.DateToMessage;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.EQMessage;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 

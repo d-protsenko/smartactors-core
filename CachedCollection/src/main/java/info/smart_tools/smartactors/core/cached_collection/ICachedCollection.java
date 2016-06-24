@@ -14,11 +14,11 @@ public interface ICachedCollection {
 
     /**
      * Reads active items by some key
-     * @param query search query
+     * @param key for cache
      * @return list with found objects
      * @throws GetCacheItemException
      */
-    List<IObject> getItems(IObject query) throws GetCacheItemException;
+    List<IObject> getItems(String key) throws GetCacheItemException;
 
     /**
      * Deletes object from memory and set active flag to false for object into DB

@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionConfig;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -20,9 +19,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -58,7 +55,7 @@ public class DeleteFromCachedCollectionTaskTest {
 
         task.prepare(srcQuery);
 
-        verify(query).setIsActive(false);
+//        verify(query).setIsActive(false);
         verify(query).wrapped();
         verify(upsertTask).prepare(srcQuery);
     }

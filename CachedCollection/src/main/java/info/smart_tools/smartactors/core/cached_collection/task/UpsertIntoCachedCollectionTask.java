@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionConfig;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionConfig;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -46,13 +47,14 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
         try {
             UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
+            UpsertItem upsertItem = message.getUpsertItem();
             IFieldName keyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), key);
             String keyValue = IOC.resolve(Keys.getOrAdd(String.class.toString()), query.getValue(keyFieldName));
             if (keyValue == null || keyValue.isEmpty()) {
                 throw new TaskPrepareException("Key field should be present.");
             }
-            if (message.getStartDateTime() == null) {
-                message.setStartDateTime(LocalDateTime.now());
+            if (upsertItem.getStartDateTime() == null) {
+                upsertItem.setStartDateTime(LocalDateTime.now());
             }
             upsertTask.prepare(message.wrapped());
         } catch (ResolutionException e) {

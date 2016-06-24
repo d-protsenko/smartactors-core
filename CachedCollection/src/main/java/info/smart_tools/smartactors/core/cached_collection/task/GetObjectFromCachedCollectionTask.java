@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.DateToMessage;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DBSearchWrappers.EQMessage;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.DateToMessage;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.EQMessage;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;

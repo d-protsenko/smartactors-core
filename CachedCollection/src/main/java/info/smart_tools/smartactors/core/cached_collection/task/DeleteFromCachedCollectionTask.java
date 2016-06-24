@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.DeleteFromCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -35,7 +36,8 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
 
         try {
             DeleteFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()), query);
-            message.setIsActive(false);
+            DeleteItem deleteItem = message.getDeleteItem();
+            deleteItem.setIsActive(false);
             updateTask.prepare(message.wrapped());
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't resolve message during prepare delete from cached collection", e);
