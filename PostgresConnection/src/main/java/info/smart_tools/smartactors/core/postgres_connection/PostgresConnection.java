@@ -38,8 +38,6 @@ public class PostgresConnection implements IStorageConnection {
      */
     public PostgresConnection(final ConnectionOptions options) throws StorageException {
         try {
-            Connection connection;
-
             try {
                 Class.forName(POSTGRESQL_JDBC_DRIVER_NAME);
             } catch (ClassNotFoundException e) {
@@ -47,25 +45,20 @@ public class PostgresConnection implements IStorageConnection {
             }
 
             try {
-                connection = DriverManager.getConnection(
+                Connection connection = DriverManager.getConnection(
                         options.getUrl(),
                         options.getUsername(),
                         options.getPassword());
-            } catch (SQLException e) {
-                throw new StorageException("Could not get JDBC connection.", e);
-            }
 
-            try {
                 for (Object key : initProps.keySet()) {
                     connection.createStatement().execute(initProps.getProperty((String) key));
                 }
 
                 connection.setAutoCommit(false);
+                this.connection = connection;
             } catch (SQLException e) {
-                throw new StorageException("Error configuring JDBC connection: ", e);
+                throw new StorageException("Could not get JDBC connection.", e);
             }
-
-            this.connection = connection;
         } catch (StorageException e) {
             throw new RuntimeException(e);
         }
