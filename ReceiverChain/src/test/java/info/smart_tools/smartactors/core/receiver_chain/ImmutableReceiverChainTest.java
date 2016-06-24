@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.receiver_chain;
 
-import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ireceiver_chain.IReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

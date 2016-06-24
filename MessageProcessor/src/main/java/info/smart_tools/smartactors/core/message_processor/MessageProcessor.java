@@ -4,11 +4,6 @@ import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.imessage.IMessage;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NoExceptionHandleChainException;
-import info.smart_tools.smartactors.core.imessage_processor.IMessageProcessor;
-import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -16,6 +11,10 @@ import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
 /**
  * Task that performs on a message actions defined by a message processing sequence.
@@ -25,7 +24,7 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
  */
 public class MessageProcessor implements ITask, IMessageProcessor {
     private IObject context;
-    private IMessage message;
+    private IObject message;
     private IObject response;
 
     private final IQueue<ITask> taskQueue;
@@ -105,7 +104,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
      * @throws ResolutionException if fails to resolve any dependency
      */
     @Override
-    public void process(final IMessage theMessage, final IObject theContext)
+    public void process(final IObject theMessage, final IObject theContext)
             throws InvalidArgumentException, ResolutionException {
         // TODO: Ensure that there is no process in progress
         this.message = theMessage;
@@ -127,7 +126,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     }
 
     @Override
-    public  IMessage getMessage() {
+    public  IObject getMessage() {
         return message;
     }
 
@@ -139,7 +138,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            messageProcessingSequence.getCurrentReceiver().receive(message, receiverCallback);
+            messageProcessingSequence.getCurrentReceiver().receive(this, receiverCallback);
         } catch (Throwable e) {
             try {
                 handleCompletedExceptionally(e);

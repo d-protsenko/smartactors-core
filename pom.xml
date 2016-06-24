@@ -80,6 +80,7 @@
         <module>MessageContext</module>
         <module>ScopeMessageContxtContainer</module>
         <module>IMessageProcessor</module>
+        <module>MessageProcessingInterfaces</module>
     </modules>
 
     <properties>

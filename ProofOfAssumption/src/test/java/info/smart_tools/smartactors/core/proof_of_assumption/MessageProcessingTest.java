@@ -2,19 +2,17 @@ package info.smart_tools.smartactors.core.proof_of_assumption;
 
 import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
-import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
-import info.smart_tools.smartactors.core.imessage_receiver.exception.MessageReceiveException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.ireceiver_chain.IReceiverChain;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.core.message_context.IMessageContextContainer;
-import info.smart_tools.smartactors.core.message_context.MessageContext;
-import info.smart_tools.smartactors.core.message_context.exceptions.MessageContextAccessException;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChain;
@@ -23,7 +21,6 @@ import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,22 +53,6 @@ public class MessageProcessingTest {
         taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(PAYLOAD_MESSAGES + MEASURE_MESSAGES + WINDOW_SIZE));
         IThreadPool threadPool = new ThreadPool(POOL_SIZE+PUT_TASKS);
         dispatcher = new TaskDispatcher(taskQueue, threadPool, 1000L, QUICK_POOL_SIZE+PUT_TASKS);
-
-        IMessageContextContainer messageContextContainer = new IMessageContextContainer() {
-            @Override
-            public IObject getCurrentContext() throws MessageContextAccessException {
-                return null;
-            }
-
-            @Override
-            public void setCurrentContext(IObject context) throws MessageContextAccessException {
-            }
-        };
-
-        Field field = MessageContext.class.getDeclaredField("container");
-        field.setAccessible(true);
-        field.set(null, messageContextContainer);
-        field.setAccessible(false);
     }
 
     @Test
@@ -112,7 +93,7 @@ public class MessageProcessingTest {
                     Thread.sleep(PUT_INTERVAL);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                } catch (InvalidArgumentException e) {}
+                } catch (InvalidArgumentException | ResolutionException e) {}
             }
         };
 

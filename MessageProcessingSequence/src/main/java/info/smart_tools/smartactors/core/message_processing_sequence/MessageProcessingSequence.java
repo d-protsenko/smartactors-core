@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
-import info.smart_tools.smartactors.core.imessage_processing_sequence.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NoExceptionHandleChainException;
-import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ireceiver_chain.IReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
 import java.util.Arrays;
 

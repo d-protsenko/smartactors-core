@@ -5,10 +5,6 @@ import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage.IMessage;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.imessage_processing_sequence.exceptions.NoExceptionHandleChainException;
-import info.smart_tools.smartactors.core.imessage_receiver.IMessageReceiver;
-import info.smart_tools.smartactors.core.imessage_receiver.exception.MessageReceiveException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -17,6 +13,10 @@ import info.smart_tools.smartactors.core.iresource_source.IResourceSource;
 import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
+import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,7 +114,7 @@ public class MessageProcessorTest {
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageMock), actionArgumentCaptor.capture());
+        verify(messageReceiverMock1).receive(same(messageProcessor), actionArgumentCaptor.capture());
 
         reset(taskQueueMock, messageProcessingSequenceMock);
 
@@ -146,7 +146,7 @@ public class MessageProcessorTest {
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageMock), actionArgumentCaptor.capture());
+        verify(messageReceiverMock1).receive(same(messageProcessor), actionArgumentCaptor.capture());
 
         actionArgumentCaptor.getValue().execute(new Exception(new RuntimeException(outOfResourceExceptionMock)));
 
@@ -177,9 +177,9 @@ public class MessageProcessorTest {
         verify(taskQueueMock).put(same(messageProcessor));
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
-        doThrow(new MessageReceiveException(outOfResourceExceptionMock)).when(messageReceiverMock1).receive(same(messageMock), any());
+        doThrow(new MessageReceiveException(outOfResourceExceptionMock)).when(messageReceiverMock1).receive(same(messageProcessor), any());
         messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageMock), actionArgumentCaptor.capture());
+        verify(messageReceiverMock1).receive(same(messageProcessor), actionArgumentCaptor.capture());
 
         verify(resourceSourceMock).onAvailable(poorActionArgumentCaptor.capture());
 
@@ -207,7 +207,7 @@ public class MessageProcessorTest {
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception));
         messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageMock), actionArgumentCaptor.capture());
+        verify(messageReceiverMock1).receive(same(messageProcessor), actionArgumentCaptor.capture());
 
         try {
             actionArgumentCaptor.getValue().execute(exception);
@@ -232,7 +232,7 @@ public class MessageProcessorTest {
         verify(taskQueueMock).put(same(messageProcessor));
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
-        doThrow(exception).when(messageReceiverMock1).receive(same(messageMock), any());
+        doThrow(exception).when(messageReceiverMock1).receive(same(messageProcessor), any());
         doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception));
 
         try {
@@ -260,7 +260,7 @@ public class MessageProcessorTest {
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageMock), actionArgumentCaptor.capture());
+        verify(messageReceiverMock1).receive(same(messageProcessor), actionArgumentCaptor.capture());
 
         actionArgumentCaptor.getValue().execute(exception);
 
