@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.message_processing;
 
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -31,6 +32,13 @@ public interface IMessageProcessingSequence {
      * @return the receiver or {@code null} if message processing is finished
      */
     IMessageReceiver getCurrentReceiver();
+
+    /**
+     * Get the arguments object that should be passed to current receiver.
+     *
+     * @return the arguments objects or {@code null} if message processing is finished
+     */
+    IObject getCurrentReceiverArguments();
 
     /**
      * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.

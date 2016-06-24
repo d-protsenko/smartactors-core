@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -21,15 +22,21 @@ import static org.mockito.Mockito.when;
 public class MessageProcessingSequenceTest {
     private IReceiverChain mainChainMock;
     private IMessageReceiver[] messageReceiverMocks;
+    private IObject[] receiverArgsMocks;
 
     @Before
     public void setUp()
             throws Exception {
         mainChainMock = mock(IReceiverChain.class);
         messageReceiverMocks = new IMessageReceiver[10];
+        receiverArgsMocks = new IObject[10];
 
         for (int i = 0; i < messageReceiverMocks.length; i++) {
             messageReceiverMocks[i] = mock(IMessageReceiver.class);
+        }
+
+        for (int i = 0; i < receiverArgsMocks.length; i++) {
+            receiverArgsMocks[i] = mock(IObject.class);
         }
     }
 
@@ -91,10 +98,25 @@ public class MessageProcessingSequenceTest {
         when(chainMock3.get(eq(0))).thenReturn(messageReceiverMocks[7]);
         when(chainMock3.get(eq(1))).thenReturn(messageReceiverMocks[8]);
 
+        when(mainChainMock.getArguments(eq(0))).thenReturn(receiverArgsMocks[0]);
+        when(mainChainMock.getArguments(eq(1))).thenReturn(receiverArgsMocks[1]);
+        when(mainChainMock.getArguments(eq(2))).thenReturn(receiverArgsMocks[2]);
+
+        when(chainMock1.getArguments(eq(0))).thenReturn(receiverArgsMocks[3]);
+        when(chainMock1.getArguments(eq(1))).thenReturn(receiverArgsMocks[4]);
+
+        when(chainMock2.getArguments(eq(0))).thenReturn(receiverArgsMocks[5]);
+        when(chainMock2.getArguments(eq(1))).thenReturn(receiverArgsMocks[6]);
+
+        when(chainMock3.getArguments(eq(0))).thenReturn(receiverArgsMocks[7]);
+        when(chainMock3.getArguments(eq(1))).thenReturn(receiverArgsMocks[8]);
+
         IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
 
         assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
+        assertSame(receiverArgsMocks[0], messageProcessingSequence.getCurrentReceiverArguments());
         assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
+        assertSame(receiverArgsMocks[0], messageProcessingSequence.getCurrentReceiverArguments());
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[1], messageProcessingSequence.getCurrentReceiver());
 

@@ -138,7 +138,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            messageProcessingSequence.getCurrentReceiver().receive(this, receiverCallback);
+            messageProcessingSequence.getCurrentReceiver().receive(
+                    this, messageProcessingSequence.getCurrentReceiverArguments(), receiverCallback);
         } catch (Throwable e) {
             try {
                 handleCompletedExceptionally(e);

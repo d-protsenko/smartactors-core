@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.receiver_chain;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
@@ -10,6 +11,7 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 public class ImmutableReceiverChain implements IReceiverChain {
     private final String name;
     private final IMessageReceiver[] receivers;
+    private final IObject[] arguments;
     private final IReceiverChain exceptionalReceiverChain;
 
     /**
@@ -17,12 +19,14 @@ public class ImmutableReceiverChain implements IReceiverChain {
      *
      * @param name                        name of the chain
      * @param receivers                   sequence (array) of receivers
+     * @param arguments                   array of argument objects for receivers in the chain
      * @param exceptionalReceiverChain    chain that should be returned by {@link IReceiverChain#getExceptionalChain(Throwable)}
      *                                    on any exception
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      */
-    public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IReceiverChain exceptionalReceiverChain)
+    public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
+                                  final IReceiverChain exceptionalReceiverChain)
             throws InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
@@ -32,8 +36,17 @@ public class ImmutableReceiverChain implements IReceiverChain {
             throw new InvalidArgumentException("Chain receivers list should not be null.");
         }
 
+        if (null == arguments) {
+            throw new InvalidArgumentException("Chain arguments list should not be null.");
+        }
+
+        if (receivers.length != arguments.length) {
+            throw new InvalidArgumentException("Length of arguments list  does not match length of receivers list.");
+        }
+
         this.name = name;
         this.receivers = receivers;
+        this.arguments = arguments;
         this.exceptionalReceiverChain = exceptionalReceiverChain;
     }
 
@@ -44,6 +57,15 @@ public class ImmutableReceiverChain implements IReceiverChain {
         }
 
         return receivers[index];
+    }
+
+    @Override
+    public IObject getArguments(final int index) {
+        if (index < 0 || index >= arguments.length) {
+            return null;
+        }
+
+        return arguments[index];
     }
 
     @Override

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -17,6 +18,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
     private IMessageReceiver currentReceiver;
+    private IObject currentArguments;
     private int stackIndex;
 
     /**
@@ -54,6 +56,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
         this.chainStack[0] = mainChain;
         this.stepStack[0] = 0;
         this.currentReceiver = mainChain.get(0);
+        this.currentArguments = mainChain.getArguments(0);
         this.stackIndex = 0;
     }
 
@@ -64,6 +67,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
             currentReceiver = chainStack[i].get(step);
 
             if (null != currentReceiver) {
+                currentArguments = chainStack[i].getArguments(step);
                 stackIndex = i;
                 return true;
             }
@@ -75,6 +79,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     @Override
     public IMessageReceiver getCurrentReceiver() {
         return currentReceiver;
+    }
+
+    @Override
+    public IObject getCurrentReceiverArguments() {
+        return currentArguments;
     }
 
     @Override
