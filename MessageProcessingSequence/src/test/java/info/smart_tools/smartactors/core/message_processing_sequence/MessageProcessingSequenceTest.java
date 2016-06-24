@@ -1,7 +1,10 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -9,20 +12,30 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.NestedCha
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Tests for {@link MessageProcessingSequence}.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({IOC.class})
 public class MessageProcessingSequenceTest {
     private IReceiverChain mainChainMock;
     private IMessageReceiver[] messageReceiverMocks;
     private IObject[] receiverArgsMocks;
+    private IObject contextMock;
+    private IKey<IFieldName> fieldNameKey;
 
     @Before
     public void setUp()
@@ -38,6 +51,18 @@ public class MessageProcessingSequenceTest {
         for (int i = 0; i < receiverArgsMocks.length; i++) {
             receiverArgsMocks[i] = mock(IObject.class);
         }
+
+        contextMock = mock(IObject.class);
+
+        mockStatic(IOC.class);
+
+        fieldNameKey = mock(IKey.class);
+        PowerMockito.when(IOC.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
+        PowerMockito.when(IOC.resolve(same(IOC.getKeyForKeyStorage()), eq(IFieldName.class.toString()))).thenReturn((IKey) fieldNameKey);
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("causeLevel"))).thenReturn(mock(IFieldName.class));
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("causeStep"))).thenReturn(mock(IFieldName.class));
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchLevel"))).thenReturn(mock(IFieldName.class));
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchStep"))).thenReturn(mock(IFieldName.class));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -178,10 +203,13 @@ public class MessageProcessingSequenceTest {
 
         assertSame(messageReceiverMocks[2], messageProcessingSequence.getCurrentReceiver());
 
-        messageProcessingSequence.catchException(exception);
+        messageProcessingSequence.catchException(exception, contextMock);
 
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
+
+        assertTrue(messageProcessingSequence.next());
+        assertSame(messageReceiverMocks[1], messageProcessingSequence.getCurrentReceiver());
 
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[4], messageProcessingSequence.getCurrentReceiver());
@@ -197,6 +225,39 @@ public class MessageProcessingSequenceTest {
 
         IMessageProcessingSequence sequence = new MessageProcessingSequence(1, mainChainMock);
 
-        sequence.catchException(exception);
+        sequence.catchException(exception, contextMock);
+    }
+
+    @Test
+    public void Should_writeCauseAndCatchPositionsToContext()
+            throws Exception {
+        Throwable exception = mock(Throwable.class);
+
+        IReceiverChain exceptionalChain = mock(IReceiverChain.class);
+        IReceiverChain secondaryChain = mock(IReceiverChain.class);
+
+        when(mainChainMock.getExceptionalChain(same(exception))).thenReturn(exceptionalChain);
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+        when(secondaryChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+        when(secondaryChain.get(eq(1))).thenReturn(messageReceiverMocks[1]);
+        when(exceptionalChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock);
+
+        messageProcessingSequence.next();
+        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.next();
+        messageProcessingSequence.callChain(secondaryChain);
+        messageProcessingSequence.next();
+        messageProcessingSequence.callChain(secondaryChain);
+        messageProcessingSequence.next();
+        messageProcessingSequence.next();
+
+        messageProcessingSequence.catchException(exception, contextMock);
+
+        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "causeLevel")), eq(3));
+        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "causeStep")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchLevel")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchStep")), eq(0));
     }
 }

@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.message_processor;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage.IMessage;
@@ -9,8 +8,6 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iresource_source.IResourceSource;
-import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
@@ -133,74 +130,6 @@ public class MessageProcessorTest {
     }
 
     @Test
-    public void Should_retryWhenOutOfResourcesExceptionOccursAsynchronously()
-            throws Exception {
-        IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
-        IObject receiverArguments1 = mock(IObject.class);
-        OutOfResourceException outOfResourceExceptionMock = mock(OutOfResourceException.class);
-        IResourceSource resourceSourceMock = mock(IResourceSource.class);
-        ArgumentCaptor<IAction> actionArgumentCaptor = ArgumentCaptor.forClass(IAction.class);
-        ArgumentCaptor<IPoorAction> poorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-
-        when(outOfResourceExceptionMock.getSource()).thenReturn(resourceSourceMock);
-
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
-
-        messageProcessor.process(messageMock, contextMock);
-        verify(taskQueueMock).put(same(messageProcessor));
-
-        when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
-        when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments1);
-        messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageProcessor), same(receiverArguments1), actionArgumentCaptor.capture());
-
-        actionArgumentCaptor.getValue().execute(new Exception(new RuntimeException(outOfResourceExceptionMock)));
-
-        verify(resourceSourceMock).onAvailable(poorActionArgumentCaptor.capture());
-
-        verifyNoMoreInteractions(taskQueueMock);
-        reset(taskQueueMock);
-
-        poorActionArgumentCaptor.getValue().execute();
-
-        verify(taskQueueMock).put(same(messageProcessor));
-    }
-
-    @Test
-    public void Should_retryWhenOutOfResourcesExceptionOccursSynchronously()
-            throws Exception {
-        IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
-        IObject receiverArguments1 = mock(IObject.class);
-        OutOfResourceException outOfResourceExceptionMock = mock(OutOfResourceException.class);
-        IResourceSource resourceSourceMock = mock(IResourceSource.class);
-        ArgumentCaptor<IAction> actionArgumentCaptor = ArgumentCaptor.forClass(IAction.class);
-        ArgumentCaptor<IPoorAction> poorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-
-        when(outOfResourceExceptionMock.getSource()).thenReturn(resourceSourceMock);
-
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
-
-        messageProcessor.process(messageMock, contextMock);
-        verify(taskQueueMock).put(same(messageProcessor));
-
-        when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
-        when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments1);
-        doThrow(new MessageReceiveException(outOfResourceExceptionMock)).when(messageReceiverMock1)
-                .receive(same(messageProcessor), same(receiverArguments1), any());
-        messageProcessor.execute();
-        verify(messageReceiverMock1).receive(same(messageProcessor), same(receiverArguments1), actionArgumentCaptor.capture());
-
-        verify(resourceSourceMock).onAvailable(poorActionArgumentCaptor.capture());
-
-        verifyNoMoreInteractions(taskQueueMock);
-        reset(taskQueueMock);
-
-        poorActionArgumentCaptor.getValue().execute();
-
-        verify(taskQueueMock).put(same(messageProcessor));
-    }
-
-    @Test
     public void Should_throw_WhenExceptionOccursAsynchronouslyAndThereIsNoExceptionalChain()
             throws Exception {
         IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
@@ -216,7 +145,7 @@ public class MessageProcessorTest {
 
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments1);
-        doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception));
+        doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
         messageProcessor.execute();
         verify(messageReceiverMock1).receive(same(messageProcessor), same(receiverArguments1), actionArgumentCaptor.capture());
 
@@ -227,7 +156,7 @@ public class MessageProcessorTest {
             assertSame(exception2, e.getCause());
         }
 
-        verify(messageProcessingSequenceMock).catchException(same(exception));
+        verify(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
     }
 
     @Test
@@ -246,7 +175,7 @@ public class MessageProcessorTest {
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments1);
         doThrow(exception).when(messageReceiverMock1).receive(same(messageProcessor), same(receiverArguments1), any());
-        doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception));
+        doThrow(exception2).when(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
 
         try {
             messageProcessor.execute();
@@ -255,7 +184,7 @@ public class MessageProcessorTest {
             assertSame(exception2, e.getCause());
         }
 
-        verify(messageProcessingSequenceMock).catchException(same(exception));
+        verify(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
     }
 
     @Test
@@ -279,7 +208,7 @@ public class MessageProcessorTest {
 
         actionArgumentCaptor.getValue().execute(exception);
 
-        verify(messageProcessingSequenceMock).catchException(same(exception));
+        verify(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
         verify(taskQueueMock).put(same(messageProcessor));
     }
 }

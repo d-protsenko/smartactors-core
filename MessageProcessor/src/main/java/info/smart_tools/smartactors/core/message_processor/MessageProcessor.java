@@ -1,20 +1,17 @@
 package info.smart_tools.smartactors.core.message_processor;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
 /**
  * Task that performs on a message actions defined by a message processing sequence.
@@ -31,17 +28,6 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private final IMessageProcessingSequence messageProcessingSequence;
 
     private final ReceiverCallback receiverCallback;
-    private final ReEnqueueAction reEnqueueAction;
-
-    /**
-     * Action that enqueues this task.
-     */
-    private class ReEnqueueAction implements IPoorAction {
-        @Override
-        public void execute() throws ActionExecuteException {
-            MessageProcessor.this.enqueue();
-        }
-    }
 
     /**
      * {@link IAction} that will be passed to {@link IMessageReceiver}'s.
@@ -53,7 +39,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
             if (null != exception) {
                 try {
                     handleCompletedExceptionally(exception);
-                } catch (NoExceptionHandleChainException e) {
+                } catch (Exception e) {
                     // TODO: Exception rethrown by receiver may be caught successful by MessageProcessor#execute()
                     complete();
                     throw new ActionExecuteException("Exception occurred while handling exception occurred in message receiver.", e);
@@ -91,7 +77,6 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         this.messageProcessingSequence = messageProcessingSequence;
 
         this.receiverCallback = new ReceiverCallback();
-        this.reEnqueueAction = new ReEnqueueAction();
     }
 
     /**
@@ -143,7 +128,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         } catch (Throwable e) {
             try {
                 handleCompletedExceptionally(e);
-            } catch (final NoExceptionHandleChainException e1) {
+            } catch (final Exception e1) {
                 complete();
                 throw new TaskExecutionException("Exception occurred while handling exception occurred in message receiver.", e1);
             }
@@ -151,16 +136,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     }
 
     private void handleCompletedExceptionally(final Throwable exception)
-            throws NoExceptionHandleChainException {
-        OutOfResourceException outOfResourceException = getOutOfResourcesCause(exception);
-
-        if (null != outOfResourceException) {
-            outOfResourceException.getSource().onAvailable(reEnqueueAction);
-            return;
-        }
-
-        // TODO: Store exception in message/context
-        messageProcessingSequence.catchException(exception);
+            throws Exception {
+        messageProcessingSequence.catchException(exception, context);
         enqueue();
     }
 
@@ -174,15 +151,5 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
     private void complete() {
         // TODO: Return message, context, response and {@code this} to the pool
-    }
-
-    private static OutOfResourceException getOutOfResourcesCause(final Throwable exception) {
-        Throwable e;
-
-        for (e = exception; null != e && !(e instanceof OutOfResourceException);) {
-            e = e.getCause();
-        }
-
-        return (null == e) ? null : ((OutOfResourceException) e);
     }
 }

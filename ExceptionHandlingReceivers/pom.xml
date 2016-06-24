@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.message_processing_sequence</artifactId>
+    <artifactId>core.exception_handling_receivers</artifactId>
 
     <dependencies>
         <dependency>
@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>core.iresource_source</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

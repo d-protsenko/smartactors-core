@@ -1,7 +1,11 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -21,6 +25,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     private IObject currentArguments;
     private int stackIndex;
 
+    private final IFieldName causeLevelFieldName;
+    private final IFieldName causeStepFieldName;
+    private final IFieldName catchLevelFieldName;
+    private final IFieldName catchStepFieldName;
+    private final IFieldName exceptionFieldName;
+
     /**
      * The constructor.
      *
@@ -29,9 +39,10 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
      * @throws InvalidArgumentException if stack depth is not a positive number
      * @throws InvalidArgumentException if main chain is {@code null}
      * @throws InvalidArgumentException if main chain contains no receivers
+     * @throws ResolutionException if resolution of any dependencies fails
      */
     public MessageProcessingSequence(final int stackDepth, final IReceiverChain mainChain)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, ResolutionException {
         if (stackDepth < 1) {
             throw new InvalidArgumentException("Chain stack depth should be a positive number.");
         }
@@ -47,6 +58,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
         this.mainChain = mainChain;
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
+
+        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "causeLevel");
+        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "causeStep");
+        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "catchLevel");
+        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "catchStep");
+        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "exception");
 
         reset();
     }
@@ -77,6 +94,16 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     }
 
     @Override
+    public void goTo(final int level, final int step) throws InvalidArgumentException {
+        if (level > stackIndex || level < 0) {
+            throw new InvalidArgumentException("Invalid level value");
+        }
+
+        this.stackIndex = level;
+        this.stepStack[level] = step - 1;
+    }
+
+    @Override
     public IMessageReceiver getCurrentReceiver() {
         return currentReceiver;
     }
@@ -104,14 +131,31 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     }
 
     @Override
-    public void catchException(final Throwable exception)
-            throws NoExceptionHandleChainException {
+    public void catchException(final Throwable exception, final IObject context)
+            throws NoExceptionHandleChainException,
+                   NestedChainStackOverflowException,
+                   ChangeValueException {
+        int causedLevel = stackIndex;
+        int causedStep = stepStack[causedLevel];
+        int caughtLevel;
+        int caughtStep;
+
         for (int i = stackIndex; i >= 0; --i) {
             IReceiverChain exceptionalChain = chainStack[i].getExceptionalChain(exception);
             if (null != exceptionalChain) {
-                chainStack[i] = exceptionalChain;
-                stepStack[i] = -1;
-                stackIndex = i;
+                caughtLevel = i;
+                caughtStep = stepStack[caughtLevel];
+
+                context.setValue(causeLevelFieldName, causedLevel);
+                context.setValue(causeStepFieldName, causedStep);
+                context.setValue(catchLevelFieldName, caughtLevel);
+                context.setValue(catchStepFieldName, caughtStep);
+                context.setValue(exceptionFieldName, exception);
+
+                // By-default start from the next receiver after the failed one
+                ++stepStack[causedLevel];
+
+                callChain(exceptionalChain);
                 return;
             }
         }

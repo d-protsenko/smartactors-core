@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.core.message_processing;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -25,6 +27,16 @@ public interface IMessageProcessingSequence {
      *                      not
      */
     boolean next();
+
+    /**
+     * Go to specific step at some level of stack of nested chains.
+     *
+     * @param level    the stack level to go to
+     * @param step     the step at that stack level
+     * @throws InvalidArgumentException if level is negative number
+     * @throws InvalidArgumentException if level is higher than current stack level
+     */
+    void goTo(int level, int step) throws InvalidArgumentException;
 
     /**
      * Get the next receiver that should receive the message.
@@ -53,9 +65,17 @@ public interface IMessageProcessingSequence {
     /**
      * Switch to the chain that should be executed when exception occurs.
      *
+     * Saves in context positions (stack indexes and step indexes) of the points in the sequence where the exception
+     * occurred ({@code "causeLevel"} and {@code "causeStep"} fields) and where it was caught - position in the chain
+     * defining the called exceptional chain ({@code "catchLevel"} and {@code "causeStep"} fields).
+     *
      * @param exception     the occurred exception
+     * @param context       the context to save positions
      * @throws NoExceptionHandleChainException when there is no such chain.
+     * @throws NestedChainStackOverflowException when it is impossible to call that chain.
+     * @throws ChangeValueException if error occurs during writing positions to context
+     * @see #callChain(IReceiverChain)
      */
-    void catchException(final Throwable exception)
-            throws NoExceptionHandleChainException;
+    void catchException(final Throwable exception, final IObject context)
+            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException;
 }
