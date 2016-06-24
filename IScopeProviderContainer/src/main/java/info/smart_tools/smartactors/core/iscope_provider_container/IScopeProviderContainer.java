@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.iscope_provider_container;
 
-import info.smart_tools.smartactors.core.iobserver.IObserver;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 
@@ -65,7 +65,7 @@ public interface IScopeProviderContainer {
      * @param handler handler for execute when event will be happened
      * @throws ScopeProviderException if any errors occurred
      */
-    void subscribeOnCreationNewScope(final IObserver<IScope> handler)
+    void subscribeOnCreationNewScope(final IAction<IScope> handler)
             throws ScopeProviderException;
 
     /**

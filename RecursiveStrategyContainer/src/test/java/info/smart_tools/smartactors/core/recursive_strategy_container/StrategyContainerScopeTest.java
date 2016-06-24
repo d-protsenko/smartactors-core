@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
@@ -29,7 +30,7 @@ public class StrategyContainerScopeTest {
     private IScope childScope;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException {
+    public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -53,12 +54,18 @@ public class StrategyContainerScopeTest {
 
         ScopeProvider.setCurrentScope(parentScope);
         IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
-                (a) -> new Key((String) a[0]))
+                (a) -> {
+                    try {
+                        return new Key((String) a[0]);
+                    } catch (InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
         );
     }
 
     @Test
-    public void testSystemIOC() throws ScopeProviderException, ResolutionException, RegistrationException, DeletionException {
+    public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException, DeletionException {
         IKey<Object> key = Keys.getOrAdd("test");
 
         ScopeProvider.setCurrentScope(parentScope);

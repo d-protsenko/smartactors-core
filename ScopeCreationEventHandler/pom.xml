@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobserver</artifactId>
+            <artifactId>core.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -32,6 +32,13 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ikey</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
+        <!-- Core exception -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

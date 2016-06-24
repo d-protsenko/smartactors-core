@@ -20,6 +20,13 @@
             <version>${core.version}</version>
         </dependency>
 
+        <!-- Core exception -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

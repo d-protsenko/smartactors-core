@@ -12,4 +12,12 @@
 
     <artifactId>core.iobject</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

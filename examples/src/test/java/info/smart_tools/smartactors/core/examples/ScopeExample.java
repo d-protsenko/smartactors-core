@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.examples.scope.MyIOCException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
@@ -32,7 +33,7 @@ public class ScopeExample {
     private IScope workerScope;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException, ScopeException {
+    public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException, ScopeException {
         initScopeForSystemIOC();
 
         MyIOC.init();   // must be initialized before any scope creation
@@ -64,14 +65,20 @@ public class ScopeExample {
         );
     }
 
-    private void initSystemIOC() throws RegistrationException {
+    private void initSystemIOC() throws InvalidArgumentException, RegistrationException {
         IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
-                (a) -> new Key((String) a[0]))
+                (a) -> {
+                    try {
+                        return new Key((String) a[0]);
+                    } catch (InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
         );
     }
 
     @Test
-    public void scopeIsKeyValueStorage() throws ScopeProviderException, ScopeException {
+    public void scopeIsKeyValueStorage() throws ScopeProviderException, InvalidArgumentException, ScopeException {
         Object scopeKey = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(scopeKey);
         Object key = new Key(java.util.UUID.randomUUID().toString());
@@ -81,7 +88,7 @@ public class ScopeExample {
     }
 
     @Test
-    public void nestedScope() throws ScopeProviderException, ScopeException {
+    public void nestedScope() throws ScopeProviderException, InvalidArgumentException, ScopeException {
         Object mainScopeKey = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(mainScopeKey);
         Object key = new Key(java.util.UUID.randomUUID().toString());
@@ -134,7 +141,7 @@ public class ScopeExample {
     }
 
     @Test
-    public void sampleIOC() throws MyIOCException, ScopeProviderException {
+    public void sampleIOC() throws InvalidArgumentException, MyIOCException, ScopeProviderException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
 
         IKey key = new Key<MyClass>("my");
@@ -153,7 +160,7 @@ public class ScopeExample {
     }
 
     @Test
-    public void testSystemIOC() throws ScopeProviderException, ResolutionException, RegistrationException {
+    public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
         IKey<MyClass> key = Keys.getOrAdd("test");
         MyClass systemObject = new MyClass("system");

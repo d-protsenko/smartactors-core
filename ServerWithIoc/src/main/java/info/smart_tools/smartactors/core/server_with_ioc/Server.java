@@ -24,10 +24,7 @@ import java.net.URL;
  */
 public class Server implements IServer {
 
-    /**
-     * Initialize service locators
-     * @throws ServerInitializeException if any errors occurred
-     */
+    @Override
     public void initialize()
             throws ServerInitializeException {
         try {
@@ -37,6 +34,7 @@ public class Server implements IServer {
         }
     }
 
+    @Override
     public void start()
             throws ServerExecutionException {
         try {

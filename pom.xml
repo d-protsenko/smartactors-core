@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.1.0</core.version>
+        <core.version>0.2.0-SNAPSHOT</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -41,11 +41,45 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>IObserver</module>
+        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
-        <module>NamedKeysStorage</module>
+        <module>ITask</module>
+        <module>IDatabaseTask</module>
+        <module>DataBaseStorage</module>
+        <module>SqlCommons</module>
+        <module>DBCreateCollectionTask</module>
+        <module>DBUpsertTask</module>
         <module>examples</module>
+        <module>BootstrapItem</module>
+        <module>IBootstrapItem</module>
+        <module>InvalidArgumentException</module>
+        <module>IBootstrap</module>
+        <module>IPlugin</module>
+        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
+        <module>IPluginLoader</module>
+        <module>IPluginLoaderVisitor</module>
+        <module>PluginLoaderVisitorEmptyImplementation</module>
+        <module>PluginLoaderFormJar</module>
+        <module>Bootstrap</module>
+        <module>IPluginCreator</module>
+        <module>PluginCreator</module>
+        <module>ServerWithPluginLoader</module>
+        <module>PluginLoadScopeProvider</module>
+        <module>PluginTestJar</module>
+        <module>NamedKeysStorage</module>
+        <module>FilesystemTracker</module>
+        <module>IFilesystemTracker</module>
+        <module>IFeatureManager</module>
+        <module>FeatureManager</module>
+        <module>IPool</module>
+        <module>Pool</module>
+        <module>PoolGuard</module>
+        <module>PluginCompileQuery</module>
+        <module>PostgresConnection</module>
+        <module>PluginPostgresConnectionPool</module>
+        <module>DBFindByIdTask</module>
+        <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
     </modules>
 

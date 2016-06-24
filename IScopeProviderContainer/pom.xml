@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobserver</artifactId>
+            <artifactId>core.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
 

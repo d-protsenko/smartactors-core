@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
@@ -26,10 +27,15 @@ public class Container implements IContainer {
 
     /**
      * Default constructor
+     * @throws InvalidArgumentException if any errors occurred
      */
     public Container() {
-        strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
-        keyForKeyStorage = new Key<>(java.util.UUID.randomUUID().toString());
+        try {
+            strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
+            keyForKeyStorage = new Key<>(java.util.UUID.randomUUID().toString());
+        } catch (Exception e) {
+            throw new RuntimeException("Initialization of IOC container has been failed.");
+        }
     }
 
     /**

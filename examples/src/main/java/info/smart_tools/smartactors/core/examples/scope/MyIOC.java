@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.examples.scope;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
@@ -32,7 +33,7 @@ public class MyIOC {
                         }
                     }
             );
-        } catch (ScopeProviderException e) {
+        } catch (InvalidArgumentException | ScopeProviderException e) {
             throw new RuntimeException(e);
         }
     }
