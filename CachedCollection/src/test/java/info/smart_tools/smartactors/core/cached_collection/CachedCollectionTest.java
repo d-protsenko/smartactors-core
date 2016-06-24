@@ -80,7 +80,7 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(keyMessage);
         when(IOC.resolve(keyMessage, query)).thenReturn(message);
 
-        collection.delete(parameters);
+        collection.delete(query);
 
         verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(query));
@@ -107,7 +107,7 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString())).thenReturn(keyMessage);
         when(IOC.resolve(keyMessage, query)).thenReturn(message);
 
-        collection.upsert(parameters);
+        collection.upsert(query);
 
         verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(query));
@@ -136,7 +136,7 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString())).thenReturn(keyMessage);
         when(IOC.resolve(keyMessage, query)).thenReturn(message);
 
-        List<IObject> items = collection.getItems(parameters);
+        List<IObject> items = collection.getItems(query);
 
         verify(readTask).setConnection(eq(connection));
         verify(readTask).prepare(eq(query));

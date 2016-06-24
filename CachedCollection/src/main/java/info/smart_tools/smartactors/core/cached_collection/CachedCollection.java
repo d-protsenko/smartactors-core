@@ -56,13 +56,14 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public List<IObject> getItems(CachedCollectionParameters params) throws GetCacheItemException {
+    public List<IObject> getItems(IObject message) throws GetCacheItemException {
 
         try {
+            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
             IDatabaseTask readTask = params.getTask();
             IObject query = params.getQuery();
-            GetObjectFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
-            String key = message.getKey();
+            GetObjectFromCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
+            String key = wrappedQuery.getKey();
             List<IObject> items = map.get(key);
             List<IObject> result = Collections.emptyList();
             if (items != null) {
@@ -82,7 +83,7 @@ public class CachedCollection implements ICachedCollection {
                 }
                 readTask.prepare(query);
                 readTask.execute();
-                result = message.getSearchResult().collect(Collectors.toList());
+                result = wrappedQuery.getSearchResult().collect(Collectors.toList());
             }
             return result;
         } catch (TaskSetConnectionException e) {
@@ -99,8 +100,9 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void delete(final CachedCollectionParameters params) throws DeleteCacheItemException {
+    public void delete(IObject message) throws DeleteCacheItemException {
         try {
+            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
             IObject query = params.getQuery();
             IDatabaseTask deleteTask = params.getTask();
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
@@ -117,14 +119,14 @@ public class CachedCollection implements ICachedCollection {
                 throw new DeleteCacheItemException("Error during execution delete task.", e);
             }
 
-            DeleteFromCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()), query);
-            String key = message.getKey();
+            DeleteFromCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()), query);
+            String key = wrappedQuery.getKey();
             List<IObject> items = map.get(key);
             if (items != null) {
                 CachedItem item;
                 for (IObject obj : items) {
                     item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                    if (item.getId().equals(message.getId())) {
+                    if (item.getId().equals(wrappedQuery.getId())) {
                         items.remove(obj);
                         break;
                     }
@@ -138,14 +140,15 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void upsert(final CachedCollectionParameters params) throws UpsertCacheItemException {
+    public void upsert(IObject message) throws UpsertCacheItemException {
 
         try {
+            CachedCollectionParameters params = IOC.resolve(Keys.getOrAdd(CachedCollectionParameters.class.toString()), message);
             IObject query = params.getQuery();
             IDatabaseTask upsertTask = params.getTask();
-            UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
-            Boolean isActive = message.isActive();
-            message.setIsActive(true);
+            UpsertIntoCachedCollectionQuery wrappedQuery = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
+            Boolean isActive = wrappedQuery.isActive();
+            wrappedQuery.setIsActive(true);
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
                 upsertTask.prepare(query);
@@ -157,16 +160,16 @@ public class CachedCollection implements ICachedCollection {
             } catch (TaskPrepareException e) {
                 throw new UpsertCacheItemException("Error during preparing upsert task.", e);
             } catch (TaskExecutionException e) {
-                message.setIsActive(isActive);
+                wrappedQuery.setIsActive(isActive);
                 throw new UpsertCacheItemException("Error during execution upsert task.", e);
             }
-            String key = message.getKey();
+            String key = wrappedQuery.getKey();
             List<IObject> items = map.get(key);
             if (items != null && !items.isEmpty()) {
                 CachedItem item;
                 for (IObject obj : items) {
                     item = IOC.resolve(Keys.getOrAdd(CachedItem.class.toString()), obj);
-                    if (item.getId().equals(message.getId())) {
+                    if (item.getId().equals(wrappedQuery.getId())) {
                         items.remove(obj);
                         items.add(query);
                         break;
