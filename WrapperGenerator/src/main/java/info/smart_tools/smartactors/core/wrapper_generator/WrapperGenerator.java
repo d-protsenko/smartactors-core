@@ -101,7 +101,8 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
-                .addImport(IObject.class.getCanonicalName());
+                .addImport(IObject.class.getCanonicalName())
+                .addImport(IObjectWrapper.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
