@@ -121,101 +121,58 @@ public class WrapperGenerator implements IWrapperGenerator {
             cb.addImport((String) entry.getValue());
         }
         cb
-                .addClass()
-                .setClassModifier(Modifiers.PUBLIC)
-                .setClassName(targetInterface.getSimpleName() + "Impl")
-                .setInterfaces("IObjectWrapper")
-                .setInterfaces(targetInterface.getSimpleName());
+                .addClass().setClassModifier(Modifiers.PUBLIC).setClassName(targetInterface.getSimpleName() + "Impl")
+                .setInterfaces("IObjectWrapper").setInterfaces(targetInterface.getSimpleName());
         for (Method m : targetInterface.getMethods()) {
             String genericType =
                     Void.TYPE == m.getGenericReturnType() ?
                             m.getGenericParameterTypes()[0].getTypeName() :
                             m.getReturnType().getTypeName();
             cb
-                    .addField()
-                    .setModifier(Modifiers.PRIVATE)
-                    .setType("Field")
-                    .setInnerGenericType(genericType)
-                    .setName("fieldFor_" + m.getName());
+                    .addField().setModifier(Modifiers.PRIVATE).setType("Field").setInnerGenericType(genericType)
+                            .setName("fieldFor_" + m.getName());
         }
 
         StringBuilder builder = new StringBuilder();
-        builder
-                .append("\t\t")
-                .append("try {\n");
+        builder.append("\t\t").append("try {\n");
         for (Method m : targetInterface.getMethods()) {
             IObject methodBinding = (IObject) currentBinding.getValue(new FieldName(m.getName()));
             builder
-                    .append("\t\t\t")
-                    .append("this.fieldFor_")
-                    .append(m.getName())
+                    .append("\t\t\t").append("this.fieldFor_").append(m.getName())
                     .append(" = new Field<>(new FieldName(\"")
                     .append((String) methodBinding.getValue(new FieldName("ValueName")))
-                    .append("\")")
-                    .append(");\n");
+                    .append("\")").append(");\n");
         }
         builder
-                .append("\t\t")
-                .append("} catch (Exception e) {\n")
-                .append("\t\t\t")
+                .append("\t\t").append("} catch (Exception e) {\n").append("\t\t\t")
                 .append("throw new InvalidArgumentException(\"\", e);\n")
-                .append("\t\t")
-                .append("}");
+                .append("\t\t").append("}");
         cb
-                .addConstructor()
-                .setModifier(Modifiers.PUBLIC)
-                .setExceptions("InvalidArgumentException")
-                .addStringToBody(builder.toString());
+                .addConstructor().setModifier(Modifiers.PUBLIC).setExceptions("InvalidArgumentException")
+                        .addStringToBody(builder.toString());
         cb
-                .addField()
-                .setModifier(Modifiers.PRIVATE)
-                .setType("IObject")
-                .setName("message");
+                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("message");
         cb
-                .addField()
-                .setModifier(Modifiers.PRIVATE)
-                .setType("IObject")
-                .setName("context");
+                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("context");
         cb
-                .addField()
-                .setModifier(Modifiers.PRIVATE)
-                .setType("IObject")
-                .setName("response");
+                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("response");
         cb
-                .addMethod()
-                .setModifier(Modifiers.PUBLIC)
-                .setReturnType("IObject")
-                .setName("getMessage")
-                .addStringToBody("return this.message;");
+                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getMessage")
+                        .addStringToBody("return this.message;");
         cb
-                .addMethod()
-                .setModifier(Modifiers.PUBLIC)
-                .setReturnType("IObject")
-                .setName("getContext")
-                .addStringToBody("return this.context;");
+                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getContext")
+                        .addStringToBody("return this.context;");
         cb
-                .addMethod()
-                .setModifier(Modifiers.PUBLIC)
-                .setReturnType("IObject")
-                .setName("getResponse")
-                .addStringToBody("return this.response;");
+                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getResponse")
+                        .addStringToBody("return this.response;");
         cb
-                .addMethod()
-                .setModifier(Modifiers.PUBLIC)
-                .setReturnType("void")
-                .setName("init")
+                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("void").setName("init")
                 .addParameter()
-                        .setType("IObject")
-                        .setName("message")
-                        .next()
+                        .setType("IObject").setName("message").next()
                 .addParameter()
-                    .setType("IObject")
-                    .setName("context")
-                    .next()
+                        .setType("IObject").setName("context").next()
                 .addParameter()
-                        .setType("IObject")
-                        .setName("response")
-                        .next()
+                        .setType("IObject").setName("response").next()
                 .addStringToBody("this.message = message;")
                 .addStringToBody("this.context = context;")
                 .addStringToBody("this.response = response;");
@@ -232,17 +189,11 @@ public class WrapperGenerator implements IWrapperGenerator {
                     this.generate(m.getReturnType(), binding);
                 }
                 cb
-                        .addMethod()
-                        .setModifier(Modifiers.PUBLIC)
-                        .setReturnType(m.getGenericReturnType().getTypeName())
-                        .setName(m.getName())
+                        .addMethod().setModifier(Modifiers.PUBLIC).setReturnType(m.getGenericReturnType().getTypeName())
+                                .setName(m.getName())
                         .addStringToBody("try {")
                         .addStringToBody(
-                                "\treturn fieldFor_" +
-                                m.getName() +
-                                ".from(" +
-                                resource +
-                                ", " +
+                                "\treturn fieldFor_" + m.getName() + ".from(" + resource + ", " +
                                 (null == strategy || strategy.isEmpty() ? typeTo + ".class" : "\"" + strategy + "\"") +
                                 ");"
                         )
@@ -255,14 +206,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                     this.generate(m.getParameterTypes()[0], binding);
                 }
                 cb
-                        .addMethod()
-                        .setModifier(Modifiers.PUBLIC)
-                        .setReturnType("void")
-                        .setName(m.getName())
+                        .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("void").setName(m.getName())
                         .addParameter()
-                                .setType(m.getGenericParameterTypes()[0].getTypeName())
-                                .setName("value")
-                                .next()
+                                .setType(m.getGenericParameterTypes()[0].getTypeName()).setName("value").next()
                         .addStringToBody("try {")
                         .addStringToBody("\tthis.fieldFor_" + m.getName() + ".inject(" + resource + ", value);")
                         .addStringToBody("} catch (Throwable e) {")
@@ -273,9 +219,6 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         return (Class<T>) classGenerator.generate(cb.buildClass().toString());
     }
-
-
-
 }
 
 

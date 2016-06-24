@@ -12,6 +12,11 @@ public class FieldInfo {
     private String type;
     private String innerGenericType;
 
+    /**
+     * Constructor.
+     * Create new instance of {@link FieldInfo} by given {@link ClassBuilder}
+     * @param classBuilder the link to parent instance of {@link ClassBuilder}
+     */
     public FieldInfo(final ClassBuilder classBuilder) {
         this.classBuilder = classBuilder;
     }
@@ -20,8 +25,13 @@ public class FieldInfo {
         return modifier;
     }
 
-    public FieldInfo setModifier(final Modifiers modifier) {
-        this.modifier = modifier;
+    /**
+     * Set modifier of field
+     * @param modifierOfField the constructor modifier
+     * @return instance of {@link FieldInfo}
+     */
+    public FieldInfo setModifier(final Modifiers modifierOfField) {
+        this.modifier = modifierOfField;
 
         return this;
     }
@@ -30,8 +40,13 @@ public class FieldInfo {
         return name;
     }
 
-    public FieldInfo setName(final String name) {
-        this.name = name;
+    /**
+     * Set name of current field
+     * @param nameOfField the name of field
+     * @return instance of {@link FieldInfo}
+     */
+    public FieldInfo setName(final String nameOfField) {
+        this.name = nameOfField;
 
         return this;
     }
@@ -40,8 +55,13 @@ public class FieldInfo {
         return type;
     }
 
-    public FieldInfo setType(final String type) {
-        this.type = type;
+    /**
+     * Set type of current field
+     * @param typeOfField the type of field
+     * @return instance of {@link FieldInfo}
+     */
+    public FieldInfo setType(final String typeOfField) {
+        this.type = typeOfField;
 
         return this;
     }
@@ -50,12 +70,21 @@ public class FieldInfo {
         return innerGenericType;
     }
 
-    public FieldInfo setInnerGenericType(final String innerGenericType) {
-        this.innerGenericType = innerGenericType;
+    /**
+     * Set generic type of current field
+     * @param genericType the generic type of field
+     * @return instance of {@link FieldInfo}
+     */
+    public FieldInfo setInnerGenericType(final String genericType) {
+        this.innerGenericType = genericType;
 
         return this;
     }
 
+    /**
+     * Return editing to parent parameters
+     * @return the parent instance of {@link ClassBuilder}
+     */
     public ClassBuilder next() {
         return this.classBuilder;
     }

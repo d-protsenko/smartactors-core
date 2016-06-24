@@ -14,16 +14,17 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -53,6 +54,10 @@ public class FieldTest {
         IResolveDependencyStrategy toInteger = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd(int.class.toString()), toInteger);
         when(toInteger.resolve(any())).thenReturn(1);
+
+        IResolveDependencyStrategy toBoolean = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("ToBoolean"), toBoolean);
+        when(toBoolean.resolve(any())).thenReturn(true);
     }
 
     @Test
@@ -120,4 +125,61 @@ public class FieldTest {
         fail();
     }
 
+    @Test (expected = InvalidArgumentException.class)
+    public void checkSecondMethodFromOnWrongArgument()
+            throws Exception {
+        Field<Integer> field = new Field<>(new FieldName("intValue"));
+        field.from(null, "");
+        fail();
+    }
+
+    @Test
+    public void checkSecondMethodFromNullValue()
+            throws Exception {
+        IObject iObject = mock(IObject.class);
+        Field<Integer> field = new Field<>(new FieldName("intValue"));
+        Integer result = field.from(iObject, "");
+        assertNull(result);
+    }
+
+    @Test
+    public void checkSecondMethodFromWithIOC()
+            throws Exception {
+        IObject iObject = mock(IObject.class);
+        when(iObject.getValue(new FieldName("booleanValue"))).thenReturn(true);
+        Field<Boolean> field = new Field<>(new FieldName("booleanValue"));
+        boolean result = field.from(iObject, "ToBoolean");
+        assertTrue(result);
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkSecondMethodFromWithIOCResolutionException()
+            throws Exception {
+        IObject iObject = mock(IObject.class);
+        when(iObject.getValue(new FieldName("boolValue"))).thenReturn(true);
+        Field<Boolean> field = new Field<>(new FieldName("boolValue"));
+        Boolean result = field.from(iObject, "Unregistered");
+        fail();
+    }
+
+    @Test
+    public void checkInjection()
+            throws Exception {
+        IObject iObject = mock(IObject.class);
+        Integer value = 1;
+        doNothing().when(iObject).setValue(new FieldName("Value"), value);
+        Field<Integer> field = new Field<>(new FieldName("Value"));
+        field.inject(iObject, value);
+        verify(iObject, times(1)).setValue(new FieldName("Value"), value);
+    }
+
+    @Test
+    public void checkDeletion()
+            throws Exception {
+        IObject iObject = mock(IObject.class);
+        doNothing().when(iObject).deleteField(new FieldName("Value"));
+        Field<Integer> field = new Field<>(new FieldName("Value"));
+        field.delete(iObject);
+        verify(iObject, times(1)).deleteField(new FieldName("Value"));
+    }
 }

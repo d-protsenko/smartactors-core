@@ -48,10 +48,8 @@ public class Field<T> {
             return (T) value;
         }
 
-        for (Class classInterface : value.getClass().getInterfaces()) {
-            if (classInterface.equals(targetClass)) {
-                return (T) value;
-            }
+        if (targetClass.isAssignableFrom(value.getClass())) {
+            return (T) value;
         }
 
         try {
@@ -121,5 +119,4 @@ public class Field<T> {
             throws DeleteValueException, InvalidArgumentException {
         object.deleteField(name);
     }
-
 }

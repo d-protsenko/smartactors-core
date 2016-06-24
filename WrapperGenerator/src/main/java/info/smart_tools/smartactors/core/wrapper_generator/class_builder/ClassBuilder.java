@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class builder
+ * Class builder.
+ * Build class by given class attributes.
  */
 public class ClassBuilder {
 
@@ -47,32 +48,55 @@ public class ClassBuilder {
         mapPrimitiveToClass.put(short.class.getName(), "Short");
     }
 
+    /**
+     * Constructor.
+     * Creates instance of {@link ClassBuilder} with given setting
+     * @param tabSymbol the symbol for indent between string beginning and language words
+     * @param lineBreakSymbol the newline character
+     */
     public ClassBuilder(final String tabSymbol, final String lineBreakSymbol) {
         this.tabSymbol = tabSymbol;
         this.lineBreakSymbol = lineBreakSymbol;
     }
 
-    public ClassBuilder addPackageName(final String packageName) {
-        this.packageName = packageName;
+    /**
+     * Add package name
+     * @param nameOfPackage the name of package
+     * @return current instance of {@link ClassBuilder}
+     */
+    public ClassBuilder addPackageName(final String nameOfPackage) {
+        this.packageName = nameOfPackage;
 
         return this;
     }
 
+    /**
+     * Add import
+     * @param value the import string
+     * @return current instance of {@link ClassBuilder}
+     */
     public ClassBuilder addImport(final String value) {
         this.importsList.add(value);
 
         return this;
     }
 
+    /**
+     * Start editing parameters of {@link ClassInfo}
+     * @return instance of {@link ClassInfo}
+     */
     public ClassInfo addClass() {
         if (null == this.classInfo) {
-            ClassInfo classInfo = new ClassInfo(this);
-            this.classInfo = classInfo;
+            this.classInfo = new ClassInfo(this);
         }
 
         return this.classInfo;
     }
 
+    /**
+     * Add new method and start editing parameters of new method
+     * @return instance of {@link MethodInfo}
+     */
     public MethodInfo addMethod() {
         MethodInfo method = new MethodInfo(this);
         this.methods.add(method);
@@ -80,6 +104,10 @@ public class ClassBuilder {
         return method;
     }
 
+    /**
+     * Add new constructor and start editing parameters of new constructor
+     * @return instance of {@link ConstructorInfo}
+     */
     public ConstructorInfo addConstructor() {
         ConstructorInfo constructorInfo = new ConstructorInfo(this);
         this.constructors.add(constructorInfo);
@@ -87,6 +115,10 @@ public class ClassBuilder {
         return constructorInfo;
     }
 
+    /**
+     * Add new field and start editing parameters of new field
+     * @return instance of {@link FieldInfo}
+     */
     public FieldInfo addField() {
         FieldInfo fieldInfo = new FieldInfo(this);
         this.fields.add(fieldInfo);
@@ -110,6 +142,10 @@ public class ClassBuilder {
         return constructors;
     }
 
+    /**
+     * Build string containing class by completed before class info, fields, constructors and methods
+     * @return instance of {@link StringBuilder}
+     */
     public StringBuilder buildClass() {
         StringBuilder builder = new StringBuilder();
 
@@ -119,9 +155,8 @@ public class ClassBuilder {
                 .append(SPACE)
                 .append(this.packageName)
                 .append(SEMICOLON)
+                .append(this.lineBreakSymbol)
                 .append(this.lineBreakSymbol);
-
-        builder.append(this.lineBreakSymbol);
 
         // Add imports
         for (String str : this.importsList) {
@@ -132,7 +167,6 @@ public class ClassBuilder {
                     .append(SEMICOLON)
                     .append(this.lineBreakSymbol);
         }
-
         builder.append(this.lineBreakSymbol);
 
         // Add class
@@ -143,11 +177,11 @@ public class ClassBuilder {
                 .append(SPACE)
                 .append(getClassInfo().getClassName())
                 .append(SPACE);
-        if (null != getClassInfo().getInheritableClass() && !getClassInfo().getInheritableClass().isEmpty()) {
+        if (null != getClassInfo().getInherited() && !getClassInfo().getInherited().isEmpty()) {
             builder
                     .append(EXTENDS)
                     .append(SPACE)
-                    .append(getClassInfo().getInheritableClass())
+                    .append(getClassInfo().getInherited())
                     .append(SPACE);
         }
 
@@ -170,7 +204,6 @@ public class ClassBuilder {
         builder
                 .append(OPEN)
                 .append(this.lineBreakSymbol);
-
 
         // Add fields
         for (FieldInfo field : this.getFields()) {
@@ -195,9 +228,7 @@ public class ClassBuilder {
                     .append(SEMICOLON)
                     .append(this.lineBreakSymbol);
         }
-
-        builder
-                .append(this.lineBreakSymbol);
+        builder.append(this.lineBreakSymbol);
 
         // Add constructors
         for (ConstructorInfo constructorInfo : this.getConstructors()) {

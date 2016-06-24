@@ -20,7 +20,7 @@ public class ClassBuilderTest {
                 .addImport("info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers")
         .addClass()
                 .setClassName("A")
-                .setInheritableClass("B")
+                .setInherited("B")
                 .setInterfaces("IB")
                 .setInterfaces("IC").setClassModifier(Modifiers.PUBLIC)
                 .next()

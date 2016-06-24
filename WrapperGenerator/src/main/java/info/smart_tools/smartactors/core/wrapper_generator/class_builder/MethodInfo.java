@@ -16,16 +16,26 @@ public class MethodInfo {
     private List<String> body = new ArrayList<>();
     private String returnType;
 
-    public MethodInfo(final ClassBuilder builder) {
-        this.builder = builder;
+    /**
+     * Constructor.
+     * Create new instance of {@link MethodInfo} by given {@link ClassBuilder}
+     * @param classBuilder the link to parent instance of {@link ClassBuilder}
+     */
+    public MethodInfo(final ClassBuilder classBuilder) {
+        this.builder = classBuilder;
     }
 
     public Modifiers getModifier() {
         return modifier;
     }
 
-    public MethodInfo setModifier(final Modifiers modifier) {
-        this.modifier = modifier;
+    /**
+     * Set modifier of method
+     * @param modifierOfMethod the method modifier
+     * @return instance of {@link MethodInfo}
+     */
+    public MethodInfo setModifier(final Modifiers modifierOfMethod) {
+        this.modifier = modifierOfMethod;
 
         return this;
     }
@@ -34,8 +44,13 @@ public class MethodInfo {
         return name;
     }
 
-    public MethodInfo setName(final String name) {
-        this.name = name;
+    /**
+     * Set name of current method
+     * @param nameOfMethod the name of method
+     * @return instance of {@link MethodInfo}
+     */
+    public MethodInfo setName(final String nameOfMethod) {
+        this.name = nameOfMethod;
 
         return this;
     }
@@ -44,6 +59,10 @@ public class MethodInfo {
         return parameters;
     }
 
+    /**
+     * Add new parameter to the current method and start editing arguments of new parameter
+     * @return instance of {@link ConstructorParameterInfo}
+     */
     public MethodParameterInfo addParameter() {
         MethodParameterInfo parameterInfo = new MethodParameterInfo(this);
         this.parameters.add(parameterInfo);
@@ -54,6 +73,11 @@ public class MethodInfo {
         return exceptions;
     }
 
+    /**
+     * Add new exception to the current method by given exception name
+     * @param exception the name of given exception
+     * @return current instance of {@link MethodInfo}
+     */
     public MethodInfo setExceptions(final String exception) {
         this.exceptions.add(exception);
 
@@ -64,8 +88,13 @@ public class MethodInfo {
         return body;
     }
 
-    public MethodInfo addStringToBody(final String body) {
-        this.body.add(body);
+    /**
+     * Add next string to the method body
+     * @param string the string with constructor code
+     * @return current instance of {@link MethodInfo}
+     */
+    public MethodInfo addStringToBody(final String string) {
+        this.body.add(string);
 
         return this;
     }
@@ -74,12 +103,21 @@ public class MethodInfo {
         return returnType;
     }
 
-    public MethodInfo setReturnType(final String returnType) {
-        this.returnType = returnType;
+    /**
+     * Set type of method return value
+     * @param type the type of returning value
+     * @return current instance of {@link MethodInfo}
+     */
+    public MethodInfo setReturnType(final String type) {
+        this.returnType = type;
 
         return this;
     }
 
+    /**
+     * Return editing to parent parameters
+     * @return the parent instance of {@link ClassBuilder}
+     */
     public ClassBuilder next() {
         return this.builder;
     }

@@ -4,8 +4,6 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 
-import java.util.Map;
-
 /**
  * IWrapperGenerator interface
  */

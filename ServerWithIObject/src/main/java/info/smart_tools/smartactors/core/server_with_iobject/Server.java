@@ -56,14 +56,17 @@ public class Server implements IServer {
                 }
             };
             /** Initialize instance of IObject - DSObject */
-            IObject obj = new DSObject(map);
+            IObject message = new DSObject();
+            IObject context = new DSObject();
+            IObject response = new DSObject();
+            IObject binding = new DSObject();
 
             /** Get wrapper generator by IOC.resolve */
             IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.toString()));
             /** Generate wrapper class by given interface and create instance of generated class */
-            DemonstrationInterface ins = wg.generate(DemonstrationInterface.class);
+            DemonstrationInterface ins = wg.generate(DemonstrationInterface.class, binding);
             /** Initialize instance of generated class by IObject */
-            ((IObjectWrapper) (ins)).init(obj);
+            ((IObjectWrapper) (ins)).init(message, context, response);
 
             /** make some operations on this instance */
             int a1 = ins.getA();
@@ -113,7 +116,7 @@ public class Server implements IServer {
 
     private void registerWrapperGenerator()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator();
+        IWrapperGenerator wg = new WrapperGenerator(null);
         IOC.register(Keys.getOrAdd(IWrapperGenerator.class.toString()), new SingletonStrategy(wg));
     }
 
