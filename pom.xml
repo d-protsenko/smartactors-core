@@ -78,6 +78,7 @@
         <module>PoolGuard</module>
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
+        <module>PluginPostgresConnectionPool</module>
         <module>DBFindByIdTask</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>

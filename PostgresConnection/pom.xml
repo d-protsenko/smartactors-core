@@ -9,7 +9,6 @@
         <groupId>info.smart_tools.smartactors</groupId>
         <version>${core.version}</version>
     </parent>
-
     <artifactId>core.postgres_connection</artifactId>
 
     <dependencies>
