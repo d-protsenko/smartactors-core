@@ -7,7 +7,7 @@
     <parent>
         <artifactId>core</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
-        <version>${core.version}</version>
+        <version>0.1.0</version>
     </parent>
 
     <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
