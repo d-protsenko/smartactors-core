@@ -82,6 +82,24 @@ public class WrapperGeneratorTest {
         IObject binding = new DSObject();
         IObject bindingForIWrapper = new DSObject();
         IObject bindingForIInnerWrapper = new DSObject();
+        IObject bindingForIIncorrectWrapperWithoutReadValueException = new DSObject();
+        IObject bindingForIIncorrectWrapperWithoutChangeValueException = new DSObject();
+
+        IObject getValue = new DSObject("{\n" +
+                "\t\"ValueName\":    \"Value\",\n" +
+                "\t\"MethodType\":   \"get\",\n" +
+                "\t\"Resource\":     \"message\",\n" +
+                "\t\"UseStrategy\":  \"\",\n" +
+                "\t\"CheckWrapper\": false\n" +
+                "}");
+
+        IObject setValue = new DSObject("{\n" +
+                "\t\"ValueName\":    \"Value\",\n" +
+                "\t\"MethodType\":   \"set\",\n" +
+                "\t\"Resource\":     \"message\",\n" +
+                "\t\"UseStrategy\":  \"\",\n" +
+                "\t\"CheckWrapper\": false\n" +
+                "}");
 
         IObject getDoubleValue = new DSObject("{\n" +
                 "\t\"ValueName\":    \"DoubleValue\",\n" +
@@ -239,6 +257,9 @@ public class WrapperGeneratorTest {
                 "\t\"CheckWrapper\": false\n" +
                 "}");
 
+        bindingForIIncorrectWrapperWithoutReadValueException.setValue(new FieldName("getValue"), getValue);
+        bindingForIIncorrectWrapperWithoutChangeValueException.setValue(new FieldName("setValue"), setValue);
+
         bindingForIInnerWrapper.setValue(new FieldName("getDoubleValue"), getDoubleValue);
         bindingForIInnerWrapper.setValue(new FieldName("setDoubleValue"), setDoubleValue);
 
@@ -262,6 +283,15 @@ public class WrapperGeneratorTest {
         bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
         bindingForIWrapper.setValue(new FieldName("getStringIInnerMap"), getStringIInnerMap);
         bindingForIWrapper.setValue(new FieldName("setStringIInnerMap"), setStringIInnerMap);
+
+        binding.setValue(new FieldName(
+                IIncorrectWrapperWithoutReadValueException.class.toString()),
+                bindingForIIncorrectWrapperWithoutReadValueException
+        );
+        binding.setValue(new FieldName(
+                        IIncorrectWrapperWithoutChangeValueException.class.toString()),
+                bindingForIIncorrectWrapperWithoutChangeValueException
+        );
 
         binding.setValue(new FieldName(IWrapper.class.toString()), bindingForIWrapper);
         binding.setValue(new FieldName(IInnerWrapper.class.toString()), bindingForIInnerWrapper);
@@ -351,6 +381,22 @@ public class WrapperGeneratorTest {
         verify(response, times(1)).setValue(new FieldName("WrappedIObject"), innerWrapperForSetter);
         verify(response, times(1)).setValue(new FieldName("IObject"), iObjectForSetter);
         verify(context, times(1)).setValue(new FieldName("StringIInnerMap"), new HashMap<String, IInnerWrapper>(){{put("cba", innerWrapperForSetter);}});
+    }
+
+    @Test (expected = WrapperGeneratorException.class)
+    public void checkOnIncorrectInterfaceWithoutReadValueException()
+            throws Exception {
+        IWrapperGenerator wg = new WrapperGenerator(null);
+        IObject binding = getBinding();
+        wg.generate(IIncorrectWrapperWithoutReadValueException.class, binding);
+    }
+
+    @Test (expected = WrapperGeneratorException.class)
+    public void checkOnIncorrectInterfaceWithoutChangeValueException()
+            throws Exception {
+        IWrapperGenerator wg = new WrapperGenerator(null);
+        IObject binding = getBinding();
+        wg.generate(IIncorrectWrapperWithoutChangeValueException.class, binding);
     }
 
     @Test (expected = InvalidArgumentException.class)

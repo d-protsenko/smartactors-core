@@ -7,6 +7,8 @@ import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
@@ -102,7 +104,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
-                .addImport(IObjectWrapper.class.getCanonicalName());
+                .addImport(IObjectWrapper.class.getCanonicalName())
+                .addImport(ReadValueException.class.getCanonicalName())
+                .addImport(ChangeValueException.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
@@ -186,12 +190,15 @@ public class WrapperGenerator implements IWrapperGenerator {
             String typeTo = m.getReturnType().getSimpleName();
             boolean checkOrGenerate = (boolean) methodBinding.getValue(new FieldName("CheckWrapper"));
             if (null != methodType && methodType.equals("get")) {
+                if (m.getExceptionTypes().length != 1 || m.getExceptionTypes()[0] != ReadValueException.class) {
+                    throw new Exception("Given interface doesn't satisfy library convention.");
+                }
                 if (checkOrGenerate) {
                     this.generate(m.getReturnType(), binding);
                 }
                 cb
                         .addMethod().setModifier(Modifiers.PUBLIC).setReturnType(m.getGenericReturnType().getTypeName())
-                                .setName(m.getName())
+                                .setName(m.getName()).setExceptions("ReadValueException")
                         .addStringToBody("try {")
                         .addStringToBody(
                                 "\treturn fieldFor_" + m.getName() + ".from(" + resource + ", " +
@@ -199,21 +206,25 @@ public class WrapperGenerator implements IWrapperGenerator {
                                 ");"
                         )
                         .addStringToBody("} catch(Throwable e) {")
-                        .addStringToBody("\tthrow new RuntimeException(\"Could not get value from iobject.\", e);")
+                        .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")
                         .addStringToBody("}");
             }
             if (null != methodType && methodType.equals("set")) {
+                if (m.getExceptionTypes().length != 1 || m.getExceptionTypes()[0] != ChangeValueException.class) {
+                    throw new Exception("Given interface doesn't satisfy library convention.");
+                }
                 if (checkOrGenerate) {
                     this.generate(m.getParameterTypes()[0], binding);
                 }
                 cb
                         .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("void").setName(m.getName())
+                        .setExceptions("ChangeValueException")
                         .addParameter()
                                 .setType(m.getGenericParameterTypes()[0].getTypeName()).setName("value").next()
                         .addStringToBody("try {")
                         .addStringToBody("\tthis.fieldFor_" + m.getName() + ".inject(" + resource + ", value);")
                         .addStringToBody("} catch (Throwable e) {")
-                        .addStringToBody("\tthrow new RuntimeException(\"Could not set value from iobject.\", e);")
+                        .addStringToBody("\tthrow new ChangeValueException(\"Could not set value from iobject.\", e);")
                         .addStringToBody("}");
             }
         }
