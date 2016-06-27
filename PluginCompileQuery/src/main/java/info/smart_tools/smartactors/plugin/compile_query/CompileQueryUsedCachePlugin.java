@@ -15,41 +15,64 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
-public class CompileQueryPlugin implements IPlugin {
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Plugin for load IOC-strategy for compiling queries
+ */
+public class CompileQueryUsedCachePlugin implements IPlugin {
+
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public CompileQueryPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public CompileQueryUsedCachePlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
     @Override
     public void load() throws PluginException {
+
         try {
-            IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
-            IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
+            //Note:: resolve by name strategy for keys should be defined
+            IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE");
+            Map<IKey, CompiledQuery> queryMap = new HashMap<>();
+            IBootstrapItem<String> item = new BootstrapItem("CompileQueryUsedCachePlugin");
             item.process(() -> {
                 try {
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
-                            (args) -> {
-                                StorageConnection connection = (StorageConnection) args[0];
+                        (args) -> {
+                            IKey key = (IKey) args[0];
+                            if (key == null)
+                                throw new RuntimeException("Can't resolve compiled query: key parameter is null!");
+
+                            CompiledQuery query = queryMap.get(key);
+                            if (query == null) {
+                                StorageConnection connection = (StorageConnection) args[1];
                                 if (connection == null)
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "connection parameter is null!");
 
-                                QueryStatementFactory factory = (QueryStatementFactory) args[1];
+                                QueryStatementFactory factory = (QueryStatementFactory) args[2];
                                 if (factory == null)
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "query statement factory parameter is null!");
 
                                 try {
-                                    return connection.compileQuery(factory.create());
+                                    QueryStatement queryStatement = factory.create();
+                                    query = connection.compileQuery(queryStatement);
+                                    queryMap.put(key, query);
+                                    //TODO:: how to remove old queries from map?
                                 } catch (QueryStatementFactoryException | StorageException e) {
                                     throw new RuntimeException("Can't resolve compiled query: ", e);
                                 }
-                            }));
+                            }
+
+                            return query;
+                        }));
                 } catch (RegistrationException | InvalidArgumentException e) {
                     throw new RuntimeException(e);
                 }
@@ -60,5 +83,4 @@ public class CompileQueryPlugin implements IPlugin {
             throw new PluginException("Can't load compile query plugin", e);
         }
     }
-
 }

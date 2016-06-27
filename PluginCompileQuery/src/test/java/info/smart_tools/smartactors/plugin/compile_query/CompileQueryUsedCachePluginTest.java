@@ -20,11 +20,11 @@ import static org.powermock.api.mockito.PowerMockito.verifyNew;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, CompileQueryPlugin.class})
+@PrepareForTest({IOC.class, CompileQueryUsedCachePlugin.class})
 @RunWith(PowerMockRunner.class)
-public class CompileQueryPluginTest {
+public class CompileQueryUsedCachePluginTest {
 
-    private CompileQueryPlugin plugin;
+    private CompileQueryUsedCachePlugin plugin;
     private IBootstrap bootstrap;
 
     @Before
@@ -38,7 +38,7 @@ public class CompileQueryPluginTest {
         when(IOC.resolve(eq(key1), eq(CompiledQuery.class.toString()))).thenReturn(keyQuery);
 
         bootstrap = mock(IBootstrap.class);
-        plugin = new CompileQueryPlugin(bootstrap);
+        plugin = new CompileQueryUsedCachePlugin(bootstrap);
     }
 
     @Test
