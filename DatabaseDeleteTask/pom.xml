@@ -7,7 +7,7 @@
     <parent>
         <artifactId>core</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>core.db_delete_task</artifactId>
@@ -22,32 +22,32 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iobject</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.idatabase_task</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.db_storage</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.sql_commons</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- http://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
         <dependency>
