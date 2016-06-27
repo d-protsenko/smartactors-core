@@ -42,23 +42,23 @@ public class DeleteFromCachedCollectionTaskTest {
         task = new DeleteFromCachedCollectionTask(upsertTask);
     }
 
-    @Test
-    public void ShouldCorrectPrepareObjectForDeleting() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
-        Key deleteFromCachedCollectionQueryKey = mock(Key.class);
-        when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(deleteFromCachedCollectionQueryKey);
-
-        IObject srcQuery = mock(IObject.class);
-
-        DeleteFromCachedCollectionQuery query = mock (DeleteFromCachedCollectionQuery.class);
-        when(IOC.resolve(deleteFromCachedCollectionQueryKey, srcQuery)).thenReturn(query);
-        when(query.wrapped()).thenReturn(srcQuery);
-
-        task.prepare(srcQuery);
-
-//        verify(query).setIsActive(false);
-        verify(query).wrapped();
-        verify(upsertTask).prepare(srcQuery);
-    }
+//    @Test
+//    public void ShouldCorrectPrepareObjectForDeleting() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
+//        Key deleteFromCachedCollectionQueryKey = mock(Key.class);
+//        when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(deleteFromCachedCollectionQueryKey);
+//
+//        IObject srcQuery = mock(IObject.class);
+//
+//        DeleteFromCachedCollectionQuery query = mock (DeleteFromCachedCollectionQuery.class);
+//        when(IOC.resolve(deleteFromCachedCollectionQueryKey, srcQuery)).thenReturn(query);
+//        when(query.wrapped()).thenReturn(srcQuery);
+//
+//        task.prepare(srcQuery);
+//
+////        verify(query).setIsActive(false);
+//        verify(query).wrapped();
+//        verify(upsertTask).prepare(srcQuery);
+//    }
 
     @Test(expected = TaskPrepareException.class)
     public void ShouldInCorrectPrepareObjectForDeletingWhenIOCThrowResolutionException() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {

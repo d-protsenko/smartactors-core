@@ -1,16 +1,14 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.DateToMessage;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.EQMessage;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -21,14 +19,10 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import java.time.LocalDateTime;
 
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
-    private IDatabaseTask targetTask;
+    private IDatabaseTask getItemTask;
 
-    public GetObjectFromCachedCollectionTask(final GetObjectsFromCachedCollectionParameters params) throws InvalidArgumentException {
-        try {
-            this.targetTask = params.getTask();
-        } catch (ReadValueException | ChangeValueException e) {
-            throw new InvalidArgumentException("Can't create GetObjectFromCachedCollectionTask.", e);
-        }
+    public GetObjectFromCachedCollectionTask(IDatabaseTask getItemTask) {
+        this.getItemTask = getItemTask;
     }
 
     @Override
@@ -54,7 +48,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             srcQueryObject.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
             srcQueryObject.setCriteria(criteriaQuery);
 
-            targetTask.prepare(query);
+            getItemTask.prepare(query);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create ISearchQuery from input query", e);
         } catch (ChangeValueException | ReadValueException e) {
@@ -64,12 +58,12 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
 
     @Override
     public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
-        targetTask.setConnection(connection);
+        getItemTask.setConnection(connection);
     }
 
     @Override
     public void execute() throws TaskExecutionException {
-        targetTask.execute();
+        getItemTask.execute();
     }
 
     private static IObject getResolvedIObject() throws ResolutionException {

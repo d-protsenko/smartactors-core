@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.DateToMessage;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.EQMessage;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectsFromCachedCollectionParameters;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -48,13 +47,8 @@ public class GetObjectFromCachedCollectionTaskTest {
         mockStatic(Keys.class);
         mockStatic(LocalDateTime.class);
 
-        GetObjectsFromCachedCollectionParameters params = mock(GetObjectsFromCachedCollectionParameters.class);
-
         targetTask = mock(IDatabaseTask.class);
-
-        when(params.getTask()).thenReturn(targetTask);
-
-        testTask = new GetObjectFromCachedCollectionTask(params);
+        testTask = new GetObjectFromCachedCollectionTask(targetTask);
     }
 
     @Test

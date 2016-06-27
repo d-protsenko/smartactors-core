@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionConfig;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
@@ -8,8 +7,6 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -25,15 +22,9 @@ import java.time.LocalDateTime;
 public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
-    private String key;
 
-    public UpsertIntoCachedCollectionTask(UpsertIntoCachedCollectionConfig config) throws InvalidArgumentException {
-        try {
-            this.upsertTask = config.getUpsertTask();
-            this.key = config.getKey();
-        } catch (ReadValueException | ChangeValueException e) {
-            throw new InvalidArgumentException("Can't create UpsertIntoCachedCollectionTask.", e);
-        }
+    public UpsertIntoCachedCollectionTask(IDatabaseTask upsertTask) {
+        this.upsertTask = upsertTask;
     }
 
     /**
@@ -48,11 +39,6 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
         try {
             UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
             UpsertItem upsertItem = message.getUpsertItem();
-            IFieldName keyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), key);
-            String keyValue = IOC.resolve(Keys.getOrAdd(String.class.toString()), query.getValue(keyFieldName));
-            if (keyValue == null || keyValue.isEmpty()) {
-                throw new TaskPrepareException("Key field should be present.");
-            }
             if (upsertItem.getStartDateTime() == null) {
                 upsertItem.setStartDateTime(LocalDateTime.now());
             }

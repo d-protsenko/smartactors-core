@@ -12,4 +12,5 @@ public interface CachedCollectionConfig {
 
     //TODO:: Should be in another wrapper?
     void setConnectionPool(IPool connectionPool) throws ReadValueException, ChangeValueException;
+    void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
 }
