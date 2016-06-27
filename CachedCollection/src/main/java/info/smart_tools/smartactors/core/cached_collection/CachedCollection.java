@@ -53,7 +53,7 @@ public class CachedCollection implements ICachedCollection {
      * @param config wrapper for configuration object with tasks and pool.
      * @throws InvalidArgumentException
      */
-    public CachedCollection(CachedCollectionConfig config) throws InvalidArgumentException {
+    public CachedCollection(final CachedCollectionConfig config) throws InvalidArgumentException {
         try {
             this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
@@ -64,7 +64,7 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public List<IObject> getItems(String key) throws GetCacheItemException {
+    public List<IObject> getItems(final String key) throws GetCacheItemException {
 
         try {
             List<IObject> items = map.get(key);
@@ -74,14 +74,18 @@ public class CachedCollection implements ICachedCollection {
                     if (getItemTask == null) {
                         //NOTE:: we should have strategy for creating nested tasks for task-facade with smth like map
                         //with name of task-facade as a key
-                        IDatabaseTask nestedTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString()), GetObjectFromCachedCollectionTask.class.toString());
+                        IDatabaseTask nestedTask = IOC.resolve(
+                            Keys.getOrAdd(IDatabaseTask.class.toString()), GetObjectFromCachedCollectionTask.class.toString()
+                        );
                         if (nestedTask == null) {
                             throw new GetCacheItemException("Can't create nested task for getItem task.");
                         }
                         getItemTask = new GetObjectFromCachedCollectionTask(nestedTask);
                         IOC.register(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString()), new SingletonStrategy(getItemTask));
                     }
-                    GetObjectFromCachedCollectionQuery getItemQuery = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()));
+                    GetObjectFromCachedCollectionQuery getItemQuery = IOC.resolve(
+                        Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString())
+                    );
                     getItemQuery.setCollectionName(collectionName);
                     getItemQuery.setKey(key);
                     getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
@@ -111,13 +115,15 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void delete(IObject message) throws DeleteCacheItemException {
+    public void delete(final IObject message) throws DeleteCacheItemException {
         try {
             DeleteItem deleteItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString()));
                 if (deleteTask == null) {
-                    IDatabaseTask nestedTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString()), DeleteFromCachedCollectionTask.class.toString());
+                    IDatabaseTask nestedTask = IOC.resolve(
+                        Keys.getOrAdd(IDatabaseTask.class.toString()), DeleteFromCachedCollectionTask.class.toString()
+                    );
                     if (nestedTask == null) {
                         throw new DeleteCacheItemException("Can't create nested task for delete task.");
                     }
@@ -164,14 +170,16 @@ public class CachedCollection implements ICachedCollection {
     }
 
     @Override
-    public void upsert(IObject message) throws UpsertCacheItemException {
+    public void upsert(final IObject message) throws UpsertCacheItemException {
 
         try {
             UpsertItem upsertItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 IDatabaseTask upsertTask = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionTask.class.toString()));
                 if (upsertTask == null) {
-                    IDatabaseTask nestedTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString()), UpsertIntoCachedCollectionTask.class.toString());
+                    IDatabaseTask nestedTask = IOC.resolve(
+                        Keys.getOrAdd(IDatabaseTask.class.toString()), UpsertIntoCachedCollectionTask.class.toString()
+                    );
                     if (nestedTask == null) {
                         throw new UpsertCacheItemException("Can't create nested task for upsert task.");
                     }
