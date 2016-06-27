@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -8,7 +9,6 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnect
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.time.LocalDateTime;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -65,36 +67,29 @@ public class UpsertIntoCachedCollectionTaskTest {
         verify(upsertTask).execute();
     }
 
-//    @Test
-//    public void ShouldPrepareUpsertQuery() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
-//
-//        IObject rawQuery = mock(IObject.class);
-//        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
-//        IFieldName fieldName = mock(IFieldName.class);
-//        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
-//        when(IOC.resolve(iocKey, "key")).thenReturn(fieldName);
-//        when(rawQuery.getValue(eq(fieldName))).thenReturn("keyField");
-//        when(IOC.resolve(iocKey, "keyField")).thenReturn("keyValue");
-//
-//        IObject wrapped = mock(IObject.class);
-//        when(query.wrapped()).thenReturn(wrapped);
-//
-//        task.prepare(rawQuery);
-//
-////        verify(query).setStartDateTime(any(LocalDateTime.class));
-//        verify(upsertTask).prepare(eq(wrapped));
-//    }
-
-    @Test(expected = TaskPrepareException.class)
-    public void ShouldThrowException_When_KeyValueIsNull() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
+    @Test
+    public void ShouldPrepareUpsertQuery() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
 
         IObject rawQuery = mock(IObject.class);
         UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
-        IFieldName fieldName = mock(IFieldName.class);
         when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
-        when(IOC.resolve(iocKey, "key")).thenReturn(fieldName);
-        when(rawQuery.getValue(eq(fieldName))).thenReturn("keyField");
-        when(IOC.resolve(iocKey, "keyField")).thenReturn(null);
+
+        IObject wrapped = mock(IObject.class);
+        when(query.wrapped()).thenReturn(wrapped);
+        UpsertItem upsertItem = mock(UpsertItem.class);
+        when(query.getUpsertItem()).thenReturn(upsertItem);
+
+        task.prepare(rawQuery);
+
+        verify(upsertItem).setStartDateTime(any(LocalDateTime.class));
+        verify(upsertTask).prepare(eq(wrapped));
+    }
+
+    @Test(expected = TaskPrepareException.class)
+    public void ShouldThrowException_When_ResolutionExceptionIsThrown() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
+
+        IObject rawQuery = mock(IObject.class);
+        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenThrow(ResolutionException.class);
 
         task.prepare(rawQuery);
     }

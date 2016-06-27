@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -42,23 +43,25 @@ public class DeleteFromCachedCollectionTaskTest {
         task = new DeleteFromCachedCollectionTask(upsertTask);
     }
 
-//    @Test
-//    public void ShouldCorrectPrepareObjectForDeleting() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
-//        Key deleteFromCachedCollectionQueryKey = mock(Key.class);
-//        when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(deleteFromCachedCollectionQueryKey);
-//
-//        IObject srcQuery = mock(IObject.class);
-//
-//        DeleteFromCachedCollectionQuery query = mock (DeleteFromCachedCollectionQuery.class);
-//        when(IOC.resolve(deleteFromCachedCollectionQueryKey, srcQuery)).thenReturn(query);
-//        when(query.wrapped()).thenReturn(srcQuery);
-//
-//        task.prepare(srcQuery);
-//
-////        verify(query).setIsActive(false);
-//        verify(query).wrapped();
-//        verify(upsertTask).prepare(srcQuery);
-//    }
+    @Test
+    public void ShouldCorrectPrepareObjectForDeleting() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
+        Key deleteFromCachedCollectionQueryKey = mock(Key.class);
+        when(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString())).thenReturn(deleteFromCachedCollectionQueryKey);
+
+        IObject srcQuery = mock(IObject.class);
+
+        DeleteFromCachedCollectionQuery query = mock (DeleteFromCachedCollectionQuery.class);
+        when(IOC.resolve(deleteFromCachedCollectionQueryKey, srcQuery)).thenReturn(query);
+        when(query.wrapped()).thenReturn(srcQuery);
+        DeleteItem deleteItem = mock(DeleteItem.class);
+        when(query.getDeleteItem()).thenReturn(deleteItem);
+
+        task.prepare(srcQuery);
+
+        verify(deleteItem).setIsActive(false);
+        verify(query).wrapped();
+        verify(upsertTask).prepare(srcQuery);
+    }
 
     @Test(expected = TaskPrepareException.class)
     public void ShouldInCorrectPrepareObjectForDeletingWhenIOCThrowResolutionException() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
