@@ -45,11 +45,17 @@
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
-        <module>IDatabaseTask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <!-- database tasks modules -->
+        <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
         <module>DBUpsertTask</module>
+        <module>DBFindByIdTask</module>
+        <module>DatabaseDeleteTask</module>
+        <module>DatabaseSearchTask</module>
+        <module>DBInsertTask</module>
+        <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -78,7 +84,6 @@
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>DBFindByIdTask</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
     </modules>
