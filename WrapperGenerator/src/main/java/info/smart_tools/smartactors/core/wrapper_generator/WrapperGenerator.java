@@ -155,32 +155,22 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addConstructor().setModifier(Modifiers.PUBLIC).setExceptions("InvalidArgumentException")
                         .addStringToBody(builder.toString());
-        cb
-                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("message");
-        cb
-                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("context");
-        cb
-                .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName("response");
-        cb
-                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getMessage")
-                        .addStringToBody("return this.message;");
-        cb
-                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getContext")
-                        .addStringToBody("return this.context;");
-        cb
-                .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getResponse")
-                        .addStringToBody("return this.response;");
+
+        StringBuilder initMethodBody = new StringBuilder();
+        String[] iobjects = (String[])currentBinding.getValue(new FieldName("initMethodParameters"));
+        int index = 0;
+        for (String argName : iobjects) {
+            cb
+                    .addField().setModifier(Modifiers.PRIVATE).setType("IObject").setName(argName);
+            initMethodBody.append("this.").append(argName).append(" = ").append("args[").append(index).append("];\n");
+            ++index;
+        }
+
         cb
                 .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("void").setName("init")
                 .addParameter()
-                        .setType("IObject").setName("message").next()
-                .addParameter()
-                        .setType("IObject").setName("context").next()
-                .addParameter()
-                        .setType("IObject").setName("response").next()
-                .addStringToBody("this.message = message;")
-                .addStringToBody("this.context = context;")
-                .addStringToBody("this.response = response;");
+                        .setType("IObject[]").setName("args").next()
+                .addStringToBody(initMethodBody.toString());
 
         for (Method m : targetInterface.getMethods()) {
             IObject methodBinding = (IObject) currentBinding.getValue(new FieldName(m.getName()));

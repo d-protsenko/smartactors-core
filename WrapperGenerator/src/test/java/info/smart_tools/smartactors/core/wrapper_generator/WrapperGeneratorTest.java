@@ -258,10 +258,14 @@ public class WrapperGeneratorTest {
                 "}");
 
         bindingForIIncorrectWrapperWithoutReadValueException.setValue(new FieldName("getValue"), getValue);
+        bindingForIIncorrectWrapperWithoutReadValueException.setValue(new FieldName("initMethodParameters"), new String[]{"message"});
+
         bindingForIIncorrectWrapperWithoutChangeValueException.setValue(new FieldName("setValue"), setValue);
+        bindingForIIncorrectWrapperWithoutChangeValueException.setValue(new FieldName("initMethodParameters"), new String[]{"message"});
 
         bindingForIInnerWrapper.setValue(new FieldName("getDoubleValue"), getDoubleValue);
         bindingForIInnerWrapper.setValue(new FieldName("setDoubleValue"), setDoubleValue);
+        bindingForIInnerWrapper.setValue(new FieldName("initMethodParameters"), new String[]{"message", "response"});
 
         bindingForIWrapper.setValue(new FieldName("getIntValue"), getIntValue);
         bindingForIWrapper.setValue(new FieldName("setIntValue"), setIntValue);
@@ -283,6 +287,7 @@ public class WrapperGeneratorTest {
         bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
         bindingForIWrapper.setValue(new FieldName("getStringIInnerMap"), getStringIInnerMap);
         bindingForIWrapper.setValue(new FieldName("setStringIInnerMap"), setStringIInnerMap);
+        bindingForIWrapper.setValue(new FieldName("initMethodParameters"), new String[]{"message", "context", "response"});
 
         binding.setValue(new FieldName(
                 IIncorrectWrapperWithoutReadValueException.class.toString()),
