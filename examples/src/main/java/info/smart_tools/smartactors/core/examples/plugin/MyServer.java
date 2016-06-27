@@ -31,7 +31,7 @@ public class MyServer implements IServer {
             ClassLoader urlClassLoader =
                     new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
 
-            IPluginLoader<String> pluginLoader = new PluginLoader(          // loads plugins to classloader
+            IPluginLoader pluginLoader = new PluginLoader(          // loads plugins to classloader
                     urlClassLoader,
                     (t) -> {
                         try {

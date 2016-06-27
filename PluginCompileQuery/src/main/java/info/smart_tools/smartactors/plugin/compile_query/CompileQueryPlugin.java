@@ -38,7 +38,7 @@ public class CompileQueryPlugin implements IPlugin {
 
         try {
             //Note:: resolve by name strategy for keys should be defined
-            IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
+            IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
             Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
             item.process(() -> {

@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -56,6 +57,10 @@ public abstract class DBSearchTask implements IDatabaseTask {
                     throw new TaskExecutionException("Could not set document's id field.", e);
                 } catch (ResolutionException e) {
                     throw new TaskExecutionException(e.getMessage(), e);
+                }
+//TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+                catch (InvalidArgumentException e) {
+                    throw new TaskExecutionException("Invalid argument exception", e);
                 }
 
                 objects.add(object);

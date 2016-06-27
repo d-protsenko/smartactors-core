@@ -73,7 +73,7 @@ public class DBInsertTaskTest {
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
-                                return new Key<IKey>((String) a[0]);
+                                return new Key((String) a[0]);
                             } catch (InvalidArgumentException e) {
                                 throw new RuntimeException(e);
                             }
@@ -81,11 +81,11 @@ public class DBInsertTaskTest {
                 )
         );
 
-        IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
-        IKey<InsertMessage> keyInsertMessage = Keys.getOrAdd(InsertMessage.class.toString());
-        IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
-        IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
-        IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
+        IKey keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
+        IKey keyInsertMessage = Keys.getOrAdd(InsertMessage.class.toString());
+        IKey keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
+        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
+        IKey keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
         IOC.register(
                 keyDBInsertTask,
                 new SingletonStrategy(mock(DBInsertTask.class))
@@ -132,7 +132,7 @@ public class DBInsertTaskTest {
 
     @Test(expected = TaskPrepareException.class)
     public void ShouldThrowTaskPrepareException_When_IdIsNull() throws Exception {
-        IKey<String> keyString = Keys.getOrAdd(String.class.toString());
+        IKey keyString = Keys.getOrAdd(String.class.toString());
         IOC.register(
                 keyString,
                 new CreateNewInstanceStrategy(

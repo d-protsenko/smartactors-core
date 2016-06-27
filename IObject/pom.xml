@@ -13,10 +13,19 @@
     <artifactId>core.iobject</artifactId>
 
     <dependencies>
+        <!-- Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.invalid_argument_exception</artifactId>
             <version>${core.version}</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

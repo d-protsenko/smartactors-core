@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -75,6 +76,10 @@ public class DBInsertTask implements IDatabaseTask {
             throw new TaskPrepareException("Can't prepare insert query");
         } catch (SQLException e){
             //TODO::
+        }
+        //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+        catch (InvalidArgumentException e) {
+            throw new TaskPrepareException("Invalid argument exception", e);
         }
     }
 

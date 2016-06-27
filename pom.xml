@@ -45,12 +45,18 @@
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>ITask</module>
-        <module>IDatabaseTask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <!-- database tasks modules -->
+        <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
         <module>DatabaseSearchTask</module>
         <module>DBUpsertTask</module>
+        <module>DBFindByIdTask</module>
+        <module>DatabaseDeleteTask</module>
+        <module>DatabaseSearchTask</module>
+        <module>DBInsertTask</module>
+        <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -73,13 +79,19 @@
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
+        <module>DSObject</module>
+        <module>IWrapperGenerator</module>
+        <module>WrapperGenerator</module>
+        <module>ServerWithIObject</module>
+        <module>IClassGenerator</module>
+        <module>ClassGeneratorJavaCompileAPI</module>
+        <module>IMultiActionStrategy</module>
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>DBFindByIdTask</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>

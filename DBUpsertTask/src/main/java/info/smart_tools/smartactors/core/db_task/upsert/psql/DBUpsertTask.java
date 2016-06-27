@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -85,6 +86,10 @@ public class DBUpsertTask implements IDatabaseTask {
                     rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
+                }
+                //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+                catch (Throwable e) {
+                    throw new TaskExecutionException("Invalid argument exception", e);
                 }
             } catch (SQLException e) {
                 throw new TaskExecutionException("Insertion query execution failed because of SQL exception.",e);
@@ -176,6 +181,11 @@ public class DBUpsertTask implements IDatabaseTask {
         } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException | SQLException e) {
             throw new TaskPrepareException("Error while writing update query statement.",e);
         }
+//TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+        catch (InvalidArgumentException e) {
+            throw new TaskPrepareException("Invalid argument exception", e);
+        }
+
     }
 
     @Override

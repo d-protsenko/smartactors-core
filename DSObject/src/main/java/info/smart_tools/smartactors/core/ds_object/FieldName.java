@@ -1,6 +1,7 @@
-package info.smart_tools.smartactors.core.iobject;
+package info.smart_tools.smartactors.core.ds_object;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 
 import java.util.regex.Pattern;
 

@@ -56,7 +56,7 @@ public class MyIOC {
         }
     }
 
-    public static <T> T resolve(final IKey<T> key) throws MyIOCException {
+    public static <T> T resolve(final IKey key) throws MyIOCException {
         try {
             MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
                     ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
