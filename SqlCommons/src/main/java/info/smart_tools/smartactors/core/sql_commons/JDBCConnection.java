@@ -19,20 +19,20 @@ public class JDBCConnection implements StorageConnection {
 
     private String id;
 
-    public JDBCConnection(Connection connection, JDBCConnectionOptions options) {
+    public JDBCConnection(final Connection connection, final JDBCConnectionOptions options) {
         this.connection = connection;
         this.options = options;
         this.id = String.valueOf(UUID.randomUUID());
     }
 
     @Override
-    public CompiledQuery compileQuery(PreparedQuery preparedQuery) throws StorageException {
+    public CompiledQuery compileQuery(final PreparedQuery preparedQuery) throws StorageException {
         try {
             return new JDBCCompiledQuery(((QueryStatement) preparedQuery).compile(connection));
         } catch (SQLException e) {
             throw new StorageException(
                     String.format("Error compiling query statement \"%s\": ",
-                            ((QueryStatement)preparedQuery).bodyWriter.toString()),
+                            ((QueryStatement) preparedQuery).bodyWriter.toString()),
                     e);
         }
     }
@@ -40,7 +40,8 @@ public class JDBCConnection implements StorageConnection {
     @Override
     public boolean validate() throws StorageException {
         try {
-            return !connection.isClosed() && this.connection.isValid(Optional.ofNullable(options.getValidationTimeout()).orElse(0));
+            return !connection.isClosed() &&
+                    this.connection.isValid(Optional.ofNullable(options.getValidationTimeout()).orElse(0));
         } catch (SQLException e) {
             throw new StorageException("Error validating connection: ", e);
         }

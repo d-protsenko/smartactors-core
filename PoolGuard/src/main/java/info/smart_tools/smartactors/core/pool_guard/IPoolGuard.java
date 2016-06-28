@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.core.pool_guard;
 
-import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
-
 /**
  * PoolGuard interface
  * provides methods for switch current {@link info.smart_tools.smartactors.core.ipool.IPool}

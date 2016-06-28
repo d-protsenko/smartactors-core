@@ -17,8 +17,6 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
-import java.net.URL;
-
 /**
  * Implementation {@link IServer} with scoped IOC
  */

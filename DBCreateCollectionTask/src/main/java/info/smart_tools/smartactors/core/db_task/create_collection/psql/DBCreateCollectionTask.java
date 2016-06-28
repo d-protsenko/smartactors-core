@@ -35,12 +35,12 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     private CompiledQuery compiledQuery;
     private StorageConnection connection;
 
-    private static Map<String,String> indexCreationTemplates = new HashMap<String, String>() {{
-        put("ordered","CREATE INDEX ON %s USING BTREE ((%s));\n");
-        put("tags","CREATE INDEX ON %s USING GIN ((%s));\n");
-        put("fulltext",String.format("CREATE INDEX ON %%s USING GIN ((to_tsvector('%s',(%%s)::text)));\n", Schema.FTS_DICTIONARY));
-        put("datetime","CREATE INDEX ON %s USING BTREE ((parse_timestamp_immutable(%s)));\n");
-        put("id","CREATE INDEX ON %1$s USING BTREE ((%2$s));\nCREATE INDEX ON %1$s USING HASH ((%2$s));\n");
+    private static Map<String, String> indexCreationTemplates = new HashMap<String, String>() {{
+        put("ordered", "CREATE INDEX ON %s USING BTREE ((%s));\n");
+        put("tags", "CREATE INDEX ON %s USING GIN ((%s));\n");
+        put("fulltext", String.format("CREATE INDEX ON %%s USING GIN ((to_tsvector('%s',(%%s)::text)));\n", Schema.FTS_DICTIONARY));
+        put("datetime", "CREATE INDEX ON %s USING BTREE ((parse_timestamp_immutable(%s)));\n");
+        put("id", "CREATE INDEX ON %1$s USING BTREE ((%2$s));\nCREATE INDEX ON %1$s USING HASH ((%2$s));\n");
     }};
 
     public DBCreateCollectionTask() {}
@@ -53,15 +53,18 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                 QueryStatement preparedQuery = new QueryStatement();
                 Writer writer = preparedQuery.getBodyWriter();
                 try {
-                    CreateCollectionQuery message = IOC.resolve(Keys.getOrAdd(CreateCollectionQuery.class.toString()), createCollectionMessage);
+                    CreateCollectionQuery message = IOC.resolve(
+                            Keys.getOrAdd(CreateCollectionQuery.class.toString()),
+                            createCollectionMessage
+                    );
                     CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
                     writer.write(String.format(
                         "CREATE TABLE %s (%s %s PRIMARY KEY, %s JSONB NOT NULL);\n",
                         collectionName.toString(),
-                        Schema.ID_COLUMN_NAME ,Schema.ID_COLUMN_SQL_TYPE, Schema.DOCUMENT_COLUMN_NAME)
+                        Schema.ID_COLUMN_NAME , Schema.ID_COLUMN_SQL_TYPE, Schema.DOCUMENT_COLUMN_NAME)
                     );
                     if (!message.getIndexes().containsKey("id")) {
-                        message.getIndexes().put("id","id");
+                        message.getIndexes().put("id", "id");
                     }
                     for (Map.Entry<String, String> entry : message.getIndexes().entrySet()) {
                         FieldPath field = IOC.resolve(Keys.getOrAdd(FieldPath.class.toString()), entry.getKey());
@@ -71,17 +74,29 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                         if (tpl == null) {
                             throw new QueryStatementFactoryException("Invalid index type: " + indexType);
                         }
-                        preparedQuery.getBodyWriter().write(String.format(tpl, collectionName.toString(), field.getSQLRepresentation()));
+                        preparedQuery.getBodyWriter().write(
+                                String.format(tpl, collectionName.toString(), field.getSQLRepresentation())
+                        );
                     }
-                } catch (IOException | QueryBuildException | ResolutionException | ChangeValueException | ReadValueException e) {
+                } catch (
+                        IOException |
+                        QueryBuildException |
+                        ResolutionException |
+                        ChangeValueException |
+                        ReadValueException e
+                ) {
                     throw new QueryStatementFactoryException("Error while initialize update query.", e);
                 }
                 return preparedQuery;
             };
 
-            this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBCreateCollectionTask.class.toString(), factory);
+            this.compiledQuery = IOC.resolve(
+                    Keys.getOrAdd(CompiledQuery.class.toString()),
+                    connection,
+                    DBCreateCollectionTask.class.toString(), factory
+            );
         } catch (ResolutionException e) {
-            throw new TaskPrepareException("Error while writing collection creation statement.",e);
+            throw new TaskPrepareException("Error while writing collection creation statement.", e);
         }
     }
 
@@ -89,14 +104,14 @@ public class DBCreateCollectionTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
 
         try {
-            ((JDBCCompiledQuery)compiledQuery).getPreparedStatement().execute();
+            ((JDBCCompiledQuery) compiledQuery).getPreparedStatement().execute();
         } catch (Exception e) {
-            throw new TaskExecutionException("Collection creation query execution failed because of SQL exception.",e);
+            throw new TaskExecutionException("Collection creation query execution failed because of SQL exception.", e);
         }
     }
 
     @Override
-    public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
+    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
         this.connection = connection;
     }
 }

@@ -34,7 +34,7 @@ public class QueryStatement implements IPreparedQuery {
      *  Add {@link SQLQueryParameterSetter} to list of setters to be used.
      *  @param setter setter to add.
      */
-    public void pushParameterSetter(SQLQueryParameterSetter setter) {
+    public void pushParameterSetter(final SQLQueryParameterSetter setter) {
         parameterSetters.add(setter);
     }
 
@@ -45,13 +45,13 @@ public class QueryStatement implements IPreparedQuery {
      *  @return created statement.
      *  @throws SQLException
      */
-    public PreparedStatement compile(Connection connection) throws SQLException {
+    public PreparedStatement compile(final Connection connection) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(this.bodyWriter.toString());
 
         int index = 1;
 
         for (SQLQueryParameterSetter setter : this.parameterSetters) {
-            index = setter.setParameters(stmt,index);
+            index = setter.setParameters(stmt, index);
         }
 
         return stmt;

@@ -17,19 +17,20 @@ import java.util.Map;
 public class Conditions {
     private Conditions(){}
 
-    private static void writeDefaultEmptyCondition(QueryStatement query)
+    private static void writeDefaultEmptyCondition(final QueryStatement query)
         throws IOException {
         query.getBodyWriter().write("(true)");
     }
 
     private static void writeCompositeCondition(
-            String prefix,String postfix,
-            String delimiter,
-            QueryStatement query,
-            QueryConditionWriterResolver resolver,
-            FieldPath contextFieldPath,
-            Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            final String prefix,
+            final String postfix,
+            final String delimiter,
+            final QueryStatement query,
+            final QueryConditionWriterResolver resolver,
+            final FieldPath contextFieldPath,
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
@@ -52,7 +53,7 @@ public class Conditions {
                     String key = (String) entry.getKey();
                     resolver.resolve(key).write(query, resolver, contextFieldPath, entry.getValue(), setters);
 
-                    if(!iterator.hasNext()) {
+                    if (!iterator.hasNext()) {
                         break;
                     }
 
@@ -99,7 +100,7 @@ public class Conditions {
                 while (entry != null) {
                     resolved.write(query, resolver, contextFieldPath, entry, setters);
 
-                    if(!iterator.hasNext()) {
+                    if (!iterator.hasNext()) {
                         break;
                     }
 
@@ -112,37 +113,37 @@ public class Conditions {
 
             writer.write(postfix);
         } catch (IOException e) {
-            throw new QueryBuildException("Error while writing a query string.",e);
+            throw new QueryBuildException("Error while writing a query string.", e);
         }
     }
 
     public static void writeAndCondition(
-            QueryStatement query,
-            QueryConditionWriterResolver resolver,
-            FieldPath contextFieldPath,
-            Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            final QueryStatement query,
+            final QueryConditionWriterResolver resolver,
+            final FieldPath contextFieldPath,
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
-        writeCompositeCondition("(",")","AND",query,resolver,contextFieldPath,queryParameter, setters);
+        writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter, setters);
     }
 
     public static void writeOrCondition(
-            QueryStatement query,
-            QueryConditionWriterResolver resolver,
-            FieldPath contextFieldPath,
-            Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            final QueryStatement query,
+            final QueryConditionWriterResolver resolver,
+            final FieldPath contextFieldPath,
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
-        writeCompositeCondition("(",")","OR",query,resolver,contextFieldPath,queryParameter, setters);
+        writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter, setters);
     }
 
     public static void writeNotCondition(
-            QueryStatement query,
-            QueryConditionWriterResolver resolver,
-            FieldPath contextFieldPath,
-            Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            final QueryStatement query,
+            final QueryConditionWriterResolver resolver,
+            final FieldPath contextFieldPath,
+            final Object queryParameter,
+            final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
-        writeCompositeCondition("(NOT(","))","AND",query,resolver,contextFieldPath,queryParameter, setters);
+        writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter, setters);
     }
 }

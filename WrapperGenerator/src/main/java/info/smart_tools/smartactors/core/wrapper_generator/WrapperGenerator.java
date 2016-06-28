@@ -157,7 +157,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody(builder.toString());
 
         StringBuilder initMethodBody = new StringBuilder();
-        String[] iobjects = (String[])currentBinding.getValue(new FieldName("initMethodParameters"));
+        String[] iobjects = (String[]) currentBinding.getValue(new FieldName("initMethodParameters"));
         int index = 0;
         for (String argName : iobjects) {
             cb

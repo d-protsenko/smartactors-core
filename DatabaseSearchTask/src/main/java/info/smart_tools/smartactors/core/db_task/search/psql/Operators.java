@@ -2,7 +2,11 @@ package info.smart_tools.smartactors.core.db_task.search.psql;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
-import info.smart_tools.smartactors.core.sql_commons.*;
+import info.smart_tools.smartactors.core.sql_commons.ConditionsResolverBase;
+import info.smart_tools.smartactors.core.sql_commons.FieldPath;
+import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriter;
+import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolver;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import javax.annotation.Nonnull;
@@ -104,7 +108,7 @@ final class Operators {
             throw new QueryBuildException("Parameter of \"$in\" operator should be an JSON array.");
         }
 
-        List<Object> paramAsList = (List<Object>)queryParameter;
+        List<Object> paramAsList = (List<Object>) queryParameter;
         Writer writer = query.getBodyWriter();
 
         try {
@@ -128,7 +132,7 @@ final class Operators {
                 return index;
             });
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.",e);
+            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
     }
 

@@ -34,7 +34,7 @@ public class QueryStatement implements PreparedQuery {
      *  @return created statement.
      *  @throws SQLException
      */
-    public PreparedStatement compile(Connection connection) throws SQLException {
+    public PreparedStatement compile(final Connection connection) throws SQLException {
         return connection.prepareStatement(this.bodyWriter.toString());
     }
 }

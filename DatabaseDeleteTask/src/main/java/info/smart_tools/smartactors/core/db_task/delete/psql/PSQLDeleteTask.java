@@ -64,7 +64,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
         try {
             DeletionQuery queryMessage = IOC.resolve(Keys.getOrAdd(DeletionQuery.class.toString()), message);
 
-            if(queryMessage.countDocumentIds() == 0) {
+            if (queryMessage.countDocumentIds() == 0) {
                 throw new TaskPrepareException("List of id's to delete should not be empty.");
             }
 
@@ -90,8 +90,9 @@ public class PSQLDeleteTask extends DBDeleteTask {
      */
     @Override
     public void execute() throws TaskExecutionException {
-        if (query == null || message == null)
+        if (query == null || message == null) {
             throw new TaskExecutionException("Should first prepare the task.");
+        }
 
         super.execute(query, message);
     }
@@ -129,8 +130,9 @@ public class PSQLDeleteTask extends DBDeleteTask {
         int documentsIdsSize = queryMessage.countDocumentIds();
         try {
             compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
-                for (int i = 0; i < documentsIdsSize; ++i)
+                for (int i = 0; i < documentsIdsSize; ++i) {
                     statement.setLong(index++, queryMessage.getDocumentIds(i));
+                }
                 return index;
             }));
         } catch (SQLException e) {

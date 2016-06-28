@@ -18,14 +18,14 @@ import java.util.Properties;
  * Implementation of {@link IStorageConnection}
  */
 public class PostgresConnection implements IStorageConnection {
-    private static final  String POSTGRESQL_JDBC_DRIVER_NAME = "org.postgresql.Driver";
+    private static final String POSTGRESQL_JDBC_DRIVER_NAME = "org.postgresql.Driver";
     private Connection connection;
     private PreparedStatement validationQueryStatement;
-    private static final Properties initProps = new Properties();
+    private static final Properties INIT_PROPS = new Properties();
 
     static {
         try (InputStream src = PostgresConnection.class.getResourceAsStream("db-init.properties")) {
-            initProps.load(src);
+            INIT_PROPS.load(src);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +36,8 @@ public class PostgresConnection implements IStorageConnection {
      * @param options is options for connection
      * @throws StorageException
      */
-    public PostgresConnection(final ConnectionOptions options) throws StorageException {
+    public PostgresConnection(final ConnectionOptions options)
+            throws StorageException {
         try {
             try {
                 Class.forName(POSTGRESQL_JDBC_DRIVER_NAME);
@@ -50,8 +51,8 @@ public class PostgresConnection implements IStorageConnection {
                         options.getUsername(),
                         options.getPassword());
 
-                for (Object key : initProps.keySet()) {
-                    connection.createStatement().execute(initProps.getProperty((String) key));
+                for (Object key : INIT_PROPS.keySet()) {
+                    connection.createStatement().execute(INIT_PROPS.getProperty((String) key));
                 }
 
                 connection.setAutoCommit(false);
@@ -76,13 +77,14 @@ public class PostgresConnection implements IStorageConnection {
      * @return CompiledQuery
      * @throws StorageException
      */
-    public ICompiledQuery compileQuery(IPreparedQuery preparedQuery) throws StorageException {
+    public ICompiledQuery compileQuery(final IPreparedQuery preparedQuery)
+            throws StorageException {
         try {
             return new JDBCCompiledQuery(((QueryStatement) preparedQuery).compile(connection));
         } catch (SQLException e) {
             throw new StorageException(
                     String.format("Error compiling query statement \"%s\": ",
-                            ((QueryStatement)preparedQuery).bodyWriter.toString()), e);
+                            ((QueryStatement) preparedQuery).bodyWriter.toString()), e);
         }
     }
 
@@ -92,7 +94,8 @@ public class PostgresConnection implements IStorageConnection {
      * @return {@code true} if the connection is valid
      * @throws StorageException
      */
-    public boolean validate() throws StorageException {
+    public boolean validate()
+            throws StorageException {
         try {
             if (connection.isClosed()) {
                 return false;

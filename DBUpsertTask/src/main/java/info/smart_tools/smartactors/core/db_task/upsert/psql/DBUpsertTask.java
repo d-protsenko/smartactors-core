@@ -86,13 +86,11 @@ public class DBUpsertTask implements IDatabaseTask {
                     rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
-                }
-                //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
-                catch (Throwable e) {
+                } catch (Throwable e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
                     throw new TaskExecutionException("Invalid argument exception", e);
                 }
             } catch (SQLException e) {
-                throw new TaskExecutionException("Insertion query execution failed because of SQL exception.",e);
+                throw new TaskExecutionException("Insertion query execution failed because of SQL exception.", e);
             }
         });
     }
@@ -124,17 +122,26 @@ public class DBUpsertTask implements IDatabaseTask {
                     Writer writer = updateQueryStatement.getBodyWriter();
                     try {
                         writer.write(String.format(
-                            "UPDATE %s AS tab SET %s = docs.document FROM (VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
+                                "UPDATE %s AS tab SET %s = docs.document FROM (VALUES",
+                                CollectionName.fromString(collectionName).toString(),
+                                Schema.DOCUMENT_COLUMN_NAME
                         ));
                         writer.write("(?,?::jsonb)");
-                        writer.write(String.format(") AS docs (id, document) WHERE tab.%s = docs.id;", Schema.ID_COLUMN_NAME));
+                        writer.write(String.format(
+                                ") AS docs (id, document) WHERE tab.%s = docs.id;",
+                                Schema.ID_COLUMN_NAME
+                        ));
                     } catch (IOException | QueryBuildException e) {
                         throw new QueryStatementFactoryException("Error while initialize update query.", e);
                     }
                     return updateQueryStatement;
                 };
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("update"), factory);
-
+                this.compiledQuery = IOC.resolve(
+                        Keys.getOrAdd(CompiledQuery.class.toString()),
+                        connection,
+                        DBUpsertTask.class.toString().concat("update"),
+                        factory
+                );
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
                     try {
@@ -156,7 +163,9 @@ public class DBUpsertTask implements IDatabaseTask {
                     Writer writer = insertQueryStatement.getBodyWriter();
                     try {
                         writer.write(String.format(
-                            "INSERT INTO %s (%s) VALUES", CollectionName.fromString(collectionName).toString(), Schema.DOCUMENT_COLUMN_NAME
+                                "INSERT INTO %s (%s) VALUES",
+                                CollectionName.fromString(collectionName).toString(),
+                                Schema.DOCUMENT_COLUMN_NAME
                         ));
                         writer.write("(?::jsonb)");
                         writer.write(String.format(" RETURNING %s AS id;", Schema.ID_COLUMN_NAME));
@@ -165,8 +174,12 @@ public class DBUpsertTask implements IDatabaseTask {
                     }
                     return insertQueryStatement;
                 };
-
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("insert"), factory);
+                this.compiledQuery = IOC.resolve(
+                        Keys.getOrAdd(CompiledQuery.class.toString()),
+                        connection,
+                        DBUpsertTask.class.toString().concat("insert"),
+                        factory
+                );
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
                     try {
@@ -178,14 +191,17 @@ public class DBUpsertTask implements IDatabaseTask {
                 });
                 this.compiledQuery.setParameters(parameterSetters);
             }
-        } catch (ReadValueException | StorageException | ResolutionException | TaskSetConnectionException | SQLException e) {
-            throw new TaskPrepareException("Error while writing update query statement.",e);
-        }
-//TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
-        catch (InvalidArgumentException e) {
+        } catch (
+                ReadValueException |
+                StorageException |
+                ResolutionException |
+                TaskSetConnectionException |
+                SQLException e
+        ) {
+            throw new TaskPrepareException("Error while writing update query statement.", e);
+        } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
             throw new TaskPrepareException("Invalid argument exception", e);
         }
-
     }
 
     @Override

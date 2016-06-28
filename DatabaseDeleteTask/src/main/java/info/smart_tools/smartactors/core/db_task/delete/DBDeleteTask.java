@@ -27,16 +27,16 @@ public abstract class DBDeleteTask implements IDatabaseTask {
      *
      * @throws TaskExecutionException when number of deleted rows not equals of number of rows which had to be removed.
      */
-    protected void execute(@Nonnull CompiledQuery query, @Nonnull DeletionQuery message)
+    protected void execute(final @Nonnull CompiledQuery query, final @Nonnull DeletionQuery message)
             throws TaskExecutionException {
         try {
-            int nDeleted = ((JDBCCompiledQuery)query).getPreparedStatement().executeUpdate();
+            int nDeleted = ((JDBCCompiledQuery) query).getPreparedStatement().executeUpdate();
 
-            if(nDeleted != message.countDocumentIds()) {
+            if (nDeleted != message.countDocumentIds()) {
                 throw new TaskExecutionException("Delete query failed: wrong count of documents is deleted.");
             }
         } catch (SQLException e) {
-            throw new TaskExecutionException("Deletion query execution failed because of SQL exception.",e);
+            throw new TaskExecutionException("Deletion query execution failed because of SQL exception.", e);
         }
     }
 }

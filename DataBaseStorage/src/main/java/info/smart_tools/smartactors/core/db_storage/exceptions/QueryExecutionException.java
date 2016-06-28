@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.db_storage.exceptions;
 
 public class QueryExecutionException extends StorageException {
-    public QueryExecutionException(String message) {
+    public QueryExecutionException(final String message) {
         super(message);
     }
 
-    public QueryExecutionException(String message, Exception cause) {
-        super(message,cause);
+    public QueryExecutionException(final String message, final Exception cause) {
+        super(message, cause);
     }
 }

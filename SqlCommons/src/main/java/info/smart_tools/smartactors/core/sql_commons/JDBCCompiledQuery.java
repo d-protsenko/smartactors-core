@@ -14,7 +14,7 @@ import java.util.List;
 public class JDBCCompiledQuery implements CompiledQuery {
     private final PreparedStatement preparedStatement;
 
-    public JDBCCompiledQuery(PreparedStatement preparedStatement) {
+    public JDBCCompiledQuery(final PreparedStatement preparedStatement) {
         this.preparedStatement = preparedStatement;
     }
 
@@ -22,10 +22,9 @@ public class JDBCCompiledQuery implements CompiledQuery {
         return preparedStatement;
     }
 
-    public void setParameters(List<SQLQueryParameterSetter> parameterSetters) throws SQLException, QueryBuildException {
-
+    public void setParameters(final List<SQLQueryParameterSetter> parameterSetters)
+            throws SQLException, QueryBuildException {
         int index = 1;
-
         for (SQLQueryParameterSetter setter : parameterSetters) {
             index = setter.setParameters(this.preparedStatement, index);
         }
