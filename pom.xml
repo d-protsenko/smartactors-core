@@ -50,7 +50,6 @@
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
-        <module>DatabaseSearchTask</module>
         <module>DBUpsertTask</module>
         <module>DBFindByIdTask</module>
         <module>DatabaseDeleteTask</module>
