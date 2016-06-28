@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CreateCachedCollectionQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -97,6 +99,17 @@ public class CreateCachedCollectionTaskTest {
         testTask.prepare(startQuery);
     }
 
+    @Test(expected = TaskPrepareException.class)
+    public void MustIncorrectPrepareQueryForCreateCollectionWhenIOCResolveThrowException() throws ResolutionException, ReadValueException, ChangeValueException, TaskPrepareException {
+        IObject startQuery = mock(IObject.class);
+
+        when(IOC.resolve(keyForGetOrAdd, startQuery)).thenThrow(new ResolutionException(""));
+
+        testTask.prepare(startQuery);
+    }
+
+
+
     @Test
     public void MustIncorrectPrepareQueryForCreateCollectionWhenTargetTaskThrowException() throws ResolutionException, ReadValueException, ChangeValueException, TaskPrepareException {
         IObject startQuery = mock(IObject.class);
@@ -138,6 +151,15 @@ public class CreateCachedCollectionTaskTest {
         testTask.execute();
 
         verify(task).execute();
+    }
+
+    @Test
+    public void MustCorrectSetConnectionForTargetTask() throws TaskSetConnectionException {
+        StorageConnection connection = mock(StorageConnection.class);
+
+        testTask.setConnection(connection);
+
+        verify(task).setConnection(connection);
     }
 
     @Test(expected = TaskExecutionException.class)

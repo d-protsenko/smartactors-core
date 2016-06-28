@@ -23,6 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.time.LocalDateTime;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -92,5 +93,38 @@ public class UpsertIntoCachedCollectionTaskTest {
         when(IOC.resolve(eq(iocKey), any(IObject.class))).thenThrow(ResolutionException.class);
 
         task.prepare(rawQuery);
+    }
+
+    @Test(expected = TaskPrepareException.class)
+    public void ShouldInCorrectPrepareUpsertQueryWhenMessageThrowException() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
+
+        IObject rawQuery = mock(IObject.class);
+        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
+        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
+
+        when(query.getUpsertItem()).thenThrow(new ReadValueException());
+
+        task.prepare(rawQuery);
+    }
+
+    @Test
+    public void ShouldInCorrectPrepareUpsertQueryWhenUpsertItemThrowException() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
+
+        IObject rawQuery = mock(IObject.class);
+        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
+        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
+
+        UpsertItem upsertItem = mock(UpsertItem.class);
+        when(query.getUpsertItem()).thenReturn(upsertItem);
+
+        when(upsertItem.getStartDateTime()).thenThrow(new ReadValueException());
+
+        try {
+            task.prepare(rawQuery);
+        } catch (TaskPrepareException e) {
+            verify(query).getUpsertItem();
+            return;
+        }
+        assertTrue("Must throw new exception", false);
     }
 }

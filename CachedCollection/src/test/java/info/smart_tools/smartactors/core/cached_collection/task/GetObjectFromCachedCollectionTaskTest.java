@@ -104,6 +104,52 @@ public class GetObjectFromCachedCollectionTaskTest {
         verify(targetTask).prepare(query);
     }
 
+    @Test(expected = TaskPrepareException.class)
+    public void MustInCorrectPrepareQueryForSelectingWhenIOCThrowException() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
+
+        IObject query = mock(IObject.class);
+
+        Key getObjectFromCachedGalleryQueryKey = mock(Key.class);
+        when(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString())).thenReturn(getObjectFromCachedGalleryQueryKey);
+        when(IOC.resolve(getObjectFromCachedGalleryQueryKey, query)).thenThrow(new ResolutionException(""));
+
+        testTask.prepare(query);
+    }
+
+    @Test(expected = TaskPrepareException.class)
+    public void MustInCorrectPrepareQueryForSelectingWhenWrapperThrowException() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
+
+        Key iobjectKey = mock(Key.class);
+        IObject testIObject = mock(IObject.class);
+        when(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString())).thenReturn(iobjectKey);
+        when(IOC.resolve(iobjectKey)).thenReturn(testIObject);
+
+        Key searchCachedCollectionKey = mock(Key.class);
+        CriteriaCachedCollectionQuery criteriaQuery = mock(CriteriaCachedCollectionQuery.class);
+
+        when(Keys.getOrAdd(CriteriaCachedCollectionQuery.class.toString())).thenReturn(searchCachedCollectionKey);
+        when(IOC.resolve(searchCachedCollectionKey, testIObject)).thenReturn(criteriaQuery);
+
+        EQMessage eqMessage = mock(EQMessage.class);
+        Key eqKey = mock(Key.class);
+        when(Keys.getOrAdd(EQMessage.class.toString())).thenReturn(eqKey);
+        when(IOC.resolve(eqKey, testIObject)).thenReturn(eqMessage);
+
+        doThrow(new ChangeValueException()).when(eqMessage).setEq(any());
+
+        GetObjectFromCachedCollectionQuery srcQueryObject = mock(GetObjectFromCachedCollectionQuery.class);
+        IObject query = mock(IObject.class);
+        when(srcQueryObject.getKey()).thenReturn(key);
+        when(srcQueryObject.wrapped()).thenReturn(query);
+
+        Key getObjectFromCachedGalleryQueryKey = mock(Key.class);
+
+        when(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString())).thenReturn(getObjectFromCachedGalleryQueryKey);
+        when(IOC.resolve(getObjectFromCachedGalleryQueryKey, query)).thenReturn(srcQueryObject);
+
+        testTask.prepare(query);
+    }
+
     @Test
     public void MustCorrectExecuteQuery() throws TaskExecutionException {
         testTask.execute();
