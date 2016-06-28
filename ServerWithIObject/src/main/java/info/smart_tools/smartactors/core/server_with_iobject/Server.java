@@ -252,6 +252,10 @@ public class Server implements IServer {
         bindingForIWrapper.setValue(new FieldName("setBoolValue"), setBoolValue);
         bindingForIWrapper.setValue(new FieldName("getIObject"), getIObject);
         bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
+        bindingForIWrapper.setValue(
+                new FieldName("initMethodParameters"),
+                new String[]{"message", "context", "response"}
+        );
 
         binding.setValue(new FieldName(IWrapper.class.toString()), bindingForIWrapper);
 

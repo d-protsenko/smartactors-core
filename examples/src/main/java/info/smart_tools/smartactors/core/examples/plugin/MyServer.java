@@ -15,6 +15,8 @@ import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *  Sample server implementation.
@@ -31,7 +33,7 @@ public class MyServer implements IServer {
             ClassLoader urlClassLoader =
                     new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
 
-            IPluginLoader pluginLoader = new PluginLoader(          // loads plugins to classloader
+            IPluginLoader<Collection<File>> pluginLoader = new PluginLoader(          // loads plugins to classloader
                     urlClassLoader,
                     (t) -> {
                         try {
@@ -46,7 +48,9 @@ public class MyServer implements IServer {
 
             File examplesJar = new File(System.getProperty("user.home"), ".m2/repository/info/smart_tools/smartactors/" +
                     "core.examples/1.0-SNAPSHOT/core.examples-1.0-SNAPSHOT.jar");
-            pluginLoader.loadPlugin(examplesJar.getAbsolutePath());     // loads plugins
+            Collection<File> fileCollection = new CopyOnWriteArrayList<>();
+            fileCollection.add(examplesJar);
+            pluginLoader.loadPlugin(fileCollection);     // loads plugins
             bootstrap.start();                                          // starts initialization
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed.", e);
