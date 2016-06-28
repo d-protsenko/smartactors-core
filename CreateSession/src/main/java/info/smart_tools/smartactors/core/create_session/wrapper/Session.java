@@ -4,6 +4,9 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
+/**
+ * Wrapper for session
+ */
 public interface Session {
     /**
      * set authorization info into session
@@ -11,5 +14,5 @@ public interface Session {
      * @throws ReadValueException
      * @throws ChangeValueException
      */
-    public void setAuthInfo(IObject authInfo) throws ReadValueException, ChangeValueException;
+    void setAuthInfo(IObject authInfo) throws ReadValueException, ChangeValueException;
 }

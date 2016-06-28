@@ -1,10 +1,12 @@
 package info.smart_tools.smartactors.core.create_session.wrapper;
 
-import com.sun.istack.internal.NotNull;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
+/**
+ * Wrapper for CreateSessionActor methods
+ */
 public interface CreateSessionMessage {
 
     /**
@@ -13,7 +15,7 @@ public interface CreateSessionMessage {
      * @throws ChangeValueException
      * @throws ReadValueException
      */
-    public Session getSession() throws ChangeValueException, ReadValueException;
+    Session getSession() throws ChangeValueException, ReadValueException;
 
     /**
      * Returns Authorization Info (example, device info)
@@ -21,15 +23,14 @@ public interface CreateSessionMessage {
      * @throws ChangeValueException
      * @throws ReadValueException
      */
-    public IObject getAuthInfo() throws ChangeValueException, ReadValueException;
+    IObject getAuthInfo() throws ChangeValueException, ReadValueException;
 
 
     /**
      * set session in message
-     * @param session
+     * @param session Session
      * @throws ReadValueException
      * @throws ChangeValueException
      */
-    @NotNull
-    public void setSession(Session session) throws ReadValueException, ChangeValueException;
+    void setSession(Session session) throws ReadValueException, ChangeValueException;
 }
