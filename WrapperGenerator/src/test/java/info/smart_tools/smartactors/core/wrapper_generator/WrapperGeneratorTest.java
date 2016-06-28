@@ -25,6 +25,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -347,6 +348,7 @@ public class WrapperGeneratorTest {
         IInnerWrapper innerWrapperResult = inst.getWrappedIObject();
         IObject iObjectResult = inst.getIObject();
         Map<String, IInnerWrapper> mapResult = inst.getStringIInnerMap();
+        IObject[] iObjects = ((IObjectWrapper) inst).getIObjects();
 
         assertEquals(intResult, 1);
         assertEquals(stringResult, "abc");
@@ -358,6 +360,9 @@ public class WrapperGeneratorTest {
         assertEquals(innerWrapperResult, innerWrapper);
         assertEquals(iObjectResult, iObject);
         assertNotNull(mapResult.get("abc"));
+        assertSame(iObjects[0], message);
+        assertSame(iObjects[1], context);
+        assertSame(iObjects[2], response);
 
         inst.setIntValue(2);
         inst.setStringValue("cba");
