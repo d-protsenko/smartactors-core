@@ -1,10 +1,10 @@
 /**
  * Contains CreateSessionActor
  */
-package info.smart_tools.smartactors.core.create_session;
+package info.smart_tools.smartactrors.core.actrors.create_session;
 
-import info.smart_tools.smartactors.core.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactors.core.create_session.wrapper.Session;
+import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionMessage;
+import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.Session;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
