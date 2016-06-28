@@ -95,9 +95,7 @@ public class GeneralSQLOrderWriter implements ISearchQueryWriter {
             queryStatement.getBodyWriter().write("(1)");
         } catch (IOException | ResolutionException | ReadValueException e) {
             throw new QueryBuildException("Error while writing ORDER BY clause of search query SQL.", e);
-        }
-//TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
-        catch (InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
             throw new QueryBuildException("Invalid argument exception" , e);
         }
     }

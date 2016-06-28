@@ -57,9 +57,7 @@ public abstract class DBSearchTask implements IDatabaseTask {
                     throw new TaskExecutionException("Could not set document's id field.", e);
                 } catch (ResolutionException e) {
                     throw new TaskExecutionException(e.getMessage(), e);
-                }
-//TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
-                catch (InvalidArgumentException e) {
+                } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
                     throw new TaskExecutionException("Invalid argument exception", e);
                 }
 

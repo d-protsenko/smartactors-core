@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 public class MyIOC {
 
     /** Key for getting instance of storage from current scope */
-    private static IKey STORAGE_KEY;
+    private static final IKey STORAGE_KEY;
 
     static {
         try {

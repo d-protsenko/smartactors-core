@@ -33,11 +33,14 @@ public class DBTaskExecutor {
      *
      * @throws Exception when an error occurred task executing or an error occurred commit.
      */
-    public static void executeTransaction(IDatabaseTask task, StorageConnection connection) throws Exception {
+    public static void executeTransaction(
+            final IDatabaseTask task,
+            final StorageConnection connection
+    ) throws Exception {
         try {
             task.execute();
             connection.commit();
-        } catch(Exception e) {
+        } catch (Exception e) {
             try {
                 connection.rollback();
             } catch (StorageException ee) {

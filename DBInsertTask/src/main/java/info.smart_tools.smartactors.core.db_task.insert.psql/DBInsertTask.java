@@ -54,7 +54,7 @@ public class DBInsertTask implements IDatabaseTask {
 
             String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), insertQuery.getValue(idFieldName));
 
-            if (id == null){
+            if (id == null) {
                 QueryStatementFactory factory = getQueryStatementFactory();
                 this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection,
                                                                     DBInsertTask.class.toString(), factory);
@@ -74,17 +74,15 @@ public class DBInsertTask implements IDatabaseTask {
             }
         } catch (ChangeValueException | ReadValueException | ResolutionException | StorageException e) {
             throw new TaskPrepareException("Can't prepare insert query");
-        } catch (SQLException e){
+        } catch (SQLException e) {
             //TODO::
-        }
-        //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
-        catch (InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {  //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
             throw new TaskPrepareException("Invalid argument exception", e);
         }
     }
 
     @Override
-    public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
+    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
         this.connection = connection;
     }
 
@@ -95,17 +93,17 @@ public class DBInsertTask implements IDatabaseTask {
                 ResultSet resultSet;
                 try {
                     resultSet = ((JDBCCompiledQuery) compiledQuery).getPreparedStatement().executeQuery();
-                } catch (SQLTimeoutException e){
+                } catch (SQLTimeoutException e) {
                     throw new Exception("Timeout DB access", e);
-                } catch (SQLException e){
+                } catch (SQLException e) {
                     throw new Exception("DataBase access error ", e);
                 }
 
-                if (resultSet == null || !resultSet.first()){
+                if (resultSet == null || !resultSet.first()) {
                     throw new QueryExecutionException("Database returned not enough generated ids");
                 }
-            } catch (Exception e){
-                throw new StorageException("Collection creation query execution failed because of SQL exception.",e);
+            } catch (Exception e) {
+                throw new StorageException("Collection creation query execution failed because of SQL exception.", e);
             }
         } catch (Exception e) {
             throw new TaskExecutionException("Query execution has been failed", e);

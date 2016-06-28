@@ -5,8 +5,8 @@ package info.smart_tools.smartactors.plugin.compile_query;
  */
 final class QueryKey {
 
-    final private String queryType;
-    final private String connectionId;
+    private final String queryType;
+    private final String connectionId;
 
     private QueryKey(final String queryType, final String connectionId) {
         this.queryType = queryType;
@@ -19,12 +19,18 @@ final class QueryKey {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         QueryKey queryKey = (QueryKey) o;
 
-        if (!queryType.equals(queryKey.queryType)) return false;
+        if (!queryType.equals(queryKey.queryType)) {
+            return false;
+        }
         return connectionId.equals(queryKey.connectionId);
 
     }

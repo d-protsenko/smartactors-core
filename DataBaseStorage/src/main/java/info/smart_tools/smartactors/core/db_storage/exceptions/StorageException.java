@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.db_storage.exceptions;
 
 public class StorageException extends Exception {
-    public StorageException(String message) {
+    public StorageException(final String message) {
         super(message);
     }
 
-    public StorageException(String message, Exception cause) {
-        super(message,cause);
+    public StorageException(final String message, final Exception cause) {
+        super(message, cause);
     }
 }

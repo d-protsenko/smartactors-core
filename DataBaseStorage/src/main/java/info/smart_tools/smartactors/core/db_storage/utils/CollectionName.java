@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
  */
 public class CollectionName {
 
-    private static Pattern VALIDATION_PATTERN = Pattern.compile("[a-zA-Z_][0-9a-zA-Z_]*");
+    private static final Pattern VALIDATION_PATTERN = Pattern.compile("[a-zA-Z_][0-9a-zA-Z_]*");
 
     private String name;
 
-    private CollectionName(String name) {
+    private CollectionName(final String name) {
         this.name = name;
     }
 
@@ -27,10 +27,10 @@ public class CollectionName {
      * @return created CollectionName
      * @throws QueryBuildException if input string doesn't match validation pattern
      */
-    public static CollectionName fromString(String name) throws QueryBuildException {
+    public static CollectionName fromString(final String name) throws QueryBuildException {
 
         if (!VALIDATION_PATTERN.matcher(name).matches()) {
-            throw new QueryBuildException("Invalid collection name: "+name);
+            throw new QueryBuildException("Invalid collection name: " + name);
         }
 
         return new CollectionName(name.toLowerCase());
