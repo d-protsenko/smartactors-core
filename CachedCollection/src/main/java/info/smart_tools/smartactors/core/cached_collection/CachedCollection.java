@@ -51,14 +51,14 @@ public class CachedCollection implements ICachedCollection {
     /**
      * Constructor which initializes database tasks for db operations and connection pool for them.
      * @param config wrapper for configuration object with tasks and pool.
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException Except when actor can't be created with @config
      */
     public CachedCollection(final CachedCollectionConfig config) throws InvalidArgumentException {
         try {
             this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
             this.map = new ConcurrentHashMap<>();
-        } catch (ReadValueException | ChangeValueException e) {
+        } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }
     }
