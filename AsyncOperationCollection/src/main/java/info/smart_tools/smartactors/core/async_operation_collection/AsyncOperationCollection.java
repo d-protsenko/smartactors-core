@@ -1,7 +1,10 @@
 package info.smart_tools.smartactors.core.async_operation_collection;
 
+import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.CreateOperationQuery;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.GetAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
@@ -80,6 +83,30 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             throw new GetAsyncOperationException("Can't create nested task for getItem task.");
         } catch (TaskExecutionException e) {
             throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        }
+    }
+
+    @Override
+    public void createAsyncOperation(final IObject data, final String token) throws CreateAsyncOperationException {
+        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            IDatabaseTask task = IOC.resolve(Keys.getOrAdd(CreateAsyncOperationTask.class.toString()));
+            if (task == null) {
+                IDatabaseTask nestedTask = IOC.resolve(
+                        Keys.getOrAdd(IDatabaseTask.class.toString()), CreateAsyncOperationTask.class.toString()
+                );
+                if (nestedTask == null) {
+                    throw new CreateAsyncOperationException("Can't create nested task for createtItem task.");
+                }
+                task = new CreateAsyncOperationTask(nestedTask);
+                IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(task));
+            }
+            CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()));
+            query.setCollectionName(collectionName);
+            task.setConnection((StorageConnection) poolGuard.getObject());
+            task.prepare(query.getIObject());
+            task.execute();
+        } catch (Exception e) {
+            throw new CreateAsyncOperationException("Failed to create async operation.");
         }
     }
 }
