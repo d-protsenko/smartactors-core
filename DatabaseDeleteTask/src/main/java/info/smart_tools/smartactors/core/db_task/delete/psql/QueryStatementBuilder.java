@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.delete.psql;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -12,13 +13,13 @@ import java.io.Writer;
 /**
  * Builder for query statement {@link QueryStatement} of delete document by id query.
  */
-class QueryStatementBuilder {
+final class QueryStatementBuilder {
     private String collection;
     private int idsNumber;
 
-    private final static String FIRST_PART_TEMPLATE = "DELETE FROM ";
-    private final static String SECOND_PART_TEMPLATE = " WHERE id IN (";
-    private final static int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() + SECOND_PART_TEMPLATE.length();
+    private static final String FIRST_PART_TEMPLATE = "DELETE FROM ";
+    private static final String SECOND_PART_TEMPLATE = " WHERE id IN (";
+    private static final int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() + SECOND_PART_TEMPLATE.length();
 
     /**
      * Default constructor. Creates a new instance of {@link QueryStatementBuilder}.
@@ -37,24 +38,24 @@ class QueryStatementBuilder {
     /**
      * Appends collection name to final query statement.
      *
-     * @param collection - a collection name for which to create query statement.
+     * @param collectionName - a collection name for which to create query statement.
      *
      * @return a link to yourself {@link QueryStatementBuilder}.
      */
-    QueryStatementBuilder withCollection(@Nonnull String collection) {
-        this.collection = collection;
+    QueryStatementBuilder withCollection(@Nonnull final String collectionName) {
+        collection = collectionName;
         return this;
     }
 
     /**
      * Appends ids number for creation parameters in final query statement.
      *
-     * @param idsNumber - a number of documents ids which needs to delete.
+     * @param documentsIdsNumber - a number of documents ids which needs to delete.
      *
      * @return a link to yourself {@link QueryStatementBuilder}.
      */
-    QueryStatementBuilder withIdsNumber(int idsNumber) {
-        this.idsNumber = idsNumber;
+    QueryStatementBuilder withIdsNumber(final int documentsIdsNumber) {
+        idsNumber = documentsIdsNumber;
         return this;
     }
 
@@ -63,9 +64,9 @@ class QueryStatementBuilder {
      *
      * @return formed and filled query statement {@link QueryStatement}.
      *
-     * @throws BuildingException when a some critical error in during building query statement.
+     * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws BuildingException {
+    QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
 
         try {
@@ -86,12 +87,13 @@ class QueryStatementBuilder {
 
             return preparedQuery;
         } catch (ResolutionException | IOException e) {
-            throw new BuildingException(e.getMessage(), e);
+            throw new QueryBuildException(e.getMessage(), e);
         }
     }
 
-    private void requiresNonnull(String str, String message) throws BuildingException {
-        if (str == null || str.isEmpty())
-            throw new BuildingException(message);
+    private void requiresNonnull(final String str, final String message) throws QueryBuildException {
+        if (str == null || str.isEmpty()) {
+            throw new QueryBuildException(message);
+        }
     }
 }

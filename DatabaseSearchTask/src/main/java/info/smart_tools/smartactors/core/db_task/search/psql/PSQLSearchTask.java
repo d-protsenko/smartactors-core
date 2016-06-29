@@ -113,8 +113,7 @@ public class PSQLSearchTask extends DBSearchTask {
         super.execute(query, message);
     }
 
-    @Override
-    public void setConnection(@Nonnull final StorageConnection storageConnection) throws TaskSetConnectionException {
+    public void setStorageConnection(@Nonnull final StorageConnection storageConnection) throws TaskSetConnectionException {
         this.connection = storageConnection;
     }
 

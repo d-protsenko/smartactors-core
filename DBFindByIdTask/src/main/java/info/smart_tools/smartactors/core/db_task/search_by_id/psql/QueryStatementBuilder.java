@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.search_by_id.psql;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -49,9 +50,9 @@ class QueryStatementBuilder {
      *
      * @return formed and filled query statement {@link QueryStatement}.
      *
-     * @throws BuildingException when a some critical error in during building query statement.
+     * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws BuildingException {
+    QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         try {
             QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
@@ -64,12 +65,12 @@ class QueryStatementBuilder {
 
             return preparedQuery;
         } catch (IOException | ResolutionException e) {
-            throw new BuildingException(e.getMessage(), e);
+            throw new QueryBuildException(e.getMessage(), e);
         }
     }
 
-    private void requiresNonnull(String str, String message) throws BuildingException {
+    private void requiresNonnull(String str, String message) throws QueryBuildException {
         if (str == null || str.isEmpty())
-            throw new BuildingException(message);
+            throw new QueryBuildException(message);
     }
 }

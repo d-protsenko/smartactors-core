@@ -9,8 +9,7 @@
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
-
-    <artifactId>core.db_upsert_task</artifactId>
+    <artifactId>core.db_update_task</artifactId>
 
     <dependencies>
         <dependency>
@@ -76,6 +75,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

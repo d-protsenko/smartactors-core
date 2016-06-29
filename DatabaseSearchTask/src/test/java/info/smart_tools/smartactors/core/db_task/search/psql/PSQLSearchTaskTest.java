@@ -84,7 +84,7 @@ public class PSQLSearchTaskTest {
     @Test
     public void prepareSearchQueryTest_WhenBufferedQueryIsNotExist() throws Exception {
         DBSearchTask searchTask = PSQLSearchTask.create();
-        searchTask.setConnection(connection);
+        searchTask.setStorageConnection(connection);
         when(queryMessage.getBufferedQuery()).thenReturn(Optional.empty());
         prepareSearchQueryTest(searchTask);
     }
@@ -92,7 +92,7 @@ public class PSQLSearchTaskTest {
     @Test
     public void prepareSearchQueryTest_WhenBufferedQueryIsExist() throws Exception {
         DBSearchTask searchTask = PSQLSearchTask.create();
-        searchTask.setConnection(connection);
+        searchTask.setStorageConnection(connection);
         when(queryMessage.getBufferedQuery()).thenReturn(Optional.of(bufferedQuery));
         prepareSearchQueryTest(searchTask);
     }
@@ -137,7 +137,7 @@ public class PSQLSearchTaskTest {
     }
 
     private void prepareSearchQueryTest(DBSearchTask searchTask) throws Exception {
-        searchTask.setConnection(connection);
+        searchTask.setStorageConnection(connection);
         searchTask.prepare(message);
 
         verify(connection, times(1)).compileQuery(anyObject());
@@ -166,7 +166,7 @@ public class PSQLSearchTaskTest {
 
     private DBSearchTask prepareSearchTask() throws Exception {
         DBSearchTask searchTask = PSQLSearchTask.create();
-        searchTask.setConnection(connection);
+        searchTask.setStorageConnection(connection);
 
         Field queryField = searchTask.getClass().getDeclaredField("query");
         queryField.setAccessible(true);

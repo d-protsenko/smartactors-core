@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.db_task.search_by_id;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper.ISearchByIdQuery;
+import info.smart_tools.smartactors.core.db_task.search_by_id.wrapper.ISearchByIdQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -29,7 +29,7 @@ public abstract class DBSearchByIdTask implements IDatabaseTask {
      *
      * @throws TaskExecutionException when the result set has more than one document.
      */
-    protected void execute(@Nonnull CompiledQuery compiledQuery, @Nonnull ISearchByIdQuery message)
+    protected void execute(@Nonnull CompiledQuery compiledQuery, @Nonnull ISearchByIdQueryMessage message)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = compiledQuery.executeQuery();

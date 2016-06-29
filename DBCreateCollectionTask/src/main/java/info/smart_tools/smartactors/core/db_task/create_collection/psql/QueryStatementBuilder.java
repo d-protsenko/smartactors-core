@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.create_collection.psql;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -15,15 +16,15 @@ import java.util.Map;
 /**
  * Builder for query statement {@link QueryStatement} of create collection query.
  */
-class QueryStatementBuilder {
+final class QueryStatementBuilder {
     private String collection;
     private String createCollectionQuery;
     private Map<String, String> indexes;
     private IndexBuilder indexBuilder;
 
-    private final static String FIRST_PART_TEMPLATE = "CREATE TABLE ";
-    private final static String SECOND_PART_TEMPLATE = " (id BIGSERIAL PRIMARY KEY, document JSONB NOT NULL);\n";
-    private final static int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() + SECOND_PART_TEMPLATE.length();
+    private static final String FIRST_PART_TEMPLATE = "CREATE TABLE ";
+    private static final String SECOND_PART_TEMPLATE = " (id BIGSERIAL PRIMARY KEY, document JSONB NOT NULL);\n";
+    private static final int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() + SECOND_PART_TEMPLATE.length();
 
     /**
      * Default constructor for {@link QueryStatementBuilder}.
@@ -45,12 +46,12 @@ class QueryStatementBuilder {
     /**
      * Appends collection name to final query statement.
      *
-     * @param collection - a collection name for which to create query statement.
+     * @param collectionName - a collection name for which to create query statement.
      *
      * @return a link to yourself {@link QueryStatementBuilder}.
      */
-    QueryStatementBuilder withCollection(@Nonnull String collection) {
-        this.collection = collection;
+    QueryStatementBuilder withCollection(@Nonnull final String collectionName) {
+        collection = collectionName;
 
         StringBuilder createCollectionQueryBuilder =
                 new StringBuilder(TEMPLATE_SIZE + collection.length());
@@ -66,14 +67,14 @@ class QueryStatementBuilder {
     /**
      * Appends list of indexes to some collection.
      *
-     * @param indexes - list of indexes to some collection.
+     * @param columnIndexes - list of indexes to some collection.
      *
      * @return a link to yourself {@link QueryStatementBuilder}.
      */
-    QueryStatementBuilder withIndexes(@Nonnull Map<String, String> indexes) {
-        this.indexes = new HashMap<>(indexes);
-        if (this.indexes.containsKey("id")) {
-            this.indexes.put("id","id");
+    QueryStatementBuilder withIndexes(@Nonnull final Map<String, String> columnIndexes) {
+        indexes = new HashMap<>(columnIndexes);
+        if (indexes.containsKey("id")) {
+            indexes.put("id", "id");
         }
 
         return this;
@@ -84,9 +85,9 @@ class QueryStatementBuilder {
      *
      * @return formed and filled query statement {@link QueryStatement}.
      *
-     * @throws BuildingException when a some critical error in during building query statement.
+     * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws BuildingException {
+    QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         requiresNonnull(indexes, "The list of indexes should not be a null, should try invoke 'withIndexes'.");
 
@@ -109,17 +110,19 @@ class QueryStatementBuilder {
 
             return preparedQuery;
         } catch (ResolutionException | IOException | IllegalArgumentException e) {
-            throw new BuildingException(e.getMessage(), e);
+            throw new QueryBuildException(e.getMessage(), e);
         }
     }
 
-    private void requiresNonnull(String str, String message) throws BuildingException {
-        if (str == null || str.isEmpty())
-            throw new BuildingException(message);
+    private void requiresNonnull(final String str, final String message) throws QueryBuildException {
+        if (str == null || str.isEmpty()) {
+            throw new QueryBuildException(message);
+        }
     }
 
-    private void requiresNonnull(Map map, String message) throws BuildingException {
-        if (map == null)
-            throw new BuildingException(message);
+    private void requiresNonnull(final Map map, final String message) throws QueryBuildException {
+        if (map == null) {
+            throw new QueryBuildException(message);
+        }
     }
 }

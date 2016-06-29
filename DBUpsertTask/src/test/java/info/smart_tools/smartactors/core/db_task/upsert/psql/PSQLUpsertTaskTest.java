@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
+import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -51,9 +51,9 @@ import static org.powermock.api.support.membermodification.MemberMatcher.field;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
-public class DBUpsertTaskTest {
+public class PSQLUpsertTaskTest {
 
-    private DBUpsertTask task;
+    private PSQLUpsertTask task;
     private JDBCCompiledQuery compiledQuery;
 
     @BeforeClass
@@ -79,8 +79,8 @@ public class DBUpsertTaskTest {
 
         compiledQuery = mock(JDBCCompiledQuery.class);
         String collectionName = "collection";
-        UpsertMessage upsertMessage = mock(UpsertMessage.class);
-        when(upsertMessage.getCollectionName()).thenReturn(collectionName);
+        IUpsertQueryMessage IUpsertQueryMessage = mock(IUpsertQueryMessage.class);
+        when(IUpsertQueryMessage.getCollectionName()).thenReturn(collectionName);
 
         IOC.register(
             IOC.getKeyForKeyStorage(),
@@ -94,7 +94,7 @@ public class DBUpsertTaskTest {
                 })
         );
         IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
-        IKey<UpsertMessage> keyUpsertMessage= Keys.getOrAdd(UpsertMessage.class.toString());
+        IKey<IUpsertQueryMessage> keyUpsertMessage= Keys.getOrAdd(IUpsertQueryMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
@@ -104,7 +104,7 @@ public class DBUpsertTaskTest {
         );
         IOC.register(
             keyUpsertMessage,
-            new SingletonStrategy(upsertMessage)
+            new SingletonStrategy(IUpsertQueryMessage)
         );
         QueryStatement queryStatement = mock(QueryStatement.class);
         when(queryStatement.getBodyWriter()).thenReturn(new StringWriter());
@@ -136,7 +136,7 @@ public class DBUpsertTaskTest {
             )
         );
 
-        task = new DBUpsertTask();
+        task = new PSQLUpsertTask();
     }
 
     @Test
@@ -154,14 +154,14 @@ public class DBUpsertTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.prepare(upsertMessage);
 
-        DBInsertTask dbInsertTask = (DBInsertTask) MemberModifier.field(DBUpsertTask.class, "dbInsertTask").get(task);
+        DBInsertTask dbInsertTask = (DBInsertTask) MemberModifier.field(PSQLUpsertTask.class, "dbInsertTask").get(task);
 
-        verify(dbInsertTask).setConnection(connection);
+        verify(dbInsertTask).setStorageConnection(connection);
         verifyStatic();
-        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("insert"), null);
+        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, PSQLUpsertTask.class.toString().concat("insert"), null);
     }
 
     @Test
@@ -177,11 +177,11 @@ public class DBUpsertTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.prepare(upsertMessage);
 
         verifyStatic();
-        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("update"), null);
+        IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, PSQLUpsertTask.class.toString().concat("update"), null);
     }
 
     @Test
@@ -194,10 +194,10 @@ public class DBUpsertTaskTest {
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
-        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
-        field(DBUpsertTask.class, "mode").set(task, "update");
+        field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLUpsertTask.class, "mode").set(task, "update");
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.execute();
 
         verify(preparedStatement).executeUpdate();
@@ -212,18 +212,18 @@ public class DBUpsertTaskTest {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
-        field(DBUpsertTask.class, "mode").set(task, "insert");
+        field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLUpsertTask.class, "mode").set(task, "insert");
         IObject rawUpsertQuery = mock(IObject.class);
-        field(DBUpsertTask.class, "rawUpsertQuery").set(task, rawUpsertQuery);
+        field(PSQLUpsertTask.class, "rawUpsertQuery").set(task, rawUpsertQuery);
         IFieldName fieldName = mock(IFieldName.class);
-        field(DBUpsertTask.class, "idFieldName").set(task, fieldName);
+        field(PSQLUpsertTask.class, "idFieldName").set(task, fieldName);
         ResultSet resultSet = mock(ResultSet.class);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.first()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(123L);
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.execute();
 
         verify(preparedStatement).executeQuery();
@@ -239,10 +239,10 @@ public class DBUpsertTaskTest {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
-        field(DBUpsertTask.class, "mode").set(task, "update");
+        field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLUpsertTask.class, "mode").set(task, "update");
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.execute();
     }
 
@@ -255,10 +255,10 @@ public class DBUpsertTaskTest {
 
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
-        field(DBUpsertTask.class, "compiledQuery").set(task, compiledQuery);
-        field(DBUpsertTask.class, "mode").set(task, "insert");
+        field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
+        field(PSQLUpsertTask.class, "mode").set(task, "insert");
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.execute();
     }
 }

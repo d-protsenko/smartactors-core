@@ -50,11 +50,12 @@
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
-        <module>DBUpsertTask</module>
         <module>DBFindByIdTask</module>
         <module>DatabaseDeleteTask</module>
         <module>DatabaseSearchTask</module>
         <module>DBInsertTask</module>
+        <module>DBUpdateTask</module>
+        <module>DBUpsertTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>

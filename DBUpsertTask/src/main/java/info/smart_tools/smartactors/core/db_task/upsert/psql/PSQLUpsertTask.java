@@ -6,8 +6,10 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.UpsertMessage;
+import info.smart_tools.smartactors.core.db_task.upsert.DBUpsertTask;
+import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskInitializationException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -26,8 +28,6 @@ import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,69 +35,29 @@ import java.util.Map;
 
 /**
  * Task for upsert row to collection:
- * Executes update operation if incoming query contains id
- * Executes insert operation otherwise
+ *          1. Executes update operation if incoming query contains id;
+ *          2. Executes insert operation otherwise.
  */
-public class DBUpsertTask implements IDatabaseTask {
+public class PSQLUpsertTask implements DBUpsertTask {
 
     private static final String INSERT_MODE = "insert";
     private static final String UPDATE_MODE = "update";
 
-    private String collectionName;
-    private IDatabaseTask dbInsertTask;
-    private IObject rawUpsertQuery;
-    private JDBCCompiledQuery compiledQuery;
-    private StorageConnection connection;
-    private Map<String, UpsertExecution> executionMap;
-    private String mode;
-    private IFieldName idFieldName;
+    /**
+     *
+     *
+     * @throws TaskInitializationException
+     */
+    protected PSQLUpsertTask() throws TaskInitializationException {
 
-    private interface UpsertExecution {
-        void upsert() throws TaskExecutionException;
-    }
-
-    public DBUpsertTask() {
-
-        executionMap = new HashMap<>();
-        try {
-            this.dbInsertTask = IOC.resolve(Keys.getOrAdd(DBInsertTask.class.toString()));
-        } catch (ResolutionException e) {
-            //TODO:: throw smth like TaskCreateException("Error while resolving insert task.", e); when standard exception would be added
-        }
-        executionMap.put(UPDATE_MODE, () -> {
-            try {
-                int nUpdated = compiledQuery.getPreparedStatement().executeUpdate();
-                if (nUpdated == 0) {
-                    throw new TaskExecutionException("Update query failed: wrong count of documents is updated.");
-                }
-            } catch (SQLException e) {
-                throw new TaskExecutionException("Transaction execution has been failed.", e);
-            }
-        });
-        executionMap.put(INSERT_MODE, () -> {
-            try {
-                ResultSet resultSet = compiledQuery.getPreparedStatement().executeQuery();
-                if (resultSet == null || !resultSet.first()) {
-                    throw new TaskExecutionException("Database returned not enough of generated ids.");
-                }
-                try {
-                    //TODO:: replace by field.inject()
-                    rawUpsertQuery.setValue(idFieldName, resultSet.getLong("id"));
-                } catch (ChangeValueException e) {
-                    throw new TaskExecutionException("Could not set new id on inserted document.");
-                }
-            } catch (SQLException e) {
-                throw new TaskExecutionException("Insertion query execution failed because of SQL exception.",e);
-            }
-        });
     }
 
     @Override
     public void prepare(final IObject upsertObject) throws TaskPrepareException {
 
         try {
-            UpsertMessage upsertMessage = IOC.resolve(Keys.getOrAdd(UpsertMessage.class.toString()), upsertObject);
-            this.collectionName = upsertMessage.getCollectionName();
+            IUpsertQueryMessage IUpsertQueryMessage = IOC.resolve(Keys.getOrAdd(IUpsertQueryMessage.class.toString()), upsertObject);
+            this.collectionName = IUpsertQueryMessage.getCollectionName();
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Error while resolving upsert message.", e);
         } catch (ReadValueException | ChangeValueException e) {
@@ -128,7 +88,7 @@ public class DBUpsertTask implements IDatabaseTask {
                     }
                     return updateQueryStatement;
                 };
-                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, DBUpsertTask.class.toString().concat("update"), factory);
+                this.compiledQuery = IOC.resolve(Keys.getOrAdd(CompiledQuery.class.toString()), connection, PSQLUpsertTask.class.toString().concat("update"), factory);
 
                 List<SQLQueryParameterSetter> parameterSetters = new ArrayList<>();
                 parameterSetters.add((statement, index) -> {
@@ -149,9 +109,8 @@ public class DBUpsertTask implements IDatabaseTask {
         }
     }
 
-    @Override
-    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        this.connection = connection;
+    public void setStorageConnection(final StorageConnection storageConnection) throws TaskSetConnectionException {
+        this.connection = storageConnection;
     }
 
     @Override

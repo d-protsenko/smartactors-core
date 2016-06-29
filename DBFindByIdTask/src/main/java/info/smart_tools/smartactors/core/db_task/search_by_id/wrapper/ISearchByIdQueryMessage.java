@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.db_task.search_by_id.psql.wrapper;
+package info.smart_tools.smartactors.core.db_task.search_by_id.wrapper;
 
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 /**
  * Wrapper for SearchById message
  */
-public interface ISearchByIdQuery {
+public interface ISearchByIdQueryMessage {
     /**
      * Return the collectionName
      * @return String the name of collection where object is stored

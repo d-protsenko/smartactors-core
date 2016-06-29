@@ -14,11 +14,22 @@ import info.smart_tools.smartactors.core.itask.ITask;
 public interface IDatabaseTask extends ITask {
 
     /**
-     * Prepares database query
-     * @param query query object
-     * @throws TaskPrepareException if error occurs in process of query preparing
+     * Prepare some task for execute.
+     *
+     * @param message - contains parameters for preparation task.
+     *
+     * @throws TaskPrepareException when:
+     *                1. Invalid storage connection;
+     *                2. Invalid parameters in the incoming message;
+     *                3. Creating query for task execute error;
+     *                4. IOC resolution error;
      */
-    void prepare(IObject query) throws TaskPrepareException;
+    void prepare(final IObject message) throws TaskPrepareException;
 
-    void setConnection(StorageConnection connection) throws TaskSetConnectionException;
+    /**
+     * Setter for storage connection field.
+     * @param storageConnection - database connection.
+     * @throws TaskSetConnectionException when the incoming connection is invalid.
+     */
+    void setStorageConnection(final StorageConnection storageConnection) throws TaskSetConnectionException;
 }

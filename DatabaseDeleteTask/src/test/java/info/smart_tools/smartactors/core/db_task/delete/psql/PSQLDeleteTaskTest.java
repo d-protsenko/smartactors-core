@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.delete.DBDeleteTask;
-import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQuery;
+import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQueryMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -34,12 +34,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @SuppressWarnings("unchecked")
 public class PSQLDeleteTaskTest {
     private CollectionName collectionName;
-    IDeletionQuery queryMessage;
+    IDeletionQueryMessage queryMessage;
     JDBCCompiledQuery compiledQuery;
 
     @Before
     public void setUp() throws ResolutionException {
-        queryMessage = mock(IDeletionQuery.class);
+        queryMessage = mock(IDeletionQueryMessage.class);
         CollectionName collectionName = mock(CollectionName.class);
 
         when(collectionName.toString()).thenReturn("testCollection");
@@ -59,11 +59,11 @@ public class PSQLDeleteTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
-        deleteTask.setConnection(connection);
+        deleteTask.setStorageConnection(connection);
 
         IKey wrapperKey = mock(IKey.class);
         IKey queryKey = mock(IKey.class);
-        when(Keys.getOrAdd(IDeletionQuery.class.toString())).thenReturn(wrapperKey);
+        when(Keys.getOrAdd(IDeletionQueryMessage.class.toString())).thenReturn(wrapperKey);
         when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(queryKey);
         when(IOC.resolve(eq(wrapperKey), anyObject())).thenReturn(queryMessage);
         when(IOC.resolve(eq(queryKey), eq(connection), eq(PSQLDeleteTask.class.toString()), anyObject()))
@@ -112,7 +112,7 @@ public class PSQLDeleteTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
-        deleteTask.setConnection(connection);
+        deleteTask.setStorageConnection(connection);
 
         deleteTask.execute();
     }

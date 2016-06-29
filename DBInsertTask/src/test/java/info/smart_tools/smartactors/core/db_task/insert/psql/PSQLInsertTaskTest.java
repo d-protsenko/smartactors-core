@@ -5,9 +5,9 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.insert.psql.wrapper.IInsertMessage;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.db_task.insert.psql.wrapper.IInsertQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -32,7 +32,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.StringWriter;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import static org.mockito.Mockito.*;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
@@ -64,9 +64,10 @@ public class PSQLInsertTaskTest {
     @Before
     public void setUp() throws Exception {
         compiledQuery = mock(JDBCCompiledQuery.class);
-        String collectionName = "collection";
-        IInsertMessage IInsertMessage = mock(IInsertMessage.class);
-        when(IInsertMessage.getCollectionName()).thenReturn(collectionName);
+        CollectionName collectionName = mock(CollectionName.class);
+        when(collectionName.toString()).thenReturn("collection");
+        IInsertQueryMessage IInsertQueryMessage = mock(IInsertQueryMessage.class);
+        when(IInsertQueryMessage.getCollectionName()).thenReturn(collectionName);
 
         IOC.register(
                 IOC.getKeyForKeyStorage(),
@@ -82,7 +83,7 @@ public class PSQLInsertTaskTest {
         );
 
         IKey<PSQLInsertTask> keyDBInsertTask = Keys.getOrAdd(PSQLInsertTask.class.toString());
-        IKey<IInsertMessage> keyInsertMessage = Keys.getOrAdd(IInsertMessage.class.toString());
+        IKey<IInsertQueryMessage> keyInsertMessage = Keys.getOrAdd(IInsertQueryMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
@@ -92,7 +93,7 @@ public class PSQLInsertTaskTest {
         );
         IOC.register(
                 keyInsertMessage,
-                new SingletonStrategy(IInsertMessage)
+                new SingletonStrategy(IInsertQueryMessage)
         );
         QueryStatement queryStatement = mock(QueryStatement.class);
         when(queryStatement.getBodyWriter()).thenReturn(new StringWriter());
@@ -144,20 +145,21 @@ public class PSQLInsertTaskTest {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.prepare(insertMessage);
     }
 
     @Test(expected = TaskExecutionException.class)
-    public void ShouldThrowException_When_NoDocumentsHaveBeenInserted() throws StorageException, IllegalAccessException, TaskSetConnectionException, TaskExecutionException {
+    public void ShouldThrowException_When_NoDocumentsHaveBeenInserted() throws Exception {
         StorageConnection connection = mock(StorageConnection.class);
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
 
-        PreparedStatement preparedStatement = mock(PreparedStatement.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(preparedStatement);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.first()).thenReturn(true);
+        when(compiledQuery.executeQuery()).thenReturn(resultSet);
         field(PSQLInsertTask.class, "compiledQuery").set(task, compiledQuery);
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.execute();
     }
 

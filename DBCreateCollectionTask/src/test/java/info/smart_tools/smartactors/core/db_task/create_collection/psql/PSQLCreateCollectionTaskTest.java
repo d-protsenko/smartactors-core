@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.ICreateCollectionQuery;
+import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.ICreateCollectionQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -37,16 +37,16 @@ import static org.powermock.api.support.membermodification.MemberMatcher.field;
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
 @SuppressWarnings("unchecked")
-public class DBCreateCollectionTaskTest {
+public class PSQLCreateCollectionTaskTest {
 
-    private DBCreateCollectionTask task;
+    private PSQLCreateCollectionTask task;
     private JDBCCompiledQuery compiledQuery;
     private StorageConnection connection;
 
     @Before
     public void setUp() throws StorageException, IllegalAccessException {
         compiledQuery = mock(JDBCCompiledQuery.class);
-        task = DBCreateCollectionTask.create();
+        task = PSQLCreateCollectionTask.create();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DBCreateCollectionTaskTest {
         throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
-        ICreateCollectionQuery message = mock(ICreateCollectionQuery.class);
+        ICreateCollectionQueryMessage message = mock(ICreateCollectionQueryMessage.class);
         PreparedQuery preparedQuery = new QueryStatement();
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
@@ -64,7 +64,7 @@ public class DBCreateCollectionTaskTest {
         when(connection.compileQuery(any(PreparedQuery.class))).thenReturn(compiledQuery);
         when(connection.getId()).thenReturn("testConnectionId");
 
-        task.setConnection(connection);
+        task.setStorageConnection(connection);
         task.prepare(createCollectionMessage);
 
         verify(connection).compileQuery(eq(preparedQuery));
@@ -74,7 +74,7 @@ public class DBCreateCollectionTaskTest {
     public void ShouldExecuteQuery() throws Exception {
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         when(compiledQuery.execute()).thenReturn(true);
-        field(DBCreateCollectionTask.class, "query").set(task, compiledQuery);
+        field(PSQLCreateCollectionTask.class, "query").set(task, compiledQuery);
         task.execute();
 
         verify(compiledQuery).execute();
@@ -83,19 +83,19 @@ public class DBCreateCollectionTaskTest {
     @Test
     public void ShouldSetConnection() throws Exception {
 
-        StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
+        StorageConnection storageConnectionBefore = (StorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
         connection = mock(StorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
 
-        task.setConnection(connection);
-        StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(DBCreateCollectionTask.class, "connection").get(task);
+        task.setStorageConnection(connection);
+        StorageConnection storageConnectionAfter = (StorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
 
         assertNull(storageConnectionBefore);
         assertNotNull(storageConnectionAfter);
         assertEquals(connection, storageConnectionAfter);
     }
 
-    private void initDataForPrepare(PreparedQuery preparedQuery, ICreateCollectionQuery message, IObject createCollectionMessage)
+    private void initDataForPrepare(PreparedQuery preparedQuery, ICreateCollectionQueryMessage message, IObject createCollectionMessage)
         throws ResolutionException, ReadValueException, ChangeValueException {
 
         mockStatic(IOC.class);
@@ -105,7 +105,7 @@ public class DBCreateCollectionTaskTest {
         IKey keyFieldPath = mock(IKey.class);IKey keyQuery = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq(QueryStatement.class.toString()))).thenReturn(keyQuery);
-        when(IOC.resolve(eq(key1), eq(ICreateCollectionQuery.class.toString()))).thenReturn(keyMessage);
+        when(IOC.resolve(eq(key1), eq(ICreateCollectionQueryMessage.class.toString()))).thenReturn(keyMessage);
         when(IOC.resolve(eq(key1), eq(FieldPath.class.toString()))).thenReturn(keyFieldPath);
         when(IOC.resolve(eq(keyQuery))).thenReturn(preparedQuery);
 

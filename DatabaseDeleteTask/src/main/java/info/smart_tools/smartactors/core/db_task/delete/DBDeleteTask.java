@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.db_task.delete;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQuery;
+import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
@@ -26,11 +26,11 @@ public abstract class DBDeleteTask implements IDatabaseTask {
      *
      * @throws TaskExecutionException when number of deleted rows not equals of number of rows which had to be removed.
      */
-    protected void execute(@Nonnull CompiledQuery query, @Nonnull IDeletionQuery message)
+    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final IDeletionQueryMessage message)
             throws TaskExecutionException {
         try {
             int nDeleted = query.executeUpdate();
-            if(nDeleted != message.countDocumentIds())
+            if (nDeleted != message.countDocumentIds())
                 throw new TaskExecutionException("'Delete task' has been failed: wrong count of documents is deleted.");
         } catch (QueryExecutionException e) {
             throw new TaskExecutionException("'Delete task' execution has been failed because:", e);
