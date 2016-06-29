@@ -14,6 +14,8 @@ public interface GetObjectFromCachedCollectionQuery {
     String getKey() throws ChangeValueException;// TODO: write custom name for field
     void setCollectionName(CollectionName collectionName) throws ChangeValueException;
     void setKey(String key) throws ChangeValueException;
-    IObject wrapped() throws ReadValueException;
     Stream<IObject> getSearchResult() throws ReadValueException;
+
+    //NOTE:: this is proto of method instead of extractWrapped() from IObjectWrapper
+    IObject wrapped() throws ReadValueException, ChangeValueException;
 }

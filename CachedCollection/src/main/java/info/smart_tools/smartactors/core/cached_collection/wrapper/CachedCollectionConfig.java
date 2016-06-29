@@ -15,16 +15,16 @@ public interface CachedCollectionConfig {
      * @throws ReadValueException
      * @throws ChangeValueException
      */
-    IPool getConnectionPool() throws ReadValueException, ChangeValueException;
+    IPool getConnectionPool() throws ReadValueException;
 
     /**
      * @return collection name
      * @throws ReadValueException
      * @throws ChangeValueException
      */
-    CollectionName getCollectionName() throws ReadValueException, ChangeValueException;
+    CollectionName getCollectionName() throws ReadValueException;
 
     //TODO:: Should be in another wrapper?
-    void setConnectionPool(IPool connectionPool) throws ReadValueException, ChangeValueException;
-    void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
+    void setConnectionPool(IPool connectionPool) throws ChangeValueException;
+    void setCollectionName(CollectionName collectionName) throws ChangeValueException;
 }

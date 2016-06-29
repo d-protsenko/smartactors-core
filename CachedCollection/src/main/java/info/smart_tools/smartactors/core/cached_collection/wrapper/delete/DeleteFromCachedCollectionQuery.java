@@ -7,10 +7,10 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 public interface DeleteFromCachedCollectionQuery {
 
-    void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
-    void setDeleteItem(DeleteItem deleteItem) throws ReadValueException, ChangeValueException;
+    void setCollectionName(CollectionName collectionName) throws ChangeValueException;
+    void setDeleteItem(DeleteItem deleteItem) throws ChangeValueException;
 
-    DeleteItem getDeleteItem() throws ReadValueException, ChangeValueException;
+    DeleteItem getDeleteItem() throws ReadValueException;
 
     //NOTE:: this is proto of method instead of extractWrapped() from IObjectWrapper
     IObject wrapped() throws ReadValueException, ChangeValueException;

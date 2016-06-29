@@ -7,10 +7,10 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 public interface UpsertIntoCachedCollectionQuery {
 
-    void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
-    void setUpsertItem(UpsertItem deleteItem) throws ReadValueException, ChangeValueException;
+    void setCollectionName(CollectionName collectionName) throws ChangeValueException;
+    void setUpsertItem(UpsertItem deleteItem) throws ChangeValueException;
 
-    UpsertItem getUpsertItem() throws ReadValueException, ChangeValueException;
+    UpsertItem getUpsertItem() throws ReadValueException;
 
     //NOTE:: this is proto of method instead of extractWrapped() from IObjectWrapper
     IObject wrapped() throws ReadValueException, ChangeValueException;

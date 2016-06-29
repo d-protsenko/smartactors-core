@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 public interface DeleteItem {
 
-    String getId() throws ReadValueException, ChangeValueException;
-    String getKey() throws ReadValueException, ChangeValueException;
-    void setIsActive(Boolean isActive) throws ReadValueException, ChangeValueException;
+    String getId() throws ReadValueException;
+    String getKey() throws ReadValueException;
+    void setIsActive(Boolean isActive) throws ChangeValueException;
 }

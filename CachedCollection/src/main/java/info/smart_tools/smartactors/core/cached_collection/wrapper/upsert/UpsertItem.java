@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
 
 public interface UpsertItem {
 
-    String getId() throws ReadValueException, ChangeValueException;
-    Boolean isActive() throws ReadValueException, ChangeValueException;
-    void setIsActive(Boolean isActive) throws ReadValueException, ChangeValueException;
-    String getKey() throws ReadValueException, ChangeValueException;
-    LocalDateTime getStartDateTime() throws ReadValueException, ChangeValueException;
-    void setStartDateTime(LocalDateTime startDateTime) throws ReadValueException, ChangeValueException;
+    String getId() throws ReadValueException;
+    Boolean isActive() throws ReadValueException;
+    void setIsActive(Boolean isActive) throws ChangeValueException;
+    String getKey() throws ReadValueException;
+    LocalDateTime getStartDateTime() throws ReadValueException;
+    void setStartDateTime(LocalDateTime startDateTime) throws ChangeValueException;
 
+    //NOTE:: this is proto of method instead of extractWrapped() from IObjectWrapper
     IObject wrapped() throws ReadValueException, ChangeValueException;
 }

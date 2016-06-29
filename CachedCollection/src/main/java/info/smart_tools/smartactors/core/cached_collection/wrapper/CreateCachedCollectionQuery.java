@@ -8,9 +8,9 @@ import java.util.Map;
 
 public interface CreateCachedCollectionQuery {
 
-    String getKey() throws ReadValueException, ChangeValueException;
+    String getKey() throws ReadValueException;
 
-    void setIndexes(Map<String, String> indexes) throws ReadValueException, ChangeValueException;
+    void setIndexes(Map<String, String> indexes) throws ChangeValueException;
 
     //NOTE:: this is proto of method instead of extractWrapped() from IObjectWrapper
     IObject wrapped() throws ReadValueException, ChangeValueException;
