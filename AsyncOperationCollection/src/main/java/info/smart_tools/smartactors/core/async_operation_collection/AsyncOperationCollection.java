@@ -1,0 +1,85 @@
+package info.smart_tools.smartactors.core.async_operation_collection;
+
+import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.GetAsyncOperationQuery;
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+
+public class AsyncOperationCollection implements IAsyncOperationCollection {
+
+    private IPool connectionPool;
+    private CollectionName collectionName;
+
+    public AsyncOperationCollection(final IPool connectionPool) {
+        this.connectionPool = connectionPool;
+        try {
+            this.collectionName = CollectionName.fromString("async_operation");
+        } catch (QueryBuildException e) {
+
+        }
+    }
+
+    @Override
+    public IObject getAsyncOperation(final String token) throws GetAsyncOperationException {
+
+        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            IDatabaseTask getItemTask = IOC.resolve(Keys.getOrAdd(GetAsyncOperationTask.class.toString()));
+            if (getItemTask == null) {
+                IDatabaseTask nestedTask = IOC.resolve(
+                    Keys.getOrAdd(IDatabaseTask.class.toString()), GetAsyncOperationTask.class.toString()
+                );
+                if (nestedTask == null) {
+                    throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+                }
+                getItemTask = new GetAsyncOperationTask(nestedTask);
+                IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(getItemTask));
+
+            }
+            GetAsyncOperationQuery getItemQuery = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()));
+            getItemQuery.setCollectionName(collectionName);
+            getItemQuery.setToken(token);
+            getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
+            getItemTask.prepare(getItemQuery.wrapped());
+            getItemTask.execute();
+
+            return getItemQuery.getSearchResult().get(0);
+        } catch (ResolutionException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (InvalidArgumentException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (RegistrationException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (PoolGuardException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (ReadValueException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (TaskSetConnectionException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (ChangeValueException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (TaskPrepareException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        } catch (TaskExecutionException e) {
+            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+        }
+    }
+}
