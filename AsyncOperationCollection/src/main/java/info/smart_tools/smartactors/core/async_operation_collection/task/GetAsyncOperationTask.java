@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.AsyncOperationTaskQuery;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.EQMessage;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.GetAsyncOperationQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.AsyncOperationTaskQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.EQMessage;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -15,10 +15,17 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+/**
+ * Task-facade for read task for async operations collection
+ */
 public class GetAsyncOperationTask implements IDatabaseTask {
 
     private IDatabaseTask getItemTask;
 
+    /**
+     * Constructor
+     * @param getItemTask nested task for read object
+     */
     public GetAsyncOperationTask(final IDatabaseTask getItemTask) {
         this.getItemTask = getItemTask;
     }
@@ -27,7 +34,6 @@ public class GetAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             GetAsyncOperationQuery srcQueryObject = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()), query);
-
             AsyncOperationTaskQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(AsyncOperationTaskQuery.class.toString()));
 
             EQMessage tokenCondition = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()));
