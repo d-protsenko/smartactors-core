@@ -93,6 +93,7 @@
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
+        <module>CreateAsyncOperation</module>
     </modules>
 
     <build>
