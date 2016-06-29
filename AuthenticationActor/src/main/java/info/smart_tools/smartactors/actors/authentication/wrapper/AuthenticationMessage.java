@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.actors.authentication.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 /**
@@ -9,15 +7,15 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
  */
 public interface AuthenticationMessage {
     /**
-     * @return auth information from session
+     * @return auth information from http request
      * @throws ReadValueException
      */
-    IObject getAuthInfo() throws ReadValueException;
+    String getRequestUserAgent() throws ReadValueException;
 
     /**
      * Set error to message if validation is failed
-     * @param error the error message
-     * @throws ChangeValueException
+     * @return auth information from user session
+     * @throws ReadValueException
      */
-    void setError(String error) throws ChangeValueException;
+    String getSessionUserAgent() throws ReadValueException;
 }
