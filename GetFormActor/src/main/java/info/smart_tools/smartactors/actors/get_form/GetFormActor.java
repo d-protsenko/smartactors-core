@@ -1,8 +1,8 @@
-package com.perspective.actors.get_form;
+package info.smart_tools.smartactors.actors.get_form;
 
-import com.perspective.actors.get_form.strategy.IFormsStrategy;
-import com.perspective.actors.get_form.wrapper.ActorParams;
-import com.perspective.actors.get_form.wrapper.GetFormMessage;
+import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
+import info.smart_tools.smartactors.actors.get_form.wrapper.ActorParams;
+import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;

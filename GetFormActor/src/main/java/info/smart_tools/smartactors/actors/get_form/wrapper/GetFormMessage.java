@@ -1,4 +1,4 @@
-package com.perspective.actors.get_form.wrapper;
+package info.smart_tools.smartactors.actors.get_form.wrapper;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
 
