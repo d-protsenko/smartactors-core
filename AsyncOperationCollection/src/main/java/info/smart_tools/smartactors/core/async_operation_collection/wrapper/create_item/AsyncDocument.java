@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.async_operation_collection.wrapper;
+package info.smart_tools.smartactors.core.async_operation_collection.wrapper.create_item;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;

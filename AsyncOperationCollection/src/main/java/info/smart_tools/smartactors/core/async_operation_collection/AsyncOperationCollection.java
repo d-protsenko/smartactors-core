@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.async_operation_collection.exception.Ge
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.CreateOperationQuery;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.GetAsyncOperationQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -27,17 +27,26 @@ import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
+/**
+ * Implementation of collection for asynchronous operations
+ * TODO:: realize cache
+ */
 public class AsyncOperationCollection implements IAsyncOperationCollection {
 
     private IPool connectionPool;
     private CollectionName collectionName;
 
-    public AsyncOperationCollection(final IPool connectionPool) {
+    /**
+     * Constructor for implementation
+     * @param connectionPool connection pool
+     * @throws InvalidArgumentException if we can't create collection name
+     */
+    public AsyncOperationCollection(final IPool connectionPool) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
         try {
             this.collectionName = CollectionName.fromString("async_operation");
         } catch (QueryBuildException e) {
-
+            throw new InvalidArgumentException("Can't create async operations collection.", e);
         }
     }
 
@@ -66,23 +75,19 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
             return getItemQuery.getSearchResult().get(0);
         } catch (ResolutionException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
-        } catch (InvalidArgumentException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
-        } catch (RegistrationException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+            throw new GetAsyncOperationException("Can't resolve object during get operation.", e);
+        } catch (InvalidArgumentException | RegistrationException e) {
+            throw new GetAsyncOperationException("Can't register strategy for getItem task.", e);
         } catch (PoolGuardException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
-        } catch (ReadValueException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+            throw new GetAsyncOperationException("Can't get connection from pool.", e);
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new GetAsyncOperationException("Can't read asynchronous operation.", e);
         } catch (TaskSetConnectionException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
-        } catch (ChangeValueException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+            throw new GetAsyncOperationException("Can't set connection to read task.", e);
         } catch (TaskPrepareException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+            throw new GetAsyncOperationException("Error during preparing read task.", e);
         } catch (TaskExecutionException e) {
-            throw new GetAsyncOperationException("Can't create nested task for getItem task.");
+            throw new GetAsyncOperationException("Error during execution read task.", e);
         }
     }
 
