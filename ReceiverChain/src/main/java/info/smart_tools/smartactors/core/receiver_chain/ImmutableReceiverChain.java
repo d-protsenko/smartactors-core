@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.util.Map;
+
 /**
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
  */
@@ -12,7 +14,7 @@ public class ImmutableReceiverChain implements IReceiverChain {
     private final String name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
-    private final IReceiverChain exceptionalReceiverChain;
+    private final Map<Class<? extends Throwable>, IReceiverChain> exceptionalChains;
 
     /**
      * The constructor.
@@ -20,13 +22,12 @@ public class ImmutableReceiverChain implements IReceiverChain {
      * @param name                        name of the chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
-     * @param exceptionalReceiverChain    chain that should be returned by {@link IReceiverChain#getExceptionalChain(Throwable)}
-     *                                    on any exception
+     * @param exceptionalChains           mapping from exception class to exceptional chain to use when it occurs
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      */
     public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
-                                  final IReceiverChain exceptionalReceiverChain)
+                                  final Map<Class<? extends Throwable>, IReceiverChain> exceptionalChains)
             throws InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
@@ -44,10 +45,14 @@ public class ImmutableReceiverChain implements IReceiverChain {
             throw new InvalidArgumentException("Length of arguments list  does not match length of receivers list.");
         }
 
+        if (null == exceptionalChains) {
+            throw new InvalidArgumentException("Exceptional chains list should not be null");
+        }
+
         this.name = name;
         this.receivers = receivers;
         this.arguments = arguments;
-        this.exceptionalReceiverChain = exceptionalReceiverChain;
+        this.exceptionalChains = exceptionalChains;
     }
 
     @Override
@@ -75,6 +80,24 @@ public class ImmutableReceiverChain implements IReceiverChain {
 
     @Override
     public IReceiverChain getExceptionalChain(final Throwable exception) {
-        return exceptionalReceiverChain;
+        Throwable e = exception;
+
+        do {
+            for (Map.Entry<Class<? extends Throwable>, IReceiverChain> entry : this.exceptionalChains.entrySet()) {
+                if (entry.getKey().isAssignableFrom(e.getClass())) {
+                    return entry.getValue();
+                }
+            }
+
+            Throwable eNext = e.getCause();
+
+            if (eNext == e) {
+                break;
+            }
+
+            e = eNext;
+        } while (null != e);
+
+        return null;
     }
 }
