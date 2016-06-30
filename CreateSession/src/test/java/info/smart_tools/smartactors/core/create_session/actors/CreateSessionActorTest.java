@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.create_session;
+package info.smart_tools.smartactors.core.create_session.actors;
 
 import info.smart_tools.smartactrors.core.actrors.create_session.CreateSessionActor;
 import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionMessage;
