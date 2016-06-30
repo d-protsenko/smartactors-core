@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
@@ -30,18 +31,22 @@ abstract class DBUpsert implements IDatabaseTask {
      * @param insertMessage - contains parameters for insert query.
      *          {@see IInsertMessage}:
      *                      {@link IUpsertQueryMessage#getCollectionName()},
-     *                      {@link IUpsertQueryMessage#countDocuments()}.
      *
      * @throws TaskPrepareException {@see IDatabaseTask} {@link IDatabaseTask#prepare(IObject)}
      */
     @Override
     public void prepare(final IObject insertMessage) throws TaskPrepareException {
         try {
-            verify(connection);
-            IUpsertQueryMessage queryMessage = takeQueryMessage(insertMessage);
+            checkConnection(connection);
+            IUpsertQueryMessage queryMessage = takeMessageWrapper(insertMessage);
+            if (requiresExit(message)) {
+                setInternalState(null , queryMessage);
+                return;
+            }
             CompiledQuery compiledQuery = takeQuery(connection, queryMessage);
             setInternalState(formatQuery(compiledQuery, queryMessage), queryMessage);
-        } catch (QueryBuildException | ResolutionException | TaskSetConnectionException e) {
+        } catch (QueryBuildException | ResolutionException |
+                TaskSetConnectionException | ReadValueException e) {
             throw new TaskPrepareException("Can't prepare query because: " + e.getMessage(), e);
         }
     }
@@ -54,11 +59,15 @@ abstract class DBUpsert implements IDatabaseTask {
      */
     @Override
     public void execute() throws TaskExecutionException {
-        if (requiresExit(message)) {
-            return;
+        try {
+            if (requiresExit(message)) {
+                return;
+            }
+            checkExecutionConditions();
+            execute(query, message);
+        } catch (ReadValueException e) {
+            throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
         }
-        checkExecutionConditions();
-        execute(query, message);
     }
 
     /**
@@ -71,7 +80,7 @@ abstract class DBUpsert implements IDatabaseTask {
      *                  {@link IDatabaseTask#setStorageConnection(StorageConnection)}
      */
     public void setStorageConnection(final StorageConnection storageConnection) throws TaskSetConnectionException {
-        verify(storageConnection);
+        checkConnection(storageConnection);
         connection = storageConnection;
     }
 
@@ -90,7 +99,7 @@ abstract class DBUpsert implements IDatabaseTask {
             @Nonnull final IUpsertQueryMessage queryMessage
     ) throws TaskExecutionException;
 
-    private IUpsertQueryMessage takeQueryMessage(final IObject object) throws ResolutionException {
+    private IUpsertQueryMessage takeMessageWrapper(final IObject object) throws ResolutionException {
         return IOC.resolve(
                 Keys.getOrAdd(IUpsertQueryMessage.class.toString()),
                 object);
@@ -101,8 +110,8 @@ abstract class DBUpsert implements IDatabaseTask {
         this.message = message;
     }
 
-    private boolean requiresExit(final IUpsertQueryMessage queryMessage) {
-        return queryMessage != null && queryMessage.countDocuments() == 0;
+    private boolean requiresExit(final IUpsertQueryMessage queryMessage) throws ReadValueException {
+        return queryMessage != null && queryMessage.getDocument() == null;
     }
 
     private void checkExecutionConditions() throws TaskExecutionException {
@@ -111,7 +120,7 @@ abstract class DBUpsert implements IDatabaseTask {
         }
     }
 
-    private void verify(final StorageConnection connection) throws TaskSetConnectionException {
+    private void checkConnection(final StorageConnection connection) throws TaskSetConnectionException {
         if (connection == null) {
             throw new TaskSetConnectionException("Connection should not be a null or empty!");
         }

@@ -1,11 +1,8 @@
 package info.smart_tools.smartactors.core.db_task.upsert;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.PSQLInsertTask;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.PSQLUpdateTask;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -16,43 +13,64 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.List;
+import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DBUpsertTask implements IDatabaseTask {
     private Map<String, IDatabaseTask> subTasks;
+    private IDatabaseTask currentTask;
     private StorageConnection connection;
-    private List<IObject> insertDocuments;
-    private List<IObject> updateDocuments;
 
-    private static final String INSERT_MODE = "insert";
-    private static final String UPDATE_MODE = "update";
+    private static final String INSERT_MODE = "INSERT";
+    private static final String UPDATE_MODE = "UPDATE";
 
     protected DBUpsertTask() {
-        subTasks.put(INSERT_MODE, PSQLInsertTask.create());
-        subTasks.put(UPDATE_MODE, PSQLUpdateTask.create());
+        subTasks = new HashMap<>(2);
     }
 
     @Override
     public void prepare(final IObject upsertMessage) throws TaskPrepareException {
         try {
-            verify(connection);
-            IUpsertQueryMessage upsertMessageWrapper = takeQueryMessage(upsertMessage);
-
+            checkConnection(connection);
+            IUpsertQueryMessage queryMessage = takeMessageWrapper(upsertMessage);
+            prepareDocuments(queryMessage.getCollectionName(), queryMessage.getDocument());
+            prepareSubTask(currentTask, queryMessage.getCollectionName(), queryMessage.getDocument());
+        } catch (Exception e) {
+            throw new TaskPrepareException("Can't prepare upsert task because: " + e.getMessage(), e);
         }
+    }
 
+    @Override
+    public void execute() throws TaskExecutionException {
+        try {
+            currentTask.execute();
+        } catch (Exception e) {
+            throw new TaskExecutionException("'Upsert task' execution has been failed because:" + e.getMessage(), e);
+        }
     }
 
     @Override
     public void setStorageConnection(final StorageConnection storageConnection)
             throws TaskSetConnectionException {
-        verify(storageConnection);
+        checkConnection(storageConnection);
         connection = storageConnection;
     }
 
-    private IUpsertQueryMessage takeQueryMessage(final IObject message) throws QueryBuildException {
+    protected DBUpsertTask setInsertTask(@Nonnull final IDatabaseTask insertTask) {
+        subTasks.put(INSERT_MODE, insertTask);
+        return this;
+    }
+
+    protected DBUpsertTask setUpdatetTask(@Nonnull final IDatabaseTask updatetTask) {
+        subTasks.put(UPDATE_MODE, updatetTask);
+        return this;
+    }
+
+    private IUpsertQueryMessage takeMessageWrapper(final IObject message) throws QueryBuildException {
         try {
             return IOC.resolve(
                     Keys.getOrAdd(IUpsertQueryMessage.class.toString()),
@@ -62,41 +80,28 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
-    private void prepare(final IUpsertQueryMessage upsertMessage) throws TaskPrepareException {
-        try {
-            String collection = upsertMessage.getCollectionName().toString();
-            prepareDocuments(collection, upsertMessage.getDocuments());
-            prepareSubTask(subTasks.get(INSERT_MODE), upsertMessage.getCollectionName(), insertDocuments);
-            prepareSubTask(subTasks.get(UPDATE_MODE), upsertMessage.getCollectionName(), updateDocuments);
-        } catch (ReadValueException | ChangeValueException | ResolutionException e) {
-            throw new TaskPrepareException();
-        }
-    }
-
-    private void prepareDocuments(final String collection, final List<IObject> documents)
+    private void prepareDocuments(final CollectionName collection, final IObject document)
             throws ResolutionException, ReadValueException {
-
         IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
-        for (IObject document : documents) {
-            String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), document.getValue(idFN));
-            if (id == null) {
-                insertDocuments.add(document);
-            } else {
-                updateDocuments.add(document);
-            }
+        String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), document.getValue(idFN));
+        if (id == null) {
+            currentTask = subTasks.get(INSERT_MODE);
+        } else {
+            currentTask = subTasks.get(UPDATE_MODE);
         }
     }
 
-    private void prepareSubTask(IDatabaseTask task, CollectionName collection, List<IObject> documents)
-            throws ResolutionException, ChangeValueException {
+    private void prepareSubTask(IDatabaseTask task, CollectionName collection, IObject document)
+            throws ChangeValueException, TaskPrepareException, ResolutionException {
+
         IUpsertQueryMessage upsertMessage = IOC.resolve(Keys.getOrAdd(IUpsertQueryMessage.class.toString()));
         upsertMessage.setCollectionName(collection);
-        upsertMessage.setDocuments(documents);
-
-        task.prepare();
+        upsertMessage.setDocument(document);
+        IObject preparedMessage = IOC.resolve(Keys.getOrAdd("ExtractWrapper"), upsertMessage);
+        task.prepare(preparedMessage);
     }
 
-    private void verify(final StorageConnection connection) throws TaskSetConnectionException {
+    private void checkConnection(final StorageConnection connection) throws TaskSetConnectionException {
         if (connection == null) {
             throw new TaskSetConnectionException("Connection should not be a null or empty!");
         }

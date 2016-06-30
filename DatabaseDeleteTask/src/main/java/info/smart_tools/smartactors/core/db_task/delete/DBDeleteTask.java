@@ -33,7 +33,7 @@ public abstract class DBDeleteTask implements IDatabaseTask {
             if (nDeleted != message.countDocumentIds())
                 throw new TaskExecutionException("'Delete task' has been failed: wrong count of documents is deleted.");
         } catch (QueryExecutionException e) {
-            throw new TaskExecutionException("'Delete task' execution has been failed because:", e);
+            throw new TaskExecutionException("'Delete task' execution has been failed because:" + e.getMessage(), e);
         }
     }
 }

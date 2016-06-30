@@ -46,16 +46,13 @@ public class PSQLInsertTask extends DBInsertTask {
                     Keys.getOrAdd(QueryKey.class.toString()),
                     connection.getId(),
                     PSQLUpdateTask.class.toString(),
-                    queryMessage.getCollectionName().toString(),
-                    queryMessage.countDocuments());
+                    queryMessage.getCollectionName().toString());
 
             return IOC.resolve(
                     Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
-                    getQueryStatementFactory(
-                            queryMessage.getCollectionName().toString(),
-                            queryMessage.countDocuments()));
+                    getQueryStatementFactory(queryMessage.getCollectionName().toString()));
         } catch (ReadValueException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -71,11 +68,8 @@ public class PSQLInsertTask extends DBInsertTask {
     protected CompiledQuery formatQuery(final CompiledQuery query, final IUpsertQueryMessage message)
             throws QueryBuildException {
 
-        int documentsNumber = message.countDocuments();
         query.setParameters(Collections.singletonList((statement, index) -> {
-            for (int i = 0; i < documentsNumber; ++i) {
-                statement.setString(index++, message.getDocuments(i).toString());
-            }
+            statement.setString(index++, message.getDocument().toString());
             return index;
         }));
 
@@ -85,16 +79,14 @@ public class PSQLInsertTask extends DBInsertTask {
     /**
      *
      * @param collection
-     * @param documentsNumber
      * @return
      */
-    private QueryStatementFactory getQueryStatementFactory(final String collection, final int documentsNumber) {
+    private QueryStatementFactory getQueryStatementFactory(final String collection) {
         return  () -> {
             try {
-                return QueryStatementBuilder
+                return InsertQueryStatementBuilder
                         .create()
                         .withCollection(collection)
-                        .withDocumentsNumber(documentsNumber)
                         .build();
             } catch (QueryBuildException e) {
                 throw new QueryStatementFactoryException("Error while initialize an insert query.", e);

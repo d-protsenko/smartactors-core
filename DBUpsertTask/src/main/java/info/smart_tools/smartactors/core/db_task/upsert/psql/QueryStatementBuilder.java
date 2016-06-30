@@ -12,30 +12,14 @@ import java.io.IOException;
 /**
  *
  */
-final class QueryStatementBuilder {
+abstract class QueryStatementBuilder {
     private String collection;
-    private int documents;
-
-    private static final String FIRST_PART_TEMPLATE = "UPDATE ";
-    private static final String SECOND_PART_TEMPLATE = " AS tab SET document = docs.document FROM (VALUES";
-    private static final String THIRD_PART_TEMPLATE = "(?,?::jsonb)";
-    private static final String FOURTH_PART_TEMPLATE = ") AS docs (id, document) WHERE tab.id = docs.id;";
-
-    private static final int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() +
-            SECOND_PART_TEMPLATE.length() + FOURTH_PART_TEMPLATE.length();
 
     /**
      *
      */
-    private QueryStatementBuilder() {}
+    protected QueryStatementBuilder() {}
 
-    /**
-     *
-     * @return
-     */
-    static QueryStatementBuilder create() {
-        return new QueryStatementBuilder();
-    }
 
     /**
      *
@@ -49,39 +33,20 @@ final class QueryStatementBuilder {
 
     /**
      *
-     * @param documentsNumber
-     * @return
-     */
-    QueryStatementBuilder withDocumentsNumber(final int documentsNumber) {
-        validateDocumentsNumber(documentsNumber);
-        documents = documentsNumber;
-        return this;
-    }
-
-    /**
-     *
      * @return
      * @throws QueryBuildException
      */
     QueryStatement build() throws QueryBuildException {
         try {
             requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
-            validateDocumentsNumber(documents);
 
             QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
-            StringBuilder queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length() +
-                    documents * THIRD_PART_TEMPLATE.length() + (documents - 1));
+            StringBuilder queryBuilder = new StringBuilder(getTemplateSize() + collection.length());
 
             queryBuilder
-                    .append(FIRST_PART_TEMPLATE)
+                    .append(getTemplateParts()[0])
                     .append(collection)
-                    .append(SECOND_PART_TEMPLATE);
-            for (int i = 0; i < documents; ++i) {
-                queryBuilder
-                        .append(THIRD_PART_TEMPLATE)
-                        .append((i == 1) ? "" : ",");
-            }
-            queryBuilder.append(FOURTH_PART_TEMPLATE);
+                    .append(getTemplateParts()[1]);
             preparedQuery.getBodyWriter().write(queryBuilder.toString());
 
             return preparedQuery;
@@ -90,11 +55,9 @@ final class QueryStatementBuilder {
         }
     }
 
-    private void validateDocumentsNumber(final int number) {
-        if (number <= 0) {
-            throw new IllegalArgumentException("The documents number should be a more than zero.");
-        }
-    }
+    protected abstract String[] getTemplateParts();
+
+    protected abstract int getTemplateSize();
 
     private void requiresNonnull(final String str, final String message) throws QueryBuildException {
         if (str == null || str.isEmpty()) {

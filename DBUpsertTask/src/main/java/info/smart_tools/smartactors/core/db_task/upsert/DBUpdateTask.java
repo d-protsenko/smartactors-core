@@ -31,11 +31,11 @@ public abstract class DBUpdateTask extends DBUpsert {
             throws TaskExecutionException {
         try {
             int nUpdated = query.executeUpdate();
-            if (nUpdated != message.countDocuments()) {
+            if (nUpdated != 1) {
                 throw new QueryExecutionException("Update query failed: wrong count of documents is updated.");
             }
         } catch (QueryExecutionException e) {
-            throw new TaskExecutionException("Update query execution failed because of SQL exception.", e);
+            throw new TaskExecutionException("Update query execution failed because:" + e.getMessage(), e);
         }
     }
 }

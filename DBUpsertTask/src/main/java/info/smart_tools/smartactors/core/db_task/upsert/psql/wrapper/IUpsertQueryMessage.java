@@ -12,22 +12,22 @@ import java.util.List;
  */
 public interface IUpsertQueryMessage {
     /**
-     * Takes a documents from the message.
+     * Takes a document from the message.
      *
      * @return {@link IObject} instance of the document.
      *
      * @throws ReadValueException when the document value couldn't been read.
      */
-    List<IObject> getDocuments() throws ReadValueException;
+    IObject getDocument() throws ReadValueException;
 
     /**
-     * Adds documents list field to the message.
+     * Adds document field to the message.
      *
      * @param documents - documents list for inserting/updating.
      *
      * @throws ChangeValueException when the documents list field couldn't been added to the message.
      */
-    void setDocuments(List<IObject> documents) throws ChangeValueException;
+    void setDocument(IObject documents) throws ChangeValueException;
 
     /**
      * Takes collection name from the message.

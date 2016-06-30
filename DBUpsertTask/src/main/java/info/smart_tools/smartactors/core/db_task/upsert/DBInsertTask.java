@@ -3,9 +3,14 @@ package info.smart_tools.smartactors.core.db_task.upsert;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -37,35 +42,41 @@ public abstract class DBInsertTask extends DBUpsert {
 
             addIdsInResult(resultSet, message);
         } catch (QueryExecutionException | SQLException e) {
-            throw new TaskExecutionException("'Insert query' execution has been failed: ", e);
+            throw new TaskExecutionException("'Insert query' execution has been failed: " + e.getMessage(), e);
         }
     }
 
-    private static void addIdsInResult(
+    private void addIdsInResult(
             final ResultSet resultSet,
             final IUpsertQueryMessage message
     ) throws TaskExecutionException {
         try {
             int docCounter = 0;
             while (resultSet.next()) {
-                if (docCounter >= message.countDocuments()) {
-                    throw new TaskExecutionException("Database returned too much of generated ids.");
-                }
                 try {
-                    message.getDocuments(docCounter).setId(resultSet.getLong("id"));
+                    String collection = message.getCollectionName().toString();
+                    setDocumentId(message.getDocument(), collection, resultSet.getString("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
                 } catch (ReadValueException e) {
                     throw new TaskExecutionException("Could not read document with index " + docCounter + ".");
                 }
-
                 docCounter++;
             }
-            if (docCounter < message.countDocuments()) {
+            if (docCounter >= 1) {
+                throw new TaskExecutionException("Database returned too much of generated ids.");
+            }
+            if (docCounter < 1) {
                 throw new TaskExecutionException("Database returned not enough of generated ids.");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ResolutionException e) {
             throw new TaskExecutionException(e.getMessage(), e);
         }
+    }
+
+    private void setDocumentId(final IObject document, String collection, String id)
+            throws ChangeValueException, ResolutionException {
+        IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
+        document.setValue(idFN, id);
     }
 }

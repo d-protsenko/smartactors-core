@@ -7,6 +7,8 @@ import info.smart_tools.smartactors.core.db_task.upsert.DBUpdateTask;
 import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -46,16 +48,14 @@ public class PSQLUpdateTask extends DBUpdateTask {
                     Keys.getOrAdd(QueryKey.class.toString()),
                     connection.getId(),
                     PSQLUpdateTask.class.toString(),
-                    queryMessage.getCollectionName().toString(),
-                    queryMessage.countDocuments());
+                    queryMessage.getCollectionName().toString());
 
             return IOC.resolve(
                     Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
                     getQueryStatementFactory(
-                            queryMessage.getCollectionName().toString(),
-                            queryMessage.countDocuments()));
+                            queryMessage.getCollectionName().toString()));
         } catch (ReadValueException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -66,35 +66,39 @@ public class PSQLUpdateTask extends DBUpdateTask {
             @Nonnull final CompiledQuery compiledQuery,
             @Nonnull final IUpsertQueryMessage updateQueryMessage
     ) throws QueryBuildException {
-        int documentsNumber = updateQueryMessage.countDocuments();
         compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
-            for (int i = 0; i < documentsNumber; i++) {
-                try {
-                    statement.setLong(index++, updateQueryMessage.getDocuments(i).getId());
-                } catch (ReadValueException | NullPointerException | NumberFormatException e) {
-                    throw new QueryBuildException("Error while writing update query statement: " +
-                            "could not read document's id.", e);
-                }
-                statement.setString(index++, updateQueryMessage.getDocuments(i).toString());
+            try {
+                String collection = updateQueryMessage.getCollectionName().toString();
+                String documentId = takeDocumentId(updateQueryMessage.getDocument(), collection);
+                statement.setString(index++, documentId);
+                statement.setString(index++, updateQueryMessage.getDocument().toString());
+
+                return index;
+            } catch (ReadValueException e) {
+                throw new QueryBuildException("Error while writing update query statement: " +
+                        "could not read document's id.", e);
             }
-            return index;
         }));
 
         return compiledQuery;
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final String collection, final int documentsNumber)
-            throws QueryBuildException {
+    private QueryStatementFactory getQueryStatementFactory(final String collection) {
         return  () -> {
             try {
-                return QueryStatementBuilder
+                return UpdateQueryStatementBuilder
                         .create()
                         .withCollection(collection)
-                        .withDocumentsNumber(documentsNumber)
                         .build();
             } catch (QueryBuildException e) {
                 throw new QueryStatementFactoryException("Error while initialize an insert query.", e);
             }
         };
+    }
+
+    private String takeDocumentId(final IObject document, String collection)
+            throws ResolutionException, ReadValueException {
+        IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
+        return document.getValue(idFN).toString();
     }
 }
