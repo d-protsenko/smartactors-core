@@ -37,13 +37,10 @@ public class GetAsyncOperationTaskTest {
     private GetAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
 
-    private String key = "key";
-
     @Before
     public void prepare () throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
-        mockStatic(LocalDateTime.class);
 
         targetTask = mock(IDatabaseTask.class);
         testTask = new GetAsyncOperationTask(targetTask);
