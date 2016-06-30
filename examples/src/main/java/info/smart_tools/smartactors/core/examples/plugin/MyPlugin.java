@@ -28,9 +28,14 @@ public class MyPlugin implements IPlugin {
             item.after("IOC");                                              // dependency, we need IOC
             item.process(() -> {
                 try {
-                    IKey<MyClass>key = IOC.resolve(IOC.getKeyForKeyStorage(), "new MyClass");
-                    IOC.register(key, new CreateNewInstanceStrategy(        // it's the initialization action of our plugin
-                            (args) -> new MyClass((String) args[0])));
+                    IKey key = IOC.resolve(IOC.getKeyForKeyStorage(), "new MyClass");
+                    IOC.register(
+                            key,
+                            // it's the initialization action of our plugin
+                            new CreateNewInstanceStrategy(
+                                    (args) -> new MyClass((String) args[0])
+                            )
+                    );
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
