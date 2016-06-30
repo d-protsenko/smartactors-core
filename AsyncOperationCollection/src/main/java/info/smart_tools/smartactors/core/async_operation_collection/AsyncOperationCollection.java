@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.core.async_operation_collection;
 
+import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.task.UpdateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -85,6 +88,49 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             throw new GetAsyncOperationException("Error during preparing read task.", e);
         } catch (TaskExecutionException e) {
             throw new GetAsyncOperationException("Error during execution read task.", e);
+        }
+    }
+
+    @Override
+    public void complete(final String token) throws CompleteAsyncOperationException {
+
+        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            IDatabaseTask updateTask = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationTask.class.toString()));
+            if (updateTask == null) {
+                IDatabaseTask nestedTask = IOC.resolve(
+                    Keys.getOrAdd(IDatabaseTask.class.toString()), UpdateAsyncOperationTask.class.toString()
+                );
+                if (nestedTask == null) {
+                    throw new CompleteAsyncOperationException("Can't create nested task for update task.");
+                }
+                updateTask = new UpdateAsyncOperationTask(nestedTask);
+                IOC.register(Keys.getOrAdd(UpdateAsyncOperationTask.class.toString()), new SingletonStrategy(updateTask));
+            }
+            UpdateAsyncOperationQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationQuery.class.toString()));
+            upsertQuery.setCollectionName(collectionName);
+            //TODO:: Should it be wrapped by transaction or smth else?
+            IObject updateItem = getAsyncOperation(token);
+            upsertQuery.setUpdateItem(updateItem);
+
+            updateTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
+            updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), upsertQuery));
+            updateTask.execute();
+        } catch (TaskExecutionException e) {
+            throw new CompleteAsyncOperationException("Error during execution complete.", e);
+        } catch (PoolGuardException e) {
+            throw new CompleteAsyncOperationException("Can't get connection from pool.", e);
+        } catch (TaskSetConnectionException e) {
+            throw new CompleteAsyncOperationException("Can't set connection to update task.", e);
+        } catch (TaskPrepareException e) {
+            throw new CompleteAsyncOperationException("Error during preparing update task.", e);
+        } catch (InvalidArgumentException | RegistrationException e) {
+            throw new CompleteAsyncOperationException("Can't register strategy for update task.", e);
+        } catch (ChangeValueException e) {
+            throw new CompleteAsyncOperationException("Can't complete async operation.", e);
+        } catch (ResolutionException e) {
+            throw new CompleteAsyncOperationException("Can't resolve async operation object.", e);
+        } catch (GetAsyncOperationException e) {
+            throw new CompleteAsyncOperationException("Can't get async operation by token.", e);
         }
     }
 }

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 public interface UpsertIntoCachedCollectionQuery {
 
     void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
-    void setUpsertItem(UpsertItem deleteItem) throws ReadValueException, ChangeValueException;
+    void setUpsertItem(UpsertItem upsertItem) throws ReadValueException, ChangeValueException;
 
     UpsertItem getUpsertItem() throws ReadValueException, ChangeValueException;
 

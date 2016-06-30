@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.core.cached_collection.task;
+package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -14,34 +14,30 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.time.LocalDateTime;
-
 /**
- * Makes add or update operation for cached collection
+ * Task for mark async operation as done
  */
-public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
+public class UpdateAsyncOperationTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
 
-    public UpsertIntoCachedCollectionTask(IDatabaseTask upsertTask) {
+    /**
+     * Constructor
+     * @param upsertTask nested task for update operation
+     */
+    public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) {
         this.upsertTask = upsertTask;
     }
 
-    /**
-     * Prepares database query
-     * @param query query object
-     * @throws TaskPrepareException if error occurs in process of query preparing
-     */
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            UpsertIntoCachedCollectionQuery message = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()), query);
-            UpsertItem upsertItem = message.getUpsertItem();
-            if (upsertItem.getStartDateTime() == null) {
-                upsertItem.setStartDateTime(LocalDateTime.now());
-            }
-            upsertTask.prepare(message.wrapped());
+            UpdateAsyncOperationQuery message = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationQuery.class.toString()), query);
+            //TODO:: mb use field?
+            UpdateItem updateItem = message.getUpdateItem();
+            updateItem.setIsDone(true);
+            upsertTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), message));
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't resolve objects during prepare upsert into cached collection", e);
         } catch (ReadValueException | ChangeValueException e) {
@@ -54,11 +50,6 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
         upsertTask.setConnection(connection);
     }
 
-    /**
-     * Execute the task.
-     *
-     * @throws TaskExecutionException if error occurs in process of task execution
-     */
     @Override
     public void execute() throws TaskExecutionException {
         upsertTask.execute();

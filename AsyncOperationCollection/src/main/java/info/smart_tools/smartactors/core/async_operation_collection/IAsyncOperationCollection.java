@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.async_operation_collection;
 
+import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
@@ -14,5 +15,12 @@ public interface IAsyncOperationCollection {
      * @return operation object
      * @throws GetAsyncOperationException if error during read is occurred
      */
-    IObject getAsyncOperation(final String token) throws GetAsyncOperationException;
+    IObject getAsyncOperation(String token) throws GetAsyncOperationException;
+
+    /**
+     * Completes asynchronous operation
+     * @param token operation unique token
+     * @throws CompleteAsyncOperationException if error during complete is occurred
+     */
+    void complete(String token) throws CompleteAsyncOperationException;
 }
