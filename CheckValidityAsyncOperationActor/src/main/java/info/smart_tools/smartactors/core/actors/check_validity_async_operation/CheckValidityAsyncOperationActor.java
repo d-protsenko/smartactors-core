@@ -32,7 +32,7 @@ public class CheckValidityAsyncOperationActor {
         try {
             Session curSession = message.getSession();
             List<String> validIds = curSession.getIdentifiers();
-            if (validIds == null || validIds.get(0) == null) {
+            if (validIds == null || validIds.isEmpty()) {
                 throw new ReadValueException("List of valid id is empty");
             }
             if (!validIds.contains(message.getAsyncOperationId())) {
