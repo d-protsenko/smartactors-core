@@ -8,7 +8,10 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 
 /**
+ * Base class for implementations of {@link IMessageReceiver} that may be used as parts of exceptional chains to handle
+ * exceptions.
  *
+ * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
  */
 public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
     private final IFieldName causeLevelFieldName;
@@ -30,23 +33,65 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
         exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "exception");
     }
 
+    /**
+     * Get a {@code "causeLevel"} value from message context.
+     *
+     * @param context    the message context
+     * @return the value from context
+     * @throws ReadValueException if error occurs reading value from context
+     * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
+     */
     protected int getCauseLevel(final IObject context) throws ReadValueException {
         return (Integer) context.getValue(causeLevelFieldName);
     }
 
+    /**
+     * Get a {@code "causeStep"} value from message context.
+     *
+     * @param context    the message context
+     * @return the value from context
+     * @throws ReadValueException if error occurs reading value from context
+     * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
+     */
     protected int getCauseStep(final IObject context) throws ReadValueException {
         return (Integer) context.getValue(causeStepFieldName);
     }
 
+    /**
+     * Get a {@code "catchLevel"} value from message context.
+     *
+     * @param context    the message context
+     * @return the value from context
+     * @throws ReadValueException if error occurs reading value from context
+     * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
+     */
     protected int getCatchLevel(final IObject context) throws ReadValueException {
         return (Integer) context.getValue(catchLevelFieldName);
     }
 
-    protected int getCatchStep(final IObject context) throws ReadValueException {
+    /**
+     * Get a {@code "catchStep"} value from message context.
+     *
+     * @param context    the message context
+     * @return the value from context
+     * @throws ReadValueException if error occurs reading value from context
+     * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
+     */
+    protected int getCatchStep(final IObject context)
+            throws ReadValueException {
         return (Integer) context.getValue(catchStepFieldName);
     }
 
-    protected Throwable getException(final IObject context) throws ReadValueException {
+    /**
+     * Get exception saved in context by a message processing sequence.
+     *
+     * @param context    the message context
+     * @return exception saved in message context
+     * @throws ReadValueException if error occurs reading value from context
+     * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
+     */
+    protected Throwable getException(final IObject context)
+            throws ReadValueException {
         return (Throwable) context.getValue(exceptionFieldName);
     }
 }
