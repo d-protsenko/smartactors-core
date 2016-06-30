@@ -1,0 +1,55 @@
+{
+  "authorisation_map": [
+    {
+      "actor": "createSessionActor",
+      "handler": "getSession",
+      "wrapper": {}
+    },
+    {
+      "actor": "authenticationActor",
+      "handler": "authenticateSession",
+      "wrapper": {
+        "getRequestUserUgent": {
+          "type": "in",
+          "source": "context",
+          "rules": [
+            {
+              "name": "getHeaderFromRequest",
+              "args": [
+                "User-Agent"
+              ]
+            }
+          ]
+        },
+        "getSessionUserAgent": {
+          "type": "in",
+          "source": "message.session.authInfo.userAgent"
+        }
+      }
+    },
+    {
+      "actor": "getFormActor",
+      "handler": "getForm",
+      "wrapper": {
+        "getFormKey": {
+          "type": "in",
+          "source": "message.formKey"
+        },
+        "setForm": {
+          "type": "out",
+          "target": "response.form"
+        }
+      }
+    },
+    {
+      "actor": "asyncOpsActor",
+      "handler": "createOperation",
+      "wrapper": {
+        "getIObject": {
+          "type": "in",
+          "source": "message"
+        }
+      }
+    }
+  ]
+}
