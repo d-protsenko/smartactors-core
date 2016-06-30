@@ -21,13 +21,15 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask updateTask;
 
+    /**
+     * @param updateTask Target update task
+     */
     public DeleteFromCachedCollectionTask(final IDatabaseTask updateTask) {
         this.updateTask = updateTask;
     }
 
     /**
      * Prepares database query
-     *
      * @param query query object
      * @throws TaskPrepareException if error occurs in process of query preparing
      */

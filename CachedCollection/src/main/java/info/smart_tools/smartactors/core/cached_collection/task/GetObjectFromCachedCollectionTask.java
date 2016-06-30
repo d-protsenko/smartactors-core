@@ -18,19 +18,45 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 
+/**
+ * Task must search objects with target task
+ */
 public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IDatabaseTask getItemTask;
 
-    public GetObjectFromCachedCollectionTask(IDatabaseTask getItemTask) {
+    /**
+     * @param getItemTask Target task for getting items
+     */
+    public GetObjectFromCachedCollectionTask(final IDatabaseTask getItemTask) {
         this.getItemTask = getItemTask;
     }
 
+    /**
+     * Prepare
+     * @param query query object
+     *              <pre>
+     *              {
+     *                  "KEY_OF_COLLECTION" : "VALUE_FOR_KEY",
+     *                  "collectionName" : "COLLECTION _NAME" //Not using but must be
+     *              }    
+     *              </pre>
+     * @throws TaskPrepareException Throw when some was incorrect in preparing query
+     */
     @Override
-    public void prepare(IObject query) throws TaskPrepareException {
+    public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            GetObjectFromCachedCollectionQuery srcQueryObject = IOC.resolve(Keys.getOrAdd(GetObjectFromCachedCollectionQuery.class.toString()), query);
+            GetObjectFromCachedCollectionQuery srcQueryObject = IOC.resolve(
+                    Keys.getOrAdd(
+                            GetObjectFromCachedCollectionQuery.class.toString()
+                    ),
+                    query);
 
-            CriteriaCachedCollectionQuery criteriaQuery = IOC.resolve(Keys.getOrAdd(CriteriaCachedCollectionQuery.class.toString()), getResolvedIObject());
+            CriteriaCachedCollectionQuery criteriaQuery =
+                    IOC.resolve(
+                            Keys.getOrAdd(
+                                    CriteriaCachedCollectionQuery.class.toString()
+                            ),
+                            getResolvedIObject());
 
             EQMessage keyEQ = IOC.resolve(Keys.getOrAdd(EQMessage.class.toString()), getResolvedIObject());
             keyEQ.setEq(srcQueryObject.getKey());
@@ -45,7 +71,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             criteriaQuery.setStartDateTime(startDateTimeDateTo);
 
             srcQueryObject.setPageNumber(0);
-            srcQueryObject.setPageSize(100);// FIXME: 6/21/16 hardcode count must be fixed
+            srcQueryObject.setPageSize(100); // FIXME: 6/21/16 hardcode count must be fixed
             srcQueryObject.setCriteria(criteriaQuery);
 
             getItemTask.prepare(query);
@@ -56,16 +82,27 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
         }
     }
 
+    /**
+     * @param connection New connection for this and target tasks
+     * @throws TaskSetConnectionException Throw when setting connection throw this exception
+     */
     @Override
-    public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
+    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
         getItemTask.setConnection(connection);
     }
 
+    /**
+     * @throws TaskExecutionException Throw when target task can't execute query
+     */
     @Override
     public void execute() throws TaskExecutionException {
         getItemTask.execute();
     }
 
+    /**
+     * @return new empty IObject
+     * @throws ResolutionException Throw when IOC can't resolve IObject
+     */
     private static IObject getResolvedIObject() throws ResolutionException {
         return IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.toString()));
     }
