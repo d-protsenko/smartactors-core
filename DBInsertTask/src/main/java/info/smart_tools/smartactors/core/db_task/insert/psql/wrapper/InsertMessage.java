@@ -4,6 +4,9 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
+/**
+ *  The IObject wrapper for a message to insert documents to DB.
+ */
 public interface InsertMessage {
 
     /**
