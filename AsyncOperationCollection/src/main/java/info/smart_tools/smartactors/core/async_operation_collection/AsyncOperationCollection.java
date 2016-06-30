@@ -2,16 +2,20 @@ package info.smart_tools.smartactors.core.async_operation_collection;
 
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.UpdateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.create_item.CreateOperationQuery;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.delete.DeleteAsyncOperationQuery;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -29,6 +33,9 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.wrapper_generator.Field;
+
+import java.util.Collections;
 
 /**
  * Implementation of collection for asynchronous operations
@@ -38,14 +45,20 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
     private IPool connectionPool;
     private CollectionName collectionName;
+    private Field<Long> idField;
 
     /**
      * Constructor for implementation
      * @param connectionPool connection pool
-     * @throws InvalidArgumentException if we can't create collection name
+     * @throws InvalidArgumentException if we can't create collection name or field
      */
     public AsyncOperationCollection(final IPool connectionPool) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
+        try {
+            this.idField = new Field<>(new FieldName("id"));
+        } catch (InvalidArgumentException e) {
+            throw new InvalidArgumentException("Can't create field", e);
+        }
         try {
             this.collectionName = CollectionName.fromString("async_operation");
         } catch (QueryBuildException e) {
@@ -119,7 +132,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     }
 
     @Override
-    public void complete(final String token) throws CompleteAsyncOperationException {
+    public void complete(final IObject asyncOperation) throws CompleteAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
             IDatabaseTask updateTask = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationTask.class.toString()));
@@ -135,9 +148,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             }
             UpdateAsyncOperationQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationQuery.class.toString()));
             upsertQuery.setCollectionName(collectionName);
-            //TODO:: Should it be wrapped by transaction or smth else?
-            IObject updateItem = getAsyncOperation(token);
-            upsertQuery.setUpdateItem(updateItem);
+            upsertQuery.setUpdateItem(asyncOperation);
 
             updateTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), upsertQuery));
@@ -156,8 +167,48 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             throw new CompleteAsyncOperationException("Can't complete async operation.", e);
         } catch (ResolutionException e) {
             throw new CompleteAsyncOperationException("Can't resolve async operation object.", e);
+        }
+    }
+
+    @Override
+    public void delete(final String token) throws DeleteAsyncOperationException {
+
+        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()));
+            if (deleteTask == null) {
+                IDatabaseTask nestedTask = IOC.resolve(
+                    Keys.getOrAdd(IDatabaseTask.class.toString()), DeleteAsyncOperationTask.class.toString()
+                );
+                if (nestedTask == null) {
+                    throw new DeleteAsyncOperationException("Can't create nested task for update task.");
+                }
+                deleteTask = new DeleteAsyncOperationTask(nestedTask);
+                IOC.register(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()), new SingletonStrategy(deleteTask));
+            }
+            DeleteAsyncOperationQuery deleteQuery = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationQuery.class.toString()));
+            deleteQuery.setCollectionName(collectionName);
+            IObject deleteItem = getAsyncOperation(token);
+            deleteQuery.setDocumentIds(Collections.singletonList(idField.from(deleteItem, Long.class)));
+
+            deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
+            deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));
+            deleteTask.execute();
+        } catch (TaskExecutionException e) {
+            throw new DeleteAsyncOperationException("Error during execution complete.", e);
+        } catch (PoolGuardException e) {
+            throw new DeleteAsyncOperationException("Can't get connection from pool.", e);
+        } catch (TaskSetConnectionException e) {
+            throw new DeleteAsyncOperationException("Can't set connection to update task.", e);
+        } catch (TaskPrepareException e) {
+            throw new DeleteAsyncOperationException("Error during preparing update task.", e);
+        } catch (InvalidArgumentException | RegistrationException e) {
+            throw new DeleteAsyncOperationException("Can't register strategy for update task.", e);
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new DeleteAsyncOperationException("Can't complete async operation.", e);
+        } catch (ResolutionException e) {
+            throw new DeleteAsyncOperationException("Can't resolve async operation object.", e);
         } catch (GetAsyncOperationException e) {
-            throw new CompleteAsyncOperationException("Can't get async operation by token.", e);
+            throw new DeleteAsyncOperationException("Can't get async operation by token.", e);
         }
     }
 }
