@@ -94,6 +94,7 @@
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>CheckValidityAsyncOperationActor</module>
     </modules>
 
     <build>
