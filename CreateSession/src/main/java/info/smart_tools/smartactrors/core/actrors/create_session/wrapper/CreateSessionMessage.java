@@ -25,7 +25,6 @@ public interface CreateSessionMessage {
      */
     IObject getAuthInfo() throws ChangeValueException, ReadValueException;
 
-
     /**
      * set session in message
      * @param session Session
