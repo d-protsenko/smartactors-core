@@ -24,12 +24,12 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
      * Constructor
      * @param task the insert DB task
      */
-    public CreateAsyncOperationTask(IDatabaseTask task) {
+    public CreateAsyncOperationTask(final IDatabaseTask task) {
         this.task = task;
     }
 
     @Override
-    public void prepare(IObject query) throws TaskPrepareException {
+    public void prepare(final IObject query) throws TaskPrepareException {
         try {
             CreateOperationQuery srcQueryObject = IOC.resolve(Keys.getOrAdd(CreateOperationQuery.class.toString()), query);
             AsyncDocument document = IOC.resolve(Keys.getOrAdd(AsyncDocument.class.toString()));
@@ -44,7 +44,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     }
 
     @Override
-    public void setConnection(StorageConnection connection) throws TaskSetConnectionException {
+    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
         this.task.setConnection(connection);
     }
 
