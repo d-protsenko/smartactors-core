@@ -6,10 +6,13 @@ import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * IObject interface
  */
-public interface IObject {
+public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
     /**
      * Returns named field value from this object.
      * @param name is name of field
@@ -55,4 +58,10 @@ public interface IObject {
      */
     <T> T serialize()
             throws SerializeException;
+
+    /**
+     * Returns new iterator over set of fields of the object.
+     * @return an iterator.
+     */
+    Iterator<Map.Entry<IFieldName, Object>> iterator();
 }

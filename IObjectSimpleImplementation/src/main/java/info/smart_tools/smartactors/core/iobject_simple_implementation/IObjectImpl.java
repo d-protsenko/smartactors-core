@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -43,5 +44,10 @@ public class IObjectImpl implements IObject {
     public <T> T serialize()
             throws SerializeException {
         return (T) storage.toString();
+    }
+
+    @Override
+    public Iterator<Map.Entry<IFieldName, Object>> iterator() {
+        return null;
     }
 }
