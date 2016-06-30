@@ -47,7 +47,7 @@
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
-        <!-- database tasks modules -->
+        <!-- database tasks -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
         <module>DBUpsertTask</module>
@@ -55,7 +55,7 @@
         <module>DatabaseDeleteTask</module>
         <module>DatabaseSearchTask</module>
         <module>DBInsertTask</module>
-        <!-- /database tasks modules -->
+        <!-- /database tasks -->
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
@@ -94,6 +94,13 @@
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <!-- actors -->
+        <module>UserAuthByLoginActor</module>
+        <!-- /actors -->
+        <!-- security.encoding -->
+        <module>IEncoder</module>
+        <module>MDPasswordEncoder</module>
+        <!-- /security.encoding -->
     </modules>
 
     <build>

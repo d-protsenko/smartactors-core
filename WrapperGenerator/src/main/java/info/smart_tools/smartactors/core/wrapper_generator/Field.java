@@ -32,11 +32,10 @@ public class Field<T> {
      * @param targetClass class to convert gotten value to
      * @return instance of {@link T}
      * @throws ReadValueException if any errors occurred when iobject had been reading
-     * @throws ChangeValueException if any errors occurred when iobject had been changing
      * @throws InvalidArgumentException if incoming arguments are incorrect
      */
     public T from(final IObject object, final Class<T> targetClass)
-            throws ReadValueException, ChangeValueException, InvalidArgumentException {
+            throws ReadValueException, InvalidArgumentException {
         if (object == null) {
             throw new InvalidArgumentException("Input IObject in Field.from(IObject, Class) is null");
         }
@@ -71,11 +70,10 @@ public class Field<T> {
      * @param strategyName if exists then indicate name of specific strategy for resolve dependency
      * @return instance of {@link T}
      * @throws ReadValueException if any errors occurred when iobject had been reading
-     * @throws ChangeValueException if any errors occurred when iobject had been changing
      * @throws InvalidArgumentException if incoming arguments are incorrect
      */
     public T from(final IObject object, final String strategyName)
-            throws ReadValueException, ChangeValueException, InvalidArgumentException {
+            throws ReadValueException, InvalidArgumentException {
         if (object == null) {
             throw new InvalidArgumentException("Input IObject in Field.from(IObject, Class) is null");
         }
