@@ -39,7 +39,7 @@ public class CheckValidityAsyncOperationActor {
                 throw new InvalidAsyncOperationIdException("List with all identifiers not contains Id from client.");
             }
         } catch (ReadValueException | ChangeValueException e) {
-            e.printStackTrace();
+            throw new InvalidAsyncOperationIdException(e);
         }
 
     }
