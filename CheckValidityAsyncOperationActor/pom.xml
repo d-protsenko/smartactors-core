@@ -12,4 +12,11 @@
     <artifactId>core.actors.check_validity_async_operation</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iobject</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+    </dependencies>
 </project>
