@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({IOC.class, Keys.class, CollectionName.class})
+@PrepareForTest({IOC.class, Keys.class, CollectionName.class, PoolGuard.class})
 public class AsyncOperationCollectionTest {
     private AsyncOperationCollection testCollection;
     private IPool pool;
@@ -47,6 +47,7 @@ public class AsyncOperationCollectionTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
         mockStatic(CollectionName.class);
+        mockStatic(PoolGuard.class);
 
         pool = mock(IPool.class);
 
@@ -59,19 +60,13 @@ public class AsyncOperationCollectionTest {
 
     @Test
     public void MustCorrectGetAsyncOperationWhenFirstGetItemNotNull() throws
-            PoolGuardException,
-            ResolutionException,
-            ReadValueException,
-            GetAsyncOperationException,
-            ChangeValueException,
-            TaskSetConnectionException,
-            TaskPrepareException,
-            TaskExecutionException {
+            Exception {
 
         String token = "token";
 
         PoolGuard poolGuard = mock(PoolGuard.class);
-        when(new PoolGuard(pool)).thenReturn(poolGuard);
+        whenNew(PoolGuard.class).withAnyArguments().thenReturn(poolGuard);
+//        whenNew(PoolGuard.class).withArguments(pool).thenReturn(poolGuard);
 
         GetAsyncOperationTask getAsyncOperationTask = mock(GetAsyncOperationTask.class);
         Key getAsyncOperationTaskKey = mock(Key.class);
@@ -100,8 +95,8 @@ public class AsyncOperationCollectionTest {
 
         verify(getAsyncOperationQuery).setCollectionName(collectionName);
         verify(getAsyncOperationQuery).setToken(token);
-//        verify(poolGuard).getObject();
-//        verify(getAsyncOperationTask).setConnection(connection);
+        verify(poolGuard).getObject();
+        verify(getAsyncOperationTask).setConnection(connection);
         verify(getAsyncOperationTask).prepare(wrapped);
         verify(getAsyncOperationTask).execute();
 
