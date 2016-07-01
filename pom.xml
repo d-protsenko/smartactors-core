@@ -95,6 +95,7 @@
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>AsyncOperationCollection</module>
+        <module>GetAsyncOperation</module>
     </modules>
 
     <build>
