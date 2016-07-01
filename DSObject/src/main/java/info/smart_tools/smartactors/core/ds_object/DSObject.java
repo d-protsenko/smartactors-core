@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -113,6 +114,30 @@ public class DSObject implements IObject {
             return (T) OBJECT_MAPPER.writer().writeValueAsString(body);
         } catch (Throwable e) {
             throw new SerializeException();
+        }
+    }
+
+    @Override
+    public Iterator<Map.Entry<IFieldName, Object>> iterator() {
+        return new DSObjectIterator();
+    }
+
+    private class DSObjectIterator implements Iterator<Map.Entry<IFieldName, Object>> {
+
+        private Iterator<Map.Entry<IFieldName, Object>> iterator;
+
+        private DSObjectIterator() {
+            this.iterator = body.entrySet().iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.iterator.hasNext();
+        }
+
+        @Override
+        public Map.Entry<IFieldName, Object> next() {
+            return this.iterator.next();
         }
     }
 }

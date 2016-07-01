@@ -93,6 +93,8 @@
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
+        <module>CachedCollection</module>
+        <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
     </modules>
 
@@ -136,6 +138,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
             <plugin>

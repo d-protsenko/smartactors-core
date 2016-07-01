@@ -34,6 +34,9 @@ import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Task for insert row to collection.
+ */
 public class DBInsertTask implements IDatabaseTask {
 
     private CompiledQuery compiledQuery;

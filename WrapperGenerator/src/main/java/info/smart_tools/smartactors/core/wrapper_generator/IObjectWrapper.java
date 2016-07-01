@@ -8,7 +8,13 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 public interface IObjectWrapper {
     /**
      * Init wrapper by message, context and response
-     * @param iobjects array of {@link IObject}
+     * @param iObjects array of {@link IObject}
      */
-    void init(IObject ... iobjects);
+    void init(IObject ... iObjects);
+
+    /**
+     * Getter for array of init iObjects
+     * @return the array of init iObjects
+     */
+    IObject[] getIObjects();
 }
