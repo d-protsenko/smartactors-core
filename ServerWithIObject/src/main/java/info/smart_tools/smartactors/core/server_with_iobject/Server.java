@@ -53,6 +53,10 @@ public class Server implements IServer {
             IObject message = getMessage();
             IObject context = getContext();
             IObject response = getResponse();
+            IObject environment = new DSObject();
+            environment.setValue(new FieldName("message"), message);
+            environment.setValue(new FieldName("context"), context);
+            environment.setValue(new FieldName("response"), response);
 
             /** Generate wrapper class by given interface and create instance of generated class */
             IWrapper wrapper = wg.generate(IWrapper.class, bindings);
@@ -61,7 +65,7 @@ public class Server implements IServer {
             IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.toString()));
 
             /** Initialize wrapper */
-            ((IObjectWrapper) wrapper).init(message, context, response);
+            ((IObjectWrapper) wrapper).init(environment);
 
             /** Wrapper usage: get values */
             Integer i = wrapper.getIntValue();
