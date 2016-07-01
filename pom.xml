@@ -98,7 +98,8 @@
         <module>UserAuthByLoginActor</module>
         <!-- /actors -->
         <!-- security.encoding -->
-        <module>IEncoder</module>
+        <module>ICodec</module>
+        <module>Codec</module>
         <module>MDPasswordEncoder</module>
         <!-- /security.encoding -->
     </modules>

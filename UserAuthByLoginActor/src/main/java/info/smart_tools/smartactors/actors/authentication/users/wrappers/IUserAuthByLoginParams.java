@@ -9,4 +9,12 @@ public interface IUserAuthByLoginParams {
      * @return
      */
     String getCollection();
+
+    /**
+     *
+     * @return
+     */
+    String getAlgorithmEncode();
+
+
 }
