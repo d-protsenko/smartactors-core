@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.actors.check_validity_async_operation;
 
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.exception.InvalidAsyncOperationIdException;
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.wrapper.CheckValidityMessage;
-import info.smart_tools.smartactors.core.actors.check_validity_async_operation.wrapper.Session;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -30,8 +29,7 @@ public class CheckValidityAsyncOperationActor {
      */
     public void check(final CheckValidityMessage message) throws InvalidAsyncOperationIdException {
         try {
-            Session curSession = message.getSession();
-            List<String> validIds = curSession.getIdentifiers();
+            List<String> validIds = message.getIdentifiers();
             if (validIds == null || validIds.isEmpty()) {
                 throw new ReadValueException("List of valid id is empty");
             }
