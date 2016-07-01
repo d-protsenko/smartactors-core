@@ -17,15 +17,16 @@ public interface IAsyncOperationCollection {
      * @return operation object
      * @throws GetAsyncOperationException if error during read is occurred
      */
-    IObject getAsyncOperation(final String token) throws GetAsyncOperationException;
+    IObject getAsyncOperation(String token) throws GetAsyncOperationException;
 
     /**
      * Create async operation in db
      * @param data the async operation data
      * @param token guid token for operation
-     * @throws CreateAsyncOperationException 123
+     * @param expiredTime TTL for async operation
+     * @throws CreateAsyncOperationException if error during create is occurred
      */
-    void createAsyncOperation(final IObject data, final String token) throws CreateAsyncOperationException;
+    void createAsyncOperation(IObject data, String token, String expiredTime) throws CreateAsyncOperationException;
 
     /**
      * Completes asynchronous operation

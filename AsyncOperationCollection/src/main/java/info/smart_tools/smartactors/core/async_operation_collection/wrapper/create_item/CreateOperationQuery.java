@@ -11,7 +11,10 @@ public interface CreateOperationQuery {
     void setDocuments(List<IObject> documents) throws ChangeValueException;
     void setCollectionName(CollectionName collectionName) throws ChangeValueException;
     IObject getIObject() throws ReadValueException;
-    IObject getSyncData() throws ReadValueException;
+    IObject getAsyncData() throws ReadValueException;
     String getToken() throws ReadValueException;
     String getExpiredTime() throws ReadValueException;
+    void setAsyncData(IObject asyncData) throws ChangeValueException;
+    void setToken(String token) throws ChangeValueException;
+    void setExpiredTime(String expiredTime) throws ChangeValueException;
 }
