@@ -107,7 +107,9 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     }
 
     @Override
-    public void createAsyncOperation(final IObject data, final String token) throws CreateAsyncOperationException {
+    public void createAsyncOperation(final IObject data, final String token, final String expiredTime)
+        throws CreateAsyncOperationException {
+
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
             IDatabaseTask task = IOC.resolve(Keys.getOrAdd(CreateAsyncOperationTask.class.toString()));
             if (task == null) {
@@ -120,8 +122,11 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                 task = new CreateAsyncOperationTask(nestedTask);
                 IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(task));
             }
-            CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()));
+            CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(CreateOperationQuery.class.toString()));
             query.setCollectionName(collectionName);
+            query.setAsyncData(data);
+            query.setExpiredTime(expiredTime);
+            query.setToken(token);
             task.setConnection((StorageConnection) poolGuard.getObject());
             task.prepare(query.getIObject());
             task.execute();

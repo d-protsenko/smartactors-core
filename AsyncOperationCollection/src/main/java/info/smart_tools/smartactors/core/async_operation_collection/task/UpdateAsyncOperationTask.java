@@ -39,9 +39,9 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
             updateItem.setIsDone(true);
             upsertTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), message));
         } catch (ResolutionException e) {
-            throw new TaskPrepareException("Can't resolve objects during prepare upsert into cached collection", e);
+            throw new TaskPrepareException("Can't resolve objects during prepare update into async operation collection", e);
         } catch (ReadValueException | ChangeValueException e) {
-            throw new TaskPrepareException("Can't prepare query for upsert into cached collection", e);
+            throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
         }
     }
 
