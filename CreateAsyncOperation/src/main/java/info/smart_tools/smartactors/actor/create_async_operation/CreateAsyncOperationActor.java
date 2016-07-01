@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
 
 import java.util.UUID;
 
@@ -44,8 +43,8 @@ public class CreateAsyncOperationActor {
             String expiredTime = message.getExpiredTime();
             AuthOperationData authOperationData = IOC.resolve(Keys.getOrAdd(AuthOperationData.class.toString()));
             authOperationData.setSessionId(message.getSessionId());
-            //TODO:: change this, my eyes are bleeding!
-            collection.createAsyncOperation(((IObjectWrapper) authOperationData).getIObjects()[0], token, expiredTime);
+//            collection.createAsyncOperation(((IObjectWrapper) authOperationData).getIObjects()[0], token, expiredTime);
+            collection.createAsyncOperation(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), authOperationData), token, expiredTime);
 
             //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);
