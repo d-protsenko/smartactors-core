@@ -34,7 +34,9 @@ public class CloseAsyncOperationActor {
      */
     void closeAsyncOp(final CloseAsyncOpMessage message) throws TaskExecutionException {
         try {
-            collection.delete(message.getToken());
+            //
+            message.getOperationTokens().remove(message.getToken());
+            collection.complete(collection.getAsyncOperation(message.getToken()));
         } catch (Exception e) {
             throw new TaskExecutionException("Failed to close async operation", e);
         }
