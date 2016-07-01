@@ -30,6 +30,14 @@ public class GetAsyncOperationTask implements IDatabaseTask {
         this.getItemTask = getItemTask;
     }
 
+    /**
+     * @param query query object
+     *              {
+     *                  "collectionName": "name of async operation collection",
+     *                  "token": "unique token of async operation for search"
+     *              }
+     * @throws TaskPrepareException for prepare error
+     */
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {

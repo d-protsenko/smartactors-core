@@ -15,13 +15,13 @@ import info.smart_tools.smartactors.core.async_operation_collection.wrapper.upda
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -50,19 +50,18 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     /**
      * Constructor for implementation
      * @param connectionPool connection pool
+     * @param collectionName string with name
      * @throws InvalidArgumentException if we can't create collection name or field
      */
-    public AsyncOperationCollection(final IPool connectionPool) throws InvalidArgumentException {
+    public AsyncOperationCollection(final IPool connectionPool, final String collectionName) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
         try {
-            this.idField = new Field<>(new FieldName("id"));
-        } catch (InvalidArgumentException e) {
-            throw new InvalidArgumentException("Can't create field", e);
-        }
-        try {
-            this.collectionName = CollectionName.fromString("async_operation");
+            this.idField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "id"));
+            this.collectionName = CollectionName.fromString(collectionName);
         } catch (QueryBuildException e) {
             throw new InvalidArgumentException("Can't create async operations collection.", e);
+        } catch (ResolutionException e) {
+            throw new InvalidArgumentException("Can't create field", e);
         }
     }
 
