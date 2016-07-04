@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.actor.create_async_operation;
 
+import info.smart_tools.smartactors.actor.create_async_operation.exception.CreateAsyncOperationActorException;
 import info.smart_tools.smartactors.actor.create_async_operation.wrapper.AuthOperationData;
 import info.smart_tools.smartactors.actor.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;

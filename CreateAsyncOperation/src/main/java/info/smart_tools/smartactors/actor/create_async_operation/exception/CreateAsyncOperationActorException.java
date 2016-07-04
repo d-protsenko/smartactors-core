@@ -1,4 +1,6 @@
-package info.smart_tools.smartactors.actor.create_async_operation;
+package info.smart_tools.smartactors.actor.create_async_operation.exception;
+
+import info.smart_tools.smartactors.actor.create_async_operation.CreateAsyncOperationActor;
 
 /**
  * Exception for error in {@link CreateAsyncOperationActor}
