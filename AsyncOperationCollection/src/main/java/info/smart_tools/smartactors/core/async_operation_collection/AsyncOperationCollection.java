@@ -79,7 +79,6 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                 }
                 getItemTask = new GetAsyncOperationTask(nestedTask);
                 IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(getItemTask));
-
             }
             GetAsyncOperationQuery getItemQuery = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()));
             getItemQuery.setCollectionName(collectionName);
