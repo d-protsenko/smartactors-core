@@ -95,6 +95,7 @@
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>CheckUserByEmailActor</module>
+        <module>AsyncOperationCollection</module>
     </modules>
 
     <build>
