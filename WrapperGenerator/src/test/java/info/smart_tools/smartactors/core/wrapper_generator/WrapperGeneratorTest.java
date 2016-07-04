@@ -114,8 +114,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
 
         // Binding for IIncorrectWrapperWithoutChangeValueException methods
@@ -125,8 +124,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/Value\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
 
         // Binding for IInnerWrapper methods
@@ -138,8 +136,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setDoubleValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -147,8 +144,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/DoubleValue\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
 
         // Binding for IWrapper methods
@@ -160,8 +156,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setIntValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -169,8 +164,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/IntValue\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getStringValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -180,8 +174,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setStringValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -189,8 +182,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/StringValue\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getTestClassValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -200,8 +192,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setTestClassValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -209,8 +200,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/TestClassValue\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getListOfInt = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -220,8 +210,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setListOfInt = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -229,8 +218,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/ListOfInt\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getListOfString = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -240,8 +228,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setListOfString = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -249,8 +236,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/ListOfString\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getListOfTestClasses = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -260,8 +246,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setListOfTestClasses = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -269,8 +254,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/ListOfTestClasses\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getBoolValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -280,8 +264,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setBoolValue = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -289,8 +272,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/BoolValue\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getWrappedIObject = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -300,8 +282,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": true\n" +
+                "\t]\n" +
                 "}");
         IObject setWrappedIObject = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -309,8 +290,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/WrappedIObject\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": true\n" +
+                "\t]\n" +
                 "}");
         IObject getIObject = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -320,8 +300,7 @@ public class WrapperGeneratorTest {
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject setIObject = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -329,8 +308,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"response/IObject\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
         IObject getInnerMapByName = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -346,8 +324,7 @@ public class WrapperGeneratorTest {
                 "\t\t\t\"context/subcontext/StringValue\"\n" +
                 "\t\t],\n" +
                 "\t\t\"target\": \"out\"\n" +
-                "\t}],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t}]\n" +
                 "}");
         IObject setStringIInnerMap = new DSObject("{\n" +
                 "\t\"rules\": [{\n" +
@@ -355,8 +332,7 @@ public class WrapperGeneratorTest {
                 "\t\t\"args\": [\"in\"],\n" +
                 "\t\t\"target\": \"context/subcontext/StringIInnerMap\"\n" +
                 "\t}\n" +
-                "\t],\n" +
-                "\t\"isWrapper\": false\n" +
+                "\t]\n" +
                 "}");
 
         bindingForIIncorrectWrapperWithoutReadValueException.setValue(new FieldName("getValue"), getValue);
@@ -408,7 +384,7 @@ public class WrapperGeneratorTest {
         IWrapperGenerator wg = new WrapperGenerator(null);
         IObject binding = getBinding();
 
-        IWrapper inst = wg.generate(IWrapper.class, binding);
+        IWrapper inst = wg.generate(IWrapper.class);
 
         assertNotNull(inst);
 
@@ -509,23 +485,21 @@ public class WrapperGeneratorTest {
     public void checkOnIncorrectInterfaceWithoutReadValueException()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        IObject binding = getBinding();
-        wg.generate(IIncorrectWrapperWithoutReadValueException.class, binding);
+        wg.generate(IIncorrectWrapperWithoutReadValueException.class);
     }
 
     @Test (expected = WrapperGeneratorException.class)
     public void checkOnIncorrectInterfaceWithoutChangeValueException()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        IObject binding = getBinding();
-        wg.generate(IIncorrectWrapperWithoutChangeValueException.class, binding);
+        wg.generate(IIncorrectWrapperWithoutChangeValueException.class);
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnTargetInterfaceNull()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        wg.generate(null, null);
+        wg.generate(null);
         fail();
     }
 
@@ -533,24 +507,7 @@ public class WrapperGeneratorTest {
     public void checkInvalidArgumentExceptionOnNotInterface()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        wg.generate(TestClass.class, null);
-        fail();
-    }
-
-    @Test (expected = InvalidArgumentException.class)
-    public void checkInvalidArgumentExceptionOnBindingNull()
-            throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
-        wg.generate(IWrapper.class, null);
-        fail();
-    }
-
-    @Test (expected = WrapperGeneratorException.class)
-    public void checkWrapperGeneratorExceptionOnWrongBinding()
-            throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
-        IObject binding = mock(IObject.class);
-        wg.generate(IWrapper.class, binding);
+        wg.generate(TestClass.class);
         fail();
     }
 }
