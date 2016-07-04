@@ -28,15 +28,14 @@ public class CloseAsyncOperationActor {
     }
 
     /**
-     * Close and delete async operation from collection
+     * Remove token from session and mark operation as comlete
      * @param message the message
      * @throws TaskExecutionException
      */
-    void closeAsyncOp(final CloseAsyncOpMessage message) throws TaskExecutionException {
+    void completeAsyncOp(final CloseAsyncOpMessage message) throws TaskExecutionException {
         try {
-            //
             message.getOperationTokens().remove(message.getToken());
-            collection.complete(collection.getAsyncOperation(message.getToken()));
+            collection.complete(message.getOperation());
         } catch (Exception e) {
             throw new TaskExecutionException("Failed to close async operation", e);
         }
