@@ -134,7 +134,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     public void catchException(final Throwable exception, final IObject context)
             throws NoExceptionHandleChainException,
                    NestedChainStackOverflowException,
-                   ChangeValueException {
+                   ChangeValueException,
+                   InvalidArgumentException {
         int causedLevel = stackIndex;
         int causedStep = stepStack[causedLevel];
         int caughtLevel;

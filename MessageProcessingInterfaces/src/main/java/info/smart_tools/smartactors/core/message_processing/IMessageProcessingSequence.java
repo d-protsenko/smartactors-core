@@ -74,8 +74,9 @@ public interface IMessageProcessingSequence {
      * @throws NoExceptionHandleChainException when there is no such chain.
      * @throws NestedChainStackOverflowException when it is impossible to call that chain.
      * @throws ChangeValueException if error occurs during writing positions to context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see #callChain(IReceiverChain)
      */
     void catchException(final Throwable exception, final IObject context)
-            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException;
+            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException;
 }
