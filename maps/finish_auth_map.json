@@ -1,0 +1,63 @@
+{
+  "finish_auth_map": [
+    {
+      "actor": "createSessionActor",
+      "handler": "getSession",
+      "wrapper": {}
+    },
+    {
+      "actor": "authenticationActor",
+      "handler": "authenticateSession",
+      "wrapper": {
+        "getRequestUserAgent": {
+          "type": "in",
+          "source": "context",
+          "rules": [
+            {
+              "name": "getHeaderFromRequest",
+              "args": [
+                "User-Agent"
+              ]
+            }
+          ]
+        },
+        "getSessionUserAgent": {
+          "type": "in",
+          "source": "message.session.authInfo.userAgent"
+        }
+      }
+    },
+    {
+      "actor": "GetAsyncOperationActor",
+      "handler": "getAsyncOperation",
+      "wrapper": {
+        "getToken": {
+          "type": "in",
+          "source": "message.token"
+        },
+        "setAsyncOperation": {
+          "type": "out",
+          "source": "message.async_operation"
+        }
+      }
+    },
+    {
+      "actor": "CloseAsyncOperationActor",
+      "handler": "completeAsyncOp",
+      "wrapper": {
+        "getToken": {
+          "type": "in",
+          "source": "message.token"
+        },
+        "getOperation": {
+          "type": "in",
+          "source": "message.async_operation"
+        },
+        "getOperationTokens": {
+          "type": "in",
+          "target": "message.session.async_operation_tokens"
+        }
+      }
+    }
+  ]
+}
