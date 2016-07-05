@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.wrapper_generator;
+package info.smart_tools.smartactors.core.iobject_wrapper;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;

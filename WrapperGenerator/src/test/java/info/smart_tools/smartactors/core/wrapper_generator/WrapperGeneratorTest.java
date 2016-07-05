@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -22,7 +23,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -62,11 +61,22 @@ public class WrapperGeneratorTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(FieldName.class.getCanonicalName()),
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
                                 return new FieldName((String) a[0]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+        );
+        IOC.register(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            try {
+                                return new DSObject();
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -95,11 +105,13 @@ public class WrapperGeneratorTest {
         IResolveDependencyStrategy getInnerWrapperFromMapByName = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("ToInnerWrapperFromMapByName"), getInnerWrapperFromMapByName);
         when(getInnerWrapperFromMapByName.resolve(any(), eq("abc"))).thenReturn(innerWrapper);
+
+        fillBinding();
     }
 
-    private IObject getBinding()
+    private void fillBinding()
             throws Exception {
-        IObject binding = new DSObject();
+        IObject binding = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "binding");
         IObject bindingForIWrapper = new DSObject();
         IObject bindingForIInnerWrapper = new DSObject();
         IObject bindingForIIncorrectWrapperWithoutReadValueException = new DSObject();
@@ -374,15 +386,12 @@ public class WrapperGeneratorTest {
 
         binding.setValue(new FieldName(IWrapper.class.getCanonicalName()), bindingForIWrapper);
         binding.setValue(new FieldName(IInnerWrapper.class.getCanonicalName()), bindingForIInnerWrapper);
-
-        return binding;
     }
 
     @Test
     public void checkCreationAndUsageWrapperByInterface()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        IObject binding = getBinding();
 
         IWrapper inst = wg.generate(IWrapper.class);
 
@@ -396,7 +405,6 @@ public class WrapperGeneratorTest {
         when(env.getValue(new FieldName("message"))).thenReturn(message);
         when(env.getValue(new FieldName("context"))).thenReturn(context);
         when(env.getValue(new FieldName("response"))).thenReturn(response);
-        when(env.getValue(new FieldName("binding"))).thenReturn(binding);
         when(context.getValue(new FieldName("subcontext"))).thenReturn(subContext);
 
         when(message.getValue(new FieldName("IntValue"))).thenReturn(1);

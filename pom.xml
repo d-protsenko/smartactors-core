@@ -114,6 +114,8 @@
         <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
+        <module>ToWrapperConverterStrategy</module>
+        <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
     </modules>
 
