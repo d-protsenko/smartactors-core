@@ -14,8 +14,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.Collections;
-
 /**
  * DB task for creating operations in db
  */
@@ -50,7 +48,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
             document.setDoneFlag(false);
             document.setToken(srcQueryObject.getToken());
             document.setExpiredTime(srcQueryObject.getExpiredTime());
-            srcQueryObject.setDocuments(Collections.singletonList(document.getIObject()));
+            srcQueryObject.setDocument(document.getIObject());
             //TODO:: mb pass to prepare new object only with needed fields?
             task.prepare(srcQueryObject.getIObject());
         } catch (ResolutionException e) {
