@@ -12,19 +12,27 @@ public interface CachedCollectionConfig {
 
     /**
      * @return connection pool
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ReadValueException Calling when try read value of variable
      */
-    IPool getConnectionPool() throws ReadValueException, ChangeValueException;
+    IPool getConnectionPool() throws ReadValueException;
 
     /**
      * @return collection name
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ReadValueException Calling when try read value of variable
      */
-    CollectionName getCollectionName() throws ReadValueException, ChangeValueException;
+    CollectionName getCollectionName() throws ReadValueException;
 
     //TODO:: Should be in another wrapper?
-    void setConnectionPool(IPool connectionPool) throws ReadValueException, ChangeValueException;
-    void setCollectionName(CollectionName collectionName) throws ReadValueException, ChangeValueException;
+
+    /**
+     * @param connectionPool Some realisation of IPool
+     * @throws ChangeValueException Calling when try change value of variable
+     */
+    void setConnectionPool(IPool connectionPool) throws ChangeValueException;
+
+    /**
+     * @param collectionName Name of collection
+     * @throws ChangeValueException Calling when try change value of variable
+     */
+    void setCollectionName(CollectionName collectionName) throws ChangeValueException;
 }

@@ -44,6 +44,13 @@
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>IMessage</module>
+        <module>IQueue</module>
+        <module>BlockingQueue</module>
+        <module>IThreadPool</module>
+        <module>ThreadPool</module>
+        <module>ITaskDispatcher</module>
+        <module>TaskDispatcher</module>
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
@@ -88,12 +95,19 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>IResourceSource</module>
+        <module>MessageProcessor</module>
+        <module>ReceiverChain</module>
+        <module>MessageProcessingSequence</module>
+        <module>MessageProcessingInterfaces</module>
+        <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>GetFormActor</module>
         <module>AuthenticationActor</module>
     </modules>
 
@@ -137,44 +151,8 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <useLastCommittedRevision>true</useLastCommittedRevision>
-                    <shortRevisionLength>7</shortRevisionLength>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Version>${core.version}-${buildNumber}</Implementation-Version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
         </plugins>
     </build>
@@ -295,9 +273,5 @@
             <url>https://archiva.smart-tools.info/repository/smartactors-core/</url>
         </repository>
     </distributionManagement>
-
-    <scm>
-        <connection>scm:git:git@github.com:SmartTools/smartactors-core.git</connection>
-    </scm>
 
 </project>
