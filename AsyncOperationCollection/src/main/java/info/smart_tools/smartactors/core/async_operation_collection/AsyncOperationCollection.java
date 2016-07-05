@@ -85,7 +85,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             getItemQuery.setCollectionName(collectionName);
             getItemQuery.setToken(token);
             getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-            getItemTask.prepare(getItemQuery.wrapped());
+            getItemTask.prepare(getItemQuery.getIObject());
             getItemTask.execute();
             List<IObject> searchResult = getItemQuery.getSearchResult();
             if (searchResult == null || searchResult.isEmpty()) {

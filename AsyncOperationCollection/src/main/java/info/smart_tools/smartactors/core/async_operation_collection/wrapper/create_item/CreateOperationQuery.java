@@ -19,7 +19,7 @@ public interface CreateOperationQuery {
 
     /**
      * Setter
-     * @param collectionName wrapped collection name
+     * @param collectionName getIObject collection name
      * @throws ChangeValueException if error during set is occurred
      */
     void setCollectionName(CollectionName collectionName) throws ChangeValueException;
