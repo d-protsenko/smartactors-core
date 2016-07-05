@@ -36,6 +36,7 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of collection for asynchronous operations
@@ -79,7 +80,6 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                 }
                 getItemTask = new GetAsyncOperationTask(nestedTask);
                 IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(getItemTask));
-
             }
             GetAsyncOperationQuery getItemQuery = IOC.resolve(Keys.getOrAdd(GetAsyncOperationQuery.class.toString()));
             getItemQuery.setCollectionName(collectionName);
@@ -87,8 +87,12 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             getItemTask.prepare(getItemQuery.wrapped());
             getItemTask.execute();
+            List<IObject> searchResult = getItemQuery.getSearchResult();
+            if (searchResult == null || searchResult.isEmpty()) {
+                throw new GetAsyncOperationException("Can't find operation.");
+            }
 
-            return getItemQuery.getSearchResult().get(0);
+            return searchResult.get(0);
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve object during get operation.", e);
         } catch (InvalidArgumentException | RegistrationException e) {
@@ -192,7 +196,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             DeleteAsyncOperationQuery deleteQuery = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationQuery.class.toString()));
             deleteQuery.setCollectionName(collectionName);
             IObject deleteItem = getAsyncOperation(token);
-            deleteQuery.setDocumentIds(Collections.singletonList(idField.from(deleteItem, Long.class)));
+            deleteQuery.setDocumentIds(Collections.singletonList(idField.out(deleteItem)));
 
             deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));
