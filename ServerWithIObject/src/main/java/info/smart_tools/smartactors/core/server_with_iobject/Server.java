@@ -31,7 +31,7 @@ public class Server implements IServer {
     public void initialize() throws ServerInitializeException {
         try {
             scopeInit();
-            registerKeysStorageStrategy();
+            registerKeysStorageStrategyAndFieldNameStrategy();
             registerWrapperGenerator();
             registerConverterStrategies();
         } catch (Throwable e) {
@@ -47,21 +47,26 @@ public class Server implements IServer {
             IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.toString()));
 
             /** Get bindings */
-            IObject bindings = getBinding();
+            IObject binding = getBinding();
 
             /** Get message, context, response */
             IObject message = getMessage();
             IObject context = getContext();
             IObject response = getResponse();
+            IObject environment = new DSObject();
+            environment.setValue(new FieldName("message"), message);
+            environment.setValue(new FieldName("context"), context);
+            environment.setValue(new FieldName("response"), response);
+            environment.setValue(new FieldName("binding"), binding);
 
             /** Generate wrapper class by given interface and create instance of generated class */
-            IWrapper wrapper = wg.generate(IWrapper.class, bindings);
+            IWrapper wrapper = wg.generate(IWrapper.class);
 
             /** Check registration of IWrapper instance creation strategy to IOC */
-            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.toString()));
+            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName()));
 
             /** Initialize wrapper */
-            ((IObjectWrapper) wrapper).init(message, context, response);
+            ((IObjectWrapper) wrapper).init(environment);
 
             /** Wrapper usage: get values */
             Integer i = wrapper.getIntValue();
@@ -102,7 +107,7 @@ public class Server implements IServer {
         ScopeProvider.setCurrentScope(mainScope);
     }
 
-    private void registerKeysStorageStrategy()
+    private void registerKeysStorageStrategyAndFieldNameStrategy()
             throws Exception {
         IOC.register(
                 IOC.getKeyForKeyStorage(),
@@ -115,6 +120,17 @@ public class Server implements IServer {
                             }
                         }
                 )
+        );
+        IOC.register(
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            try {
+                                return new FieldName((String) a[0]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
         );
     }
 
@@ -155,89 +171,114 @@ public class Server implements IServer {
         IObject binding = new DSObject();
         IObject bindingForIWrapper = new DSObject();
 
+        // Binding for IWrapper methods
         IObject getIntValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IntValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"message/IntValue\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setIntValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IntValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"response/IntValue\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject getStringValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"StringValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"message/StringValue\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setStringValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"StringValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"response/StringValue\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject getListOfInt = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfInt\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"ToListOfInt\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"ToListOfInt\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"message/ListOfInt\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setListOfInt = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfInt\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"response/ListOfInt\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject getListOfString = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfString\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"ToListOfString\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"ToListOfString\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"message/ListOfString\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setListOfString = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfString\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"response/ListOfString\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject getBoolValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"BoolValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"context/BoolValue\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setBoolValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"BoolValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"context/BoolValue\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject getIObject = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IObject\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\n" +
+                "\t\t\t\"context/IObject\"\n" +
+                "\t\t],\n" +
+                "\t\t\"target\": \"out\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
         IObject setIObject = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IObject\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
+                "\t\"rules\": [{\n" +
+                "\t\t\"name\": \"\",\n" +
+                "\t\t\"args\": [\"in\"],\n" +
+                "\t\t\"target\": \"context/IObject\"\n" +
+                "\t}\n" +
+                "\t]\n" +
                 "}");
 
         bindingForIWrapper.setValue(new FieldName("getIntValue"), getIntValue);
@@ -252,12 +293,8 @@ public class Server implements IServer {
         bindingForIWrapper.setValue(new FieldName("setBoolValue"), setBoolValue);
         bindingForIWrapper.setValue(new FieldName("getIObject"), getIObject);
         bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
-        bindingForIWrapper.setValue(
-                new FieldName("initMethodParameters"),
-                new String[]{"message", "context", "response"}
-        );
 
-        binding.setValue(new FieldName(IWrapper.class.toString()), bindingForIWrapper);
+        binding.setValue(new FieldName(IWrapper.class.getCanonicalName()), bindingForIWrapper);
 
         return binding;
     }
