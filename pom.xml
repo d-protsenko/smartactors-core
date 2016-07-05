@@ -112,6 +112,7 @@
         <module>AuthenticationActor</module>
         <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
+        <module>GetAsyncOperation</module>
     </modules>
 
     <build>
