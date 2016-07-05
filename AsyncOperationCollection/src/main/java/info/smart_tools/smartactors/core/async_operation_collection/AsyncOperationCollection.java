@@ -36,6 +36,7 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of collection for asynchronous operations
@@ -86,8 +87,12 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             getItemTask.prepare(getItemQuery.wrapped());
             getItemTask.execute();
+            List<IObject> searchResult = getItemQuery.getSearchResult();
+            if (searchResult == null || searchResult.isEmpty()) {
+                throw new GetAsyncOperationException("Can't find operation.");
+            }
 
-            return getItemQuery.getSearchResult().get(0);
+            return searchResult.get(0);
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve object during get operation.", e);
         } catch (InvalidArgumentException | RegistrationException e) {
