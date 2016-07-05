@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
@@ -7,14 +9,18 @@ import info.smart_tools.smartactors.core.iobject.IObject;
  */
 public interface IObjectWrapper {
     /**
-     * Init wrapper by message, context and response
-     * @param iObjects array of {@link IObject}
+     * Initialize wrapper by instance of {@link IObject}
+     * @param environment instance of {@link IObject}
      */
-    void init(IObject ... iObjects);
+    void init(IObject environment);
 
     /**
-     * Getter for array of init iObjects
-     * @return the array of init iObjects
+     * Get specified instance of {@link IObject} by given {@link IFieldName}
+     * from init environment
+     * @return the specified instance of {@link IObject}
+     * @throws InvalidArgumentException if fieldName is null
+     * or environment doesn't contain IObject with given fieldName
      */
-    IObject[] getIObjects();
+    IObject getEnvironmentIObject(IFieldName fieldName)
+            throws InvalidArgumentException;
 }
