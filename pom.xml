@@ -110,6 +110,7 @@
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
+        <module>CheckUserByEmailActor</module>
         <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
