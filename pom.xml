@@ -107,6 +107,7 @@
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
         <module>AsyncOperationCollection</module>
