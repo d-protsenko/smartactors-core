@@ -109,6 +109,7 @@
         <module>CachedCollection</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
+        <module>AsyncOperationCollection</module>
     </modules>
 
     <build>
