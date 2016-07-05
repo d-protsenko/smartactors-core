@@ -74,7 +74,7 @@ public class MessageProcessingTest {
                 IOC.getKeyForKeyStorage(),
                 new CreateNewInstanceStrategy(objects -> {
                     try {
-                        return new Key<>(objects[0].toString());
+                        return new Key(objects[0].toString());
                     } catch (InvalidArgumentException e) {
                         throw new RuntimeException(e);
                     }
