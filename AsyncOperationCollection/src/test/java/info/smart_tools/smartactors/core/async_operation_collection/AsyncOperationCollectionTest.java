@@ -11,12 +11,14 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
@@ -80,7 +82,7 @@ public class AsyncOperationCollectionTest {
         when(IOC.resolve(getAsyncOperationQueryKey)).thenReturn(getAsyncOperationQuery);
 
         IObject wrapped = mock(IObject.class);
-        when(getAsyncOperationQuery.getIObject()).thenReturn(wrapped);
+        when(getAsyncOperationQuery.wrapped()).thenReturn(wrapped);
 
         StorageConnection connection = mock(StorageConnection.class);
         when(poolGuard.getObject()).thenReturn(connection);
@@ -143,7 +145,7 @@ public class AsyncOperationCollectionTest {
         when(IOC.resolve(getAsyncOperationQueryKey)).thenReturn(getAsyncOperationQuery);
 
         IObject wrapped = mock(IObject.class);
-        when(getAsyncOperationQuery.getIObject()).thenReturn(wrapped);
+        when(getAsyncOperationQuery.wrapped()).thenReturn(wrapped);
 
         StorageConnection connection = mock(StorageConnection.class);
         when(poolGuard.getObject()).thenReturn(connection);
@@ -351,7 +353,7 @@ public class AsyncOperationCollectionTest {
         when(Keys.getOrAdd(StorageConnection.class.toString())).thenReturn(connectionKey);
         when(IOC.resolve(connectionKey, connection)).thenReturn(connection);
 
-        when(getAsyncOperationQuery.getIObject()).thenThrow(new ReadValueException());
+        when(getAsyncOperationQuery.wrapped()).thenThrow(new ReadValueException());
 
         try {
             testCollection.getAsyncOperation(token);
@@ -368,7 +370,7 @@ public class AsyncOperationCollectionTest {
             verify(getAsyncOperationQuery).setToken(token);
             verify(poolGuard).getObject();
             verify(getAsyncOperationTask).setConnection(connection);
-            verify(getAsyncOperationQuery).getIObject();
+            verify(getAsyncOperationQuery).wrapped();
 
             verify(poolGuard).close();
             return;
@@ -402,7 +404,7 @@ public class AsyncOperationCollectionTest {
         when(IOC.resolve(connectionKey, connection)).thenReturn(connection);
 
         IObject wrapped = mock(IObject.class);
-        when(getAsyncOperationQuery.getIObject()).thenReturn(wrapped);
+        when(getAsyncOperationQuery.wrapped()).thenReturn(wrapped);
 
         doThrow(new TaskPrepareException("")).when(getAsyncOperationTask).prepare(wrapped);
 
@@ -421,7 +423,7 @@ public class AsyncOperationCollectionTest {
             verify(getAsyncOperationQuery).setToken(token);
             verify(poolGuard).getObject();
             verify(getAsyncOperationTask).setConnection(connection);
-            verify(getAsyncOperationQuery).getIObject();
+            verify(getAsyncOperationQuery).wrapped();
             verify(getAsyncOperationTask).prepare(wrapped);
 
             verify(poolGuard).close();
@@ -456,7 +458,7 @@ public class AsyncOperationCollectionTest {
         when(IOC.resolve(connectionKey, connection)).thenReturn(connection);
 
         IObject wrapped = mock(IObject.class);
-        when(getAsyncOperationQuery.getIObject()).thenReturn(wrapped);
+        when(getAsyncOperationQuery.wrapped()).thenReturn(wrapped);
 
         doThrow(new TaskExecutionException("")).when(getAsyncOperationTask).execute();
 
@@ -475,7 +477,7 @@ public class AsyncOperationCollectionTest {
             verify(getAsyncOperationQuery).setToken(token);
             verify(poolGuard).getObject();
             verify(getAsyncOperationTask).setConnection(connection);
-            verify(getAsyncOperationQuery).getIObject();
+            verify(getAsyncOperationQuery).wrapped();
             verify(getAsyncOperationTask).prepare(wrapped);
             verify(getAsyncOperationTask).execute();
 
