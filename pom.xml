@@ -108,6 +108,7 @@
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>GetFormActor</module>
+        <module>AuthenticationActor</module>
     </modules>
 
     <build>
