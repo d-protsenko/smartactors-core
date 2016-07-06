@@ -10,12 +10,11 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 public interface CreateSessionMessage {
 
     /**
-     * Returns current session
-     * @return Session session or null
-     * @throws ChangeValueException
+     * Returns sessionId for current session
      * @throws ReadValueException
+     * @throws ChangeValueException
      */
-    Session getSession() throws ChangeValueException, ReadValueException;
+    String getSessionId() throws ReadValueException, ChangeValueException;
 
     /**
      * Returns Authorization Info (example, device info)

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>actors.create_session</artifactId>
+    <artifactId>core.actors.create_session</artifactId>
 
     <dependencies>
         <dependency>
@@ -30,6 +30,16 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ikey</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.idatabase_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.wrapper_generator</artifactId>
             <version>${core.version}</version>
         </dependency>
 
