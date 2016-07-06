@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.exception_handling_receivers;
 
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -39,9 +40,10 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @param context    the message context
      * @return the value from context
      * @throws ReadValueException if error occurs reading value from context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
      */
-    protected int getCauseLevel(final IObject context) throws ReadValueException {
+    protected int getCauseLevel(final IObject context) throws ReadValueException, InvalidArgumentException {
         return (Integer) context.getValue(causeLevelFieldName);
     }
 
@@ -51,9 +53,10 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @param context    the message context
      * @return the value from context
      * @throws ReadValueException if error occurs reading value from context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
      */
-    protected int getCauseStep(final IObject context) throws ReadValueException {
+    protected int getCauseStep(final IObject context) throws ReadValueException, InvalidArgumentException {
         return (Integer) context.getValue(causeStepFieldName);
     }
 
@@ -63,9 +66,10 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @param context    the message context
      * @return the value from context
      * @throws ReadValueException if error occurs reading value from context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
      */
-    protected int getCatchLevel(final IObject context) throws ReadValueException {
+    protected int getCatchLevel(final IObject context) throws ReadValueException, InvalidArgumentException {
         return (Integer) context.getValue(catchLevelFieldName);
     }
 
@@ -75,10 +79,11 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @param context    the message context
      * @return the value from context
      * @throws ReadValueException if error occurs reading value from context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
      */
     protected int getCatchStep(final IObject context)
-            throws ReadValueException {
+        throws ReadValueException, InvalidArgumentException {
         return (Integer) context.getValue(catchStepFieldName);
     }
 
@@ -88,10 +93,11 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @param context    the message context
      * @return exception saved in message context
      * @throws ReadValueException if error occurs reading value from context
+     * @throws InvalidArgumentException if incoming argument is null
      * @see info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence#catchException(Throwable, IObject)
      */
     protected Throwable getException(final IObject context)
-            throws ReadValueException {
+        throws ReadValueException, InvalidArgumentException {
         return (Throwable) context.getValue(exceptionFieldName);
     }
 }

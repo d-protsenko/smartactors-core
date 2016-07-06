@@ -112,6 +112,16 @@
         <module>MapRouter</module>
         <module>ChainStorage</module>
         <module>ChainCallReceiver</module>
+        <module>CloseAsyncOperationActor</module>
+        <module>GetFormActor</module>
+        <module>AuthenticationActor</module>
+        <module>CheckUserByEmailActor</module>
+        <module>AsyncOperationCollection</module>
+        <module>CreateAsyncOperation</module>
+        <module>GetAsyncOperation</module>
+        <module>ToWrapperConverterStrategy</module>
+        <module>IObjectWrapper</module>
+        <module>CreateUserActor</module>
     </modules>
 
     <build>

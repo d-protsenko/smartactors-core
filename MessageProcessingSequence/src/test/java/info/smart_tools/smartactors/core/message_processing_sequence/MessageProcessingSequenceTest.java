@@ -35,7 +35,7 @@ public class MessageProcessingSequenceTest {
     private IMessageReceiver[] messageReceiverMocks;
     private IObject[] receiverArgsMocks;
     private IObject contextMock;
-    private IKey<IFieldName> fieldNameKey;
+    private IKey fieldNameKey;
 
     @Before
     public void setUp()
