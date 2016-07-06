@@ -5,8 +5,16 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 import java.util.Map;
 
+/**
+ * Wrapper for create collection query iobject
+ */
 public interface CreateCollectionQuery {
 
+    /**
+     * @return collection name
+     * @throws ReadValueException
+     * @throws ChangeValueException
+     */
     String  getCollectionName() throws ReadValueException, ChangeValueException;
     /**
      *  What indexes to create on collection.

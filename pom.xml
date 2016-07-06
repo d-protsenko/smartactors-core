@@ -44,6 +44,13 @@
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>IMessage</module>
+        <module>IQueue</module>
+        <module>BlockingQueue</module>
+        <module>IThreadPool</module>
+        <module>ThreadPool</module>
+        <module>ITaskDispatcher</module>
+        <module>TaskDispatcher</module>
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
@@ -88,12 +95,29 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>IResourceSource</module>
+        <module>MessageProcessor</module>
+        <module>ReceiverChain</module>
+        <module>MessageProcessingSequence</module>
+        <module>MessageProcessingInterfaces</module>
+        <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CreateSession</module>
+        <module>CachedCollection</module>
+        <module>CloseAsyncOperationActor</module>
+        <module>GetFormActor</module>
+        <module>AuthenticationActor</module>
+        <module>CheckUserByEmailActor</module>
+        <module>AsyncOperationCollection</module>
+        <module>CreateAsyncOperation</module>
+        <module>GetAsyncOperation</module>
+        <module>ToWrapperConverterStrategy</module>
+        <module>IObjectWrapper</module>
+        <module>CreateUserActor</module>
     </modules>
 
     <build>
