@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.core.create_session.actors;
 
+import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactrors.core.actrors.create_session.CreateSessionActor;
+import info.smart_tools.smartactrors.core.actrors.create_session.exception.CreateSessionException;
+import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionMessage;
 import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.Session;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -16,6 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(IOC.class)
@@ -39,12 +43,16 @@ public class CreateSessionActorTest {
         when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.core.create_session.wrapper.Session"))).thenReturn(sessionKey);
         when(IOC.resolve(eq(sessionKey))).thenReturn(session);
 
-        actor = new CreateSessionActor(mock(IObject.class));
+        CreateSessionConfig config = mock(CreateSessionConfig.class);
+        when(config.getCollectionName()).thenReturn("collectionName");
+        IPool connectionPool = mock(IPool.class);
+        when(config.getConnectionPool()).thenReturn(connectionPool);
+        actor = new CreateSessionActor(config);
     }
 
     @Test
-    public void Should_insertNewSessionInMessage_When_SessionIsNull() throws ChangeValueException, ReadValueException {
-        when(inputMessage.getSession()).thenReturn(null);
+    public void Should_insertNewSessionInMessage_When_SessionIsNull() throws ChangeValueException, ReadValueException, CreateSessionException {
+        when(inputMessage.getSessionId()).thenReturn(null);
         actor.createSession(inputMessage);
         verify(session).setAuthInfo(eq(authInfo));
         verify(inputMessage).setSession(eq(session));
