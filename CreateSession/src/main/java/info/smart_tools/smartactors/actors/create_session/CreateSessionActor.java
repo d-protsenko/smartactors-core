@@ -97,12 +97,19 @@ public class CreateSessionActor {
                         throw new CreateSessionException("Search task didn't returned a buffered query!", e);
                     }
 
-                    Field<Integer> countSearchResultField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "countSearchResult"));
+                    Field<Integer> countSearchResultField = new Field<>(
+                            IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "countSearchResult")
+                    );
                     if (countSearchResultField.out(searchQuery) == 0) {
-                        throw new CreateSessionException("Cannot find session by sessionId: " + inputMessage.getSessionId());
+                        throw new CreateSessionException("Cannot find session by sessionId: "
+                                + inputMessage.getSessionId()
+                        );
                     }
 
-                    Field<List<IObject>> searchResultField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "searchResult"));
+                    Field<List<IObject>> searchResultField = new Field<>(
+                            IOC.resolve(Keys.getOrAdd(IFieldName.class.toString())
+                                    , "searchResult")
+                    );
                     IObject result = searchResultField.out(searchQuery).get(0);
                     Field<Session> sessionFieldName = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "session"));
                     Session fromDBSession = sessionFieldName.out(result);
@@ -125,7 +132,8 @@ public class CreateSessionActor {
         }
     }
 
-    private void prepareSearchQuery(final IObject searchQuery, final CreateSessionMessage inputMessage) throws ChangeValueException, InvalidArgumentException, ResolutionException, ReadValueException {
+    private void prepareSearchQuery(final IObject searchQuery, final CreateSessionMessage inputMessage)
+            throws ChangeValueException, InvalidArgumentException, ResolutionException, ReadValueException {
         IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
         IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
 

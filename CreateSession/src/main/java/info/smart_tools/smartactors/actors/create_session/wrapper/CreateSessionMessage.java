@@ -11,24 +11,25 @@ public interface CreateSessionMessage {
 
     /**
      * Returns sessionId for current session
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @return String that contain sessionId
+     * @throws ReadValueException Calling when try read value of variable
+     * @throws ChangeValueException Calling when try change value of variable
      */
     String getSessionId() throws ReadValueException, ChangeValueException;
 
     /**
      * Returns Authorization Info (example, device info)
      * @return IObject which contains auth info
-     * @throws ChangeValueException
-     * @throws ReadValueException
+     * @throws ChangeValueException Calling when try read value of variable
+     * @throws ReadValueException Calling when try change value of variable
      */
     IObject getAuthInfo() throws ChangeValueException, ReadValueException;
 
     /**
-     * set session in message
+     * Set session in message
      * @param session Session
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ReadValueException Calling when try read value of variable
+     * @throws ChangeValueException Calling when try change value of variable
      */
     void setSession(Session session) throws ReadValueException, ChangeValueException;
 }

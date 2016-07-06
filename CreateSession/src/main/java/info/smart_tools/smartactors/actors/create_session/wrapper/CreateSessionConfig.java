@@ -11,15 +11,16 @@ public interface CreateSessionConfig {
 
     /**
      *
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @return Return collection name
+     * @throws ReadValueException Calling when try read value of variable
+     * @throws ChangeValueException Calling when change read value of variable
      */
     String getCollectionName() throws ReadValueException, ChangeValueException;
 
     /**
-     *
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @return Return connection pool
+     * @throws ReadValueException Calling when try read value of variable
+     * @throws ChangeValueException Calling when try change value of variable
      */
     IPool getConnectionPool() throws ReadValueException, ChangeValueException;
 }
