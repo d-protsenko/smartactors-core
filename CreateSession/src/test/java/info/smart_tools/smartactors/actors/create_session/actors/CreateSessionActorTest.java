@@ -68,5 +68,7 @@ public class CreateSessionActorTest {
     }
 
     @Test
-    public void
+    public void Should_searchSessionInDB_When_SessionIdIsNotNullAndNotEmptyString() {
+        //TODO:: add test
+    }
 }
