@@ -11,10 +11,10 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -24,7 +24,6 @@ import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingExce
 import info.smart_tools.smartactors.core.security.encoding.encoders.IEncoder;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -44,9 +43,9 @@ public class UserAuthByLoginActor {
     /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
-    private static final Field<IObject> LOGIN_F;
-    private static final Field<String> PASSWORD_F;
-    private static final Field<String> EQUALS_F;
+    private final Field<IObject> LOGIN_F;
+    private final Field<String> PASSWORD_F;
+    private final Field<String> EQUALS_F;
 
     /* ToDo : Needs message source {@see Spring Framework}. */
     private static final String AUTH_ERROR_MSG = "User authentication has been failed because: ";
@@ -60,13 +59,13 @@ public class UserAuthByLoginActor {
     private static final String INTERNAL_ERROR_MSG = "Во время обработки запроса произошла ошибка. " +
             "Пожалуйста попробуйте повторить операцию. Приносим свои извинения за доставленные неудобства.";
 
-    static {
+    {
         try {
             /* ToDo : Needs IField interface. */
-            LOGIN_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "email"));
-            PASSWORD_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "password"));
-            EQUALS_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "$eq"));
-        } catch (ResolutionException e) {
+            LOGIN_F = IOC.resolve(Keys.getOrAdd("Field"), "email");
+            PASSWORD_F = IOC.resolve(Keys.getOrAdd("Field"), "password");
+            EQUALS_F = IOC.resolve(Keys.getOrAdd("Field"), "$eq");
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -174,7 +173,7 @@ public class UserAuthByLoginActor {
     private void validatePassword(final IUserAuthByLoginMessage message, final IObject user)
             throws AuthenticateUserException {
         try {
-            String password = PASSWORD_F.from(user, String.class);
+            String password = PASSWORD_F.out(user);
             if (password == null || password.isEmpty()) {
                 setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
@@ -196,8 +195,8 @@ public class UserAuthByLoginActor {
         IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
         IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
 
-        EQUALS_F.inject(loginObject, message.getLogin());
-        LOGIN_F.inject(query, loginObject);
+        EQUALS_F.in(loginObject, message.getLogin());
+        LOGIN_F.in(query, loginObject);
 
         searchQuery.setCollectionName(collection);
         searchQuery.setPageSize(1);

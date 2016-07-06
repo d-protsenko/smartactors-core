@@ -9,15 +9,16 @@ import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.security.encoding.codecs.ICharSequenceCodec;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IEncoder;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
+import info.smart_tools.smartactors.core.wrapper_generator.Field;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ public class UserAuthByLoginActorTest {
     private UserAuthByLoginActor authByLoginActor;
     private IUserAuthByLoginMessage message;
     private ISearchQuery searchQuery;
+    private Field passwordField;
 
     private static final String COLLECTION_NAME = "testCollection";
     private static final String LOGIN = "testLogin";
@@ -52,54 +54,65 @@ public class UserAuthByLoginActorTest {
             "и Вам на электронную почту придет ссылка. Пройдя по ссылке, " +
             "Вы сможете ввести новый удобный для Вас пароль.";
 
+    private boolean isSetUp = false;
 
     @Before
     public void setUp() throws Exception {
-        mockStatic(IOC.class);
-        mockStatic(Keys.class);
+        if (!isSetUp) {
+            isSetUp = true;
+
+            mockStatic(IOC.class);
+            mockStatic(Keys.class);
+
+            searchQuery = mock(ISearchQuery.class);
+            message = mock(IUserAuthByLoginMessage.class);
 
         /* <General #0> Mocks for static block. */
-        IKey fieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
-        IFieldName fieldName = mock(IFieldName.class);
-        when(IOC.resolve(eq(fieldNameKey))).thenReturn(fieldName);
+            Field field = mock(Field.class);
+            passwordField = mock(Field.class);
+            IKey fieldKey = mock(IKey.class);
+            when(Keys.getOrAdd("Field")).thenReturn(fieldKey);
+            when(IOC.resolve(eq(fieldKey), eq("email"))).thenReturn(field);
+            when(IOC.resolve(eq(fieldKey), eq("password"))).thenReturn(passwordField);
+            when(IOC.resolve(eq(fieldKey), eq("$eq"))).thenReturn(field);
 
         /* </General #0> Mocks for static block. */
 
         /* <General #1> Mocks for constructor UserAuthByLoginActor. */
-        final String algorithmName = "testAlgorithm";
-        final String charsetName = "testCharset";
-        final String encoderName = "testEncoder";
+            final String algorithmName = "testAlgorithm";
+            final String charsetName = "testCharset";
+            final String encoderName = "testEncoder";
 
-        IUserAuthByLoginParams params = mock(IUserAuthByLoginParams.class);
-        when(params.getCollection()).thenReturn(COLLECTION_NAME);
-        when(params.getAlgorithm()).thenReturn(algorithmName);
-        when(params.getCharset()).thenReturn(charsetName);
-        when(params.getEncoder()).thenReturn(encoderName);
+            IUserAuthByLoginParams params = mock(IUserAuthByLoginParams.class);
+            when(params.getCollection()).thenReturn(COLLECTION_NAME);
+            when(params.getAlgorithm()).thenReturn(algorithmName);
+            when(params.getCharset()).thenReturn(charsetName);
+            when(params.getEncoder()).thenReturn(encoderName);
 
-        IKey encoderKey = mock(IKey.class);
-        IKey charSequenceCodecKey = mock(IKey.class);
-        IKey passwordEncoderKey = mock(IKey.class);
+            IKey encoderKey = mock(IKey.class);
+            IKey charSequenceCodecKey = mock(IKey.class);
+            IKey passwordEncoderKey = mock(IKey.class);
 
-        when(Keys.getOrAdd(IEncoder.class.toString() + "<-" + params.getEncoder())).thenReturn(encoderKey);
-        when(Keys.getOrAdd(ICharSequenceCodec.class.toString() + "<-" + params.getCharset())).thenReturn(charSequenceCodecKey);
-        when(Keys.getOrAdd(IPasswordEncoder.class.toString() + "<-MDPassword")).thenReturn(passwordEncoderKey);
+            when(Keys.getOrAdd(IEncoder.class.toString() + "<-" + params.getEncoder())).thenReturn(encoderKey);
+            when(Keys.getOrAdd(ICharSequenceCodec.class.toString() + "<-" + params.getCharset())).thenReturn(charSequenceCodecKey);
+            when(Keys.getOrAdd(IPasswordEncoder.class.toString() + "<-MDPassword")).thenReturn(passwordEncoderKey);
 
-        IEncoder encoder = mock(IEncoder.class);
-        ICharSequenceCodec charSequenceCodec = mock(ICharSequenceCodec.class);
-        IPasswordEncoder passwordEncoder = mock(IPasswordEncoder.class);
+            IEncoder encoder = mock(IEncoder.class);
+            ICharSequenceCodec charSequenceCodec = mock(ICharSequenceCodec.class);
+            IPasswordEncoder passwordEncoder = mock(IPasswordEncoder.class);
 
-        when(IOC.resolve(eq(encoderKey))).thenReturn(encoder);
-        when(IOC.resolve(eq(charSequenceCodecKey))).thenReturn(charSequenceCodec);
-        when(IOC.resolve(eq(passwordEncoderKey), eq(algorithmName), eq(encoder), eq(charSequenceCodec)))
-                .thenReturn(passwordEncoder);
+            when(IOC.resolve(eq(encoderKey))).thenReturn(encoder);
+            when(IOC.resolve(eq(charSequenceCodecKey))).thenReturn(charSequenceCodec);
+            when(IOC.resolve(eq(passwordEncoderKey), eq(algorithmName), eq(encoder), eq(charSequenceCodec)))
+                    .thenReturn(passwordEncoder);
         /* </General #1> ------------------------------------------ */
 
         /* Init UserAuthByLoginActor actor. */
-        authByLoginActor = new UserAuthByLoginActor(params);
+            authByLoginActor = new UserAuthByLoginActor(params);
 
         /* Sets a commons mocks. */
-        setMocks();
+            setMocks();
+        }
     }
 
     @Test
@@ -117,10 +130,9 @@ public class UserAuthByLoginActorTest {
         /* <Internal #2.1> Special mocks for private method UserAuthByLoginActor#validateLogin */
 
         /* <Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
-        when(user.getValue(anyObject())).thenReturn(PASSWORD);
+        when(passwordField.out(user)).thenReturn(PASSWORD);
         /* </Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
-
         authByLoginActor.authenticateUser(message);
 
         verify(searchQuery, times(1)).setCollectionName(COLLECTION_NAME);
@@ -152,8 +164,6 @@ public class UserAuthByLoginActorTest {
 
         assertEquals(statusCaptor.getValue(), "SUCCESS");
         assertEquals(statusMessageCaptor.getValue(), "");
-
-        updateMocks();
     }
 
     @Test
@@ -193,8 +203,6 @@ public class UserAuthByLoginActorTest {
             assertEquals(e.getMessage(), "Invalid message format!");
             verifyFailAuthenticate(4);
         }
-
-        updateMocks();
     }
 
     @Test
@@ -214,8 +222,6 @@ public class UserAuthByLoginActorTest {
             assertEquals(e.getMessage(), "Search task didn't returned a buffered query!");
             verifyFailAuthenticate(1);
         }
-
-        updateMocks();
     }
 
     @Test
@@ -237,8 +243,6 @@ public class UserAuthByLoginActorTest {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG + "user with login: [" + LOGIN + "] doesn't exist!");
             verifyFailAuthenticate(1);
         }
-
-        updateMocks();
     }
 
     @Test
@@ -260,8 +264,6 @@ public class UserAuthByLoginActorTest {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG + "too many users with login: [" + LOGIN + "]!");
             verifyFailAuthenticate(1);
         }
-
-        updateMocks();
     }
 
     @Test
@@ -272,6 +274,7 @@ public class UserAuthByLoginActorTest {
 
             /* <Internal #2.1> Special mocks for private method UserAuthByLoginActor#resolveLogin */
         IObject user = mock(IObject.class);
+        when(user.toString()).thenReturn("User");
         IBufferedQuery bufferedQuery = mock(IBufferedQuery.class);
         when(searchQuery.getBufferedQuery()).thenReturn(Optional.of(bufferedQuery));
         when(searchQuery.countSearchResult()).thenReturn(1);
@@ -280,7 +283,7 @@ public class UserAuthByLoginActorTest {
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
 
         try {
-            when(user.getValue(anyObject())).thenReturn(null);
+            when(passwordField.out(user)).thenReturn(null);
             authByLoginActor.authenticateUser(message);
         } catch (AuthenticateUserException e) {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG +
@@ -289,19 +292,18 @@ public class UserAuthByLoginActorTest {
         }
 
         try {
-            when(user.getValue(anyObject())).thenReturn("");
+            reset(passwordField);
+            when(passwordField.out(user)).thenReturn("");
             authByLoginActor.authenticateUser(message);
         } catch (AuthenticateUserException e) {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG +
                     "user with login: [" + LOGIN + "] hasn't password!");
             verifyFailAuthenticate(2);
         }
-
-        updateMocks();
     }
 
     @Test
-    public void should_ThrowsException_WithReason_GivenUserPasswordIsNotActual() throws Exception {
+    public void should_ThrowsException_WithReason_GivenUserPasswordIsInvalidForGivenLogin() throws Exception {
          /* <General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
         when(message.getLogin()).thenReturn(LOGIN);
         when(message.getPassword()).thenReturn(PASSWORD);
@@ -315,7 +317,7 @@ public class UserAuthByLoginActorTest {
         /* <Internal #2.1> Special mocks for private method UserAuthByLoginActor#validateLogin */
 
         /* <Internal #2.2> Mocks for private method UserAuthByLoginActor#resolveLogin */
-        when(user.getValue(anyObject())).thenReturn("invalidPassword");
+        when(passwordField.out(user)).thenReturn("invalidPassword");
         /* </Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
 
@@ -323,23 +325,23 @@ public class UserAuthByLoginActorTest {
             authByLoginActor.authenticateUser(message);
         } catch (AuthenticateUserException e) {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG +
-                    "Invalid password: [" + "invalidPassword" + "] for login: [" + LOGIN + "]!");
+                    "Invalid password: [invalidPassword] for login: [" + LOGIN + "]!");
             verifyFailAuthenticate(1);
         }
-
-        updateMocks();
     }
 
 
     /* Internal methods. */
 
     /* Resets and sets a commons mocks. */
-    private void updateMocks() throws Exception {
+    @After
+    public void clearMocks() throws Exception {
         resetMocks();
         setMocks();
     }
 
     private void setMocks() throws Exception {
+        when(passwordField.toString()).thenReturn("PasswordField");
         /* <General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
         IKey psqlConnectionPoolGuardKey = mock(IKey.class);
         IPoolGuard psqlConnectionPoolGuard = mock(IPoolGuard.class);
@@ -349,8 +351,6 @@ public class UserAuthByLoginActorTest {
         when(IOC.resolve(eq(psqlConnectionPoolGuardKey))).thenReturn(psqlConnectionPoolGuard);
         when(psqlConnectionPoolGuard.getObject()).thenReturn(psqlConnection);
 
-        message = mock(IUserAuthByLoginMessage.class);
-
         /* <Internal #2.1> Commons mocks for private method UserAuthByLoginActor#resolveLogin */
         IKey searchTaskKey = mock(IKey.class);
         IKey searchQueryKey = mock(IKey.class);
@@ -358,7 +358,6 @@ public class UserAuthByLoginActorTest {
         when(Keys.getOrAdd(ISearchQuery.class.toString())).thenReturn(searchQueryKey);
 
         IDatabaseTask searchTask = mock(IDatabaseTask.class);
-        searchQuery = mock(ISearchQuery.class);
         when(IOC.resolve(eq(searchTaskKey))).thenReturn(searchTask);
         when(IOC.resolve(eq(searchQueryKey))).thenReturn(searchQuery);
 
@@ -377,8 +376,7 @@ public class UserAuthByLoginActorTest {
     }
 
     private void resetMocks() {
-        reset(searchQuery);
-        reset(message);
+        reset(searchQuery, message, passwordField);
     }
 
     /* Verify message authenticate status and message when authentication is failed. */

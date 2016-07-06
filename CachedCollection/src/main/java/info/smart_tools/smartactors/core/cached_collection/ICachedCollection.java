@@ -16,21 +16,21 @@ public interface ICachedCollection {
      * Reads active items by some key
      * @param key for cache
      * @return list with found objects
-     * @throws GetCacheItemException
+     * @throws GetCacheItemException Throw when Collection can't get items for key
      */
     List<IObject> getItems(String key) throws GetCacheItemException;
 
     /**
      * Deletes object from memory and set active flag to false for object into DB
      * @param query deletion query
-     * @throws DeleteCacheItemException
+     * @throws DeleteCacheItemException Throw when collection can't delete objects with @query
      */
     void delete(IObject query) throws DeleteCacheItemException;
 
     /**
      * Add or update object in memory and DB
      * @param query upsert query
-     * @throws UpsertCacheItemException
+     * @throws UpsertCacheItemException Throw when collection can't update/insert objects in query
      */
     void upsert(IObject query) throws UpsertCacheItemException;
 }

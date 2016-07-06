@@ -23,13 +23,15 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
 
-    public UpsertIntoCachedCollectionTask(IDatabaseTask upsertTask) {
+    /**
+     * @param upsertTask Target update task
+     */
+    public UpsertIntoCachedCollectionTask(final IDatabaseTask upsertTask) {
         this.upsertTask = upsertTask;
     }
 
     /**
      * Prepares database query
-     *
      * @param query query object
      * @throws TaskPrepareException if error occurs in process of query preparing
      */
