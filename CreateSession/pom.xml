@@ -10,7 +10,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core.actors.create_session</artifactId>
+    <artifactId>actor.create_session</artifactId>
 
     <dependencies>
         <dependency>

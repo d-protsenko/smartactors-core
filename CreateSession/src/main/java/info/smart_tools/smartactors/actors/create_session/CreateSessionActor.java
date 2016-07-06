@@ -1,12 +1,10 @@
 /**
  * Contains CreateSessionActor
  */
-package info.smart_tools.smartactrors.core.actrors.create_session;
+package info.smart_tools.smartactors.actors.create_session;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -24,10 +22,9 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
-import info.smart_tools.smartactrors.core.actrors.create_session.exception.CreateSessionException;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionConfig;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.Session;
+import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
+import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
+import info.smart_tools.smartactors.actors.create_session.wrapper.Session;
 
 import java.util.List;
 

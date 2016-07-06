@@ -1,11 +1,11 @@
-package info.smart_tools.smartactors.core.create_session.actors;
+package info.smart_tools.smartactors.actors.create_session.actors;
 
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactrors.core.actrors.create_session.CreateSessionActor;
-import info.smart_tools.smartactrors.core.actrors.create_session.exception.CreateSessionException;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionConfig;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactrors.core.actrors.create_session.wrapper.Session;
+import info.smart_tools.smartactors.actors.create_session.CreateSessionActor;
+import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
+import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
+import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
+import info.smart_tools.smartactors.actors.create_session.wrapper.Session;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -40,8 +40,9 @@ public class CreateSessionActorTest {
         IKey key = mock(IKey.class);
         IKey sessionKey = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.core.create_session.wrapper.Session"))).thenReturn(sessionKey);
+        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.actors.create_session.wrapper.Session"))).thenReturn(sessionKey);
         when(IOC.resolve(eq(sessionKey))).thenReturn(session);
+
 
         CreateSessionConfig config = mock(CreateSessionConfig.class);
         when(config.getCollectionName()).thenReturn("collectionName");
@@ -51,10 +52,21 @@ public class CreateSessionActorTest {
     }
 
     @Test
-    public void Should_insertNewSessionInMessage_When_SessionIsNull() throws ChangeValueException, ReadValueException, CreateSessionException {
+    public void Should_insertNewSessionInMessage_When_SessionIdIsNull() throws ChangeValueException, ReadValueException, CreateSessionException {
         when(inputMessage.getSessionId()).thenReturn(null);
         actor.createSession(inputMessage);
         verify(session).setAuthInfo(eq(authInfo));
         verify(inputMessage).setSession(eq(session));
     }
+
+    @Test
+    public void Should_insertNewSessionInMessage_When_SessionIdEqualEmptyString() throws CreateSessionException, ReadValueException, ChangeValueException {
+        when(inputMessage.getSessionId()).thenReturn("");
+        actor.createSession(inputMessage);
+        verify(session).setAuthInfo(eq(authInfo));
+        verify(inputMessage).setSession(eq(session));
+    }
+
+    @Test
+    public void
 }

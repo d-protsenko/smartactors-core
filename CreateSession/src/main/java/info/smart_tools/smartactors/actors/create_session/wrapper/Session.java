@@ -1,4 +1,4 @@
-package info.smart_tools.smartactrors.core.actrors.create_session.wrapper;
+package info.smart_tools.smartactors.actors.create_session.wrapper;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;

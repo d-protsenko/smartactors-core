@@ -1,4 +1,4 @@
-package info.smart_tools.smartactrors.core.actrors.create_session.exception;
+package info.smart_tools.smartactors.actors.create_session.exception;
 
 /**
  * Exception for error in CreateSessionActor methods
