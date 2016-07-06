@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.actors.authentication.users.exceptions.Authe
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.search.psql.PSQLSearchTask;
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -27,18 +26,29 @@ import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEnc
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
 
+import javax.annotation.Nonnull;
+
 /**
+ * Actor for authenticate users by given login and password.
  *
  */
 public class UserAuthByLoginActor {
+    /** Name of a some collection in database where is users documents. */
     private String collection;
+    /**
+     * A cached compiled query for search user in database by login.
+     * The cached query hasn't parametrized.
+     * {@link IBufferedQuery}.
+     */
     private IBufferedQuery bufferedQuery;
+    /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
     private static final Field<IObject> LOGIN_F;
     private static final Field<String> PASSWORD_F;
     private static final Field<String> EQUALS_F;
 
+    /* ToDo : Needs message source {@see Spring Framework}. */
     private static final String AUTH_ERROR_MSG = "User authentication has been failed because: ";
 
     private static final String AUTH_ERROR_RESPONSE_MSG = "Такой почтовый адрес не зарегистрирован, либо пароль неверный. " +
@@ -52,6 +62,7 @@ public class UserAuthByLoginActor {
 
     static {
         try {
+            /* ToDo : Needs IField interface. */
             LOGIN_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "email"));
             PASSWORD_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "password"));
             EQUALS_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "$eq"));
@@ -61,22 +72,27 @@ public class UserAuthByLoginActor {
     }
 
     /**
+     * Default constructor for actor.
+     * Necessary for resolving from IOC.
      *
-     * @param params
-     * @throws InvalidArgumentException
+     * @param params - parameters for initialize actor.
+     *               All parameters must not be a NULL or empty.
+     * @see IUserAuthByLoginParams
+     *
+     * @throws InvalidArgumentException when given parameters is invalid.
      */
-    public UserAuthByLoginActor(final IUserAuthByLoginParams params) throws InvalidArgumentException {
+    public UserAuthByLoginActor(@Nonnull final IUserAuthByLoginParams params) throws InvalidArgumentException {
         try {
             checkParams(params);
 
             this.collection = params.getCollection();
 
-            IEncoder encoder = IOC.resolve(Keys.getOrAdd(IEncoder.class.toString() + "<-Hex"));
+            IEncoder encoder = IOC.resolve(Keys.getOrAdd(IEncoder.class.toString() + "<-" + params.getEncoder()));
             ICharSequenceCodec charSequenceCodec = IOC.resolve(
-                    Keys.getOrAdd(ICharSequenceCodec.class.toString() + "<-UTF-8"));
+                    Keys.getOrAdd(ICharSequenceCodec.class.toString() + "<-" + params.getCharset()));
             this.passwordEncoder = IOC.resolve(
                     Keys.getOrAdd(IPasswordEncoder.class.toString() + "<-MDPassword"),
-                    params.getAlgorithmEncode(),
+                    params.getAlgorithm(),
                     encoder,
                     charSequenceCodec);
         } catch (ResolutionException e) {
@@ -85,16 +101,27 @@ public class UserAuthByLoginActor {
     }
 
     /**
+     * Try to authenticate a some user by given login and password.
+     * If authentication is successfully sets the status "SUCCESS" into the given auth message,
+     *              else sets status "FAIL" and error message into the given auth message.
      *
-     * @param message
-     * @throws InvalidArgumentException
-     * @throws AuthenticateUserException
+     * @param message - message for authentication with user's login and password.
+     *                The user's login and password must not be a NULL or empty.
+     * @see IUserAuthByLoginMessage
+     *
+     * @throws InvalidArgumentException when given message is invalid.
+     * @throws AuthenticateUserException when:
+     *                1. User with given login hasn't registered in the system.
+     *                2. Given password is invalid.
+     *                3. In the system has a few users with given login.
+     *                4. In the system user with given login saved without password.
+     *                5. A wrong work of search database task : task not prepare a query.
      */
-    public void authenticateUser(final IUserAuthByLoginMessage message)
+    public void authenticateUser(@Nonnull final IUserAuthByLoginMessage message)
             throws InvalidArgumentException, AuthenticateUserException {
-        try (IPoolGuard poolGuard = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"))) {
+        try (IPoolGuard poolGuard = IOC.resolve(Keys.getOrAdd("PostgresConnectionPoolGuard"))) {
             checkMsg(message);
-            IObject user = validateLogin(message, poolGuard);
+            IObject user = resolveLogin(message, poolGuard);
             validatePassword(message, user);
             setSuccessResponse(message);
         } catch (ResolutionException e) {
@@ -103,30 +130,44 @@ public class UserAuthByLoginActor {
         }
     }
 
-    private IObject validateLogin(final IUserAuthByLoginMessage message, final IPoolGuard poolGuard)
+    private IObject resolveLogin(final IUserAuthByLoginMessage message, final IPoolGuard poolGuard)
             throws AuthenticateUserException {
         try {
-            IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(PSQLSearchTask.class.toString()));
+            IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString() + "PSQL"));
             ISearchQuery searchQuery = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()));
 
             searchTask.setConnection((StorageConnection) poolGuard.getObject());
             searchTask.prepare(prepareQueryMsg(searchQuery, message));
             searchTask.execute();
 
-            this.bufferedQuery = searchQuery
-                    .getBufferedQuery()
-                    .orElseThrow(() -> new AuthenticateUserException("Search task didn't returned a buffered query!"));
-
-            if (searchQuery.countSearchResult() == 0) {
-                setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
-                throw new AuthenticateUserException(AUTH_ERROR_MSG +
-                        "user with login: [" + message.getLogin() + "] doesn't exist!");
-            }
+            validateSearchResult(searchQuery, message);
 
             return searchQuery.getSearchResult(0);
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException |
                 TaskSetConnectionException | TaskExecutionException | TaskPrepareException e) {
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
+        }
+    }
+
+    private void validateSearchResult(final ISearchQuery searchQuery, final IUserAuthByLoginMessage message)
+            throws AuthenticateUserException {
+
+        this.bufferedQuery = searchQuery
+                .getBufferedQuery()
+                .orElseThrow(() -> {
+                    setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
+                    return new AuthenticateUserException("Search task didn't returned a buffered query!");
+                });
+
+        if (searchQuery.countSearchResult() == 0) {
+            setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
+            throw new AuthenticateUserException(AUTH_ERROR_MSG +
+                    "user with login: [" + message.getLogin() + "] doesn't exist!");
+        }
+        if (searchQuery.countSearchResult() > 1) {
+            setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
+            throw new AuthenticateUserException(AUTH_ERROR_MSG +
+                    "too many users with login: [" + message.getLogin() + "]!");
         }
     }
 
@@ -177,7 +218,7 @@ public class UserAuthByLoginActor {
     }
 
     private void setFailResponse(final IUserAuthByLoginMessage message, final String errorMessage) {
-        message.setAuthStatus("SUCCESS");
+        message.setAuthStatus("FAIL");
         message.setAuthMessage(errorMessage);
     }
 
@@ -185,13 +226,14 @@ public class UserAuthByLoginActor {
         if (isNullOrEmpty(params.getCollection())) {
             throw new InvalidArgumentException("Invalid collection name!");
         }
-        if (isNullOrEmpty(params.getAlgorithmEncode())) {
+        if (isNullOrEmpty(params.getAlgorithm())) {
             throw new InvalidArgumentException("Invalid algorithm for password encoding!");
         }
     }
 
     private void checkMsg(final IUserAuthByLoginMessage msg) throws InvalidArgumentException {
         if (isNullOrEmpty(msg.getLogin()) || isNullOrEmpty(msg.getPassword())) {
+            setFailResponse(msg, AUTH_ERROR_RESPONSE_MSG);
             throw new InvalidArgumentException("Invalid message format!");
         }
     }

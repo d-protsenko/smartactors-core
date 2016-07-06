@@ -14,7 +14,17 @@ public interface IUserAuthByLoginParams {
      *
      * @return
      */
-    String getAlgorithmEncode();
+    String getAlgorithm();
 
+    /**
+     *
+     * @return
+     */
+    String getCharset();
 
+    /**
+     *
+     * @return
+     */
+    String getEncoder();
 }
