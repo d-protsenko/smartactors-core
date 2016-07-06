@@ -111,6 +111,7 @@
         <module>IChainStorage</module>
         <module>MapRouter</module>
         <module>ChainStorage</module>
+        <module>ChainCallReceiver</module>
     </modules>
 
     <build>
