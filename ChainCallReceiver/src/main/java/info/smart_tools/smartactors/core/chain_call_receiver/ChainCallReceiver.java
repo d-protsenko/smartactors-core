@@ -14,7 +14,7 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.MessageRe
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 
 /**
- *
+ * Receiver that calls {@link IReceiverChain} chosen by a {@link IChainChoiceStrategy} on a message.
  */
 public class ChainCallReceiver implements IMessageReceiver {
     private IChainStorage chainStorage;
