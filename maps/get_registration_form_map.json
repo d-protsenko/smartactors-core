@@ -36,5 +36,6 @@
         "in_getFormKey": "message/formKey",
         "out_setForm": "response/form"
       }
+    }
   ]
 }
