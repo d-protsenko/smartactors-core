@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.iendpoint_creator;
 
-import info.smart_tools.smartactors.core.IObject;
-import info.smart_tools.smartactors.core.services.AsyncService;
+import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
+import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
  * Endpoint creator in factory method pattern.
@@ -13,6 +13,6 @@ public interface IEndpointCreator {
      * @param params ...
      * @return endpoint constructed by parameters.
      */
-    AsyncService create(IObject params);
+    IAsyncService create(IObject params);
 
 }

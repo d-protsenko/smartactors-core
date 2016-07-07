@@ -55,6 +55,7 @@
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
         <module>IEndpointCreator</module>
+        <module>IAsyncService</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
@@ -118,7 +119,7 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
-        <module>IAsyncService</module>
+        <module>EndpointGenerator</module>
     </modules>
 
     <build>
