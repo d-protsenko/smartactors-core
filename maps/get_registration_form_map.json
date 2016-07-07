@@ -3,53 +3,38 @@
     {
       "actor": "createSessionActor",
       "handler": "getSession",
-      "wrapper": {}
+      "wrapper": []
     },
     {
       "actor": "authenticationActor",
       "handler": "authenticateSession",
       "wrapper": {
-        "getRequestUserAgent": {
-          "type": "in",
-          "source": "context",
+        "in_getRequestUserAgent": {
           "rules": [
             {
               "name": "getHeaderFromRequest",
               "args": [
-                "User-Agent"
+                "context/User-Agent"
               ]
             }
           ]
         },
-        "getSessionUserAgent": {
-          "type": "in",
-          "source": "message.session.authInfo.userAgent"
-        }
+        "in_getSessionUserAgent": "message/session/authInfo/userAgent"
       }
     },
     {
       "actor": "asyncOpsActor",
       "handler": "createOperation",
       "wrapper": {
-        "getIObject": {
-          "type": "in",
-          "source": "message"
-        }
+        "in_getIObject": "message"
       }
     },
     {
       "actor": "getFormActor",
       "handler": "getForm",
       "wrapper": {
-        "getFormKey": {
-          "type": "in",
-          "source": "message.formKey"
-        },
-        "setForm": {
-          "type": "out",
-          "target": "response.form"
-        }
+        "in_getFormKey": "message/formKey",
+        "out_setForm": "response/form"
       }
-    }
   ]
 }
