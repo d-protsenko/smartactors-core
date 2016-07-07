@@ -1,0 +1,16 @@
+{
+  "getRestorePasswordFormMap": [
+    {
+      "actor": "getFormActor",
+      "handler": "getForm",
+      "wrapper": [
+        {
+          "in_getFormKey": "message/formKey"
+        },
+        {
+          "out_setForm": "response/form"
+        }
+      ]
+    }
+  ]
+}
