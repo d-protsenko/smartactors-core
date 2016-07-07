@@ -31,10 +31,11 @@ import java.util.List;
  * <pre>
  *     {
  *         "steps": [
- *             {
+ *             {                            // object describing a single step of message processing (a single receiver)
+ *                                          // this object will be passed to {@link IMessageReceiver#receive} method
+ *                                          // as second argument.
  *                 "target": "theTarget",   // (just for example) fields defining the receiver. concrete field names
  *                                          // depend on implementation of "receiver_id_from_iobject" strategy
- *                 "arguments": {}          // (optional) arguments passed to receiver
  *             },
  *             {
  *                 . . .
@@ -69,7 +70,6 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
             IFieldName exceptionClassFieldName = IOC.resolve(fieldNameKey, "class");
             IFieldName exceptionChainFieldName = IOC.resolve(fieldNameKey, "chain");
-            IFieldName stepArgsFieldName = IOC.resolve(fieldNameKey, "arguments");
 
             List chainSteps = (List) description.getValue(stepsFieldName);
             List exceptionalChains = (List) description.getValue(exceptionalChainsFieldName);
@@ -79,10 +79,9 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
 
             for (int i = 0; i < chainSteps.size(); i++) {
                 IObject step = (IObject) chainSteps.get(i);
-                Object arg = step.getValue(stepArgsFieldName);
 
                 receivers[i] = router.route(IOC.resolve(receiverIdKey, step));
-                arguments[i] = (null == arg) ? null : (IObject) arg;
+                arguments[i] = step;
             }
 
             LinkedHashMap<Class<? extends Throwable>, IReceiverChain> exceptionalChainsMap = new LinkedHashMap<>();
