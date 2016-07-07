@@ -2,61 +2,43 @@
   "finish_auth_map": [
     {
       "actor": "createSessionActor",
-      "handler": "getSession",
-      "wrapper": {}
+      "handler": "resolve",
+      "wrapper": {
+        "in_getSessionId": "message/sessionId",
+        "out_setSession": "message/session"
+      }
     },
     {
       "actor": "authenticationActor",
       "handler": "authenticateSession",
       "wrapper": {
-        "getRequestUserAgent": {
-          "type": "in",
-          "source": "context",
-          "rules": [
-            {
-              "name": "getHeaderFromRequest",
-              "args": [
-                "User-Agent"
-              ]
-            }
-          ]
-        },
-        "getSessionUserAgent": {
-          "type": "in",
-          "source": "message.session.authInfo.userAgent"
-        }
+        "in_getRequestUserAgent": [
+          {
+            "name": "getUserAgentFromRequestRule",
+            "args": [
+              "context/request",
+              "const/User-Agent"
+            ]
+          }
+        ],
+        "in_getSessionUserAgent": "message/session/authInfo/userAgent"
       }
     },
     {
       "actor": "GetAsyncOperationActor",
       "handler": "getAsyncOperation",
       "wrapper": {
-        "getToken": {
-          "type": "in",
-          "source": "message.token"
-        },
-        "setAsyncOperation": {
-          "type": "out",
-          "source": "message.async_operation"
-        }
+        "in_getToken": "message/token",
+        "out_setAsyncOperation": "message.async_operation"
       }
     },
     {
       "actor": "CloseAsyncOperationActor",
       "handler": "completeAsyncOp",
       "wrapper": {
-        "getToken": {
-          "type": "in",
-          "source": "message.token"
-        },
-        "getOperation": {
-          "type": "in",
-          "source": "message.async_operation"
-        },
-        "getOperationTokens": {
-          "type": "in",
-          "target": "message.session.async_operation_tokens"
-        }
+        "in_ getToken": "message.token",
+        "in_getOperation": "message.async_operation",
+        "in_getOperationTokens": "message.session.async_operation_tokens"
       }
     }
   ]
