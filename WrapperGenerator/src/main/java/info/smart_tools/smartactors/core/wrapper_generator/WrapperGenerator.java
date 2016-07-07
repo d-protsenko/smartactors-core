@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -10,6 +9,7 @@ import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
@@ -43,7 +43,7 @@ public class WrapperGenerator implements IWrapperGenerator {
     }
 
     @Override
-    public <T> T generate(final Class<T> targetInterface, final IObject binding)
+    public <T> T generate(final Class<T> targetInterface)
             throws InvalidArgumentException, WrapperGeneratorException {
         T instance = null;
 
@@ -53,12 +53,9 @@ public class WrapperGenerator implements IWrapperGenerator {
         if (!targetInterface.isInterface()) {
             throw new InvalidArgumentException("Target class should be an interface!");
         }
-        if (null == binding) {
-            throw new InvalidArgumentException("Binding object should be null!");
-        }
 
         try {
-            instance = IOC.resolve(Keys.getOrAdd(targetInterface.toString()));
+            instance = IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
         } catch (ResolutionException e) {
             // do nothing
         }
@@ -67,11 +64,11 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            Class<T> clazz = generateClass(targetInterface, binding);
+            Class<T> clazz = generateClass(targetInterface);
 
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
             IOC.register(
-                    Keys.getOrAdd(targetInterface.toString()),
+                    Keys.getOrAdd(targetInterface.getCanonicalName()),
                     new CreateNewInstanceStrategy(
                             (arg) ->  {
                                 try {
@@ -83,7 +80,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                     )
             );
 
-            return IOC.resolve(Keys.getOrAdd(targetInterface.toString()));
+            return IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",
@@ -92,11 +89,8 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
     }
 
-    private <T> Class<T> generateClass(final Class<T> targetInterface, final IObject binding)
+    private <T> Class<T> generateClass(final Class<T> targetInterface)
             throws Exception {
-        IObject currentBinding = (IObject) binding.getValue(
-                IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), targetInterface.getCanonicalName())
-        );
 
         ClassBuilder cb = new ClassBuilder("\t", "\n");
 
@@ -104,7 +98,6 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addPackageName(targetInterface.getPackage().getName())
                 .addImport(Field.class.getCanonicalName())
-                .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
@@ -157,7 +150,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             builder
                     .append("\t\t\t").append("this.fieldFor_")
                     .append(m.getName())
-                    .append(" = new Field<>(\"binding/")
+                    .append(" = new Field<>(\"")
                     .append(targetInterface.getCanonicalName())
                     .append("/").append(m.getName()).append("\"" + ");\n");
         }
@@ -195,18 +188,9 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         // Add getters and setters
         for (Method m : targetInterface.getMethods()) {
-            IObject methodBinding = (IObject) currentBinding.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), m.getName())
-            );
             String typeTo = m.getReturnType().getSimpleName();
-            boolean checkOrGenerate = (boolean) methodBinding.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "isWrapper")
-            );
 
             if (!m.getReturnType().equals(Void.TYPE)) {
-                if (checkOrGenerate) {
-                    this.generate(m.getReturnType(), binding);
-                }
                 cb
                         .addMethod().setModifier(Modifiers.PUBLIC).setReturnType(m.getGenericReturnType().getTypeName())
                                 .setName(m.getName()).setExceptions("ReadValueException")
@@ -220,9 +204,6 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")
                         .addStringToBody("}");
             } else {
-                if (checkOrGenerate) {
-                    this.generate(m.getParameterTypes()[0], binding);
-                }
                 cb
                         .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("void").setName(m.getName())
                         .setExceptions("ChangeValueException")
