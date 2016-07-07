@@ -25,20 +25,20 @@
       }
     },
     {
-      "actor": "GetAsyncOperationActor",
+      "actor": "getAsyncOperationActor",
       "handler": "getAsyncOperation",
-      "wrapper": {
+      "info.smart_tools.smartactors.actor.get_async_operation.wrapper.GetAsyncOperationMessage": {
         "in_getToken": "message/token",
-        "out_setAsyncOperation": "message.async_operation"
+        "out_setAsyncOperation": "message/async_operation"
       }
     },
     {
-      "actor": "CloseAsyncOperationActor",
+      "actor": "closeAsyncOperationActor",
       "handler": "completeAsyncOp",
-      "wrapper": {
-        "in_ getToken": "message.token",
-        "in_getOperation": "message.async_operation",
-        "in_getOperationTokens": "message.session.async_operation_tokens"
+      "info.smart_tools.smartactors.actors.close_async_operation.wrapper.CloseAsyncOpMessage": {
+        "in_ getToken": "message/token",
+        "in_getOperation": "message/async_operation",
+        "in_getOperationTokens": "message/session/async_operation_tokens"
       }
     }
   ]
