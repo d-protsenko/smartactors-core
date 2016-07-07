@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.actors.get_form;
 
 import info.smart_tools.smartactors.actors.get_form.strategy.FirstItemStrategy;
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
-import info.smart_tools.smartactors.actors.get_form.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
@@ -54,7 +53,7 @@ public class GetFormActorTest {
 
         when(collection.getItems(key)).thenReturn(objects);
 
-        actor = new GetFormActor(mock(ActorParams.class));
+        actor = new GetFormActor(mock(IObject.class));
         GetFormMessage message = mock(GetFormMessage.class);
         when(message.getFormKey()).thenReturn(key);
         actor.getForm(message);
@@ -79,7 +78,7 @@ public class GetFormActorTest {
 
         when(collection.getItems(key)).thenThrow(Exception.class);
 
-        actor = new GetFormActor(mock(ActorParams.class));
+        actor = new GetFormActor(mock(IObject.class));
         GetFormMessage message = mock(GetFormMessage.class);
         when(message.getFormKey()).thenReturn(key);
         actor.getForm(message);

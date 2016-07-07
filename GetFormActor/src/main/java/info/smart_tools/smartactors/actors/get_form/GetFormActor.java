@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.actors.get_form;
 
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
-import info.smart_tools.smartactors.actors.get_form.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -26,9 +26,10 @@ public class GetFormActor {
      * @param params the wrapper for IObject, contains collectionName
      * @throws InvalidArgumentException
      */
-    public GetFormActor(final ActorParams params) throws InvalidArgumentException {
+    public GetFormActor(final IObject params) throws InvalidArgumentException {
         try {
-            collection = IOC.resolve(Keys.getOrAdd(CachedCollection.class.toString()), params.getCollectionName());
+            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "collectionName");
+            collection = IOC.resolve(Keys.getOrAdd(CachedCollection.class.toString()), params.getValue(fieldName));
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException(e);
         }
