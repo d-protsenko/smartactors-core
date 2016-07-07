@@ -7,8 +7,6 @@ import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCache
 import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.GetObjectFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteItem;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
@@ -44,9 +42,11 @@ import java.util.concurrent.ConcurrentMap;
 public class CachedCollection implements ICachedCollection {
 
     private Field<CollectionName> collectionNameField;
-    private Field<IPool> connectionPoolField;
     private Field<String> keyNameField;
     private Field<String> keyValueField;
+    private Field<String> specificKeyNameField;
+    private Field<IObject> documentField;
+    private Field<String> idField;
     //TODO:: uncomment when ListField would be added
 //    private ListField<IObject> searchResultField;
 
@@ -64,12 +64,15 @@ public class CachedCollection implements ICachedCollection {
         try {
             this.map = new ConcurrentHashMap<>();
             this.collectionNameField = IOC.resolve(Keys.getOrAdd("Field"), "collectionName");
-            this.connectionPoolField = IOC.resolve(Keys.getOrAdd("Field"), "connectionPool");
+            Field<IPool> connectionPoolField = IOC.resolve(Keys.getOrAdd("Field"), "connectionPool");
             this.keyNameField = IOC.resolve(Keys.getOrAdd("Field"), "keyName");
             this.keyValueField = IOC.resolve(Keys.getOrAdd("Field"), "keyValue");
+            this.documentField = IOC.resolve(Keys.getOrAdd("Field"), "document");
+            this.idField = IOC.resolve(Keys.getOrAdd("Field"), "id");
             this.collectionName = collectionNameField.out(config);
             this.connectionPool = connectionPoolField.out(config);
             this.keyName = keyNameField.out(config);
+            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd("Field"), keyName);
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }
@@ -131,7 +134,6 @@ public class CachedCollection implements ICachedCollection {
     @Override
     public void delete(final IObject message) throws DeleteCacheItemException {
         try {
-            DeleteItem deleteItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString()));
                 if (deleteTask == null) {
@@ -144,13 +146,12 @@ public class CachedCollection implements ICachedCollection {
                     deleteTask = new DeleteFromCachedCollectionTask(nestedTask);
                     IOC.register(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString()), new SingletonStrategy(deleteTask));
                 }
-                deleteItem = IOC.resolve(Keys.getOrAdd(DeleteItem.class.toString()), message);
-                DeleteFromCachedCollectionQuery deleteQuery = IOC.resolve(Keys.getOrAdd(DeleteFromCachedCollectionQuery.class.toString()));
-                deleteQuery.setCollectionName(collectionName);
-                deleteQuery.setDeleteItem(deleteItem);
+                IObject deleteQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                collectionNameField.in(deleteQuery, collectionName);
+                documentField.in(deleteQuery, message);
                 StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject());
                 deleteTask.setConnection(connection);
-                deleteTask.prepare(deleteQuery.wrapped());
+                deleteTask.prepare(deleteQuery);
                 deleteTask.execute();
             } catch (PoolGuardException e) {
                 throw new DeleteCacheItemException("Can't get connection from pool.", e);
@@ -162,15 +163,15 @@ public class CachedCollection implements ICachedCollection {
                 throw new DeleteCacheItemException("Error during execution delete task.", e);
             } catch (InvalidArgumentException | RegistrationException e) {
                 throw new DeleteCacheItemException("Can't register strategy for delete task.", e);
+            } catch (CreateCachedCollectionTaskException e) {
+                throw new DeleteCacheItemException("Can't create delete task.", e);
             }
 
-            String key = deleteItem.getKey();
+            String key = specificKeyNameField.out(message);
             List<IObject> items = map.get(key);
             if (items != null) {
-                DeleteItem item;
                 for (IObject obj : items) {
-                    item = IOC.resolve(Keys.getOrAdd(DeleteItem.class.toString()), obj);
-                    if (item.getId().equals(deleteItem.getId())) {
+                    if (idField.out(obj).equals(idField.out(message))) {
                         items.remove(obj);
                         break;
                     }
@@ -178,7 +179,7 @@ public class CachedCollection implements ICachedCollection {
             }
         }  catch (ResolutionException e) {
             throw new DeleteCacheItemException("Can't resolve cached object.", e);
-        } catch (ReadValueException | ChangeValueException e) {
+        } catch (InvalidArgumentException| ReadValueException | ChangeValueException e) {
             throw new DeleteCacheItemException("Can't delete cached object.", e);
         }
     }

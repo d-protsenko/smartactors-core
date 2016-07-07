@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.delete.DeleteItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
@@ -14,7 +15,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ public class DeleteFromCachedCollectionTaskTest {
     private IDatabaseTask upsertTask;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException {
+    public void setUp() throws ReadValueException, ChangeValueException, CreateCachedCollectionTaskException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
