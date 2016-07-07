@@ -3,7 +3,9 @@ package info.smart_tools.smartactors.core.server_with_iobject;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iserver.IServer;
@@ -16,7 +18,6 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
 import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 
 import java.util.ArrayList;
@@ -46,9 +47,6 @@ public class Server implements IServer {
             /** Get wrapper generator by IOC.resolve */
             IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.toString()));
 
-            /** Get bindings */
-            IObject binding = getBinding();
-
             /** Get message, context, response */
             IObject message = getMessage();
             IObject context = getContext();
@@ -57,7 +55,6 @@ public class Server implements IServer {
             environment.setValue(new FieldName("message"), message);
             environment.setValue(new FieldName("context"), context);
             environment.setValue(new FieldName("response"), response);
-            environment.setValue(new FieldName("binding"), binding);
 
             /** Generate wrapper class by given interface and create instance of generated class */
             IWrapper wrapper = wg.generate(IWrapper.class);
@@ -122,7 +119,7 @@ public class Server implements IServer {
                 )
         );
         IOC.register(
-                Keys.getOrAdd(FieldName.class.getCanonicalName()),
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -164,11 +161,23 @@ public class Server implements IServer {
                         }
                 )
         );
+        IOC.register(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            try {
+                                return new DSObject();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+        );
+        fillBinding();
     }
 
-    private IObject getBinding()
+    private void fillBinding()
             throws Exception {
-        IObject binding = new DSObject();
+        IObject binding = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "binding");
         IObject bindingForIWrapper = new DSObject();
 
         // Binding for IWrapper methods
@@ -295,8 +304,6 @@ public class Server implements IServer {
         bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
 
         binding.setValue(new FieldName(IWrapper.class.getCanonicalName()), bindingForIWrapper);
-
-        return binding;
     }
 
     private IObject getMessage()

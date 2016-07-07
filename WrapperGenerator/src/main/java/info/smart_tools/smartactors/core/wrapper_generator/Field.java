@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -21,20 +21,31 @@ public class Field<T> {
     private static final String FIELD_TARGET = "target";
     private static final String FIELD_ARGS = "args";
     private static final String FIELD_NAME = "name";
-    private static final String FIELD_RULES = "rules";
+    private static final String RULES_KEYWORD = "rules";
     private static final String METHOD_IN = "in";
     private static final String METHOD_OUT = "out";
     private static final String SPLITTER = "\\/";
+    private static final String BINDING_KEYWORD = "binding";
 
-    private String bindingLocation;
+    //private String bindingLocation;
+    private List<Map<String, Object>> rules;
 
     /**
      * Constructor.
      * Create instance of {@link Field}
      * @param bindingPath the path to binding for current instance of {@link Field}
      */
-    public Field(final String bindingPath) {
-        this.bindingLocation = bindingPath;
+    public Field(final String bindingPath) throws InvalidArgumentException {
+        try {
+            this.rules = (ArrayList<Map<String, Object>>) (
+                    getValueFromNestedIObject(
+                            IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), BINDING_KEYWORD),
+                            bindingPath + "/" + RULES_KEYWORD
+                    )
+            );
+        } catch (Throwable e) {
+            throw new InvalidArgumentException("" ,e);
+        }
     }
 
     /**
@@ -50,14 +61,10 @@ public class Field<T> {
         if (null == env) {
             throw new InvalidArgumentException("Environment should not be null.");
         }
-        Object value = null;
+        Object value;
         Object out = null;
         try {
-            IObject binding = (IObject) getValueFromNestedIObject(env, this.bindingLocation);
-            List<Map<String, Object>> rules = (ArrayList<Map<String, Object>>) binding.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), FIELD_RULES)
-            );
-            for (Map<String, Object> rule : rules) {
+            for (Map<String, Object> rule : this.rules) {
                 String target = (String) rule.get(FIELD_TARGET);
                 List<String> args = (ArrayList<String>) rule.get(FIELD_ARGS);
                 String name = (String) rule.get(FIELD_NAME);
@@ -95,13 +102,9 @@ public class Field<T> {
         if (null == env) {
             throw new InvalidArgumentException("Environment should not be null.");
         }
-        Object value = null;
+        Object value;
         try {
-            IObject binding = (IObject) getValueFromNestedIObject(env, this.bindingLocation);
-            List<Map<String, Object>> rules = (ArrayList<Map<String, Object>>) binding.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), FIELD_RULES)
-            );
-            for (Map<String, Object> rule : rules) {
+            for (Map<String, Object> rule : this.rules) {
                 String target = (String) rule.get(FIELD_TARGET);
                 List<String> args = (ArrayList<String>) rule.get(FIELD_ARGS);
                 String name = (String) rule.get(FIELD_NAME);
@@ -123,17 +126,8 @@ public class Field<T> {
             throws ReadValueException {
         try {
             String[] separated = location.split(SPLITTER);
-            IObject nestedObject = (IObject) source.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[0])
-            );
-            for (int i = 1; i < separated.length - 1; ++i) {
-                nestedObject = (IObject) nestedObject.getValue(
-                        IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[i])
-                );
-            }
-
-            return nestedObject.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[separated.length - 1])
+            return getNestedIObject(source, separated).getValue(
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
             throw new ReadValueException("Could not read value from IObject", e);
@@ -144,20 +138,29 @@ public class Field<T> {
             throws ChangeValueException {
         try {
             String[] separated = location.split(SPLITTER);
-            IObject nestedObject = (IObject) source.getValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[0])
-            );
-            for (int i = 1; i < separated.length - 1; ++i) {
-                nestedObject = (IObject) nestedObject.getValue(
-                        IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[i])
-                );
-            }
-            nestedObject.setValue(
-                    IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[separated.length - 1]),
+            getNestedIObject(source, separated).setValue(
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[separated.length - 1]),
                     value
             );
         } catch (Throwable e) {
             throw new ChangeValueException("Could not write value to IObject", e);
+        }
+    }
+
+    private IObject getNestedIObject(final IObject source, final String[] separatedPath) throws Exception {
+        try {
+            IObject nestedObject = (IObject) source.getValue(
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[0])
+            );
+            for (int i = 1; i < separatedPath.length - 1; ++i) {
+                nestedObject = (IObject) nestedObject.getValue(
+                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[i])
+                );
+            }
+
+            return nestedObject;
+        } catch (Throwable e) {
+            throw new ReadValueException("Could not read nested IObject.", e);
         }
     }
 }
