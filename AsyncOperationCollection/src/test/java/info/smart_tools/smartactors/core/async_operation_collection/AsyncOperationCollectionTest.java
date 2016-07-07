@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -25,6 +26,7 @@ import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
+import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +48,10 @@ public class AsyncOperationCollectionTest {
     private AsyncOperationCollection testCollection;
     private IPool pool;
     private CollectionName collectionName;
+    private Field<Long> idField;
 
     @Before
-    public void prepare () throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException, QueryBuildException {
+    public void prepare () throws Exception {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
         mockStatic(CollectionName.class);
@@ -58,6 +61,14 @@ public class AsyncOperationCollectionTest {
         collectionName = mock(CollectionName.class);
 
         when(CollectionName.fromString("async_operation")).thenReturn(collectionName);
+
+        Key fieldNameKey = mock(Key.class);
+        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+        String idBindingPath = "idBindingPath";
+        when(IOC.resolve(fieldNameKey, "id")).thenReturn(idBindingPath);
+
+        idField = mock(Field.class);
+        whenNew(Field.class).withArguments(idBindingPath).thenReturn(idField);
 
         testCollection = new AsyncOperationCollection(pool, "async_operation");
     }
