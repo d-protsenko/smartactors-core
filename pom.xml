@@ -117,6 +117,7 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>ActorReceiver</module>
     </modules>
 
     <build>
