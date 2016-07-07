@@ -7,8 +7,6 @@ import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCache
 import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.GetObjectFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -47,6 +45,7 @@ public class CachedCollection implements ICachedCollection {
     private Field<String> specificKeyNameField;
     private Field<IObject> documentField;
     private Field<String> idField;
+    private Field<Boolean> isActiveField;
     //TODO:: uncomment when ListField would be added
 //    private ListField<IObject> searchResultField;
 
@@ -69,6 +68,7 @@ public class CachedCollection implements ICachedCollection {
             this.keyValueField = IOC.resolve(Keys.getOrAdd("Field"), "keyValue");
             this.documentField = IOC.resolve(Keys.getOrAdd("Field"), "document");
             this.idField = IOC.resolve(Keys.getOrAdd("Field"), "id");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd("Field"), "isActive");
             this.collectionName = collectionNameField.out(config);
             this.connectionPool = connectionPoolField.out(config);
             this.keyName = keyNameField.out(config);
@@ -179,7 +179,7 @@ public class CachedCollection implements ICachedCollection {
             }
         }  catch (ResolutionException e) {
             throw new DeleteCacheItemException("Can't resolve cached object.", e);
-        } catch (InvalidArgumentException| ReadValueException | ChangeValueException e) {
+        } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new DeleteCacheItemException("Can't delete cached object.", e);
         }
     }
@@ -188,7 +188,6 @@ public class CachedCollection implements ICachedCollection {
     public void upsert(final IObject message) throws UpsertCacheItemException {
 
         try {
-            UpsertItem upsertItem;
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 IDatabaseTask upsertTask = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionTask.class.toString()));
                 if (upsertTask == null) {
@@ -201,19 +200,18 @@ public class CachedCollection implements ICachedCollection {
                     upsertTask = new UpsertIntoCachedCollectionTask(nestedTask);
                     IOC.register(Keys.getOrAdd(UpsertIntoCachedCollectionTask.class.toString()), new SingletonStrategy(upsertTask));
                 }
-                upsertItem = IOC.resolve(Keys.getOrAdd(UpsertItem.class.toString()), message);
-                Boolean isActive = upsertItem.isActive();
-                upsertItem.setIsActive(true);
-                UpsertIntoCachedCollectionQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpsertIntoCachedCollectionQuery.class.toString()));
-                upsertQuery.setCollectionName(collectionName);
-                upsertQuery.setUpsertItem(upsertItem);
+                IObject upsertQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                Boolean isActive = isActiveField.out(message);
+                isActiveField.in(message, true);
+                collectionNameField.in(upsertQuery, collectionName);
+                documentField.in(upsertQuery, message);
 
                 upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-                upsertTask.prepare(upsertQuery.wrapped());
+                upsertTask.prepare(upsertQuery);
                 try {
                     upsertTask.execute();
                 } catch (TaskExecutionException e) {
-                    upsertItem.setIsActive(isActive);
+                    isActiveField.in(message, isActive);
                     throw new UpsertCacheItemException("Error during execution upsert task.", e);
                 }
             } catch (PoolGuardException e) {
@@ -224,23 +222,23 @@ public class CachedCollection implements ICachedCollection {
                 throw new UpsertCacheItemException("Error during preparing upsert task.", e);
             } catch (InvalidArgumentException | RegistrationException e) {
                 throw new UpsertCacheItemException("Can't register strategy for upsert task.", e);
+            }  catch (CreateCachedCollectionTaskException e) {
+                throw new UpsertCacheItemException("Can't create upsert task.", e);
             }
-            String key = upsertItem.getKey();
+            String key = specificKeyNameField.out(message);
             List<IObject> items = map.get(key);
             if (items != null && !items.isEmpty()) {
-                UpsertItem item;
                 for (IObject obj : items) {
-                    item = IOC.resolve(Keys.getOrAdd(UpsertItem.class.toString()), obj);
-                    if (item.getId().equals(upsertItem.getId())) {
+                    if (idField.out(obj).equals(idField.out(message))) {
                         items.remove(obj);
-                        items.add(upsertItem.wrapped());
+                        items.add(message);
                         break;
                     }
                 }
             } else {
-                map.put(key, Collections.singletonList(upsertItem.wrapped()));
+                map.put(key, Collections.singletonList(message));
             }
-        } catch (ReadValueException | ChangeValueException e) {
+        } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new UpsertCacheItemException("Can't add or update cached object.", e);
         } catch (ResolutionException e) {
             throw new UpsertCacheItemException("Can't resolve cached object.", e);

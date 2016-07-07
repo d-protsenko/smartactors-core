@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -41,7 +40,7 @@ public class UpsertIntoCachedCollectionTaskTest {
     private IKey iocKey;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, ResolutionException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
