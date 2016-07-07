@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Checks availability of fields of pattern object in test object.
- * Non strict matching - test object should contain all fields from pattern object, test object can contain additional fields.
+ * Non strict matching - test object must contain all fields from pattern object, test object can contain additional fields.
  */
 public class PatternMatching implements IObject, IMatcher {
 
@@ -76,9 +76,11 @@ public class PatternMatching implements IObject, IMatcher {
 
     @Override
     public Boolean match(IObject obj) throws ReadValueException, InvalidArgumentException, PatternMatchingException {
+        if (obj == null)
+            throw new PatternMatchingException("Test object must be specified.");
         Iterator<Map.Entry<IFieldName, Object>> iterator = iterator();
-        if (!iterator.hasNext() || obj == null)
-            throw new PatternMatchingException("Pattern can not be empty. Pattern should contain several fields to compare with");
+        if (!iterator.hasNext())
+            throw new PatternMatchingException("Pattern can not be empty. Pattern must contain several fields to compare.");
         Map.Entry<IFieldName, Object> patternField;
         IFieldName patternFieldName;
         Object patternFieldValue;
@@ -92,7 +94,9 @@ public class PatternMatching implements IObject, IMatcher {
         return true;
     }
 
-    private Boolean identical(Object objOne, Object objTwo) {
-        return objOne == objTwo || (objOne != null && objOne.equals(objTwo));
+    private Boolean identical(Object patternFieldValue, Object testObjectFieldValue) throws PatternMatchingException {
+        if (patternFieldValue == null)
+            throw new PatternMatchingException("Pattern field value can not be null.");
+        return patternFieldValue.equals(testObjectFieldValue);
     }
 }

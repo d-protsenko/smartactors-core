@@ -28,8 +28,18 @@ public class PatternMatchingTest {
     public void match_EmptyPattern_ExceptionThrown()
             throws Exception {
         thrown.expect(PatternMatchingException.class);
+        thrown.expectMessage("Pattern can not be empty. Pattern must contain several fields to compare.");
         PatternMatching pattern = new PatternMatching();
         pattern.match(new DSObject());
+    }
+
+    @Test
+    public void match_NoTestObject_ExceptionThrown()
+            throws Exception {
+        thrown.expect(PatternMatchingException.class);
+        thrown.expectMessage("Test object must be specified.");
+        PatternMatching pattern = new PatternMatching();
+        pattern.match(null);
     }
 
     @Test
@@ -85,7 +95,7 @@ public class PatternMatchingTest {
     }
 
     @Test
-    public void match_NullFieldValueContained_false()
+    public void match_NullFieldValueContainedInTestObject_false()
             throws Exception {
         IFieldName fieldName = mock(IFieldName.class);
         Object obj = mock(Object.class);
@@ -97,8 +107,10 @@ public class PatternMatchingTest {
     }
 
     @Test
-    public void match_NullFieldValuesContained_true()
+    public void match_NullFieldValuesContainedInPattern_ExceptionThrown()
             throws Exception {
+        thrown.expect(PatternMatchingException.class);
+        thrown.expectMessage("Pattern field value can not be null.");
         IFieldName fieldName = mock(IFieldName.class);
         Map<IFieldName, Object> mapPattern = new HashMap<IFieldName, Object>(){{put(fieldName, null);}};
         IMatcher pattern = new PatternMatching(mapPattern);
