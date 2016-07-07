@@ -54,6 +54,7 @@
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <module>IEndpointCreator</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
