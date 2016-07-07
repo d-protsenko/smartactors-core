@@ -5,9 +5,9 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_task.upsert.psql.wrapper.IUpsertQueryMessage;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -79,8 +79,8 @@ public class PSQLUpsertTaskTest {
 
         compiledQuery = mock(JDBCCompiledQuery.class);
         String collectionName = "collection";
-        IUpsertQueryMessage IUpsertQueryMessage = mock(IUpsertQueryMessage.class);
-        when(IUpsertQueryMessage.getCollectionName()).thenReturn(collectionName);
+        IUpsertMessage IUpsertMessage = mock(info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage.class);
+        when(IUpsertMessage.getCollection()).thenReturn(collectionName);
 
         IOC.register(
             IOC.getKeyForKeyStorage(),
@@ -94,7 +94,7 @@ public class PSQLUpsertTaskTest {
                 })
         );
         IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
-        IKey<IUpsertQueryMessage> keyUpsertMessage= Keys.getOrAdd(IUpsertQueryMessage.class.toString());
+        IKey<info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage> keyUpsertMessage= Keys.getOrAdd(info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IKey<CompiledQuery> keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
@@ -104,7 +104,7 @@ public class PSQLUpsertTaskTest {
         );
         IOC.register(
             keyUpsertMessage,
-            new SingletonStrategy(IUpsertQueryMessage)
+            new SingletonStrategy(IUpsertMessage)
         );
         QueryStatement queryStatement = mock(QueryStatement.class);
         when(queryStatement.getBodyWriter()).thenReturn(new StringWriter());

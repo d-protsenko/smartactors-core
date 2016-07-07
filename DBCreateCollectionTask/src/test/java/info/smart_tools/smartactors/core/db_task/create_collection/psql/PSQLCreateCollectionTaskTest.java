@@ -4,9 +4,9 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper.ICreateCollectionQueryMessage;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.create_collection.ICreateCollectionMessage;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -54,7 +54,7 @@ public class PSQLCreateCollectionTaskTest {
         throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
-        ICreateCollectionQueryMessage message = mock(ICreateCollectionQueryMessage.class);
+        ICreateCollectionMessage message = mock(ICreateCollectionMessage.class);
         PreparedQuery preparedQuery = new QueryStatement();
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
@@ -95,7 +95,7 @@ public class PSQLCreateCollectionTaskTest {
         assertEquals(connection, storageConnectionAfter);
     }
 
-    private void initDataForPrepare(PreparedQuery preparedQuery, ICreateCollectionQueryMessage message, IObject createCollectionMessage)
+    private void initDataForPrepare(PreparedQuery preparedQuery, ICreateCollectionMessage message, IObject createCollectionMessage)
         throws ResolutionException, ReadValueException, ChangeValueException {
 
         mockStatic(IOC.class);
@@ -105,7 +105,7 @@ public class PSQLCreateCollectionTaskTest {
         IKey keyFieldPath = mock(IKey.class);IKey keyQuery = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq(QueryStatement.class.toString()))).thenReturn(keyQuery);
-        when(IOC.resolve(eq(key1), eq(ICreateCollectionQueryMessage.class.toString()))).thenReturn(keyMessage);
+        when(IOC.resolve(eq(key1), eq(ICreateCollectionMessage.class.toString()))).thenReturn(keyMessage);
         when(IOC.resolve(eq(key1), eq(FieldPath.class.toString()))).thenReturn(keyFieldPath);
         when(IOC.resolve(eq(keyQuery))).thenReturn(preparedQuery);
 
@@ -116,6 +116,6 @@ public class PSQLCreateCollectionTaskTest {
 
         CollectionName collectionName = mock(CollectionName.class);
         when(collectionName.toString()).thenReturn("collection");
-        when(message.getCollectionName()).thenReturn(collectionName);
+        when(message.getCollection()).thenReturn(collectionName);
     }
 }

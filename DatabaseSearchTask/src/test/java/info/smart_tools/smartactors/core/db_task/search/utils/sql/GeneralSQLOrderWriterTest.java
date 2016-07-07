@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.db_task.search.utils.sql;
 import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_task.search.psql.PSQLFieldPath;
 import info.smart_tools.smartactors.core.db_task.search.utils.ISearchQueryWriter;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -43,14 +43,14 @@ public class GeneralSQLOrderWriterTest {
 
     @Test
     public void should_WritesORDERClauseIntoQueryStatement() throws Exception {
-        ISearchQuery ISearchQuery = mock(ISearchQuery.class);
+        ISearchMessage ISearchMessage = mock(ISearchMessage.class);
         IObject orderItem = mock(IObject.class);
 
         FieldPath fieldPath = mock(FieldPath.class);
         String sortDirection = "testSQLStrDirection";
 
-        when(ISearchQuery.countOrderBy()).thenReturn(1);
-        when(ISearchQuery.getOrderBy(0)).thenReturn(orderItem);
+        when(ISearchMessage.countOrderBy()).thenReturn(1);
+        when(ISearchMessage.getOrderBy(0)).thenReturn(orderItem);
         when(orderItem.getValue(anyObject())).thenReturn("testOrderField").thenReturn("testOrderDirection");
 
         when(fieldPath.getSQLRepresentation()).thenReturn("testSQLStrField");
@@ -65,7 +65,7 @@ public class GeneralSQLOrderWriterTest {
 
         QueryStatement queryStatement = new QueryStatement();
         List<SQLQueryParameterSetter> setters = new LinkedList<>();
-        orderWriter.write(queryStatement, ISearchQuery, setters);
+        orderWriter.write(queryStatement, ISearchMessage, setters);
 
         assertTrue("ORDER BY(testSQLStrField)ASC,(1)".equals(queryStatement.getBodyWriter().toString()));
 

@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.db_task.search.psql;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
-import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ICachedQuery;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -36,9 +36,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class PSQLSearchTaskTest {
     private StorageConnection connection;
     private IObject message;
-    private ISearchQuery queryMessage;
+    private ISearchMessage queryMessage;
     private JDBCCompiledQuery compiledQuery;
-    private IBufferedQuery bufferedQuery;
+    private ICachedQuery bufferedQuery;
 
     private IKey wrapperKey;
     private IKey bufferedQueryKey;
@@ -50,8 +50,8 @@ public class PSQLSearchTaskTest {
 
         connection = mock(StorageConnection.class);
         message = mock(IObject.class);
-        queryMessage = mock(ISearchQuery.class);
-        when(queryMessage.getCollectionName()).thenReturn("testCollection");
+        queryMessage = mock(ISearchMessage.class);
+        when(queryMessage.getCollection()).thenReturn("testCollection");
         when(queryMessage.countOrderBy()).thenReturn(0);
         compiledQuery = mock(JDBCCompiledQuery.class);
         when(connection.compileQuery(anyObject())).thenReturn(compiledQuery);
@@ -66,15 +66,15 @@ public class PSQLSearchTaskTest {
         when(queryMessage.getPageSize()).thenReturn(2);
 
         wrapperKey = mock(IKey.class);
-        when(Keys.getOrAdd(ISearchQuery.class.toString())).thenReturn(wrapperKey);
+        when(Keys.getOrAdd(ISearchMessage.class.toString())).thenReturn(wrapperKey);
         when(IOC.resolve(eq(wrapperKey), eq(message))).thenReturn(queryMessage);
 
-        bufferedQuery = mock(IBufferedQuery.class);
+        bufferedQuery = mock(ICachedQuery.class);
         when(bufferedQuery.getCompiledQuery()).thenReturn(compiledQuery);
         when(bufferedQuery.getParametersSetters()).thenReturn(new ArrayList<>());
 
         bufferedQueryKey = mock(IKey.class);
-        when(Keys.getOrAdd(IBufferedQuery.class.toString())).thenReturn(bufferedQueryKey);
+        when(Keys.getOrAdd(ICachedQuery.class.toString())).thenReturn(bufferedQueryKey);
         when(IOC.resolve(eq(bufferedQueryKey), eq(compiledQuery), anyObject())).thenReturn(bufferedQuery);
 
         // For execute.
@@ -85,7 +85,7 @@ public class PSQLSearchTaskTest {
     public void prepareSearchQueryTest_WhenBufferedQueryIsNotExist() throws Exception {
         DBSearchTask searchTask = PSQLSearchTask.create();
         searchTask.setStorageConnection(connection);
-        when(queryMessage.getBufferedQuery()).thenReturn(Optional.empty());
+        when(queryMessage.getCachedQuery()).thenReturn(Optional.empty());
         prepareSearchQueryTest(searchTask);
     }
 
@@ -93,7 +93,7 @@ public class PSQLSearchTaskTest {
     public void prepareSearchQueryTest_WhenBufferedQueryIsExist() throws Exception {
         DBSearchTask searchTask = PSQLSearchTask.create();
         searchTask.setStorageConnection(connection);
-        when(queryMessage.getBufferedQuery()).thenReturn(Optional.of(bufferedQuery));
+        when(queryMessage.getCachedQuery()).thenReturn(Optional.of(bufferedQuery));
         prepareSearchQueryTest(searchTask);
     }
 
@@ -141,10 +141,10 @@ public class PSQLSearchTaskTest {
         searchTask.prepare(message);
 
         verify(connection, times(1)).compileQuery(anyObject());
-        verify(queryMessage, times(1)).getCollectionName();
+        verify(queryMessage, times(1)).getCollection();
         verify(queryMessage, times(1)).getCriteria();
         verify(queryMessage, times(1)).countOrderBy();
-        verify(queryMessage, times(1)).setBufferedQuery(eq(bufferedQuery));
+        verify(queryMessage, times(1)).setCachedQuery(eq(bufferedQuery));
 
         verifyStatic(times(1));
         IOC.resolve(eq(wrapperKey), eq(message));

@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_task.delete.DBDeleteTask;
-import info.smart_tools.smartactors.core.db_task.delete.wrappers.IDeletionQueryMessage;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -34,16 +34,16 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @SuppressWarnings("unchecked")
 public class PSQLDeleteTaskTest {
     private CollectionName collectionName;
-    IDeletionQueryMessage queryMessage;
+    IDeleteMessage queryMessage;
     JDBCCompiledQuery compiledQuery;
 
     @Before
     public void setUp() throws ResolutionException {
-        queryMessage = mock(IDeletionQueryMessage.class);
+        queryMessage = mock(IDeleteMessage.class);
         CollectionName collectionName = mock(CollectionName.class);
 
         when(collectionName.toString()).thenReturn("testCollection");
-        when(queryMessage.getCollectionName()).thenReturn(collectionName);
+        when(queryMessage.getCollection()).thenReturn(collectionName);
         when(queryMessage.countDocumentIds()).thenReturn(3);
         when(queryMessage.getDocumentIds(0)).thenReturn(0L);
         when(queryMessage.getDocumentIds(1)).thenReturn(1L);
@@ -63,7 +63,7 @@ public class PSQLDeleteTaskTest {
 
         IKey wrapperKey = mock(IKey.class);
         IKey queryKey = mock(IKey.class);
-        when(Keys.getOrAdd(IDeletionQueryMessage.class.toString())).thenReturn(wrapperKey);
+        when(Keys.getOrAdd(IDeleteMessage.class.toString())).thenReturn(wrapperKey);
         when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(queryKey);
         when(IOC.resolve(eq(wrapperKey), anyObject())).thenReturn(queryMessage);
         when(IOC.resolve(eq(queryKey), eq(connection), eq(PSQLDeleteTask.class.toString()), anyObject()))

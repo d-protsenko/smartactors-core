@@ -87,6 +87,7 @@
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
+        <module>DBTasks</module>
     </modules>
 
     <build>

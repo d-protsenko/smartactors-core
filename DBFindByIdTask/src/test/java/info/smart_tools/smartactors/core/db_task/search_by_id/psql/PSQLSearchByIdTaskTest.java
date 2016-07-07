@@ -5,9 +5,9 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.PreparedQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.search_by_id.wrapper.ISearchByIdQueryMessage;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchByIdMessage;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -63,7 +63,7 @@ public class PSQLSearchByIdTaskTest {
             throws TaskPrepareException, ResolutionException, ReadValueException, ChangeValueException, StorageException, PoolTakeException, TaskSetConnectionException {
 
         IObject createCollectionMessage = mock(IObject.class);
-        ISearchByIdQueryMessage message = mock(ISearchByIdQueryMessage.class);
+        ISearchByIdMessage message = mock(ISearchByIdMessage.class);
         PreparedQuery preparedQuery = new QueryStatement();
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
@@ -109,7 +109,7 @@ public class PSQLSearchByIdTaskTest {
         assertEquals(connection, storageConnectionAfter);
     }
 
-    private void initDataForPrepare(PreparedQuery preparedQuery, ISearchByIdQueryMessage message, IObject createCollectionMessage)
+    private void initDataForPrepare(PreparedQuery preparedQuery, ISearchByIdMessage message, IObject createCollectionMessage)
             throws ResolutionException, ReadValueException, ChangeValueException {
 
         mockStatic(IOC.class);
@@ -120,7 +120,7 @@ public class PSQLSearchByIdTaskTest {
         IKey keyFieldPath = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq(QueryStatement.class.toString()))).thenReturn(keyQuery);
-        when(IOC.resolve(eq(key1), eq(ISearchByIdQueryMessage.class.toString()))).thenReturn(keyMessage);
+        when(IOC.resolve(eq(key1), eq(ISearchByIdMessage.class.toString()))).thenReturn(keyMessage);
         when(IOC.resolve(eq(key1), eq(FieldPath.class.toString()))).thenReturn(keyFieldPath);
 
 
@@ -132,6 +132,6 @@ public class PSQLSearchByIdTaskTest {
 
         CollectionName collectionName = mock(CollectionName.class);
         when(collectionName.toString()).thenReturn("collection");
-        when(message.getCollectionName()).thenReturn(collectionName);
+        when(message.getCollection()).thenReturn(collectionName);
     }
 }
