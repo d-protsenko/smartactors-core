@@ -2,54 +2,54 @@
   "authorisation_map": [
     {
       "actor": "createSessionActor",
-      "handler": "getSession",
-      "wrapper": {}
+      "handler": "resolve",
+      "wrapper": [
+        {
+          "in_getSessionId": "message/sessionId"
+        },
+        {
+          "out_setSession": "message/session"
+        }
+      ]
     },
     {
       "actor": "authenticationActor",
       "handler": "authenticateSession",
-      "wrapper": {
-        "getRequestUserUgent": {
-          "type": "in",
-          "source": "context",
-          "rules": [
+      "wrapper": [
+        {
+          "in_getRequestUserAgent": [
             {
-              "name": "getHeaderFromRequest",
+              "name": "getUserAgentFromRequestRule",
               "args": [
-                "User-Agent"
+                "context/request",
+                "const/User-Agent"
               ]
             }
-          ]
-        },
-        "getSessionUserAgent": {
-          "type": "in",
-          "source": "message.session.authInfo.userAgent"
+          ],
+          "in_getSessionUserAgent": "message/session/authInfo/userAgent"
         }
-      }
+      ]
     },
     {
       "actor": "getFormActor",
       "handler": "getForm",
-      "wrapper": {
-        "getFormKey": {
-          "type": "in",
-          "source": "message.formKey"
+      "wrapper": [
+        {
+          "in_getFormKey": "message/formKey"
         },
-        "setForm": {
-          "type": "out",
-          "target": "response.form"
+        {
+          "out_setForm": "response/form"
         }
-      }
+      ]
     },
     {
       "actor": "asyncOpsActor",
       "handler": "createOperation",
-      "wrapper": {
-        "getIObject": {
-          "type": "in",
-          "source": "message"
+      "wrapper": [
+        {
+          "in_getIObject": "message"
         }
-      }
+      ]
     }
   ]
 }
