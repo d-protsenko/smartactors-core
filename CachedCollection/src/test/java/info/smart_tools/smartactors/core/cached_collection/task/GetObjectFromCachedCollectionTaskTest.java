@@ -1,15 +1,14 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
+import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.DateToMessage;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.get_item.EQMessage;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.GetObjectFromCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.CriteriaCachedCollectionQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -27,9 +26,11 @@ import java.time.LocalDateTime;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 
 @RunWith(PowerMockRunner.class)
@@ -42,7 +43,7 @@ public class GetObjectFromCachedCollectionTaskTest {
     private String key = "key";
 
     @Before
-    public void prepare () throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
+    public void prepare () throws Exception {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
         mockStatic(LocalDateTime.class);
