@@ -15,13 +15,13 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>core.iasync_service</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iasync_service</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>core.iobject</artifactId>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 
