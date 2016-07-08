@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -24,9 +25,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,15 +75,15 @@ public class FieldTest {
     @Test
     public void checkFieldCreation()
             throws Exception {
-        Field field = new Field<>("binding");
+        IField field = new InField<>("binding");
         assertNotNull(field);
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkOutMethodOnWrongArgument()
             throws Exception {
-        Field<Integer> field = new Field<>("binding");
-        field.out(null);
+        IField<Integer> field = new InField<>("binding");
+        field.in(null);
         fail();
     }
 
@@ -108,8 +107,8 @@ public class FieldTest {
         when(env.getValue(new FieldName("binding"))).thenReturn(binding);
         when(binding.getValue(new FieldName("Binding"))).thenReturn(rules);
         when(env.getValue(new FieldName("message"))).thenReturn(message);
-        Field<Integer> field = new Field<>("binding/Binding");
-        Integer result = field.out(env);
+        IField<Integer> field = new InField<>("binding/Binding");
+        Integer result = field.in(env);
         assertNull(result);
     }
 
@@ -133,8 +132,8 @@ public class FieldTest {
         when(env.getValue(new FieldName("binding"))).thenReturn(binding);
         when(binding.getValue(new FieldName("Binding"))).thenReturn(rules);
         when(env.getValue(new FieldName("message"))).thenReturn(message);
-        Field<Integer> field = new Field<>("wrong/Wrong");
-        field.out(env);
+        IField<Integer> field = new InField<>("wrong/Wrong");
+        field.in(env);
         fail();
     }
 
@@ -168,8 +167,8 @@ public class FieldTest {
         when(message.getValue(new FieldName("submessage"))).thenReturn(subMessage);
         when(message.getValue(new FieldName("Value"))).thenReturn(value);
         when(subMessage.getValue(new FieldName("Value"))).thenReturn(value);
-        Field<Integer> field = new Field<>("binding/Binding");
-        Integer result = field.out(env);
+        IField<Integer> field = new InField<>("binding/Binding");
+        Integer result = field.in(env);
         assertEquals(result, value);
     }
 
@@ -194,16 +193,16 @@ public class FieldTest {
         when(binding.getValue(new FieldName("Binding"))).thenReturn(rules);
         when(env.getValue(new FieldName("message"))).thenReturn(message);
         when(message.getValue(new FieldName("Value"))).thenReturn(true);
-        Field<Integer> field = new Field<>("binding/Binding");
-        Integer a = field.out(env);
+        IField<Integer> field = new InField<>("binding/Binding");
+        Integer a = field.in(env);
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInMethodOnWrongArgument()
             throws Exception {
-        Field<Integer> field = new Field<>("binding");
-        field.in(null, 1);
+        IField<Integer> field = new OutField<>("binding");
+        field.out(null, 1);
         fail();
     }
 
@@ -227,8 +226,8 @@ public class FieldTest {
         when(env.getValue(new FieldName("binding"))).thenReturn(binding);
         when(binding.getValue(new FieldName("Binding"))).thenReturn(rules);
         when(env.getValue(new FieldName("message"))).thenReturn(message);
-        Field<Integer> field = new Field<>("binding/Binding");
-        field.in(env, 1);
+        IField<Integer> field = new OutField<>("binding/Binding");
+        field.out(env, 1);
         fail();
     }
 
@@ -252,7 +251,7 @@ public class FieldTest {
         when(env.getValue(new FieldName("binding"))).thenReturn(binding);
         when(binding.getValue(new FieldName("Binding"))).thenReturn(rules);
         when(env.getValue(new FieldName("message"))).thenReturn(message);
-        Field<Integer> field = new Field<>("binding/Binding");
-        field.in(env, 1);
+        IField<Integer> field = new OutField<>("binding/Binding");
+        field.out(env, 1);
     }
 }
