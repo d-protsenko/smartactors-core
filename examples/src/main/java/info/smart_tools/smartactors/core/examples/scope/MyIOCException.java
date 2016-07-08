@@ -5,7 +5,7 @@ package info.smart_tools.smartactors.core.examples.scope;
  */
 public class MyIOCException extends Throwable {
 
-    public MyIOCException(Throwable e) {
+    public MyIOCException(final Throwable e) {
         super(e);
     }
 

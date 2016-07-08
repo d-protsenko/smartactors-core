@@ -28,7 +28,7 @@ public class CompileQueryPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey<ICompiledQuery> compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString());
+            IKey compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
             item.process(() -> {
                 try {

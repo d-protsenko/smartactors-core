@@ -3,30 +3,46 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.update.IUpdateMessage;
+import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import javax.annotation.Nonnull;
 
 /**
  * Common update task executor.
  */
-public abstract class DBUpdateTask extends GeneralDatabaseTask<IUpdateMessage> {
+public abstract class DBUpdateTask extends GeneralDatabaseTask {
+
+    protected static final IField DOCUMENT_F;
+    protected static final IField COLLECTION_F;
+
+    static {
+        try {
+            DOCUMENT_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+            COLLECTION_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collection");
+        } catch (ResolutionException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     /**
      *
      */
     protected DBUpdateTask() {}
 
     @Override
-    protected boolean requiresExit(@Nonnull final IUpdateMessage queryMessage) throws InvalidArgumentException {
+    protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return queryMessage.getDocument() == null;
+            return DOCUMENT_F.in(message) == null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }
-
     }
 
     /**
@@ -40,7 +56,7 @@ public abstract class DBUpdateTask extends GeneralDatabaseTask<IUpdateMessage> {
      *              2. Query execution errors.
      */
     @Override
-    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IUpdateMessage message)
+    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
             int nUpdated = query.executeUpdate();

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
-public abstract class DBCreateCollectionTask extends GeneralDatabaseTask<ICreateCollectionMessage> {
+public abstract class DBCreateCollectionTask extends GeneralDatabaseTask {
 
     protected DBCreateCollectionTask() {}
 

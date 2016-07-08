@@ -5,16 +5,20 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBUpdateTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.update.IUpdateMessage;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryKey;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
+import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -40,32 +44,23 @@ public class PSQLUpdateTask extends DBUpdateTask {
 
     @Nonnull
     @Override
-    protected IUpdateMessage takeMessageWrapper(@Nonnull IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(IUpdateMessage.class.toString()),
-                object);
-    }
-
-    @Nonnull
-    @Override
     protected ICompiledQuery takeQuery(
             @Nonnull final IStorageConnection connection,
-            @Nonnull final IUpdateMessage queryMessage
+            @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
             IKey queryKey = IOC.resolve(
                     Keys.getOrAdd(QueryKey.class.toString()),
                     connection.getId(),
                     PSQLUpdateTask.class.toString(),
-                    queryMessage.getCollection().toString());
+                    COLLECTION_F.in(message));
 
             return IOC.resolve(
                     Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
-                    getQueryStatementFactory(
-                            queryMessage.getCollection().toString()));
-        } catch (ReadValueException | ResolutionException e) {
+                    getQueryStatementFactory(COLLECTION_F.in(message)));
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -74,20 +69,22 @@ public class PSQLUpdateTask extends DBUpdateTask {
     @Override
     protected ICompiledQuery setParameters(
             @Nonnull final ICompiledQuery compiledQuery,
-            @Nonnull final IUpdateMessage updateQueryMessage
+            @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = updateQueryMessage.getCollection().toString();
-            String documentId = takeDocumentId(updateQueryMessage.getDocument(), collection);
-            String document = updateQueryMessage.getDocument().toString();
+            String collection = COLLECTION_F.in(message);
+            IObject document = DOCUMENT_F.in(message);
+            String documentId = takeDocumentId(document, collection);
+            String documentJson = document.serialize();
 
             compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
                 statement.setString(index++, documentId);
-                statement.setString(index++, document);
+                statement.setString(index++, documentJson);
 
                 return index;
             }));
-        } catch (ReadValueException | ResolutionException e) {
+        } catch (ReadValueException | InvalidArgumentException |
+                SerializeException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
 

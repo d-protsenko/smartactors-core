@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.FieldName;
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -87,17 +87,25 @@ public class PSQLUpsertTaskTest {
             new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
-                        return new Key<IKey>((String) a[0]);
+                        return new Key((String) a[0]);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
         );
+<<<<<<< HEAD:DBTasks/src/test/java/info/smart_tools/smartactors/core/db_tasks/psql/upsert/PSQLUpsertTaskTest.java
         IKey<DBInsertTask> keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
         IKey<info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage> keyUpsertMessage= Keys.getOrAdd(info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage.class.toString());
         IKey<QueryStatement> keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
         IKey<IFieldName> keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
         IKey<ICompiledQuery> keyCompiledQuery = Keys.getOrAdd(ICompiledQuery.class.toString());
+=======
+        IKey keyDBInsertTask = Keys.getOrAdd(DBInsertTask.class.toString());
+        IKey keyUpsertMessage= Keys.getOrAdd(UpsertMessage.class.toString());
+        IKey keyQueryStatement = Keys.getOrAdd(QueryStatement.class.toString());
+        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.toString());
+        IKey keyCompiledQuery = Keys.getOrAdd(CompiledQuery.class.toString());
+>>>>>>> develop:DBUpsertTask/src/test/java/info/smart_tools/smartactors/core/db_task/upsert/psql/DBUpsertTaskTest.java
         IOC.register(
             keyDBInsertTask,
             new SingletonStrategy(mock(DBInsertTask.class))
@@ -143,7 +151,7 @@ public class PSQLUpsertTaskTest {
     public void ShouldPrepareInsertQuery_When_IdIsNull()
         throws Exception {
 
-        IKey<String> keyString = Keys.getOrAdd(String.class.toString());
+        IKey keyString = Keys.getOrAdd(String.class.toString());
         IOC.register(
             keyString,
             new CreateNewInstanceStrategy(
@@ -168,7 +176,7 @@ public class PSQLUpsertTaskTest {
     public void ShouldPrepareUpdateQuery_When_IdIsGiven()
         throws Exception {
 
-        IKey<String> keyString = Keys.getOrAdd(String.class.toString());
+        IKey keyString = Keys.getOrAdd(String.class.toString());
         IOC.register(
             keyString,
             new CreateNewInstanceStrategy(String::valueOf));

@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -85,6 +86,8 @@ public class GeneralSQLOrderWriter implements ISearchQueryStatementWriter<List<I
             queryStatement.getBodyWriter().write("(1)");
         } catch (IOException | ReadValueException e) {
             throw new QueryBuildException("Error while writing ORDER BY clause of search query SQL.", e);
+        } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+            throw new QueryBuildException("Invalid argument exception" , e);
         }
     }
 }

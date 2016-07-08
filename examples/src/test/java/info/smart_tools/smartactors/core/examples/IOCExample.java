@@ -44,17 +44,17 @@ public class IOCExample {
     
     @Test
     public void keyExample() throws ResolutionException, InvalidArgumentException {
-        IKey<MyClass> myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
-        IKey<MyClass> myKey = Keys.getOrAdd("myKey");
-        IKey<MyClass> myNewKey = new Key<>("myKey");
-        IKey<MyClass> myTypedKey = new Key<>(MyClass.class, "myKey");
+        IKey myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
+        IKey myKey = Keys.getOrAdd("myKey");
+        IKey myNewKey = new Key("myKey");
+        //IKey myTypedKey = new Key(MyClass.class, "myKey");
         assertEquals("resolve differs from got from Keys", myResolveKey, myKey);
         assertEquals("new differs from resolve", myNewKey, myResolveKey);
     }
 
     @Test
     public void singletonStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IKey<MyClass> key = Keys.getOrAdd("singleton");
+        IKey key = Keys.getOrAdd("singleton");
         MyClass myObject = new MyClass("singleton");
         IOC.register(key, new SingletonStrategy(myObject));
         MyClass resolveObject1 = IOC.resolve(key);
@@ -67,7 +67,7 @@ public class IOCExample {
 
     @Test
     public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IKey<MyClass> key = Keys.getOrAdd("new");
+        IKey key = Keys.getOrAdd("new");
         IOC.register(key, new CreateNewInstanceStrategy(
                 (args) -> new MyClass((String) args[0])));
         MyClass resolveObject1 = IOC.resolve(key, "id1");

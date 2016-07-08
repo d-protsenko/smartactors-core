@@ -66,7 +66,7 @@ public class StrategyContainerScopeTest {
 
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException, DeletionException {
-        IKey<Object> key = Keys.getOrAdd("test");
+        IKey key = Keys.getOrAdd("test");
 
         ScopeProvider.setCurrentScope(parentScope);
         try {

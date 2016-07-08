@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 public class MyIOC {
 
     /** Key for getting instance of storage from current scope */
-    private static IKey STORAGE_KEY;
+    private static final IKey STORAGE_KEY;
 
     static {
         try {
@@ -56,7 +56,7 @@ public class MyIOC {
         }
     }
 
-    public static <T> T resolve(final IKey<T> key) throws MyIOCException {
+    public static <T> T resolve(final IKey key) throws MyIOCException {
         try {
             MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
                     ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);

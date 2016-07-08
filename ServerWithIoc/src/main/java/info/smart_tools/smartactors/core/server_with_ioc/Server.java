@@ -17,8 +17,6 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
-import java.net.URL;
-
 /**
  * Implementation {@link IServer} with scoped IOC
  */
@@ -41,7 +39,7 @@ public class Server implements IServer {
 
 
             /** Example of registration the Singleton strategy */
-            Key<String> key1 = new Key<String>(String.class, "a");
+            Key key1 = new Key("a");
             IResolveDependencyStrategy strategy = new SingletonStrategy("abcd");
             IOC.register(key1, strategy);
             /** Example of usage the Singleton strategy */
@@ -53,7 +51,7 @@ public class Server implements IServer {
                     new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
-                                return new Key<IKey>((String) a[0]);
+                                return new Key((String) a[0]);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -65,7 +63,7 @@ public class Server implements IServer {
             IKey key4 = IOC.resolve(IOC.getKeyForKeyStorage(), "key2");  // Should be same as key2
 
             /** Example of registration the CreateNewInstance strategy */
-            IKey<IObject> key5 = new Key<IObject>("create_new");
+            IKey key5 = new Key("create_new");
             IOC.register(
                     key5,
                     new CreateNewInstanceStrategy(
@@ -88,7 +86,7 @@ public class Server implements IServer {
 
 
             /** Example of registration and usage Keys service locator */
-            IKey<Integer> key7 = Keys.getOrAdd("key7");
+            IKey key7 = Keys.getOrAdd("key7");
             IOC.register(
                     key7,
                     new CreateNewInstanceStrategy(

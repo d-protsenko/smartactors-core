@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class CollectionName implements ICollectionName {
 
-    private static Pattern VALIDATION_PATTERN = Pattern.compile("[a-zA-Z_][0-9a-zA-Z_]*");
+    private static final Pattern VALIDATION_PATTERN = Pattern.compile("[a-zA-Z_][0-9a-zA-Z_]*");
 
     private String name;
 
@@ -31,7 +31,7 @@ public class CollectionName implements ICollectionName {
     public static CollectionName fromString(final String name) throws QueryBuildException {
 
         if (!VALIDATION_PATTERN.matcher(name).matches()) {
-            throw new QueryBuildException("Invalid collection name: "+name);
+            throw new QueryBuildException("Invalid collection name: " + name);
         }
 
         return new CollectionName(name.toLowerCase());

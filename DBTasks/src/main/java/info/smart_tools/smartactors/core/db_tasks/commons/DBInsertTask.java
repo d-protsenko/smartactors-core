@@ -21,7 +21,7 @@ import java.sql.SQLException;
 /**
  * Common insert task executor.
  */
-public abstract class DBInsertTask extends GeneralDatabaseTask<IInsertMessage> {
+public abstract class DBInsertTask extends GeneralDatabaseTask {
 
     protected DBInsertTask() {}
 

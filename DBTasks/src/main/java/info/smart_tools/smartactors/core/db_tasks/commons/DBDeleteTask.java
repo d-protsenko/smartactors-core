@@ -21,7 +21,7 @@ public abstract class DBDeleteTask extends GeneralDatabaseTask {
     protected DBDeleteTask() {}
 
     @Override
-    protected boolean requiresExit(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
+    protected boolean requiresNonExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
         try {
             return queryMessage.getDocumentId() == null;
         } catch (ReadValueException e) {

@@ -38,7 +38,7 @@ public class CompileQueryUsedCachePlugin implements IPlugin {
 
         try {
             //Note:: resolve by name strategy for keys should be defined
-            IKey<ICompiledQuery> compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE");
+            IKey compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE");
             Map<IKey, ICompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryUsedCachePlugin");
             item.process(() -> {

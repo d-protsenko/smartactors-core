@@ -14,12 +14,33 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 abstract class GeneralDatabaseTask implements IDatabaseTask {
     private ICompiledQuery query;
     private IObject message;
     private IStorageConnection connection;
+    private boolean isNonExecutable;
 
-    protected GeneralDatabaseTask() {}
+    private Map<Boolean, IPrepareStrategy> prepareStrategies;
+    private Map<Boolean, IExecuteStrategy> executeStrategies;
+
+    /**
+     *
+     */
+    protected GeneralDatabaseTask() {
+        prepareStrategies = new HashMap<>(2);
+        prepareStrategies.put(true, message -> setInternalState(null , message));
+        prepareStrategies.put(false, message -> {
+            ICompiledQuery compiledQuery = takeQuery(connection, message);
+            setInternalState(setParameters(compiledQuery, message), message);
+        });
+
+        executeStrategies = new HashMap<>(2);
+        executeStrategies.put(true, () -> { });
+        executeStrategies.put(false, () -> execute(query, message));
+    }
 
     /**
      * {@see IDatabaseTask} {@link IDatabaseTask#prepare(IObject)}
@@ -34,12 +55,8 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
     @Override
     public void prepare(@Nonnull final IObject insertMessage) throws TaskPrepareException {
         try {
-            if (requiresExit(insertMessage)) {
-                setInternalState(null , insertMessage);
-                return;
-            }
-            ICompiledQuery compiledQuery = takeQuery(connection, insertMessage);
-            setInternalState(setParameters(compiledQuery, insertMessage), insertMessage);
+            isNonExecutable = requiresNonExecutable(insertMessage);
+            prepareStrategies.get(isNonExecutable).doAction(insertMessage);
         } catch (NullPointerException e) {
             throw new TaskPrepareException("Can't prepare query because: Invalid given insert message!");
         } catch (Exception e) {
@@ -56,10 +73,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            if (requiresExit(message)) {
-                return;
-            }
-            execute(query, message);
+            executeStrategies.get(isNonExecutable).doAction();
         } catch (Exception e) {
             throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
         }
@@ -97,12 +111,38 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
             @Nonnull final IObject queryMessage
     ) throws TaskExecutionException;
 
-    protected abstract boolean requiresExit(@Nonnull final IObject queryMessage) throws InvalidArgumentException;
+    protected abstract boolean requiresNonExecutable(@Nonnull final IObject queryMessage)
+            throws InvalidArgumentException;
 
 
     /* Internal method. */
     private void setInternalState(final ICompiledQuery compiledQuery, final IObject queryMessage) {
         this.query = compiledQuery;
         this.message = queryMessage;
+    }
+
+    /**
+     *
+     */
+    @FunctionalInterface
+    private interface IPrepareStrategy {
+        /**
+         *
+         * @param message
+         * @throws QueryBuildException
+         */
+        void doAction(final IObject message) throws QueryBuildException;
+    }
+
+    /**
+     *
+     */
+    @FunctionalInterface
+    private interface IExecuteStrategy {
+        /**
+         *
+         * @throws TaskExecutionException
+         */
+        void doAction() throws TaskExecutionException;
     }
 }

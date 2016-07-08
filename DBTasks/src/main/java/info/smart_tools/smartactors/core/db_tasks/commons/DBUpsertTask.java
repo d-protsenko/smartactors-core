@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -21,12 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DBUpsertTask implements IDatabaseTask {
-    private Map<String, IDatabaseTask> subTasks;
+    private Map<Boolean, IDatabaseTask> subTasks;
     private IDatabaseTask currentTask;
     private IStorageConnection connection;
 
-    private static final String INSERT_MODE = "INSERT";
-    private static final String UPDATE_MODE = "UPDATE";
+    private static final boolean INSERT_MODE = true;
+    private static final boolean UPDATE_MODE = false;
 
     protected DBUpsertTask() {
         subTasks = new HashMap<>(2);
@@ -79,14 +80,10 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     }
 
     private void prepareDocuments(final ICollectionName collection, final IObject document)
-            throws ResolutionException, ReadValueException {
+            throws ResolutionException, ReadValueException, InvalidArgumentException {
         IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
         String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), document.getValue(idFN));
-        if (id == null) {
-            currentTask = subTasks.get(INSERT_MODE);
-        } else {
-            currentTask = subTasks.get(UPDATE_MODE);
-        }
+        currentTask = subTasks.get(id == null);
     }
 
     private void prepareSubTask(final IDatabaseTask task, final ICollectionName collection, final IObject document)

@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.IObjectIterator;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
@@ -62,8 +61,8 @@ public class PSQLSearchTaskTest {
         when(connection.compileQuery(anyObject())).thenReturn(compiledQuery);
 
         IObject criteria = mock(IObject.class);
-        IObjectIterator iterator = mock(IObjectIterator.class);
-        when(iterator.next()).thenReturn(false);
+        Iterator iterator = mock(Iterator.class);
+        when(iterator.hasNext()).thenReturn(false);
         when(criteria.iterator()).thenReturn(iterator);
 
         when(queryMessage.getCriteria()).thenReturn(criteria);
