@@ -120,6 +120,9 @@
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
         <module>EndpointGenerator</module>
+        <module>EndpointHandler</module>
+        <module>IExchange</module>
+        <module>NettyServer</module>
     </modules>
 
     <build>
