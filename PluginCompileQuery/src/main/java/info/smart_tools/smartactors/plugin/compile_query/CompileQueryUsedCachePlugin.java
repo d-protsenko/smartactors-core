@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.plugin.compile_query;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -38,8 +38,8 @@ public class CompileQueryUsedCachePlugin implements IPlugin {
 
         try {
             //Note:: resolve by name strategy for keys should be defined
-            IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE");
-            Map<IKey, CompiledQuery> queryMap = new HashMap<>();
+            IKey<ICompiledQuery> compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE");
+            Map<IKey, ICompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryUsedCachePlugin");
             item.process(() -> {
                 try {
@@ -49,9 +49,9 @@ public class CompileQueryUsedCachePlugin implements IPlugin {
                             if (key == null)
                                 throw new RuntimeException("Can't resolve compiled query: key parameter is null!");
 
-                            CompiledQuery query = queryMap.get(key);
+                            ICompiledQuery query = queryMap.get(key);
                             if (query == null) {
-                                StorageConnection connection = (StorageConnection) args[1];
+                                IStorageConnection connection = (IStorageConnection) args[1];
                                 if (connection == null)
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "connection parameter is null!");

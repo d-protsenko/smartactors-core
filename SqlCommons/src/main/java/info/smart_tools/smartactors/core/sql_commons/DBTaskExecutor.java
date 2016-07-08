@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.sql_commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 
 /**
@@ -33,7 +33,7 @@ public class DBTaskExecutor {
      *
      * @throws Exception when an error occurred task executing or an error occurred commit.
      */
-    public static void executeTransaction(IDatabaseTask task, StorageConnection connection) throws Exception {
+    public static void executeTransaction(IDatabaseTask task, IStorageConnection connection) throws Exception {
         try {
             task.execute();
             connection.commit();

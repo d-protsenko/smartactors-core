@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.sql_commons;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.IObjectIterator;
 
@@ -27,7 +27,7 @@ public class Conditions {
             QueryConditionWriterResolver resolver,
             FieldPath contextFieldPath,
             Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
@@ -117,7 +117,7 @@ public class Conditions {
             QueryConditionWriterResolver resolver,
             FieldPath contextFieldPath,
             Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         writeCompositeCondition("(",")","AND",query,resolver,contextFieldPath,queryParameter, setters);
     }
@@ -127,7 +127,7 @@ public class Conditions {
             QueryConditionWriterResolver resolver,
             FieldPath contextFieldPath,
             Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         writeCompositeCondition("(",")","OR",query,resolver,contextFieldPath,queryParameter, setters);
     }
@@ -137,7 +137,7 @@ public class Conditions {
             QueryConditionWriterResolver resolver,
             FieldPath contextFieldPath,
             Object queryParameter,
-            List<SQLQueryParameterSetter> setters
+            List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         writeCompositeCondition("(NOT(","))","AND",query,resolver,contextFieldPath,queryParameter, setters);
     }

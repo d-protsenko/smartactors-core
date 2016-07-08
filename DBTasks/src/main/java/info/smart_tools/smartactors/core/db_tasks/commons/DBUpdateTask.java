@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.update.IUpdateMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -40,7 +40,7 @@ public abstract class DBUpdateTask extends GeneralDatabaseTask<IUpdateMessage> {
      *              2. Query execution errors.
      */
     @Override
-    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final IUpdateMessage message)
+    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IUpdateMessage message)
             throws TaskExecutionException {
         try {
             int nUpdated = query.executeUpdate();

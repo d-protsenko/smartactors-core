@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.update;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBUpdateTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.update.IUpdateMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -48,8 +48,8 @@ public class PSQLUpdateTask extends DBUpdateTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery takeQuery(
-            @Nonnull final StorageConnection connection,
+    protected ICompiledQuery takeQuery(
+            @Nonnull final IStorageConnection connection,
             @Nonnull final IUpdateMessage queryMessage
     ) throws QueryBuildException {
         try {
@@ -60,7 +60,7 @@ public class PSQLUpdateTask extends DBUpdateTask {
                     queryMessage.getCollection().toString());
 
             return IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
+                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
                     getQueryStatementFactory(
@@ -72,23 +72,24 @@ public class PSQLUpdateTask extends DBUpdateTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(
-            @Nonnull final CompiledQuery compiledQuery,
+    protected ICompiledQuery setParameters(
+            @Nonnull final ICompiledQuery compiledQuery,
             @Nonnull final IUpdateMessage updateQueryMessage
     ) throws QueryBuildException {
-        compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
-            try {
-                String collection = updateQueryMessage.getCollection().toString();
-                String documentId = takeDocumentId(updateQueryMessage.getDocument(), collection);
+        try {
+            String collection = updateQueryMessage.getCollection().toString();
+            String documentId = takeDocumentId(updateQueryMessage.getDocument(), collection);
+            String document = updateQueryMessage.getDocument().toString();
+
+            compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
                 statement.setString(index++, documentId);
-                statement.setString(index++, updateQueryMessage.getDocument().toString());
+                statement.setString(index++, document);
 
                 return index;
-            } catch (ReadValueException | ResolutionException e) {
-                throw new QueryBuildException("Error while writing update query statement: " +
-                        "could not read document's id.", e);
-            }
-        }));
+            }));
+        } catch (ReadValueException | ResolutionException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
 
         return compiledQuery;
     }
@@ -110,6 +111,5 @@ public class PSQLUpdateTask extends DBUpdateTask {
             throws ResolutionException, ReadValueException {
         IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
         return document.getValue(idFN).toString();
-
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.IDBTaskMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -36,7 +36,7 @@ public abstract class DBSearchTask<TMessage extends IDBTaskMessage> extends Gene
      *                2. Error change a value into {@link IObject};
      *                3. Error during search query execution.
      */
-    protected List<IObject> execute(@Nonnull final CompiledQuery query)
+    protected List<IObject> execute(@Nonnull final ICompiledQuery query)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = query.executeQuery();

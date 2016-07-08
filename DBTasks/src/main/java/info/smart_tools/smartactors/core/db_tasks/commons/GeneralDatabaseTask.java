@@ -1,14 +1,12 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.IDBTaskMessage;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.itask.ITask;
@@ -16,10 +14,10 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
-abstract class GeneralDatabaseTask<TMessage extends IDBTaskMessage> implements IDatabaseTask {
-    private CompiledQuery query;
-    private TMessage message;
-    private StorageConnection connection;
+abstract class GeneralDatabaseTask implements IDatabaseTask {
+    private ICompiledQuery query;
+    private IObject message;
+    private IStorageConnection connection;
 
     protected GeneralDatabaseTask() {}
 
@@ -34,16 +32,16 @@ abstract class GeneralDatabaseTask<TMessage extends IDBTaskMessage> implements I
      * @throws TaskPrepareException {@see IDatabaseTask} {@link IDatabaseTask#prepare(IObject)}
      */
     @Override
-    public void prepare(final IObject insertMessage) throws TaskPrepareException {
+    public void prepare(@Nonnull final IObject insertMessage) throws TaskPrepareException {
         try {
-            checkConnection(connection);
-            TMessage queryMessage = takeMessageWrapper(insertMessage);
-            if (requiresExit(message)) {
-                setInternalState(null , queryMessage);
+            if (requiresExit(insertMessage)) {
+                setInternalState(null , insertMessage);
                 return;
             }
-            CompiledQuery compiledQuery = takeQuery(connection, queryMessage);
-            setInternalState(setParameters(compiledQuery, queryMessage), queryMessage);
+            ICompiledQuery compiledQuery = takeQuery(connection, insertMessage);
+            setInternalState(setParameters(compiledQuery, insertMessage), insertMessage);
+        } catch (NullPointerException e) {
+            throw new TaskPrepareException("Can't prepare query because: Invalid given insert message!");
         } catch (Exception e) {
             throw new TaskPrepareException("Can't prepare query because: " + e.getMessage(), e);
         }
@@ -61,7 +59,6 @@ abstract class GeneralDatabaseTask<TMessage extends IDBTaskMessage> implements I
             if (requiresExit(message)) {
                 return;
             }
-            checkExecutionConditions();
             execute(query, message);
         } catch (Exception e) {
             throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
@@ -69,63 +66,43 @@ abstract class GeneralDatabaseTask<TMessage extends IDBTaskMessage> implements I
     }
 
     /**
-     * {@see IDatabaseTask} {@link IDatabaseTask#setStorageConnection(StorageConnection)}
+     * {@see IDatabaseTask} {@link IDatabaseTask#setStorageConnection(IStorageConnection)}
      *
      * @param storageConnection - {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setStorageConnection(StorageConnection)}.
+     *                  {@link IDatabaseTask#setStorageConnection(IStorageConnection)}.
      *
      * @throws TaskSetConnectionException {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setStorageConnection(StorageConnection)}
+     *                  {@link IDatabaseTask#setStorageConnection(IStorageConnection)}
      */
     @Override
-    public void setStorageConnection(final StorageConnection storageConnection) throws TaskSetConnectionException {
-        checkConnection(storageConnection);
+    public void setStorageConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException {
         connection = storageConnection;
     }
 
 
-    /* @see . */
-
-    protected abstract @Nonnull CompiledQuery takeQuery(
-            @Nonnull final StorageConnection connection,
-            @Nonnull final TMessage queryMessage
+    protected abstract @Nonnull
+    ICompiledQuery takeQuery(
+            @Nonnull final IStorageConnection connection,
+            @Nonnull final IObject queryMessage
     ) throws QueryBuildException;
 
-    protected abstract @Nonnull CompiledQuery setParameters(
-            @Nonnull final CompiledQuery query,
-            @Nonnull final TMessage message
+    protected abstract @Nonnull
+    ICompiledQuery setParameters(
+            @Nonnull final ICompiledQuery query,
+            @Nonnull final IObject message
     ) throws QueryBuildException;
 
     protected abstract void execute(
-            @Nonnull final CompiledQuery compiledQuery,
-            @Nonnull final TMessage queryMessage
+            @Nonnull final ICompiledQuery compiledQuery,
+            @Nonnull final IObject queryMessage
     ) throws TaskExecutionException;
 
-    protected abstract boolean requiresExit(@Nonnull final TMessage queryMessage) throws InvalidArgumentException;
-
-    protected abstract @Nonnull TMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException;
+    protected abstract boolean requiresExit(@Nonnull final IObject queryMessage) throws InvalidArgumentException;
 
 
-
-    /* Internal methods. */
-
-    private void setInternalState(final CompiledQuery query, final TMessage message) {
-        this.query = query;
-        this.message = message;
-    }
-
-    private void checkExecutionConditions() throws TaskExecutionException {
-        if (query == null || message == null) {
-            throw new TaskExecutionException("Should first prepare the task.");
-        }
-    }
-
-    private void checkConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        if (connection == null) {
-            throw new TaskSetConnectionException("Connection should not be a null or empty!");
-        }
-        if (connection.getId() == null || connection.getId().isEmpty()) {
-            throw new TaskSetConnectionException("Connection should have an id!");
-        }
+    /* Internal method. */
+    private void setInternalState(final ICompiledQuery compiledQuery, final IObject queryMessage) {
+        this.query = compiledQuery;
+        this.message = queryMessage;
     }
 }

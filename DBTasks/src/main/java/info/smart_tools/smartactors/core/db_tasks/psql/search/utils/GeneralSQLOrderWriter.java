@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -62,7 +62,7 @@ public class GeneralSQLOrderWriter implements ISearchQueryStatementWriter<List<I
     public void write(
             @Nonnull final QueryStatement queryStatement,
             @Nonnull final List<IObject> orderByItems,
-            @Nonnull final List<SQLQueryParameterSetter> setters
+            @Nonnull final List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         if (orderByItems.size() == 0) {
             return;

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.sql_commons.*;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
@@ -28,7 +28,7 @@ final class Operators {
             final QueryStatement query,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -60,7 +60,7 @@ final class Operators {
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -93,7 +93,7 @@ final class Operators {
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {

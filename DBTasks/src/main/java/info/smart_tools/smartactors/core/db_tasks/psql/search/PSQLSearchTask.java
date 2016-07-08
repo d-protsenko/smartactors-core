@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ICachedQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
@@ -48,15 +48,13 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
 
     @Override
     protected boolean requiresExit(@Nonnull final ISearchMessage message) throws InvalidArgumentException {
-        Integer pageNumber = message.getPageNumber(),
-                pageSize = message.getPageSize();
-        return (pageNumber == null || pageNumber < 1) || (pageSize == null || pageNumber < 1);
+        return false;
     }
 
     @Nonnull
     @Override
-    protected CompiledQuery takeQuery(@Nonnull final StorageConnection connection,
-                                      @Nonnull final ISearchMessage message
+    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
+                                       @Nonnull final ISearchMessage message
     ) throws QueryBuildException {
         try {
             ICachedQuery cachedSearchQuery = message
@@ -72,8 +70,8 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
 
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(@Nonnull final CompiledQuery query,
-                                          @Nonnull final ISearchMessage message
+    protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
+                                           @Nonnull final ISearchMessage message
     ) throws QueryBuildException {
         query.setParameters(message
                 .getCachedQuery()
@@ -84,7 +82,7 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
     }
 
     @Override
-    protected void execute(@Nonnull final CompiledQuery query,
+    protected void execute(@Nonnull final ICompiledQuery query,
                            @Nonnull final ISearchMessage message
     ) throws TaskExecutionException {
         try {
@@ -94,12 +92,12 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
         }
     }
 
-    private ICachedQuery createCachedSearchQuery(final StorageConnection connection,
+    private ICachedQuery createCachedSearchQuery(final IStorageConnection connection,
                                                  final ISearchMessage message
     ) throws ResolutionException, ReadValueException {
-        List<SQLQueryParameterSetter> setters = new ArrayList<>();
-        CompiledQuery compiledQuery = IOC.resolve(
-                Keys.getOrAdd(CompiledQuery.class.toString()),
+        List<ISQLQueryParameterSetter> setters = new ArrayList<>();
+        ICompiledQuery compiledQuery = IOC.resolve(
+                Keys.getOrAdd(ICompiledQuery.class.toString()),
                 connection,
                 getQueryStatementFactory(message, setters));
 
@@ -110,7 +108,7 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
     }
 
     private QueryStatementFactory getQueryStatementFactory(final ISearchMessage message,
-                                                           final List<SQLQueryParameterSetter> setters
+                                                           final List<ISQLQueryParameterSetter> setters
     ) {
         return () -> {
             try {

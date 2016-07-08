@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -44,7 +44,7 @@ public abstract class DBInsertTask extends GeneralDatabaseTask<IInsertMessage> {
      * @throws TaskExecutionException when the result set has more than one document.
      */
     @Override
-    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final IInsertMessage message)
+    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IInsertMessage message)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = query.executeQuery();

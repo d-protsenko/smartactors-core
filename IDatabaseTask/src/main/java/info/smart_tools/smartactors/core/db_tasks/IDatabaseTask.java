@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks;
 
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -31,5 +31,5 @@ public interface IDatabaseTask extends ITask {
      * @param storageConnection - database connection.
      * @throws TaskSetConnectionException when the incoming connection is invalid.
      */
-    void setStorageConnection(final StorageConnection storageConnection) throws TaskSetConnectionException;
+    void setStorageConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException;
 }

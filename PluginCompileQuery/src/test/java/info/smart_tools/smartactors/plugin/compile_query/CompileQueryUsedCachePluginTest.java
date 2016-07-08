@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.compile_query;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -35,7 +35,7 @@ public class CompileQueryUsedCachePluginTest {
         IKey key1 = mock(IKey.class);
         IKey keyQuery = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
-        when(IOC.resolve(eq(key1), eq(CompiledQuery.class.toString()))).thenReturn(keyQuery);
+        when(IOC.resolve(eq(key1), eq(ICompiledQuery.class.toString()))).thenReturn(keyQuery);
 
         bootstrap = mock(IBootstrap.class);
         plugin = new CompileQueryUsedCachePlugin(bootstrap);

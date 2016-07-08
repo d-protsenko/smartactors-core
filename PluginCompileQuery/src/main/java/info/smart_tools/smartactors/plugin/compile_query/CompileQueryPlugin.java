@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.plugin.compile_query;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -28,13 +28,13 @@ public class CompileQueryPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey<CompiledQuery> compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
+            IKey<ICompiledQuery> compiledQueryKey = Keys.getOrAdd(ICompiledQuery.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
             item.process(() -> {
                 try {
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
                             (args) -> {
-                                StorageConnection connection = (StorageConnection) args[0];
+                                IStorageConnection connection = (IStorageConnection) args[0];
                                 if (connection == null)
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "connection parameter is null!");

@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -23,7 +23,7 @@ import java.util.Map;
 public abstract class DBUpsertTask implements IDatabaseTask {
     private Map<String, IDatabaseTask> subTasks;
     private IDatabaseTask currentTask;
-    private StorageConnection connection;
+    private IStorageConnection connection;
 
     private static final String INSERT_MODE = "INSERT";
     private static final String UPDATE_MODE = "UPDATE";
@@ -35,7 +35,6 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject upsertMessage) throws TaskPrepareException {
         try {
-            checkConnection(connection);
             IUpsertMessage queryMessage = takeMessageWrapper(upsertMessage);
             prepareDocuments(queryMessage.getCollection(), queryMessage.getDocument());
             prepareSubTask(currentTask, queryMessage.getCollection(), queryMessage.getDocument());
@@ -54,9 +53,8 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     }
 
     @Override
-    public void setStorageConnection(final StorageConnection storageConnection)
+    public void setStorageConnection(final IStorageConnection storageConnection)
             throws TaskSetConnectionException {
-        checkConnection(storageConnection);
         connection = storageConnection;
     }
 
@@ -80,7 +78,7 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
-    private void prepareDocuments(final CollectionName collection, final IObject document)
+    private void prepareDocuments(final ICollectionName collection, final IObject document)
             throws ResolutionException, ReadValueException {
         IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
         String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), document.getValue(idFN));
@@ -91,22 +89,13 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
-    private void prepareSubTask(IDatabaseTask task, CollectionName collection, IObject document)
-            throws ChangeValueException, TaskPrepareException, ResolutionException {
-
+    private void prepareSubTask(final IDatabaseTask task, final ICollectionName collection, final IObject document)
+            throws ChangeValueException, TaskPrepareException, ResolutionException, TaskSetConnectionException {
         IUpsertMessage upsertMessage = IOC.resolve(Keys.getOrAdd(IUpsertMessage.class.toString()));
         upsertMessage.setCollection(collection);
         upsertMessage.setDocument(document);
         IObject preparedMessage = IOC.resolve(Keys.getOrAdd("ExtractWrapper"), upsertMessage);
+        task.setStorageConnection(connection);
         task.prepare(preparedMessage);
-    }
-
-    private void checkConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        if (connection == null) {
-            throw new TaskSetConnectionException("Connection should not be a null or empty!");
-        }
-        if (connection.getId() == null || connection.getId().isEmpty()) {
-            throw new TaskSetConnectionException("Connection should have an id!");
-        }
     }
 }

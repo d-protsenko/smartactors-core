@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -24,5 +24,5 @@ public interface ISearchQueryStatementWriter<TSetParameter> {
     void write(
             @Nonnull final QueryStatement queryStatement,
             @Nonnull final TSetParameter setParameter,
-            @Nonnull final List<SQLQueryParameterSetter> setters) throws QueryBuildException;
+            @Nonnull final List<ISQLQueryParameterSetter> setters) throws QueryBuildException;
 }

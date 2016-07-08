@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.delete;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBDeleteTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -37,16 +37,8 @@ public class PSQLDeleteTask extends DBDeleteTask {
 
     @Nonnull
     @Override
-    protected IDeleteMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(IDeleteMessage.class.toString()),
-                object);
-    }
-
-    @Nonnull
-    @Override
-    protected CompiledQuery takeQuery(@Nonnull final StorageConnection connection,
-                                      @Nonnull final IDeleteMessage message
+    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
+                                       @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
             String collection = message.getCollection().toString();
@@ -57,7 +49,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
                     collection);
 
             return IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
+                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
@@ -68,15 +60,21 @@ public class PSQLDeleteTask extends DBDeleteTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(@Nonnull final CompiledQuery query,
-                                          @Nonnull final IDeleteMessage message
+    protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
+                                           @Nonnull final IObject message
     ) throws QueryBuildException {
-        query.setParameters(Collections.singletonList((statement, index) -> {
-            statement.setLong(index++, message.getDocumentId());
-            return index;
-        }));
+        try {
+            Long documentId = message.getDocumentId();
+            query.setParameters(Collections.singletonList((statement, index) -> {
+                statement.setLong(index++, documentId);
+                return index;
+            }));
 
-        return query;
+            return query;
+        } catch (ReadValueException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
+
     }
 
     private QueryStatementFactory getQueryStatementFactory(final String collection) {

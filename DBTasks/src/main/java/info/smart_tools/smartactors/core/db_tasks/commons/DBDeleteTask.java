@@ -1,9 +1,10 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
 /**
  * Common deletion task executor.
  */
-public abstract class DBDeleteTask extends GeneralDatabaseTask<IDeleteMessage> {
+public abstract class DBDeleteTask extends GeneralDatabaseTask {
 
     /**
      * Default constructor.
@@ -20,7 +21,7 @@ public abstract class DBDeleteTask extends GeneralDatabaseTask<IDeleteMessage> {
     protected DBDeleteTask() {}
 
     @Override
-    protected boolean requiresExit(@Nonnull final IDeleteMessage queryMessage) throws InvalidArgumentException {
+    protected boolean requiresExit(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
         try {
             return queryMessage.getDocumentId() == null;
         } catch (ReadValueException e) {
@@ -37,7 +38,7 @@ public abstract class DBDeleteTask extends GeneralDatabaseTask<IDeleteMessage> {
      * @throws TaskExecutionException when number of deleted rows not equals of number of rows which had to be removed.
      */
     @Override
-    protected void execute(@Nonnull final CompiledQuery query, @Nonnull final IDeleteMessage message)
+    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
             int nDeleted = query.executeUpdate();

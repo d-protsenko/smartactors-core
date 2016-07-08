@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBCreateCollectionTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.create_collection.ICreateCollectionMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -20,9 +20,6 @@ import java.util.Map;
  * Task for create collection with predefined indexes in psql database.
  */
 public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
-    private CompiledQuery compiledQuery;
-    private StorageConnection storageConnection;
-
     /**
      * Default constructor.
      *              Creates a new instance of {@link PSQLCreateCollectionTask}.
@@ -40,7 +37,7 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
 
     @Nonnull
     @Override
-    protected ICreateCollectionMessage takeMessageWrapper(@Nonnull IObject object) throws ResolutionException {
+    protected ICreateCollectionMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException {
         return IOC.resolve(
                 Keys.getOrAdd(ICreateCollectionMessage.class.toString()),
                 object);
@@ -48,13 +45,12 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery takeQuery(
-            final StorageConnection connection,
-            final ICreateCollectionMessage message
+    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
+                                       @Nonnull final ICreateCollectionMessage message
     ) throws QueryBuildException {
         try {
             return IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString()),
+                    Keys.getOrAdd(ICompiledQuery.class.toString()),
                     connection,
                     getQueryStatementFactory(
                             message.getCollection().toString(),
@@ -66,8 +62,8 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(@Nonnull final CompiledQuery query,
-                                          @Nonnull final ICreateCollectionMessage message
+    protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
+                                           @Nonnull final ICreateCollectionMessage message
     ) throws QueryBuildException {
         return query;
     }

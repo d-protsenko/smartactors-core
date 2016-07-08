@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ public class GeneralSQLPagingWriter implements ISearchQueryStatementWriter<int[]
     public void write(
             @Nonnull final QueryStatement queryStatement,
             @Nonnull final int[] paging,
-            @Nonnull final List<SQLQueryParameterSetter> setters
+            @Nonnull final List<ISQLQueryParameterSetter> setters
     ) throws QueryBuildException {
         try {
             queryStatement.getBodyWriter().write("LIMIT(?)OFFSET(?)");

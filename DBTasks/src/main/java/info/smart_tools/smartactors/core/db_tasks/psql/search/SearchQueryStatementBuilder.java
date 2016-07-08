@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.GeneralSQLOrderWriter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.GeneralSQLPagingWriter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.ISearchQueryStatementWriter;
@@ -21,7 +21,7 @@ final class SearchQueryStatementBuilder {
     private Object criteria;
     private List<IObject> orderByItems;
     private int[] paging = new int[2];
-    private List<SQLQueryParameterSetter> setters;
+    private List<ISQLQueryParameterSetter> setters;
 
     private static final QueryConditionWriterResolver CONDITION_WRITER_RESOLVER  = ConditionsWriterResolver.create();
     private static final ISearchQueryStatementWriter<List<IObject>> ORDER_WRITER = GeneralSQLOrderWriter.create();
@@ -95,7 +95,7 @@ final class SearchQueryStatementBuilder {
      * @param setters
      * @return
      */
-    SearchQueryStatementBuilder withSQLSetters(@Nonnull final List<SQLQueryParameterSetter> setters) {
+    SearchQueryStatementBuilder withSQLSetters(@Nonnull final List<ISQLQueryParameterSetter> setters) {
         this.setters = setters;
         return this;
     }

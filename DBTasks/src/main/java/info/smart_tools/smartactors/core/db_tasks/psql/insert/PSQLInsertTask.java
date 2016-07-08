@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.insert;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBInsertTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -47,8 +47,8 @@ public class PSQLInsertTask extends DBInsertTask {
 
     @Nonnull
     @Override
-    protected CompiledQuery takeQuery(
-            @Nonnull final StorageConnection connection,
+    protected ICompiledQuery takeQuery(
+            @Nonnull final IStorageConnection connection,
             @Nonnull final IInsertMessage queryMessage
     ) throws QueryBuildException {
         try {
@@ -60,7 +60,7 @@ public class PSQLInsertTask extends DBInsertTask {
                     collection);
 
             return IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
+                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
@@ -78,15 +78,19 @@ public class PSQLInsertTask extends DBInsertTask {
      */
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(final CompiledQuery query, final IInsertMessage message)
+    protected ICompiledQuery setParameters(final ICompiledQuery query, final IInsertMessage message)
             throws QueryBuildException {
+        try {
+            String document = message.getDocument().toString();
+            query.setParameters(Collections.singletonList((statement, index) -> {
+                statement.setString(index++, document);
+                return index;
+            }));
 
-        query.setParameters(Collections.singletonList((statement, index) -> {
-            statement.setString(index++, message.getDocument().toString());
-            return index;
-        }));
-
-        return query;
+            return query;
+        } catch (ReadValueException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
     }
 
 

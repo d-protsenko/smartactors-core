@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchByIdMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -59,8 +59,8 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
 
     @Nonnull
     @Override
-    protected CompiledQuery takeQuery(@Nonnull final StorageConnection connection,
-                                      @Nonnull final ISearchByIdMessage message
+    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
+                                       @Nonnull final ISearchByIdMessage message
     ) throws QueryBuildException {
         try {
             String collection = message.getCollection().toString();
@@ -71,7 +71,7 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
                     collection);
 
             return IOC.resolve(
-                    Keys.getOrAdd(CompiledQuery.class.toString() + "USED_CACHE"),
+                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
@@ -82,8 +82,8 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
 
     @Nonnull
     @Override
-    protected CompiledQuery setParameters(@Nonnull final CompiledQuery query,
-                                          @Nonnull final ISearchByIdMessage message
+    protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
+                                           @Nonnull final ISearchByIdMessage message
     ) throws QueryBuildException {
         try {
             String id = message.getId();
@@ -99,7 +99,7 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
     }
 
     @Override
-    protected void execute(@Nonnull final CompiledQuery query,
+    protected void execute(@Nonnull final ICompiledQuery query,
                            @Nonnull final ISearchByIdMessage message
     ) throws TaskExecutionException {
         List<IObject> result = super.execute(query);

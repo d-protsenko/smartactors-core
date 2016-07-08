@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.wrappers.search;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 
 import java.util.List;
 
@@ -12,22 +12,22 @@ public interface ICachedQuery {
     /**
      * @return the compiled query with empty parameters.
      */
-    CompiledQuery getCompiledQuery();
+    ICompiledQuery getCompiledQuery();
 
     /**
      *
      * @param query
      */
-    void setCompiledQuery(CompiledQuery query);
+    void setCompiledQuery(ICompiledQuery query);
 
     /**
      * @return the parameters setters for compiled query.
      */
-    List<SQLQueryParameterSetter> getParametersSetters();
+    List<ISQLQueryParameterSetter> getParametersSetters();
 
     /**
      *
      * @param setters
      */
-    void setParametersSetters(List<SQLQueryParameterSetter> setters);
+    void setParametersSetters(List<ISQLQueryParameterSetter> setters);
 }
