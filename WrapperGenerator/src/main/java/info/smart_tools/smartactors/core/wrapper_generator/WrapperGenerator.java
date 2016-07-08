@@ -172,7 +172,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                 methodPrefix = "in";
             }
             cb
-                    .addField().setModifier(Modifiers.PRIVATE).setType("IField").setInnerGenericType(genericType)
+                    .addField().setModifier(Modifiers.PRIVATE).setType("IField")
                             .setName("fieldFor_" + methodPrefix + "_" + m.getName());
         }
 
@@ -188,7 +188,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(m.getName())
                     .append(" = new ")
                     .append(methodPrefix.equals("out") ? "Out" : "In")
-                    .append("Field<>(\"")
+                    .append("Field(\"")
                     .append(targetInterface.getCanonicalName())
                     .append("/").append(methodPrefix).append("_").append(m.getName()).append("\"" + ");\n");
         }

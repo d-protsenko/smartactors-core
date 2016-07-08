@@ -19,12 +19,13 @@ import java.util.Map;
  * Implementation of {@link IField} only for {@code out} method
  * @param <T> return type for {@code in} method
  */
-public class OutField<T> implements IField<T> {
+public class OutField implements IField {
 
     private static final String FIELD_ARGS = "args";
     private static final String FIELD_NAME = "name";
-    private static final String LOCAL_KEYWORD = "local";
-    private static final String VALUE_KEYWORD = "value";
+    private static final String LOCAL_KEYWORD = "local/value";
+    private static final String CONST_KEYWORD = "const/";
+    private static final String ENVIRONMENT_KEYWORD = "environment";
     private static final String SPLITTER = "\\/";
     private static final String MAPS_KEYWORD = "environments";
     private static final String SUB_MAPS_KEYWORD = "wrappers";
@@ -77,15 +78,49 @@ public class OutField<T> implements IField<T> {
     }
 
     @Override
-    public T in(final IObject env)
+    public <T> T in(final IObject env)
             throws ReadValueException, InvalidArgumentException, ClassCastException {
         throw new InvalidArgumentException("Method not implemented.");
     }
 
     @Override
-    public void out(final IObject env, final T in)
+    public <T> void out(final IObject env, final T in)
             throws ChangeValueException, InvalidArgumentException {
-            throw new InvalidArgumentException("Method not implemented.");
+        if (null == env) {
+            throw new InvalidArgumentException("Environment should not be null.");
+        }
+
+        try {
+            for(List<Map<String, Object>> rulesArray : this.rules) {
+                Object value = in;
+                for (Map<String, Object> rule : rulesArray) {
+                    List<String> args = (ArrayList<String>) rule.get(FIELD_ARGS);
+                    String name = (String) rule.get(FIELD_NAME);
+                    Object[] resolvedArgs = new Object[args.size()];
+                    for (String arg : args) {
+                        if (arg.equals(LOCAL_KEYWORD)) {
+                            resolvedArgs[args.indexOf(arg)] = value;
+                            continue;
+                        }
+                        if (arg.contains(CONST_KEYWORD)) {
+                            resolvedArgs[args.indexOf(arg)] = arg.split(SPLITTER)[1];
+                            continue;
+                        }
+                        if (arg.equals(ENVIRONMENT_KEYWORD)) {
+                            resolvedArgs[args.indexOf(arg)] = env;
+                            continue;
+                        }
+                        resolvedArgs[args.indexOf(arg)] = getValueFromNestedIObject(env, arg);
+                    }
+                    value =
+                            null != name && !name.isEmpty() ?
+                                    IOC.resolve(Keys.getOrAdd(name), resolvedArgs) :
+                                    resolvedArgs[0];
+                }
+            }
+        } catch (Exception e) {
+            throw new ChangeValueException("Could not apply rules.", e);
+        }
     }
 
     private Object getValueFromNestedIObject(final IObject source, final String location)

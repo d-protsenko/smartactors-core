@@ -19,7 +19,7 @@ import java.util.Map;
  * Implementation of {@link IField} only for {@code in} method
  * @param <T> return type for {@code in} method
  */
-public class InField<T> implements IField<T> {
+public class InField implements IField {
 
     private static final String FIELD_ARGS = "args";
     private static final String FIELD_NAME = "name";
@@ -73,7 +73,7 @@ public class InField<T> implements IField<T> {
     }
 
     @Override
-    public T in(final IObject env)
+    public <T> T in(final IObject env)
             throws ReadValueException, InvalidArgumentException, ClassCastException {
         if (null == env) {
             throw new InvalidArgumentException("Environment should not be null.");
@@ -115,7 +115,7 @@ public class InField<T> implements IField<T> {
     }
 
     @Override
-    public void out(final IObject env, final T in)
+    public <T> void out(final IObject env, final T in)
             throws ChangeValueException, InvalidArgumentException {
         throw new InvalidArgumentException("Method not implemented.");
     }
