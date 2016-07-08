@@ -184,7 +184,6 @@ public class WrapperGeneratorTest {
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "AddToList", addToList
         );
 
-
         IResolveDependencyStrategy convertToString = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("ConvertToString"), convertToString);
         IOC.resolve(

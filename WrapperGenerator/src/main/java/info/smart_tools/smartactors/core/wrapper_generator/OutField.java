@@ -42,6 +42,9 @@ public class OutField implements IField {
      */
     public OutField(final String bindingPath)
             throws InvalidArgumentException {
+        if (null == bindingPath || bindingPath.isEmpty()) {
+            throw new InvalidArgumentException("Arguments should not be null or empty");
+        }
         try {
             this.strategies = new HashMap<>();
             Object obj = getValueFromNestedIObject(

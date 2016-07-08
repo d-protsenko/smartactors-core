@@ -28,6 +28,7 @@ public class InField implements IField {
     private static final String SPLITTER = "\\/";
     private static final String MAPS_KEYWORD = "environments";
     private static final String SUB_MAPS_KEYWORD = "wrappers";
+    private static final String SLASH = "/";
 
     private List<Map<String, Object>> rules;
     private HashMap<String, IResolveDependencyStrategy> strategies;
@@ -40,11 +41,14 @@ public class InField implements IField {
      */
     public InField(final String bindingPath)
             throws InvalidArgumentException {
+        if (null == bindingPath || bindingPath.isEmpty()) {
+            throw new InvalidArgumentException("Arguments should not be null or empty");
+        }
         try {
             this.strategies = new HashMap<>();
             Object obj = getValueFromNestedIObject(
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), MAPS_KEYWORD),
-                    SUB_MAPS_KEYWORD + "/" + bindingPath
+                    SUB_MAPS_KEYWORD + SLASH + bindingPath
             );
             if (obj instanceof ArrayList) {
                 this.rules = (ArrayList) obj;
@@ -62,7 +66,7 @@ public class InField implements IField {
                 this.rules = new ArrayList<>();
                 this.rules.add(
                         new HashMap<String, Object>() {{
-                            put("args", new ArrayList<String>() {{ add((String) obj); }});
+                            put(FIELD_ARGS, new ArrayList<String>() {{ add((String) obj); }});
                         }}
                 );
             }
