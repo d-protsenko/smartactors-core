@@ -49,7 +49,7 @@ public class ListenerTask implements Runnable {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                         File file = ((Path) event.context()).toFile();
-                        newFileAction.execute(file);
+                        newFileAction.execute(addFileToDirectory(file));
                     }
                 }
 
@@ -70,4 +70,9 @@ public class ListenerTask implements Runnable {
             newFileAction.execute(file);
         }
     }
+
+    File addFileToDirectory(File file) {
+        return new File(directory, file.getPath());
+    }
+
 }
