@@ -48,7 +48,7 @@ public class MyServer implements IServer {
             );
 
             File examplesJar = new File(System.getProperty("user.home"), ".m2/repository/info/smart_tools/smartactors/" +
-                    "core.examples/1.0-SNAPSHOT/core.examples-1.0-SNAPSHOT.jar");
+                    "core.examples/0.2.0-SNAPSHOT/core.examples-0.2.0-SNAPSHOT.jar");
             Collection<File> fileCollection = new CopyOnWriteArrayList<>();
             fileCollection.add(examplesJar);
             pluginLoader.loadPlugin(fileCollection);     // loads plugins
