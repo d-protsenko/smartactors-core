@@ -29,6 +29,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -106,7 +108,7 @@ public class WrapperGeneratorTest {
                 "    \"out_setIntValue\": \"response/IntValue\",\n" +
                 "    \"in_getTestClassValue\": \"message/TestClassValue\",\n" +
                 "    \"out_setTestClassValue\": \"response/TestClassValue\",\n" +
-                "    \"out_getListOfTestClasses\": \"response/ListOfTestClasses\",\n" +
+                "    \"out_setListOfTestClasses\": \"response/ListOfTestClasses\",\n" +
                 "    \"out_wrappedIObject\": \"response/WrappedIObject\",\n" +
                 "    \"in_wrappedIObject\": [{\n" +
                 "      \"name\": \"ConvertToWrapper\",\n" +
@@ -131,7 +133,7 @@ public class WrapperGeneratorTest {
                 "        \"args\": [\"local/value\"]\n" +
                 "      }, {\n" +
                 "        \"name\": \"JoinStrings\",\n" +
-                "        \"args\": [\"local/value\", \"const/CONST\"]\n" +
+                "        \"args\": [\"local/value\", \"const/abc\"]\n" +
                 "      }, {\n" +
                 "        \"name\": \"target\",\n" +
                 "        \"args\": [\"response/ModifiedString1\", \"local/value\"]\n" +
@@ -187,12 +189,14 @@ public class WrapperGeneratorTest {
         IOC.resolve(
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "ConvertToString", convertToString
         );
+        when(convertToString.resolve(1)).thenReturn("1");
 
         IResolveDependencyStrategy joinStrings = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("JoinStrings"), joinStrings);
         IOC.resolve(
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "JoinStrings", joinStrings
         );
+        when(joinStrings.resolve("1", "abc")).thenReturn("1abc");
 
         IWrapperGenerator wg = new WrapperGenerator(null);
         IWrapper inst = wg.generate(IWrapper.class);
@@ -252,29 +256,27 @@ public class WrapperGeneratorTest {
         assertSame(testClasses.get(1), otherTestClass);
 
         // Check 'out' methods of wrapper
+        inst.setIntValue(2);
+        verify(response, times(1)).setValue(new FieldName("IntValue"), 2);
+        inst.setTestClassValue(testClass);
+        verify(response, times(1)).setValue(new FieldName("TestClassValue"), testClass);
+        inst.wrappedIObject(innerWrapper);
+        verify(response, times(1)).setValue(new FieldName("WrappedIObject"), innerWrapper);
+        inst.setListOfTestClasses(listOfTestClasses);
+        verify(response, times(1)).setValue(new FieldName("ListOfTestClasses"), listOfTestClasses);
+        inst.transform(1);
+        verify(response, times(1)).setValue(new FieldName("ModifiedString1"), "1abc");
+        verify(response, times(1)).setValue(new FieldName("ModifiedString2"), "1");
 
 
         // Check methods of IObjectWrapper
         IObject resultMessage = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("message"));
         IObject resultContext = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("context"));
         IObject resultResponse = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("response"));
-//
-//        assertEquals(intResult, 1);
-//        assertEquals(stringResult, "abc");
-//        assertEquals(testClassResult, testClass);
-//        assertEquals((int) integerList.get(0), 1);
-//        assertEquals(stringList.get(0), "abc");
-//        assertEquals(testClasses.get(0).getF(), 1.5f, 0);
-//        assertEquals(boolResult, true);
-//        assertEquals(innerWrapperResult, innerWrapper);
-//        assertEquals(iObjectResult, iObject);
-//
-//        assertNotNull(resultOfChainStrategy);
-//        assertTrue(IInnerWrapper.class.isAssignableFrom(resultOfChainStrategy.getClass()));
-//
-//        assertSame(resultMessage, message);
-//        assertSame(resultContext, context);
-//        assertSame(resultResponse, response);
+        assertSame(resultMessage, message);
+        assertSame(resultContext, context);
+        assertSame(resultResponse, response);
+
 //
 //        inst.setIntValue(2);
 //        inst.setStringValue("cba");

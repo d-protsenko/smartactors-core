@@ -17,7 +17,6 @@ import java.util.Map;
 
 /**
  * Implementation of {@link IField} only for {@code in} method
- * @param <T> return type for {@code in} method
  */
 public class InField implements IField {
 
@@ -101,7 +100,7 @@ public class InField implements IField {
                 }
                 value =
                         null != name && !name.isEmpty() ?
-                        IOC.resolve(Keys.getOrAdd(name), resolvedArgs) :
+                        strategies.get(name).resolve(resolvedArgs) :
                         resolvedArgs[0];
             }
         } catch (Exception e) {
