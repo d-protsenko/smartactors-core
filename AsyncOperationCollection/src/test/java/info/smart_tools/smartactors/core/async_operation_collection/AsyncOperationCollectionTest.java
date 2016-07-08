@@ -586,4 +586,40 @@ public class AsyncOperationCollectionTest {
         }
         assertTrue("Must throw exception, but was not", false);
     }
+
+    @Test
+    public void MustInCorrectGetAsyncOperationWhenFirstGetItemNullAndNestedTaskNull() throws
+            Exception {
+
+        String token = "token";
+
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(pool).thenReturn(poolGuard);
+
+        GetAsyncOperationTask getAsyncOperationTask = mock(GetAsyncOperationTask.class);
+        Key getAsyncOperationTaskKey = mock(Key.class);
+        when(Keys.getOrAdd(GetAsyncOperationTask.class.toString())).thenReturn(getAsyncOperationTaskKey);
+        when(IOC.resolve(getAsyncOperationTaskKey)).thenReturn(null);
+
+        Key nestedTaskKey = mock(Key.class);
+        when(Keys.getOrAdd(IDatabaseTask.class.toString())).thenReturn(nestedTaskKey);
+
+        when(IOC.resolve(nestedTaskKey, GetAsyncOperationTask.class.toString())).thenReturn(null);
+
+        try {
+            testCollection.getAsyncOperation(token);
+        } catch (GetAsyncOperationException e) {
+
+            verifyNew(PoolGuard.class).withArguments(pool);
+
+            verifyStatic();
+            Keys.getOrAdd(GetAsyncOperationTask.class.toString());
+            verifyStatic();
+            IOC.resolve(getAsyncOperationTaskKey);
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue("Must throw exception, but was not", false);
+    }
 }
