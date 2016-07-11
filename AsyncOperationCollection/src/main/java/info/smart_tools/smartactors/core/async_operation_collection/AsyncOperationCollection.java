@@ -196,7 +196,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             DeleteAsyncOperationQuery deleteQuery = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationQuery.class.toString()));
             deleteQuery.setCollectionName(collectionName);
             IObject deleteItem = getAsyncOperation(token);
-            deleteQuery.setDocumentIds(Collections.singletonList(idField.out(deleteItem)));
+            deleteQuery.setDocumentIds(Collections.singletonList(idField.in(deleteItem)));
 
             deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));
