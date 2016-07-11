@@ -26,7 +26,6 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     private IField doneFlagField;
     private IField tokenField;
     private IField expiredTimeField;
-    private IField documentField;
     /**
      * Constructor
      * @param task the insert DB task
@@ -35,11 +34,10 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
         this.task = task;
 
         try {
-            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "asyncData");
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
-            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "token");
-            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "expiredTime");
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/asyncData");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/done");
+            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/token");
+            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/expiredTime");
         } catch (ResolutionException e) {
             throw new CreateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -59,17 +57,12 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
 
-            IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-
-            asyncDataField.out(document, asyncDataField.in(query));
-            doneFlagField.out(document, false);
-            tokenField.out(document, tokenField.in(query));
-            expiredTimeField.out(document, expiredTimeField.in(query));
-            documentField.out(query, document);
+            asyncDataField.out(query, asyncDataField.in(query));
+            doneFlagField.out(query, false);
+            tokenField.out(query, tokenField.in(query));
+            expiredTimeField.out(query, expiredTimeField.in(query));
 
             task.prepare(query);
-        } catch (ResolutionException e) {
-            throw new TaskPrepareException("Can't resolve objects during prepare create async operation", e);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for create async operation cause one of IField.out operation down", e);
         }
