@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.actors.authentication;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -12,16 +14,18 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({IOC.class, Keys.class, AuthenticationActorPlugin.class})
+@PrepareForTest({IOC.class, Keys.class, AuthenticationActorPlugin.class, CreateNewInstanceStrategy.class})
 public class AuthenticationActorPluginTest {
 
     private IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -45,13 +49,31 @@ public class AuthenticationActorPluginTest {
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("AuthenticationActorPlugin").thenReturn(item);
 
+        AuthenticationActor actor = mock(AuthenticationActor.class);
+        whenNew(AuthenticationActor.class).withNoArguments().thenReturn(actor);
+
         targetPlugin.load();
 
         verifyStatic();
         Keys.getOrAdd(AuthenticationActor.class.toString());
 
         verifyNew(BootstrapItem.class).withArguments("AuthenticationActorPlugin");
-        verify(item).process(any());
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+
+        verify(item).process(actionArgumentCaptor.capture());
+
+        actionArgumentCaptor.getValue().execute();
+
+        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+
+        verifyStatic();
+        IOC.register(eq(cachedCollectionKey), createNewInstanceStrategyArgumentCaptor.capture());
+
+        createNewInstanceStrategyArgumentCaptor.getValue().resolve();
+
+        verifyNew(AuthenticationActor.class).withNoArguments();
+
         verify(bootstrap).add(item);
     }
 
