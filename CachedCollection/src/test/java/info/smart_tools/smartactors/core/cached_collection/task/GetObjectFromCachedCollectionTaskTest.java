@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -12,7 +13,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +37,12 @@ public class GetObjectFromCachedCollectionTaskTest {
     private GetObjectFromCachedCollectionTask testTask;
     private IDatabaseTask targetTask;
 
-    private Field<Integer> pageSizeField;
-    private Field<Integer> pageNumberField;
-    private Field<String> keyNameField;
-    private Field<String> keyValueField;
-    private Field<Boolean> criteriaEqualsIsActiveField;
-    private Field<String> criteriaDateToStartDateTimeField;
+    private IField pageSizeField;
+    private IField pageNumberField;
+    private IField keyNameField;
+    private IField keyValueField;
+    private IField criteriaEqualsIsActiveField;
+    private IField criteriaDateToStartDateTimeField;
     private IKey mockKeyField = mock(IKey.class);
 
     @Before
@@ -51,16 +51,16 @@ public class GetObjectFromCachedCollectionTaskTest {
         mockStatic(Keys.class);
         mockStatic(LocalDateTime.class);
 
-        Field<String> collectionNameField = mock(Field.class);
-        keyNameField = mock(Field.class);
-        keyValueField = mock(Field.class);
-        pageSizeField = mock(Field.class);
-        pageNumberField = mock(Field.class);
-        criteriaEqualsIsActiveField = mock(Field.class);
-        criteriaDateToStartDateTimeField = mock(Field.class);
+        IField collectionNameField = mock(IField.class);
+        keyNameField = mock(IField.class);
+        keyValueField = mock(IField.class);
+        pageSizeField = mock(IField.class);
+        pageNumberField = mock(IField.class);
+        criteriaEqualsIsActiveField = mock(IField.class);
+        criteriaDateToStartDateTimeField = mock(IField.class);
 
 
-        when(Keys.getOrAdd("Field")).thenReturn(mockKeyField);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(mockKeyField);
         when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(mockKeyField, "keyValue")).thenReturn(keyValueField);
@@ -77,25 +77,25 @@ public class GetObjectFromCachedCollectionTaskTest {
     public void MustCorrectPrepareQueryForSelecting() throws Exception {
 
         IObject query = mock(IObject.class);
-        when(keyNameField.out(query)).thenReturn("keyName");
-        when(keyValueField.out(query)).thenReturn("keyValue");
+        when(keyNameField.in(query)).thenReturn("keyName");
+        when(keyValueField.in(query)).thenReturn("keyValue");
 
         IObject queryForNestedTask = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(queryForNestedTask);
 
-        Field<String> criteriaEqualsKeyField = mock(Field.class);
+        IField criteriaEqualsKeyField = mock(IField.class);
         when(IOC.resolve(mockKeyField, "keyName/$eq/keyValue")).thenReturn(criteriaEqualsKeyField);
 
         testTask.prepare(query);
 
         verify(targetTask).prepare(queryForNestedTask);
-        verify(criteriaEqualsKeyField).out(queryForNestedTask);
-        verify(pageSizeField).in(queryForNestedTask, 100);
-        verify(pageNumberField).in(queryForNestedTask, 1);
-        verify(criteriaEqualsIsActiveField).in(queryForNestedTask, true);
-        verify(criteriaDateToStartDateTimeField).in(eq(queryForNestedTask), anyString());
+        verify(criteriaEqualsKeyField).in(queryForNestedTask);
+        verify(pageSizeField).out(queryForNestedTask, 100);
+        verify(pageNumberField).out(queryForNestedTask, 1);
+        verify(criteriaEqualsIsActiveField).out(queryForNestedTask, true);
+        verify(criteriaDateToStartDateTimeField).out(eq(queryForNestedTask), anyString());
     }
 
     @Test(expected = TaskPrepareException.class)

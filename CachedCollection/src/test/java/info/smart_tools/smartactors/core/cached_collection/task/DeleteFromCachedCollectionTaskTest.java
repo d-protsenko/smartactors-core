@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -13,7 +14,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ public class DeleteFromCachedCollectionTaskTest {
 
     private DeleteFromCachedCollectionTask task;
     private IDatabaseTask upsertTask;
-    private Field<Boolean> isActiveField;
+    private IField isActiveField;
 
     @Before
     public void setUp() throws ReadValueException, ChangeValueException, CreateCachedCollectionTaskException, ResolutionException {
@@ -41,9 +41,9 @@ public class DeleteFromCachedCollectionTaskTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        isActiveField = mock(Field.class);
+        isActiveField = mock(IField.class);
         IKey keyField = mock(IKey.class);
-        when(Keys.getOrAdd("Field")).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
         when(IOC.resolve(keyField, "document/isActive")).thenReturn(isActiveField);
         upsertTask = mock(IDatabaseTask.class);
         task = new DeleteFromCachedCollectionTask(upsertTask);
@@ -56,7 +56,7 @@ public class DeleteFromCachedCollectionTaskTest {
 
         task.prepare(query);
 
-        verify(isActiveField).in(query, false);
+        verify(isActiveField).out(query, false);
         verify(upsertTask).prepare(query);
     }
 
@@ -64,7 +64,7 @@ public class DeleteFromCachedCollectionTaskTest {
     public void ShouldInCorrectPrepareObjectForDeletingWhenNestedExceptionIsGiven() throws Exception {
 
         IObject srcQuery = mock(IObject.class);
-        doThrow(new ChangeValueException("")).when(isActiveField).in(srcQuery, false);
+        doThrow(new ChangeValueException("")).when(isActiveField).out(srcQuery, false);
 
         task.prepare(srcQuery);
     }

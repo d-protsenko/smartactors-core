@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -22,7 +23,6 @@ import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,13 +50,13 @@ public class CachedCollectionTest {
     private StorageConnection connection;
     private CollectionName collectionName;
 
-    private Field<CollectionName> collectionNameField;
-    private Field<String> keyNameField;
-    private Field<String> keyValueField;
-    private Field<String> specificKeyNameField;
-    private Field<IObject> documentField;
-    private Field<String> idField;
-    private Field<Boolean> isActiveField;
+    private IField collectionNameField;
+    private IField keyNameField;
+    private IField keyValueField;
+    private IField specificKeyNameField;
+    private IField documentField;
+    private IField idField;
+    private IField isActiveField;
 
     @Before
     public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException, ResolutionException {
@@ -66,17 +66,17 @@ public class CachedCollectionTest {
 
         IObject config = mock(IObject.class);
 
-        collectionNameField = mock(Field.class);
-        keyNameField = mock(Field.class);
-        keyValueField = mock(Field.class);
-        specificKeyNameField = mock(Field.class);
-        documentField = mock(Field.class);
-        idField = mock(Field.class);
-        isActiveField = mock(Field.class);
-        Field<IPool> connectionPoolField = mock(Field.class);
+        collectionNameField = mock(IField.class);
+        keyNameField = mock(IField.class);
+        keyValueField = mock(IField.class);
+        specificKeyNameField = mock(IField.class);
+        documentField = mock(IField.class);
+        idField = mock(IField.class);
+        isActiveField = mock(IField.class);
+        IField connectionPoolField = mock(IField.class);
 
         IKey mockKeyField = mock(IKey.class);
-        when(Keys.getOrAdd("Field")).thenReturn(mockKeyField);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(mockKeyField);
         when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
@@ -86,15 +86,15 @@ public class CachedCollectionTest {
         when(IOC.resolve(mockKeyField, "isActive")).thenReturn(isActiveField);
 
         String keyName = "customKeyName";
-        when(keyNameField.out(config)).thenReturn(keyName);
+        when(keyNameField.in(config)).thenReturn(keyName);
         when(IOC.resolve(mockKeyField, keyName)).thenReturn(specificKeyNameField);
 
         IPool connectionPool = mock(IPool.class);
         connection = mock(StorageConnection.class);
         collectionName = mock(CollectionName.class);
         when(connectionPool.take()).thenReturn(connection);
-        when(connectionPoolField.out(config)).thenReturn(connectionPool);
-        when(collectionNameField.out(config)).thenReturn(collectionName);
+        when(connectionPoolField.in(config)).thenReturn(connectionPool);
+        when(collectionNameField.in(config)).thenReturn(collectionName);
         collection = new CachedCollection(config);
 
         IKey keyConnection = mock(IKey.class);
@@ -118,15 +118,15 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
         when(IOC.resolve(keyTask)).thenReturn(deleteTask);
 
-        when(specificKeyNameField.out(query)).thenReturn("key");
+        when(specificKeyNameField.in(query)).thenReturn("key");
 
         collection.delete(query);
 
         verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
-        verify(collectionNameField).in(eq(deleteQuery), eq(collectionName));
-        verify(documentField).in(eq(deleteQuery), eq(query));
+        verify(collectionNameField).out(eq(deleteQuery), eq(collectionName));
+        verify(documentField).out(eq(deleteQuery), eq(query));
     }
 
     @Test(expected = DeleteCacheItemException.class)
@@ -145,7 +145,7 @@ public class CachedCollectionTest {
         IKey keyIObject = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(deleteQuery);
-        when(specificKeyNameField.out(query)).thenReturn("key");
+        when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask nestedTask = mock(IDatabaseTask.class);
         DeleteFromCachedCollectionTask deleteTask = mock(DeleteFromCachedCollectionTask.class);
@@ -164,7 +164,7 @@ public class CachedCollectionTest {
         verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
-        verify(specificKeyNameField).out(eq(query));
+        verify(specificKeyNameField).in(eq(query));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class CachedCollectionTest {
         IKey keyIObject = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(upsertQuery);
-        when(specificKeyNameField.out(query)).thenReturn("key");
+        when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask upsertTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
@@ -188,10 +188,10 @@ public class CachedCollectionTest {
         verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
-        verify(specificKeyNameField).out(eq(query));
-        verify(isActiveField).in(eq(query), eq(true));
-        verify(collectionNameField).in(eq(upsertQuery), eq(collectionName));
-        verify(documentField).in(eq(upsertQuery), eq(query));
+        verify(specificKeyNameField).in(eq(query));
+        verify(isActiveField).out(eq(query), eq(true));
+        verify(collectionNameField).out(eq(upsertQuery), eq(collectionName));
+        verify(documentField).out(eq(upsertQuery), eq(query));
     }
 
     @Test(expected = UpsertCacheItemException.class)
@@ -203,7 +203,7 @@ public class CachedCollectionTest {
         IKey keyIObject = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(upsertQuery);
-        when(specificKeyNameField.out(query)).thenReturn("key");
+        when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask upsertTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
@@ -217,11 +217,11 @@ public class CachedCollectionTest {
             verify(upsertTask).setConnection(eq(connection));
             verify(upsertTask).prepare(upsertQuery);
             verify(upsertTask).execute();
-            verify(specificKeyNameField, never()).out(eq(query));
-            verify(isActiveField, times(1)).in(eq(query), eq(true));
-            verify(isActiveField, times(1)).in(eq(query), eq(true));
-            verify(collectionNameField).in(eq(upsertQuery), eq(collectionName));
-            verify(documentField).in(eq(upsertQuery), eq(query));
+            verify(specificKeyNameField, never()).in(eq(query));
+            verify(isActiveField, times(1)).out(eq(query), eq(true));
+            verify(isActiveField, times(1)).out(eq(query), eq(true));
+            verify(collectionNameField).out(eq(upsertQuery), eq(collectionName));
+            verify(documentField).out(eq(upsertQuery), eq(query));
             throw e;
         }
         fail();
@@ -243,7 +243,7 @@ public class CachedCollectionTest {
         IKey keyIObject = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(upsertQuery);
-        when(specificKeyNameField.out(query)).thenReturn("key");
+        when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask nestedTask = mock(IDatabaseTask.class);
         UpsertIntoCachedCollectionTask upsertTask = mock(UpsertIntoCachedCollectionTask.class);
@@ -262,10 +262,10 @@ public class CachedCollectionTest {
         verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
-        verify(specificKeyNameField).out(eq(query));
-        verify(isActiveField).in(eq(query), eq(true));
-        verify(collectionNameField).in(eq(upsertQuery), eq(collectionName));
-        verify(documentField).in(eq(upsertQuery), eq(query));
+        verify(specificKeyNameField).in(eq(query));
+        verify(isActiveField).out(eq(query), eq(true));
+        verify(collectionNameField).out(eq(upsertQuery), eq(collectionName));
+        verify(documentField).out(eq(upsertQuery), eq(query));
     }
 
     //TODO:: uncomment and verify when list field would be added

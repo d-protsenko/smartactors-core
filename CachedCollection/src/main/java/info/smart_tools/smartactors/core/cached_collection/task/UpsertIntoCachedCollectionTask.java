@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -13,7 +14,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,17 +25,18 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
 
-    private Field<String> startDateTimeField;
+    private IField startDateTimeField;
     //TODO:: this format should be setted for whole project?
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * @param upsertTask Target update task
+     * @throws CreateCachedCollectionTaskException for create task error
      */
     public UpsertIntoCachedCollectionTask(final IDatabaseTask upsertTask) throws CreateCachedCollectionTaskException {
         this.upsertTask = upsertTask;
         try {
-            this.startDateTimeField = IOC.resolve(Keys.getOrAdd("Field"), "document/startDateTime");
+            this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/startDateTime");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create UpsertIntoCachedCollectionTask.", e);
         }
@@ -50,8 +51,8 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            if (startDateTimeField.out(query) == null) {
-                startDateTimeField.in(query, LocalDateTime.now().format(FORMATTER));
+            if (startDateTimeField.in(query) == null) {
+                startDateTimeField.out(query, LocalDateTime.now().format(FORMATTER));
             }
             upsertTask.prepare(query);
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {

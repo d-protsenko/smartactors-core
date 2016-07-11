@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -26,7 +27,6 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +39,13 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class CachedCollection implements ICachedCollection {
 
-    private Field<CollectionName> collectionNameField;
-    private Field<String> keyNameField;
-    private Field<String> keyValueField;
-    private Field<String> specificKeyNameField;
-    private Field<IObject> documentField;
-    private Field<String> idField;
-    private Field<Boolean> isActiveField;
+    private IField collectionNameField;
+    private IField keyNameField;
+    private IField keyValueField;
+    private IField specificKeyNameField;
+    private IField documentField;
+    private IField idField;
+    private IField isActiveField;
     //TODO:: uncomment when ListField would be added
 //    private ListField<IObject> searchResultField;
 
@@ -62,17 +62,17 @@ public class CachedCollection implements ICachedCollection {
     public CachedCollection(final IObject config) throws InvalidArgumentException {
         try {
             this.map = new ConcurrentHashMap<>();
-            this.collectionNameField = IOC.resolve(Keys.getOrAdd("Field"), "collectionName");
-            Field<IPool> connectionPoolField = IOC.resolve(Keys.getOrAdd("Field"), "connectionPool");
-            this.keyNameField = IOC.resolve(Keys.getOrAdd("Field"), "keyName");
-            this.keyValueField = IOC.resolve(Keys.getOrAdd("Field"), "keyValue");
-            this.documentField = IOC.resolve(Keys.getOrAdd("Field"), "document");
-            this.idField = IOC.resolve(Keys.getOrAdd("Field"), "id");
-            this.isActiveField = IOC.resolve(Keys.getOrAdd("Field"), "isActive");
-            this.collectionName = collectionNameField.out(config);
-            this.connectionPool = connectionPoolField.out(config);
-            this.keyName = keyNameField.out(config);
-            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd("Field"), keyName);
+            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
+            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
+            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
+            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyValue");
+            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "isActive");
+            this.collectionName = collectionNameField.in(config);
+            this.connectionPool = connectionPoolField.in(config);
+            this.keyName = keyNameField.in(config);
+            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), keyName);
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }
@@ -99,14 +99,14 @@ public class CachedCollection implements ICachedCollection {
                         IOC.register(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString()), new SingletonStrategy(getItemTask));
                     }
                     IObject getItemQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                    collectionNameField.in(getItemQuery, collectionName);
-                    keyNameField.in(getItemQuery, keyName);
-                    keyValueField.in(getItemQuery, key);
+                    collectionNameField.out(getItemQuery, collectionName);
+                    keyNameField.out(getItemQuery, keyName);
+                    keyValueField.out(getItemQuery, key);
                     getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
                     getItemTask.prepare(getItemQuery);
                     getItemTask.execute();
                     //TODO:: uncomment when ListField would be added
-//                    items = searchResultField.out(getItemQuery);
+//                    items = searchResultField.in(getItemQuery);
                     map.put(key, items);
                 } catch (PoolGuardException e) {
                     throw new GetCacheItemException("Can't get connection from pool.", e);
@@ -147,8 +147,8 @@ public class CachedCollection implements ICachedCollection {
                     IOC.register(Keys.getOrAdd(DeleteFromCachedCollectionTask.class.toString()), new SingletonStrategy(deleteTask));
                 }
                 IObject deleteQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                collectionNameField.in(deleteQuery, collectionName);
-                documentField.in(deleteQuery, message);
+                collectionNameField.out(deleteQuery, collectionName);
+                documentField.out(deleteQuery, message);
                 StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject());
                 deleteTask.setConnection(connection);
                 deleteTask.prepare(deleteQuery);
@@ -167,11 +167,11 @@ public class CachedCollection implements ICachedCollection {
                 throw new DeleteCacheItemException("Can't create delete task.", e);
             }
 
-            String key = specificKeyNameField.out(message);
+            String key = specificKeyNameField.in(message);
             List<IObject> items = map.get(key);
             if (items != null) {
                 for (IObject obj : items) {
-                    if (idField.out(obj).equals(idField.out(message))) {
+                    if (idField.in(obj).equals(idField.in(message))) {
                         items.remove(obj);
                         break;
                     }
@@ -201,17 +201,17 @@ public class CachedCollection implements ICachedCollection {
                     IOC.register(Keys.getOrAdd(UpsertIntoCachedCollectionTask.class.toString()), new SingletonStrategy(upsertTask));
                 }
                 IObject upsertQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                Boolean isActive = isActiveField.out(message);
-                isActiveField.in(message, true);
-                collectionNameField.in(upsertQuery, collectionName);
-                documentField.in(upsertQuery, message);
+                Boolean isActive = isActiveField.in(message);
+                isActiveField.out(message, true);
+                collectionNameField.out(upsertQuery, collectionName);
+                documentField.out(upsertQuery, message);
 
                 upsertTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
                 upsertTask.prepare(upsertQuery);
                 try {
                     upsertTask.execute();
                 } catch (TaskExecutionException e) {
-                    isActiveField.in(message, isActive);
+                    isActiveField.out(message, isActive);
                     throw new UpsertCacheItemException("Error during execution upsert task.", e);
                 }
             } catch (PoolGuardException e) {
@@ -225,11 +225,11 @@ public class CachedCollection implements ICachedCollection {
             }  catch (CreateCachedCollectionTaskException e) {
                 throw new UpsertCacheItemException("Can't create upsert task.", e);
             }
-            String key = specificKeyNameField.out(message);
+            String key = specificKeyNameField.in(message);
             List<IObject> items = map.get(key);
             if (items != null && !items.isEmpty()) {
                 for (IObject obj : items) {
-                    if (idField.out(obj).equals(idField.out(message))) {
+                    if (idField.in(obj).equals(idField.in(message))) {
                         items.remove(obj);
                         items.add(message);
                         break;

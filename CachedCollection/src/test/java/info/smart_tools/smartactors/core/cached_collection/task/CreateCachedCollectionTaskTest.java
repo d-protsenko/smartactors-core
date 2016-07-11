@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -14,7 +15,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +38,8 @@ public class CreateCachedCollectionTaskTest {
     private IDatabaseTask task;
     private CreateCachedCollectionTask testTask;
 
-    private Field<String> keyNameField;
-    private Field<Map> indexesField;
+    private IField keyNameField;
+    private IField indexesField;
 
     private Key keyForGetOrAdd;
 
@@ -51,10 +51,10 @@ public class CreateCachedCollectionTaskTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        keyNameField = PowerMockito.mock(Field.class);
-        indexesField = PowerMockito.mock(Field.class);
+        keyNameField = PowerMockito.mock(IField.class);
+        indexesField = PowerMockito.mock(IField.class);
         IKey keyField = PowerMockito.mock(IKey.class);
-        when(Keys.getOrAdd("Field")).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
         when(IOC.resolve(keyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(keyField, "indexes")).thenReturn(indexesField);
 
@@ -71,7 +71,7 @@ public class CreateCachedCollectionTaskTest {
 
         IObject startQuery = mock(IObject.class);
         String key = "key";
-        when(keyNameField.out(startQuery)).thenReturn(key);
+        when(keyNameField.in(startQuery)).thenReturn(key);
 
         Map<String, String> indexes = new HashMap<>();
         indexes.put(key, ORDERED_INDEX);
@@ -80,7 +80,7 @@ public class CreateCachedCollectionTaskTest {
 
         testTask.prepare(startQuery);
 
-        verify(indexesField).in(startQuery, indexes);
+        verify(indexesField).out(startQuery, indexes);
         verify(task).prepare(startQuery);
     }
 
@@ -88,7 +88,7 @@ public class CreateCachedCollectionTaskTest {
     public void MustIncorrectPrepareQueryForCreateCollectionWhenIOCResolveThrowException() throws Exception {
 
         IObject startQuery = mock(IObject.class);
-        when(keyNameField.out(startQuery)).thenThrow(new ReadValueException());
+        when(keyNameField.in(startQuery)).thenThrow(new ReadValueException());
 
         testTask.prepare(startQuery);
     }

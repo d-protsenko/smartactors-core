@@ -4,13 +4,13 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class UpsertIntoCachedCollectionTaskTest {
     private UpsertIntoCachedCollectionTask task;
     private IDatabaseTask upsertTask;
 
-    private Field<String> startDateTimeField;
+    private IField startDateTimeField;
 
     @Before
     public void setUp() throws Exception {
@@ -39,9 +39,9 @@ public class UpsertIntoCachedCollectionTaskTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        startDateTimeField = mock(Field.class);
+        startDateTimeField = mock(IField.class);
         IKey keyField = mock(IKey.class);
-        when(Keys.getOrAdd("Field")).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
         when(IOC.resolve(keyField, "document/startDateTime")).thenReturn(startDateTimeField);
 
         upsertTask = mock(IDatabaseTask.class);
@@ -68,18 +68,18 @@ public class UpsertIntoCachedCollectionTaskTest {
 
         IObject rawQuery = mock(IObject.class);
 
-        when(startDateTimeField.out(rawQuery)).thenReturn(null);
+        when(startDateTimeField.in(rawQuery)).thenReturn(null);
         task.prepare(rawQuery);
 
         verify(upsertTask).prepare(eq(rawQuery));
-        verify(startDateTimeField).in(eq(rawQuery), anyString());
+        verify(startDateTimeField).out(eq(rawQuery), anyString());
     }
 
     @Test(expected = TaskPrepareException.class)
     public void ShouldThrowException_When_ResolutionExceptionIsThrown() throws Exception {
 
         IObject rawQuery = mock(IObject.class);
-        when(startDateTimeField.out(rawQuery)).thenThrow(ChangeValueException.class);
+        when(startDateTimeField.in(rawQuery)).thenThrow(ChangeValueException.class);
 
         task.prepare(rawQuery);
     }

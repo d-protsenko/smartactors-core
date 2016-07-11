@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -12,7 +13,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 /**
  * Deletes object from cached collection (sets isActive flag to false)
@@ -21,15 +21,16 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask updateTask;
 
-    private Field<Boolean> isActiveField;
+    private IField isActiveField;
 
     /**
      * @param updateTask Target update task
+     * @throws CreateCachedCollectionTaskException for create task error
      */
     public DeleteFromCachedCollectionTask(final IDatabaseTask updateTask) throws CreateCachedCollectionTaskException {
         this.updateTask = updateTask;
         try {
-            this.isActiveField = IOC.resolve(Keys.getOrAdd("Field"), "document/isActive");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/isActive");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create GetObjectFromCachedCollectionTask.", e);
         }
@@ -50,7 +51,7 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            isActiveField.in(query, false);
+            isActiveField.out(query, false);
             updateTask.prepare(query);
         } catch (InvalidArgumentException | ChangeValueException e) {
             throw new TaskPrepareException("Can't prepare query for delete from cached collection", e);
