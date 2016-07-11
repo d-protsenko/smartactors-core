@@ -59,8 +59,6 @@ public class UpdateAsyncOperationTaskTest {
     public void MustCorrectPrepareQuery() throws InvalidArgumentException, TaskPrepareException, ChangeValueException {
         IObject query = mock(IObject.class);
 
-        IObject updateItem = mock(IObject.class);
-
         testTask.prepare(query);
 
         verify(doneFlagField).out(query, true);
@@ -71,8 +69,6 @@ public class UpdateAsyncOperationTaskTest {
     @Test
     public void MustInCorrectPrepareQueryWhenUpdateItemThrowChangeValueException() throws InvalidArgumentException, ChangeValueException {
         IObject query = mock(IObject.class);
-
-        IObject updateItem = mock(IObject.class);
 
         doThrow(new ChangeValueException()).when(doneFlagField).out(query, true);
 
@@ -91,8 +87,6 @@ public class UpdateAsyncOperationTaskTest {
     @Test
     public void MustInCorrectPrepareQueryWhenTargetTaskThrowException() throws InvalidArgumentException, ChangeValueException, TaskPrepareException {
         IObject query = mock(IObject.class);
-
-        IObject updateItem = mock(IObject.class);
 
         doThrow(new TaskPrepareException("")).when(targetTask).prepare(query);
 
