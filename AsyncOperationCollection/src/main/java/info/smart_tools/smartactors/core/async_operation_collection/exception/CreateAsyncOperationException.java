@@ -12,4 +12,8 @@ public class CreateAsyncOperationException extends Exception {
     public CreateAsyncOperationException(final String message) {
         super(message);
     }
+
+    public CreateAsyncOperationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

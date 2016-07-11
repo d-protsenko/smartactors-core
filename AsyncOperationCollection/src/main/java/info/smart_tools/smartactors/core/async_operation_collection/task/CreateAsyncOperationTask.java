@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
+import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -30,14 +31,18 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
      * Constructor
      * @param task the insert DB task
      */
-    public CreateAsyncOperationTask(final IDatabaseTask task) throws ResolutionException, InvalidArgumentException {
+    public CreateAsyncOperationTask(final IDatabaseTask task) throws CreateAsyncOperationException {
         this.task = task;
 
-        asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "asyncData");
-        doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
-        tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "token");
-        expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "expiredTime");
-        documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+        try {
+            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "asyncData");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
+            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "token");
+            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "expiredTime");
+            documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+        } catch (ResolutionException e) {
+            throw new CreateAsyncOperationException("Can't resolve one of fields", e);
+        }
     }
 
     /**
