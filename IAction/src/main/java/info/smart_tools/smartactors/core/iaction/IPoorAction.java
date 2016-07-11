@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.iaction;
 
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
 /**
  * Interface IPoorAction.
@@ -12,5 +13,5 @@ public interface IPoorAction {
      * @throws ActionExecuteException if any errors occurred
      */
     void execute()
-            throws ActionExecuteException;
+            throws ActionExecuteException, InvalidArgumentException;
 }
