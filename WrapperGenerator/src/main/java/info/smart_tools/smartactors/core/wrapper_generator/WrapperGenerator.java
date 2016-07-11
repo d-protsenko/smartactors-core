@@ -48,7 +48,6 @@ public class WrapperGenerator implements IWrapperGenerator {
             IResolveDependencyStrategy targetStrategy =  new ApplyFunctionToArgumentsStrategy(
                     (a) -> {
                         try {
-
                             ((IObject) a[0]).setValue(
                                     IOC.resolve(
                                             Keys.getOrAdd(IFieldName.class.getCanonicalName()), (String) a[1]

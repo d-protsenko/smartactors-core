@@ -26,9 +26,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -106,7 +109,7 @@ public class WrapperGeneratorTest {
                 "    \"out_setIntValue\": \"response/IntValue\",\n" +
                 "    \"in_getTestClassValue\": \"message/TestClassValue\",\n" +
                 "    \"out_setTestClassValue\": \"response/TestClassValue\",\n" +
-                "    \"out_getListOfTestClasses\": \"response/ListOfTestClasses\",\n" +
+                "    \"out_setListOfTestClasses\": \"response/ListOfTestClasses\",\n" +
                 "    \"out_wrappedIObject\": \"response/WrappedIObject\",\n" +
                 "    \"in_wrappedIObject\": [{\n" +
                 "      \"name\": \"ConvertToWrapper\",\n" +
@@ -131,7 +134,7 @@ public class WrapperGeneratorTest {
                 "        \"args\": [\"local/value\"]\n" +
                 "      }, {\n" +
                 "        \"name\": \"JoinStrings\",\n" +
-                "        \"args\": [\"local/value\", \"const/CONST\"]\n" +
+                "        \"args\": [\"local/value\", \"const/abc\"]\n" +
                 "      }, {\n" +
                 "        \"name\": \"target\",\n" +
                 "        \"args\": [\"response/ModifiedString1\", \"local/value\"]\n" +
@@ -181,18 +184,19 @@ public class WrapperGeneratorTest {
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "AddToList", addToList
         );
 
-
         IResolveDependencyStrategy convertToString = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("ConvertToString"), convertToString);
         IOC.resolve(
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "ConvertToString", convertToString
         );
+        when(convertToString.resolve(1)).thenReturn("1");
 
         IResolveDependencyStrategy joinStrings = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("JoinStrings"), joinStrings);
         IOC.resolve(
                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "JoinStrings", joinStrings
         );
+        when(joinStrings.resolve("1", "abc")).thenReturn("1abc");
 
         IWrapperGenerator wg = new WrapperGenerator(null);
         IWrapper inst = wg.generate(IWrapper.class);
@@ -252,57 +256,26 @@ public class WrapperGeneratorTest {
         assertSame(testClasses.get(1), otherTestClass);
 
         // Check 'out' methods of wrapper
+        inst.setIntValue(2);
+        verify(response, times(1)).setValue(new FieldName("IntValue"), 2);
+        inst.setTestClassValue(testClass);
+        verify(response, times(1)).setValue(new FieldName("TestClassValue"), testClass);
+        inst.wrappedIObject(innerWrapper);
+        verify(response, times(1)).setValue(new FieldName("WrappedIObject"), innerWrapper);
+        inst.setListOfTestClasses(listOfTestClasses);
+        verify(response, times(1)).setValue(new FieldName("ListOfTestClasses"), listOfTestClasses);
+        inst.transform(1);
+        verify(response, times(1)).setValue(new FieldName("ModifiedString1"), "1abc");
+        verify(response, times(1)).setValue(new FieldName("ModifiedString2"), "1");
 
 
         // Check methods of IObjectWrapper
         IObject resultMessage = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("message"));
         IObject resultContext = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("context"));
         IObject resultResponse = ((IObjectWrapper) inst).getEnvironmentIObject(new FieldName("response"));
-//
-//        assertEquals(intResult, 1);
-//        assertEquals(stringResult, "abc");
-//        assertEquals(testClassResult, testClass);
-//        assertEquals((int) integerList.get(0), 1);
-//        assertEquals(stringList.get(0), "abc");
-//        assertEquals(testClasses.get(0).getF(), 1.5f, 0);
-//        assertEquals(boolResult, true);
-//        assertEquals(innerWrapperResult, innerWrapper);
-//        assertEquals(iObjectResult, iObject);
-//
-//        assertNotNull(resultOfChainStrategy);
-//        assertTrue(IInnerWrapper.class.isAssignableFrom(resultOfChainStrategy.getClass()));
-//
-//        assertSame(resultMessage, message);
-//        assertSame(resultContext, context);
-//        assertSame(resultResponse, response);
-//
-//        inst.setIntValue(2);
-//        inst.setStringValue("cba");
-//        TestClass testClassForSetter = new TestClass();
-//        inst.setTestClassValue(testClassForSetter);
-//        List<Integer> integerListForSetter = new ArrayList<Integer>(){{add(2);}};
-//        inst.setListOfInt(integerListForSetter);
-//        List<String> stringListForSetter = new ArrayList<String>(){{add("cba");}};
-//        inst.setListOfString(stringListForSetter);
-//        List<TestClass> testClassListForSetter = new ArrayList<TestClass>(){{add(testClassForSetter);}};
-//        inst.setListOfTestClasses(testClassListForSetter);
-//        inst.setBoolValue(false);
-//        IInnerWrapper innerWrapperForSetter = mock(IInnerWrapper.class);
-//        inst.setWrappedIObject(innerWrapperForSetter);
-//        IObject iObjectForSetter = mock(IObject.class);
-//        inst.setIObject(iObjectForSetter);
-//        inst.setStringIInnerMap(new HashMap<String, IInnerWrapper>(){{put("cba", innerWrapperForSetter);}});
-//
-//        verify(response, times(1)).setValue(new FieldName("IntValue"), 2);
-//        verify(response, times(1)).setValue(new FieldName("StringValue"), "cba");
-//        verify(response, times(1)).setValue(new FieldName("TestClassValue"), testClassForSetter);
-//        verify(response, times(1)).setValue(new FieldName("ListOfInt"), integerListForSetter);
-//        verify(response, times(1)).setValue(new FieldName("ListOfString"), stringListForSetter);
-//        verify(response, times(1)).setValue(new FieldName("ListOfTestClasses"), testClassListForSetter);
-//        verify(response, times(1)).setValue(new FieldName("BoolValue"), false);
-//        verify(response, times(1)).setValue(new FieldName("WrappedIObject"), innerWrapperForSetter);
-//        verify(response, times(1)).setValue(new FieldName("IObject"), iObjectForSetter);
-//        verify(subContext, times(1)).setValue(new FieldName("StringIInnerMap"), new HashMap<String, IInnerWrapper>(){{put("cba", innerWrapperForSetter);}});
+        assertSame(resultMessage, message);
+        assertSame(resultContext, context);
+        assertSame(resultResponse, response);
     }
 
     @Test (expected = WrapperGeneratorException.class)
@@ -333,6 +306,41 @@ public class WrapperGeneratorTest {
         IWrapperGenerator wg = new WrapperGenerator(null);
         wg.generate(TestClass.class);
         fail();
+    }
+
+    @Test
+    public void checkFastReturnOnSecondGenerationSameInterface()
+            throws Exception {
+        IResolveDependencyStrategy toWrapperConverter = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("ConvertToWrapper"), toWrapperConverter);
+        IOC.resolve(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "ConvertToWrapper", toWrapperConverter
+        );
+
+        IResolveDependencyStrategy addToList = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("AddToList"), addToList);
+        IOC.resolve(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "AddToList", addToList
+        );
+
+        IResolveDependencyStrategy convertToString = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("ConvertToString"), convertToString);
+        IOC.resolve(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "ConvertToString", convertToString
+        );
+
+        IResolveDependencyStrategy joinStrings = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("JoinStrings"), joinStrings);
+        IOC.resolve(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "JoinStrings", joinStrings
+        );
+
+        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapper inst = wg.generate(IWrapper.class);
+        assertNotNull(inst);
+        IWrapper inst2 = wg.generate(IWrapper.class);
+        assertNotNull(inst2);
+        assertNotSame(inst, inst2);
     }
 }
 
