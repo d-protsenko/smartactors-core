@@ -23,7 +23,6 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
 
-    private IField updateIObjectField;
     private IField doneFlagField;
 
     /**
@@ -35,8 +34,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         this.upsertTask = upsertTask;
 
         try {
-            updateIObjectField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "updateItem");
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "updateItem/done");
         } catch (ResolutionException e) {
             throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -46,10 +44,9 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            IObject updateItem = updateIObjectField.in(query);
-            doneFlagField.out(updateItem, true);
+            doneFlagField.out(query, true);
             upsertTask.prepare(query);
-        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
+        } catch (ChangeValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
         }
     }
