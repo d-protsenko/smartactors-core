@@ -46,8 +46,7 @@ public class CachedCollection implements ICachedCollection {
     private IField documentField;
     private IField idField;
     private IField isActiveField;
-    //TODO:: uncomment when ListField would be added
-//    private ListField<IObject> searchResultField;
+    private IField searchResultField;
 
     private IPool connectionPool;
     private CollectionName collectionName;
@@ -69,6 +68,7 @@ public class CachedCollection implements ICachedCollection {
             this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
             this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
             this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "isActive");
+            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
@@ -105,8 +105,7 @@ public class CachedCollection implements ICachedCollection {
                     getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
                     getItemTask.prepare(getItemQuery);
                     getItemTask.execute();
-                    //TODO:: uncomment when ListField would be added
-//                    items = searchResultField.in(getItemQuery);
+                    items = searchResultField.in(getItemQuery);
                     map.put(key, items);
                 } catch (PoolGuardException e) {
                     throw new GetCacheItemException("Can't get connection from pool.", e);
@@ -126,7 +125,7 @@ public class CachedCollection implements ICachedCollection {
             throw new GetCacheItemException("Error during execution read task.", e);
         } catch (ResolutionException e) {
             throw new GetCacheItemException("Can't resolve cached object.", e);
-        } catch (ChangeValueException e) {
+        } catch (ChangeValueException | ReadValueException e) {
             throw new GetCacheItemException("Can't read cached object.", e);
         }
     }
