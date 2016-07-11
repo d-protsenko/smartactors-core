@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.core.actor_receiver;
+package info.smart_tools.smartactors.core.actor_receiver;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ikey.IKey;
