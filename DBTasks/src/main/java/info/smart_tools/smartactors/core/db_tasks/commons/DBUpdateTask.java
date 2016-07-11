@@ -3,14 +3,10 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import javax.annotation.Nonnull;
 

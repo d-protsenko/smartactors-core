@@ -140,4 +140,9 @@ public class DSObject implements IObject {
             return this.iterator.next();
         }
     }
+
+    @Override
+    public int hashCode() {
+        return 31 * body.hashCode();
+    }
 }

@@ -16,6 +16,7 @@ public final class DBQueryFields {
     public static final IField INDEXES;
     public static final IField DOCUMENT_ID;
     public static final IField SEARCH_RESULT;
+    public static final IField PARAMETERS;
 
     static {
         try {
@@ -24,6 +25,7 @@ public final class DBQueryFields {
             COLLECTION = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collection");
             INDEXES = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "indexes");
             SEARCH_RESULT = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
+            PARAMETERS = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "parameters");
         } catch (ResolutionException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

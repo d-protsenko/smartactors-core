@@ -63,7 +63,7 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
             while (resultSet.next()) {
                 try {
                     String collection = DBQueryFields.COLLECTION.in(message);
-                    setDocumentId(DBQueryFields.DOCUMENT.in(message), collection, resultSet.getString("id"));
+                    setDocumentId(DBQueryFields.DOCUMENT.in(message), collection, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -82,7 +82,7 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
         }
     }
 
-    private void setDocumentId(final IObject document, String collection, String documentId)
+    private void setDocumentId(final IObject document, final String collection, final Long documentId)
             throws ChangeValueException, ResolutionException, InvalidArgumentException {
         IField id = getIdFieldFor(collection);
         id.out(document, documentId);

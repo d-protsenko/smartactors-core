@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.db_tasks.psql.update;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBUpdateTask;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -12,12 +13,10 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.sql_commons.QueryKey;
 import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 
 /**
  * Task for update documents in postgres database.
@@ -69,15 +68,13 @@ public class PSQLUpdateTask extends DBUpdateTask {
         try {
             String collection = DBQueryFields.COLLECTION.in(message);
             IObject document = DBQueryFields.DOCUMENT.in(message);
-            String documentId = takeDocumentId(document, collection);
+            Long documentId = takeDocumentId(document, collection);
             String documentJson = document.serialize();
 
-            compiledQuery.setParameters(Collections.singletonList((statement, index) -> {
-                statement.setString(index++, documentId);
-                statement.setString(index++, documentJson);
-
-                return index;
-            }));
+            compiledQuery.setParameters((statement) -> {
+                statement.setLong(1, documentId);
+                statement.setString(2, documentJson);
+            });
         } catch (ReadValueException | InvalidArgumentException |
                 SerializeException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
@@ -99,9 +96,9 @@ public class PSQLUpdateTask extends DBUpdateTask {
         };
     }
 
-    private String takeDocumentId(final IObject document, final String collection)
+    private Long takeDocumentId(final IObject document, final String collection)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         IField id = getIdFieldFor(collection);
-        return id.in(document);
+        return Long.parseLong(id.in(document));
     }
 }

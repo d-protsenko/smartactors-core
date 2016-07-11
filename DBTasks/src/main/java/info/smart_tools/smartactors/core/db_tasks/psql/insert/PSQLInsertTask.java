@@ -3,18 +3,17 @@ package info.smart_tools.smartactors.core.db_tasks.psql.insert;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBInsertTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.sql_commons.QueryKey;
 import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 
 /**
  * Task for insert documents in postgres database.
@@ -70,10 +69,9 @@ public class PSQLInsertTask extends DBInsertTask {
             throws QueryBuildException {
         try {
             String document = DBQueryFields.DOCUMENT.in(message);
-            query.setParameters(Collections.singletonList((statement, index) -> {
-                statement.setString(index++, document);
-                return index;
-            }));
+            query.setParameters(statement -> {
+                statement.setString(1, document);
+            });
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {

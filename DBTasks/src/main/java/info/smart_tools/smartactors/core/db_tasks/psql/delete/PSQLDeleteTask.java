@@ -3,22 +3,17 @@ package info.smart_tools.smartactors.core.db_tasks.psql.delete;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBDeleteTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.psql.insert.PSQLInsertTask;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryKey;
 import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 
 /**
  * Task for deletion documents from database.
@@ -65,10 +60,9 @@ public class PSQLDeleteTask extends DBDeleteTask {
     ) throws QueryBuildException {
         try {
             Long documentId = DBQueryFields.DOCUMENT_ID.in(message);
-            query.setParameters(Collections.singletonList((statement, index) -> {
-                statement.setLong(index++, documentId);
-                return index;
-            }));
+            query.setParameters(statement -> {
+                statement.setLong(1, documentId);
+            });
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {

@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -17,10 +16,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * {@see SearchQueryWriter} {@link ISearchQueryStatementWriter}.
  * General writer an ORDER clause for psql db.
  */
-public class GeneralSQLOrderWriter implements ISearchQueryStatementWriter<List<IObject>> {
+public class GeneralSQLOrderWriter {
     private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
     private static final IFieldName ORDER_DIRECTION_ORDER_BY_ITEM_FN;
 
@@ -51,19 +49,15 @@ public class GeneralSQLOrderWriter implements ISearchQueryStatementWriter<List<I
      *
      * @param queryStatement - a compiled statement of query.
      * @param orderByItems -
-     * @param setters - list of query parameters setter.
-     *                Any setter sets some parameter into query.
      *
      * @throws QueryBuildException when:
      *              1. Writing body of query error;
      *              2. IOC resolution error object;
      *              3. Reading field from <pre>queryMessage</pre> error.
      */
-    @Override
     public void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final List<IObject> orderByItems,
-            @Nonnull final List<ISQLQueryParameterSetter> setters
+            @Nonnull final List<IObject> orderByItems
     ) throws QueryBuildException {
         if (orderByItems.size() == 0) {
             return;
@@ -86,7 +80,7 @@ public class GeneralSQLOrderWriter implements ISearchQueryStatementWriter<List<I
             queryStatement.getBodyWriter().write("(1)");
         } catch (IOException | ReadValueException e) {
             throw new QueryBuildException("Error while writing ORDER BY clause of search query SQL.", e);
-        } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+        } catch (InvalidArgumentException e) {
             throw new QueryBuildException("Invalid argument exception" , e);
         }
     }

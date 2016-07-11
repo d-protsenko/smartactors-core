@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
-import info.smart_tools.smartactors.core.sql_commons.QueryKey;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

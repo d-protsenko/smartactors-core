@@ -11,5 +11,5 @@ import java.sql.SQLException;
  */
 @FunctionalInterface
 public interface ISQLQueryParameterSetter {
-    int setParameters(PreparedStatement statement, int firstIndex) throws SQLException, QueryBuildException;
+    void setParameters(PreparedStatement statement) throws SQLException, QueryBuildException;
 }

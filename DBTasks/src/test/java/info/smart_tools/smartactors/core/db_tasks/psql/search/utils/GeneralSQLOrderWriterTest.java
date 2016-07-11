@@ -25,14 +25,14 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({ IOC.class, Keys.class })
 @SuppressWarnings("unchecked")
 public class GeneralSQLOrderWriterTest {
-    private ISearchQueryStatementWriter orderWriter;
+//    private ISearchQueryStatementWriter orderWriter;
 
     @Before
     public void setUp() {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        orderWriter = GeneralSQLOrderWriter.create();
+//        orderWriter = GeneralSQLOrderWriter.create();
     }
 
     @Test
@@ -48,7 +48,7 @@ public class GeneralSQLOrderWriterTest {
 
         QueryStatement queryStatement = new QueryStatement();
         List<ISQLQueryParameterSetter> setters = new LinkedList<>();
-        orderWriter.write(queryStatement, orderByItems, setters);
+//        orderWriter.write(queryStatement, orderByItems, setters);
 
         assertTrue("ORDER BY(document#>'{testOrderDirection}')ASC,(1)".equals(queryStatement.getBodyWriter().toString()));
         verify(orderItem, times(2)).getValue(anyObject());

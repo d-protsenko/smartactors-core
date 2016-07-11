@@ -1,8 +1,9 @@
-package info.smart_tools.smartactors.core.sql_commons;
+package info.smart_tools.smartactors.core.db_storage.utils;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Utility class for IOC-strategy for resolving compiled query by connection and query type
@@ -11,13 +12,13 @@ final public class QueryKey implements IKey {
     final private String connectionId;
     final private String queryType;
     final private String collection;
-    final private List<?> options;
+    final private Set<?> options;
 
     private QueryKey(
             final String connectionId,
             final String queryType,
             final String collection,
-            final List<?> options
+            final Set<?> options
     ) {
         this.connectionId = connectionId;
         this.queryType = queryType;
@@ -33,14 +34,14 @@ final public class QueryKey implements IKey {
         this.connectionId = connectionId;
         this.queryType = queryType;
         this.collection = collection;
-        this.options = Collections.emptyList();
+        this.options = Collections.emptySet();
     }
 
     public static QueryKey create(
             final String connectionId,
             final String taskName,
             final String collection,
-            final List<?> options
+            final Set<?> options
     ) {
         return new QueryKey(connectionId, taskName, collection, options);
     }

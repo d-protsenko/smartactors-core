@@ -39,7 +39,7 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
     private final Map<Boolean, IPreparationStrategy> preparationStrategies;
     private final Map<Boolean, IExecutionStrategy> executionStrategies;
 
-    private static final ConcurrentMap<IKey, ICompiledQuery> CACHED_COMPILED_QUERIES = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Integer, ICompiledQuery> CACHED_COMPILED_QUERIES = new ConcurrentHashMap<>();
 
     private static final ConcurrentMap<String, IField> CACHED_DOCUMENTS_IDS = new ConcurrentHashMap<>();
 
@@ -120,7 +120,7 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
             return compiledQuery;
         }
         compiledQuery = createCompiledQuery(connection, factory);
-        CACHED_COMPILED_QUERIES.put(queryKey, compiledQuery);
+        CACHED_COMPILED_QUERIES.put(queryKey.hashCode(), compiledQuery);
 
         return compiledQuery;
     }

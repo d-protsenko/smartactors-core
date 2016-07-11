@@ -48,12 +48,11 @@ public class JDBCCompiledQuery implements ICompiledQuery {
     }
 
     @Override
-    public void setParameters(List<ISQLQueryParameterSetter> parameterSetters) throws QueryBuildException {
-        int index = 1;
+    public void setParameters(final ISQLQueryParameterSetter parameterSetter) throws QueryBuildException {
         try {
-            for (ISQLQueryParameterSetter setter : parameterSetters) {
-                index = setter.setParameters(this.preparedStatement, index);
-            }
+
+            parameterSetter.setParameters(this.preparedStatement);
+
         } catch (SQLException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }

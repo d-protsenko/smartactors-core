@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.PSQLFieldPath;
 import info.smart_tools.smartactors.core.sql_commons.ConditionsResolverBase;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
+import info.smart_tools.smartactors.core.sql_commons.ParamContainer;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class OperatorsTest {
 
         List<String> operatorsNames = new ArrayList<>(OPERATORS_NUMBER);
         List<FieldPath> fieldsPaths = new ArrayList<>(OPERATORS_NUMBER);
-        List<ISQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
+        List<ParamContainer> order = new ArrayList<>(OPERATORS_NUMBER);
         List<String> result = new ArrayList<>(OPERATORS_NUMBER);
 
         operatorsNames.addAll(
@@ -76,29 +76,29 @@ public class OperatorsTest {
             QueryStatement queryStatement = new QueryStatement();
             conditionsResolver
                     .resolve(operatorsNames.get(i))
-                    .write(queryStatement, conditionsResolver, fieldsPaths.get(i), queryParam, setters);
+                    .write(queryStatement, conditionsResolver, fieldsPaths.get(i), queryParam + i, order);
             assertEquals(queryStatement.getBodyWriter().toString().trim(), result.get(i));
         }
-        assertEquals(setters.size(), 10);
+        assertEquals(order.size(), 10);
     }
 
     @Test
     public void writeFieldExistsCheckConditionTest() throws Exception {
         final int OPERATORS_NUMBER = 1;
 
-        List<ISQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
+        List<ParamContainer> order = new ArrayList<>(OPERATORS_NUMBER);
         FieldPath fieldPath = PSQLFieldPath.fromString("isNull");
 
         QueryStatement queryStatementIsNull = new QueryStatement();
         conditionsResolver
                 .resolve("$isNull")
-                .write(queryStatementIsNull, conditionsResolver, fieldPath, "true", setters);
+                .write(queryStatementIsNull, conditionsResolver, fieldPath, "true", order);
         assertEquals(queryStatementIsNull.getBodyWriter().toString().trim(), "(document#>'{isNull}') is null");
 
         QueryStatement queryStatementIsNotNull = new QueryStatement();
         conditionsResolver
                 .resolve("$isNull")
-                .write(queryStatementIsNotNull, conditionsResolver, fieldPath, "false", setters);
+                .write(queryStatementIsNotNull, conditionsResolver, fieldPath, "false", order);
         assertEquals(queryStatementIsNotNull.getBodyWriter().toString().trim(), "(document#>'{isNull}') is not null");
     }
 
@@ -107,17 +107,17 @@ public class OperatorsTest {
         final String operatorName = "$in";
         final int OPERATORS_NUMBER = 1;
 
-        List<ISQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
+        List<ParamContainer> order = new ArrayList<>(OPERATORS_NUMBER);
         FieldPath fieldPath = PSQLFieldPath.fromString(operatorName.replace("$", ""));
-        List<Integer> queryParam = new LinkedList<>(Arrays.asList(1, 10, 100));
+        List<Object> queryParam = new ArrayList<>(Arrays.asList("testInName", 3));
 
         QueryStatement queryStatement = new QueryStatement();
         conditionsResolver
                 .resolve(operatorName)
-                .write(queryStatement, conditionsResolver, fieldPath, queryParam, setters);
+                .write(queryStatement, conditionsResolver, fieldPath, queryParam, order);
         assertEquals(queryStatement.getBodyWriter().toString().trim(),
                 "((document#>'{in}')in(to_json(?)::jsonb,to_json(?)::jsonb,to_json(?)::jsonb))");
-        assertEquals(setters.size(), 1);
+        assertEquals(order.size(), 1);
     }
 
     @Test(expected = QueryBuildException.class)

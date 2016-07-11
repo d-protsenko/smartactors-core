@@ -5,17 +5,13 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
-import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteTask;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryKey;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
@@ -78,10 +74,9 @@ public class PSQLSearchByIdTask extends DBSearchTask {
     ) throws QueryBuildException {
         try {
             String id = DBQueryFields.DOCUMENT_ID.in(message);
-            query.setParameters(Collections.singletonList((statement, index) -> {
-                statement.setObject(index++, id);
-                return index;
-            }));
+            query.setParameters((statement) -> {
+                statement.setObject(1, id);
+            });
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {

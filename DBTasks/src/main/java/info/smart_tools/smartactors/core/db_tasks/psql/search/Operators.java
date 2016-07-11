@@ -1,7 +1,11 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
+import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.*;
 import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
@@ -14,6 +18,16 @@ import java.util.List;
  * Class for constructing queries with comparison operators and parameters
  */
 final class Operators {
+    private static final IKey FIELD_NAME_KEY;
+
+    static {
+        try {
+            FIELD_NAME_KEY = Keys.getOrAdd(IFieldName.class.toString());
+        } catch (ResolutionException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     private Operators(){}
 
     /**
@@ -28,20 +42,17 @@ final class Operators {
             final QueryStatement query,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ISQLQueryParameterSetter> setters
+            final List<ParamContainer> parametersOrder
     ) throws QueryBuildException {
-
-        if (contextFieldPath == null) {
-            throw new QueryBuildException("Field check conditions not allowed outside of field context.");
-        }
-
         try {
             query.getBodyWriter().write(String.format(format, contextFieldPath.getSQLRepresentation()));
-
-            setters.add((statement, index) -> {
-                statement.setObject(index++, queryParameter);
-                return index;
-            });
+            setParameterInOrder(parametersOrder, queryParameter.toString(), 1);
+//            setters.add((statement, index) -> {
+//                statement.setObject(index++, queryParameter);
+//                return index;
+//            });
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Field check conditions not allowed outside of field context.");
         } catch (IOException e) {
             throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
@@ -60,13 +71,8 @@ final class Operators {
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ISQLQueryParameterSetter> setters
+            final List<ParamContainer> parametersOrder
     ) throws QueryBuildException {
-
-        if (contextFieldPath == null) {
-            throw new QueryBuildException("Field check conditions not allowed outside of field context.");
-        }
-
         try {
             String isNullStr = String.valueOf(queryParameter);
             if (!(isNullStr.equalsIgnoreCase("true") || isNullStr.equalsIgnoreCase("false"))) {
@@ -75,6 +81,8 @@ final class Operators {
             Boolean isNull = Boolean.parseBoolean(isNullStr);
             String condition = isNull ? "(%s) is null" : "(%s) is not null";
             query.getBodyWriter().write(String.format(condition, contextFieldPath.getSQLRepresentation()));
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Field check conditions not allowed outside of field context.");
         } catch (IOException e) {
             throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
@@ -93,48 +101,44 @@ final class Operators {
             final QueryConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ISQLQueryParameterSetter> setters
+            final List<ParamContainer> parametersOrder
     ) throws QueryBuildException {
-
-        if (contextFieldPath == null) {
-            throw new QueryBuildException("Operator \"$in\" not allowed outside of field context.");
-        }
-
-        if (!List.class.isAssignableFrom(queryParameter.getClass())) {
-            throw new QueryBuildException("Parameter of \"$in\" operator should be an JSON array.");
-        }
-
-        List<Object> paramAsList = (List<Object>)queryParameter;
-        Writer writer = query.getBodyWriter();
-
         try {
+            List<Object> paramAsList = (List<Object>)queryParameter;
+            Writer writer = query.getBodyWriter();
             if (paramAsList.size() == 0) {
                 writer.write("(FALSE)");
                 return;
             }
-
+            String parameterName = paramAsList.get(0).toString();
+            int parametersNumber = Integer.valueOf(paramAsList.get(1).toString());
             writer.write(String.format("((%s)in(", contextFieldPath.getSQLRepresentation()));
-
-            for (int i = paramAsList.size(); i > 0; --i) {
+            for (int i = parametersNumber; i > 0; --i) {
                 writer.write(String.format("to_json(?)::jsonb%s", (i == 1) ? "" : ","));
             }
-
             writer.write("))");
+            setParameterInOrder(parametersOrder, parameterName, parametersNumber);
 
-            setters.add((statement, index) -> {
-                for (Object obj : paramAsList) {
-                    statement.setObject(index++, obj);
-                }
-                return index;
-            });
+//            setters.add((statement, index) -> {
+//                for (Object obj : paramAsList) {
+//                    statement.setObject(index++, obj);
+//                }
+//                return index;
+//            });
+        } catch (NumberFormatException e) {
+            throw new QueryBuildException("Invalid query format of operator \"$in\".");
+        } catch (ClassCastException e) {
+            throw new QueryBuildException("Parameter of \"$in\" operator should be an JSON array.");
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Operator \"$in\" not allowed outside of field context.");
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.",e);
+            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
     }
 
     private static QueryConditionWriter formattedCheckWriter(final String format) {
-        return (query, resolver, contextFieldPath, queryParameter, setters) ->
-            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
+        return (query, resolver, contextFieldPath, queryParameter, parametersOrder) ->
+            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, parametersOrder);
     }
 
     /**
@@ -168,5 +172,21 @@ final class Operators {
         resolver.addOperator("$fulltext", formattedCheckWriter(
                 String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
                         Schema.FTS_DICTIONARY, Schema.FTS_DICTIONARY)));
+    }
+
+    private static void setParameterInOrder(final List<ParamContainer> order,
+                                            final String name,
+                                            final int count
+    ) throws QueryBuildException {
+        try {
+            IFieldName fieldName = IOC.resolve(FIELD_NAME_KEY, name);
+            ParamContainer container = ParamContainer.create(fieldName, count);
+            if (order.contains(container)) {
+                throw new QueryBuildException("Name of query parameter must be unique!");
+            }
+            order.add(container);
+        } catch (ResolutionException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
     }
 }
