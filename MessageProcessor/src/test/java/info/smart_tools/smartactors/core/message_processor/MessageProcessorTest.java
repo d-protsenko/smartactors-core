@@ -94,7 +94,6 @@ public class MessageProcessorTest {
         assertSame(messageProcessingSequenceMock, messageProcessor.getSequence());
         assertSame(messageMock, messageProcessor.getMessage());
         assertSame(contextMock, messageProcessor.getContext());
-        assertSame(responseMock, messageProcessor.getResponse());
     }
 
     @Test
