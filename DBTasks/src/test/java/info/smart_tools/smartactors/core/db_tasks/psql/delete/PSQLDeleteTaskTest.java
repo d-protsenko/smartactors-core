@@ -56,7 +56,7 @@ public class PSQLDeleteTaskTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
-        deleteTask.setStorageConnection(connection);
+        deleteTask.setConnection(connection);
 
         IKey wrapperKey = mock(IKey.class);
         IKey queryKey = mock(IKey.class);
@@ -104,7 +104,7 @@ public class PSQLDeleteTaskTest {
         when(connection.getId()).thenReturn("testConnectionId");
 
         DBDeleteTask deleteTask = PSQLDeleteTask.create();
-        deleteTask.setStorageConnection(connection);
+        deleteTask.setConnection(connection);
         deleteTask.execute();
     }
 

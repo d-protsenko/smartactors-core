@@ -31,5 +31,11 @@ public interface IDatabaseTask extends ITask {
      * @param storageConnection - database connection.
      * @throws TaskSetConnectionException when the incoming connection is invalid.
      */
-    void setStorageConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException;
+    void setConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException;
+
+    /**
+     *
+     * @return
+     */
+    IStorageConnection getConnection();
 }

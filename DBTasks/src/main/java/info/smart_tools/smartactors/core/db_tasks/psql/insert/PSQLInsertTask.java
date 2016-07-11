@@ -4,15 +4,13 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBInsertTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryKey;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
@@ -39,32 +37,22 @@ public class PSQLInsertTask extends DBInsertTask {
 
     @Nonnull
     @Override
-    protected IInsertMessage takeMessageWrapper(@Nonnull IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(IInsertMessage.class.toString()),
-                object);
-    }
-
-    @Nonnull
-    @Override
-    protected ICompiledQuery takeQuery(
+    protected ICompiledQuery takeCompiledQuery(
             @Nonnull final IStorageConnection connection,
-            @Nonnull final IInsertMessage queryMessage
+            @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = queryMessage.getCollection().toString();
-            IKey queryKey = IOC.resolve(
-                    Keys.getOrAdd(QueryKey.class.toString()),
+            String collection = DBQueryFields.COLLECTION.in(message);
+            IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLInsertTask.class.toString(),
                     collection);
 
-            return IOC.resolve(
-                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
+            return takeCompiledQuery(
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
-        } catch (ReadValueException | ResolutionException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -78,29 +66,27 @@ public class PSQLInsertTask extends DBInsertTask {
      */
     @Nonnull
     @Override
-    protected ICompiledQuery setParameters(final ICompiledQuery query, final IInsertMessage message)
+    protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws QueryBuildException {
         try {
-            String document = message.getDocument().toString();
+            String document = DBQueryFields.DOCUMENT.in(message);
             query.setParameters(Collections.singletonList((statement, index) -> {
                 statement.setString(index++, document);
                 return index;
             }));
 
             return query;
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
-
-
 
     /**
      *
      * @param collection
      * @return
      */
-    private QueryStatementFactory getQueryStatementFactory(final String collection) {
+    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
         return  () -> {
             try {
                 return QueryStatementBuilder

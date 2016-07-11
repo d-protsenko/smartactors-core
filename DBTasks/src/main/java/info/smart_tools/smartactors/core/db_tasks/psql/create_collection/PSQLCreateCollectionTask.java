@@ -4,13 +4,14 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBCreateCollectionTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.create_collection.ICreateCollectionMessage;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
@@ -37,25 +38,16 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
 
     @Nonnull
     @Override
-    protected ICreateCollectionMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(ICreateCollectionMessage.class.toString()),
-                object);
-    }
-
-    @Nonnull
-    @Override
-    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
-                                       @Nonnull final ICreateCollectionMessage message
+    protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+                                               @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            return IOC.resolve(
-                    Keys.getOrAdd(ICompiledQuery.class.toString()),
+            return createCompiledQuery(
                     connection,
                     getQueryStatementFactory(
-                            message.getCollection().toString(),
-                            message.getIndexes()));
-        } catch (ReadValueException | ResolutionException e) {
+                            DBQueryFields.COLLECTION.in(message),
+                            DBQueryFields.INDEXES.in(message)));
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -63,12 +55,12 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
     @Nonnull
     @Override
     protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
-                                           @Nonnull final ICreateCollectionMessage message
+                                           @Nonnull final IObject message
     ) throws QueryBuildException {
         return query;
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final String collection, final Map<String, String> indexes) {
+    private IQueryStatementFactory getQueryStatementFactory(final String collection, final Map<String, String> indexes) {
         return () -> {
             try {
                 return QueryStatementBuilder

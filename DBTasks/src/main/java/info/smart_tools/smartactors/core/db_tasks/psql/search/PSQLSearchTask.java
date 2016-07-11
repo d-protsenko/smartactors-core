@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ISQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ICachedQuery;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
@@ -15,7 +16,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Task for searching documents in database.
  */
-public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
+public class PSQLSearchTask extends DBSearchTask {
 
     private PSQLSearchTask() {}
 
@@ -38,31 +39,18 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
        return new PSQLSearchTask();
     }
 
-    @Nonnull
     @Override
-    protected ISearchMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(ISearchMessage.class.toString()),
-                object);
-    }
-
-    @Override
-    protected boolean requiresExit(@Nonnull final ISearchMessage message) throws InvalidArgumentException {
+    protected boolean requiresNonExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
         return false;
     }
 
     @Nonnull
     @Override
-    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
-                                       @Nonnull final ISearchMessage message
+    protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+                                               @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            ICachedQuery cachedSearchQuery = message
-                    .getCachedQuery()
-                    .orElse(createCachedSearchQuery(connection, message));
-            message.setCachedQuery(cachedSearchQuery);
 
-            return cachedSearchQuery.getCompiledQuery();
         } catch (ReadValueException | ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -71,23 +59,20 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
     @Nonnull
     @Override
     protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
-                                           @Nonnull final ISearchMessage message
+                                           @Nonnull final IObject message
     ) throws QueryBuildException {
-        query.setParameters(message
-                .getCachedQuery()
-                .orElseThrow(() -> new QueryBuildException("Prepare cached search query is null!"))
-                .getParametersSetters());
+
 
         return query;
     }
 
     @Override
     protected void execute(@Nonnull final ICompiledQuery query,
-                           @Nonnull final ISearchMessage message
+                           @Nonnull final IObject message
     ) throws TaskExecutionException {
         try {
-            message.setSearchResult(super.execute(query));
-        } catch (ChangeValueException e) {
+            DBQueryFields.SEARCH_RESULT.out(message, super.execute(query));
+        } catch (ChangeValueException | InvalidArgumentException e) {
             throw new TaskExecutionException(e.getMessage(), e);
         }
     }
@@ -107,8 +92,8 @@ public class PSQLSearchTask extends DBSearchTask<ISearchMessage> {
                 setters);
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final ISearchMessage message,
-                                                           final List<ISQLQueryParameterSetter> setters
+    private IQueryStatementFactory getQueryStatementFactory(final ISearchMessage message,
+                                                            final List<ISQLQueryParameterSetter> setters
     ) {
         return () -> {
             try {

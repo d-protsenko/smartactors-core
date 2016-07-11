@@ -18,19 +18,6 @@ import javax.annotation.Nonnull;
  * Common update task executor.
  */
 public abstract class DBUpdateTask extends GeneralDatabaseTask {
-
-    protected static final IField DOCUMENT_F;
-    protected static final IField COLLECTION_F;
-
-    static {
-        try {
-            DOCUMENT_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
-            COLLECTION_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collection");
-        } catch (ResolutionException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
     /**
      *
      */
@@ -39,7 +26,7 @@ public abstract class DBUpdateTask extends GeneralDatabaseTask {
     @Override
     protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return DOCUMENT_F.in(message) == null;
+            return DBQueryFields.DOCUMENT.in(message) == null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }

@@ -54,9 +54,13 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     }
 
     @Override
-    public void setStorageConnection(final IStorageConnection storageConnection)
-            throws TaskSetConnectionException {
+    public void setConnection(final IStorageConnection storageConnection) {
         connection = storageConnection;
+    }
+
+    @Override
+    public IStorageConnection getConnection() {
+        return connection;
     }
 
     protected DBUpsertTask setInsertTask(@Nonnull final IDatabaseTask insertTask) {
@@ -92,7 +96,7 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         upsertMessage.setCollection(collection);
         upsertMessage.setDocument(document);
         IObject preparedMessage = IOC.resolve(Keys.getOrAdd("ExtractWrapper"), upsertMessage);
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(preparedMessage);
     }
 }

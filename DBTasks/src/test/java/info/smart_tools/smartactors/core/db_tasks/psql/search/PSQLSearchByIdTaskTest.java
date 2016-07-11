@@ -20,7 +20,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public class PSQLSearchByIdTaskTest {
         initDataForPrepare(preparedQuery, message, createCollectionMessage);
         Map<String, String> indexes = new HashMap<>();
         indexes.put("meta.tags", "tags");
-        when(message.getId()).thenReturn("123");
+        when(message.getDocumentId()).thenReturn("123");
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any(IPreparedQuery.class))).thenReturn(compiledQuery);
         when(connection.getId()).thenReturn("testConnectionId");
@@ -77,11 +77,11 @@ public class PSQLSearchByIdTaskTest {
         when(Keys.getOrAdd(ICompiledQuery.class.toString())).thenReturn(compiledQueryKey);
         when(IOC.resolve(eq(compiledQueryKey), eq(connection), anyObject())).thenReturn(compiledQuery);
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(createCollectionMessage);
 
         PowerMockito.verifyStatic();
-        IOC.resolve(any(IKey.class), eq(connection), any(QueryStatementFactory.class));
+        IOC.resolve(any(IKey.class), eq(connection), any(IQueryStatementFactory.class));
     }
 
     @Test(expected = TaskExecutionException.class)
@@ -101,7 +101,7 @@ public class PSQLSearchByIdTaskTest {
         IStorageConnection storageConnectionBefore = (IStorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
         connection = mock(IStorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         IStorageConnection storageConnectionAfter = (IStorageConnection) MemberModifier.field(PSQLSearchByIdTask.class, "connection").get(task);
 
         assertNull(storageConnectionBefore);

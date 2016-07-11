@@ -22,7 +22,18 @@ final public class QueryKey implements IKey {
         this.connectionId = connectionId;
         this.queryType = queryType;
         this.collection = collection;
-        this.options = new LinkedList<>(options);
+        this.options = options;
+    }
+
+    private QueryKey(
+            final String connectionId,
+            final String queryType,
+            final String collection
+    ) {
+        this.connectionId = connectionId;
+        this.queryType = queryType;
+        this.collection = collection;
+        this.options = Collections.emptyList();
     }
 
     public static QueryKey create(
@@ -32,6 +43,14 @@ final public class QueryKey implements IKey {
             final List<?> options
     ) {
         return new QueryKey(connectionId, taskName, collection, options);
+    }
+
+    public static QueryKey create(
+            final String connectionId,
+            final String taskName,
+            final String collection
+    ) {
+        return new QueryKey(connectionId, taskName, collection);
     }
 
     @Override

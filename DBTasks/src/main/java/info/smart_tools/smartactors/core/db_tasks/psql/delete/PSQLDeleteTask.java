@@ -4,15 +4,17 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBDeleteTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
+import info.smart_tools.smartactors.core.db_tasks.psql.insert.PSQLInsertTask;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryKey;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
@@ -37,23 +39,21 @@ public class PSQLDeleteTask extends DBDeleteTask {
 
     @Nonnull
     @Override
-    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
-                                       @Nonnull final IObject message
+    protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+                                               @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = message.getCollection().toString();
-            IKey queryKey = IOC.resolve(
-                    Keys.getOrAdd(QueryKey.class.toString()),
+            String collection = DBQueryFields.COLLECTION.in(message);
+            IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLDeleteTask.class.toString(),
                     collection);
 
-            return IOC.resolve(
-                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
+            return takeCompiledQuery(
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
-        } catch (ResolutionException | ReadValueException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -64,20 +64,19 @@ public class PSQLDeleteTask extends DBDeleteTask {
                                            @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            Long documentId = message.getDocumentId();
+            Long documentId = DBQueryFields.DOCUMENT_ID.in(message);
             query.setParameters(Collections.singletonList((statement, index) -> {
                 statement.setLong(index++, documentId);
                 return index;
             }));
 
             return query;
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
-
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final String collection) {
+    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
         return () -> {
             try {
                 return QueryStatementBuilder

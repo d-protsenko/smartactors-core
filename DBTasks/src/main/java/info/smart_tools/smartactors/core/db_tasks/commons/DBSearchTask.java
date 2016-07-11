@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Common a searching task executor.
  */
-public abstract class DBSearchTask<TMessage extends IDBTaskMessage> extends GeneralDatabaseTask<TMessage> {
+public abstract class DBSearchTask extends GeneralDatabaseTask {
     /**
      * Default constructor.
      */
@@ -53,7 +53,7 @@ public abstract class DBSearchTask<TMessage extends IDBTaskMessage> extends Gene
                     throw new TaskExecutionException("Could not set document's id field.", e);
                 } catch (ResolutionException e) {
                     throw new TaskExecutionException(e.getMessage(), e);
-                } catch (InvalidArgumentException e) { //TODO added by AKutalev, reason: now IObject can throw InvalidArgumentException
+                } catch (InvalidArgumentException e) {
                     throw new TaskExecutionException("Invalid argument exception", e);
                 }
 

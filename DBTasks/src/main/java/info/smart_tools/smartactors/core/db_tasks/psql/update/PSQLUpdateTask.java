@@ -3,22 +3,18 @@ package info.smart_tools.smartactors.core.db_tasks.psql.update;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBUpdateTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.update.IUpdateMessage;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryKey;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -31,7 +27,7 @@ public class PSQLUpdateTask extends DBUpdateTask {
      * Default constructor.
      *              Creates a new instance of {@link PSQLUpdateTask}.
      */
-    protected PSQLUpdateTask() {}
+    private PSQLUpdateTask() { }
 
     /**
      * Factory method for creation a new instance of {@link PSQLUpdateTask}.
@@ -44,23 +40,22 @@ public class PSQLUpdateTask extends DBUpdateTask {
 
     @Nonnull
     @Override
-    protected ICompiledQuery takeQuery(
+    protected ICompiledQuery takeCompiledQuery(
             @Nonnull final IStorageConnection connection,
             @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            IKey queryKey = IOC.resolve(
-                    Keys.getOrAdd(QueryKey.class.toString()),
+            String collection = DBQueryFields.COLLECTION.in(message);
+            IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLUpdateTask.class.toString(),
-                    COLLECTION_F.in(message));
+                    collection);
 
-            return IOC.resolve(
-                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
+            return takeCompiledQuery(
                     queryKey,
                     connection,
-                    getQueryStatementFactory(COLLECTION_F.in(message)));
-        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                    getQueryStatementFactory(collection));
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -72,8 +67,8 @@ public class PSQLUpdateTask extends DBUpdateTask {
             @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = COLLECTION_F.in(message);
-            IObject document = DOCUMENT_F.in(message);
+            String collection = DBQueryFields.COLLECTION.in(message);
+            IObject document = DBQueryFields.DOCUMENT.in(message);
             String documentId = takeDocumentId(document, collection);
             String documentJson = document.serialize();
 
@@ -91,7 +86,7 @@ public class PSQLUpdateTask extends DBUpdateTask {
         return compiledQuery;
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final String collection) {
+    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
         return  () -> {
             try {
                 return QueryStatementBuilder
@@ -105,8 +100,8 @@ public class PSQLUpdateTask extends DBUpdateTask {
     }
 
     private String takeDocumentId(final IObject document, final String collection)
-            throws ResolutionException, ReadValueException {
-        IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
-        return document.getValue(idFN).toString();
+            throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField id = getIdFieldFor(collection);
+        return id.in(document);
     }
 }

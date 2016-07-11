@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 public class CompileQueryPlugin implements IPlugin {
@@ -39,7 +39,7 @@ public class CompileQueryPlugin implements IPlugin {
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "connection parameter is null!");
 
-                                QueryStatementFactory factory = (QueryStatementFactory) args[1];
+                                IQueryStatementFactory factory = (IQueryStatementFactory) args[1];
                                 if (factory == null)
                                     throw new RuntimeException("Can't resolve compiled query: " +
                                             "query statement factory parameter is null!");

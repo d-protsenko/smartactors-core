@@ -28,14 +28,16 @@ public class DBTaskExecutor {
      *              If the task executed successfully then changes are committed in database,
      *              else changes rollback.
      *
-     * @param task - an executable task to database.
+     * @param tasks - an executable tasks to database.
      * @param connection - a connection to database.
      *
      * @throws Exception when an error occurred task executing or an error occurred commit.
      */
-    public static void executeTransaction(IDatabaseTask task, IStorageConnection connection) throws Exception {
+    public static void executeTransaction(IStorageConnection connection, IDatabaseTask... tasks) throws Exception {
         try {
-            task.execute();
+            for (IDatabaseTask task : tasks) {
+                task.execute();
+            }
             connection.commit();
         } catch(Exception e) {
             try {

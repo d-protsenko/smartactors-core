@@ -3,8 +3,9 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchByIdMessage;
+import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteTask;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -15,7 +16,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryKey;
-import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Database task for search documents by id
  */
-public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
+public class PSQLSearchByIdTask extends DBSearchTask {
     /**
      * Constructor for DBGetByIdTask
      */
@@ -40,18 +41,10 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
         return new PSQLSearchByIdTask();
     }
 
-    @Nonnull
     @Override
-    protected ISearchByIdMessage takeMessageWrapper(@Nonnull final IObject object) throws ResolutionException {
-        return IOC.resolve(
-                Keys.getOrAdd(ISearchByIdMessage.class.toString()),
-                object);
-    }
-
-    @Override
-    protected boolean requiresExit(@Nonnull final ISearchByIdMessage message) throws InvalidArgumentException {
+    protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return message.getId() == null;
+            return DBQueryFields.DOCUMENT_ID.in(message) == null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }
@@ -59,23 +52,21 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
 
     @Nonnull
     @Override
-    protected ICompiledQuery takeQuery(@Nonnull final IStorageConnection connection,
-                                       @Nonnull final ISearchByIdMessage message
+    protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+                                               @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = message.getCollection().toString();
-            IKey queryKey = IOC.resolve(
-                    Keys.getOrAdd(QueryKey.class.toString()),
+            String collection = DBQueryFields.COLLECTION.in(message);
+            IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLSearchByIdTask.class.toString(),
                     collection);
 
-            return IOC.resolve(
-                    Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE"),
+            return takeCompiledQuery(
                     queryKey,
                     connection,
                     getQueryStatementFactory(collection));
-        } catch (ReadValueException | ResolutionException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
@@ -83,24 +74,24 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
     @Nonnull
     @Override
     protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
-                                           @Nonnull final ISearchByIdMessage message
+                                           @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String id = message.getId();
+            String id = DBQueryFields.DOCUMENT_ID.in(message);
             query.setParameters(Collections.singletonList((statement, index) -> {
                 statement.setObject(index++, id);
                 return index;
             }));
 
             return query;
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }
 
     @Override
     protected void execute(@Nonnull final ICompiledQuery query,
-                           @Nonnull final ISearchByIdMessage message
+                           @Nonnull final IObject message
     ) throws TaskExecutionException {
         List<IObject> result = super.execute(query);
         if (result.size() > 1) {
@@ -108,13 +99,13 @@ public class PSQLSearchByIdTask extends DBSearchTask<ISearchByIdMessage> {
                     "the given id correspond to multiple users!");
         }
         try {
-            message.setSearchResult(result.get(0));
-        } catch (ChangeValueException e) {
+            DBQueryFields.SEARCH_RESULT.out(message, result.get(0));
+        } catch (ChangeValueException | InvalidArgumentException e) {
             throw new TaskExecutionException("'Search query' execution has been failed: " + e.getMessage(), e);
         }
     }
 
-    private QueryStatementFactory getQueryStatementFactory(final String collection) {
+    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
         return () -> {
             try {
                 return SearchByIdQueryStatementBuilder

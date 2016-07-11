@@ -64,7 +64,7 @@ public class PSQLCreateCollectionTaskTest {
 
     @Test
     public void should_PrepareQuery() throws Exception {
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(message);
 
         verify(wrapper, times(1)).getCollection();
@@ -80,7 +80,7 @@ public class PSQLCreateCollectionTaskTest {
     public void should_ThrowsException_WithReason_InvalidMessage() throws Exception {
         when(wrapper.getCollection()).thenReturn(null);
         when(wrapper.getIndexes()).thenReturn(null);
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(message);
     }
 
@@ -97,7 +97,7 @@ public class PSQLCreateCollectionTaskTest {
     public void should_SetConnection() throws Exception {
         when(connection.getId()).thenReturn("testConnectionId");
         IStorageConnection storageConnectionBefore = (IStorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         IStorageConnection storageConnectionAfter = (IStorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
 
         assertNull(storageConnectionBefore);

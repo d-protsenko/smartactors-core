@@ -1,45 +1,62 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
+import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
+import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
+import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-abstract class GeneralDatabaseTask implements IDatabaseTask {
+/**
+ *
+ */
+public abstract class GeneralDatabaseTask implements IDatabaseTask {
     private ICompiledQuery query;
     private IObject message;
     private IStorageConnection connection;
     private boolean isNonExecutable;
 
-    private Map<Boolean, IPrepareStrategy> prepareStrategies;
-    private Map<Boolean, IExecuteStrategy> executeStrategies;
+    private final Map<Boolean, IPreparationStrategy> preparationStrategies;
+    private final Map<Boolean, IExecutionStrategy> executionStrategies;
+
+    private static final ConcurrentMap<IKey, ICompiledQuery> CACHED_COMPILED_QUERIES = new ConcurrentHashMap<>();
+
+    private static final ConcurrentMap<String, IField> CACHED_DOCUMENTS_IDS = new ConcurrentHashMap<>();
 
     /**
      *
      */
     protected GeneralDatabaseTask() {
-        prepareStrategies = new HashMap<>(2);
-        prepareStrategies.put(true, message -> setInternalState(null , message));
-        prepareStrategies.put(false, message -> {
-            ICompiledQuery compiledQuery = takeQuery(connection, message);
+        preparationStrategies = new HashMap<>(2);
+        preparationStrategies.put(true, message -> { });
+        preparationStrategies.put(false, message -> {
+            ICompiledQuery compiledQuery = takeCompiledQuery(connection, message);
             setInternalState(setParameters(compiledQuery, message), message);
         });
 
-        executeStrategies = new HashMap<>(2);
-        executeStrategies.put(true, () -> { });
-        executeStrategies.put(false, () -> execute(query, message));
+        executionStrategies = new HashMap<>(2);
+        executionStrategies.put(true, () -> { });
+        executionStrategies.put(false, () -> execute(query, message));
     }
 
     /**
@@ -56,7 +73,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
     public void prepare(@Nonnull final IObject insertMessage) throws TaskPrepareException {
         try {
             isNonExecutable = requiresNonExecutable(insertMessage);
-            prepareStrategies.get(isNonExecutable).doAction(insertMessage);
+            preparationStrategies.get(isNonExecutable).doAction(insertMessage);
         } catch (NullPointerException e) {
             throw new TaskPrepareException("Can't prepare query because: Invalid given insert message!");
         } catch (Exception e) {
@@ -73,29 +90,69 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            executeStrategies.get(isNonExecutable).doAction();
+            executionStrategies.get(isNonExecutable).doAction();
         } catch (Exception e) {
             throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
         }
     }
 
     /**
-     * {@see IDatabaseTask} {@link IDatabaseTask#setStorageConnection(IStorageConnection)}
+     * {@see IDatabaseTask} {@link IDatabaseTask#setConnection(IStorageConnection)}
      *
      * @param storageConnection - {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setStorageConnection(IStorageConnection)}.
+     *                  {@link IDatabaseTask#setConnection(IStorageConnection)}.
      *
      * @throws TaskSetConnectionException {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setStorageConnection(IStorageConnection)}
+     *                  {@link IDatabaseTask#setConnection(IStorageConnection)}
      */
     @Override
-    public void setStorageConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException {
+    public void setConnection(final IStorageConnection storageConnection) {
         connection = storageConnection;
     }
 
 
+    protected ICompiledQuery takeCompiledQuery(final IKey queryKey,
+                                               final IStorageConnection connection,
+                                               final IQueryStatementFactory factory
+    ) throws QueryBuildException {
+        ICompiledQuery compiledQuery = CACHED_COMPILED_QUERIES.get(queryKey);
+        if (compiledQuery != null) {
+            return compiledQuery;
+        }
+        compiledQuery = createCompiledQuery(connection, factory);
+        CACHED_COMPILED_QUERIES.put(queryKey, compiledQuery);
+
+        return compiledQuery;
+    }
+
+    protected ICompiledQuery createCompiledQuery(final IStorageConnection connection,
+                                                 final IQueryStatementFactory factory
+    ) throws QueryBuildException {
+        try {
+            QueryStatement queryStatement = factory.create();
+            return connection.compileQuery(queryStatement);
+        } catch (QueryStatementFactoryException | StorageException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
+    }
+
+    protected IField getIdFieldFor(final String collection) throws ResolutionException {
+        IField id = CACHED_DOCUMENTS_IDS.get(collection);
+        if (id == null) {
+            id = IOC.resolve(Keys.getOrAdd(IField.class.toString()), collection + "Id");
+            CACHED_DOCUMENTS_IDS.put(collection, id);
+        }
+
+        return id;
+    }
+
+    @Override
+    public IStorageConnection getConnection() {
+        return connection;
+    }
+
     protected abstract @Nonnull
-    ICompiledQuery takeQuery(
+    ICompiledQuery takeCompiledQuery(
             @Nonnull final IStorageConnection connection,
             @Nonnull final IObject queryMessage
     ) throws QueryBuildException;
@@ -125,7 +182,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
      *
      */
     @FunctionalInterface
-    private interface IPrepareStrategy {
+    private interface IPreparationStrategy {
         /**
          *
          * @param message
@@ -138,7 +195,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
      *
      */
     @FunctionalInterface
-    private interface IExecuteStrategy {
+    private interface IExecutionStrategy {
         /**
          *
          * @throws TaskExecutionException

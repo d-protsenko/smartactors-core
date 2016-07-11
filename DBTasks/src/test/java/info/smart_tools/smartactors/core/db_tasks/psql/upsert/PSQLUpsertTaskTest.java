@@ -162,7 +162,7 @@ public class PSQLUpsertTaskTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any(IPreparedQuery.class))).thenReturn(compiledQuery);
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(upsertMessage);
 
         DBInsertTask dbInsertTask = (DBInsertTask) MemberModifier.field(PSQLUpsertTask.class, "dbInsertTask").get(task);
@@ -185,7 +185,7 @@ public class PSQLUpsertTaskTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any(IPreparedQuery.class))).thenReturn(compiledQuery);
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.prepare(upsertMessage);
 
         verifyStatic();
@@ -205,7 +205,7 @@ public class PSQLUpsertTaskTest {
         field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
         field(PSQLUpsertTask.class, "mode").set(task, "update");
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.execute();
 
         verify(preparedStatement).executeUpdate();
@@ -231,7 +231,7 @@ public class PSQLUpsertTaskTest {
         when(resultSet.first()).thenReturn(true);
         when(resultSet.getLong("id")).thenReturn(123L);
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.execute();
 
         verify(preparedStatement).executeQuery();
@@ -250,7 +250,7 @@ public class PSQLUpsertTaskTest {
         field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
         field(PSQLUpsertTask.class, "mode").set(task, "update");
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.execute();
     }
 
@@ -266,7 +266,7 @@ public class PSQLUpsertTaskTest {
         field(PSQLUpsertTask.class, "compiledQuery").set(task, compiledQuery);
         field(PSQLUpsertTask.class, "mode").set(task, "insert");
 
-        task.setStorageConnection(connection);
+        task.setConnection(connection);
         task.execute();
     }
 }

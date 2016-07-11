@@ -36,18 +36,6 @@ import java.util.Optional;
  * </pre>
  */
 public interface ISearchMessage extends IDBTaskMessage {
-    /**
-     *
-     * @param query
-     */
-    void setCachedQuery(ICachedQuery query);
-
-    /**
-     *
-     * @return
-     */
-    Optional<ICachedQuery> getCachedQuery();
-
     /** Criteria for searching query. */
     Object getCriteria();
 

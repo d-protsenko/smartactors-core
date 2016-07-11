@@ -14,14 +14,14 @@ public interface ISearchByIdMessage extends IDBTaskMessage {
      * @return String the id of document should to be found
      * @throws ReadValueException
      */
-    String getId() throws ReadValueException;
+    String getDocumentId() throws ReadValueException;
 
     /**
      *
      * @param id
      * @throws ChangeValueException
      */
-    void setId(String id) throws ChangeValueException;
+    void setDocumentId(String id) throws ChangeValueException;
 
     /**
      * Set the found object to message

@@ -2,17 +2,13 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -26,13 +22,12 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
     protected DBInsertTask() {}
 
     @Override
-    protected boolean requiresExit(@Nonnull final IInsertMessage queryMessage) throws InvalidArgumentException {
+    protected boolean requiresNonExecutable(@Nonnull IObject message) throws InvalidArgumentException {
         try {
-            return queryMessage.getDocument() == null;
+            return DBQueryFields.DOCUMENT.in(message) == null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }
-
     }
 
     /**
@@ -44,7 +39,7 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
      * @throws TaskExecutionException when the result set has more than one document.
      */
     @Override
-    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IInsertMessage message)
+    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = query.executeQuery();
@@ -61,17 +56,17 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
 
     private void addIdsInResult(
             final ResultSet resultSet,
-            final IUpsertMessage message
+            final IObject message
     ) throws TaskExecutionException {
         try {
             int docCounter = 0;
             while (resultSet.next()) {
                 try {
-                    String collection = message.getCollection().toString();
-                    setDocumentId(message.getDocument(), collection, resultSet.getString("id"));
+                    String collection = DBQueryFields.COLLECTION.in(message);
+                    setDocumentId(DBQueryFields.DOCUMENT.in(message), collection, resultSet.getString("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
-                } catch (ReadValueException e) {
+                } catch (ReadValueException | InvalidArgumentException e) {
                     throw new TaskExecutionException("Could not read document with index " + docCounter + ".");
                 }
                 docCounter++;
@@ -87,9 +82,9 @@ public abstract class DBInsertTask extends GeneralDatabaseTask {
         }
     }
 
-    private void setDocumentId(final IObject document, String collection, String id)
-            throws ChangeValueException, ResolutionException {
-        IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
-        document.setValue(idFN, id);
+    private void setDocumentId(final IObject document, String collection, String documentId)
+            throws ChangeValueException, ResolutionException, InvalidArgumentException {
+        IField id = getIdFieldFor(collection);
+        id.out(document, documentId);
     }
 }
