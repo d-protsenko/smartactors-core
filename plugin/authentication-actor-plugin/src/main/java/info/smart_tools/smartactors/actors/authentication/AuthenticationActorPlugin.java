@@ -25,7 +25,7 @@ public class AuthenticationActorPlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
-            IBootstrapItem<String> item = new BootstrapItem("CreateGetFormMapActorsPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
             item.process(() -> {
                 try {
@@ -43,7 +43,7 @@ public class AuthenticationActorPlugin implements IPlugin {
             });
             bootstrap.add(item);
         } catch (ResolutionException | InvalidArgumentException e) {
-            throw new PluginException("Can't load CreateGetFormMapActors plugin", e);
+            throw new PluginException("Can't load AuthenticationActor plugin", e);
         }
     }
 }
