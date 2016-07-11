@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
+import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.UpdateAsyncOperationException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -8,7 +9,6 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnect
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;

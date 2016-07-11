@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.async_operation_collection;
 
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.UpdateAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
@@ -38,7 +38,7 @@ public interface IAsyncOperationCollection {
     /**
      * Deletes asynchronous operation
      * @param token operation unique token
-     * @throws UpdateAsyncOperationException if error during delete is occurred
+     * @throws DeleteAsyncOperationException if error during delete is occurred
      */
-    void delete(String token) throws UpdateAsyncOperationException;
+    void delete(String token) throws DeleteAsyncOperationException;
 }
