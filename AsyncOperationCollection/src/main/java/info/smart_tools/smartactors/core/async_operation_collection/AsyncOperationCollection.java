@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.async_operation_collection;
 
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.exception.UpdateAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteAsyncOperationTask;
@@ -178,7 +178,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     }
 
     @Override
-    public void delete(final String token) throws DeleteAsyncOperationException {
+    public void delete(final String token) throws UpdateAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
             IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()));
@@ -187,7 +187,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                     Keys.getOrAdd(IDatabaseTask.class.toString()), DeleteAsyncOperationTask.class.toString()
                 );
                 if (nestedTask == null) {
-                    throw new DeleteAsyncOperationException("Can't create nested task for update task.");
+                    throw new UpdateAsyncOperationException("Can't create nested task for update task.");
                 }
                 deleteTask = new DeleteAsyncOperationTask(nestedTask);
                 IOC.register(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()), new SingletonStrategy(deleteTask));
@@ -201,21 +201,21 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));
             deleteTask.execute();
         } catch (TaskExecutionException e) {
-            throw new DeleteAsyncOperationException("Error during execution complete.", e);
+            throw new UpdateAsyncOperationException("Error during execution complete.", e);
         } catch (PoolGuardException e) {
-            throw new DeleteAsyncOperationException("Can't get connection from pool.", e);
+            throw new UpdateAsyncOperationException("Can't get connection from pool.", e);
         } catch (TaskSetConnectionException e) {
-            throw new DeleteAsyncOperationException("Can't set connection to update task.", e);
+            throw new UpdateAsyncOperationException("Can't set connection to update task.", e);
         } catch (TaskPrepareException e) {
-            throw new DeleteAsyncOperationException("Error during preparing update task.", e);
+            throw new UpdateAsyncOperationException("Error during preparing update task.", e);
         } catch (InvalidArgumentException | RegistrationException e) {
-            throw new DeleteAsyncOperationException("Can't register strategy for update task.", e);
+            throw new UpdateAsyncOperationException("Can't register strategy for update task.", e);
         } catch (ReadValueException | ChangeValueException e) {
-            throw new DeleteAsyncOperationException("Can't complete async operation.", e);
+            throw new UpdateAsyncOperationException("Can't complete async operation.", e);
         } catch (ResolutionException e) {
-            throw new DeleteAsyncOperationException("Can't resolve async operation object.", e);
+            throw new UpdateAsyncOperationException("Can't resolve async operation object.", e);
         } catch (GetAsyncOperationException e) {
-            throw new DeleteAsyncOperationException("Can't get async operation by token.", e);
+            throw new UpdateAsyncOperationException("Can't get async operation by token.", e);
         }
     }
 }

@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateItem;
+import info.smart_tools.smartactors.core.async_operation_collection.exception.UpdateAsyncOperationException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 /**
  * Task for mark async operation as done
@@ -24,26 +23,31 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
 
     private IDatabaseTask upsertTask;
 
-    private Field<IObject> updateIObjectField;
-    private Field<Boolean> doneFlagField;
+    private IField updateIObjectField;
+    private IField doneFlagField;
 
     /**
      * Constructor
      * @param upsertTask nested task for update operation
+     * @throws ResolutionException
      */
-    public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) throws ResolutionException, InvalidArgumentException {
+    public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) throws UpdateAsyncOperationException {
         this.upsertTask = upsertTask;
 
-        updateIObjectField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "updateItem"));
-        doneFlagField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "done"));
+        try {
+            updateIObjectField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "updateItem");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
+        } catch (ResolutionException e) {
+            throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
+        }
     }
 
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            IObject updateItem = updateIObjectField.out(query);
-            doneFlagField.in(updateItem, true);
+            IObject updateItem = updateIObjectField.in(query);
+            doneFlagField.out(updateItem, true);
             upsertTask.prepare(query);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
