@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateItem;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -16,7 +14,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,43 +31,36 @@ public class UpdateAsyncOperationTaskTest {
     private UpdateAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
 
-    private Field<IObject> updateIObjectField;
-    private Field<Boolean> doneFlagField;
+    private IField updateIObjectField;
+    private IField doneFlagField;
 
     @Before
     public void prepare () throws Exception {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        updateIObjectField = mock(Field.class);
-        doneFlagField = mock(Field.class);
+        updateIObjectField = mock(IField.class);
+        doneFlagField = mock(IField.class);
 
-        Key fieldNameKey = mock(Key.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+        Key fieldKey = mock(Key.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
 
-        String updateItemFieldNameBindingPath = "updateItemFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "updateItem")).thenReturn(updateItemFieldNameBindingPath);
+        when(IOC.resolve(fieldKey, "updateItem")).thenReturn(updateIObjectField);
 
-        String doneFieldNameBindingPath = "doneFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "done")).thenReturn(doneFieldNameBindingPath);
-
-        whenNew(Field.class).withArguments(doneFieldNameBindingPath).thenReturn(doneFlagField);
-        whenNew(Field.class).withArguments(updateItemFieldNameBindingPath).thenReturn(updateIObjectField);
+        when(IOC.resolve(fieldKey, "done")).thenReturn(doneFlagField);
 
         targetTask = mock(IDatabaseTask.class);
 
         testTask = new UpdateAsyncOperationTask(targetTask);
 
         verifyStatic(times(2));
-        Keys.getOrAdd(IFieldName.class.toString());
+        Keys.getOrAdd(IField.class.toString());
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "updateItem");
-        verifyNew(Field.class).withArguments(updateItemFieldNameBindingPath);
+        IOC.resolve(fieldKey, "updateItem");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "done");
-        verifyNew(Field.class).withArguments(doneFieldNameBindingPath);
+        IOC.resolve(fieldKey, "done");
     }
 
     @Test
@@ -79,13 +69,13 @@ public class UpdateAsyncOperationTaskTest {
 
         IObject updateItem = mock(IObject.class);
 
-        when(updateIObjectField.out(query)).thenReturn(updateItem);
+        when(updateIObjectField.in(query)).thenReturn(updateItem);
 
         testTask.prepare(query);
 
-        verify(updateIObjectField).out(query);
+        verify(updateIObjectField).in(query);
 
-        verify(doneFlagField).in(updateItem, true);
+        verify(doneFlagField).out(updateItem, true);
 
         verify(targetTask).prepare(query);
     }
@@ -94,13 +84,13 @@ public class UpdateAsyncOperationTaskTest {
     public void MustInCorrectPrepareQueryWhenMessageThrowReadValueException() throws ReadValueException, InvalidArgumentException {
         IObject query = mock(IObject.class);
 
-        when(updateIObjectField.out(query)).thenThrow(new ReadValueException());
+        when(updateIObjectField.in(query)).thenThrow(new ReadValueException());
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
-            verify(updateIObjectField).out(query);
+            verify(updateIObjectField).in(query);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -112,17 +102,17 @@ public class UpdateAsyncOperationTaskTest {
 
         IObject updateItem = mock(IObject.class);
 
-        when(updateIObjectField.out(query)).thenReturn(updateItem);
+        when(updateIObjectField.in(query)).thenReturn(updateItem);
 
-        doThrow(new ChangeValueException()).when(doneFlagField).in(updateItem, true);
+        doThrow(new ChangeValueException()).when(doneFlagField).out(updateItem, true);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
-            verify(updateIObjectField).out(query);
+            verify(updateIObjectField).in(query);
 
-            verify(doneFlagField).in(updateItem, true);
+            verify(doneFlagField).out(updateItem, true);
 
             return;
         }
@@ -136,7 +126,7 @@ public class UpdateAsyncOperationTaskTest {
 
         IObject updateItem = mock(IObject.class);
 
-        when(updateIObjectField.out(query)).thenReturn(updateItem);
+        when(updateIObjectField.in(query)).thenReturn(updateItem);
 
         doThrow(new TaskPrepareException("")).when(targetTask).prepare(query);
 
@@ -144,9 +134,9 @@ public class UpdateAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
-            verify(updateIObjectField).out(query);
+            verify(updateIObjectField).in(query);
 
-            verify(doneFlagField).in(updateItem, true);
+            verify(doneFlagField).out(updateItem, true);
 
             verify(targetTask).prepare(query);
             return;

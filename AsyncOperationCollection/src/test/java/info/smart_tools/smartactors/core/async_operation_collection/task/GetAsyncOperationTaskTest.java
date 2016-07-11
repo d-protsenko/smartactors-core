@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.AsyncOperationTaskQuery;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.EQMessage;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -17,7 +15,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,11 +33,11 @@ public class GetAsyncOperationTaskTest {
     private GetAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
 
-    private Field<Integer> pageNumberField;
-    private Field<Integer> pageSizeField;
-    private Field<IObject> queryField;
-    private Field<String> eqField;
-    private Field<String> tokenField;
+    private IField pageNumberField;
+    private IField pageSizeField;
+    private IField queryField;
+    private IField eqField;
+    private IField tokenField;
 
     @Before
     public void prepare () throws Exception {
@@ -50,60 +47,45 @@ public class GetAsyncOperationTaskTest {
         targetTask = mock(IDatabaseTask.class);
 
 
-        pageNumberField = mock(Field.class);
-        pageSizeField = mock(Field.class);
-        queryField = mock(Field.class);
-        eqField = mock(Field.class);
-        tokenField = mock(Field.class);
+        pageNumberField = mock(IField.class);
+        pageSizeField = mock(IField.class);
+        queryField = mock(IField.class);
+        eqField = mock(IField.class);
+        tokenField = mock(IField.class);
 
-        Key fieldNameKey = mock(Key.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+        Key fieldKey = mock(Key.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
 
-        String pageNumberBindingPath = "pageNumber";
-        when(IOC.resolve(fieldNameKey, "pageNumber")).thenReturn(pageNumberBindingPath);
-        whenNew(Field.class).withArguments(pageNumberBindingPath).thenReturn(pageNumberField);
+        when(IOC.resolve(fieldKey, "pageNumber")).thenReturn(pageNumberField);
 
-        String pageSizeBindingPath = "pageSize";
-        when(IOC.resolve(fieldNameKey, "pageSize")).thenReturn(pageSizeBindingPath);
-        whenNew(Field.class).withArguments(pageSizeBindingPath).thenReturn(pageSizeField);
+        when(IOC.resolve(fieldKey, "pageSize")).thenReturn(pageSizeField);
 
-        String queryBindingPath = "query";
-        when(IOC.resolve(fieldNameKey, "query")).thenReturn(queryBindingPath);
-        whenNew(Field.class).withArguments(queryBindingPath).thenReturn(queryField);
+        when(IOC.resolve(fieldKey, "query")).thenReturn(queryField);
 
-        String eqBindingPath = "eq";
-        when(IOC.resolve(fieldNameKey, "$eq")).thenReturn(eqBindingPath);
-        whenNew(Field.class).withArguments(eqBindingPath).thenReturn(eqField);
+        when(IOC.resolve(fieldKey, "$eq")).thenReturn(eqField);
 
-        String tokenBindingPath = "token";
-        when(IOC.resolve(fieldNameKey, "token")).thenReturn(tokenBindingPath);
-        whenNew(Field.class).withArguments(tokenBindingPath).thenReturn(tokenField);
+        when(IOC.resolve(fieldKey, "token")).thenReturn(tokenField);
 
 
         testTask = new GetAsyncOperationTask(targetTask);
 
         verifyStatic(times(5));
-        Keys.getOrAdd(IFieldName.class.toString());
+        Keys.getOrAdd(IField.class.toString());
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "pageNumber");
-        verifyNew(Field.class).withArguments(pageNumberBindingPath);
+        IOC.resolve(fieldKey, "pageNumber");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "pageSize");
-        verifyNew(Field.class).withArguments(pageSizeBindingPath);
+        IOC.resolve(fieldKey, "pageSize");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "query");
-        verifyNew(Field.class).withArguments(queryBindingPath);
+        IOC.resolve(fieldKey, "query");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "$eq");
-        verifyNew(Field.class).withArguments(eqBindingPath);
+        IOC.resolve(fieldKey, "$eq");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "token");
-        verifyNew(Field.class).withArguments(tokenBindingPath);
+        IOC.resolve(fieldKey, "token");
     }
 
     @Test
@@ -118,7 +100,7 @@ public class GetAsyncOperationTaskTest {
 
         String token = "tiptoken";
 
-        when(tokenField.out(testQuery)).thenReturn(token);
+        when(tokenField.in(testQuery)).thenReturn(token);
 
         testTask.prepare(testQuery);
 
@@ -127,12 +109,12 @@ public class GetAsyncOperationTaskTest {
         verifyStatic();
         IOC.resolve(ioBjectKey);
 
-        verify(tokenField).out(testQuery);
-        verify(eqField).in(futureCriteriaObject, token);
+        verify(tokenField).in(testQuery);
+        verify(eqField).out(futureCriteriaObject, token);
 
-        verify(pageNumberField).in(testQuery, 1);
-        verify(pageSizeField).in(testQuery, 1);
-        verify(queryField).in(testQuery, futureCriteriaObject);
+        verify(pageNumberField).out(testQuery, 1);
+        verify(pageSizeField).out(testQuery, 1);
+        verify(queryField).out(testQuery, futureCriteriaObject);
 
         verify(targetTask).prepare(testQuery);
     }
@@ -169,7 +151,7 @@ public class GetAsyncOperationTaskTest {
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(ioBjectKey);
         when(IOC.resolve(ioBjectKey)).thenReturn(futureCriteriaObject);
 
-        when(tokenField.out(testQuery)).thenThrow(new ReadValueException());
+        when(tokenField.in(testQuery)).thenThrow(new ReadValueException());
 
         try {
             testTask.prepare(testQuery);
@@ -180,7 +162,7 @@ public class GetAsyncOperationTaskTest {
             verifyStatic();
             IOC.resolve(ioBjectKey);
 
-            verify(tokenField).out(testQuery);
+            verify(tokenField).in(testQuery);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -198,9 +180,9 @@ public class GetAsyncOperationTaskTest {
 
         String token = "tiptoken";
 
-        when(tokenField.out(testQuery)).thenReturn(token);
+        when(tokenField.in(testQuery)).thenReturn(token);
 
-        doThrow(new ChangeValueException()).when(eqField).in(futureCriteriaObject, token);
+        doThrow(new ChangeValueException()).when(eqField).out(futureCriteriaObject, token);
 
         try {
             testTask.prepare(testQuery);
@@ -211,8 +193,8 @@ public class GetAsyncOperationTaskTest {
             verifyStatic();
             IOC.resolve(ioBjectKey);
 
-            verify(tokenField).out(testQuery);
-            verify(eqField).in(futureCriteriaObject, token);
+            verify(tokenField).in(testQuery);
+            verify(eqField).out(futureCriteriaObject, token);
             return;
         }
         assertTrue("Must throw exception", false);

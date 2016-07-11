@@ -1,11 +1,10 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.create_item.AsyncDocument;
-import info.smart_tools.smartactors.core.async_operation_collection.wrapper.create_item.CreateOperationQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
@@ -16,7 +15,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,11 +33,11 @@ public class CreateAsyncOperationTaskTest {
     private CreateAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
 
-    private Field<IObject> asyncDataField;
-    private Field<Boolean> doneFlagField;
-    private Field<String> tokenField;
-    private Field<String> expiredTimeField;
-    private Field<IObject> documentField;
+    private IField asyncDataField;
+    private IField doneFlagField;
+    private IField tokenField;
+    private IField expiredTimeField;
+    private IField documentField;
 
     @Before
     public void prepare () throws Exception {
@@ -48,60 +46,44 @@ public class CreateAsyncOperationTaskTest {
 
         targetTask = mock(IDatabaseTask.class);
 
-        asyncDataField = mock(Field.class);
-        doneFlagField = mock(Field.class);
-        tokenField = mock(Field.class);
-        expiredTimeField = mock(Field.class);
-        documentField = mock(Field.class);
+        asyncDataField = mock(IField.class);
+        doneFlagField = mock(IField.class);
+        tokenField = mock(IField.class);
+        expiredTimeField = mock(IField.class);
+        documentField = mock(IField.class);
 
-        Key fieldNameKey = mock(Key.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+        Key fieldKey = mock(Key.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
 
-        String asyncDataFieldNameBindingPath = "asyncDataFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "asyncData")).thenReturn(asyncDataFieldNameBindingPath);
+        when(IOC.resolve(fieldKey, "asyncData")).thenReturn(asyncDataField);
 
-        String doneFieldNameBindingPath = "doneFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "done")).thenReturn(doneFieldNameBindingPath);
+        when(IOC.resolve(fieldKey, "done")).thenReturn(doneFlagField);
 
-        String tokenFieldNameBindingPath = "tokenFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "token")).thenReturn(tokenFieldNameBindingPath);
+        when(IOC.resolve(fieldKey, "token")).thenReturn(tokenField);
 
-        String expiredTimeFieldNameBindingPath = "expiredTimeFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "expiredTime")).thenReturn(expiredTimeFieldNameBindingPath);
+        when(IOC.resolve(fieldKey, "expiredTime")).thenReturn(expiredTimeField);
 
-        String documentFieldNameBindingPath = "documentFieldNameBindingPath";
-        when(IOC.resolve(fieldNameKey, "document")).thenReturn(documentFieldNameBindingPath);
-
-        whenNew(Field.class).withArguments(asyncDataFieldNameBindingPath).thenReturn(asyncDataField);
-        whenNew(Field.class).withArguments(doneFieldNameBindingPath).thenReturn(doneFlagField);
-        whenNew(Field.class).withArguments(tokenFieldNameBindingPath).thenReturn(tokenField);
-        whenNew(Field.class).withArguments(expiredTimeFieldNameBindingPath).thenReturn(expiredTimeField);
-        whenNew(Field.class).withArguments(documentFieldNameBindingPath).thenReturn(documentField);
+        when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
 
         testTask = new CreateAsyncOperationTask(targetTask);
 
         verifyStatic(times(5));
-        Keys.getOrAdd(IFieldName.class.toString());
+        Keys.getOrAdd(IField.class.toString());
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "asyncData");
-        verifyNew(Field.class).withArguments(asyncDataFieldNameBindingPath);
+        IOC.resolve(fieldKey, "asyncData");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "done");
-        verifyNew(Field.class).withArguments(doneFieldNameBindingPath);
+        IOC.resolve(fieldKey, "done");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "token");
-        verifyNew(Field.class).withArguments(tokenFieldNameBindingPath);
+        IOC.resolve(fieldKey, "token");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "expiredTime");
-        verifyNew(Field.class).withArguments(expiredTimeFieldNameBindingPath);
+        IOC.resolve(fieldKey, "expiredTime");
 
         verifyStatic();
-        IOC.resolve(fieldNameKey, "document");
-        verifyNew(Field.class).withArguments(documentFieldNameBindingPath);
+        IOC.resolve(fieldKey, "document");
     }
 
     @Test
@@ -117,9 +99,9 @@ public class CreateAsyncOperationTaskTest {
         String token = "token";
         String expiredTime = "expTime";
 
-        when(asyncDataField.out(query)).thenReturn(asyncData);
-        when(tokenField.out(query)).thenReturn(token);
-        when(expiredTimeField.out(query)).thenReturn(expiredTime);
+        when(asyncDataField.in(query)).thenReturn(asyncData);
+        when(tokenField.in(query)).thenReturn(token);
+        when(expiredTimeField.in(query)).thenReturn(expiredTime);
 
         testTask.prepare(query);
 
@@ -128,18 +110,18 @@ public class CreateAsyncOperationTaskTest {
         verifyStatic();
         IOC.resolve(iobjectKey);
 
-        verify(asyncDataField).out(query);
-        verify(asyncDataField).in(documentIObject, asyncData);
+        verify(asyncDataField).in(query);
+        verify(asyncDataField).out(documentIObject, asyncData);
 
-        verify(doneFlagField).in(documentIObject, false);
+        verify(doneFlagField).out(documentIObject, false);
 
-        verify(tokenField).out(query);
-        verify(tokenField).in(documentIObject, token);
+        verify(tokenField).in(query);
+        verify(tokenField).out(documentIObject, token);
 
-        verify(expiredTimeField).out(query);
-        verify(expiredTimeField).in(documentIObject, expiredTime);
+        verify(expiredTimeField).in(query);
+        verify(expiredTimeField).out(documentIObject, expiredTime);
 
-        verify(documentField).in(query, documentIObject);
+        verify(documentField).out(query, documentIObject);
 
         verify(targetTask).prepare(query);
     }
@@ -207,7 +189,7 @@ public class CreateAsyncOperationTaskTest {
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(iobjectKey);
         when(IOC.resolve(iobjectKey)).thenReturn(documentIObject);
 
-        when(asyncDataField.out(query)).thenThrow(new ReadValueException());
+        when(asyncDataField.in(query)).thenThrow(new ReadValueException());
 
         try {
             testTask.prepare(query);
@@ -218,7 +200,7 @@ public class CreateAsyncOperationTaskTest {
             verifyStatic();
             IOC.resolve(iobjectKey);
 
-            verify(asyncDataField).out(query);
+            verify(asyncDataField).in(query);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -235,9 +217,9 @@ public class CreateAsyncOperationTaskTest {
 
         IObject asyncData = mock(IObject.class);
 
-        when(asyncDataField.out(query)).thenReturn(asyncData);
+        when(asyncDataField.in(query)).thenReturn(asyncData);
 
-        doThrow(new ChangeValueException()).when(asyncDataField).in(documentIObject, asyncData);
+        doThrow(new ChangeValueException()).when(asyncDataField).out(documentIObject, asyncData);
 
         try {
             testTask.prepare(query);
@@ -248,8 +230,8 @@ public class CreateAsyncOperationTaskTest {
             verifyStatic();
             IOC.resolve(iobjectKey);
 
-            verify(asyncDataField).out(query);
-            verify(asyncDataField).in(documentIObject, asyncData);
+            verify(asyncDataField).in(query);
+            verify(asyncDataField).out(documentIObject, asyncData);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -268,9 +250,9 @@ public class CreateAsyncOperationTaskTest {
         String token = "token";
         String expiredTime = "expTime";
 
-        when(asyncDataField.out(query)).thenReturn(asyncData);
-        when(tokenField.out(query)).thenReturn(token);
-        when(expiredTimeField.out(query)).thenReturn(expiredTime);
+        when(asyncDataField.in(query)).thenReturn(asyncData);
+        when(tokenField.in(query)).thenReturn(token);
+        when(expiredTimeField.in(query)).thenReturn(expiredTime);
 
         doThrow(new TaskPrepareException("")).when(targetTask).prepare(query);
 
@@ -282,18 +264,18 @@ public class CreateAsyncOperationTaskTest {
             verifyStatic();
             IOC.resolve(iobjectKey);
 
-            verify(asyncDataField).out(query);
-            verify(asyncDataField).in(documentIObject, asyncData);
+            verify(asyncDataField).in(query);
+            verify(asyncDataField).out(documentIObject, asyncData);
 
-            verify(doneFlagField).in(documentIObject, false);
+            verify(doneFlagField).out(documentIObject, false);
 
-            verify(tokenField).out(query);
-            verify(tokenField).in(documentIObject, token);
+            verify(tokenField).in(query);
+            verify(tokenField).out(documentIObject, token);
 
-            verify(expiredTimeField).out(query);
-            verify(expiredTimeField).in(documentIObject, expiredTime);
+            verify(expiredTimeField).in(query);
+            verify(expiredTimeField).out(documentIObject, expiredTime);
 
-            verify(documentField).in(query, documentIObject);
+            verify(documentField).out(query, documentIObject);
 
             verify(targetTask).prepare(query);
             return;
