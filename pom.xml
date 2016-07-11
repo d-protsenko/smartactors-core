@@ -119,6 +119,7 @@
         <module>CreateUserActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
+        <module>HandlerRoutingReceiver</module>
     </modules>
 
     <build>
