@@ -3,7 +3,7 @@
     {
       "actor": "createSessionActor",
       "handler": "resolve",
-      "wrapper": {
+      "info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage": {
         "in_getSessionId": "message/sessionId",
         "out_setSession": "message/session"
       }
@@ -11,7 +11,7 @@
     {
       "actor": "authenticationActor",
       "handler": "authenticateSession",
-      "wrapper": {
+      "info.smart_tools.smartactors.actors.authentication.wrapper.AuthenticationMessage": {
         "in_getRequestUserAgent": [
           {
             "name": "getUserAgentFromRequestRule",
@@ -22,6 +22,24 @@
           }
         ],
         "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+      }
+    },
+    {
+      "actor": "checkValidityAsyncOperationActor",
+      "handler": "check",
+      "info.smart_tools.smartactors.core.actors.check_validity_async_operation.wrapper.CheckValidityMessage": {
+        "in_getAsyncOperationId": "message/token",
+        "in_getIdentifiers": "message/session/async_operation_tokens"
+      }
+    },
+    {
+      "actor": "userAuthByLoginActor",
+      "handler": "authenticateUser",
+      "info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage": {
+        "in_getLogin": "message/login",
+        "in_getPassword": "message/password",
+        "out_setAuthStatus": "response/auth_status",
+        "out_setAuthMessage": "response/auth_message"
       }
     },
     {
@@ -36,7 +54,7 @@
       "actor": "closeAsyncOperationActor",
       "handler": "completeAsyncOp",
       "info.smart_tools.smartactors.actors.close_async_operation.wrapper.CloseAsyncOpMessage": {
-        "in_ getToken": "message/token",
+        "in_getToken": "message/token",
         "in_getOperation": "message/async_operation",
         "in_getOperationTokens": "message/session/async_operation_tokens"
       }
