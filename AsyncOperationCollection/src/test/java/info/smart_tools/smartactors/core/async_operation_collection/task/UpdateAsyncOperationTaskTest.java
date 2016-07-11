@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -31,7 +30,6 @@ public class UpdateAsyncOperationTaskTest {
     private UpdateAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
 
-    private IField updateIObjectField;
     private IField doneFlagField;
 
     @Before
@@ -39,80 +37,50 @@ public class UpdateAsyncOperationTaskTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        updateIObjectField = mock(IField.class);
         doneFlagField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
         when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
 
-        when(IOC.resolve(fieldKey, "updateItem")).thenReturn(updateIObjectField);
-
-        when(IOC.resolve(fieldKey, "done")).thenReturn(doneFlagField);
+        when(IOC.resolve(fieldKey, "updateItem/done")).thenReturn(doneFlagField);
 
         targetTask = mock(IDatabaseTask.class);
 
         testTask = new UpdateAsyncOperationTask(targetTask);
 
-        verifyStatic(times(2));
+        verifyStatic();
         Keys.getOrAdd(IField.class.toString());
 
         verifyStatic();
-        IOC.resolve(fieldKey, "updateItem");
-
-        verifyStatic();
-        IOC.resolve(fieldKey, "done");
+        IOC.resolve(fieldKey, "updateItem/done");
     }
 
     @Test
-    public void MustCorrectPrepareQuery() throws ReadValueException, InvalidArgumentException, TaskPrepareException, ChangeValueException {
+    public void MustCorrectPrepareQuery() throws InvalidArgumentException, TaskPrepareException, ChangeValueException {
         IObject query = mock(IObject.class);
 
         IObject updateItem = mock(IObject.class);
 
-        when(updateIObjectField.in(query)).thenReturn(updateItem);
-
         testTask.prepare(query);
 
-        verify(updateIObjectField).in(query);
-
-        verify(doneFlagField).out(updateItem, true);
+        verify(doneFlagField).out(query, true);
 
         verify(targetTask).prepare(query);
     }
 
     @Test
-    public void MustInCorrectPrepareQueryWhenMessageThrowReadValueException() throws ReadValueException, InvalidArgumentException {
-        IObject query = mock(IObject.class);
-
-        when(updateIObjectField.in(query)).thenThrow(new ReadValueException());
-
-        try {
-            testTask.prepare(query);
-        } catch (TaskPrepareException e) {
-
-            verify(updateIObjectField).in(query);
-            return;
-        }
-        assertTrue("Must throw exception", false);
-    }
-
-    @Test
-    public void MustInCorrectPrepareQueryWhenUpdateItemThrowChangeValueException() throws ReadValueException, InvalidArgumentException, ChangeValueException {
+    public void MustInCorrectPrepareQueryWhenUpdateItemThrowChangeValueException() throws InvalidArgumentException, ChangeValueException {
         IObject query = mock(IObject.class);
 
         IObject updateItem = mock(IObject.class);
 
-        when(updateIObjectField.in(query)).thenReturn(updateItem);
-
-        doThrow(new ChangeValueException()).when(doneFlagField).out(updateItem, true);
+        doThrow(new ChangeValueException()).when(doneFlagField).out(query, true);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
-            verify(updateIObjectField).in(query);
-
-            verify(doneFlagField).out(updateItem, true);
+            verify(doneFlagField).out(query, true);
 
             return;
         }
@@ -121,12 +89,10 @@ public class UpdateAsyncOperationTaskTest {
     }
 
     @Test
-    public void MustInCorrectPrepareQueryWhenTargetTaskThrowException() throws ReadValueException, InvalidArgumentException, ChangeValueException, TaskPrepareException {
+    public void MustInCorrectPrepareQueryWhenTargetTaskThrowException() throws InvalidArgumentException, ChangeValueException, TaskPrepareException {
         IObject query = mock(IObject.class);
 
         IObject updateItem = mock(IObject.class);
-
-        when(updateIObjectField.in(query)).thenReturn(updateItem);
 
         doThrow(new TaskPrepareException("")).when(targetTask).prepare(query);
 
@@ -134,9 +100,7 @@ public class UpdateAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
-            verify(updateIObjectField).in(query);
-
-            verify(doneFlagField).out(updateItem, true);
+            verify(doneFlagField).out(query, true);
 
             verify(targetTask).prepare(query);
             return;
