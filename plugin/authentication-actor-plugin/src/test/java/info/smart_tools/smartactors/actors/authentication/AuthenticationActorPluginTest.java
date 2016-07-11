@@ -70,7 +70,7 @@ public class AuthenticationActorPluginTest {
         verifyStatic();
         IOC.register(eq(cachedCollectionKey), createNewInstanceStrategyArgumentCaptor.capture());
 
-        createNewInstanceStrategyArgumentCaptor.getValue().resolve();
+        assertTrue("Objects must have one link", createNewInstanceStrategyArgumentCaptor.getValue().resolve() == actor);
 
         verifyNew(AuthenticationActor.class).withNoArguments();
 
