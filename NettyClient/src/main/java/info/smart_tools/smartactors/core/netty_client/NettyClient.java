@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.netty_client;
 
+import info.smart_tools.smartactors.core.CompletableNettyFuture;
 import info.smart_tools.smartactors.core.iclient.IClient;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
