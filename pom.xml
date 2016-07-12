@@ -134,6 +134,8 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
+        <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>IField</module>
     </modules>
 
     <build>
