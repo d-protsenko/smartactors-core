@@ -125,6 +125,7 @@
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
         <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
     </modules>
 
     <build>
