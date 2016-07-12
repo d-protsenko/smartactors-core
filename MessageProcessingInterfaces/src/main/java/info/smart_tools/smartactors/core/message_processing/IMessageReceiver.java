@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.message_processing;
 
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 
 /**
@@ -13,6 +14,7 @@ public interface IMessageReceiver {
      *
      * @param processor the {@link IMessageProcessor} processing the message
      * @throws MessageReceiveException if error occurs receiving the message
+     * @throws AsynchronousOperationException if error occurs starting asynchronous operation
      */
-    void receive(IMessageProcessor processor) throws MessageReceiveException;
+    void receive(IMessageProcessor processor) throws MessageReceiveException, AsynchronousOperationException;
 }
