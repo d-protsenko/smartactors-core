@@ -51,6 +51,5 @@ public class CheckValidityAsyncOperationPlugin implements IPlugin {
         } catch (ResolutionException | InvalidArgumentException e) {
             throw new PluginException("Can't load CheckValidityAsyncOperation plugin", e);
         }
-
     }
 }
