@@ -36,7 +36,9 @@
       "actor": "asyncOpsActor",
       "handler": "createOperation",
       "info.smart_tools.smartactors.actor.create_async_operation.wrapper.CreateAsyncOperationMessage": {
-        "in_getIObject": "message"
+        "in_getSessionId": "message/sessionId",
+        "in_getExpiredTime": "message/expiredTime",
+        "out_setAsyncOperationToken": "response/token"
       }
     }
   ]
