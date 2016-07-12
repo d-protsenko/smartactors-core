@@ -34,7 +34,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         this.upsertTask = upsertTask;
 
         try {
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "updateItem/done");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/done");
         } catch (ResolutionException e) {
             throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
         }
