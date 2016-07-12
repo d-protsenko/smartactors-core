@@ -41,7 +41,9 @@ public class CompileQueryPlugin implements IPlugin {
             IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
             Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
-            item.process(() -> {
+            item
+                    .after("IOC")
+                    .process(() -> {
                 try {
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
                         (args) -> {
