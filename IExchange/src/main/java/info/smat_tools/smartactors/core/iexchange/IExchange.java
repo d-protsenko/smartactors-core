@@ -1,6 +1,7 @@
 package info.smat_tools.smartactors.core.iexchange;
 
 import info.smart_tools.smartactors.core.imessage.IMessage;
+import info.smart_tools.smartactors.core.iobject.IObject;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,5 +20,5 @@ public interface IExchange {
      * @param message message to be sent
      * @return a future value which can be used to wait an operation completion.
      */
-    CompletableFuture<Void> write(IMessage message);
+    CompletableFuture<Void> write(IObject message);
 }
