@@ -119,8 +119,6 @@
         <module>CreateUserActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
-        <module>plugin/authentication-actor-module</module>
-        <module>plugin/authentication-actor-plugin</module>
         <module>PluginAuthenticationActor</module>
     </modules>
 
