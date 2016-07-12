@@ -50,6 +50,8 @@ public class CreateCachedCollectionPlugin implements IPlugin {
             IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
             Map<String, ICachedCollection> collectionMap = new HashMap<>();
 
+            item.after("IOC");
+
             item.process(() -> {
                 try {
                     IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
