@@ -50,7 +50,7 @@ public class CreateAsyncOperationTaskPlugin implements IPlugin {
             });
             bootstrap.add(item);
         } catch (ResolutionException | InvalidArgumentException e) {
-            throw new PluginException("Can't load CreateCollectionActor plugin", e);
+            throw new PluginException("Can't load CreateAsyncOperationTask plugin", e);
         }
     }
 }

@@ -120,6 +120,7 @@
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
         <module>PluginCreateAsyncOperationTask</module>
+        <module>PluginGetAsyncOperationTask</module>
     </modules>
 
     <build>
