@@ -17,7 +17,6 @@ import java.util.Map;
 
 /**
  * Implementation of {@link IField} only for {@code out} method
- * @param <T> return type for {@code in} method
  */
 public class OutField implements IField {
 
@@ -25,8 +24,10 @@ public class OutField implements IField {
     private static final String FIELD_NAME = "name";
     private static final String LOCAL_KEYWORD = "local/value";
     private static final String CONST_KEYWORD = "const/";
+    private static final String TARGET_KEYWORD = "target";
     private static final String ENVIRONMENT_KEYWORD = "environment";
     private static final String SPLITTER = "\\/";
+    private static final String SLASH = "/";
     private static final String MAPS_KEYWORD = "environments";
     private static final String SUB_MAPS_KEYWORD = "wrappers";
 
@@ -41,11 +42,14 @@ public class OutField implements IField {
      */
     public OutField(final String bindingPath)
             throws InvalidArgumentException {
+        if (null == bindingPath || bindingPath.isEmpty()) {
+            throw new InvalidArgumentException("Arguments should not be null or empty");
+        }
         try {
             this.strategies = new HashMap<>();
             Object obj = getValueFromNestedIObject(
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), MAPS_KEYWORD),
-                    SUB_MAPS_KEYWORD + "/" + bindingPath
+                    SUB_MAPS_KEYWORD + SLASH + bindingPath
             );
             if (obj instanceof ArrayList) {
                 this.rules = (ArrayList) obj;
@@ -66,7 +70,7 @@ public class OutField implements IField {
                 this.rules.add(
                         new ArrayList<Map<String, Object>>() {{ add(
                                 new HashMap<String, Object>() {{
-                                    put("args", new ArrayList<String>() {{ add((String) obj); }});
+                                    put(FIELD_ARGS, new ArrayList<String>() {{ add((String) obj); }});
                                 }}
                             );
                         }}
@@ -89,7 +93,6 @@ public class OutField implements IField {
         if (null == env) {
             throw new InvalidArgumentException("Environment should not be null.");
         }
-
         try {
             for(List<Map<String, Object>> rulesArray : this.rules) {
                 Object value = in;
@@ -97,6 +100,18 @@ public class OutField implements IField {
                     List<String> args = (ArrayList<String>) rule.get(FIELD_ARGS);
                     String name = (String) rule.get(FIELD_NAME);
                     Object[] resolvedArgs = new Object[args.size()];
+                    if (null == name || name.isEmpty()) {
+                        setValueToNestedIObject(env, args.get(0), value);
+                        continue;
+                    }
+                    if (name.equals(TARGET_KEYWORD)) {
+                        String source = args.get(0);
+                        String[] split = source.split(SPLITTER);
+                        String fieldName = split[split.length - 1];
+                        String path = source.substring(0, source.lastIndexOf(SLASH));
+                        strategies.get(name).resolve(getValueFromNestedIObject(env, path), fieldName, value);
+                        continue;
+                    }
                     for (String arg : args) {
                         if (arg.equals(LOCAL_KEYWORD)) {
                             resolvedArgs[args.indexOf(arg)] = value;
@@ -112,10 +127,7 @@ public class OutField implements IField {
                         }
                         resolvedArgs[args.indexOf(arg)] = getValueFromNestedIObject(env, arg);
                     }
-                    value =
-                            null != name && !name.isEmpty() ?
-                                    IOC.resolve(Keys.getOrAdd(name), resolvedArgs) :
-                                    resolvedArgs[0];
+                    value = strategies.get(name).resolve(resolvedArgs);
                 }
             }
         } catch (Exception e) {
@@ -127,6 +139,9 @@ public class OutField implements IField {
             throws ReadValueException {
         try {
             String[] separated = location.split(SPLITTER);
+            if (1 == separated.length) {
+                return getNestedIObject(source, separated);
+            }
             return getNestedIObject(source, separated).getValue(
                     IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
