@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.netty_client.NettyClient;
 import info.smart_tools.smartactors.core.netty_server.NettyServer;
 import info.smat_tools.smartactors.core.iexchange.IExchange;
 import io.netty.channel.ChannelHandlerContext;
