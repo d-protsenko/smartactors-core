@@ -54,6 +54,14 @@ public interface IMessageProcessor {
     IObject getEnvironment();
 
     /**
+     * Set a global configuration object to use for processing of next message.
+     *
+     * @param config    the configuration object
+     * @throws InvalidArgumentException if {@code config} is {@code null}
+     */
+    void setConfig(IObject config) throws InvalidArgumentException;
+
+    /**
      * Start processing new message using this instance of {@link IMessageProcessor}.
      *
      * @param message    the message to process

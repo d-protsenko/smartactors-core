@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.core.message_processor;
 
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
@@ -37,9 +39,11 @@ public class MessageProcessorTest {
     private IObject contextMock;
     private IObject responseMock;
     private IObject environmentMock;
+    private IObject configurationMock;
 
     private final IKey KEY_FOR_KEY_STORAGE = mock(IKey.class);
     private final IKey KEY_FOR_NEW_IOBJECT = mock(IKey.class);
+    private final IKey KEY_FOR_FIELD_NAME = mock(IKey.class);
 
     @Before
     public void setUp()
@@ -50,6 +54,7 @@ public class MessageProcessorTest {
         contextMock = mock(IObject.class);
         responseMock = mock(IObject.class);
         environmentMock = mock(IObject.class);
+        configurationMock = mock(IObject.class);
 
         mockStatic(IOC.class);
 
@@ -57,18 +62,50 @@ public class MessageProcessorTest {
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, IObject.class.getCanonicalName())).thenReturn(KEY_FOR_NEW_IOBJECT);
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(environmentMock);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, IFieldName.class.getCanonicalName())).thenReturn(KEY_FOR_FIELD_NAME);
+        when(IOC.resolve(same(KEY_FOR_FIELD_NAME), any()))
+                .thenAnswer(invocationOnMock -> new FieldName((String) invocationOnMock.getArguments()[1]));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_queueIsNull()
             throws Exception {
-        assertNotNull(new MessageProcessor(null, messageProcessingSequenceMock));
+        assertNotNull(new MessageProcessor(null, messageProcessingSequenceMock, configurationMock));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_messageProcessingSequenceIsNull()
             throws Exception {
-        assertNotNull(new MessageProcessor(taskQueueMock, null));
+        assertNotNull(new MessageProcessor(taskQueueMock, null, configurationMock));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_constructorThrow_When_configIsNull()
+            throws Exception {
+        assertNotNull(new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, null));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_setConfigThrow_When_ConfigIsNull()
+            throws Exception {
+        new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock).setConfig(null);
+    }
+
+    @Test
+    public void Should_updateConfigurationInEnvironmentStartOfProcessing()
+            throws Exception {
+        IObject configurationMock2 = mock(IObject.class);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
+
+        messageProcessor.process(messageMock, contextMock);
+
+        verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "config")), same(configurationMock));
+
+        messageProcessor.setConfig(configurationMock2);
+
+        messageProcessor.process(messageMock, contextMock);
+
+        verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "config")), same(configurationMock2));
     }
 
     @Test
@@ -79,7 +116,7 @@ public class MessageProcessorTest {
         when(messageProcessingSequenceMock.getCurrentReceiver()).thenReturn(messageReceiverMock1);
         doThrow(new InterruptedException()).when(taskQueueMock).put(any());
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -92,7 +129,7 @@ public class MessageProcessorTest {
     @Test
     public void Should_storeAndReturnMessageAndContextAndSequenceAndCreateResponse()
             throws Exception {
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -114,7 +151,7 @@ public class MessageProcessorTest {
         IObject receiverArgs1 = mock(IObject.class);
         IObject receiverArgs2 = mock(IObject.class);
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -156,7 +193,7 @@ public class MessageProcessorTest {
         Throwable exception = new Exception();
         Throwable exception2 = mock(NoExceptionHandleChainException.class);
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -193,7 +230,7 @@ public class MessageProcessorTest {
         Throwable exception = mock(MessageReceiveException.class);
         Throwable exception2 = mock(NoExceptionHandleChainException.class);
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -223,7 +260,7 @@ public class MessageProcessorTest {
         IObject receiverArguments1 = mock(IObject.class);
         Throwable exception = new Exception();
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);
@@ -255,7 +292,7 @@ public class MessageProcessorTest {
         IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
         IObject receiverArguments1 = mock(IObject.class);
 
-        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock);
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(responseMock);

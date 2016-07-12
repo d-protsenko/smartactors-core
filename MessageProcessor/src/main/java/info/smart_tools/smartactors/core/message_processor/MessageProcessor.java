@@ -20,11 +20,13 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.Asynchron
  * @see ITask
  */
 public class MessageProcessor implements ITask, IMessageProcessor {
+    private IObject config;
     private IObject context;
     private IObject message;
     private IObject response;
     private IObject environment;
 
+    private IFieldName configFieldName;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
     private IFieldName responseFieldName;
@@ -63,11 +65,12 @@ public class MessageProcessor implements ITask, IMessageProcessor {
      *
      * @param taskQueue                    the queue to be executed from
      * @param messageProcessingSequence    a {@link IMessageProcessingSequence} to use
+     * @param config                       the global configuration object to use
      * @throws InvalidArgumentException if taskQueue is {@code null}
      * @throws InvalidArgumentException if messageProcessingSequence is {@code null}
      * @throws ResolutionException if failed to resolve any dependency
      */
-    public MessageProcessor(final IQueue<ITask> taskQueue, final IMessageProcessingSequence messageProcessingSequence)
+    public MessageProcessor(final IQueue<ITask> taskQueue, final IMessageProcessingSequence messageProcessingSequence, final IObject config)
             throws InvalidArgumentException, ResolutionException {
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");
@@ -77,14 +80,20 @@ public class MessageProcessor implements ITask, IMessageProcessor {
             throw new InvalidArgumentException("Message processing sequence should not be null.");
         }
 
+        if (null == config) {
+            throw new InvalidArgumentException("Configuration object should not be null.");
+        }
+
         this.taskQueue = taskQueue;
         this.messageProcessingSequence = messageProcessingSequence;
+        this.config = config;
 
         this.interrupted = false;
         this.asyncOpDepth = 0;
 
         this.environment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
 
+        configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "config");
         messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message");
         contextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context");
         responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "response");
@@ -100,6 +109,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         this.context = theContext;
         this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
 
+        environment.setValue(configFieldName, config);
         environment.setValue(sequenceFieldName, messageProcessingSequence);
         environment.setValue(responseFieldName, response);
         environment.setValue(messageFieldName, theMessage);
@@ -170,6 +180,14 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public IObject getEnvironment() {
         return environment;
+    }
+
+    @Override
+    public void setConfig(final IObject config) throws InvalidArgumentException {
+        if (null == config) {
+            throw new InvalidArgumentException("Configuration object should not be null.");
+        }
+        this.config = config;
     }
 
     @Override
