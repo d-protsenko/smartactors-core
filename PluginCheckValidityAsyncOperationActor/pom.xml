@@ -28,6 +28,11 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.actors.check_validity_async_operation</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
             <version>${core.version}</version>
         </dependency>
