@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.core.handler_routing_receiver;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 
 import java.util.Map;
@@ -38,16 +37,16 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
     }
 
     @Override
-    public void receive(final IMessageProcessor processor, final IObject arguments, final IAction<Throwable> onEnd)
-            throws MessageReceiveException {
+    public void receive(final IMessageProcessor processor)
+            throws MessageReceiveException, AsynchronousOperationException {
         try {
-            Object handlerId = handlerField.in(arguments);
+            Object handlerId = handlerField.in(processor.getSequence().getCurrentReceiverArguments());
             IMessageReceiver handlerReceiver = handlerReceiversMap.get(handlerId);
 
             if (null == handlerReceiver) {
                 throw new MessageReceiveException("Handler not found.");
             } else {
-                handlerReceiver.receive(processor, arguments, onEnd);
+                handlerReceiver.receive(processor);
             }
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageReceiveException("Error reading handler name.");
