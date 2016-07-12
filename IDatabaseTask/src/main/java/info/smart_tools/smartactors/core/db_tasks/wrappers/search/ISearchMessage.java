@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface for message containing incoming search request.
@@ -38,6 +37,18 @@ import java.util.Optional;
 public interface ISearchMessage extends IDBTaskMessage {
     /** Criteria for searching query. */
     Object getCriteria();
+
+    /**
+     *
+     * @return
+     */
+    IObject getParameters();
+
+    /**
+     *
+     * @param parameters
+     */
+    void setParameters(IObject parameters);
 
     /**
      *
