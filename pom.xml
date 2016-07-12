@@ -118,6 +118,7 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>PluginCreateSession</module>
     </modules>
 
     <build>
