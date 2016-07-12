@@ -57,6 +57,11 @@
         <module>IEndpointCreator</module>
         <module>IAsyncService</module>
         <module>EndpointGenerator</module>
+        <module>EndpointHandler</module>
+        <module>IExchange</module>
+        <module>NettyServer</module>
+        <module>TcpServer</module>
+        <module>HttpServer</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
@@ -120,9 +125,15 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
-        <module>EndpointHandler</module>
-        <module>IExchange</module>
-        <module>NettyServer</module>
+        <module>HttpEndpoint</module>
+        <module>IMessageMapper</module>
+        <module>IDeserializeStrategy</module>
+        <module>EndpointChannelInboundHandler</module>
+        <module>NettyClient</module>
+        <module>IClient</module>
+        <module>HttpClient</module>
+        <module>CompletableNettyFuture</module>
+        <module>DeserializeStrategyPostJson</module>
     </modules>
 
     <build>
