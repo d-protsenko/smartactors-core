@@ -18,6 +18,7 @@ import java.util.List;
  * Actor that put form to message from cached collection
  */
 public class GetFormActor {
+    private static final String KEY_NAME = "form";
     private ICachedCollection collection;
 
     /**
@@ -28,7 +29,7 @@ public class GetFormActor {
     public GetFormActor(final IObject params) throws GetFormActorException {
         try {
             IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "collectionName");
-            collection = IOC.resolve(Keys.getOrAdd(CachedCollection.class.toString()), params.getValue(fieldName));
+            collection = IOC.resolve(Keys.getOrAdd(CachedCollection.class.toString()), params.getValue(fieldName), KEY_NAME);
         } catch (Exception e) {
             throw new GetFormActorException("Can't create GetFormActor", e);
         }

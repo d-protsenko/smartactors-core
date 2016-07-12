@@ -36,22 +36,24 @@ public class GetFormMapPlugin implements IPlugin {
             IKey cachedCollectionKey = Keys.getOrAdd(GetFormActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CreateGetFormMapActorsPlugin");
 
-            item.process(() -> {
-                try {
-                    IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
-                            (args) -> {
-                                try {
-                                    return new GetFormActor((IObject) args[0]);
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }));
-                } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            item
+                .after("IOC")
+                .process(() -> {
+                    try {
+                        IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
+                                (args) -> {
+                                    try {
+                                        return new GetFormActor((IObject) args[0]);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }));
+                    } catch (RegistrationException | InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (Exception e) {
             throw new PluginException("Can't load CreateGetFormMapActors plugin", e);
         }
     }
