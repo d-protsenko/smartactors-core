@@ -70,6 +70,12 @@ public class WDSObjectTest {
                             }
                         })
         );
+        IOC.register(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> a[1]
+                )
+        );
     }
 
     @Test
@@ -188,23 +194,39 @@ public class WDSObjectTest {
     @Test
     public void checkSetValueMethod()
             throws Exception {
+        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IOC.resolve(
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                "TransformToInt",
+                strategy1
+        );
+        when(strategy1.resolve("2", "1")).thenReturn(21);
         IObject config = mock(IObject.class);
         IObject rule11 = mock(IObject.class);
         IObject rule21 = mock(IObject.class);
         IObject rule22 = mock(IObject.class);
         List<IObject> rulesList1 = new ArrayList<IObject>(){{add(rule11);}};
-//        List<IObject> rulesList2 = new ArrayList<IObject>(){{add(rule21); add(rule22);}};
-        List<List<IObject>> rules = new ArrayList<List<IObject>>(){{add(rulesList1); /* add(rulesList2);*/}};
+        List<IObject> rulesList2 = new ArrayList<IObject>(){{add(rule21); add(rule22);}};
+        List<List<IObject>> rules = new ArrayList<List<IObject>>(){{add(rulesList1);  add(rulesList2);}};
         when(config.getValue(new FieldName("TransformAndSetValue"))).thenReturn(rules);
         IObject env = mock(IObject.class);
         IObject response = mock(IObject.class);
+        IObject message = mock(IObject.class);
         when(env.getValue(new FieldName("response"))).thenReturn(response);
+        when(env.getValue(new FieldName("message"))).thenReturn(message);
+        when(message.getValue(new FieldName("stringValue"))).thenReturn("1");
         when(rule11.getValue(new FieldName("name"))).thenReturn("wds_target_strategy");
         when(rule11.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("response/stringValue");}});
+        when(rule21.getValue(new FieldName("name"))).thenReturn("TransformToInt");
+        when(rule21.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("consts/2"); add("message/stringValue");}});
+        when(rule22.getValue(new FieldName("name"))).thenReturn("wds_target_strategy");
+        when(rule22.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("response/intValue");}});
         doNothing().when(response).setValue(new FieldName("stringValue"), "1");
+        doNothing().when(response).setValue(new FieldName("intValue"), 1);
         IObject wObj = new WDSObject(config);
         ((IObjectWrapper) wObj).init(env);
         wObj.setValue(new FieldName("TransformAndSetValue"), "1");
         verify(response, times(1)).setValue(new FieldName("stringValue"), "1");
+        verify(response, times(1)).setValue(new FieldName("intValue"), 21);
     }
 }

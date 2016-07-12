@@ -40,67 +40,9 @@ public class WrapperGenerator implements IWrapperGenerator {
      * Constructor.
      * Create new instance of {@link WrapperGenerator} by given {@link ClassLoader}
      * @param classLoader the instance of {@link ClassLoader}
-     * @throws WrapperGeneratorException if generation of wrapper has been failed by any reasons
      */
-    public WrapperGenerator(final ClassLoader classLoader)
-            throws WrapperGeneratorException {
-        try {
-            this.classGenerator = new ClassGenerator(classLoader);
-            IResolveDependencyStrategy targetStrategy =  new ApplyFunctionToArgumentsStrategy(
-                    (a) -> {
-                        try {
-                            ((IObject) a[0]).setValue(
-                                    IOC.resolve(
-                                            Keys.getOrAdd(IKey.class.getCanonicalName()), (String) a[1]
-                                    ),
-                                    a[2]
-                            );
-                            return a[0];
-                        } catch (Throwable e) {
-                            throw new RuntimeException("Resolution error in 'target' strategy.");
-                        }
-                    }
-            );
-            IOC.resolve(
-                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
-                    "wg_target",
-                    targetStrategy
-            );
-
-            IResolveDependencyStrategy defaultSetterStrategy =  new ApplyFunctionToArgumentsStrategy(
-                    (a) -> {
-                        try {
-                            ((IObject) a[0]).setValue((IKey) a[1], a[2]);
-                            return a[0];
-                        } catch (Throwable e) {
-                            throw new RuntimeException("Resolution error in 'target' strategy.");
-                        }
-                    }
-            );
-            IOC.resolve(
-                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
-                    "wg_set_default",
-                    defaultSetterStrategy
-            );
-
-            IResolveDependencyStrategy defaultGetterStrategy =  new ApplyFunctionToArgumentsStrategy(
-                    (a) -> {
-                        try {
-                            return ((IObject) a[0]).getValue((IKey) a[1]);
-                        } catch (Throwable e) {
-                            throw new RuntimeException("Resolution error in 'target' strategy.");
-                        }
-                    }
-            );
-            IOC.resolve(
-                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
-                    "wg_get_default",
-                    defaultGetterStrategy
-            );
-
-        } catch (Throwable e) {
-            throw new WrapperGeneratorException("Could not registry 'target' strategy.", e);
-        }
+    public WrapperGenerator(final ClassLoader classLoader) {
+        this.classGenerator = new ClassGenerator(classLoader);
     }
 
     @Override
@@ -220,8 +162,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(m.getName())
                     .append(" = new ")
                     .append("Field(new FieldName(\"")
-                    .append(targetInterface.getCanonicalName())
-                    .append("/").append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
+                    .append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
         }
         builder
                 .append("\t\t").append("} catch (Exception e) {\n").append("\t\t\t")

@@ -11,9 +11,9 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import java.lang.Integer;
-import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
-import java.util.List;
 import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
+import java.util.List;
+import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
 
 public class IWrapperImpl implements IObjectWrapper, IWrapper {
     private IField fieldFor_in_getIntValue;
@@ -29,15 +29,15 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
 
     public IWrapperImpl() throws InvalidArgumentException  {
         try {
-            this.fieldFor_in_getIntValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getIntValue"));
-            this.fieldFor_in_getTestClassValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getTestClassValue"));
-            this.fieldFor_in_wrappedIObject = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_wrappedIObject"));
-            this.fieldFor_out_wrappedIObject = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_wrappedIObject"));
-            this.fieldFor_in_getListOfTestClasses = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getListOfTestClasses"));
-            this.fieldFor_out_setIntValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setIntValue"));
-            this.fieldFor_out_setTestClassValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setTestClassValue"));
-            this.fieldFor_out_setListOfTestClasses = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setListOfTestClasses"));
-            this.fieldFor_out_transform = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_transform"));
+            this.fieldFor_in_getIntValue = new Field(new FieldName("in_getIntValue"));
+            this.fieldFor_in_getTestClassValue = new Field(new FieldName("in_getTestClassValue"));
+            this.fieldFor_in_wrappedIObject = new Field(new FieldName("in_wrappedIObject"));
+            this.fieldFor_out_wrappedIObject = new Field(new FieldName("out_wrappedIObject"));
+            this.fieldFor_in_getListOfTestClasses = new Field(new FieldName("in_getListOfTestClasses"));
+            this.fieldFor_out_setIntValue = new Field(new FieldName("out_setIntValue"));
+            this.fieldFor_out_setTestClassValue = new Field(new FieldName("out_setTestClassValue"));
+            this.fieldFor_out_setListOfTestClasses = new Field(new FieldName("out_setListOfTestClasses"));
+            this.fieldFor_out_transform = new Field(new FieldName("out_transform"));
         } catch (Exception e) {
             throw new InvalidArgumentException("", e);
         }
