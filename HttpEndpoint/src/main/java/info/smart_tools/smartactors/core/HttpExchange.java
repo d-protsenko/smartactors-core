@@ -66,7 +66,7 @@ public class HttpExchange implements IExchange {
     }
 
     @Override
-    public CompletableFuture<Void> write(IMessage responseMessage) {
+    public CompletableFuture<Void> write(IObject responseMessage) {
         ByteBuf serializedMessage = Unpooled.wrappedBuffer(messageMapper.serialize(responseMessage));
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, getResponseStatus(responseMessage), serializedMessage);
         response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
@@ -88,7 +88,7 @@ public class HttpExchange implements IExchange {
         return CompletableNettyFuture.from(writeFuture);
     }
 
-    private HttpResponseStatus getResponseStatus(IMessage responseMessage) {
+    private HttpResponseStatus getResponseStatus(IObject responseMessage) {
         try {
             Field<Exception> exceptionField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "exception");
             Exception ex = exceptionField.out(responseMessage);
