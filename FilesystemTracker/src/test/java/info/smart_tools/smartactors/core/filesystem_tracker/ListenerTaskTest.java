@@ -2,58 +2,81 @@ package info.smart_tools.smartactors.core.filesystem_tracker;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ListenerTaskTest {
-    private IAction<File> actionMock;
-    private File directoryMock;
+    private IAction<IPath> actionMock;
+    private IPath directoryMock;
+    private FileSystem fileSystemMock;
+    private FileSystemProvider fileSystemProviderMock;
     private WatchService watchServiceMock;
     private WatchKey watchKeyMock;
     private WatchEvent event1Mock, event2Mock;
+    private java.nio.file.Path directoryPathMock;
 
     @Before
     public void setUp()
             throws Exception {
-        actionMock = (IAction<File>)mock(IAction.class);
-        directoryMock = spy(new File("dir"));
+        actionMock = mock(IAction.class);
+
+        directoryMock = mock(IPath.class);
+        directoryPathMock = mock(java.nio.file.Path.class);
+        fileSystemMock = mock(FileSystem.class);
+        fileSystemProviderMock = mock(FileSystemProvider.class);
         watchServiceMock = mock(WatchService.class);
         watchKeyMock = mock(WatchKey.class);
         event1Mock = mock(WatchEvent.class);
         event2Mock = mock(WatchEvent.class);
 
-//        when(directoryMock.getName()).thenReturn("dir");
-//        when(directoryMock.getPath()).thenReturn("dir");
-        when(directoryMock.toPath()).thenReturn(mock(Path.class));
-        when(directoryMock.toPath().getFileSystem()).thenReturn(mock(FileSystem.class));
-        when(directoryMock.toPath().getFileSystem().newWatchService()).thenReturn(watchServiceMock);
+        when(directoryMock.getPath()).thenReturn("dir");
+        when(directoryPathMock.getFileSystem()).thenReturn(fileSystemMock);
+        when(fileSystemMock.getPath("dir")).thenReturn(directoryPathMock);
+        when(fileSystemMock.provider()).thenReturn(fileSystemProviderMock);
+        when(fileSystemMock.newWatchService()).thenReturn(watchServiceMock);
     }
 
     @Test
     public void Should_setupWatchServiceOnCreation()
             throws Exception {
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
+        ListenerTask task = new ListenerTask(directoryMock, actionMock, fileSystemMock);
 
-        verify(directoryMock.toPath()).register(same(watchServiceMock), same(StandardWatchEventKinds.ENTRY_CREATE));
+        verify(directoryPathMock).register(same(watchServiceMock), same(StandardWatchEventKinds.ENTRY_CREATE));
     }
 
     @Test
     public void Should_queryListOfExistFilesAndPollWatchServiceEvents()
             throws Exception {
-        File[] filesMock = new File[] {mock(File.class), mock(File.class)};
-        File newFileMock = spy(new File(directoryMock, "new"));
-        Path newFilePathMock = Paths.get("new");
+        DirectoryStream directoryStreamMock = mock(DirectoryStream.class);
+        Iterator directoryStreamIteratorMock = mock(Iterator.class);
+        java.nio.file.Path[] filesMock = new java.nio.file.Path[] {
+                mock(java.nio.file.Path.class),
+                mock(java.nio.file.Path.class)
+        };
+        when(filesMock[0].toString()).thenReturn("dir/one");
+        when(filesMock[1].toString()).thenReturn("dir/two");
 
-        when(directoryMock.listFiles()).thenReturn(filesMock);
+        when(directoryStreamIteratorMock.hasNext()).thenReturn(true, true, false);
+        when(directoryStreamIteratorMock.next()).thenReturn(filesMock[0], filesMock[1]);
+        when(directoryStreamMock.iterator()).thenReturn(directoryStreamIteratorMock);
+        when(fileSystemProviderMock.newDirectoryStream(any(), any())).thenReturn(directoryStreamMock);
+
+        java.nio.file.Path newFilePathMock = mock(java.nio.file.Path.class);
+        when(newFilePathMock.toString()).thenReturn("dir/new");
 
         when(event1Mock.kind()).thenReturn((WatchEvent.Kind)StandardWatchEventKinds.ENTRY_CREATE);
         when(event1Mock.context()).thenReturn(newFilePathMock);
@@ -65,23 +88,29 @@ public class ListenerTaskTest {
         when(watchServiceMock.take()).thenReturn(watchKeyMock);
         when(watchKeyMock.reset()).thenReturn(true).thenReturn(false);
 
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
+        ListenerTask task = new ListenerTask(directoryMock, actionMock, fileSystemMock);
 
         task.run();
 
-        verify(actionMock, times(1)).execute(same(filesMock[0]));
-        verify(actionMock, times(1)).execute(same(filesMock[1]));
-        verify(actionMock, times(1)).execute(eq(newFileMock));
+        verify(actionMock, times(1)).execute(eq(new Path("dir/one")));
+        verify(actionMock, times(1)).execute(eq(new Path("dir/two")));
+        verify(actionMock, times(1)).execute(eq(new Path("dir/new")));
         verify(actionMock, times(3)).execute(any());
     }
 
     @Test
     public void Should_handleThreadInterruption()
             throws Exception {
-        when(directoryMock.listFiles()).thenReturn(new File[0]);
+        DirectoryStream directoryStreamMock = mock(DirectoryStream.class);
+        Iterator directoryStreamIteratorMock = mock(Iterator.class);
+
+        when(directoryStreamIteratorMock.hasNext()).thenReturn(false);
+        when(directoryStreamMock.iterator()).thenReturn(directoryStreamIteratorMock);
+        when(fileSystemProviderMock.newDirectoryStream(any(), any())).thenReturn(directoryStreamMock);
+
         when(watchServiceMock.take()).thenThrow(new InterruptedException());
 
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
+        ListenerTask task = new ListenerTask(directoryMock, actionMock, fileSystemMock);
 
         task.run();
 
@@ -91,12 +120,20 @@ public class ListenerTaskTest {
     @Test
     public void Should_wrapActionExceptionsIntoRuntimeExceptions()
             throws Exception {
-        File[] filesMock = new File[] {mock(File.class)};
-        when(directoryMock.listFiles()).thenReturn(filesMock);
+        DirectoryStream directoryStreamMock = mock(DirectoryStream.class);
+        Iterator directoryStreamIteratorMock = mock(Iterator.class);
+        java.nio.file.Path[] filesMock = new java.nio.file.Path[] {
+                mock(java.nio.file.Path.class)
+        };
 
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
+        when(directoryStreamIteratorMock.hasNext()).thenReturn(true, false);
+        when(directoryStreamIteratorMock.next()).thenReturn(filesMock[0]);
+        when(directoryStreamMock.iterator()).thenReturn(directoryStreamIteratorMock);
+        when(fileSystemProviderMock.newDirectoryStream(any(), any())).thenReturn(directoryStreamMock);
 
-        doThrow(new ActionExecuteException("")).when(actionMock).execute(same(filesMock[0]));
+        ListenerTask task = new ListenerTask(directoryMock, actionMock, fileSystemMock);
+
+        doThrow(new ActionExecuteException("")).when(actionMock).execute(any(IPath.class));
 
         try {
             task.run();
@@ -104,36 +141,6 @@ public class ListenerTaskTest {
         } catch (RuntimeException e) {
             assertTrue(e.getCause() instanceof ActionExecuteException);
         }
-    }
-
-    @Test
-    public void Should_existFilesAndPolledFilesBeInTheSameDir()
-            throws Exception {
-        File newFileMock = new File(directoryMock.getName(), "file");
-        Path newFilePathMock = Paths.get("file");
-
-        when(directoryMock.listFiles()).thenReturn(new File[] {});
-
-        when(event1Mock.kind()).thenReturn((WatchEvent.Kind)StandardWatchEventKinds.ENTRY_CREATE);
-        when(event1Mock.context()).thenReturn(newFilePathMock);
-        when(watchKeyMock.pollEvents())
-                .thenReturn(Arrays.asList(event1Mock))
-                .thenReturn(Collections.emptyList());
-
-        when(watchServiceMock.take()).thenReturn(watchKeyMock);
-        when(watchKeyMock.reset()).thenReturn(true).thenReturn(false);
-
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
-        task.run();
-
-        verify(actionMock, times(1)).execute(eq(newFileMock));
-    }
-
-    @Test
-    public void Should_addDirectoryToTrackedFiles() throws IOException {
-        ListenerTask task = new ListenerTask(directoryMock, actionMock);
-        assertEquals(new File("dir/file"), task.addFileToDirectory(new File("file")));
-        assertEquals(new File("dir/subdir/file"), task.addFileToDirectory(new File("subdir/file")));
     }
 
 }
