@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core;
 
 
 import info.smart_tools.smartactors.core.imessage.IMessage;
+import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
  * Temporary interface for {@link IMessage} serialization/deserialization logic.
@@ -14,7 +15,7 @@ public interface IMessageMapper<TSerialized> {
      * @param serializedInput serialized message
      * @return a deserialized message
      */
-    IMessage deserialize(TSerialized serializedInput);
+    IObject deserialize(TSerialized serializedInput);
 
     /**
      * Serialize a {@link IMessage} into some format. From which it can be deserialized later.
@@ -22,5 +23,5 @@ public interface IMessageMapper<TSerialized> {
      * @param message message to be serialized
      * @return a serialized representation of message
      */
-    TSerialized serialize(IMessage message);
+    TSerialized serialize(IObject message);
 }
