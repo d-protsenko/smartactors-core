@@ -36,13 +36,13 @@ public class CreateSessionPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey cachedCollectionKey = Keys.getOrAdd(CreateSessionActor.class.toString());
+            IKey createSessionActorKey = Keys.getOrAdd(CreateSessionActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CreateSessionActorPlugin");
 
             item.process(() -> {
                 try {
                     IPool connectionPool = IOC.resolve(Keys.getOrAdd(IPool.class.toString()));
-                    IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
+                    IOC.register(createSessionActorKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 try {
                                     IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
