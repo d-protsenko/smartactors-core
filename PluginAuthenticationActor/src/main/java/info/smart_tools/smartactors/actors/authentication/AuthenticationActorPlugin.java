@@ -27,7 +27,7 @@ public class AuthenticationActorPlugin implements IPlugin {
             IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
-            item.process(() -> {
+            item.after("IOC").process(() -> {
                 try {
                     IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
                             (args) -> {

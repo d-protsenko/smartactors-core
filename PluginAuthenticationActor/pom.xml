@@ -6,11 +6,11 @@
         <artifactId>core</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>core.authentication-actor-plugin</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -68,6 +68,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
 </project>
