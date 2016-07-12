@@ -2,8 +2,7 @@
   "get_registration_form_map": [
     {
       "actor": "createSessionActor",
-      "handler": "getSession",
-      "wrapper": []
+      "handler": "getSession"
     },
     {
       "actor": "authenticationActor",
