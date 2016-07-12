@@ -16,6 +16,10 @@ public class GetHeaderFromRequestRule implements IResolveDependencyStrategy {
      */
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) ((FullHttpRequest) args[0]).headers().get((String) args[1]);
+        try {
+            return (T) ((FullHttpRequest) args[0]).headers().get((String) args[1]);
+        } catch (ClassCastException e) {
+            throw new ResolveDependencyStrategyException("Can't cast the object");
+        }
     }
 }
