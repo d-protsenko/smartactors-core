@@ -1,12 +1,11 @@
 package info.smart_tools.smartactors.core.actor_receiver;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 
 import java.util.Queue;
@@ -21,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ActorReceiver implements IMessageReceiver {
     // It's preferred to use ConcurrentLinkedQueue that uses lock-free algorithms
-    private final Queue<Object[]> queue;
+    private final Queue<IMessageProcessor> queue;
 
     // Atomic flag. True if any message is being processed by childReceiver
     private final AtomicBoolean isBusy;
@@ -48,32 +47,38 @@ public class ActorReceiver implements IMessageReceiver {
     }
 
     @Override
-    public void receive(final IMessageProcessor processor, final IObject arguments, final IAction<Throwable> onEnd)
-            throws MessageReceiveException {
+    public void receive(final IMessageProcessor processor)
+            throws MessageReceiveException, AsynchronousOperationException {
+        Throwable syncException = null;
+
         if (isBusy.compareAndSet(false, true)) {
             try {
-                childReceiver.receive(processor, arguments, onEnd);
+                childReceiver.receive(processor);
             } catch (Throwable e) {
-                try {
-                    onEnd.execute(e);
-                } catch (Throwable ee) {
-                    ee.addSuppressed(e);
-                    catchCriticalException(ee);
-                }
+                syncException = e;
             } finally {
                 isBusy.set(false);
             }
         } else {
-            queue.add(new Object[]{processor, arguments, onEnd});
+            processor.pauseProcess();
+            queue.add(processor);
         }
 
+        executeDelayed();
+
+        if (null != syncException) {
+            throw new MessageReceiveException("Failed to execute actor receiver.", syncException);
+        }
+    }
+
+    private void executeDelayed() {
         while (!queue.isEmpty()) {
             if (isBusy.compareAndSet(false, true)) {
-                Object[] arr;
+                IMessageProcessor mp;
 
                 try {
-                    while (null != (arr = queue.poll())) {
-                        executeOne(arr);
+                    while (null != (mp = queue.poll())) {
+                        executeOne(mp);
                     }
                 } finally {
                     isBusy.set(false);
@@ -84,20 +89,23 @@ public class ActorReceiver implements IMessageReceiver {
         }
     }
 
-    private void executeOne(final Object[] arr) {
-        final IMessageProcessor messageProcessor = (IMessageProcessor) arr[0];
-        final IObject arguments = (IObject) arr[1];
-        final IAction callback = (IAction) arr[2];
+    private void executeOne(final IMessageProcessor messageProcessor) {
+        Throwable exception = null;
 
         try {
-            childReceiver.receive(messageProcessor, arguments, callback);
+            childReceiver.receive(messageProcessor);
         } catch (Throwable e) {
-            try {
-                callback.execute(e);
-            } catch (Throwable ee) {
-                ee.addSuppressed(e);
-                catchCriticalException(ee);
+            exception = e;
+        }
+
+        try {
+            messageProcessor.continueProcess(exception);
+        } catch (Throwable e) {
+            if (null != exception) {
+                e.addSuppressed(exception);
             }
+
+            catchCriticalException(e);
         }
     }
 
@@ -108,6 +116,9 @@ public class ActorReceiver implements IMessageReceiver {
      * @param e    the exception
      */
     private void catchCriticalException(final Throwable e) {
-        //
+        // TODO: Handle exception.
+        // The exception cannot be rethrown as it is not caused by error in processing of current message but by error in processing of
+        // another one.
+        e.printStackTrace();
     }
 }

@@ -1,16 +1,15 @@
 package info.smart_tools.smartactors.core.actor_receiver;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -21,8 +20,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -36,8 +36,6 @@ public class ActorReceiverTest {
     private AtomicBoolean receiverFlag;
     private IMessageReceiver childReceiverMock;
     private IMessageProcessor processorMock;
-    private IObject argsMock;
-    private IAction callbackMock;
 
     @Before
     public void setUp()
@@ -51,8 +49,6 @@ public class ActorReceiverTest {
         receiverFlag = new AtomicBoolean(false);
         childReceiverMock = mock(IMessageReceiver.class);
         processorMock = mock(IMessageProcessor.class);
-        argsMock = mock(IObject.class);
-        callbackMock = mock(IAction.class);
 
         when(IOC.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
         when(IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_queue")).thenReturn(actorReceiverQueueKey);
@@ -71,20 +67,14 @@ public class ActorReceiverTest {
     @Test
     public void Should_enqueueMessageProcessor_When_ActorIsBusy()
             throws Exception {
-        ArgumentCaptor<Object[]> arrayCaptor = ArgumentCaptor.forClass(Object[].class);
-
         receiverFlag.set(true);
         when(receiverQueueMock.isEmpty()).thenReturn(false);
 
         ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
 
-        actorReceiver.receive(processorMock, argsMock, callbackMock);
+        actorReceiver.receive(processorMock);
 
-        verify(receiverQueueMock).add(arrayCaptor.capture());
-
-        assertSame(processorMock, arrayCaptor.getValue()[0]);
-        assertSame(argsMock, arrayCaptor.getValue()[1]);
-        assertSame(callbackMock, arrayCaptor.getValue()[2]);
+        verify(receiverQueueMock).add(same(processorMock));
     }
 
     @Test
@@ -95,31 +85,29 @@ public class ActorReceiverTest {
         doAnswer(invocationOnMock -> {
             assertTrue(receiverFlag.get());
             return null;
-        }).when(childReceiverMock).receive(any(), any(), any());
+        }).when(childReceiverMock).receive(any());
 
         when(receiverQueueMock.isEmpty()).thenReturn(true);
 
         ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
 
-        actorReceiver.receive(processorMock, argsMock, callbackMock);
+        actorReceiver.receive(processorMock);
 
-        verify(childReceiverMock).receive(same(processorMock), same(argsMock), same(callbackMock));
+        verify(childReceiverMock).receive(same(processorMock));
     }
 
     @Test
     public void Should_executeReceiversFromQueue_When_QueueIsNotEmptyAndActorIsNotBusy()
             throws Exception {
-        Object[][] processorMocks = new Object[][] {
-                {mock(IMessageProcessor.class), mock(IObject.class), mock(IAction.class)},
-                {mock(IMessageProcessor.class), mock(IObject.class), mock(IAction.class)},
-        };
+        IMessageProcessor[] processorMocks = new IMessageProcessor[] {
+                mock(IMessageProcessor.class), mock(IMessageProcessor.class) };
 
         receiverFlag.set(false);
 
         doAnswer(invocationOnMock -> {
             assertTrue(receiverFlag.get());
             return null;
-        }).when(childReceiverMock).receive(any(), any(), any());
+        }).when(childReceiverMock).receive(any());
 
         when(receiverQueueMock.isEmpty())
             .thenAnswer(invocationOnMock -> {
@@ -138,10 +126,57 @@ public class ActorReceiverTest {
 
         ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
 
-        actorReceiver.receive(processorMock, argsMock, callbackMock);
+        actorReceiver.receive(processorMock);
 
-        verify(childReceiverMock).receive(processorMock, argsMock, callbackMock);
-        verify(childReceiverMock).receive((IMessageProcessor) processorMocks[0][0], (IObject) processorMocks[0][1], (IAction) processorMocks[0][2]);
-        verify(childReceiverMock).receive((IMessageProcessor) processorMocks[1][0], (IObject) processorMocks[1][1], (IAction) processorMocks[1][2]);
+        verify(childReceiverMock).receive(processorMock);
+        verify(childReceiverMock).receive(processorMocks[0]);
+        verify(childReceiverMock).receive(processorMocks[1]);
+    }
+
+    @Test
+    public void Should_rethrowExceptionAfterCheckingQueue_When_nestedReceiverThrows()
+            throws Exception {
+        MessageReceiveException exception = mock(MessageReceiveException.class);
+
+        when(receiverQueueMock.isEmpty()).thenReturn(true);
+        doAnswer(invocationOnMock -> {
+            assertTrue(receiverFlag.get());
+            throw exception;
+        }).when(childReceiverMock).receive(same(processorMock));
+
+        ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
+
+        try {
+            actorReceiver.receive(processorMock);
+            fail();
+        } catch (MessageReceiveException e) {
+            assertSame(exception, e.getCause());
+        }
+    }
+
+    @Test
+    public void Should_handleExceptionOccurredWhileCompletingAsynchronousOperationOnDelayedProcessor()
+            throws Exception {
+        MessageReceiveException messageReceiveExceptionMock = mock(MessageReceiveException.class);
+        AsynchronousOperationException asynchronousOperationExceptionMock = mock(AsynchronousOperationException.class);
+
+        when(receiverQueueMock.isEmpty()).thenAnswer(invocationOnMock -> {
+            receiverFlag.set(false);
+            return false;
+        }).thenReturn(true);
+
+        when(receiverQueueMock.poll()).thenReturn(processorMock).thenReturn(null);
+
+        doThrow(messageReceiveExceptionMock).when(childReceiverMock).receive(same(processorMock));
+        doThrow(asynchronousOperationExceptionMock).when(processorMock).continueProcess(same(messageReceiveExceptionMock));
+
+        ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
+
+        receiverFlag.set(true);
+
+        actorReceiver.receive(processorMock);
+
+        verify(asynchronousOperationExceptionMock).printStackTrace();
+        verify(asynchronousOperationExceptionMock).addSuppressed(messageReceiveExceptionMock);
     }
 }
