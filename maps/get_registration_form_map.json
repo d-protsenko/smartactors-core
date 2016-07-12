@@ -22,13 +22,6 @@
       }
     },
     {
-      "actor": "asyncOpsActor",
-      "handler": "createOperation",
-      "wrapper": {
-        "in_getIObject": "message"
-      }
-    },
-    {
       "actor": "getFormActor",
       "handler": "getForm",
       "wrapper": {
