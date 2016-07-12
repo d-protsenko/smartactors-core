@@ -1,16 +1,20 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChain;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import info.smat_tools.smartactors.core.iexchange.IExchange;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,10 +36,10 @@ import java.util.concurrent.ExecutionException;
  * @param <TRequest> type of a request received by endpoint
  */
 public abstract class EndpointHandler<TContext, TRequest> {
-    private final IQueue<ITask> taskQueue;
+    private final IMessageReceiver receiver;
 
-    public EndpointHandler(final IQueue<ITask> taskQueue) throws ResolutionException {
-        this.taskQueue = taskQueue;
+    public EndpointHandler(final IMessageReceiver receiver) throws ResolutionException {
+        this.receiver = receiver;
     }
 
     /**
@@ -46,17 +50,16 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @return a deserialized message
      * @throws Exception
      */
-    protected abstract IMessage getMessage(TRequest request) throws Exception;
-
+    protected abstract IObject getEnvironment(TContext ctx, TRequest request) throws Exception;
 
     /**
-     * Parse a context from the given request.
+     * Handle exceptions during request processing.
      *
-     * @param request request to the endpoint
-     * @return a context object
-     * @throws Exception
+     * @param ctx   endpoint channel context
+     * @param cause thrown exception
      */
-    protected abstract IObject getContext(TRequest request) throws Exception;
+    public abstract void handleException(TContext ctx, Throwable cause);
+
 
     /**
      * Get {@link IExchange} object used for communication with the message sender.
@@ -66,16 +69,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param request request to the endpoint
      * @return a {@link IExchange} object for the given request
      */
-
-    protected abstract IExchange getExchange(IMessage message, TContext ctx, TRequest request);
-
-    /**
-     * Handle exceptions during request processing.
-     *
-     * @param ctx   endpoint channel context
-     * @param cause thrown exception
-     */
-    public abstract void handleException(TContext ctx, Throwable cause);
+    protected abstract IExchange getExchange(IMessage message, TContext ctx, TRequest request) throws ResolutionException;
 
     /**
      * Handle an endpoint request using the specified context.
@@ -86,41 +80,17 @@ public abstract class EndpointHandler<TContext, TRequest> {
      */
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
-            IMessage message = getMessage(request);
-            generateMessageFields(message);
-            if (isRequest(message)) {
-                IExchange exchange = getExchange(message, ctx, request);
-
-                //SystemFields.EXCHANGE_FIELD.inject(message, exchange);
-            }
+            IObject environment = getEnvironment(ctx, request);
             SocketAddress address = ((ChannelHandlerContext) ctx).channel().remoteAddress();
             if (address != null) {
-                Field<String> ipAddressField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "ipAddress");
-                ipAddressField.in(message, ((InetSocketAddress) address).getAddress().getHostAddress());
+                FieldName ipAddressField = new FieldName("ipAddress");
+                environment.setValue(ipAddressField, ((InetSocketAddress) address).getAddress().getHostAddress());
             }
-            MessageProcessingSequence messageProcessingSequence = IOC.resolve(
-                    Keys.getOrAdd(MessageProcessingSequence.class.toString()), 5, null/*get chain by name message.messageMapId*/
-            );
-            MessageProcessor messageProcessor = IOC.resolve(
-                    Keys.getOrAdd(MessageProcessor.class.toString()), taskQueue, messageProcessingSequence
-            );
-            messageProcessor.process(message, getContext(request));
+            /*
+            TODO: add sending of environment to chain
+             */
         } catch (Exception e) {
             throw new ExecutionException("Failed to handle request to endpoint", e);
         }
-    }
-
-    private void generateMessageFields(final IMessage message) throws ChangeValueException, InvalidArgumentException {
-        Field<UUID> idField = null;
-        try {
-            idField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "ID");
-        } catch (ResolutionException e) {
-            throw new InvalidArgumentException("Can't create field", e);
-        }
-        idField.in(message, UUID.randomUUID());
-    }
-
-    private boolean isRequest(final IMessage message) {
-        return true;
     }
 }
