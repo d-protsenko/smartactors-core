@@ -172,7 +172,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
         } catch (ResolutionException e) {
             throw new CompleteAsyncOperationException("Can't resolve async operation object.", e);
         } catch (UpdateAsyncOperationException e) {
-            e.printStackTrace();
+            throw new CompleteAsyncOperationException("Can't create new UpdateAsyncOperationTask.", e);
         }
     }
 

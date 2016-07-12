@@ -13,6 +13,11 @@ public class CreateAsyncOperationException extends Exception {
         super(message);
     }
 
+    /**
+     * Constructor with specific error message and cause as arguments
+     * @param message specific error message
+     * @param cause throwable cause
+     */
     public CreateAsyncOperationException(String message, Throwable cause) {
         super(message, cause);
     }
