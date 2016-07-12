@@ -21,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
 
@@ -49,6 +50,8 @@ public class AuthenticationActorPluginTest {
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("AuthenticationActorPlugin").thenReturn(item);
 
+        when(item.after(any())).thenReturn(item);
+
         AuthenticationActor actor = mock(AuthenticationActor.class);
         whenNew(AuthenticationActor.class).withNoArguments().thenReturn(actor);
 
@@ -61,6 +64,7 @@ public class AuthenticationActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
+        verify(item).after("IOC");
         verify(item).process(actionArgumentCaptor.capture());
 
         actionArgumentCaptor.getValue().execute();
