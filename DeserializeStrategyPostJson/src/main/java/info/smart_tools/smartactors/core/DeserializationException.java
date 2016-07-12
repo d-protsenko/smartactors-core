@@ -1,7 +1,21 @@
 package info.smart_tools.smartactors.core;
 
-/**
- * Created by sevenbits on 12.07.16.
- */
-public class DeserializationException {
+public class DeserializationException extends Exception {
+
+    public DeserializationException() {
+        super();
+    }
+
+    public DeserializationException(String message) {
+        super(message);
+    }
+
+    public DeserializationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DeserializationException(Throwable cause) {
+        super(cause);
+    }
 }
+
