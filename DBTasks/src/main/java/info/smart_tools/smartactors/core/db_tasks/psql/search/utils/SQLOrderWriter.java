@@ -33,29 +33,39 @@ public class SQLOrderWriter {
         }
     }
 
+    private SQLOrderWriter() { }
+
+    /**
+     *
+     * @return
+     */
+    public static SQLOrderWriter create() {
+        return new SQLOrderWriter();
+    }
+
     /**
      * Writes an ORDER clause into the query statement.
      *
      * @param queryStatement - a compiled statement of query.
-     * @param orderByItems -
+     * @param order -
      *
      * @throws QueryBuildException when:
      *              1. Writing body of query error;
      *              2. IOC resolution error object;
      *              3. Reading field from <pre>queryMessage</pre> error.
      */
-    public static void write(
+    public void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final List<IObject> orderByItems
+            @Nonnull final List<IObject> order
     ) throws QueryBuildException {
-        if (orderByItems.size() == 0) {
+        if (order.size() == 0) {
             return;
         }
 
         try {
             queryStatement.getBodyWriter().write("ORDER BY");
 
-            for (IObject orderByItem : orderByItems) {
+            for (IObject orderByItem : order) {
                 String sortDirection = orderByItem.getValue(ORDER_DIRECTION_ORDER_BY_ITEM_FN).toString();
                 FieldPath fieldPath =
                         PSQLFieldPath.fromString(orderByItem.getValue(ORDER_FIELD_ORDER_BY_ITEM_FN).toString());

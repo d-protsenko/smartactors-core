@@ -9,6 +9,6 @@ import java.util.List;
  */
 @FunctionalInterface
 public interface QueryConditionWriter {
-    void write(QueryStatement query, QueryConditionWriterResolver resolver, FieldPath contextFieldPath,
-               Object queryParameter, List<ParamContainer> parametersOrder) throws QueryBuildException;
+    void write(QueryStatement query, QueryConditionResolver resolver, FieldPath contextFieldPath,
+               Object queryParameter, List<DeclaredParam> parametersOrder) throws QueryBuildException;
 }

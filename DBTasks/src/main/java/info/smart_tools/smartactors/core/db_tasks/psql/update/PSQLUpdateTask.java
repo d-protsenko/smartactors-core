@@ -3,9 +3,14 @@ package info.smart_tools.smartactors.core.db_tasks.psql.update;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
+import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.DBUpdateTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBUpdateTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
+import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -13,20 +18,26 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
 /**
  * Task for update documents in postgres database.
  */
-public class PSQLUpdateTask extends DBUpdateTask {
+public class PSQLUpdateTask extends CachedDatabaseTask {
+
+    private final QueryStatementBuilder queryStatementBuilder;
+    private final IDBTaskExecutor taskExecutor;
+
     /**
      * Default constructor.
      *              Creates a new instance of {@link PSQLUpdateTask}.
      */
-    private PSQLUpdateTask() { }
+    private PSQLUpdateTask() {
+        queryStatementBuilder = QueryStatementBuilder.create();
+        taskExecutor = DBUpdateTaskExecutor.create();
+    }
 
     /**
      * Factory method for creation a new instance of {@link PSQLUpdateTask}.
@@ -44,16 +55,16 @@ public class PSQLUpdateTask extends DBUpdateTask {
             @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = DBQueryFields.COLLECTION.in(message);
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
             IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLUpdateTask.class.toString(),
-                    collection);
+                    collection.toString());
 
             return takeCompiledQuery(
                     queryKey,
                     connection,
-                    getQueryStatementFactory(collection));
+                    getQueryStatementBuilder(collection.toString()));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -83,22 +94,25 @@ public class PSQLUpdateTask extends DBUpdateTask {
         return compiledQuery;
     }
 
-    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
-        return  () -> {
-            try {
-                return QueryStatementBuilder
-                        .create()
-                        .withCollection(collection)
-                        .build();
-            } catch (QueryBuildException e) {
-                throw new QueryStatementFactoryException("Error while initialize an insert query.", e);
-            }
-        };
+    @Override
+    protected void execute(@Nonnull final ICompiledQuery query,
+                           @Nonnull final IObject message
+    ) throws TaskExecutionException {
+        taskExecutor.execute(query, message);
+    }
+
+    @Override
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+        return taskExecutor.requiresExecutable(message);
+    }
+
+    private IQueryStatementBuilder getQueryStatementBuilder(final String collection) {
+        return queryStatementBuilder.withCollection(collection);
     }
 
     private Long takeDocumentId(final IObject document, final String collection)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField id = getIdFieldFor(collection);
+        IField id = IDContainer.getIdFieldFor(collection);
         return Long.parseLong(id.in(document));
     }
 }

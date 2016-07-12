@@ -96,10 +96,8 @@
         <module>MessageProcessingSequence</module>
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
-        <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>CloseAsyncOperationActor</module>

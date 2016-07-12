@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 /**
  *  Resolves a {@link QueryConditionWriter} for specific condition object key.
  */
-public interface QueryConditionWriterResolver {
+public interface QueryConditionResolver {
     /**
      *
      *  @param conditionKey key in key-value pair of condition object. May be an operator name,

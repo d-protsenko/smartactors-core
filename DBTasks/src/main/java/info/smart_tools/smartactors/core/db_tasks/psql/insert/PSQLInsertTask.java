@@ -3,27 +3,37 @@ package info.smart_tools.smartactors.core.db_tasks.psql.insert;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
-import info.smart_tools.smartactors.core.db_tasks.commons.DBInsertTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBInsertTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
 /**
  * Task for insert documents in postgres database.
  */
-public class PSQLInsertTask extends DBInsertTask {
+public class PSQLInsertTask extends CachedDatabaseTask {
+
+    private final QueryStatementBuilder queryStatementBuilder;
+    private final IDBTaskExecutor taskExecutor;
+
     /**
      * Default constructor.
      *              Creates a new instance of {@link PSQLInsertTask}.
      */
-    protected PSQLInsertTask() {}
+    private PSQLInsertTask() {
+        queryStatementBuilder = QueryStatementBuilder.create();
+        taskExecutor = DBInsertTaskExecutor.create();
+    }
 
     /**
      * Factory method for creation a new instance of {@link PSQLInsertTask}.
@@ -41,16 +51,16 @@ public class PSQLInsertTask extends DBInsertTask {
             @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = DBQueryFields.COLLECTION.in(message);
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
             IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLInsertTask.class.toString(),
-                    collection);
+                    collection.toString());
 
             return takeCompiledQuery(
                     queryKey,
                     connection,
-                    getQueryStatementFactory(collection));
+                    getQueryStatementBuilder(collection.toString()));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -69,9 +79,7 @@ public class PSQLInsertTask extends DBInsertTask {
             throws QueryBuildException {
         try {
             String document = DBQueryFields.DOCUMENT.in(message);
-            query.setParameters(statement -> {
-                statement.setString(1, document);
-            });
+            query.setParameters(statement -> statement.setString(1, document));
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {
@@ -79,21 +87,24 @@ public class PSQLInsertTask extends DBInsertTask {
         }
     }
 
+    @Override
+    protected void execute(@Nonnull final ICompiledQuery query,
+                           @Nonnull final IObject message
+    ) throws TaskExecutionException {
+        taskExecutor.execute(query, message);
+    }
+
+    @Override
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+        return taskExecutor.requiresExecutable(message);
+    }
+
     /**
      *
      * @param collection
      * @return
      */
-    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
-        return  () -> {
-            try {
-                return QueryStatementBuilder
-                        .create()
-                        .withCollection(collection)
-                        .build();
-            } catch (QueryBuildException e) {
-                throw new QueryStatementFactoryException("Error while initialize an insert query.", e);
-            }
-        };
+    private IQueryStatementBuilder getQueryStatementBuilder(final String collection) {
+        return queryStatementBuilder.withCollection(collection);
     }
 }

@@ -1,7 +1,9 @@
-package info.smart_tools.smartactors.core.db_tasks.commons;
+package info.smart_tools.smartactors.core.db_tasks.commons.executors;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
+import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -17,12 +19,18 @@ import java.sql.SQLException;
 /**
  * Common insert task executor.
  */
-public abstract class DBInsertTask extends CachedDatabaseTask {
+public class DBInsertTaskExecutor implements IDBTaskExecutor {
+    /**
+     *
+     */
+    private DBInsertTaskExecutor() {}
 
-    protected DBInsertTask() {}
+    public static DBInsertTaskExecutor create() {
+        return new DBInsertTaskExecutor();
+    }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull IObject message) throws InvalidArgumentException {
+    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
@@ -39,7 +47,7 @@ public abstract class DBInsertTask extends CachedDatabaseTask {
      * @throws TaskExecutionException when the result set has more than one document.
      */
     @Override
-    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
+    public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
             ResultSet resultSet = query.executeQuery();
@@ -84,7 +92,7 @@ public abstract class DBInsertTask extends CachedDatabaseTask {
 
     private void setDocumentId(final IObject document, final String collection, final Long documentId)
             throws ChangeValueException, ResolutionException, InvalidArgumentException {
-        IField id = getIdFieldFor(collection);
+        IField id = IDContainer.getIdFieldFor(collection);
         id.out(document, documentId);
     }
 }

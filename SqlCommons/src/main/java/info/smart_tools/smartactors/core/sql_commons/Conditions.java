@@ -24,10 +24,10 @@ public class Conditions {
             final String postfix,
             final String delimiter,
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> parametersOrder
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
@@ -90,30 +90,30 @@ public class Conditions {
 
     public static void writeAndCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }
 
     public static void writeOrCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }
 
     public static void writeNotCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }

@@ -1,14 +1,9 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 
-import com.sun.istack.internal.NotNull;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * The builder for query of creation of indexes to some collection.
@@ -83,7 +78,7 @@ final class IndexBuilder {
      *
      * @return a link to yourself {@link IndexBuilder}.
      */
-    IndexBuilder withIndex(@NotNull final String queryIndex) {
+    IndexBuilder withIndex(@Nonnull final String queryIndex) {
         if (!indexCreationTemplates.containsKey(queryIndex)) {
             throw new IllegalArgumentException("Index type - " + queryIndex + " not supported.");
         }
@@ -99,7 +94,7 @@ final class IndexBuilder {
      *
      * @return a link to yourself {@link IndexBuilder}.
      */
-    IndexBuilder withField(@NotNull final String indexedField) {
+    IndexBuilder withField(@Nonnull final String indexedField) {
         field = indexedField;
         return this;
     }

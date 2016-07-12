@@ -1,17 +1,9 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class ConditionsWriterResolverTest {
-
-    @Test
-    public void resolve_QueryCriteria() throws InvalidArgumentException, ChangeValueException, QueryBuildException {
+//public class ConditionsWriterResolverTest {
+//
+//    @Test
+//    public void resolve_QueryCriteria() throws InvalidArgumentException, ChangeValueException, QueryBuildException {
 //        QueryConditionWriterResolver conditionsWriterResolver  = ConditionsWriterResolver.create();
 //
 //        IObject criteria = new DSObject();
@@ -58,11 +50,5 @@ public class ConditionsWriterResolverTest {
 //        conditionsWriterResolver
 //                .resolve(null)
 //                .write(queryStatement, conditionsWriterResolver, null, criteria, paramContainers);
-
-        List<Object> l = new ArrayList<>();
-        String s = "";
-        String NULL = null;
-
-        int a = 0;
-    }
-}
+//    }
+//}

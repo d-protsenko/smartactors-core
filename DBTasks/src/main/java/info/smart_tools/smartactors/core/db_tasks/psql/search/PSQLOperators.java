@@ -2,12 +2,10 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.*;
-import info.smart_tools.smartactors.core.sql_commons.psql.Schema;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -17,40 +15,25 @@ import java.util.List;
 /**
  * Class for constructing queries with comparison operators and parameters
  */
-final class Operators {
-    private static final IKey FIELD_NAME_KEY;
+final class PSQLOperators {
 
-    static {
-        try {
-            FIELD_NAME_KEY = Keys.getOrAdd(IFieldName.class.toString());
-        } catch (ResolutionException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private Operators(){}
+    private PSQLOperators() { }
 
     /**
      * Writes sql-query with basic field comparison operators
      * @param format Sql string for condition. Contains '%s' for field path and '?' for parameters
      * @param query Query statement object with part of sql query (select...) and parameter setters
-     * @param contextFieldPath Field path, for example document#>'{field}'
      * @throws QueryBuildException
      */
     private static void writeFieldCheckCondition(
             final String format,
             final QueryStatement query,
-            final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
-            query.getBodyWriter().write(String.format(format, contextFieldPath.getSQLRepresentation()));
-            setParameterInOrder(parametersOrder, queryParameter.toString(), 1);
-//            setters.add((statement, index) -> {
-//                statement.setObject(index++, queryParameter);
-//                return index;
-//            });
+            query.getBodyWriter().write(format);
+            addParameterToDeclared(declaredParams, queryParameter.toString(), 1);
         } catch (NullPointerException e) {
             throw new QueryBuildException("Field check conditions not allowed outside of field context.");
         } catch (IOException e) {
@@ -68,10 +51,10 @@ final class Operators {
      */
     private static void writeFieldExistsCheckCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
             String isNullStr = String.valueOf(queryParameter);
@@ -79,8 +62,13 @@ final class Operators {
                 throw new QueryBuildException("Parameter for existence checking should represent boolean value.");
             }
             Boolean isNull = Boolean.parseBoolean(isNullStr);
-            String condition = isNull ? "(%s) is null" : "(%s) is not null";
-            query.getBodyWriter().write(String.format(condition, contextFieldPath.getSQLRepresentation()));
+            String condition = isNull ? " is null" : " is not null";
+            StringBuilder formatBuilder = new StringBuilder()
+                    .append("(")
+                    .append(contextFieldPath.getSQLRepresentation())
+                    .append(")")
+                    .append(condition);
+            query.getBodyWriter().write(formatBuilder.toString());
         } catch (NullPointerException e) {
             throw new QueryBuildException("Field check conditions not allowed outside of field context.");
         } catch (IOException e) {
@@ -98,10 +86,10 @@ final class Operators {
      */
     private static void writeFieldInArrayCheckCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<ParamContainer> parametersOrder
+            final List<DeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
             List<Object> paramAsList = (List<Object>)queryParameter;
@@ -112,19 +100,19 @@ final class Operators {
             }
             String parameterName = paramAsList.get(0).toString();
             int parametersNumber = Integer.valueOf(paramAsList.get(1).toString());
-            writer.write(String.format("((%s)in(", contextFieldPath.getSQLRepresentation()));
-            for (int i = parametersNumber; i > 0; --i) {
-                writer.write(String.format("to_json(?)::jsonb%s", (i == 1) ? "" : ","));
-            }
-            writer.write("))");
-            setParameterInOrder(parametersOrder, parameterName, parametersNumber);
 
-//            setters.add((statement, index) -> {
-//                for (Object obj : paramAsList) {
-//                    statement.setObject(index++, obj);
-//                }
-//                return index;
-//            });
+            StringBuilder formatBuilder = new StringBuilder("((")
+                    .append(contextFieldPath.getSQLRepresentation())
+                    .append(")in(");
+
+            for (int i = parametersNumber; i > 0; --i) {
+                formatBuilder
+                        .append("to_json(?)::jsonb")
+                        .append((i == 1) ? "" : ",");
+            }
+            formatBuilder.append("))");
+            writer.write(formatBuilder.toString());
+            addParameterToDeclared(declaredParams, parameterName, parametersNumber);
         } catch (NumberFormatException e) {
             throw new QueryBuildException("Invalid query format of operator \"$in\".");
         } catch (ClassCastException e) {
@@ -136,9 +124,17 @@ final class Operators {
         }
     }
 
-    private static QueryConditionWriter formattedCheckWriter(final String format) {
-        return (query, resolver, contextFieldPath, queryParameter, parametersOrder) ->
-            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, parametersOrder);
+    private static QueryConditionWriter formattedCheckWriter(final String fPartFormat, final String sPartFormat) {
+        return (query, resolver, contextFieldPath, queryParameter, parametersOrder) -> {
+            try {
+                StringBuilder formatBuilder = new StringBuilder(fPartFormat)
+                        .append(contextFieldPath.getSQLRepresentation())
+                        .append(sPartFormat);
+                writeFieldCheckCondition(formatBuilder.toString(), query, queryParameter, parametersOrder);
+            } catch (NullPointerException e) {
+                throw new QueryBuildException("Field check conditions not allowed outside of field context.");
+            }
+        };
     }
 
     /**
@@ -147,44 +143,43 @@ final class Operators {
      */
     public static void addAll(@Nonnull final ConditionsResolverBase resolver) {
         // Basic field comparison operators
-        resolver.addOperator("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
-        resolver.addOperator("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
-        resolver.addOperator("$lt", formattedCheckWriter("((%s)<to_json(?)::jsonb)"));
-        resolver.addOperator("$gt", formattedCheckWriter("((%s)>to_json(?)::jsonb)"));
-        resolver.addOperator("$lte", formattedCheckWriter("((%s)<=to_json(?)::jsonb)"));
-        resolver.addOperator("$gte", formattedCheckWriter("((%s)>=to_json(?)::jsonb)"));
+        resolver.addOperator("$eq", formattedCheckWriter("((", ")=to_json(?)::jsonb)"));
+        resolver.addOperator("$ne", formattedCheckWriter("((", ")!=to_json(?)::jsonb)"));
+        resolver.addOperator("$lt", formattedCheckWriter("((", ")<to_json(?)::jsonb)"));
+        resolver.addOperator("$gt", formattedCheckWriter("((", ")>to_json(?)::jsonb)"));
+        resolver.addOperator("$lte", formattedCheckWriter("((", ")<=to_json(?)::jsonb)"));
+        resolver.addOperator("$gte", formattedCheckWriter("((", ")>=to_json(?)::jsonb)"));
 
         //Check on present
-        resolver.addOperator("$isNull", Operators::writeFieldExistsCheckCondition);
+        resolver.addOperator("$isNull", PSQLOperators::writeFieldExistsCheckCondition);
 
         // ISO 8601 date/time operators
         /*TODO: Find a way to build an index on date/time field.*/
-        resolver.addOperator("$date-from", formattedCheckWriter("(parse_timestamp_immutable(%s)>=(?)::timestamp)"));
-        resolver.addOperator("$date-to", formattedCheckWriter("(parse_timestamp_immutable(%s)<=(?)::timestamp)"));
+        resolver.addOperator("$date-from", formattedCheckWriter("(parse_timestamp_immutable(", ")>=(?)::timestamp)"));
+        resolver.addOperator("$date-to", formattedCheckWriter("(parse_timestamp_immutable(", ")<=(?)::timestamp)"));
 
         // Value in list check
-        resolver.addOperator("$in", Operators::writeFieldInArrayCheckCondition);
+        resolver.addOperator("$in", PSQLOperators::writeFieldInArrayCheckCondition);
 
         // Tags operators
-        resolver.addOperator("$hasTag", formattedCheckWriter("((%s)??(?))"));
+        resolver.addOperator("$hasTag", formattedCheckWriter("((", ")??(?))"));
 
         // Fulltext search
         resolver.addOperator("$fulltext", formattedCheckWriter(
-                String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
-                        Schema.FTS_DICTIONARY, Schema.FTS_DICTIONARY)));
+                "(to_tsvector('russian',(", ")::text))@@(to_tsquery(russian,?))"));
     }
 
-    private static void setParameterInOrder(final List<ParamContainer> order,
-                                            final String name,
-                                            final int count
+    private static void addParameterToDeclared(final List<DeclaredParam> declaredParams,
+                                               final String name,
+                                               final int count
     ) throws QueryBuildException {
         try {
-            IFieldName fieldName = IOC.resolve(FIELD_NAME_KEY, name);
-            ParamContainer container = ParamContainer.create(fieldName, count);
-            if (order.contains(container)) {
+            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), name);
+            DeclaredParam container = DeclaredParam.create(fieldName, count);
+            if (declaredParams.contains(container)) {
                 throw new QueryBuildException("Name of query parameter must be unique!");
             }
-            order.add(container);
+            declaredParams.add(container);
         } catch (ResolutionException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }

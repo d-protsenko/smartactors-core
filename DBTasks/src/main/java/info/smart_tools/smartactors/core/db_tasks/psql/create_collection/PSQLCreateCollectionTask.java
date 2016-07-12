@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
-import info.smart_tools.smartactors.core.db_tasks.commons.DBCreateCollectionTask;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBCreateCollectionTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -20,12 +20,19 @@ import java.util.Map;
 /**
  * Task for create collection with predefined indexes in psql database.
  */
-public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
+public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
+    /**  */
+    private final QueryStatementBuilder queryStatementBuilder;
+    private final IDBTaskExecutor taskExecutor;
+
     /**
      * Default constructor.
      *              Creates a new instance of {@link PSQLCreateCollectionTask}.
      */
-    protected PSQLCreateCollectionTask() {}
+    private PSQLCreateCollectionTask() {
+        queryStatementBuilder =  QueryStatementBuilder.create();
+        taskExecutor = DBCreateCollectionTaskExecutor.create();
+    }
 
     /**
      * Factory method for creation a new instance of {@link PSQLCreateCollectionTask}.
@@ -36,16 +43,22 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
         return new PSQLCreateCollectionTask();
     }
 
+    @Override
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+        return taskExecutor.requiresExecutable(message);
+    }
+
     @Nonnull
     @Override
     protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
                                                @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
             return createCompiledQuery(
                     connection,
-                    getQueryStatementFactory(
-                            DBQueryFields.COLLECTION.in(message),
+                    getQueryStatementBuilder(
+                            collection.toString(),
                             DBQueryFields.INDEXES.in(message)));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
@@ -60,17 +73,18 @@ public class PSQLCreateCollectionTask extends DBCreateCollectionTask {
         return query;
     }
 
-    private IQueryStatementFactory getQueryStatementFactory(final String collection, final Map<String, String> indexes) {
-        return () -> {
-            try {
-                return QueryStatementBuilder
-                        .create()
-                        .withCollection(collection)
-                        .withIndexes(indexes)
-                        .build();
-            } catch (QueryBuildException e) {
-                throw new QueryStatementFactoryException("Error while initialize create collection compiledQuery.", e);
-            }
-        };
+    @Override
+    protected void execute(@Nonnull final ICompiledQuery query,
+                           @Nonnull final IObject message
+    ) throws TaskExecutionException {
+        taskExecutor.execute(query, message);
+    }
+
+    private IQueryStatementBuilder getQueryStatementBuilder(final String collection,
+                                                            final Map<String, String> indexes
+    ) {
+        return queryStatementBuilder
+                .withCollection(collection)
+                .withIndexes(indexes);
     }
 }

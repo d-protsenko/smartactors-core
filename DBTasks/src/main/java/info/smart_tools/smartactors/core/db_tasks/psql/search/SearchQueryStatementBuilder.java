@@ -1,9 +1,12 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IComplexQueryStatementBuilder;
+import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLOrderWriter;
+import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLPagingWriter;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.sql_commons.ParamContainer;
-import info.smart_tools.smartactors.core.sql_commons.QueryConditionWriterResolver;
+import info.smart_tools.smartactors.core.sql_commons.DeclaredParam;
+import info.smart_tools.smartactors.core.sql_commons.QueryConditionResolver;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -13,13 +16,16 @@ import java.util.List;
 /**
  *
  */
-final class SearchQueryStatementBuilder {
+final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder {
     private String collection;
     private Object criteria;
-    private List<IObject> orderByItems;
-    private int[] paging = new int[2];
+    private List<IObject> orderBy;
+    private List<DeclaredParam> declaredParams;
 
-    private static final QueryConditionWriterResolver CONDITION_WRITER_RESOLVER  = ConditionsWriterResolver.create();
+    private final QueryConditionResolver conditionResolver;
+    private final SQLOrderWriter orderWriter;
+    private final SQLPagingWriter pagingWriter;
+
 
     private final static String FIRST_PART_TEMPLATE = "SELECT * FROM ";
     private final static String SECOND_PART_TEMPLATE = " WHERE";
@@ -27,9 +33,20 @@ final class SearchQueryStatementBuilder {
     private final static int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() +
             SECOND_PART_TEMPLATE.length();
 
+    private SearchQueryStatementBuilder(final QueryConditionResolver conditionResolver,
+                                        final SQLOrderWriter orderWriter,
+                                        final SQLPagingWriter pagingWriter
+    ) {
+        this.conditionResolver = conditionResolver;
+        this.orderWriter = orderWriter;
+        this.pagingWriter = pagingWriter;
+    }
 
-    public static SearchQueryStatementBuilder create() {
-        return new SearchQueryStatementBuilder();
+    public static SearchQueryStatementBuilder create(final QueryConditionResolver conditionResolver,
+                                                     final SQLOrderWriter orderWriter,
+                                                     final SQLPagingWriter pagingWriter
+    ) {
+        return new SearchQueryStatementBuilder(conditionResolver, orderWriter, pagingWriter);
     }
 
     /**
@@ -56,41 +73,30 @@ final class SearchQueryStatementBuilder {
 
     /**
      *
-     * @param orderByItems
+     * @param orderBy
      * @return
      */
-    SearchQueryStatementBuilder withOrderByItems(@Nonnull final List<IObject> orderByItems) {
-        this.orderByItems = orderByItems;
+    SearchQueryStatementBuilder withOrderBy(@Nonnull final List<IObject> orderBy) {
+        this.orderBy = orderBy;
         return this;
     }
 
     /**
      *
-     * @param pageNumber
+     * @param declaredParams
      * @return
      */
-    SearchQueryStatementBuilder withPageNumber(@Nonnull final int pageNumber) {
-        this.paging[0] = pageNumber;
+    public SearchQueryStatementBuilder withDeclaredParams(@Nonnull final List<DeclaredParam> declaredParams) {
+        this.declaredParams = declaredParams;
         return this;
     }
-
-    /**
-     *
-     * @param pageSize
-     * @return
-     */
-    SearchQueryStatementBuilder withPageSize(@Nonnull final int pageSize) {
-        this.paging[1] = pageSize;
-        return this;
-    }
-
 
     /**
      *
      * @return
      * @throws QueryBuildException
      */
-    QueryStatement build(List<ParamContainer> order) throws QueryBuildException {
+    public QueryStatement build() throws QueryBuildException {
         try {
             QueryStatement queryStatement = new QueryStatement();
             Writer writer = queryStatement.getBodyWriter();
@@ -100,11 +106,11 @@ final class SearchQueryStatementBuilder {
                     .append(collection)
                     .append(SECOND_PART_TEMPLATE);
             writer.write(queryBuilder.toString());
-            CONDITION_WRITER_RESOLVER
+            conditionResolver
                     .resolve(null)
-                    .write(queryStatement, CONDITION_WRITER_RESOLVER, null, criteria, order);
-//            ORDER_WRITER.write(queryStatement, orderByItems, order);
-//            PAGING_WRITER.write(queryStatement, paging, order);
+                    .write(queryStatement, conditionResolver, null, criteria, declaredParams);
+            orderWriter.write(queryStatement, orderBy);
+            pagingWriter.write(queryStatement);
 
             return queryStatement;
         } catch (QueryBuildException e) {

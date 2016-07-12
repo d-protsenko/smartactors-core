@@ -34,8 +34,7 @@ public interface IDatabaseTask extends ITask {
     void setConnection(final IStorageConnection storageConnection) throws TaskSetConnectionException;
 
     /**
-     *
-     * @return
+     * @return used storage connection.
      */
     IStorageConnection getConnection();
 }

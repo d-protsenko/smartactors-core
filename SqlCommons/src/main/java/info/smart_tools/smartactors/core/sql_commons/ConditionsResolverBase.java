@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ConditionsResolverBase implements QueryConditionWriterResolver {
+public abstract class ConditionsResolverBase implements QueryConditionResolver {
     private Map<String, QueryConditionWriter> operatorWriters = new HashMap<>();
     protected String defaultCompositionOperator = "$and";
 

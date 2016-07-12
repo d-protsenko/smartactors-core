@@ -2,22 +2,22 @@ package info.smart_tools.smartactors.core.sql_commons;
 
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 
-public class ParamContainer {
+public class DeclaredParam {
     private IFieldName name;
     private int count;
 
-    private ParamContainer(final IFieldName name, final int count) {
+    private DeclaredParam(final IFieldName name, final int count) {
         this.name = name;
         this.count = count;
     }
 
-    public static ParamContainer create(final IFieldName name, final int count) {
-        return new ParamContainer(name, count);
+    public static DeclaredParam create(final IFieldName name, final int count) {
+        return new DeclaredParam(name, count);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof ParamContainer && name.equals(((ParamContainer) obj).name);
+        return obj instanceof DeclaredParam && name.equals(((DeclaredParam) obj).name);
 
     }
 

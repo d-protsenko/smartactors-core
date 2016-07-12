@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Builder for query statement {@link QueryStatement} of create collection query.
  */
-final class QueryStatementBuilder {
+final class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
     private String createCollectionQuery;
     private Map<String, String> indexes;
@@ -87,7 +88,7 @@ final class QueryStatementBuilder {
      *
      * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws QueryBuildException {
+    public QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         requiresNonnull(indexes, "The list of indexes should not be a null, should try invoke 'withIndexes'.");
 

@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
@@ -12,16 +13,14 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
 
 /**
  *
  */
-abstract class GeneralDatabaseTask implements IDatabaseTask {
+public abstract class GeneralDatabaseTask implements IDatabaseTask {
     private ICompiledQuery query;
     private IObject message;
     private IStorageConnection connection;
@@ -52,7 +51,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
             }
         } catch (NullPointerException e) {
             throw new TaskPrepareException("Can't prepare query because: Invalid given insert message!");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new TaskPrepareException("Can't prepare query because: " + e.getMessage(), e);
         }
     }
@@ -69,7 +68,7 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
             if (isExecutable) {
                 execute(query, message);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
         }
     }
@@ -88,15 +87,21 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
         connection = storageConnection;
     }
 
-
+    /**
+     *
+     * @param connection
+     * @param queryStatementBuilder
+     * @return
+     * @throws QueryBuildException
+     */
     protected ICompiledQuery createCompiledQuery(final IStorageConnection connection,
-                                                 final IQueryStatementFactory factory
+                                                 final IQueryStatementBuilder queryStatementBuilder
     ) throws QueryBuildException {
         try {
-            QueryStatement queryStatement = factory.create();
+            QueryStatement queryStatement = queryStatementBuilder.build();
             return connection.compileQuery(queryStatement);
-        } catch (QueryStatementFactoryException | StorageException e) {
-            throw new QueryBuildException(e.getMessage(), e);
+        } catch (StorageException e) {
+            throw new QueryBuildException("Query compile error: " + e.getMessage(), e);
         }
     }
 
@@ -105,21 +110,16 @@ abstract class GeneralDatabaseTask implements IDatabaseTask {
         return connection;
     }
 
-    protected abstract @Nonnull
-    ICompiledQuery takeCompiledQuery(
-            @Nonnull final IStorageConnection connection,
-            @Nonnull final IObject queryMessage
+    protected abstract @Nonnull ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+                                                                 @Nonnull final IObject queryMessage
     ) throws QueryBuildException;
 
-    protected abstract @Nonnull
-    ICompiledQuery setParameters(
-            @Nonnull final ICompiledQuery query,
-            @Nonnull final IObject message
+    protected abstract @Nonnull ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
+                                                             @Nonnull final IObject message
     ) throws QueryBuildException;
 
-    protected abstract void execute(
-            @Nonnull final ICompiledQuery compiledQuery,
-            @Nonnull final IObject queryMessage
+    protected abstract void execute(@Nonnull final ICompiledQuery compiledQuery,
+                                    @Nonnull final IObject queryMessage
     ) throws TaskExecutionException;
 
     protected abstract boolean requiresExecutable(@Nonnull final IObject queryMessage)

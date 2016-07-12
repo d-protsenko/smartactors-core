@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -12,7 +13,7 @@ import java.io.IOException;
 /**
  * Builder for query statement {@link QueryStatement} of find by id query.
  */
-final class SearchByIdQueryStatementBuilder {
+final class SearchByIdQueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
 
     private final static String FIRST_PART_TEMPLATE = "SELECT * FROM ";
@@ -52,7 +53,7 @@ final class SearchByIdQueryStatementBuilder {
      *
      * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws QueryBuildException {
+    public QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         try {
             QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
@@ -69,8 +70,9 @@ final class SearchByIdQueryStatementBuilder {
         }
     }
 
-    private void requiresNonnull(String str, String message) throws QueryBuildException {
-        if (str == null || str.isEmpty())
+    private void requiresNonnull(final String str, final String message) throws QueryBuildException {
+        if (str == null || str.isEmpty()) {
             throw new QueryBuildException(message);
+        }
     }
 }

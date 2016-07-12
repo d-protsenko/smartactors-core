@@ -3,36 +3,49 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
+import info.smart_tools.smartactors.core.db_tasks.commons.ComplexDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IComplexQueryStatementBuilder;
+import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLOrderWriter;
+import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLPagingWriter;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
-import info.smart_tools.smartactors.core.sql_commons.ParamContainer;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Task for searching documents in database.
  */
-public class PSQLSearchTask extends DBSearchTask {
+public class PSQLSearchTask extends ComplexDatabaseTask {
+    private final SQLPagingWriter pagingWriter;
+    private final SearchQueryStatementBuilder queryStatementBuilder;
+    private final IDBTaskExecutor taskExecutor;
 
-    private PSQLSearchTask() {}
+    private PSQLSearchTask(final int minPageSize, final int maxPageSize) {
+        taskExecutor = DBSearchTaskExecutor.create();
+        pagingWriter = SQLPagingWriter.create(minPageSize, maxPageSize);
+        queryStatementBuilder = SearchQueryStatementBuilder.create(
+                PSQLConditionsResolver.create(),
+                SQLOrderWriter.create(),
+                SQLPagingWriter.create(minPageSize, maxPageSize));
+    }
 
     /**
-     * Factory method for creation new instance of {@link PSQLSearchTask}.
      *
+     * @param minPageSize
+     * @param maxPageSize
      * @return
      */
-    public static PSQLSearchTask create() {
-       return new PSQLSearchTask();
+    public static PSQLSearchTask create(final int minPageSize, final int maxPageSize) {
+       return new PSQLSearchTask(minPageSize, maxPageSize);
     }
 
     @Override
@@ -43,30 +56,28 @@ public class PSQLSearchTask extends DBSearchTask {
     @Nonnull
     @Override
     protected ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
-                                               @Nonnull final IObject message
-    ) throws QueryBuildException {
+                                               @Nonnull final IObject message)
+            throws QueryBuildException {
+        try {
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
+            IObject criteria = DBQueryFields.CRITERIA.in(message);
+            List<IObject> order = DBQueryFields.ORDER_BY.in(message);
 
-//        try {
-//            String collection = DBQueryFields.COLLECTION.in(message);
-//            IKey queryKey = QueryKey.create(
-//                    connection.getId(),
-//                    PSQLSearchByIdTask.class.toString(),
-//                    collection);
-//
-//            return takeCompiledQuery(
-//                    queryKey,
-//                    connection,
-//                    getQueryStatementFactory(collection));
-//        } catch (ReadValueException | InvalidArgumentException e) {
-//           throw new QueryBuildException(e.getMessage(), e);
-//        }
+            IKey queryKey = QueryKey.create(
+                    connection.getId(),
+                    PSQLSearchTask.class.toString(),
+                    collection.toString(),
+                    criteria.hashCode());
 
-//        try {
-//
-//        } catch (ReadValueException | ResolutionException e) {
-//            throw new QueryBuildException(e.getMessage(), e);
-//        }
-        return null;
+            return takeCompiledQuery(
+                    queryKey,
+                    connection,
+                    getQueryStatementBuilder(collection.toString(), criteria, order));
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Message and connection must not be a null!");
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
     }
 
     @Nonnull
@@ -74,37 +85,13 @@ public class PSQLSearchTask extends DBSearchTask {
     protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
                                            @Nonnull final IObject message
     ) throws QueryBuildException {
-        try {
-            SearchCompiledQuery searchCompiledQuery = (SearchCompiledQuery) query;
-            IObject parameters = DBQueryFields.PARAMETERS.in(message);
-            List<ParamContainer> parametersOrder = searchCompiledQuery.getParametersOrder();
-
-
-
-            int pageSize = DBQueryFields.PAGE_SIZE.in(message);
-            int pageNumber = DBQueryFields.PAGE_NUBMER.in(message);
-
-            pageNumber = (pageNumber < 0) ? 0 : pageNumber;
-            pageSize = (pageSize > MAX_PAGE_SIZE) ?
-                    MAX_PAGE_SIZE : ((pageSize < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : pageSize);
-
-            searchCompiledQuery.setParameters(statement -> {
-                int parametersSize = orderedParameters.size();
-                for (int i = 0; i < parametersSize; ++i) {
-                    statement.setObject(i + 1, orderedParameters.get(i));
-                }
-                statement.setInt(parametersSize + 1, pageSize);
-                statement.setInt(parametersSize + 2, pageSize * pageNumber);
-            });
-        } catch (NullPointerException e) {
-
-        } catch (ClassCastException e) {
-
-        } catch (ReadValueException e) {
-            e.printStackTrace();
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
-        }
+        List<Object> sortedParams = sortParameters(query, message);
+        query.setParameters(statement -> {
+            int parametersSize = sortedParams.size();
+            for (int i = 0; i < parametersSize; ++i) {
+                statement.setObject(i + 1, sortedParams.get(i));
+            }
+        });
 
         return query;
     }
@@ -114,27 +101,39 @@ public class PSQLSearchTask extends DBSearchTask {
                            @Nonnull final IObject message
     ) throws TaskExecutionException {
         try {
-            DBQueryFields.SEARCH_RESULT.out(message, super.execute(query));
-        } catch (ChangeValueException | InvalidArgumentException e) {
-            throw new TaskExecutionException(e.getMessage(), e);
+            taskExecutor.execute(query, message);
+        } catch (NullPointerException e) {
+            throw new TaskExecutionException("Query and message must not be a null!");
         }
     }
 
-    private IQueryStatementFactory getQueryStatementFactory(final ISearchMessage message,
-                                                            final List<ParamContainer> order
+    @Override
+    protected List<Object> sortParameters(final ICompiledQuery query, final IObject message)
+            throws QueryBuildException {
+        try {
+            List<Object> sortedParams = super.sortParameters(query, message);
+
+            int pageSize = pagingWriter.takePageSize(message);
+            int pageNumber = pagingWriter.takePageNumber(message);
+            sortedParams.add(pageSize);
+            sortedParams.add(pageSize * pageNumber);
+
+            return sortedParams;
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Query and message must not be a null!");
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new QueryBuildException(e.getMessage(), e);
+        }
+    }
+
+    private IComplexQueryStatementBuilder getQueryStatementBuilder(final String collection,
+                                                                   final IObject criteria,
+                                                                   final List<IObject> order
     ) {
-        return () -> {
-            try {
-                return SearchQueryStatementBuilder
-                        .create()
-                        .withCollection(message.getCollection().toString())
-                        .withCriteria(message.getCriteria())
-                        .withOrderByItems(message.getOrderBy())
-                        .build(order);
-            } catch (QueryBuildException | ReadValueException e) {
-                throw new QueryStatementFactoryException("Error while initialize a search by id query.", e);
-            }
-        };
+        return queryStatementBuilder
+                .withCollection(collection)
+                .withCriteria(criteria)
+                .withOrderBy(order);
     }
 }
 

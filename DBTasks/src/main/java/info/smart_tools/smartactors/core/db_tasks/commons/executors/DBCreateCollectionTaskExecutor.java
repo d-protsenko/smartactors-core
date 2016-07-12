@@ -1,27 +1,29 @@
-package info.smart_tools.smartactors.core.db_tasks.commons;
+package info.smart_tools.smartactors.core.db_tasks.commons.executors;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.create_collection.ICreateCollectionMessage;
-import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
 
-public abstract class DBCreateCollectionTask extends GeneralDatabaseTask {
+public class DBCreateCollectionTaskExecutor implements IDBTaskExecutor {
 
-    protected DBCreateCollectionTask() {}
+    private DBCreateCollectionTaskExecutor() { }
+
+    public static DBCreateCollectionTaskExecutor create() {
+        return new DBCreateCollectionTaskExecutor();
+    }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull IObject queryMessage) throws InvalidArgumentException {
+    public boolean requiresExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
         return true;
     }
 
     @Override
-    protected void execute(@Nonnull final ICompiledQuery compiledQuery,
-                           @Nonnull final IObject queryMessage
+    public void execute(@Nonnull final ICompiledQuery compiledQuery,
+                        @Nonnull final IObject queryMessage
     ) throws TaskExecutionException {
         try {
             compiledQuery.execute();

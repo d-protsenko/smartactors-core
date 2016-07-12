@@ -3,30 +3,38 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
+import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
+import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.DBSearchTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
-import info.smart_tools.smartactors.core.sql_commons.IQueryStatementFactory;
-import info.smart_tools.smartactors.core.sql_commons.exception.QueryStatementFactoryException;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Database task for search documents by id
  */
-public class PSQLSearchByIdTask extends DBSearchTask {
+public class PSQLSearchByIdTask extends CachedDatabaseTask {
+    /**  */
+    private final SearchByIdQueryStatementBuilder queryStatementBuilder;
+    private final IDBTaskExecutor taskExecutor;
+
     /**
      * Constructor for DBGetByIdTask
      */
-    protected PSQLSearchByIdTask() {}
+    protected PSQLSearchByIdTask() {
+        queryStatementBuilder = SearchByIdQueryStatementBuilder.create();
+        taskExecutor = DBSearchTaskExecutor.create();
+    }
 
     /**
      * Factory method for creation a new instance of {@link PSQLSearchByIdTask}.
@@ -52,16 +60,16 @@ public class PSQLSearchByIdTask extends DBSearchTask {
                                                @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = DBQueryFields.COLLECTION.in(message);
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
             IKey queryKey = QueryKey.create(
                     connection.getId(),
                     PSQLSearchByIdTask.class.toString(),
-                    collection);
+                    collection.toString());
 
             return takeCompiledQuery(
                     queryKey,
                     connection,
-                    getQueryStatementFactory(collection));
+                    getQueryStatementBuilder(collection.toString()));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
@@ -74,9 +82,7 @@ public class PSQLSearchByIdTask extends DBSearchTask {
     ) throws QueryBuildException {
         try {
             String id = DBQueryFields.DOCUMENT_ID.in(message);
-            query.setParameters((statement) -> {
-                statement.setObject(1, id);
-            });
+            query.setParameters((statement) -> statement.setObject(1, id));
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {
@@ -88,28 +94,20 @@ public class PSQLSearchByIdTask extends DBSearchTask {
     protected void execute(@Nonnull final ICompiledQuery query,
                            @Nonnull final IObject message
     ) throws TaskExecutionException {
-        List<IObject> result = super.execute(query);
-        if (result.size() > 1) {
-            throw new TaskExecutionException("'Search query' execution has been failed: " +
-                    "the given id correspond to multiple users!");
-        }
         try {
+            taskExecutor.execute(query, message);
+            List<IObject> result = DBQueryFields.SEARCH_RESULT.in(message);
+            if (result.size() > 1) {
+                throw new TaskExecutionException("'Search query' execution has been failed: " +
+                        "the given id correspond to multiple users!");
+            }
             DBQueryFields.SEARCH_RESULT.out(message, result.get(0));
-        } catch (ChangeValueException | InvalidArgumentException e) {
+        } catch (ChangeValueException | ReadValueException | InvalidArgumentException e) {
             throw new TaskExecutionException("'Search query' execution has been failed: " + e.getMessage(), e);
         }
     }
 
-    private IQueryStatementFactory getQueryStatementFactory(final String collection) {
-        return () -> {
-            try {
-                return SearchByIdQueryStatementBuilder
-                        .create()
-                        .withCollection(collection)
-                        .build();
-            } catch (QueryBuildException e) {
-                throw new QueryStatementFactoryException("Error while initialize a search by id query.", e);
-            }
-        };
+    private IQueryStatementBuilder getQueryStatementBuilder(final String collection) {
+        return queryStatementBuilder.withCollection(collection);
     }
 }

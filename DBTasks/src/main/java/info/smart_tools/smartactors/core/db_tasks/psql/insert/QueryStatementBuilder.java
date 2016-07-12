@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.insert;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -12,7 +13,7 @@ import java.io.IOException;
 /**
  *
  */
-class QueryStatementBuilder {
+class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
 
     private static final String[] TEMPLATE_PARTS = { "INSERT ",
@@ -44,7 +45,7 @@ class QueryStatementBuilder {
      * @return
      * @throws QueryBuildException
      */
-    QueryStatement build() throws QueryBuildException {
+    public QueryStatement build() throws QueryBuildException {
         try {
             requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
 

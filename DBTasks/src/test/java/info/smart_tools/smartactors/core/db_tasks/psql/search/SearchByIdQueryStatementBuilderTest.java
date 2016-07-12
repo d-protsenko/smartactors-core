@@ -1,14 +1,9 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
-import info.smart_tools.smartactors.core.ioc.IOC;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-@PrepareForTest(IOC.class)
-@RunWith(PowerMockRunner.class)
-@SuppressWarnings("unchecked")
-public class SearchByIdQueryStatementBuilderTest {
+//@PrepareForTest(IOC.class)
+//@RunWith(PowerMockRunner.class)
+//@SuppressWarnings("unchecked")
+//public class SearchByIdQueryStatementBuilderTest {
 
 //    @Before
 //    public void setUp() throws Exception {
@@ -46,4 +41,4 @@ public class SearchByIdQueryStatementBuilderTest {
 //                .create()
 //                .build();
 //    }
-}
+//}

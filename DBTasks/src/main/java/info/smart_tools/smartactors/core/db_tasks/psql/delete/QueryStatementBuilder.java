@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.delete;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -13,7 +14,7 @@ import java.io.Writer;
 /**
  * Builder for query statement {@link QueryStatement} of delete document by id query.
  */
-final class QueryStatementBuilder {
+final class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
 
     private static final String FIRST_PART_TEMPLATE = "DELETE FROM ";
@@ -53,7 +54,7 @@ final class QueryStatementBuilder {
      *
      * @throws QueryBuildException when a some critical error in during building query statement.
      */
-    QueryStatement build() throws QueryBuildException {
+    public QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
 
         try {

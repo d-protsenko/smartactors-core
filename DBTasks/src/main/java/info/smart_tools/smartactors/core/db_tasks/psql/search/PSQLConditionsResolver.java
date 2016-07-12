@@ -8,18 +8,18 @@ import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 /**
  * {@see ConditionsResolverBase} {@link ConditionsResolverBase}.
  */
-final class ConditionsWriterResolver extends ConditionsResolverBase {
+final class PSQLConditionsResolver extends ConditionsResolverBase {
 
-    private ConditionsWriterResolver() {
-        Operators.addAll(this);
+    private PSQLConditionsResolver() {
+        PSQLOperators.addAll(this);
     }
 
     /**
      * Factory method for creating a new instance.
      * @return a new instance of <pre>ConditionsWriterResolver</pre>.
      */
-    public static ConditionsWriterResolver create() {
-        return new ConditionsWriterResolver();
+    public static PSQLConditionsResolver create() {
+        return new PSQLConditionsResolver();
     }
 
     /**

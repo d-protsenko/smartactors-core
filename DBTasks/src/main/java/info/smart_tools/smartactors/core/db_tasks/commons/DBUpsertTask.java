@@ -6,10 +6,11 @@ import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -36,10 +37,11 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject upsertMessage) throws TaskPrepareException {
         try {
-            IUpsertMessage queryMessage = takeMessageWrapper(upsertMessage);
-            prepareDocuments(queryMessage.getCollection(), queryMessage.getDocument());
-            prepareSubTask(currentTask, queryMessage.getCollection(), queryMessage.getDocument());
-        } catch (Exception e) {
+            ICollectionName collection = DBQueryFields.COLLECTION.in(upsertMessage);
+            IObject document = DBQueryFields.DOCUMENT.in(upsertMessage);
+            prepareDocuments(collection.toString(), document);
+            prepareSubTask(currentTask, upsertMessage);
+        } catch (Throwable e) {
             throw new TaskPrepareException("Can't prepare upsert task because: " + e.getMessage(), e);
         }
     }
@@ -48,7 +50,7 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
         try {
             currentTask.execute();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new TaskExecutionException("'Upsert task' execution has been failed because:" + e.getMessage(), e);
         }
     }
@@ -83,20 +85,16 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
-    private void prepareDocuments(final ICollectionName collection, final IObject document)
+    private void prepareDocuments(final String collection, final IObject document)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), collection + "Id");
-        String id = IOC.resolve(Keys.getOrAdd(String.class.toString()), document.getValue(idFN));
+        IField idF = IDContainer.getIdFieldFor(collection);
+        String id = idF.in(document);
         currentTask = subTasks.get(id == null);
     }
 
-    private void prepareSubTask(final IDatabaseTask task, final ICollectionName collection, final IObject document)
+    private void prepareSubTask(final IDatabaseTask task, final IObject message)
             throws ChangeValueException, TaskPrepareException, ResolutionException, TaskSetConnectionException {
-        IUpsertMessage upsertMessage = IOC.resolve(Keys.getOrAdd(IUpsertMessage.class.toString()));
-        upsertMessage.setCollection(collection);
-        upsertMessage.setDocument(document);
-        IObject preparedMessage = IOC.resolve(Keys.getOrAdd("ExtractWrapper"), upsertMessage);
         task.setConnection(connection);
-        task.prepare(preparedMessage);
+        task.prepare(message);
     }
 }

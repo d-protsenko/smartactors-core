@@ -18,7 +18,9 @@ public final class DBQueryFields {
     public static final IField SEARCH_RESULT;
     public static final IField PARAMETERS;
     public static final IField PAGE_SIZE;
-    public static final IField PAGE_NUBMER;
+    public static final IField PAGE_NUMBER;
+    public static final IField ORDER_BY;
+    public static final IField CRITERIA;
 
     static {
         try {
@@ -28,8 +30,10 @@ public final class DBQueryFields {
             INDEXES = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "indexes");
             SEARCH_RESULT = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
             PARAMETERS = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "parameters");
-            PAGE_NUBMER = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "pageNumber");
+            PAGE_NUMBER = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "pageNumber");
             PAGE_SIZE = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "pageSize");
+            ORDER_BY = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "orderBy");
+            CRITERIA = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "criteria");
         } catch (ResolutionException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

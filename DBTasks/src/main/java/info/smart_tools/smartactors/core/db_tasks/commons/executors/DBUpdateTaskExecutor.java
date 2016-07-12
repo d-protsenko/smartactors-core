@@ -1,8 +1,9 @@
-package info.smart_tools.smartactors.core.db_tasks.commons;
+package info.smart_tools.smartactors.core.db_tasks.commons.executors;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -13,14 +14,25 @@ import javax.annotation.Nonnull;
 /**
  * Common update task executor.
  */
-public abstract class DBUpdateTask extends CachedDatabaseTask {
+public class DBUpdateTaskExecutor implements IDBTaskExecutor {
+    private DBUpdateTaskExecutor() {}
+
     /**
      *
+     * @return
      */
-    protected DBUpdateTask() {}
+    public static DBUpdateTaskExecutor create() {
+        return new DBUpdateTaskExecutor();
+    }
 
+    /**
+     *
+     * @param message
+     * @return
+     * @throws InvalidArgumentException
+     */
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
@@ -39,7 +51,7 @@ public abstract class DBUpdateTask extends CachedDatabaseTask {
      *              2. Query execution errors.
      */
     @Override
-    protected void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
+    public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
             int nUpdated = query.executeUpdate();

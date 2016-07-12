@@ -1,27 +1,16 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ IOC.class, Keys.class })
-@SuppressWarnings("unchecked")
-public class PSQLSearchTaskTest {
-    private IStorageConnection connection;
-    private IObject message;
-    private ISearchMessage queryMessage;
-    private JDBCCompiledQuery compiledQuery;
-
-    private IKey wrapperKey;
-    private IKey cachedQueryKey;
+//@RunWith(PowerMockRunner.class)
+//@PrepareForTest({ IOC.class, Keys.class })
+//@SuppressWarnings("unchecked")
+//public class PSQLSearchTaskTest {
+//    private IStorageConnection connection;
+//    private IObject message;
+//    private ISearchMessage queryMessage;
+//    private JDBCCompiledQuery compiledQuery;
+//
+//    private IKey wrapperKey;
+//    private IKey cachedQueryKey;
 
 //    @Before
 //    public void setUp() throws Exception {
@@ -151,4 +140,4 @@ public class PSQLSearchTaskTest {
 //
 //        return searchTask;
 //    }
-}
+//}
