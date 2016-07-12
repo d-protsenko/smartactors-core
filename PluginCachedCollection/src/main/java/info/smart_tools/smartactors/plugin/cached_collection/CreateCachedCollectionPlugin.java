@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.cached_collection;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -67,8 +68,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);
                                     keyNameField.out(config, keyName);
-                                    //TODO:: uncomment, when refactored cached collection would be merged
-//                                    cachedCollection = new CachedCollection(config);
+                                    cachedCollection = new CachedCollection(config);
                                     collectionMap.put(collectionMapKey, cachedCollection);
                                 }
 
