@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.iobject_wrapper;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
@@ -15,13 +15,13 @@ public interface IObjectWrapper {
     void init(IObject environment);
 
     /**
-     * Get specified instance of {@link IObject} by given {@link IFieldName}
+     * Get specified instance of {@link IObject} by given {@link IKey}
      * from init environment
-     * @param fieldName the named instance of {@link IFieldName}
+     * @param fieldName the named instance of {@link IKey}
      * @return the specified instance of {@link IObject}
      * @throws InvalidArgumentException if fieldName is null
      * or environment doesn't contain IObject with given fieldName
      */
-    IObject getEnvironmentIObject(IFieldName fieldName)
+    IObject getEnvironmentIObject(IKey fieldName)
             throws InvalidArgumentException;
 }

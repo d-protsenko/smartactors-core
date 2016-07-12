@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.wrapper_generator.InField;
-import info.smart_tools.smartactors.core.wrapper_generator.OutField;
+import info.smart_tools.smartactors.core.wrapper_generator.Field;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.wrapper_generator.IWrapper;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import java.lang.Integer;
 import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
 import java.util.List;
@@ -21,23 +21,23 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
     private IField fieldFor_in_wrappedIObject;
     private IField fieldFor_out_wrappedIObject;
     private IField fieldFor_in_getListOfTestClasses;
-    private IField fieldFor_out_transform;
     private IField fieldFor_out_setIntValue;
     private IField fieldFor_out_setTestClassValue;
     private IField fieldFor_out_setListOfTestClasses;
+    private IField fieldFor_out_transform;
     private IObject env;
 
     public IWrapperImpl() throws InvalidArgumentException  {
         try {
-            this.fieldFor_in_getIntValue = new InField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getIntValue");
-            this.fieldFor_in_getTestClassValue = new InField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getTestClassValue");
-            this.fieldFor_in_wrappedIObject = new InField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_wrappedIObject");
-            this.fieldFor_out_wrappedIObject = new OutField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_wrappedIObject");
-            this.fieldFor_in_getListOfTestClasses = new InField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getListOfTestClasses");
-            this.fieldFor_out_transform = new OutField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_transform");
-            this.fieldFor_out_setIntValue = new OutField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setIntValue");
-            this.fieldFor_out_setTestClassValue = new OutField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setTestClassValue");
-            this.fieldFor_out_setListOfTestClasses = new OutField("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setListOfTestClasses");
+            this.fieldFor_in_getIntValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getIntValue"));
+            this.fieldFor_in_getTestClassValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getTestClassValue"));
+            this.fieldFor_in_wrappedIObject = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_wrappedIObject"));
+            this.fieldFor_out_wrappedIObject = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_wrappedIObject"));
+            this.fieldFor_in_getListOfTestClasses = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/in_getListOfTestClasses"));
+            this.fieldFor_out_setIntValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setIntValue"));
+            this.fieldFor_out_setTestClassValue = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setTestClassValue"));
+            this.fieldFor_out_setListOfTestClasses = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_setListOfTestClasses"));
+            this.fieldFor_out_transform = new Field(new FieldName("info.smart_tools.smartactors.core.wrapper_generator.IWrapper/out_transform"));
         } catch (Exception e) {
             throw new InvalidArgumentException("", e);
         }
@@ -49,7 +49,7 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
 
     }
 
-    public IObject getEnvironmentIObject(IFieldName fieldName) throws InvalidArgumentException  {
+    public IObject getEnvironmentIObject(IKey fieldName) throws InvalidArgumentException  {
         try {
             return (IObject) this.env.getValue(fieldName);
         } catch (Throwable e) {
@@ -103,15 +103,6 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
 
     }
 
-    public void transform(java.lang.Integer value) throws ChangeValueException  {
-        try {
-            this.fieldFor_out_transform.out(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
     public void setIntValue(int value) throws ChangeValueException  {
         try {
             this.fieldFor_out_setIntValue.out(this.env, value);
@@ -133,6 +124,15 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
     public void setListOfTestClasses(java.util.List<info.smart_tools.smartactors.core.wrapper_generator.TestClass> value) throws ChangeValueException  {
         try {
             this.fieldFor_out_setListOfTestClasses.out(this.env, value);
+        } catch (Throwable e) {
+            throw new ChangeValueException("Could not set value from iobject.", e);
+        }
+
+    }
+
+    public void transform(java.lang.Integer value) throws ChangeValueException  {
+        try {
+            this.fieldFor_out_transform.out(this.env, value);
         } catch (Throwable e) {
             throw new ChangeValueException("Could not set value from iobject.", e);
         }

@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;

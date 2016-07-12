@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -59,7 +59,7 @@ public class WrapperGeneratorTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                Keys.getOrAdd(IKey.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

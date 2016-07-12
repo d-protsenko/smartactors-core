@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -50,7 +51,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                         try {
                             ((IObject) a[0]).setValue(
                                     IOC.resolve(
-                                            Keys.getOrAdd(IFieldName.class.getCanonicalName()), (String) a[1]
+                                            Keys.getOrAdd(IKey.class.getCanonicalName()), (String) a[1]
                                     ),
                                     a[2]
                             );
@@ -60,7 +61,42 @@ public class WrapperGenerator implements IWrapperGenerator {
                         }
                     }
             );
-            IOC.resolve(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "target", targetStrategy);
+            IOC.resolve(
+                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                    "wg_target",
+                    targetStrategy
+            );
+
+            IResolveDependencyStrategy defaultSetterStrategy =  new ApplyFunctionToArgumentsStrategy(
+                    (a) -> {
+                        try {
+                            ((IObject) a[0]).setValue((IKey) a[1], a[2]);
+                            return a[0];
+                        } catch (Throwable e) {
+                            throw new RuntimeException("Resolution error in 'target' strategy.");
+                        }
+                    }
+            );
+            IOC.resolve(
+                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                    "wg_set_default",
+                    defaultSetterStrategy
+            );
+
+            IResolveDependencyStrategy defaultGetterStrategy =  new ApplyFunctionToArgumentsStrategy(
+                    (a) -> {
+                        try {
+                            return ((IObject) a[0]).getValue((IKey) a[1]);
+                        } catch (Throwable e) {
+                            throw new RuntimeException("Resolution error in 'target' strategy.");
+                        }
+                    }
+            );
+            IOC.resolve(
+                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                    "wg_get_default",
+                    defaultGetterStrategy
+            );
 
         } catch (Throwable e) {
             throw new WrapperGeneratorException("Could not registry 'target' strategy.", e);
@@ -123,15 +159,15 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addPackageName(targetInterface.getPackage().getName())
                 .addImport(IField.class.getCanonicalName())
-                .addImport(InField.class.getCanonicalName())
-                .addImport(OutField.class.getCanonicalName())
+                .addImport(Field.class.getCanonicalName())
+                .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
                 .addImport(IObjectWrapper.class.getCanonicalName())
                 .addImport(ReadValueException.class.getCanonicalName())
                 .addImport(ChangeValueException.class.getCanonicalName())
-                .addImport(IFieldName.class.getCanonicalName());
+                .addImport(IKey.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
@@ -161,13 +197,10 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         // Add class fields
         for (Method m : targetInterface.getMethods()) {
-            String genericType;
             String methodPrefix;
             if (Void.TYPE == m.getGenericReturnType()) {
-                genericType = m.getGenericParameterTypes()[0].getTypeName();
                 methodPrefix = "out";
             } else {
-                genericType = m.getReturnType().getTypeName();
                 methodPrefix = "in";
             }
             cb
@@ -186,10 +219,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append("_")
                     .append(m.getName())
                     .append(" = new ")
-                    .append(methodPrefix.equals("out") ? "Out" : "In")
-                    .append("Field(\"")
+                    .append("Field(new FieldName(\"")
                     .append(targetInterface.getCanonicalName())
-                    .append("/").append(methodPrefix).append("_").append(m.getName()).append("\"" + ");\n");
+                    .append("/").append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
         }
         builder
                 .append("\t\t").append("} catch (Exception e) {\n").append("\t\t\t")
@@ -213,7 +245,7 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getEnvironmentIObject")
                 .addParameter()
-                        .setType("IFieldName")
+                        .setType("IKey")
                         .setName("fieldName")
                         .next()
                 .setExceptions("InvalidArgumentException")
