@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -13,7 +12,7 @@ import javax.annotation.Nonnull;
 /**
  * Common deletion task executor.
  */
-public abstract class DBDeleteTask extends GeneralDatabaseTask {
+public abstract class DBDeleteTask extends CachedDatabaseTask {
 
     /**
      * Default constructor.
@@ -21,9 +20,9 @@ public abstract class DBDeleteTask extends GeneralDatabaseTask {
     protected DBDeleteTask() {}
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return DBQueryFields.DOCUMENT_ID.in(message) == null;
+            return DBQueryFields.DOCUMENT_ID.in(message) != null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }

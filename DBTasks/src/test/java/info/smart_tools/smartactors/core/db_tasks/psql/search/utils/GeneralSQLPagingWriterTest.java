@@ -17,7 +17,7 @@ public class GeneralSQLPagingWriterTest {
 
     @Before
     public void setUp() {
-//        pagingWriter = GeneralSQLPagingWriter.create();
+//        pagingWriter = SQLPagingWriter.create();
     }
 
     @Test

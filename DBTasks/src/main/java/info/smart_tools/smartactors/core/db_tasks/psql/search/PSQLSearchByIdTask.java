@@ -38,9 +38,9 @@ public class PSQLSearchByIdTask extends DBSearchTask {
     }
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return DBQueryFields.DOCUMENT_ID.in(message) == null;
+            return DBQueryFields.DOCUMENT_ID.in(message) != null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }

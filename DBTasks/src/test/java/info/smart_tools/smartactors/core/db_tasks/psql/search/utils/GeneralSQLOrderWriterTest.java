@@ -32,7 +32,7 @@ public class GeneralSQLOrderWriterTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-//        orderWriter = GeneralSQLOrderWriter.create();
+//        orderWriter = SQLOrderWriter.create();
     }
 
     @Test

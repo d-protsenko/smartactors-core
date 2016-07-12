@@ -15,8 +15,8 @@ public abstract class DBCreateCollectionTask extends GeneralDatabaseTask {
     protected DBCreateCollectionTask() {}
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull IObject queryMessage) throws InvalidArgumentException {
-        return false;
+    protected boolean requiresExecutable(@Nonnull IObject queryMessage) throws InvalidArgumentException {
+        return true;
     }
 
     @Override

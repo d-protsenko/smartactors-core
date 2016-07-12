@@ -13,16 +13,16 @@ import javax.annotation.Nonnull;
 /**
  * Common update task executor.
  */
-public abstract class DBUpdateTask extends GeneralDatabaseTask {
+public abstract class DBUpdateTask extends CachedDatabaseTask {
     /**
      *
      */
     protected DBUpdateTask() {}
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
-            return DBQueryFields.DOCUMENT.in(message) == null;
+            return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }

@@ -17,6 +17,8 @@ public final class DBQueryFields {
     public static final IField DOCUMENT_ID;
     public static final IField SEARCH_RESULT;
     public static final IField PARAMETERS;
+    public static final IField PAGE_SIZE;
+    public static final IField PAGE_NUBMER;
 
     static {
         try {
@@ -26,6 +28,8 @@ public final class DBQueryFields {
             INDEXES = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "indexes");
             SEARCH_RESULT = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
             PARAMETERS = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "parameters");
+            PAGE_NUBMER = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "pageNumber");
+            PAGE_SIZE = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "pageSize");
         } catch (ResolutionException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

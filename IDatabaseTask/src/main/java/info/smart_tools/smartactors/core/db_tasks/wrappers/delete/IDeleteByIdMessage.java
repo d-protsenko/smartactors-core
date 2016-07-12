@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
  * Message with parameters for deletion query.
  * Should contains a collection name and a list of documents ids.
  */
-public interface IDeleteMessage extends IDBTaskMessage {
+public interface IDeleteByIdMessage extends IDBTaskMessage {
     /**
      * @return document's id.
      */

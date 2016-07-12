@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBDeleteTask;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteMessage;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.delete.IDeleteByIdMessage;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -34,12 +34,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @SuppressWarnings("unchecked")
 public class PSQLDeleteTaskTest {
     private CollectionName collectionName;
-    IDeleteMessage queryMessage;
+    IDeleteByIdMessage queryMessage;
     JDBCCompiledQuery compiledQuery;
 
     @Before
     public void setUp() throws Exception {
-        queryMessage = mock(IDeleteMessage.class);
+        queryMessage = mock(IDeleteByIdMessage.class);
         CollectionName collectionName = mock(CollectionName.class);
 
         when(collectionName.toString()).thenReturn("testCollection");
@@ -55,17 +55,17 @@ public class PSQLDeleteTaskTest {
     public void should_PrepareDeletionQueryTest() throws Exception {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
-        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        DBDeleteTask deleteTask = PSQLDeleteByIdTask.create();
         deleteTask.setConnection(connection);
 
         IKey wrapperKey = mock(IKey.class);
         IKey queryKey = mock(IKey.class);
         IKey key = mock(IKey.class);
         when(Keys.getOrAdd(QueryKey.class.toString())).thenReturn(key);
-        when(IOC.resolve(eq(key), eq("testConnectionId"), eq(PSQLDeleteTask.class.toString()), eq("testCollection")))
+        when(IOC.resolve(eq(key), eq("testConnectionId"), eq(PSQLDeleteByIdTask.class.toString()), eq("testCollection")))
                 .thenReturn(key);
 
-        when(Keys.getOrAdd(IDeleteMessage.class.toString())).thenReturn(wrapperKey);
+        when(Keys.getOrAdd(IDeleteByIdMessage.class.toString())).thenReturn(wrapperKey);
         when(Keys.getOrAdd(ICompiledQuery.class.toString() + "USED_CACHE")).thenReturn(queryKey);
         when(IOC.resolve(eq(wrapperKey), anyObject())).thenReturn(queryMessage);
         when(IOC.resolve(eq(queryKey), eq(key), eq(connection), anyObject()))
@@ -77,7 +77,7 @@ public class PSQLDeleteTaskTest {
         verifyStatic(times(1));
         IOC.resolve(eq(wrapperKey), eq(deletionQuery));
 
-        Field[] fields = fields(PSQLDeleteTask.class);
+        Field[] fields = fields(PSQLDeleteByIdTask.class);
         assertEquals(getValue(fields, deleteTask, "query"), compiledQuery);
         assertEquals(getValue(fields, deleteTask, "message"), queryMessage);
     }
@@ -85,13 +85,13 @@ public class PSQLDeleteTaskTest {
     @Test
     public void should_ExecuteDeletionQueryTest() throws Exception {
         JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
-        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        DBDeleteTask deleteTask = PSQLDeleteByIdTask.create();
         PreparedStatement prepareStatement = mock(PreparedStatement.class);
 
         when(compiledQuery.executeUpdate()).thenReturn(1);
         when(prepareStatement.executeUpdate()).thenReturn(1);
-        field(PSQLDeleteTask.class, "query").set(deleteTask, compiledQuery);
-        field(PSQLDeleteTask.class, "message").set(deleteTask, queryMessage);
+        field(PSQLDeleteByIdTask.class, "query").set(deleteTask, compiledQuery);
+        field(PSQLDeleteByIdTask.class, "message").set(deleteTask, queryMessage);
 
         deleteTask.execute();
 
@@ -103,7 +103,7 @@ public class PSQLDeleteTaskTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(connection.getId()).thenReturn("testConnectionId");
 
-        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        DBDeleteTask deleteTask = PSQLDeleteByIdTask.create();
         deleteTask.setConnection(connection);
         deleteTask.execute();
     }
@@ -111,11 +111,11 @@ public class PSQLDeleteTaskTest {
     @Test(expected = TaskExecutionException.class)
     public void should_ThrowsException_WithReason_Of_WrongCountOfDocumentsIsDeleted() throws Exception {
         JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
-        DBDeleteTask deleteTask = PSQLDeleteTask.create();
+        DBDeleteTask deleteTask = PSQLDeleteByIdTask.create();
 
         when(compiledQuery.executeUpdate()).thenReturn(2);
-        field(PSQLDeleteTask.class, "query").set(deleteTask, compiledQuery);
-        field(PSQLDeleteTask.class, "message").set(deleteTask, queryMessage);
+        field(PSQLDeleteByIdTask.class, "query").set(deleteTask, compiledQuery);
+        field(PSQLDeleteByIdTask.class, "message").set(deleteTask, queryMessage);
 
         deleteTask.execute();
     }

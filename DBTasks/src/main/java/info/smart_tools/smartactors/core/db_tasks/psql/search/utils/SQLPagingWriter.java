@@ -9,20 +9,20 @@ import java.io.IOException;
 /**
  * General writer a PAGING(LIMIT and OFFSET) clause for psql db.
  */
-public class GeneralSQLPagingWriter {
+public class SQLPagingWriter {
     /** Const param for paging */
     private static final int MAX_PAGE_SIZE = 10000;
     private static final int MIN_PAGE_SIZE = 1;
 
-    private GeneralSQLPagingWriter() {}
+    private SQLPagingWriter() {}
 
     /**
-     * Factory method for creation a new instance of <pre>GeneralSQLPagingWriter</pre>.
+     * Factory method for creation a new instance of <pre>SQLPagingWriter</pre>.
      *
-     * @return a new instance of <pre>GeneralSQLPagingWriter</pre>.
+     * @return a new instance of <pre>SQLPagingWriter</pre>.
      */
-    public static GeneralSQLPagingWriter create() {
-        return new GeneralSQLPagingWriter();
+    public static SQLPagingWriter create() {
+        return new SQLPagingWriter();
     }
 
     /**

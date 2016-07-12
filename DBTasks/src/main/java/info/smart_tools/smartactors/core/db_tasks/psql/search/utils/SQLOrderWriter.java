@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * General writer an ORDER clause for psql db.
  */
-public class GeneralSQLOrderWriter {
+public class SQLOrderWriter {
     private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
     private static final IFieldName ORDER_DIRECTION_ORDER_BY_ITEM_FN;
 
@@ -33,17 +33,6 @@ public class GeneralSQLOrderWriter {
         }
     }
 
-    private GeneralSQLOrderWriter() {}
-
-    /**
-     * Factory method for creation a new instance of <pre>GeneralSQLOrderWriter</pre>.
-     *
-     * @return new instance of <pre>GeneralSQLOrderWriter</pre>.
-     */
-    public static GeneralSQLOrderWriter create() {
-        return new GeneralSQLOrderWriter();
-    }
-
     /**
      * Writes an ORDER clause into the query statement.
      *
@@ -55,7 +44,7 @@ public class GeneralSQLOrderWriter {
      *              2. IOC resolution error object;
      *              3. Reading field from <pre>queryMessage</pre> error.
      */
-    public void write(
+    public static void write(
             @Nonnull final QueryStatement queryStatement,
             @Nonnull final List<IObject> orderByItems
     ) throws QueryBuildException {

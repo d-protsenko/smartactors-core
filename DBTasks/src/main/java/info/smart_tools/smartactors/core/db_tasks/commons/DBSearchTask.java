@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Common a searching task executor.
  */
-public abstract class DBSearchTask extends GeneralDatabaseTask {
+public abstract class DBSearchTask extends ComplexDatabaseTask {
     /**
      * Default constructor.
      */

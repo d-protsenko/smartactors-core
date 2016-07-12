@@ -17,14 +17,14 @@ import java.sql.SQLException;
 /**
  * Common insert task executor.
  */
-public abstract class DBInsertTask extends GeneralDatabaseTask {
+public abstract class DBInsertTask extends CachedDatabaseTask {
 
     protected DBInsertTask() {}
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull IObject message) throws InvalidArgumentException {
+    protected boolean requiresExecutable(@Nonnull IObject message) throws InvalidArgumentException {
         try {
-            return DBQueryFields.DOCUMENT.in(message) == null;
+            return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }

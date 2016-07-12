@@ -36,8 +36,8 @@ public class PSQLSearchTask extends DBSearchTask {
     }
 
     @Override
-    protected boolean requiresNonExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
-        return false;
+    protected boolean requiresExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
+        return true;
     }
 
     @Nonnull
@@ -79,31 +79,22 @@ public class PSQLSearchTask extends DBSearchTask {
             IObject parameters = DBQueryFields.PARAMETERS.in(message);
             List<ParamContainer> parametersOrder = searchCompiledQuery.getParametersOrder();
 
-            List<Object> orderedParameters = new ArrayList<>();
-            for (ParamContainer container : parametersOrder) {
-                Object parameter = parameters.getValue(container.getName());
-                if (!List.class.isAssignableFrom(parameter.getClass())) {
-                    List<Object> inParameters = (List<Object>) parameter;
-                    if (inParameters.size() > container.getCount()) {
-                        throw new QueryBuildException();
-                    }
-                    orderedParameters.addAll(inParameters);
-                    int variableSize = container.getCount() - inParameters.size();
-                    if (variableSize > 0) {
-                        for (int i = 0; i < variableSize; ++i) {
-                            orderedParameters.add(inParameters.get(inParameters.size() - 1));
-                        }
-                    }
-                } else {
-                    orderedParameters.add(parameter);
-                }
-            }
+
+
+            int pageSize = DBQueryFields.PAGE_SIZE.in(message);
+            int pageNumber = DBQueryFields.PAGE_NUBMER.in(message);
+
+            pageNumber = (pageNumber < 0) ? 0 : pageNumber;
+            pageSize = (pageSize > MAX_PAGE_SIZE) ?
+                    MAX_PAGE_SIZE : ((pageSize < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : pageSize);
 
             searchCompiledQuery.setParameters(statement -> {
                 int parametersSize = orderedParameters.size();
                 for (int i = 0; i < parametersSize; ++i) {
-                    statement.setObject(i, orderedParameters.get(i));
+                    statement.setObject(i + 1, orderedParameters.get(i));
                 }
+                statement.setInt(parametersSize + 1, pageSize);
+                statement.setInt(parametersSize + 2, pageSize * pageNumber);
             });
         } catch (NullPointerException e) {
 

@@ -18,18 +18,18 @@ import javax.annotation.Nonnull;
 /**
  * Task for deletion documents from database.
  */
-public class PSQLDeleteTask extends DBDeleteTask {
+public class PSQLDeleteByIdTask extends DBDeleteTask {
     /**
-     * A single constructor for creation {@link PSQLDeleteTask}
+     * A single constructor for creation {@link PSQLDeleteByIdTask}
      *
      */
-    protected PSQLDeleteTask() {}
+    protected PSQLDeleteByIdTask() {}
 
     /**
-     * Factory method for creation new instance of {@link PSQLDeleteTask}.
+     * Factory method for creation new instance of {@link PSQLDeleteByIdTask}.
      */
-    public static PSQLDeleteTask create() {
-        return new PSQLDeleteTask();
+    public static PSQLDeleteByIdTask create() {
+        return new PSQLDeleteByIdTask();
     }
 
     @Nonnull
@@ -41,7 +41,7 @@ public class PSQLDeleteTask extends DBDeleteTask {
             String collection = DBQueryFields.COLLECTION.in(message);
             IKey queryKey = QueryKey.create(
                     connection.getId(),
-                    PSQLDeleteTask.class.toString(),
+                    PSQLDeleteByIdTask.class.toString(),
                     collection);
 
             return takeCompiledQuery(
