@@ -52,9 +52,9 @@
         <module>ITaskDispatcher</module>
         <module>TaskDispatcher</module>
         <module>ITask</module>
+        <!-- database tasks modules -->
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
-        <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBTasks</module>
         <!-- /database tasks modules -->
