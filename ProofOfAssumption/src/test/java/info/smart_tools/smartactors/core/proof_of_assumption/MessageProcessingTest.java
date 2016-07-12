@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ds_object.FieldName;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
@@ -98,9 +97,11 @@ public class MessageProcessingTest {
                     }
                 })
         );
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class), new CreateNewInstanceStrategy(objects -> null));
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(objects -> new DSObject()));
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(objects -> {
                     try {
                         return new FieldName(String.valueOf(objects[0]));
@@ -122,24 +123,13 @@ public class MessageProcessingTest {
         IMessage messageMock = mock(IMessage.class);
         IObject contextMock = mock(IObject.class);
 
-        IMessageReceiver countReceiver = (message, args, onEnd) -> {
+        IMessageReceiver countReceiver = (mp) -> {
             Long tid = Thread.currentThread().getId();
             long n = threadUseCount.computeIfAbsent(tid, l -> 0L) + 1;
             threadUseCount.put(tid, n);
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
         };
 
-        IMessageReceiver dummyReceiver = (message, args, onEnd) -> {
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
-        };
+        IMessageReceiver dummyReceiver = (mp) -> {};
 
         ITask putTask = () -> {
             while (!mainThread.isInterrupted() && !Thread.interrupted()) {
@@ -148,7 +138,7 @@ public class MessageProcessingTest {
                     Thread.sleep(PUT_INTERVAL);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                } catch (InvalidArgumentException | ResolutionException e) {}
+                } catch (InvalidArgumentException | ResolutionException | ChangeValueException e) {}
             }
         };
 
@@ -156,26 +146,16 @@ public class MessageProcessingTest {
             taskQueue.put(putTask);
         }
 
-        IMessageReceiver countStartReceiver = (message, args, onEnd) -> {
+        IMessageReceiver countStartReceiver = (mp) -> {
             startNanoTime.set(System.nanoTime());
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
         };
 
-        IMessageReceiver countEndReceiver = (message, args, onEnd) -> {
+        IMessageReceiver countEndReceiver = (mp) -> {
             deltaTime.set(System.nanoTime() - startNanoTime.get());
             System.out.println(MessageFormat.format("Messages handled in {0}ns ({1}s)", deltaTime, 0.000000001*(double)deltaTime.get()));
             done.set(true);
             synchronized (done) {
                 done.notifyAll();
-            }
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
             }
         };
 
@@ -249,7 +229,7 @@ public class MessageProcessingTest {
         IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
 
-        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "target");
+        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "target");
 
         IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"),
                 new IResolveDependencyStrategy() {
@@ -283,8 +263,8 @@ public class MessageProcessingTest {
         IObject payloadChainDesc = new DSObject();
         IObject innerPayloadChainDesc = new DSObject();
 
-        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "exceptional");
-        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.toString()), "steps");
+        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exceptional");
+        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "steps");
 
         // Main chain
         mainChainDesc.setValue(exceptionalFieldName, new ArrayList<>());
@@ -328,7 +308,7 @@ public class MessageProcessingTest {
         // Receivers
         final AtomicLong messageCounter = new AtomicLong(0);
 
-        router.register("prepare", (processor, arguments, onEnd) -> {
+        router.register("prepare", (mp) -> {
             long i = messageCounter.getAndIncrement();
             String target = null;
 
@@ -341,9 +321,8 @@ public class MessageProcessingTest {
             }
 
             try {
-                processor.getMessage().setValue(targetNameFieldName, target);
-                onEnd.execute(null);
-            } catch (ChangeValueException | InvalidArgumentException | ActionExecuteException e) {
+                mp.getMessage().setValue(targetNameFieldName, target);
+            } catch (ChangeValueException | InvalidArgumentException e) {
                 throw new MessageReceiveException(e);
             }
         });
@@ -359,45 +338,24 @@ public class MessageProcessingTest {
         router.register("call2", new ChainCallReceiver(storage, messageProcessor ->
             "innerPayload"));
 
-        router.register("count", (message, args, onEnd) -> {
+        router.register("count", (mp) -> {
             Long tid = Thread.currentThread().getId();
             long n = threadUseCount.computeIfAbsent(tid, l -> 0L) + 1;
             threadUseCount.put(tid, n);
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
         });
 
-        router.register("dummy", (message, args, onEnd) -> {
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
-        });
+        router.register("dummy", (mp) -> { });
 
-        router.register("startMeasure", (message, args, onEnd) -> {
+        router.register("startMeasure", (mp) -> {
             startNanoTime.set(System.nanoTime());
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
-            }
         });
 
-        router.register("endMeasure", (message, args, onEnd) -> {
+        router.register("endMeasure", (mp) -> {
             deltaTime.set(System.nanoTime() - startNanoTime.get());
             System.out.println(MessageFormat.format("Messages handled in {0}ns ({1}s)", deltaTime, 0.000000001*(double)deltaTime.get()));
             done.set(true);
             synchronized (done) {
                 done.notifyAll();
-            }
-            try {
-                onEnd.execute(null);
-            } catch (ActionExecuteException | InvalidArgumentException e) {
-                throw new MessageReceiveException(e);
             }
         });
 
