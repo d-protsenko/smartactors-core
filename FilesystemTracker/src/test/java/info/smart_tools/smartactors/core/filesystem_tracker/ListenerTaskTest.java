@@ -75,11 +75,14 @@ public class ListenerTaskTest {
         when(directoryStreamMock.iterator()).thenReturn(directoryStreamIteratorMock);
         when(fileSystemProviderMock.newDirectoryStream(any(), any())).thenReturn(directoryStreamMock);
 
-        java.nio.file.Path newFilePathMock = mock(java.nio.file.Path.class);
-        when(newFilePathMock.toString()).thenReturn("dir/new");
+        java.nio.file.Path newFileEventPathMock = mock(java.nio.file.Path.class);
+        when(newFileEventPathMock.toString()).thenReturn("new");
+        java.nio.file.Path newFileActualPathMock = mock(java.nio.file.Path.class);
+        when(newFileActualPathMock.toString()).thenReturn("dir/new");
+        when(directoryPathMock.resolve(newFileEventPathMock)).thenReturn(newFileActualPathMock);
 
         when(event1Mock.kind()).thenReturn((WatchEvent.Kind)StandardWatchEventKinds.ENTRY_CREATE);
-        when(event1Mock.context()).thenReturn(newFilePathMock);
+        when(event1Mock.context()).thenReturn(newFileEventPathMock);
         when(event2Mock.kind()).thenReturn((WatchEvent.Kind)StandardWatchEventKinds.ENTRY_DELETE);
         when(watchKeyMock.pollEvents())
                 .thenReturn(Arrays.asList(event1Mock, event2Mock))

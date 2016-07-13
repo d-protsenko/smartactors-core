@@ -5,10 +5,12 @@ import info.smart_tools.smartactors.core.examples.plugin.MyPluginVisitor;
 import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
 import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
 import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
+import info.smart_tools.smartactors.core.filesystem_tracker.Path;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
+import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -46,7 +48,7 @@ public class FeatureServer implements IServer {
             ClassLoader urlClassLoader =
                 new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
 
-            IPluginLoader<Collection<File>> pluginLoader = new PluginLoader(
+            IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
                     // loads plugins to classloader
                     urlClassLoader,
                     (t) -> {
@@ -62,7 +64,7 @@ public class FeatureServer implements IServer {
 
             // calls handlers when a new file appeared in the tracking directory
             IFilesystemTracker jarFilesTracker = new FilesystemTracker(
-                    (dir, name) -> name.endsWith(".jar"),
+                    (path) -> path.getPath().endsWith(".jar"),
                     ListenerTask::new);
             // is called when a tracking error appeared
             jarFilesTracker.addErrorHandler((e) -> {
@@ -103,7 +105,7 @@ public class FeatureServer implements IServer {
             feature.listen();
 
             // directory where jars are located
-            File jarsDir = new File("target/libs");
+            IPath jarsDir = new Path("target/libs");
             // start monitoring in daemon thread
             jarFilesTracker.start(jarsDir);
 

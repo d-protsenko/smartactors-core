@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.core.examples.plugin;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.filesystem_tracker.Path;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -33,7 +35,7 @@ public class MyServer implements IServer {
             ClassLoader urlClassLoader =
                     new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes
 
-            IPluginLoader<Collection<File>> pluginLoader = new PluginLoader(
+            IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
                     // loads plugins to classloader
                     urlClassLoader,
                     (t) -> {
@@ -47,9 +49,9 @@ public class MyServer implements IServer {
                     visitor
             );
 
-            File examplesJar = new File(System.getProperty("user.home"), ".m2/repository/info/smart_tools/smartactors/" +
+            IPath examplesJar = new Path(System.getProperty("user.home") + "/.m2/repository/info/smart_tools/smartactors/" +
                     "core.examples/0.2.0-SNAPSHOT/core.examples-0.2.0-SNAPSHOT.jar");
-            Collection<File> fileCollection = new CopyOnWriteArrayList<>();
+            Collection<IPath> fileCollection = new CopyOnWriteArrayList<>();
             fileCollection.add(examplesJar);
             pluginLoader.loadPlugin(fileCollection);     // loads plugins
             bootstrap.start();                                          // starts initialization

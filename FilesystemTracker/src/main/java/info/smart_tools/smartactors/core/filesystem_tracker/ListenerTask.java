@@ -68,7 +68,8 @@ public class ListenerTask implements Runnable {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                         Path file = ((Path) event.context());
-                        newFileAction.execute(new info.smart_tools.smartactors.core.filesystem_tracker.Path(file));
+                        Path dirAndFile = fileSystem.getPath(directory.getPath()).resolve(file);
+                        newFileAction.execute(new info.smart_tools.smartactors.core.filesystem_tracker.Path(dirAndFile));
                     }
                 }
 
