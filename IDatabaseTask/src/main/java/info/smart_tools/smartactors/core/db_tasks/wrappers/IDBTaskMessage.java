@@ -5,24 +5,25 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 /**
- *
+ * General wrapper for an another database queries messages wrappers.
+ * Provides methods to obtains and sets the name of the collection to which you sent the query.
  */
 public interface IDBTaskMessage {
     /**
-     * Takes collection name from the message.
+     * Takes collection name from the message to database.
      *
      * @return name of current collection.
      *
-     * @throws ReadValueException when the collection name field value couldn't been read.
+     * @exception  ReadValueException when the collection name field value couldn't been read.
      */
     ICollectionName getCollection() throws ReadValueException;
 
     /**
-     * Adds collection name field to the message.
+     * Adds collection name field to the message to database.
      *
      * @param collectionName - collection name for updating.
      *
-     * @throws ChangeValueException when the collection name field couldn't been added to the message.
+     * @exception ChangeValueException when the collection name field couldn't been added to the message.
      */
     void setCollection(ICollectionName collectionName) throws ChangeValueException;
 }

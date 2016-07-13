@@ -1,38 +1,38 @@
 package info.smart_tools.smartactors.core.db_tasks;
 
-
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.db_tasks.wrappers.IDBTaskMessage;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.itask.ITask;
 
 /**
- * Database oriented task
+ * Database oriented task.
+ * Used for preparation and execution a some query to database.
  * @see ITask
  */
 public interface IDatabaseTask extends ITask {
-
     /**
-     * Prepare some task for execute.
+     * Prepare a some database oriented task to execute.
      *
      * @param message - contains parameters for preparation task.
+     * @see IDBTaskMessage
      *
-     * @throws TaskPrepareException when:
-     *                1. Invalid storage connection;
-     *                2. Invalid parameters in the incoming message;
-     *                3. Creating query for task execute error;
-     *                4. IOC resolution error;
+     * @exception TaskPrepareException when error of preparation task process.
      */
     void prepare(final IObject message) throws TaskPrepareException;
 
     /**
      * Setter for storage connection field.
+     *
      * @param storageConnection - database connection.
+     * @see IStorageConnection
      */
     void setConnection(final IStorageConnection storageConnection);
 
     /**
      * @return used storage connection.
+     * @see IStorageConnection
      */
     IStorageConnection getConnection();
 }

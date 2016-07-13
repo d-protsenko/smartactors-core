@@ -7,24 +7,32 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import java.util.Map;
 
 /**
- *
+ * Message wrapper for create collection query to database.
+ * Contains a collection name and indexes to the collection.
+ * @see IDBTaskMessage
  */
 public interface ICreateCollectionMessage extends IDBTaskMessage {
     /**
-     *  What indexes to create on collection.
-     *  @return map filedName->indexType
+     * Gives indexes to create on collection.
      *
-     *  Index types:
-     *  ordered     - for sortable fields (numeric or strings).
-     *  tags        - for search by tags (tags field should be an JSON array).
+     * Index types:
+     * ordered     - for sortable fields (numeric or strings).
+     * tags        - for search by tags (tags field should be an JSON array).
      *
+     * @return map filedName->indexType
+     * @exception ReadValueException when error of reading indexes in the message.
      */
     Map<String, String> getIndexes() throws ReadValueException;
 
     /**
+     * Sets the indexes to collection in the message.
      *
-     * @param indexes
-     * @throws ChangeValueException
+     * Index types:
+     * ordered     - for sortable fields (numeric or strings).
+     * tags        - for search by tags (tags field should be an JSON array).
+     *
+     * @param indexes - database indexes to a some collection.
+     * @exception ChangeValueException when error of writing indexes in the message.
      */
     void setIndexes(Map<String, String> indexes) throws ChangeValueException;
 }

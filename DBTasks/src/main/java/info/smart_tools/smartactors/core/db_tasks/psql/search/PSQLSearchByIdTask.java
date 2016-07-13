@@ -81,8 +81,8 @@ public class PSQLSearchByIdTask extends CachedDatabaseTask {
                                            @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String id = DBQueryFields.DOCUMENT_ID.in(message);
-            query.setParameters((statement) -> statement.setObject(1, id));
+            Long id = DBQueryFields.DOCUMENT_ID.in(message);
+            query.setParameters((statement) -> statement.setLong(1, id));
 
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {
