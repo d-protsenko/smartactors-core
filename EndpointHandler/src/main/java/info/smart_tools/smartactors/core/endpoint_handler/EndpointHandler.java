@@ -1,27 +1,18 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
 import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import info.smat_tools.smartactors.core.iexchange.IExchange;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -36,10 +27,15 @@ import java.util.concurrent.ExecutionException;
  * @param <TRequest> type of a request received by endpoint
  */
 public abstract class EndpointHandler<TContext, TRequest> {
-    private final IMessageReceiver receiver;
+    private final IReceiverChain receiverChain;
+    private final IEnvironmentHandler environmentHandler;
+    private final IScope scope;
 
-    public EndpointHandler(final IMessageReceiver receiver) throws ResolutionException {
-        this.receiver = receiver;
+    public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
+                           final IScope scope) throws ResolutionException {
+        this.scope = scope;
+        this.receiverChain = receiver;
+        this.environmentHandler = environmentHandler;
     }
 
     /**
@@ -86,9 +82,8 @@ public abstract class EndpointHandler<TContext, TRequest> {
                 FieldName ipAddressField = new FieldName("ipAddress");
                 environment.setValue(ipAddressField, ((InetSocketAddress) address).getAddress().getHostAddress());
             }
-            /*
-            TODO: add sending of environment to chain
-             */
+            ScopeProvider.setCurrentScope(scope);
+            environmentHandler.handle(environment, receiverChain);
         } catch (Exception e) {
             throw new ExecutionException("Failed to handle request to endpoint", e);
         }

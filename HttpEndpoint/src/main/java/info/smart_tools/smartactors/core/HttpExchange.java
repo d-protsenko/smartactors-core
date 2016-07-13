@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core;
 
 
+import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -8,7 +9,6 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 import info.smat_tools.smartactors.core.iexchange.IExchange;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -49,20 +49,20 @@ public class HttpExchange implements IExchange {
     private IMessageMapper<byte[]> messageMapper;
     private IMessage requestMessage;
 
-    private static Field<IObject> cookiesField;
-    private static Field<IObject> headersF;
-    private static Field<String> valueCookieField;
-    private static Field<Integer> maxAgeSecondsField;
+    private static FieldName cookiesField;
+    private static FieldName headersF;
+    private static FieldName valueCookieField;
+    private static FieldName maxAgeSecondsField;
 
     public HttpExchange(IMessage requestMessage, ChannelHandlerContext ctx, HttpRequest httpRequest, IMessageMapper<byte[]> messageMapper) throws ResolutionException {
         this.ctx = ctx;
         this.httpRequest = httpRequest;
         this.messageMapper = messageMapper;
         this.requestMessage = requestMessage;
-        cookiesField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "cookies");
-        headersF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "setHeaders");
-        valueCookieField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "value");
-        maxAgeSecondsField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "maxAge");
+        cookiesField = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "cookies");
+        headersF = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "setHeaders");
+        valueCookieField = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "value");
+        maxAgeSecondsField = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "maxAge");
     }
 
     @Override
@@ -90,8 +90,8 @@ public class HttpExchange implements IExchange {
 
     private HttpResponseStatus getResponseStatus(IObject responseMessage) {
         try {
-            Field<Exception> exceptionField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "exception");
-            Exception ex = exceptionField.out(responseMessage);
+            FieldName exceptionFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "exception");
+            Exception ex = (Exception) responseMessage.getValue(exceptionFieldName);
             if (ex != null) {
                 if (ex instanceof RuntimeException || ex.getCause() != null && ex.getCause() instanceof RuntimeException) {
                     return HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -109,7 +109,7 @@ public class HttpExchange implements IExchange {
 
     private void setCookiesFromMessage(FullHttpResponse httpResponse, IMessage message) {
         try {
-            IObject cookies = cookiesField.out(message);
+            IObject cookies = (IObject) message.getValue(cookiesField);
             /*IObjectIterator cookiesIterator = cookies.iterator();
 
             while (cookiesIterator.next()) {
@@ -136,7 +136,7 @@ public class HttpExchange implements IExchange {
 
     private void setHeadersFromMessage(FullHttpResponse httpResponse, IMessage message) {
         try {
-            IObject headers = headersF.out(message);
+            IObject headers = (IObject) message.getValue(headersF);
             /*IObjectIterator headersIterator = headers.iterator();
 
             while (headersIterator.next()) {
