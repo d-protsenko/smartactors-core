@@ -14,6 +14,7 @@ public class HttpEndpoint extends HttpServer {
     /**
      * Constructor for endpoint
      * @param port port of the endpoint
+     * @param maxContentLength max length of the content
      * @param scope scope for endpoint
      * @param handler handler for environment
      * @param receiverChain chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
@@ -21,10 +22,12 @@ public class HttpEndpoint extends HttpServer {
      *                              and value is strategy for that content type
      * @throws ResolutionException
      */
-    public HttpEndpoint(final int port, final IScope scope, final IEnvironmentHandler handler,
-                        final IReceiverChain receiverChain, final Map<String, IDeserializeStrategy> strategies)
+    public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
+                        final IEnvironmentHandler handler, final IReceiverChain receiverChain,
+                        final Map<String, IDeserializeStrategy> strategies
+                        )
             throws ResolutionException {
-        super(port, new EndpointChannelInboundHandler<>(
+        super(port, maxContentLength, new EndpointChannelInboundHandler<>(
                 new HttpRequestHandler(scope, handler, receiverChain, strategies),
                 FullHttpRequest.class
         ));

@@ -173,7 +173,7 @@ public class HttpEndpointTest {
     ) throws ResolutionException, ScopeProviderException {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
-        return new HttpEndpoint(getTestingPort(), ScopeProvider.getCurrentScope(),
+        return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
                 environmentHandler, receiver, strategies);
     }
 

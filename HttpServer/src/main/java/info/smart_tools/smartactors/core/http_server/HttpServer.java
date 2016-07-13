@@ -13,15 +13,24 @@ import io.netty.handler.codec.http.HttpServerCodec;
  * TODO: handle input/output compression (e.g. gzip, deflate etc.)
  */
 public class HttpServer extends TcpServer {
-    public HttpServer(int port, ChannelInboundHandler requestHandler) {
+    private final int maxContentLength;
+
+    /**
+     * Constructor for HttpServer
+     * @param port port of the http server
+     * @param maxContentLength max length of the content
+     * @param requestHandler channel, that handle request
+     */
+    public HttpServer(final int port, final int maxContentLength, final ChannelInboundHandler requestHandler) {
         super(port, requestHandler);
+        this.maxContentLength = maxContentLength;
     }
 
     @Override
-    protected ChannelPipeline setupPipeline(ChannelPipeline pipeline) {
+    protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         return super.setupPipeline(pipeline).addLast(
                 new HttpServerCodec(),
-                new HttpObjectAggregator(4096)
+                new HttpObjectAggregator(maxContentLength)
         );
     }
 }
