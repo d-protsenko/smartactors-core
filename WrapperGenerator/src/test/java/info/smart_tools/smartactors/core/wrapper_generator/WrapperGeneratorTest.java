@@ -97,6 +97,8 @@ public class WrapperGeneratorTest {
     @Test
     public void checkCreationAndUsageWrapperByInterface()
             throws Exception {
+        IWrapperGenerator wg = new WrapperGenerator(null);
+        wg.generate(IWrapper.class);
     }
 
     @Test (expected = WrapperGeneratorException.class)
