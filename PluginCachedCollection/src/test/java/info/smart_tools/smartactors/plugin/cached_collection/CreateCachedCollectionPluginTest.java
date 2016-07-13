@@ -8,9 +8,12 @@ import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
@@ -23,16 +26,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, CreateCachedCollectionPlugin.class})
 @RunWith(PowerMockRunner.class)
@@ -57,7 +56,7 @@ public class CreateCachedCollectionPluginTest {
     }
 
     @Test
-    public void ShouldAddNewItemDuringLoad() throws Exception {
+    public void MustCorrectLoadPlugin() throws Exception {
 
         IKey cachedCollectionKey = mock(IKey.class);
         when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
@@ -160,5 +159,116 @@ public class CreateCachedCollectionPluginTest {
 
         verifyNew(HashMap.class).withNoArguments();
         verify(bootstrap).add(bootstrapItem);
+    }
+
+    @Test
+    public void MustIncorrectLoadPluginWhenKeysThrowException() throws Exception {
+
+        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenThrow(new ResolutionException(""));
+
+        try {
+            plugin.load();
+        } catch (PluginException e) {
+
+            verifyStatic();
+            Keys.getOrAdd(ICachedCollection.class.toString());
+            return;
+        }
+        assertTrue("Must throw exception", false);
+    }
+
+    @Test
+    public void MustIncorrectLoadPluginWhenIOCResolveThrowException() throws Exception {
+        IKey cachedCollectionKey = mock(IKey.class);
+        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
+
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin").thenReturn(bootstrapItem);
+
+        IKey iFieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(iFieldKey);
+
+        when(IOC.resolve(iFieldKey, "connectionPool")).thenThrow(new ResolutionException(""));
+
+        try {
+            plugin.load();
+        } catch (PluginException e) {
+
+            verifyStatic();
+            Keys.getOrAdd(ICachedCollection.class.toString());
+
+            verifyNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin");
+
+            verifyStatic(times(3));
+            Keys.getOrAdd(IField.class.toString());
+
+            verifyStatic();
+            IOC.resolve(iFieldKey, "connectionPool");
+            return;
+        }
+        assertTrue("Must throw exception", false);
+    }
+
+    @Test
+    public void MustInCorrectExecuteInIPoorActionWhenThrowRegistrationException() throws Exception {
+
+        IKey cachedCollectionKey = mock(IKey.class);
+        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
+
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin").thenReturn(bootstrapItem);
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+
+        IKey iFieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(iFieldKey);
+
+        IField connectionPoolField = mock(IField.class);
+        when(IOC.resolve(iFieldKey, "connectionPool")).thenReturn(connectionPoolField);
+
+        IField collectionNameField = mock(IField.class);
+        when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
+
+        IField keyNameField = mock(IField.class);
+        when(IOC.resolve(iFieldKey, "keyName")).thenReturn(keyNameField);
+
+        HashMap<String, ICachedCollection> collectionMap = mock(HashMap.class);
+        whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
+
+        plugin.load();
+
+        verifyStatic();
+        Keys.getOrAdd(ICachedCollection.class.toString());
+
+        verifyNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin");
+
+        verifyStatic(times(3));
+        Keys.getOrAdd(IField.class.toString());
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "connectionPool");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "collectionName");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "keyName");
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(bootstrapItem).process(actionArgumentCaptor.capture());
+
+        doThrow(new RegistrationException("")).when(IOC.class);
+        IOC.register(eq(cachedCollectionKey), any());
+
+        try {
+            actionArgumentCaptor.getValue().execute();
+        } catch (RuntimeException e) {
+            verifyStatic();
+            IOC.register(eq(cachedCollectionKey), any());
+
+            verifyNew(HashMap.class).withNoArguments();
+            verify(bootstrap).add(bootstrapItem);
+            return;
+        }
+        assertTrue("Must throw exception", false);
     }
 }
