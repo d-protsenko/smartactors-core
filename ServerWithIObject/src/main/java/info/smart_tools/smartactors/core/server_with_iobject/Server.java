@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.server_with_iobject;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -117,7 +118,7 @@ public class Server implements IServer {
                 )
         );
         IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

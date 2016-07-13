@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
  */
 public class Field implements IField {
 
-    private IKey fieldName;
+    private IFieldName fieldName;
 
     /**
      * Constructor.
@@ -20,7 +20,7 @@ public class Field implements IField {
      * @param fieldName name of {@code WDSObject} field
      * @throws InvalidArgumentException if incoming arguments are incorrect
      */
-    public Field(final IKey fieldName)
+    public Field(final IFieldName fieldName)
             throws InvalidArgumentException {
         if (null == fieldName) {
             throw new InvalidArgumentException("FieldName should not be null");
