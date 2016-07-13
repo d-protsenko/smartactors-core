@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.field_name;
 
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
 import java.util.regex.Pattern;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * A {@code FieldName} passed to {@code IObject} methods
  * as name of needed field. This class checks the validity of the name.
  */
-public class FieldName implements IKey {
+public class FieldName implements IFieldName {
 
     /**
      * Pattern with valid symbols for {@code FieldName}

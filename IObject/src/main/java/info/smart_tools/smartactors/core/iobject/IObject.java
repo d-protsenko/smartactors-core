@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.iobject;
 
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * IObject interface
  */
-public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
+public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
     /**
      * Returns named field value from this object.
      * @param name is name of field
@@ -22,9 +22,9 @@ public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
      * @throws ReadValueException in case of underlying exceptions
      * @throws InvalidArgumentException if incoming argument is null
      *
-     * @see IKey
+     * @see IFieldName
      */
-    Object getValue(IKey name)
+    Object getValue(IFieldName name)
             throws ReadValueException, InvalidArgumentException;
 
     /**
@@ -36,9 +36,9 @@ public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
      * @throws ChangeValueException in case of underlying exceptions
      * @throws InvalidArgumentException if incoming argument is null
      *
-     * @see IKey
+     * @see IFieldName
      */
-    void setValue(IKey name, Object value)
+    void setValue(IFieldName name, Object value)
             throws ChangeValueException, InvalidArgumentException;
 
     /**
@@ -48,7 +48,7 @@ public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
      * @throws DeleteValueException if object couldn't delete value with note fieldname.
      * @throws InvalidArgumentException if incoming argument is null
      */
-    void deleteField(IKey name)
+    void deleteField(IFieldName name)
             throws DeleteValueException, InvalidArgumentException;
 
     /**
@@ -64,5 +64,5 @@ public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
      * Returns new iterator over set of fields of the object.
      * @return an iterator.
      */
-    Iterator<Map.Entry<IKey, Object>> iterator();
+    Iterator<Map.Entry<IFieldName, Object>> iterator();
 }

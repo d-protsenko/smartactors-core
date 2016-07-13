@@ -16,7 +16,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
+            <artifactId>core.ifield_name</artifactId>
             <version>${core.version}</version>
         </dependency>
 

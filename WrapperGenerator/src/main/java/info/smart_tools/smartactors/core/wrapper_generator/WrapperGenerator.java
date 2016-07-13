@@ -4,15 +4,14 @@ import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassG
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -61,6 +60,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             instance = IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
         } catch (ResolutionException e) {
             // do nothing
+            // ToDo: need refactoring
         }
         if (null != instance) {
             return instance;
@@ -109,7 +109,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addImport(IObjectWrapper.class.getCanonicalName())
                 .addImport(ReadValueException.class.getCanonicalName())
                 .addImport(ChangeValueException.class.getCanonicalName())
-                .addImport(IKey.class.getCanonicalName());
+                .addImport(IFieldName.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
@@ -186,7 +186,7 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addMethod().setModifier(Modifiers.PUBLIC).setReturnType("IObject").setName("getEnvironmentIObject")
                 .addParameter()
-                        .setType("IKey")
+                        .setType("IFieldName")
                         .setName("fieldName")
                         .next()
                 .setExceptions("InvalidArgumentException")
