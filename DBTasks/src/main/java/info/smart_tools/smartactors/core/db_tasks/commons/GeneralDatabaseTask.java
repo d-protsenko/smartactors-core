@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnectio
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -79,8 +78,6 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
      * @param storageConnection - {@see IDatabaseTask}
      *                  {@link IDatabaseTask#setConnection(IStorageConnection)}.
      *
-     * @throws TaskSetConnectionException {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setConnection(IStorageConnection)}
      */
     @Override
     public void setConnection(final IStorageConnection storageConnection) {

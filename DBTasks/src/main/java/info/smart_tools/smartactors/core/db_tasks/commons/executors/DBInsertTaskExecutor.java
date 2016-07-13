@@ -17,20 +17,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Common insert task executor.
+ * Common executor for insert query to database.
+ * Not dependent of database type.
+ * All insert tasks may use this executor.
+ * @see IDBTaskExecutor
  */
-public class DBInsertTaskExecutor implements IDBTaskExecutor {
-    /**
-     *
-     */
+public final class DBInsertTaskExecutor implements IDBTaskExecutor {
+
     private DBInsertTaskExecutor() {}
 
+    /**
+     * Factory-method for creation a new instance of {@link DBInsertTaskExecutor}.
+     * @return a new instance of {@link DBInsertTaskExecutor}.
+     */
     public static DBInsertTaskExecutor create() {
         return new DBInsertTaskExecutor();
     }
 
+    /**
+     * Checks the insert query on executable.
+     * @see IDBTaskExecutor#isExecutable(IObject)
+     *
+     * @param message - query message with a some parameters for query.
+     * @return <code>true</code> if message contains a document, else false.
+     * @exception InvalidArgumentException when incoming message has invalid format.
+     */
     @Override
-    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    public boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
@@ -39,12 +52,13 @@ public class DBInsertTaskExecutor implements IDBTaskExecutor {
     }
 
     /**
-     * Executes insertion documents query to database.
+     * Executes the insert query.
+     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
      *
-     * @param query - a compiled executable query to database.
-     * @param message - source message with parameters for query.
-     *
-     * @throws TaskExecutionException when the result set has more than one document.
+     * @param query - prepared compiled query for execution.
+     * @param message - query message with parameters for query.
+     * @exception TaskExecutionException when database return not enough generated ids
+     *              or errors in during execution create collection query to database.
      */
     @Override
     public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)

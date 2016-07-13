@@ -45,7 +45,7 @@ public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
 
     @Override
     protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
-        return taskExecutor.requiresExecutable(message);
+        return taskExecutor.isExecutable(message);
     }
 
     @Nonnull

@@ -19,32 +19,49 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Common a searching task executor.
+ * Common executor for search query to database.
+ * Not dependent of database type.
+ * All search tasks may use this executor.
+ * @see IDBTaskExecutor
  */
-public class DBSearchTaskExecutor implements IDBTaskExecutor {
-    /**
-     * Default constructor.
-     */
+public final class DBSearchTaskExecutor implements IDBTaskExecutor {
+
     private DBSearchTaskExecutor() {}
 
+    /**
+     * Factory-method for creation a new instance of {@link DBSearchTaskExecutor}.
+     * @return a new instance of {@link DBSearchTaskExecutor}.
+     */
     public static DBSearchTaskExecutor create() {
         return new DBSearchTaskExecutor();
     }
 
+    /**
+     * Checks the search query on executable.
+     * Always gives <code>true</code> because this method must be override a impl. classes.
+     * @see IDBTaskExecutor#isExecutable(IObject)
+     *
+     * @param message - query message with a some parameters for query.
+     * @return always <code>true</code>.
+     * @exception InvalidArgumentException never throws in current executor.
+     */
     @Override
-    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    public boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         return true;
     }
 
     /**
-     * Executes a searching query of rows to database and pushes the result in the incoming message.
+     * Executes the search query.
+     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
      *
-     * @param query - a compiled executable query to database.
-     *
-     * @throws TaskExecutionException when :
-     *                1. IOC resolution error;
-     *                2. Error change a value into {@link IObject};
-     *                3. Error during search query execution.
+     * @param query - prepared compiled query for execution.
+     * @param message - query message with parameters for query.
+     * @exception TaskExecutionException when:
+     *              1. Errors of resolution a IObject or IFieldName dependencies;
+     *              2. Errors of setting a document's id field in result object
+     *                      or search result field in the incoming message.
+     *              3. The incoming message has a invalid format.
+     *              4. Errors in during execution create collection query to database.
      */
     @Override
     public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)

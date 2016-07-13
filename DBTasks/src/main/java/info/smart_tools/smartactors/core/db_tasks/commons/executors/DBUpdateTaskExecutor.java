@@ -12,27 +12,33 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import javax.annotation.Nonnull;
 
 /**
- * Common update task executor.
+ * Common executor for update query to database.
+ * Not dependent of database type.
+ * All update tasks may use this executor.
+ * @see IDBTaskExecutor
  */
 public class DBUpdateTaskExecutor implements IDBTaskExecutor {
-    private DBUpdateTaskExecutor() {}
+
+    private DBUpdateTaskExecutor() { }
 
     /**
-     *
-     * @return
+     * Factory-method for creation a new instance of {@link DBUpdateTaskExecutor}.
+     * @return a new instance of {@link DBUpdateTaskExecutor}.
      */
     public static DBUpdateTaskExecutor create() {
         return new DBUpdateTaskExecutor();
     }
 
     /**
+     * Checks the update query on executable.
+     * @see IDBTaskExecutor#isExecutable(IObject)
      *
-     * @param message
-     * @return
-     * @throws InvalidArgumentException
+     * @param message - query message with a some parameters for query.
+     * @return <code>true</code> if incoming message contains a document, else <code>false</code>.
+     * @exception InvalidArgumentException when the incoming message has invalid format.
      */
     @Override
-    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    public boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT.in(message) != null;
         } catch (ReadValueException e) {
@@ -41,14 +47,14 @@ public class DBUpdateTaskExecutor implements IDBTaskExecutor {
     }
 
     /**
-     * Executes update documents query to database.
+     * Executes the update query.
+     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
      *
-     * @param query - a compiled executable query to database.
-     * @param message - source message with parameters for query.
-     *
-     * @throws TaskExecutionException when:
-     *              1. The result set size hasn't equals of number of updating documents;
-     *              2. Query execution errors.
+     * @param query - prepared compiled query for execution.
+     * @param message - query message with parameters for query.
+     * @exception TaskExecutionException when the result set size
+     *              hasn't equals of number of updating documents or
+     *              errors in during execution create collection query to database.
      */
     @Override
     public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)

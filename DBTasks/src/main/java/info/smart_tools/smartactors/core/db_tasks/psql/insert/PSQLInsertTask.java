@@ -96,7 +96,7 @@ public class PSQLInsertTask extends CachedDatabaseTask {
 
     @Override
     protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
-        return taskExecutor.requiresExecutable(message);
+        return taskExecutor.isExecutable(message);
     }
 
     /**

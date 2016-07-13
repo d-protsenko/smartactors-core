@@ -11,21 +11,33 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import javax.annotation.Nonnull;
 
 /**
- * Common deletion task executor.
+ * Common executor for delete query to database.
+ * Not dependent of database type.
+ * All delete tasks may use this executor.
+ * @see IDBTaskExecutor
  */
-public class DBDeleteTaskExecutor implements IDBTaskExecutor {
+public final class DBDeleteTaskExecutor implements IDBTaskExecutor {
 
+    private DBDeleteTaskExecutor() {}
+
+    /**
+     * Factory-method for creation a new instance of {@link DBDeleteTaskExecutor}.
+     * @return a new instance of {@link DBDeleteTaskExecutor}.
+     */
     public static DBDeleteTaskExecutor create() {
         return new DBDeleteTaskExecutor();
     }
 
     /**
-     * Default constructor.
+     * Checks the create collection query on executable.
+     * @see IDBTaskExecutor#isExecutable(IObject)
+     *
+     * @param message - query message with a some parameters for query.
+     * @return <code>true</code> if message contains a document id, else false.
+     * @exception InvalidArgumentException when incoming message has invalid format.
      */
-    private DBDeleteTaskExecutor() {}
-
     @Override
-    public boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    public boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT_ID.in(message) != null;
         } catch (ReadValueException e) {
@@ -34,12 +46,14 @@ public class DBDeleteTaskExecutor implements IDBTaskExecutor {
     }
 
     /**
-     * Executes deletion query of rows to database.
+     * Executes the delete query.
+     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
      *
-     * @param query - a compiled executable query to database.
-     * @param message - source message with parameters for query.
-     *
-     * @throws TaskExecutionException when number of deleted rows not equals of number of rows which had to be removed.
+     * @param query - prepared compiled query for execution.
+     * @param message - query message with parameters for query.
+     * @exception TaskExecutionException when number of deleted rows not equals
+     *              of number of rows which had to be removed,
+     *              or errors in during execution create collection query to database.
      */
     @Override
     public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
