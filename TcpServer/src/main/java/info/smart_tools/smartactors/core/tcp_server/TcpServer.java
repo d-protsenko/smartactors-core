@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.tcp_server;
 
 import com.google.common.collect.ImmutableList;
 import info.smart_tools.smartactors.core.netty_server.NettyServer;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

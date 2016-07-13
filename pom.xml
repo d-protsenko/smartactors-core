@@ -136,6 +136,9 @@
         <module>DeserializeStrategyPostJson</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
+        <module>IEnvironmentReceiver</module>
+        <module>IEnvironmentHandler</module>
+        <module>EnvironmentHandler</module>
     </modules>
 
     <build>
