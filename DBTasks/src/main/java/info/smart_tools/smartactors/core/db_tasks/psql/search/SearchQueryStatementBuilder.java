@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.db_tasks.commons.queries.IComplexQueryS
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLOrderWriter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLPagingWriter;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.sql_commons.DeclaredParam;
+import info.smart_tools.smartactors.core.sql_commons.IDeclaredParam;
 import info.smart_tools.smartactors.core.sql_commons.QueryConditionResolver;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
@@ -20,7 +20,7 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
     private String collection;
     private Object criteria;
     private List<IObject> orderBy;
-    private List<DeclaredParam> declaredParams;
+    private List<IDeclaredParam> declaredParams;
 
     private final QueryConditionResolver conditionResolver;
     private final SQLOrderWriter orderWriter;
@@ -86,7 +86,7 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
      * @param declaredParams
      * @return
      */
-    public SearchQueryStatementBuilder withDeclaredParams(@Nonnull final List<DeclaredParam> declaredParams) {
+    public SearchQueryStatementBuilder withDeclaredParams(@Nonnull final List<IDeclaredParam> declaredParams) {
         this.declaredParams = declaredParams;
         return this;
     }

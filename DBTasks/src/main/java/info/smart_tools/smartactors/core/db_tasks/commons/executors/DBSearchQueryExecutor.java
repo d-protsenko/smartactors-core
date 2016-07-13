@@ -22,24 +22,24 @@ import java.util.List;
  * Common executor for search query to database.
  * Not dependent of database type.
  * All search tasks may use this executor.
- * @see IDBTaskExecutor
+ * @see IDBQueryExecutor
  */
-public final class DBSearchTaskExecutor implements IDBTaskExecutor {
+public final class DBSearchQueryExecutor implements IDBQueryExecutor {
 
-    private DBSearchTaskExecutor() {}
+    private DBSearchQueryExecutor() {}
 
     /**
-     * Factory-method for creation a new instance of {@link DBSearchTaskExecutor}.
-     * @return a new instance of {@link DBSearchTaskExecutor}.
+     * Factory-method for creation a new instance of {@link DBSearchQueryExecutor}.
+     * @return a new instance of {@link DBSearchQueryExecutor}.
      */
-    public static DBSearchTaskExecutor create() {
-        return new DBSearchTaskExecutor();
+    public static DBSearchQueryExecutor create() {
+        return new DBSearchQueryExecutor();
     }
 
     /**
      * Checks the search query on executable.
      * Always gives <code>true</code> because this method must be override a impl. classes.
-     * @see IDBTaskExecutor#isExecutable(IObject)
+     * @see IDBQueryExecutor#isExecutable(IObject)
      *
      * @param message - query message with a some parameters for query.
      * @return always <code>true</code>.
@@ -52,7 +52,7 @@ public final class DBSearchTaskExecutor implements IDBTaskExecutor {
 
     /**
      * Executes the search query.
-     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
      *
      * @param query - prepared compiled query for execution.
      * @param message - query message with parameters for query.

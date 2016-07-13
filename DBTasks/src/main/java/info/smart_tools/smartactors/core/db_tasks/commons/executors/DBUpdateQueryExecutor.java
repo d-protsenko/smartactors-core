@@ -15,23 +15,23 @@ import javax.annotation.Nonnull;
  * Common executor for update query to database.
  * Not dependent of database type.
  * All update tasks may use this executor.
- * @see IDBTaskExecutor
+ * @see IDBQueryExecutor
  */
-public class DBUpdateTaskExecutor implements IDBTaskExecutor {
+public class DBUpdateQueryExecutor implements IDBQueryExecutor {
 
-    private DBUpdateTaskExecutor() { }
+    private DBUpdateQueryExecutor() { }
 
     /**
-     * Factory-method for creation a new instance of {@link DBUpdateTaskExecutor}.
-     * @return a new instance of {@link DBUpdateTaskExecutor}.
+     * Factory-method for creation a new instance of {@link DBUpdateQueryExecutor}.
+     * @return a new instance of {@link DBUpdateQueryExecutor}.
      */
-    public static DBUpdateTaskExecutor create() {
-        return new DBUpdateTaskExecutor();
+    public static DBUpdateQueryExecutor create() {
+        return new DBUpdateQueryExecutor();
     }
 
     /**
      * Checks the update query on executable.
-     * @see IDBTaskExecutor#isExecutable(IObject)
+     * @see IDBQueryExecutor#isExecutable(IObject)
      *
      * @param message - query message with a some parameters for query.
      * @return <code>true</code> if incoming message contains a document, else <code>false</code>.
@@ -48,7 +48,8 @@ public class DBUpdateTaskExecutor implements IDBTaskExecutor {
 
     /**
      * Executes the update query.
-     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
+     * One call = one update.
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
      *
      * @param query - prepared compiled query for execution.
      * @param message - query message with parameters for query.

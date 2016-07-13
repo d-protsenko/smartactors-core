@@ -20,23 +20,23 @@ import java.sql.SQLException;
  * Common executor for insert query to database.
  * Not dependent of database type.
  * All insert tasks may use this executor.
- * @see IDBTaskExecutor
+ * @see IDBQueryExecutor
  */
-public final class DBInsertTaskExecutor implements IDBTaskExecutor {
+public final class DBInsertQueryExecutor implements IDBQueryExecutor {
 
-    private DBInsertTaskExecutor() {}
+    private DBInsertQueryExecutor() {}
 
     /**
-     * Factory-method for creation a new instance of {@link DBInsertTaskExecutor}.
-     * @return a new instance of {@link DBInsertTaskExecutor}.
+     * Factory-method for creation a new instance of {@link DBInsertQueryExecutor}.
+     * @return a new instance of {@link DBInsertQueryExecutor}.
      */
-    public static DBInsertTaskExecutor create() {
-        return new DBInsertTaskExecutor();
+    public static DBInsertQueryExecutor create() {
+        return new DBInsertQueryExecutor();
     }
 
     /**
      * Checks the insert query on executable.
-     * @see IDBTaskExecutor#isExecutable(IObject)
+     * @see IDBQueryExecutor#isExecutable(IObject)
      *
      * @param message - query message with a some parameters for query.
      * @return <code>true</code> if message contains a document, else false.
@@ -53,7 +53,10 @@ public final class DBInsertTaskExecutor implements IDBTaskExecutor {
 
     /**
      * Executes the insert query.
-     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
+     * One call = one insert.
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
+     *
+     * After executes adds in source object generated id in database.
      *
      * @param query - prepared compiled query for execution.
      * @param message - query message with parameters for query.

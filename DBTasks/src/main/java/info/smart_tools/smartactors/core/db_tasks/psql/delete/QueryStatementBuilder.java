@@ -2,9 +2,6 @@ package info.smart_tools.smartactors.core.db_tasks.psql.delete;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -58,7 +55,7 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
 
         try {
-            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
+            QueryStatement preparedQuery = new QueryStatement();
             Writer writer = preparedQuery.getBodyWriter();
             StringBuilder queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
 
@@ -69,7 +66,7 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
             writer.write(queryBuilder.toString());
 
             return preparedQuery;
-        } catch (ResolutionException | IOException e) {
+        } catch (IOException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }

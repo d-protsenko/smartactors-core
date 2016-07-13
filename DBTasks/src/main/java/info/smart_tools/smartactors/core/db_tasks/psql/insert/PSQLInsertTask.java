@@ -7,8 +7,8 @@ import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBInsertTaskExecutor;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBInsertQueryExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 public class PSQLInsertTask extends CachedDatabaseTask {
 
     private final QueryStatementBuilder queryStatementBuilder;
-    private final IDBTaskExecutor taskExecutor;
+    private final IDBQueryExecutor taskExecutor;
 
     /**
      * Default constructor.
@@ -32,7 +32,7 @@ public class PSQLInsertTask extends CachedDatabaseTask {
      */
     private PSQLInsertTask() {
         queryStatementBuilder = QueryStatementBuilder.create();
-        taskExecutor = DBInsertTaskExecutor.create();
+        taskExecutor = DBInsertQueryExecutor.create();
     }
 
     /**
@@ -95,7 +95,7 @@ public class PSQLInsertTask extends CachedDatabaseTask {
     }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         return taskExecutor.isExecutable(message);
     }
 

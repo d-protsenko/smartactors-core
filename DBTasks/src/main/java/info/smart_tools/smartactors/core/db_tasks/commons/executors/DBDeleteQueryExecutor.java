@@ -14,23 +14,23 @@ import javax.annotation.Nonnull;
  * Common executor for delete query to database.
  * Not dependent of database type.
  * All delete tasks may use this executor.
- * @see IDBTaskExecutor
+ * @see IDBQueryExecutor
  */
-public final class DBDeleteTaskExecutor implements IDBTaskExecutor {
+public final class DBDeleteQueryExecutor implements IDBQueryExecutor {
 
-    private DBDeleteTaskExecutor() {}
+    private DBDeleteQueryExecutor() {}
 
     /**
-     * Factory-method for creation a new instance of {@link DBDeleteTaskExecutor}.
-     * @return a new instance of {@link DBDeleteTaskExecutor}.
+     * Factory-method for creation a new instance of {@link DBDeleteQueryExecutor}.
+     * @return a new instance of {@link DBDeleteQueryExecutor}.
      */
-    public static DBDeleteTaskExecutor create() {
-        return new DBDeleteTaskExecutor();
+    public static DBDeleteQueryExecutor create() {
+        return new DBDeleteQueryExecutor();
     }
 
     /**
      * Checks the create collection query on executable.
-     * @see IDBTaskExecutor#isExecutable(IObject)
+     * @see IDBQueryExecutor#isExecutable(IObject)
      *
      * @param message - query message with a some parameters for query.
      * @return <code>true</code> if message contains a document id, else false.
@@ -47,7 +47,8 @@ public final class DBDeleteTaskExecutor implements IDBTaskExecutor {
 
     /**
      * Executes the delete query.
-     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
+     * One call = one delete.
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
      *
      * @param query - prepared compiled query for execution.
      * @param message - query message with parameters for query.

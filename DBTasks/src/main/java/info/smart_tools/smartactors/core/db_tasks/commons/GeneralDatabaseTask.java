@@ -5,66 +5,94 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
 
 /**
- *
+ * General common thread-unsafe database task for all database oriented tasks.
+ * This class realize a "Template Method Pattern".
+ * Defines a common group of methods for preparation and execution task;
+ *           they must be override in sub tasks.
  */
 public abstract class GeneralDatabaseTask implements IDatabaseTask {
+    /** Prepared query for execution. */
     private ICompiledQuery query;
+    /** Message with parameters for task. */
     private IObject message;
+    /** Database connection which used for execution query. */
     private IStorageConnection connection;
-    private boolean isExecutable;
+    /**
+     * Execution flag.
+     * If <code>true</code> then task executes query to database else no executes.
+     * @see IDBQueryExecutor#isExecutable(IObject)
+     */
+    private boolean executable;
 
     /**
-     *
+     * Default constructor for sub tasks.
      */
     protected GeneralDatabaseTask() { }
 
     /**
-     * {@see IDatabaseTask} {@link IDatabaseTask#prepare(IObject)}
-     * Prepare task a insert documents query for postgres database.
-
-     * @param insertMessage - contains parameters for insert query.
-     *          {@see IInsertMessage}:
-     *                      {@link IUpsertMessage#getCollection()},
+     * Prepares the task for execution.
+     * Task prepares a specific query for execution to the postgres database.
+     * @see IDatabaseTask#prepare(IObject)
      *
-     * @throws TaskPrepareException {@see IDatabaseTask} {@link IDatabaseTask#prepare(IObject)}
+     * Builds and compile query to database by parameters from message.
+     * @see GeneralDatabaseTask#query
+     * @see GeneralDatabaseTask#message
+     *
+     * Uses a template methods which must be override in sub task:
+     * @see GeneralDatabaseTask#isExecutable(IObject)
+     * @see GeneralDatabaseTask#takeCompiledQuery(IStorageConnection, IObject)
+     * @see GeneralDatabaseTask#setParameters(ICompiledQuery, IObject)
+     * @see GeneralDatabaseTask#setInternalState(ICompiledQuery, IObject)
+     *
+     * @param message - query message with parameters for insert query.
+     * @see info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage
+     *
+     * @exception TaskPrepareException  when incoming message has a invalid format
+     *              or errors in during preparation the task.
      */
     @Override
-    public void prepare(@Nonnull final IObject insertMessage) throws TaskPrepareException {
+    public void prepare(@Nonnull final IObject message) throws TaskPrepareException {
         try {
-            isExecutable = requiresExecutable(insertMessage);
-            if (isExecutable) {
+            executable = isExecutable(message);
+            if (executable) {
                 ICompiledQuery compiledQuery = takeCompiledQuery(connection, message);
                 setInternalState(setParameters(compiledQuery, message), message);
             }
         } catch (NullPointerException e) {
-            throw new TaskPrepareException("Can't prepare query because: Invalid given insert message!");
+            throw new TaskPrepareException("Can't prepare query because: Invalid given query message!");
+        } catch (ClassCastException e) {
+            throw new TaskPrepareException("Invalid collection field type!");
         } catch (Throwable e) {
             throw new TaskPrepareException("Can't prepare query because: " + e.getMessage(), e);
         }
     }
 
     /**
-     * {@see ITask} {@link ITask#execute()}
-     * Executes a insert documents query to postgres database.
+     * Executes the task.
+     * Task executes a specific query to the postgres database.
+     * @see IDatabaseTask#execute()
      *
-     * @throws TaskExecutionException {@see ITask} {@link ITask#execute()}
+     * Before execution the task must be done preparation else throws exception.
+     * @see IDatabaseTask#prepare(IObject)
+     * @see TaskExecutionException
+     *
+     * @exception TaskExecutionException when errors in during execution the task.
      */
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            if (isExecutable) {
+            if (executable) {
                 execute(query, message);
             }
         } catch (Throwable e) {
@@ -73,11 +101,16 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
     }
 
     /**
-     * {@see IDatabaseTask} {@link IDatabaseTask#setConnection(IStorageConnection)}
-     *
-     * @param storageConnection - {@see IDatabaseTask}
-     *                  {@link IDatabaseTask#setConnection(IStorageConnection)}.
-     *
+     * @return used database connection.
+     */
+    @Override
+    public IStorageConnection getConnection() {
+        return connection;
+    }
+
+    /**
+     * @param storageConnection - used database connection.
+     * @see IStorageConnection
      */
     @Override
     public void setConnection(final IStorageConnection storageConnection) {
@@ -85,41 +118,80 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
     }
 
     /**
+     * Compiles a some query statement for incoming connection.
      *
-     * @param connection
-     * @param queryStatementBuilder
-     * @return
-     * @throws QueryBuildException
+     * @param connection - used database connection for compilation query statement.
+     * @param queryStatementBuilder - builds query statement.
+     * @return compiled query from query statement.
+     * @exception  QueryBuildException when errors in during compilation query.
      */
-    protected ICompiledQuery createCompiledQuery(final IStorageConnection connection,
-                                                 final IQueryStatementBuilder queryStatementBuilder
+    protected @Nonnull ICompiledQuery createCompiledQuery(@Nonnull final IStorageConnection connection,
+                                                          @Nonnull final IQueryStatementBuilder queryStatementBuilder
     ) throws QueryBuildException {
         try {
             QueryStatement queryStatement = queryStatementBuilder.build();
             return connection.compileQuery(queryStatement);
+        } catch (NullPointerException e) {
+            throw new QueryBuildException("Query compile error because: Incoming parameters must not be a null!", e);
         } catch (StorageException e) {
             throw new QueryBuildException("Query compile error: " + e.getMessage(), e);
         }
     }
 
-    @Override
-    public IStorageConnection getConnection() {
-        return connection;
-    }
-
-    protected abstract @Nonnull ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection connection,
+    /**
+     * Method which override in sub task, used in preparation task.
+     * @see GeneralDatabaseTask#prepare(IObject)
+     * Creates a prepared for execution compiled query with parameters.
+     * @see ICompiledQuery
+     *
+     * @param storageConnection - used database connection for compilation query.
+     * @param queryMessage - message with query parameters.
+     * @return compiled query for incoming connection.
+     * @throws QueryBuildException when errors in during obtaining compiled query.
+     */
+    protected abstract @Nonnull ICompiledQuery takeCompiledQuery(@Nonnull final IStorageConnection storageConnection,
                                                                  @Nonnull final IObject queryMessage
     ) throws QueryBuildException;
 
-    protected abstract @Nonnull ICompiledQuery setParameters(@Nonnull final ICompiledQuery query,
-                                                             @Nonnull final IObject message
+    /**
+     * Sets special for query parameters values from message in compiled query.
+     *
+     * @param compiledQuery - query without parameters values.
+     * @param queryMessage - message with parameters for query.
+     * @return a parametrized compiled query.
+     * @throws QueryBuildException when errors in during parameterization query.
+     */
+    protected abstract @Nonnull ICompiledQuery setParameters(@Nonnull final ICompiledQuery compiledQuery,
+                                                             @Nonnull final IObject queryMessage
     ) throws QueryBuildException;
 
+    /**
+     * Executes the query to database.
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
+     *
+     * @param compiledQuery - prepared compiled query for execution.
+     * @param queryMessage - query message with parameters for query.
+     * @exception TaskExecutionException when number of deleted rows not equals
+     *              of number of rows which had to be removed,
+     *              or errors in during execution create collection query to database.
+     */
     protected abstract void execute(@Nonnull final ICompiledQuery compiledQuery,
                                     @Nonnull final IObject queryMessage
     ) throws TaskExecutionException;
 
-    protected abstract boolean requiresExecutable(@Nonnull final IObject queryMessage)
+    /**
+     * Checks a some query on executable.
+     * If result is false task must not execute query to database, because query is already done.
+     * For example: needs insert document in a some collection,
+     *          but query message hasn't contains a field document
+     *          then we deem that query done successfully.
+     *
+     * @param queryMessage - query message for checking.
+     * @return a result of checking.
+     *          If query is executable than <code>true</code>, else <code>false</code>.
+     * @exception  InvalidArgumentException when query message has invalid format.
+     */
+    protected abstract boolean isExecutable(@Nonnull final IObject queryMessage)
             throws InvalidArgumentException;
 
 

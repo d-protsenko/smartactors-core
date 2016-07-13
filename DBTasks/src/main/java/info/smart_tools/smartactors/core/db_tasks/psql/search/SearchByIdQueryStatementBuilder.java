@@ -2,9 +2,6 @@ package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -56,7 +53,7 @@ final class SearchByIdQueryStatementBuilder implements IQueryStatementBuilder {
     public QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         try {
-            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
+            QueryStatement preparedQuery = new QueryStatement();
             StringBuilder queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
             preparedQuery.getBodyWriter().write(queryBuilder
                     .append(FIRST_PART_TEMPLATE)
@@ -65,7 +62,7 @@ final class SearchByIdQueryStatementBuilder implements IQueryStatementBuilder {
                     .toString());
 
             return preparedQuery;
-        } catch (IOException | ResolutionException e) {
+        } catch (IOException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }

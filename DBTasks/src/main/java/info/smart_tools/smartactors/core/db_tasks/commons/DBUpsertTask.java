@@ -21,18 +21,34 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ */
 public abstract class DBUpsertTask implements IDatabaseTask {
+    /**  */
     private Map<Boolean, IDatabaseTask> subTasks;
+    /**  */
     private IDatabaseTask currentTask;
+    /**  */
     private IStorageConnection connection;
 
+    /**  */
     private static final boolean INSERT_MODE = true;
+    /**  */
     private static final boolean UPDATE_MODE = false;
 
+    /**
+     *
+     */
     protected DBUpsertTask() {
         subTasks = new HashMap<>(2);
     }
 
+    /**
+     *
+     * @param upsertMessage
+     * @throws TaskPrepareException
+     */
     @Override
     public void prepare(final IObject upsertMessage) throws TaskPrepareException {
         try {
@@ -45,6 +61,10 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
+    /**
+     *
+     * @throws TaskExecutionException
+     */
     @Override
     public void execute() throws TaskExecutionException {
         try {
@@ -54,21 +74,39 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         }
     }
 
+    /**
+     *
+     * @param storageConnection - database connection.
+     */
     @Override
     public void setConnection(final IStorageConnection storageConnection) {
         connection = storageConnection;
     }
 
+    /**
+     *
+      * @return
+     */
     @Override
     public IStorageConnection getConnection() {
         return connection;
     }
 
+    /**
+     *
+     * @param insertTask
+     * @return
+     */
     protected DBUpsertTask setInsertTask(@Nonnull final IDatabaseTask insertTask) {
         subTasks.put(INSERT_MODE, insertTask);
         return this;
     }
 
+    /**
+     *
+     * @param updatetTask
+     * @return
+     */
     protected DBUpsertTask setUpdatetTask(@Nonnull final IDatabaseTask updatetTask) {
         subTasks.put(UPDATE_MODE, updatetTask);
         return this;

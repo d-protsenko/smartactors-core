@@ -2,9 +2,7 @@ package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.PSQLFieldPath;
 import info.smart_tools.smartactors.core.sql_commons.FieldPath;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
@@ -74,7 +72,7 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
      */
     QueryStatementBuilder withIndexes(@Nonnull final Map<String, String> columnIndexes) {
         indexes = new HashMap<>(columnIndexes);
-        if (indexes.containsKey("id")) {
+        if (!indexes.containsKey("id")) {
             indexes.put("id", "id");
         }
 
@@ -93,13 +91,13 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
         requiresNonnull(indexes, "The list of indexes should not be a null, should try invoke 'withIndexes'.");
 
         try {
-            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
+            QueryStatement preparedQuery = new QueryStatement();
             Writer writer = preparedQuery.getBodyWriter();
 
             writer.write(createCollectionQuery);
             indexBuilder.withCollection(collection);
             for (Map.Entry<String, String> entry : indexes.entrySet()) {
-                FieldPath field = IOC.resolve(Keys.getOrAdd(FieldPath.class.toString()), entry.getKey());
+                FieldPath field = PSQLFieldPath.fromString(entry.getKey());
                 String indexType = entry.getValue();
                 String index = indexBuilder
                         .withIndex(indexType)
@@ -110,7 +108,7 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
             }
 
             return preparedQuery;
-        } catch (ResolutionException | IOException | IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }

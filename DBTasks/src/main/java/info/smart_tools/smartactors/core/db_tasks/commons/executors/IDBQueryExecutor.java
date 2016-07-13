@@ -8,10 +8,10 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import javax.annotation.Nonnull;
 
 /**
- * Executor for oriented database task.
+ * Executor for a some query to database.
  * Contains an universal algorithm of execute a some db query independently of the database type.
  */
-public interface IDBTaskExecutor {
+public interface IDBQueryExecutor {
     /**
      * Checks a some query on executable.
      * If result is false task must not execute query to database, because query is already done.

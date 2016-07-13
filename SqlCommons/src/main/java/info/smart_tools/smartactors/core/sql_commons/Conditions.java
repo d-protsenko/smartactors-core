@@ -27,7 +27,7 @@ public class Conditions {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> parametersOrder
+            final List<IDeclaredParam> parametersOrder
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
@@ -93,7 +93,7 @@ public class Conditions {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> parametersOrder
+            final List<IDeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }
@@ -103,7 +103,7 @@ public class Conditions {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> parametersOrder
+            final List<IDeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }
@@ -113,7 +113,7 @@ public class Conditions {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> parametersOrder
+            final List<IDeclaredParam> parametersOrder
     ) throws QueryBuildException {
         writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter, parametersOrder);
     }

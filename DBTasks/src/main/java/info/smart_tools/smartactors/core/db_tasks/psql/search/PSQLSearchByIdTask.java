@@ -7,8 +7,8 @@ import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchTaskExecutor;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchQueryExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -26,14 +26,14 @@ import java.util.List;
 public class PSQLSearchByIdTask extends CachedDatabaseTask {
     /**  */
     private final SearchByIdQueryStatementBuilder queryStatementBuilder;
-    private final IDBTaskExecutor taskExecutor;
+    private final IDBQueryExecutor taskExecutor;
 
     /**
      * Constructor for DBGetByIdTask
      */
     protected PSQLSearchByIdTask() {
         queryStatementBuilder = SearchByIdQueryStatementBuilder.create();
-        taskExecutor = DBSearchTaskExecutor.create();
+        taskExecutor = DBSearchQueryExecutor.create();
     }
 
     /**
@@ -46,7 +46,7 @@ public class PSQLSearchByIdTask extends CachedDatabaseTask {
     }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         try {
             return DBQueryFields.DOCUMENT_ID.in(message) != null;
         } catch (ReadValueException e) {

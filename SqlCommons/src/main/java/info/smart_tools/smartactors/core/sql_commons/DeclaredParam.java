@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.sql_commons;
 
 import info.smart_tools.smartactors.core.iobject.IFieldName;
 
-public class DeclaredParam {
+public class DeclaredParam implements IDeclaredParam {
     private IFieldName name;
     private int count;
 

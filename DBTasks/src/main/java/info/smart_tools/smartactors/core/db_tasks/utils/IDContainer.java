@@ -9,16 +9,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * Container for stored a used documents ids for all database collection.
  */
 public class IDContainer {
+    /** Cache of documents ids fields for all database collection. */
     private static final ConcurrentMap<String, IField> CACHED_DOCUMENTS_IDS = new ConcurrentHashMap<>();
 
     /**
+     * Gives a document id by specific collection.
      *
-     * @param collection
-     * @return
-     * @throws ResolutionException
+     * @param collection - name of collection for id.
+     * @return the document id field for special collection.
+     * @throws ResolutionException when error resolution the IField dependence.
      */
     public static IField getIdFieldFor(final String collection) throws ResolutionException {
         IField id = CACHED_DOCUMENTS_IDS.get(collection);

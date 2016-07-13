@@ -6,8 +6,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnectio
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBCreateCollectionTaskExecutor;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBCreateCollectionQueryExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
     /**  */
     private final QueryStatementBuilder queryStatementBuilder;
-    private final IDBTaskExecutor taskExecutor;
+    private final IDBQueryExecutor taskExecutor;
 
     /**
      * Default constructor.
@@ -31,7 +31,7 @@ public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
      */
     private PSQLCreateCollectionTask() {
         queryStatementBuilder =  QueryStatementBuilder.create();
-        taskExecutor = DBCreateCollectionTaskExecutor.create();
+        taskExecutor = DBCreateCollectionQueryExecutor.create();
     }
 
     /**
@@ -44,7 +44,7 @@ public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
     }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         return taskExecutor.isExecutable(message);
     }
 

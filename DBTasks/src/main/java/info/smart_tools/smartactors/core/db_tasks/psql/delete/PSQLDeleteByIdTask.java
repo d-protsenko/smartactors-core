@@ -7,8 +7,8 @@ import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.CachedDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBDeleteTaskExecutor;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBDeleteQueryExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 public class PSQLDeleteByIdTask extends CachedDatabaseTask {
     /**  */
     private final QueryStatementBuilder queryStatementBuilder;
-    private final IDBTaskExecutor taskExecutor;
+    private final IDBQueryExecutor taskExecutor;
 
     /**
      * A single constructor for creation {@link PSQLDeleteByIdTask}
@@ -32,7 +32,7 @@ public class PSQLDeleteByIdTask extends CachedDatabaseTask {
      */
     private PSQLDeleteByIdTask() {
         queryStatementBuilder = QueryStatementBuilder.create();
-        taskExecutor = DBDeleteTaskExecutor.create();
+        taskExecutor = DBDeleteQueryExecutor.create();
     }
 
     /**
@@ -86,7 +86,7 @@ public class PSQLDeleteByIdTask extends CachedDatabaseTask {
     }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
+    protected boolean isExecutable(@Nonnull final IObject message) throws InvalidArgumentException {
         return taskExecutor.isExecutable(message);
     }
 

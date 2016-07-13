@@ -12,23 +12,23 @@ import javax.annotation.Nonnull;
  * Common executor for create collection query to database.
  * Not dependent of database type.
  * All create collection tasks may use this executor.
- * @see IDBTaskExecutor
+ * @see IDBQueryExecutor
  */
-public final class DBCreateCollectionTaskExecutor implements IDBTaskExecutor {
+public final class DBCreateCollectionQueryExecutor implements IDBQueryExecutor {
 
-    private DBCreateCollectionTaskExecutor() { }
+    private DBCreateCollectionQueryExecutor() { }
 
     /**
-     * Factory-method for creation a new instance of {@link DBCreateCollectionTaskExecutor}.
-     * @return a new instance of {@link DBCreateCollectionTaskExecutor}.
+     * Factory-method for creation a new instance of {@link DBCreateCollectionQueryExecutor}.
+     * @return a new instance of {@link DBCreateCollectionQueryExecutor}.
      */
-    public static DBCreateCollectionTaskExecutor create() {
-        return new DBCreateCollectionTaskExecutor();
+    public static DBCreateCollectionQueryExecutor create() {
+        return new DBCreateCollectionQueryExecutor();
     }
 
     /**
      * Checks the create collection query on executable.
-     * @see IDBTaskExecutor#isExecutable(IObject)
+     * @see IDBQueryExecutor#isExecutable(IObject)
      * Always gives <code>true</code> because create collection query hasn't optionals parameters.
      *
      * @param message - query message with a some parameters for query.
@@ -42,7 +42,8 @@ public final class DBCreateCollectionTaskExecutor implements IDBTaskExecutor {
 
     /**
      * Executes the create collection query.
-     * @see IDBTaskExecutor#execute(ICompiledQuery, IObject)
+     * One call = one creation.
+     * @see IDBQueryExecutor#execute(ICompiledQuery, IObject)
      *
      * @param query - prepared compiled query for execution.
      * @param message - query message with parameters for query.

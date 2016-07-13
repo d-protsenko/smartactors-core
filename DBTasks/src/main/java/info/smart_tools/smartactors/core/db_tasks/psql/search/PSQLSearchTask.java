@@ -7,8 +7,8 @@ import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_storage.utils.QueryKey;
 import info.smart_tools.smartactors.core.db_tasks.commons.ComplexDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchTaskExecutor;
-import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBTaskExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.DBSearchQueryExecutor;
+import info.smart_tools.smartactors.core.db_tasks.commons.executors.IDBQueryExecutor;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IComplexQueryStatementBuilder;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLOrderWriter;
 import info.smart_tools.smartactors.core.db_tasks.psql.search.utils.SQLPagingWriter;
@@ -27,10 +27,10 @@ import java.util.List;
 public class PSQLSearchTask extends ComplexDatabaseTask {
     private final SQLPagingWriter pagingWriter;
     private final SearchQueryStatementBuilder queryStatementBuilder;
-    private final IDBTaskExecutor taskExecutor;
+    private final IDBQueryExecutor taskExecutor;
 
     private PSQLSearchTask(final int minPageSize, final int maxPageSize) {
-        taskExecutor = DBSearchTaskExecutor.create();
+        taskExecutor = DBSearchQueryExecutor.create();
         pagingWriter = SQLPagingWriter.create(minPageSize, maxPageSize);
         queryStatementBuilder = SearchQueryStatementBuilder.create(
                 PSQLConditionsResolver.create(),
@@ -49,7 +49,7 @@ public class PSQLSearchTask extends ComplexDatabaseTask {
     }
 
     @Override
-    protected boolean requiresExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
+    protected boolean isExecutable(@Nonnull final IObject queryMessage) throws InvalidArgumentException {
         return true;
     }
 

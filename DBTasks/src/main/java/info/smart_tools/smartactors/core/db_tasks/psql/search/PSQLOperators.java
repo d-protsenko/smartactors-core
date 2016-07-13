@@ -29,7 +29,7 @@ final class PSQLOperators {
             final String format,
             final QueryStatement query,
             final Object queryParameter,
-            final List<DeclaredParam> declaredParams
+            final List<IDeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
             query.getBodyWriter().write(format);
@@ -54,7 +54,7 @@ final class PSQLOperators {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> declaredParams
+            final List<IDeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
             String isNullStr = String.valueOf(queryParameter);
@@ -89,7 +89,7 @@ final class PSQLOperators {
             final QueryConditionResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
-            final List<DeclaredParam> declaredParams
+            final List<IDeclaredParam> declaredParams
     ) throws QueryBuildException {
         try {
             List<Object> paramAsList = (List<Object>)queryParameter;
@@ -169,13 +169,13 @@ final class PSQLOperators {
                 "(to_tsvector('russian',(", ")::text))@@(to_tsquery(russian,?))"));
     }
 
-    private static void addParameterToDeclared(final List<DeclaredParam> declaredParams,
+    private static void addParameterToDeclared(final List<IDeclaredParam> declaredParams,
                                                final String name,
                                                final int count
     ) throws QueryBuildException {
         try {
             IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), name);
-            DeclaredParam container = DeclaredParam.create(fieldName, count);
+            IDeclaredParam container = DeclaredParam.create(fieldName, count);
             if (declaredParams.contains(container)) {
                 throw new QueryBuildException("Name of query parameter must be unique!");
             }

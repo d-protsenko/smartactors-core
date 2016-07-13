@@ -7,19 +7,28 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
- *
+ * Container of fields for used document fields in message.
  */
 public final class DBQueryFields {
-
+    /** Field: "document". */
     public static final IField DOCUMENT;
+    /** Field: "collection" in all database query message. */
     public static final IField COLLECTION;
+    /** Field: "indexes" in create collection message. */
     public static final IField INDEXES;
+    /** Field: "documentId". */
     public static final IField DOCUMENT_ID;
+    /** Field: "searchResult" in search query. */
     public static final IField SEARCH_RESULT;
+    /** Field: "parameters" in complex query. */
     public static final IField PARAMETERS;
+    /** Field: "pageSize" in search query. */
     public static final IField PAGE_SIZE;
+    /** Field: "pageNumber" in search query. */
     public static final IField PAGE_NUMBER;
+    /** Field: "orderBy" in search query. */
     public static final IField ORDER_BY;
+    /** Field: "criteria" in all complex query. */
     public static final IField CRITERIA;
 
     static {
