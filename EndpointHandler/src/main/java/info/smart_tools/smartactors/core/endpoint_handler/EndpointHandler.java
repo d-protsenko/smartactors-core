@@ -1,18 +1,13 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
-import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smat_tools.smartactors.core.iexchange.IExchange;
-import io.netty.channel.ChannelHandlerContext;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -31,6 +26,15 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
 
+    /**
+     * Constructor for HttpRequestHandler
+     *
+     * @param scope scope for HttpRequestHandler
+     * @param environmentHandler handler for environment
+     * @param receiver chain, that should receive message
+     *
+     * @throws ResolutionException
+     */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
                            final IScope scope) throws ResolutionException {
         this.scope = scope;
@@ -43,29 +47,11 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * Endpoint can receive message in different formats, so we can't make this process common for now.
      *
      * @param request request to the endpoint
+     * @param ctx context of the request
      * @return a deserialized message
      * @throws Exception
      */
     protected abstract IObject getEnvironment(TContext ctx, TRequest request) throws Exception;
-
-    /**
-     * Handle exceptions during request processing.
-     *
-     * @param ctx   endpoint channel context
-     * @param cause thrown exception
-     */
-    public abstract void handleException(TContext ctx, Throwable cause);
-
-
-    /**
-     * Get {@link IExchange} object used for communication with the message sender.
-     *
-     * @param message a received message
-     * @param ctx     endpoint channel context
-     * @param request request to the endpoint
-     * @return a {@link IExchange} object for the given request
-     */
-    protected abstract IExchange getExchange(IMessage message, TContext ctx, TRequest request) throws ResolutionException;
 
     /**
      * Handle an endpoint request using the specified context.
@@ -77,11 +63,6 @@ public abstract class EndpointHandler<TContext, TRequest> {
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
             IObject environment = getEnvironment(ctx, request);
-            SocketAddress address = ((ChannelHandlerContext) ctx).channel().remoteAddress();
-            if (address != null) {
-                FieldName ipAddressField = new FieldName("ipAddress");
-                environment.setValue(ipAddressField, ((InetSocketAddress) address).getAddress().getHostAddress());
-            }
             ScopeProvider.setCurrentScope(scope);
             environmentHandler.handle(environment, receiverChain);
         } catch (Exception e) {

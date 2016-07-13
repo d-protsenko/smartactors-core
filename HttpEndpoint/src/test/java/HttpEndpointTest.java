@@ -42,6 +42,8 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -169,8 +171,10 @@ public class HttpEndpointTest {
     protected HttpServer createEndpoint(
             IEnvironmentHandler environmentHandler, IReceiverChain receiver, IMessageMapper<byte[]> mapper
     ) throws ResolutionException, ScopeProviderException {
+        Map<String, IDeserializeStrategy> strategies = new HashMap<>();
+        strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), ScopeProvider.getCurrentScope(),
-                environmentHandler, receiver, mapper, new DeserializeStrategyPostJson(mapper));
+                environmentHandler, receiver, strategies);
     }
 
     protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException {

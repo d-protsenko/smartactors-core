@@ -24,12 +24,17 @@ public class TcpServer extends NettyServer {
     private final NioEventLoopGroup childGroup = new NioEventLoopGroup();
     private ChannelHandler requestHandler;
 
-    public TcpServer(int port, ChannelHandler requestHandler) {
+    /**
+     * Constructor
+     * @param port port of the tcp server
+     * @param requestHandler channel for tcp server
+     */
+    public TcpServer(final int port, final ChannelHandler requestHandler) {
         super(port);
         this.requestHandler = requestHandler;
     }
 
-    protected ChannelPipeline setupPipeline(ChannelPipeline pipeline) {
+    protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         return pipeline;
     }
 
