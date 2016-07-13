@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.iobject;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * IObject interface
  */
-public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
+public interface IObject extends Iterable<Map.Entry<IKey, Object>> {
     /**
      * Returns named field value from this object.
      * @param name is name of field
@@ -21,9 +22,9 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * @throws ReadValueException in case of underlying exceptions
      * @throws InvalidArgumentException if incoming argument is null
      *
-     * @see IFieldName
+     * @see IKey
      */
-    Object getValue(IFieldName name)
+    Object getValue(IKey name)
             throws ReadValueException, InvalidArgumentException;
 
     /**
@@ -35,9 +36,9 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * @throws ChangeValueException in case of underlying exceptions
      * @throws InvalidArgumentException if incoming argument is null
      *
-     * @see IFieldName
+     * @see IKey
      */
-    void setValue(IFieldName name, Object value)
+    void setValue(IKey name, Object value)
             throws ChangeValueException, InvalidArgumentException;
 
     /**
@@ -47,7 +48,7 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * @throws DeleteValueException if object couldn't delete value with note fieldname.
      * @throws InvalidArgumentException if incoming argument is null
      */
-    void deleteField(IFieldName name)
+    void deleteField(IKey name)
             throws DeleteValueException, InvalidArgumentException;
 
     /**
@@ -63,5 +64,5 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * Returns new iterator over set of fields of the object.
      * @return an iterator.
      */
-    Iterator<Map.Entry<IFieldName, Object>> iterator();
+    Iterator<Map.Entry<IKey, Object>> iterator();
 }

@@ -1,11 +1,14 @@
-package info.smart_tools.smartactors.core.ds_object;
+package info.smart_tools.smartactors.core.field_name;
 
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -16,19 +19,27 @@ public class FieldNameTest {
     @Test
     public void checkCreation()
             throws Exception {
-        IFieldName fieldName1 = new FieldName("test");
-        IFieldName fieldName2 = new FieldName("test");
-        IFieldName fieldNameOther = new FieldName("test_other");
+        IKey fieldName1 = new FieldName("test");
+        IKey fieldName2 = new FieldName("test");
+        IKey fieldNameOther = new FieldName("test_other");
         assertEquals(fieldName1, fieldName2);
         assertNotEquals(fieldName1, fieldNameOther);
         assertNotEquals(fieldName2, fieldNameOther);
+        assertTrue(fieldName1.equals(fieldName2) && fieldName2.equals(fieldName1));
+        assertTrue(fieldName1.hashCode() == fieldName2.hashCode());
+        assertFalse(fieldName1.equals(fieldNameOther) && fieldNameOther.equals(fieldName1));
+        assertFalse(fieldName1.hashCode() == fieldNameOther.hashCode());
+        IKey fieldNameLink = fieldName1;
+        assertTrue(fieldName1.equals(fieldNameLink));
+        IKey nullObject = null;
+        assertFalse(fieldName1.equals(nullObject));
     }
 
     @Test
     public void checkToString()
             throws Exception {
         String name = "test";
-        IFieldName fieldName = new FieldName(name);
+        IKey fieldName = new FieldName(name);
         assertEquals(name, fieldName.toString());
     }
 

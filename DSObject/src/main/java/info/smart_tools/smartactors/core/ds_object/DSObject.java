@@ -8,8 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 public class DSObject implements IObject {
 
-    private Map<IFieldName, Object> body;
+    private Map<IKey, Object> body;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static {
         OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -46,11 +47,11 @@ public class DSObject implements IObject {
     }
 
     /**
-     * Create new instance of {@link DSObject} by given body of pairs {@link IFieldName}, {@link Object}
-     * @param objectEntries map of pairs {@link IFieldName}, {@link Object}
+     * Create new instance of {@link DSObject} by given body of pairs {@link IKey}, {@link Object}
+     * @param objectEntries map of pairs {@link IKey}, {@link Object}
      * @throws InvalidArgumentException if argument is null
      */
-    public DSObject(final Map<IFieldName, Object> objectEntries)
+    public DSObject(final Map<IKey, Object> objectEntries)
             throws InvalidArgumentException {
         if (null == objectEntries) {
             throw new InvalidArgumentException("Argument should not be null.");
@@ -81,7 +82,7 @@ public class DSObject implements IObject {
     }
 
     @Override
-    public Object getValue(final IFieldName name)
+    public Object getValue(final IKey name)
             throws ReadValueException, InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Name parameter should not be null.");
@@ -90,7 +91,7 @@ public class DSObject implements IObject {
     }
 
     @Override
-    public void setValue(final IFieldName name, final Object value)
+    public void setValue(final IKey name, final Object value)
             throws ChangeValueException, InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Name parameter should not be null.");
@@ -99,7 +100,7 @@ public class DSObject implements IObject {
     }
 
     @Override
-    public void deleteField(final IFieldName name)
+    public void deleteField(final IKey name)
             throws DeleteValueException, InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Name parameter should not be null.");
@@ -118,13 +119,16 @@ public class DSObject implements IObject {
     }
 
     @Override
-    public Iterator<Map.Entry<IFieldName, Object>> iterator() {
+    public Iterator<Map.Entry<IKey, Object>> iterator() {
         return new DSObjectIterator();
     }
 
-    private class DSObjectIterator implements Iterator<Map.Entry<IFieldName, Object>> {
+    /**
+     * Iterator over {@code body}
+     */
+    private final class DSObjectIterator implements Iterator<Map.Entry<IKey, Object>> {
 
-        private Iterator<Map.Entry<IFieldName, Object>> iterator;
+        private Iterator<Map.Entry<IKey, Object>> iterator;
 
         private DSObjectIterator() {
             this.iterator = body.entrySet().iterator();
@@ -136,8 +140,8 @@ public class DSObject implements IObject {
         }
 
         @Override
-        public Map.Entry<IFieldName, Object> next() {
+        public Map.Entry<IKey, Object> next() {
             return this.iterator.next();
         }
-    }
+    } 
 }

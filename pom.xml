@@ -120,6 +120,8 @@
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
         <module>PluginCreateAsyncOperationActor</module>
+        <module>WDSObject</module>
+        <module>FieldName</module>
     </modules>
 
     <build>
