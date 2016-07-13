@@ -35,7 +35,7 @@ public class CreateAsyncOpPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateAsyncOperationActorPlugin");
 
             item
-                    //.after("IOC")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(createAsyncOpKey, new CreateNewInstanceStrategy(
