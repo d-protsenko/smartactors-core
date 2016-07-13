@@ -136,9 +136,11 @@
         <module>DeserializeStrategyPostJson</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
-        <module>IEnvironmentReceiver</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
+        <module>WDSObject</module>
+        <module>FieldName</module>
+        <module>IFieldName</module>
     </modules>
 
     <build>
