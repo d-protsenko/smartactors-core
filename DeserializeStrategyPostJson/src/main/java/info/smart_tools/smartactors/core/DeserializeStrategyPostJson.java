@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core;
 
+import info.smart_tools.smartactors.core.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import io.netty.handler.codec.http.FullHttpRequest;
 
@@ -10,15 +11,25 @@ import io.netty.handler.codec.http.FullHttpRequest;
 public class DeserializeStrategyPostJson implements IDeserializeStrategy {
     private final IMessageMapper<byte[]> messageMapper;
 
-    public DeserializeStrategyPostJson(IMessageMapper<byte[]> messageMapper) {
+    /**
+     * Constructor
+     * @param messageMapper message mapper for deserialize
+     */
+    public DeserializeStrategyPostJson(final IMessageMapper<byte[]> messageMapper) {
         this.messageMapper = messageMapper;
     }
 
+    /**
+     * Method, that deserialize json content of request
+     * @param request Http request, that should be deserialize
+     * @return {@link IObject} deserializated json
+     * @throws info.smart_tools.smartactors.core.exceptions.DeserializationException
+     */
     @Override
-    public IObject deserialize(FullHttpRequest request) throws info.smart_tools.smartactors.core.exceptions.DeserializationException {
+    public IObject deserialize(final FullHttpRequest request) throws DeserializationException {
         byte[] bytes = new byte[request.content().capacity()];
 
-        for (int i = 0, size = request.content().capacity(); i < size; i ++) {
+        for (int i = 0, size = request.content().capacity(); i < size; i++) {
             bytes[i] = request.content().getByte(i);
         }
         return messageMapper.deserialize(bytes);
