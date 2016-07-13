@@ -43,48 +43,48 @@ public class CreateCachedCollectionPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
-            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
-            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
-            IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
             Map<String, ICachedCollection> collectionMap = new HashMap<>();
 
             item
                 .after("IOC")
                 .process(() -> {
-                try {
-                    IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
-                        (args) -> {
-                            try {
-                                CollectionName collectionName = (CollectionName) args[0];
-                                String keyName = String.valueOf(args[1]);
-                                if (collectionName == null || keyName == null) {
-                                    throw new RuntimeException("Can't resolve cached collection: key parameter is null");
-                                }
-                                String collectionMapKey = collectionName.toString().concat(keyName);
-                                ICachedCollection cachedCollection = collectionMap.get(collectionMapKey);
-                                if (cachedCollection == null) {
-                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd(IPool.class.toString() + "PostgresConnection"));
-                                    connectionPoolField.out(config, connectionPool);
-                                    collectionNameField.out(config, collectionName);
-                                    keyNameField.out(config, keyName);
-                                    cachedCollection = new CachedCollection(config);
-                                    collectionMap.put(collectionMapKey, cachedCollection);
-                                }
+                    try {
+                        IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
+                        IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
+                        IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
+                        IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
+                        IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
+                            (args) -> {
+                                try {
+                                    CollectionName collectionName = (CollectionName) args[0];
+                                    String keyName = String.valueOf(args[1]);
+                                    if (collectionName == null || keyName == null) {
+                                        throw new RuntimeException("Can't resolve cached collection: key parameter is null");
+                                    }
+                                    String collectionMapKey = collectionName.toString().concat(keyName);
+                                    ICachedCollection cachedCollection = collectionMap.get(collectionMapKey);
+                                    if (cachedCollection == null) {
+                                        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                                        IPool connectionPool = IOC.resolve(Keys.getOrAdd(IPool.class.toString() + "PostgresConnection"));
+                                        connectionPoolField.out(config, connectionPool);
+                                        collectionNameField.out(config, collectionName);
+                                        keyNameField.out(config, keyName);
+                                        cachedCollection = new CachedCollection(config);
+                                        collectionMap.put(collectionMapKey, cachedCollection);
+                                    }
 
-                                return cachedCollection;
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }));
-                } catch (RegistrationException | InvalidArgumentException e) {
+                                    return cachedCollection;
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }));
+                } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
                     throw new RuntimeException(e);
                 }
             });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load CreateCollectionActor plugin", e);
         }
     }
