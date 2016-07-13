@@ -107,6 +107,11 @@
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>IRouter</module>
+        <module>IChainStorage</module>
+        <module>MapRouter</module>
+        <module>ChainStorage</module>
+        <module>ChainCallReceiver</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
@@ -123,6 +128,9 @@
         <module>FieldName</module>
         <module>IFieldName</module>
         <module>ReceiverGenerator</module>
+        <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
+        <module>IReceiverGenerator</module>
     </modules>
 
     <build>
@@ -165,7 +173,6 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
-                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>

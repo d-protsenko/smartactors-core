@@ -34,7 +34,6 @@ public class ExceptionHandlingReceiverTest {
     protected IKey keyForFieldName = mock(IKey.class);
 
     protected IMessageProcessor messageProcessorMock;
-    protected IAction<Throwable> callbackMock;
     protected IObject contextMock;
 
     @Before
@@ -52,8 +51,6 @@ public class ExceptionHandlingReceiverTest {
         messageProcessorMock = mock(IMessageProcessor.class);
         contextMock = mock(IObject.class);
         when(messageProcessorMock.getContext()).thenReturn(contextMock);
-
-        callbackMock = mock(IAction.class);
     }
 
 }

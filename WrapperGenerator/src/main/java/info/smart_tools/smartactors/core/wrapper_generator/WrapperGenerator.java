@@ -15,8 +15,8 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers;
+import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
@@ -70,6 +70,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             Class<T> clazz = generateClass(targetInterface);
 
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
+            // ToDo: replace this strategy to the future plugin for WrapperGenerator
             IOC.register(
                     Keys.getOrAdd(targetInterface.getCanonicalName()),
                     new ApplyFunctionToArgumentsStrategy(

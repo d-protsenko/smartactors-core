@@ -59,7 +59,7 @@ public class WrapperGeneratorTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IKey.class.getCanonicalName()),
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -70,7 +70,7 @@ public class WrapperGeneratorTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                Keys.getOrAdd(DSObject.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
