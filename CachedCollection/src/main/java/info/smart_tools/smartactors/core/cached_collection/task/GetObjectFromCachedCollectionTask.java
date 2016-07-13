@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.cached_collection.exception.CreateCache
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -93,7 +92,6 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
 
     /**
      * @param connection New connection for this and target tasks
-     * @throws TaskSetConnectionException Throw when setting connection throw this exception
      */
     @Override
     public void setConnection(final IStorageConnection connection) {

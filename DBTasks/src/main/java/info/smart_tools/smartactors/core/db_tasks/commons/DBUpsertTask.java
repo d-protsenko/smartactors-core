@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnectio
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -93,7 +92,7 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     }
 
     private void prepareSubTask(final IDatabaseTask task, final IObject message)
-            throws ChangeValueException, TaskPrepareException, ResolutionException, TaskSetConnectionException {
+            throws ChangeValueException, TaskPrepareException, ResolutionException {
         task.setConnection(connection);
         task.prepare(message);
     }

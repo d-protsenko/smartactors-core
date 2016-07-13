@@ -26,13 +26,13 @@ public interface ISearchByIdMessage extends IDBTaskMessage {
     /**
      * Sets the search result in the message.
      * @param object the found document
-     * @throws ChangeValueException when error of writing search result in the message.
+     * @exception ChangeValueException when error of writing search result in the message.
      */
     void setSearchResult(IObject object) throws ChangeValueException;
 
     /**
      * @return the search result.
-     * @throws ReadValueException when error of reading search result in the message.
+     * @exception ReadValueException when error of reading search result in the message.
      */
     IObject getSearchResult() throws ReadValueException;
 }
