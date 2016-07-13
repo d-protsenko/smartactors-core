@@ -104,6 +104,7 @@
         <module>PluginCompileQuery</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
+        <module>PluginField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
