@@ -13,7 +13,7 @@ import java.util.Collection;
 public interface IFeature {
     /**
      * Add a file name to list of names of files required for this feature.
-     *
+     * The file name should not contain any preceding path.
      * @param fileName    name of the file
      * @throws FeatureManagementException if {@link #listen()} already has been called on this {@link IFeature}.
      */

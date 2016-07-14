@@ -8,6 +8,8 @@ import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
@@ -28,6 +30,7 @@ class Feature implements IFeature {
     private String name;
     private IAction<IPath> fileHandleAction;
     private IFilesystemTracker filesystemTracker;
+    private FileSystem fileSystem = FileSystems.getDefault();
 
     /**
      * Action to execute when filesystem tracker notifies feature about new files.
@@ -37,7 +40,7 @@ class Feature implements IFeature {
         public void execute(final IPath file)
                 throws ActionExecuteException {
             synchronized (Feature.this.lock) {
-                String fileName = file.getPath();
+                String fileName = fileSystem.getPath(file.getPath()).getFileName().toString();
 
                 if (expectedFileNames.contains(fileName)) {
                     presentFiles.add(file);
