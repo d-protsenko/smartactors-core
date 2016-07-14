@@ -69,15 +69,15 @@ public class FeatureServer implements IServer {
             IFilesystemTracker jarFilesTracker = new FilesystemTracker(
                     (path) -> path.getPath().endsWith(".jar"),
                     ListenerTask::new);
+            // is called when a new file is created in the directory
+            jarFilesTracker.addFileHandler((file) -> System.out.println("Found file: " + file));
             // is called when a tracking error appeared
             jarFilesTracker.addErrorHandler((e) -> {
-                System.out.println("Failed to track files" + e);
+                System.out.println("Failed to track files: " + e);
                 e.printStackTrace();
                 notifyInitWaiter();
                 throw new RuntimeException(e);
             });
-            // is called when a new file is created in the directory
-            jarFilesTracker.addFileHandler((file) -> System.out.println("Found file: " + file));
 
             // takes care on feature initialization while new jars appeared
             IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
@@ -85,13 +85,8 @@ public class FeatureServer implements IServer {
             // a new feature for the set of jars
             IFeature feature = featureManager.newFeature("example.feature");
             // what files to wait
-            String[] jars = {
-                "Plugin1.jar",
-                "Plugin2.jar"
-            };
-            for (String jarName : jars) {
-                feature.requireFile(jarName);
-            }
+            feature.requireFile("Plugin1.jar");
+            feature.requireFile("Plugin2.jar");
             // what to do when the feature found all necessary files
             feature.whenPresent(files -> {
                 try {
