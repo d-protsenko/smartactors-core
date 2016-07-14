@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -25,11 +26,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     private IObject currentArguments;
     private int stackIndex;
 
-    private final FieldName causeLevelFieldName;
-    private final FieldName causeStepFieldName;
-    private final FieldName catchLevelFieldName;
-    private final FieldName catchStepFieldName;
-    private final FieldName exceptionFieldName;
+    private final IFieldName causeLevelFieldName;
+    private final IFieldName causeStepFieldName;
+    private final IFieldName catchLevelFieldName;
+    private final IFieldName catchStepFieldName;
+    private final IFieldName exceptionFieldName;
 
     /**
      * The constructor.

@@ -24,9 +24,4 @@ public class EndpointChannelInboundHandler<TRequest> extends SimpleChannelInboun
     protected void channelRead0(ChannelHandlerContext ctx, TRequest request) throws Exception {
         handler.handle(ctx, request);
     }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        handler.handleException(ctx, cause);
-    }
 }

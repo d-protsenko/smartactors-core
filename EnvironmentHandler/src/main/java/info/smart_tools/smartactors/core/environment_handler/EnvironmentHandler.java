@@ -1,10 +1,11 @@
 package info.smart_tools.smartactors.core.environment_handler;
 
 
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -40,8 +41,8 @@ public class EnvironmentHandler implements IEnvironmentHandler {
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.toString()), stackDepth, receiverChain);
             IMessageProcessor messageProcessor =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.toString()), taskQueue, processingSequence);
-            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "message");
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "context");
+            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "message");
+            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "context");
             IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(messageFieldName));
             IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(contextFieldName));
             messageProcessor.process(message, context);

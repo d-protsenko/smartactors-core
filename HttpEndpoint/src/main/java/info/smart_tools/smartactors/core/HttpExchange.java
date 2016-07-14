@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.core;
 
 
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -49,10 +50,10 @@ public class HttpExchange implements IExchange {
     private IMessageMapper<byte[]> messageMapper;
     private IMessage requestMessage;
 
-    private static FieldName cookiesField;
-    private static FieldName headersF;
-    private static FieldName valueCookieField;
-    private static FieldName maxAgeSecondsField;
+    private static IFieldName cookiesField;
+    private static IFieldName headersF;
+    private static IFieldName valueCookieField;
+    private static IFieldName maxAgeSecondsField;
 
     public HttpExchange(IMessage requestMessage, ChannelHandlerContext ctx, HttpRequest httpRequest, IMessageMapper<byte[]> messageMapper) throws ResolutionException {
         this.ctx = ctx;
@@ -90,7 +91,7 @@ public class HttpExchange implements IExchange {
 
     private HttpResponseStatus getResponseStatus(IObject responseMessage) {
         try {
-            FieldName exceptionFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "exception");
+            IFieldName exceptionFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "exception");
             Exception ex = (Exception) responseMessage.getValue(exceptionFieldName);
             if (ex != null) {
                 if (ex instanceof RuntimeException || ex.getCause() != null && ex.getCause() instanceof RuntimeException) {

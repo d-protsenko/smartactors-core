@@ -1,12 +1,15 @@
 package info.smart_tools.smartactors.core;
 
-import info.smart_tools.smartactors.core.ds_object.FieldName;
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -43,7 +46,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request) throws Exception {
         IObject environment = deserializeStrategies.get(request.headers().get(HttpHeaders.Names.CONTENT_TYPE))
                 .deserialize(request);
-        FieldName context = new FieldName("context");
+        IFieldName context = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
         environment.setValue(context, ctx);
         return environment;
     }
