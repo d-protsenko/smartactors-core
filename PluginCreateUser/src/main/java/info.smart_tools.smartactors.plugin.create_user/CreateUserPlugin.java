@@ -15,7 +15,9 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
- * Plugin for CreateUserActor
+ * Plugin.
+ * Implements {@link IPlugin}
+ * CreateUserActor.
  */
 public class CreateUserPlugin implements IPlugin {
     /** Local storage for instance of {@link IBootstrap}*/
@@ -23,9 +25,13 @@ public class CreateUserPlugin implements IPlugin {
 
     /**
      * Constructor for CreateUserPlugin
-     * @param bootstrap bootstrap
+     * @param bootstrap instance of {@link IBootstrap}
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public CreateUserPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public CreateUserPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) throws InvalidArgumentException {
+        if (null == bootstrap) {
+            throw new InvalidArgumentException("Incoming argument should be not null.");
+        }
         this.bootstrap = bootstrap;
     }
 
