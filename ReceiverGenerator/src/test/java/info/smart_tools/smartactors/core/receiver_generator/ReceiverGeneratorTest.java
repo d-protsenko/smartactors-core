@@ -95,7 +95,7 @@ public class ReceiverGeneratorTest {
     @Test(expected = ReceiverGeneratorException.class)
     public void checkReceiverGeneratorExceptionOn()
             throws Exception {
-        WrongClass a = new WrongClass();
+        CustomActor a = new CustomActor();
 
         IReceiverGenerator rg = new ReceiverGenerator(null);
         rg.generate(a, "a");
