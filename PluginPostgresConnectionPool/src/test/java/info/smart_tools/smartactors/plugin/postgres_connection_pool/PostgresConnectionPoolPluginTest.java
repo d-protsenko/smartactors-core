@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.plugin.postgres_connection_pool;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.plugin.postges_connection_pool.PostgresConnectionPoolPlugin;
@@ -11,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -44,6 +44,7 @@ public class PostgresConnectionPoolPluginTest {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin").thenReturn(bootstrapItem);
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
         plugin.load();
         verifyNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin");
         verify(bootstrap).add(eq(bootstrapItem));
