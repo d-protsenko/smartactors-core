@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.ifieldname;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -63,16 +64,20 @@ public class IFieldNamePlugin implements IPlugin {
                                                     return result;
                                                 } catch (ClassCastException e) {
                                                     throw new RuntimeException("Can't cast object to String: " + args[0], e);
+                                                } catch (ArrayIndexOutOfBoundsException e) {
+                                                    throw new RuntimeException(
+                                                            "Can't get args: args must contain one or more elements " +
+                                                                    "and first element must be String", e);
                                                 }
                                         }
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new RuntimeException("Can't get IFieldName key");
+                            throw new ActionExecuteException("Can't get IFieldName key");
                         } catch (InvalidArgumentException e) {
-                            throw new RuntimeException("Can't get create strategy");
+                            throw new ActionExecuteException("Can't get create strategy");
                         } catch (RegistrationException e) {
-                            throw new RuntimeException("Can't get register new strategy");
+                            throw new ActionExecuteException("Can't get register new strategy");
                         }
                     });
             bootstrap.add(item);
