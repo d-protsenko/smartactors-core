@@ -1,21 +1,17 @@
 package info.smart_tools.smartactors.plugin.create_user;
 
 import info.smart_tools.smartactors.actors.create_user.CreateUserActor;
-import info.smart_tools.smartactors.actors.create_user.wrapper.ActorParams;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @PrepareForTest({IOC.class, CreateUserPlugin.class})
@@ -48,10 +44,8 @@ public class CreateUserPluginTest {
         PowerMockito.whenNew(CreateUserActor.class).withArguments(any()).thenReturn(actor);
 
         plugin.load();
-        CreateUserActor resolveActor = IOC.resolve(createUserKey, "collectionName");
 
         verify(bootstrap).add(eq(item));
-        assertEquals(actor, resolveActor);
     }
 
 }
