@@ -2,10 +2,10 @@ package info.smart_tools.smartactors.plugin.field;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -16,8 +16,8 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Plugin for registration of IOC strategy for Field
@@ -38,7 +38,7 @@ public class FieldPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            Map<String, IField> fieldMap = new HashMap<>();
+            ConcurrentMap<String, IField> fieldMap = new ConcurrentHashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("FieldPlugin");
             item
                 .after("IOC")
@@ -51,10 +51,10 @@ public class FieldPlugin implements IPlugin {
                                 IField field = fieldMap.get(fieldName);
                                 if (field == null) {
                                     try {
-                                        //TODO:: Remove IKey when old Field would be returned
-                                        field = new Field(new FieldName(fieldName));
-                                        fieldMap.put(fieldName, field);
-                                    } catch (InvalidArgumentException e) {
+                                        //TODO:: clarify key name
+                                        field = new Field(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName));
+                                        fieldMap.putIfAbsent(fieldName, field);
+                                    } catch (InvalidArgumentException | ResolutionException e) {
                                         throw new RuntimeException("Can't resolve field: ", e);
                                     }
                                 }
