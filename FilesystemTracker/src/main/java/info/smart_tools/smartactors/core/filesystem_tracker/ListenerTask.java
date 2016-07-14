@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.filesystem_tracker;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ListenerTask implements Runnable {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                         Path file = ((Path) event.context());
                         Path dirAndFile = fileSystem.getPath(directory.getPath()).resolve(file);
-                        newFileAction.execute(new info.smart_tools.smartactors.core.filesystem_tracker.Path(dirAndFile));
+                        newFileAction.execute(new info.smart_tools.smartactors.core.path.Path(dirAndFile));
                     }
                 }
 
@@ -89,7 +89,7 @@ public class ListenerTask implements Runnable {
         try (Stream<Path> files = Files.list(fileSystem.getPath(directory.getPath()))) {
             Iterable<Path> iterableFiles = files::iterator;
             for (Path path : iterableFiles) {
-                newFileAction.execute(new info.smart_tools.smartactors.core.filesystem_tracker.Path(path));
+                newFileAction.execute(new info.smart_tools.smartactors.core.path.Path(path));
             }
         } catch (IOException e) {
             throw new ActionExecuteException(e);

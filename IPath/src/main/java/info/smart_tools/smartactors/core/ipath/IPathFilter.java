@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.ifilesystem_tracker;
+package info.smart_tools.smartactors.core.ipath;
 
 /**
  * Interface for abstract file path filter.

@@ -2,14 +2,10 @@ package info.smart_tools.smartactors.core.filesystem_tracker;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Arrays;
@@ -95,9 +91,9 @@ public class ListenerTaskTest {
 
         task.run();
 
-        verify(actionMock, times(1)).execute(eq(new Path("dir/one")));
-        verify(actionMock, times(1)).execute(eq(new Path("dir/two")));
-        verify(actionMock, times(1)).execute(eq(new Path("dir/new")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/one")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/two")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/new")));
         verify(actionMock, times(3)).execute(any());
     }
 

@@ -117,6 +117,8 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+	    <module>IPath</module>
+	    <module>Path</module>
     </modules>
 
     <build>

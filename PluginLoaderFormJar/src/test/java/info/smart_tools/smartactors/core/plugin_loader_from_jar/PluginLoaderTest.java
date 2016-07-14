@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.plugin_loader_from_jar;
 
 import com.sun.org.apache.bcel.internal.util.ClassLoader;
-import info.smart_tools.smartactors.core.filesystem_tracker.Path;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.path.Path;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
@@ -122,7 +122,7 @@ public class PluginLoaderTest {
         if (null == url) {
             fail();
         }
-        Collection<IPath> files = new ArrayList<IPath>(){{add(new info.smart_tools.smartactors.core.filesystem_tracker.Path(url.getPath()));}};
+        Collection<IPath> files = new ArrayList<IPath>(){{add(new info.smart_tools.smartactors.core.path.Path(url.getPath()));}};
         pl.loadPlugin(files);
         assertTrue(checker.wasCalled);
         fail();

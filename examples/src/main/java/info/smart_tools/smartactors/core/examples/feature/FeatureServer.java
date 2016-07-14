@@ -5,12 +5,12 @@ import info.smart_tools.smartactors.core.examples.plugin.MyPluginVisitor;
 import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
 import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
 import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
-import info.smart_tools.smartactors.core.filesystem_tracker.Path;
+import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -22,7 +22,6 @@ import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 
@@ -34,7 +33,11 @@ public class FeatureServer implements IServer {
     private final Object initWaiter;
     private volatile boolean initialized = false;
 
-    public FeatureServer(Object initWaiter) {
+    /**
+     * Creates the server
+     * @param initWaiter an object instance which will be {@link Object#notifyAll()}'ed when the server initialization is completed
+     */
+    public FeatureServer(final Object initWaiter) {
         this.initWaiter = initWaiter;
     }
 
@@ -74,9 +77,7 @@ public class FeatureServer implements IServer {
                 throw new RuntimeException(e);
             });
             // is called when a new file is created in the directory
-            jarFilesTracker.addFileHandler((file) -> {
-                System.out.println("Found file: " + file);
-            });
+            jarFilesTracker.addFileHandler((file) -> System.out.println("Found file: " + file));
 
             // takes care on feature initialization while new jars appeared
             IFeatureManager featureManager = new FeatureManager(jarFilesTracker);

@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.examples.plugin;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.filesystem_tracker.Path;
+import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;

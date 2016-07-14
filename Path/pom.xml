@@ -10,19 +10,9 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core.ifilesystem_tracker</artifactId>
+    <artifactId>core.path</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
-            <version>${core.version}</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ipath</artifactId>

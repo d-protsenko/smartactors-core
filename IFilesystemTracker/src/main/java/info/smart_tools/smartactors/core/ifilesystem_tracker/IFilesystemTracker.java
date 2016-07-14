@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.ifilesystem_tracker;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.exception.FilesystemTrackerStartupException;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.ipath.IPath;
 
 /**
  * Interface for a service that notifies observers (executing {@link IAction}s) about all files exist and appearing in

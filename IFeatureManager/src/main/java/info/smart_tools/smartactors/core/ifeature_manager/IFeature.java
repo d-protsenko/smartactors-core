@@ -2,9 +2,8 @@ package info.smart_tools.smartactors.core.ifeature_manager;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 
-import java.io.File;
 import java.util.Collection;
 
 /**

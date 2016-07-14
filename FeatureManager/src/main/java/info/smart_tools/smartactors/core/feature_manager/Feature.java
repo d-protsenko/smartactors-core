@@ -5,10 +5,9 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;

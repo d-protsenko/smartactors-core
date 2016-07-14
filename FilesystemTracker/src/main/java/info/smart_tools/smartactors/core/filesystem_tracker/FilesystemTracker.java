@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.filesystem_tracker;
 
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPath;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IPathFilter;
+import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.core.ipath.IPathFilter;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.exception.FilesystemTrackerStartupException;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
