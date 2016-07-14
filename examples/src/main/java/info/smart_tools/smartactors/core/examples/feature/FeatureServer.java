@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.feature;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.examples.plugin.MyPluginVisitor;
+import info.smart_tools.smartactors.core.examples.plugin.SamplePluginVisitor;
 import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
 import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
 import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
@@ -46,7 +46,7 @@ public class FeatureServer implements IServer {
         try {
             IBootstrap bootstrap = new Bootstrap();         // initializes the server in correct order
             IPluginCreator creator = new PluginCreator();   // instantiates the plugin correctly
-            IPluginLoaderVisitor<String> visitor = new MyPluginVisitor();   // checks the plugin loadings
+            IPluginLoaderVisitor<String> visitor = new SamplePluginVisitor();   // checks the plugin loadings
 
             ClassLoader urlClassLoader =
                 new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());  // loads plugins' classes

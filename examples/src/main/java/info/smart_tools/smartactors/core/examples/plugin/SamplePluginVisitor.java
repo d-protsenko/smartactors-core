@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVis
 /**
  *  Simplest visitor which just prints the calls to System.out.
  */
-public class MyPluginVisitor implements IPluginLoaderVisitor<String> {
+public class SamplePluginVisitor implements IPluginLoaderVisitor<String> {
 
     @Override
     public void pluginLoadingFail(final String value, final Throwable e) {

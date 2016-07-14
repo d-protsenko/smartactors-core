@@ -55,10 +55,10 @@ public class IOCExample {
     @Test
     public void singletonStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IKey key = Keys.getOrAdd("singleton");
-        MyClass myObject = new MyClass("singleton");
+        SampleClass myObject = new SampleClass("singleton");
         IOC.register(key, new SingletonStrategy(myObject));
-        MyClass resolveObject1 = IOC.resolve(key);
-        MyClass resolveObject2 = IOC.resolve(key);
+        SampleClass resolveObject1 = IOC.resolve(key);
+        SampleClass resolveObject2 = IOC.resolve(key);
         assertEquals("first resolve not equals", myObject, resolveObject1);
         assertEquals("second resolve not equals", myObject, resolveObject2);
         assertSame("first resolve not same", myObject, resolveObject1);
@@ -69,10 +69,10 @@ public class IOCExample {
     public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IKey key = Keys.getOrAdd("new");
         IOC.register(key, new CreateNewInstanceStrategy(
-                (args) -> new MyClass((String) args[0])));
-        MyClass resolveObject1 = IOC.resolve(key, "id1");
-        MyClass resolveObject2 = IOC.resolve(key, "id1");
-        MyClass resolveObject3 = IOC.resolve(key, "id3");
+                (args) -> new SampleClass((String) args[0])));
+        SampleClass resolveObject1 = IOC.resolve(key, "id1");
+        SampleClass resolveObject2 = IOC.resolve(key, "id1");
+        SampleClass resolveObject3 = IOC.resolve(key, "id3");
         assertEquals("objects with the same ids are not equals", resolveObject1, resolveObject2);
         assertNotSame("objects with the same ids are same", resolveObject1, resolveObject2);
         assertTrue("different objects are equals", !resolveObject1.equals(resolveObject3));

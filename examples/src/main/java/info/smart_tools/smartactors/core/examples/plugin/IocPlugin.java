@@ -14,13 +14,17 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 /**
- *  The plugin which mimics the IOC initialization and provides "IOC" dependency.
+ * The plugin which mimics the IOC initialization and provides "IOC" dependency.
  */
-public class MyIocPlugin implements IPlugin {
+public class IocPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public MyIocPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    /**
+     * Creates the plugin.
+     * @param bootstrap bootstrap where this plugin puts it's {@link IBootstrapItem}
+     */
+    public IocPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 

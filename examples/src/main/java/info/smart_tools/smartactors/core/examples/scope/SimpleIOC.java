@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 /**
  *  A sample of scope based IoC.
  */
-public class MyIOC {
+public final class SimpleIOC {
 
     /** Key for getting instance of storage from current scope */
     private static final IKey STORAGE_KEY;
@@ -21,13 +21,13 @@ public class MyIOC {
             ScopeProvider.subscribeOnCreationNewScope(
                     scope -> {
                         try {
-                            MyRecursiveContainer<IKey, Object> parentStorage = null;
+                            RecursiveContainer<IKey, Object> parentStorage = null;
                             try {
-                                parentStorage = (MyRecursiveContainer<IKey, Object>) scope.getValue(STORAGE_KEY);
+                                parentStorage = (RecursiveContainer<IKey, Object>) scope.getValue(STORAGE_KEY);
                             } catch (ScopeException e) {
                                 // parent storage does not exists, create a new with null parent
                             }
-                            scope.setValue(STORAGE_KEY, new MyRecursiveContainer<>(parentStorage));
+                            scope.setValue(STORAGE_KEY, new RecursiveContainer<>(parentStorage));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -38,31 +38,49 @@ public class MyIOC {
         }
     }
 
-    private MyIOC() {
+    private SimpleIOC() {
         // avoid instantiation
     }
 
+    /**
+     * Initializes the IoC.
+     * This method is empty, but call it when it's necessary to initialize the class,
+     * i.e. call it's static initialization block.
+     */
     public static void init() {
         // empty method to force initialization of the class when necessary
     }
 
-    public static void register(final IKey key, final Object value) throws MyIOCException {
+    /**
+     * Registers the object in the IoC.
+     * @param key key for the object
+     * @param value the object to register
+     * @throws SimpleIOCException if something goes wrong
+     */
+    public static void register(final IKey key, final Object value) throws SimpleIOCException {
         try {
-            MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
+            RecursiveContainer<IKey, Object> storage = (RecursiveContainer<IKey, Object>)
                     ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
             storage.put(key, value);
         } catch (Throwable e) {
-            throw new MyIOCException(e);
+            throw new SimpleIOCException(e);
         }
     }
 
-    public static <T> T resolve(final IKey key) throws MyIOCException {
+    /**
+     * Resolves the previously registered object.
+     * @param key the key to find the object
+     * @param <T> type of the result to cast the stored object
+     * @return the resolved object, can be null
+     * @throws SimpleIOCException if something goes wrong
+     */
+    public static <T> T resolve(final IKey key) throws SimpleIOCException {
         try {
-            MyRecursiveContainer<IKey, Object> storage = (MyRecursiveContainer<IKey, Object>)
+            RecursiveContainer<IKey, Object> storage = (RecursiveContainer<IKey, Object>)
                     ScopeProvider.getCurrentScope().getValue(STORAGE_KEY);
             return (T) storage.get(key);
         } catch (Throwable e) {
-            throw new MyIOCException(e);
+            throw new SimpleIOCException(e);
         }
     }
 
