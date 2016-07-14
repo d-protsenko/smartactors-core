@@ -19,8 +19,8 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -44,10 +44,11 @@ public class CreateCachedCollectionPlugin implements IPlugin {
 
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
-            Map<String, ICachedCollection> collectionMap = new HashMap<>();
+            ConcurrentMap<String, ICachedCollection> collectionMap = new ConcurrentHashMap<>();
 
             item
                 .after("IOC")
+                .after("CollectionNamePlugin")
                 .process(() -> {
                     try {
                         IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
@@ -57,7 +58,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                         IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 try {
-                                    CollectionName collectionName = (CollectionName) args[0];
+                                    CollectionName collectionName = IOC.resolve(Keys.getOrAdd(CollectionName.class.toString()), args[0]);
                                     String keyName = String.valueOf(args[1]);
                                     if (collectionName == null || keyName == null) {
                                         throw new RuntimeException("Can't resolve cached collection: key parameter is null");
@@ -71,7 +72,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                         collectionNameField.out(config, collectionName);
                                         keyNameField.out(config, keyName);
                                         cachedCollection = new CachedCollection(config);
-                                        collectionMap.put(collectionMapKey, cachedCollection);
+                                        collectionMap.putIfAbsent(collectionMapKey, cachedCollection);
                                     }
 
                                     return cachedCollection;

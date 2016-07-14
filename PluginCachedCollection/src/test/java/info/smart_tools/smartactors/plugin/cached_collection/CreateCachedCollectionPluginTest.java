@@ -23,7 +23,7 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -83,8 +83,8 @@ public class CreateCachedCollectionPluginTest {
         IField keyNameField = mock(IField.class);
         when(IOC.resolve(iFieldKey, "keyName")).thenReturn(keyNameField);
 
-        HashMap<String, ICachedCollection> collectionMap = mock(HashMap.class);
-        whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
+        ConcurrentHashMap<String, ICachedCollection> collectionMap = mock(ConcurrentHashMap.class);
+        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(collectionMap);
 
         plugin.load();
 
@@ -130,15 +130,19 @@ public class CreateCachedCollectionPluginTest {
         IKey connectionPoolKey = mock(IKey.class);
         when(Keys.getOrAdd(IPool.class.toString() + "PostgresConnection")).thenReturn(connectionPoolKey);
 
+        IKey collectionNameKey = mock(IKey.class);
+        when(Keys.getOrAdd(CollectionName.class.toString())).thenReturn(collectionNameKey);
+
         IObject config = mock(IObject.class);
         IPool connectionPool = mock(IPool.class);
 
         when(IOC.resolve(iobjectKey)).thenReturn(config);
         when(IOC.resolve(connectionPoolKey)).thenReturn(connectionPool);
+        when(IOC.resolve(collectionNameKey, collectionNameString)).thenReturn(collectionName);
 
         whenNew(CachedCollection.class).withArguments(config).thenReturn(cachedCollection);
 
-        assertTrue("Must return correct value", createNewInstanceStrategyArgumentCaptor.getValue().resolve(collectionName, keyName) == cachedCollection);
+        assertTrue("Must return correct value", createNewInstanceStrategyArgumentCaptor.getValue().resolve(collectionNameString, keyName) == cachedCollection);
 
         verify(collectionMap).get(collectionMapKey);
 
@@ -159,12 +163,7 @@ public class CreateCachedCollectionPluginTest {
         verify(keyNameField).out(config, keyName);
 
         verifyNew(CachedCollection.class).withArguments(config);
-
-        verify(collectionMap).put(collectionMapKey, cachedCollection);
-
-
-
-        verifyNew(HashMap.class).withNoArguments();
+        verify(collectionMap).putIfAbsent(collectionMapKey, cachedCollection);
         verify(bootstrap).add(bootstrapItem);
     }
 
@@ -198,8 +197,8 @@ public class CreateCachedCollectionPluginTest {
         IField keyNameField = mock(IField.class);
         when(IOC.resolve(iFieldKey, "keyName")).thenReturn(keyNameField);
 
-        HashMap<String, ICachedCollection> collectionMap = mock(HashMap.class);
-        whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
+        ConcurrentHashMap<String, ICachedCollection> collectionMap = mock(ConcurrentHashMap.class);
+        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(collectionMap);
 
         plugin.load();
 
@@ -232,7 +231,6 @@ public class CreateCachedCollectionPluginTest {
             verifyStatic();
             IOC.register(eq(cachedCollectionKey), any());
 
-            verifyNew(HashMap.class).withNoArguments();
             verify(bootstrap).add(bootstrapItem);
             return;
         }
