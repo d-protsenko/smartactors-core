@@ -122,6 +122,7 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>PluginGetHeaderRule</module>
     </modules>
 
     <build>
