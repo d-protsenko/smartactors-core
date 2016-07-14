@@ -131,6 +131,7 @@
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
         <module>IReceiverGenerator</module>
+        <module>PluginReceiverGenerator</module>
     </modules>
 
     <build>
