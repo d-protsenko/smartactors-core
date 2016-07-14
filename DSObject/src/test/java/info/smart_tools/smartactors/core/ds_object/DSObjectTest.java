@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.ds_object;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
@@ -45,9 +45,9 @@ public class DSObjectTest {
     @Test
     public void checkCreationByMap()
             throws Exception {
-        IKey fieldName = mock(IKey.class);
+        IFieldName fieldName = mock(IFieldName.class);
         Object obj = mock(Object.class);
-        Map<IKey, Object> map = new HashMap<IKey, Object>(){{put(fieldName, obj);}};
+        Map<IFieldName, Object> map = new HashMap<IFieldName, Object>(){{put(fieldName, obj);}};
         IObject result = new DSObject(map);
         assertNotNull(obj);
         assertEquals(obj, result.getValue(fieldName));
@@ -64,7 +64,7 @@ public class DSObjectTest {
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnCreationByMap()
             throws Exception {
-        Map<IKey, Object> map = null;
+        Map<IFieldName, Object> map = null;
         new DSObject(map);
         fail();
     }
@@ -93,7 +93,7 @@ public class DSObjectTest {
     @Test
     public void checkSetGetAndDeleteValue()
             throws Exception {
-        IKey fieldName = mock(IKey.class);
+        IFieldName fieldName = mock(IFieldName.class);
         Object value = mock(Object.class);
         IObject obj = new DSObject();
         assertNull(obj.getValue(fieldName));
@@ -115,7 +115,7 @@ public class DSObjectTest {
     public void checkExceptionOnSerialization()
             throws Exception {
         String json = "{\"value\":1,\"string\":\"foo\"}";
-        IKey fieldName = mock(IKey.class);
+        IFieldName fieldName = mock(IFieldName.class);
         IObject obj = new DSObject(json);
         obj.setValue(fieldName, Thread.currentThread());
         obj.serialize();
@@ -126,7 +126,7 @@ public class DSObjectTest {
     public void checkSerializationWithNestedIObject()
             throws Exception {
         IObject obj = new DSObject();
-        IKey fieldName = mock(IKey.class);
+        IFieldName fieldName = mock(IFieldName.class);
         obj.setValue(fieldName, new DSObject());
         String result = obj.serialize();
         assertNotNull(result);
@@ -137,12 +137,12 @@ public class DSObjectTest {
             throws Exception {
         String json = "{\"value\":1,\"string\":\"foo\"}";
         IObject iObject = new DSObject(json);
-        Iterator<Map.Entry<IKey, Object>> it = iObject.iterator();
+        Iterator<Map.Entry<IFieldName, Object>> it = iObject.iterator();
         int index = 0;
-        List<IKey> resultFieldName = new ArrayList<>();
+        List<IFieldName> resultFieldName = new ArrayList<>();
         List<Object> resultValue = new ArrayList<>();
         while (it.hasNext()) {
-            Map.Entry<IKey, Object> obj = it.next();
+            Map.Entry<IFieldName, Object> obj = it.next();
             resultFieldName.add(obj.getKey());
             resultValue.add(obj.getValue());
             ++index;
@@ -159,10 +159,10 @@ public class DSObjectTest {
             throws Exception {
         String json = "{\"value\":1,\"string\":\"foo\"}";
         IObject iObject = new DSObject(json);
-        Iterator<Map.Entry<IKey, Object>> it = iObject.iterator();
-        List<IKey> resultFieldName = new ArrayList<>();
+        Iterator<Map.Entry<IFieldName, Object>> it = iObject.iterator();
+        List<IFieldName> resultFieldName = new ArrayList<>();
         List<Object> resultValue = new ArrayList<>();
-        for(Map.Entry<IKey, Object> entry : iObject) {
+        for(Map.Entry<IFieldName, Object> entry : iObject) {
             resultFieldName.add(entry.getKey());
             resultValue.add(entry.getValue());
         }

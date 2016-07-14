@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.wds_object;
 
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -21,8 +22,8 @@ import java.util.Map;
 public class WDSObject implements IObject, IObjectWrapper {
 
     private IObject initIObject;
-    private Map<IKey, IField> inFields;
-    private Map<IKey, IField[]> outFields;
+    private Map<IFieldName, IField> inFields;
+    private Map<IFieldName, IField[]> outFields;
     private IObject wrapperConfig;
 
     /**
@@ -38,7 +39,7 @@ public class WDSObject implements IObject, IObjectWrapper {
     }
 
     @Override
-    public Object getValue(final IKey name)
+    public Object getValue(final IFieldName name)
             throws ReadValueException, InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Name parameter should not be null.");
@@ -56,7 +57,7 @@ public class WDSObject implements IObject, IObjectWrapper {
     }
 
     @Override
-    public void setValue(final IKey name, final Object value)
+    public void setValue(final IFieldName name, final Object value)
             throws ChangeValueException, InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Name parameter should not be null.");
@@ -80,7 +81,7 @@ public class WDSObject implements IObject, IObjectWrapper {
     }
 
     @Override
-    public void deleteField(final IKey name)
+    public void deleteField(final IFieldName name)
             throws DeleteValueException, InvalidArgumentException {
         throw new DeleteValueException("Method not implemented.");
     }
@@ -92,7 +93,7 @@ public class WDSObject implements IObject, IObjectWrapper {
     }
 
     @Override
-    public Iterator<Map.Entry<IKey, Object>> iterator() {
+    public Iterator<Map.Entry<IFieldName, Object>> iterator() {
         return null;
     }
 
@@ -102,7 +103,7 @@ public class WDSObject implements IObject, IObjectWrapper {
     }
 
     @Override
-    public IObject getEnvironmentIObject(final IKey fieldName)
+    public IObject getEnvironmentIObject(final IFieldName fieldName)
             throws InvalidArgumentException {
         if (null == fieldName) {
             throw new InvalidArgumentException("FieldName should not be null.");

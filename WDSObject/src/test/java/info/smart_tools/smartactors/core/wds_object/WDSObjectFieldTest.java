@@ -55,7 +55,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IKey.class.getCanonicalName()),
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

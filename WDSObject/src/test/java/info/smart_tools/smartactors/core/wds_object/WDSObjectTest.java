@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.wds_object;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -60,7 +59,7 @@ public class WDSObjectTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IKey.class.getCanonicalName()),
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

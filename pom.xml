@@ -122,6 +122,7 @@
         <module>PluginCreateAsyncOperationActor</module>
         <module>WDSObject</module>
         <module>FieldName</module>
+        <module>IFieldName</module>
     </modules>
 
     <build>
