@@ -122,6 +122,8 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>ConfigLoader</module>
+        <module>StandardConfigSections</module>
     </modules>
 
     <build>
