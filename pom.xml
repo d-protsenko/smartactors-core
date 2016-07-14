@@ -125,6 +125,7 @@
         <module>FieldName</module>
         <module>IFieldName</module>
         <module>IField</module>
+        <module>PluginCheckUserIsNewActor</module>
     </modules>
 
     <build>
