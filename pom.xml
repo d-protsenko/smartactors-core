@@ -117,8 +117,13 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
-	    <module>IPath</module>
-	    <module>Path</module>
+        <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>IField</module>
+        <module>WDSObject</module>
+        <module>FieldName</module>
+        <module>IFieldName</module>
+        <module>IPath</module>
+	<module>Path</module>
     </modules>
 
     <build>

@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
+import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -16,6 +17,7 @@ import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGen
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wrapper_generator.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -58,6 +60,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             instance = IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
         } catch (ResolutionException e) {
             // do nothing
+            // ToDo: need refactoring
         }
         if (null != instance) {
             return instance;
@@ -69,7 +72,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
             IOC.register(
                     Keys.getOrAdd(targetInterface.getCanonicalName()),
-                    new CreateNewInstanceStrategy(
+                    new ApplyFunctionToArgumentsStrategy(
                             (arg) ->  {
                                 try {
                                     return clazz.newInstance();
@@ -97,7 +100,9 @@ public class WrapperGenerator implements IWrapperGenerator {
         // Add package name and imports.
         cb
                 .addPackageName(targetInterface.getPackage().getName())
+                .addImport(IField.class.getCanonicalName())
                 .addImport(Field.class.getCanonicalName())
+                .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
@@ -134,25 +139,30 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         // Add class fields
         for (Method m : targetInterface.getMethods()) {
-            String genericType =
-                    Void.TYPE == m.getGenericReturnType() ?
-                            m.getGenericParameterTypes()[0].getTypeName() :
-                            m.getReturnType().getTypeName();
+            String methodPrefix;
+            if (Void.TYPE == m.getGenericReturnType()) {
+                methodPrefix = "out";
+            } else {
+                methodPrefix = "in";
+            }
             cb
-                    .addField().setModifier(Modifiers.PRIVATE).setType("Field").setInnerGenericType(genericType)
-                            .setName("fieldFor_" + m.getName());
+                    .addField().setModifier(Modifiers.PRIVATE).setType("IField")
+                            .setName("fieldFor_" + methodPrefix + "_" + m.getName());
         }
 
         // Add class constructors
         StringBuilder builder = new StringBuilder();
         builder.append("\t\t").append("try {\n");
         for (Method m : targetInterface.getMethods()) {
+            String methodPrefix = Void.TYPE == m.getGenericReturnType() ? "out" : "in";
             builder
                     .append("\t\t\t").append("this.fieldFor_")
+                    .append(methodPrefix)
+                    .append("_")
                     .append(m.getName())
-                    .append(" = new Field<>(\"")
-                    .append(targetInterface.getCanonicalName())
-                    .append("/").append(m.getName()).append("\"" + ");\n");
+                    .append(" = new ")
+                    .append("Field(new FieldName(\"")
+                    .append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
         }
         builder
                 .append("\t\t").append("} catch (Exception e) {\n").append("\t\t\t")
@@ -188,8 +198,7 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         // Add getters and setters
         for (Method m : targetInterface.getMethods()) {
-            String typeTo = m.getReturnType().getSimpleName();
-
+            String methodPrefix = Void.TYPE == m.getGenericReturnType() ? "out" : "in";
             if (!m.getReturnType().equals(Void.TYPE)) {
                 cb
                         .addMethod().setModifier(Modifiers.PUBLIC).setReturnType(m.getGenericReturnType().getTypeName())
@@ -197,8 +206,10 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody("try {")
                         .addStringToBody(
                                 "\treturn fieldFor_" +
+                                methodPrefix +
+                                "_" +
                                 m.getName() +
-                                ".out(this.env);"
+                                ".in(this.env);"
                         )
                         .addStringToBody("} catch(Throwable e) {")
                         .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")
@@ -212,8 +223,10 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody("try {")
                         .addStringToBody(
                                 "\tthis.fieldFor_" +
+                                methodPrefix +
+                                "_" +
                                 m.getName() +
-                                ".in(this.env, value);"
+                                ".out(this.env, value);"
                         )
                         .addStringToBody("} catch (Throwable e) {")
                         .addStringToBody("\tthrow new ChangeValueException(\"Could not set value from iobject.\", e);")
