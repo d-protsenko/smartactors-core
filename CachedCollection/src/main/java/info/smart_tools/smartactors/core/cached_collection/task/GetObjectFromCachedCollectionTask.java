@@ -63,6 +63,20 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
      *                  "collectionName" : "COLLECTION _NAME"
      *              }    
      *              </pre>
+     * Query which would be passed to the nested task:
+     * TODO:: change this format after finish task's refactoring
+     *              <pre>
+     *              {
+     *                  "pageSize": 100,
+     *                  "pageNumber": 1,
+     *                  "collectionName" : "COLLECTION _NAME",
+     *                  "criteria": {
+     *                      "isActive": {"$eq": true},
+     *                      "startDateTime": {"date-to": "now"},
+     *                      "<keyName>": {"$eq": "<keyValue>"}
+     *                  }
+     *              }
+     *              </pre>
      * @throws TaskPrepareException Throw when some was incorrect in preparing query
      */
     @Override
