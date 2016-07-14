@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -42,6 +43,7 @@ public class GetFormActorTest {
         GetFormActor actor;
         List<IObject> objects = Collections.singletonList(mock(IObject.class));
         String key = "123";
+        IField field = mock(IField.class);
 
         IKey collectionKey = mock(IKey.class);
         when(Keys.getOrAdd(CachedCollection.class.toString())).thenReturn(collectionKey);
@@ -50,6 +52,10 @@ public class GetFormActorTest {
         IKey strategyKey = mock(IKey.class);
         when(Keys.getOrAdd(IFormsStrategy.class.toString())).thenReturn(strategyKey);
         when(IOC.resolve(eq(strategyKey), anyObject())).thenReturn(strategy);
+
+        IKey fieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
+        when(IOC.resolve(eq(fieldKey), anyObject())).thenReturn(field);
 
         when(collection.getItems(key)).thenReturn(objects);
 

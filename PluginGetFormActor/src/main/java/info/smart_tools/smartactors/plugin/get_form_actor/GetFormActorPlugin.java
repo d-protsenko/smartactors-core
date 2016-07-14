@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -32,14 +33,13 @@ public class GetFormActorPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey cachedCollectionKey = Keys.getOrAdd(GetFormActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("GetFormActorPlugin");
-
             item
-                .after("IOC")
+                //.after("IOC")
                 .process(() -> {
                     try {
-                        IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
+                        IKey actorKey = Keys.getOrAdd(GetFormActor.class.toString());
+                        IOC.register(actorKey, new CreateNewInstanceStrategy(
                                 (args) -> {
                                     try {
                                         return new GetFormActor((IObject) args[0]);
@@ -47,7 +47,7 @@ public class GetFormActorPlugin implements IPlugin {
                                         throw new RuntimeException(e);
                                     }
                                 }));
-                    } catch (RegistrationException | InvalidArgumentException e) {
+                    } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
                         throw new RuntimeException(e);
                     }
                 });
