@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.collection_name.CollectionNamePlugin.java;
+package info.smart_tools.smartactors.plugin.ifieldname;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
