@@ -75,6 +75,7 @@ public class IFieldNamePlugin implements IPlugin {
                             throw new RuntimeException("Can't get register new strategy");
                         }
                     });
+            bootstrap.add(item);
         } catch (InvalidArgumentException e) {
             throw new PluginException("Can't get BootstrapItem from one of reason", e);
         }
