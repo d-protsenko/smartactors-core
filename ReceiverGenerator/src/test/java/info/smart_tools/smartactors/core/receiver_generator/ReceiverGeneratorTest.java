@@ -85,10 +85,6 @@ public class ReceiverGeneratorTest {
         r.receive(processor);
         assertTrue(w.getGetterUsed());
         assertTrue(w.getSetterUsed());
-
-        // re-usage test
-        IMessageReceiver r1 = rg.generate(configs);
-        assertNotNull(r1);
     }
 
     @Test(expected = InvalidArgumentException.class)

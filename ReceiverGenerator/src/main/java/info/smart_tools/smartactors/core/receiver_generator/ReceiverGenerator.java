@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -19,7 +18,6 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.Asynchron
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
-import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
 
@@ -42,7 +40,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
      * Constructor.
      * Create new instance of {@link ReceiverGenerator} by given {@link ClassLoader}
      * @param classLoader the instance of {@link ClassLoader}
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException if initialization inner instances of {@link FieldName} was failed
      */
     public ReceiverGenerator(final ClassLoader classLoader)
             throws InvalidArgumentException {
@@ -68,15 +66,8 @@ public class ReceiverGenerator implements IReceiverGenerator {
             if (null == actorID || null == handlerName || actorID.isEmpty() || handlerName.isEmpty()) {
                 throw new ReadValueException("Actor ID and handler name should not be null or empty.");
             }
-            instance = IOC.resolve(Keys.getOrAdd(actorID + "_" + handlerName), wrapperConfiguration);
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Given wrapper configuration is incorrect.");
-        } catch (ResolutionException e) {
-            // do nothing
-            // ToDo: need refactoring
-        }
-        if (null != instance) {
-            return instance;
         }
         try {
             Object actor = IOC.resolve(Keys.getOrAdd(actorID));
@@ -88,26 +79,8 @@ public class ReceiverGenerator implements IReceiverGenerator {
                     handlerName,
                     actor
             );
-
-            // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
-            // ToDo: replace this strategy to the future plugin for WrapperGenerator
-            IOC.register(
-                    Keys.getOrAdd(actorID + "_" + handlerName),
-                    new ApplyFunctionToArgumentsStrategy(
-                            (arg) ->  {
-                                try {
-                                    return clazz.getConstructor(new Class[]{IObject.class})
-                                            .newInstance(
-                                                    new Object[]{((IObject)arg[0]).getValue(this.wrapperFieldName)}
-                                            );
-                                } catch (Throwable e) {
-                                    throw new RuntimeException("Error on creation new instance.", e);
-                                }
-                            }
-                    )
-            );
-
-            return IOC.resolve(Keys.getOrAdd(actorID + "_" + handlerName), wrapperConfiguration);
+            return clazz.getConstructor(new Class[]{IObject.class})
+                    .newInstance(new Object[]{wrapperConfiguration.getValue(this.wrapperFieldName)});
         } catch (Throwable e) {
             throw new ReceiverGeneratorException(
                     "Could not generate message receiver because of the following error:",
