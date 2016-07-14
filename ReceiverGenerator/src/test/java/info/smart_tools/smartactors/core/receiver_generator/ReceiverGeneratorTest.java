@@ -3,11 +3,15 @@ package info.smart_tools.smartactors.core.receiver_generator;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ireceiver_generator.IReceiverGenerator;
+import info.smart_tools.smartactors.core.ireceiver_generator.exception.ReceiverGeneratorException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
@@ -16,7 +20,14 @@ import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,15 +59,87 @@ public class ReceiverGeneratorTest {
     public void checkCreation()
             throws Exception {
         CustomActor a = new CustomActor();
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("actorID"), strategy);
-        when(strategy.resolve()).thenReturn(a);
+        CustomWrapper w = new CustomWrapper();
+        w.setGetterUsed(false);
+        w.setSetterUsed(false);
+        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
+        IResolveDependencyStrategy returnWrapperStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
+        IOC.register(Keys.getOrAdd(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
+        when(returnCustomActorStrategy.resolve()).thenReturn(a);
+        when(returnWrapperStrategy.resolve()).thenReturn(w);
         IObject configs = mock(IObject.class);
+        IObject env = mock(IObject.class);
         IObject wrapperConfig = mock(IObject.class);
         when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
         when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
         when(configs.getValue(new FieldName("wrapper"))).thenReturn(wrapperConfig);
+        when(env.getValue(new FieldName("int"))).thenReturn(1);
+        doNothing().when(env).setValue(new FieldName("int"), 2);
+        IMessageProcessor processor = mock(IMessageProcessor.class);
+        when(processor.getEnvironment()).thenReturn(env);
+        IReceiverGenerator rg = new ReceiverGenerator(null);
+        assertNotNull(rg);
+        IMessageReceiver r = rg.generate(configs);
+        assertNotNull(r);
+        r.receive(processor);
+        assertTrue(w.getGetterUsed());
+        assertTrue(w.getSetterUsed());
+
+        // re-usage test
+        IMessageReceiver r1 = rg.generate(configs);
+        assertNotNull(r1);
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnNullParameter()
+            throws Exception {
+        IReceiverGenerator rg = new ReceiverGenerator(null);
+        rg.generate(null);
+        fail();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnWrongConfig()
+            throws Exception {
+        IObject configs = mock(IObject.class);
         IReceiverGenerator rg = new ReceiverGenerator(null);
         rg.generate(configs);
+        fail();
+    }
+
+    @Test(expected = ReceiverGeneratorException.class)
+    public void checkReceiverGeneratorExceptionOnAbsentActorInIOC()
+            throws Exception {
+        IObject configs = mock(IObject.class);
+        when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
+        when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
+        when(configs.getValue(new FieldName("wrapper"))).thenReturn(null);
+
+        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
+        when(returnCustomActorStrategy.resolve()).thenReturn(null);
+
+        IReceiverGenerator rg = new ReceiverGenerator(null);
+        rg.generate(configs);
+        fail();
+    }
+
+    @Test(expected = ReceiverGeneratorException.class)
+    public void checkReceiverGeneratorExceptionOnWrongWrapperConfig()
+            throws Exception {
+        CustomActor a = new CustomActor();
+        IObject configs = mock(IObject.class);
+        when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
+        when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
+        when(configs.getValue(new FieldName("wrapper"))).thenReturn(null);
+
+        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
+        when(returnCustomActorStrategy.resolve()).thenReturn(a);
+
+        IReceiverGenerator rg = new ReceiverGenerator(null);
+        rg.generate(configs);
+        fail();
     }
 }

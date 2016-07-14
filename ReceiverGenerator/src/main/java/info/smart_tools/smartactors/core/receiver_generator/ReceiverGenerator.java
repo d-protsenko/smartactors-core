@@ -191,9 +191,8 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 )
                 .addStringToBody("((IObjectWrapper) this.wrappedIObject).init(processor.getEnvironment());")
                 .addStringToBody(
-                        "IObjectWrapper wrapper = IOC.resolve(Keys.getOrAdd(\"" +
-                        actorID + "_" +
-                        handlerName + "\"));"
+                        "IObjectWrapper wrapper = IOC.resolve(Keys.getOrAdd("
+                        + wrapperInterface.getSimpleName() + ".class.getCanonicalName()));"
                 )
                 .addStringToBody("wrapper.init(this.wrappedIObject);")
                 .addStringToBody("a." + handlerName + "((" + wrapperInterface.getSimpleName() + ") wrapper);")

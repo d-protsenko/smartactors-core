@@ -32,7 +32,7 @@ public class actorID_doSomeWork_receiver implements IMessageReceiver {
         try {
             CustomActor a = IOC.resolve(Keys.getOrAdd("actorID"));
             ((IObjectWrapper) this.wrappedIObject).init(processor.getEnvironment());
-            IObjectWrapper wrapper = IOC.resolve(Keys.getOrAdd("actorID_doSomeWork"));
+            IObjectWrapper wrapper = IOC.resolve(Keys.getOrAdd(ICustomWrapper.class.getCanonicalName()));
             wrapper.init(this.wrappedIObject);
             a.doSomeWork((ICustomWrapper) wrapper);
         } catch (Throwable e) {
