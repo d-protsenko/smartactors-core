@@ -143,13 +143,14 @@ public class ScopeExample {
     public void sampleIOC() throws InvalidArgumentException, SimpleIOCException, ScopeProviderException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
 
-        IKey key = new Key("my");
+        IKey key = new Key("sample");
         SampleClass main = new SampleClass("main");
         SimpleIOC.register(key, main);
         assertEquals(main, SimpleIOC.resolve(key));
 
         ScopeProvider.setCurrentScope(workerScope);
         assertEquals(main, SimpleIOC.resolve(key));
+
         SampleClass worker = new SampleClass("worker");
         SimpleIOC.register(key, worker);
         assertEquals(worker, SimpleIOC.resolve(key));

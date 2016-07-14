@@ -52,6 +52,7 @@ public class PluginServer implements IServer {
             fileCollection.add(new Path("libs/SamplePlugin.jar"));
             fileCollection.add(new Path("libs/IocPlugin.jar"));
             pluginLoader.loadPlugin(fileCollection);     // loads plugins
+
             bootstrap.start();                           // starts initialization
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed.", e);

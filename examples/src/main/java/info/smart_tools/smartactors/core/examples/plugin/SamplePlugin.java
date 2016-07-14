@@ -9,13 +9,14 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  * Example of plugin.
  */
 public class SamplePlugin implements IPlugin {
 
-    private final IBootstrap<IBootstrapItem<String>> bootstrap;             // to register our BootstrapItem
+    private final IBootstrap<IBootstrapItem<String>> bootstrap;                 // to register our BootstrapItem
 
     /**
      * Creates the plugin.
@@ -31,10 +32,10 @@ public class SamplePlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("SamplePlugin");    // our item name
-            item.after("IOC");                                              // dependency, we need IOC
+            item.after("IOC");                                                  // dependency, we need IOC
             item.process(() -> {
                 try {
-                    IKey key = IOC.resolve(IOC.getKeyForKeyStorage(), "new SampleClass");
+                    IKey key = Keys.getOrAdd("new SampleClass");
                     IOC.register(
                             key,
                             // it's the initialization action of our plugin

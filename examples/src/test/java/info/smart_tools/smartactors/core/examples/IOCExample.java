@@ -44,25 +44,24 @@ public class IOCExample {
     
     @Test
     public void keyExample() throws ResolutionException, InvalidArgumentException {
-        IKey myResolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "myKey");
-        IKey myKey = Keys.getOrAdd("myKey");
-        IKey myNewKey = new Key("myKey");
-        //IKey myTypedKey = new Key(MyClass.class, "myKey");
-        assertEquals("resolve differs from got from Keys", myResolveKey, myKey);
-        assertEquals("new differs from resolve", myNewKey, myResolveKey);
+        IKey resolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "sample");
+        IKey key = Keys.getOrAdd("sample");
+        IKey newKey = new Key("sample");
+        assertEquals("resolve differs from got from Keys", resolveKey, key);
+        assertEquals("new differs from resolve", newKey, resolveKey);
     }
 
     @Test
     public void singletonStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IKey key = Keys.getOrAdd("singleton");
-        SampleClass myObject = new SampleClass("singleton");
-        IOC.register(key, new SingletonStrategy(myObject));
+        SampleClass sampleObject = new SampleClass("singleton");
+        IOC.register(key, new SingletonStrategy(sampleObject));
         SampleClass resolveObject1 = IOC.resolve(key);
         SampleClass resolveObject2 = IOC.resolve(key);
-        assertEquals("first resolve not equals", myObject, resolveObject1);
-        assertEquals("second resolve not equals", myObject, resolveObject2);
-        assertSame("first resolve not same", myObject, resolveObject1);
-        assertSame("second resolve not same", myObject, resolveObject2);
+        assertEquals("first resolve not equals", sampleObject, resolveObject1);
+        assertEquals("second resolve not equals", sampleObject, resolveObject2);
+        assertSame("first resolve not same", sampleObject, resolveObject1);
+        assertSame("second resolve not same", sampleObject, resolveObject2);
     }
 
     @Test
