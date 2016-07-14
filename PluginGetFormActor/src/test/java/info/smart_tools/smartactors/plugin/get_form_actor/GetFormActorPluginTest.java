@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -58,6 +60,9 @@ public class GetFormActorPluginTest {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("GetFormActorPlugin").thenReturn(bootstrapItem);
         plugin.load();
+
+        verifyStatic();
+        Keys.getOrAdd(GetFormActor.class.toString());
         verifyNew(BootstrapItem.class).withArguments("GetFormActorPlugin");
 
         ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
@@ -76,5 +81,21 @@ public class GetFormActorPluginTest {
         verifyNew(GetFormActor.class).withArguments(arg);
 
         verify(bootstrap).add(eq(bootstrapItem));
+    }
+
+    @Test
+    public void ShouldInCorrectTryAddItemWhenKeysThrowException() throws Exception {
+
+        when(Keys.getOrAdd(GetFormActor.class.toString())).thenThrow(new ResolutionException(""));
+
+        try {
+            plugin.load();
+        } catch (PluginException e) {
+
+            verifyStatic();
+            Keys.getOrAdd(GetFormActor.class.toString());
+            return;
+        }
+        assertTrue("Must throw exception", false);
     }
 }
