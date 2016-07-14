@@ -1,9 +1,6 @@
 package info.smart_tools.smartactors.core.async_operation_collection;
 
-import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
+import info.smart_tools.smartactors.core.async_operation_collection.exception.*;
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
@@ -18,10 +15,10 @@ import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -33,7 +30,6 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +42,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
     private IPool connectionPool;
     private CollectionName collectionName;
-    private Field<Long> idField;
+    private IField idField;
 
     /**
      * Constructor for implementation
@@ -57,7 +53,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public AsyncOperationCollection(final IPool connectionPool, final String collectionName) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
         try {
-            this.idField = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "id"));
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
             this.collectionName = CollectionName.fromString(collectionName);
         } catch (QueryBuildException e) {
             throw new InvalidArgumentException("Can't create async operations collection.", e);
@@ -175,6 +171,8 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             throw new CompleteAsyncOperationException("Can't complete async operation.", e);
         } catch (ResolutionException e) {
             throw new CompleteAsyncOperationException("Can't resolve async operation object.", e);
+        } catch (UpdateAsyncOperationException e) {
+            throw new CompleteAsyncOperationException("Can't create new UpdateAsyncOperationTask.", e);
         }
     }
 
