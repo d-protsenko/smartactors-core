@@ -117,6 +117,7 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
         <module>WDSObject</module>
