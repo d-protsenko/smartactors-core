@@ -83,10 +83,8 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             getItemTask.prepare(queryForNestedTask);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create searchQuery from input query", e);
-        } catch (ChangeValueException | ReadValueException e) {
+        } catch (InvalidArgumentException | ChangeValueException | ReadValueException e) {
             throw new TaskPrepareException("Can't change value in one of IObjects", e);
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
         }
     }
 
