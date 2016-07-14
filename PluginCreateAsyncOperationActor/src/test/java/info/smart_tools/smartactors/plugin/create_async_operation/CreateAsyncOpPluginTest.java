@@ -21,6 +21,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +57,8 @@ public class CreateAsyncOpPluginTest {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
+
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
