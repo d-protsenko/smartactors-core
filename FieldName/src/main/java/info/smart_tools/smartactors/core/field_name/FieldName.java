@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.core.ds_object;
+package info.smart_tools.smartactors.core.field_name;
 
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 
 import java.util.regex.Pattern;
 
@@ -30,16 +30,21 @@ public class FieldName implements IFieldName {
     }
 
     @Override
-    public int hashCode() {
-        return 23 + name.hashCode();
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FieldName fieldName = (FieldName) o;
+
+        return name.equals(fieldName.name);
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return (this == obj) ||
-                ((obj instanceof FieldName)
-                        && this.name.equals(((FieldName) obj).name)
-                );
+    public int hashCode() {
+        return name.hashCode();
     }
 
     @Override

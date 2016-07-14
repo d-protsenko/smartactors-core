@@ -118,6 +118,13 @@
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
         <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
+        <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>IField</module>
+        <module>WDSObject</module>
+        <module>FieldName</module>
+        <module>IFieldName</module>
     </modules>
 
     <build>
