@@ -46,6 +46,7 @@ public class CompileQueryPluginTest {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CompileQueryPlugin").thenReturn(bootstrapItem);
+        when(bootstrapItem.after("IOC")).thenReturn(bootstrapItem);
         plugin.load();
         verifyNew(BootstrapItem.class).withArguments("CompileQueryPlugin");
         verify(bootstrap).add(eq(bootstrapItem));
