@@ -32,6 +32,7 @@ public class ConfigurePlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
+            /* config_loader - register ISectionStrategiesStorage singleton in IOC */
             IBootstrapItem<String> configLoaderItem = new BootstrapItem("config_loader");
 
             configLoaderItem
@@ -47,6 +48,7 @@ public class ConfigurePlugin implements IPlugin {
 
             bootstrap.add(configLoaderItem);
 
+            /* configure - loads initial configuration */
             IBootstrapItem<String> configureItem = new BootstrapItem("configure");
 
             configureItem

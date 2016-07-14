@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.config_loader;
 
+import info.smart_tools.smartactors.core.config_loader.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -13,9 +14,10 @@ public interface ISectionStrategy {
      *
      * @param config    the root configuration object
      * @throws ReadValueException if error occurs accessing configuration object
+     * @throws ConfigurationProcessingException if any error occurs loading the configuration
      * @see info.smart_tools.smartactors.core.config_loader
      */
-    void onLoadConfig(final IObject config) throws ReadValueException;
+    void onLoadConfig(final IObject config) throws ReadValueException, ConfigurationProcessingException;
 
     /**
      * Return name of the configuration section processed by this strategy.

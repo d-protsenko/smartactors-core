@@ -1,13 +1,15 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.config_loader.ISectionStrategy;
+import info.smart_tools.smartactors.core.config_loader.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
 import java.util.List;
 
@@ -49,21 +51,23 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
 
     @Override
     public void onLoadConfig(final IObject config)
-            throws ReadValueException {
+            throws ReadValueException, ConfigurationProcessingException {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
 
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()));
+
             for (IObject mapDescription : section) {
                 Object mapId = mapDescription.getValue(mapIdFieldName);
-                IReceiverChain chain = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
-                        mapId, mapDescription, null/*TODO: Chains storage*/, null/*TODO: Router*/);
-                // TODO: register map
+                try {
+                    chainStorage.register(mapId, mapDescription);
+                } catch (ChainCreationException e) {
+                    throw new ConfigurationProcessingException("Could not create chain for map #'" + String.valueOf(mapId) + "'.", e);
+                }
             }
         } catch (InvalidArgumentException | ResolutionException e) {
-            // TODO:
+            throw new ConfigurationProcessingException("Error occurred loading \"maps\" section of configuration.", e);
         }
-        // TODO: Implement
     }
 
     @Override
