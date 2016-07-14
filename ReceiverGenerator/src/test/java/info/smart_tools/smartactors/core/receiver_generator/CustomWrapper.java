@@ -1,14 +1,18 @@
 package info.smart_tools.smartactors.core.receiver_generator;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 
-public class CustomWrapper implements IObjectWrapper, ICustomWrapper {
+import java.util.Iterator;
+import java.util.Map;
+
+public class CustomWrapper implements IObjectWrapper, ICustomWrapper, IObject {
 
     private IObject env;
     private Boolean getterUsed = false;
@@ -58,5 +62,25 @@ public class CustomWrapper implements IObjectWrapper, ICustomWrapper {
 
     public void setSetterUsed(Boolean setterUsed) {
         this.setterUsed = setterUsed;
+    }
+
+    public Object getValue(IFieldName name) throws ReadValueException, InvalidArgumentException {
+        return null;
+    }
+
+    public void setValue(IFieldName name, Object value) throws ChangeValueException, InvalidArgumentException {
+
+    }
+
+    public void deleteField(IFieldName name) throws DeleteValueException, InvalidArgumentException {
+        throw new DeleteValueException("Method not implemented.");
+    }
+
+    public <T> T serialize() throws SerializeException {
+        throw new SerializeException("Method not implemented.");
+    }
+
+    public Iterator<Map.Entry<IFieldName, Object>> iterator() {
+        return null;
     }
 }

@@ -6,18 +6,12 @@ import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.core.ireceiver_generator.exception.ReceiverGeneratorException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
 
 import java.lang.reflect.Method;
 
@@ -32,10 +26,6 @@ public class ReceiverGenerator implements IReceiverGenerator {
 
     private IClassGenerator<String> classGenerator;
 
-    private FieldName actorIdFieldName;
-    private FieldName handlerFieldName;
-    private FieldName wrapperFieldName;
-
     /**
      * Constructor.
      * Create new instance of {@link ReceiverGenerator} by given {@link ClassLoader}
@@ -45,42 +35,21 @@ public class ReceiverGenerator implements IReceiverGenerator {
     public ReceiverGenerator(final ClassLoader classLoader)
             throws InvalidArgumentException {
         this.classGenerator = new ClassGenerator(classLoader);
-        this.actorIdFieldName = new FieldName("actor");
-        this.handlerFieldName = new FieldName("handler");
-        this.wrapperFieldName = new FieldName("wrapper");
     }
 
     @Override
-    public IMessageReceiver generate(
-            final IObject wrapperConfiguration
-    ) throws InvalidArgumentException, ReceiverGeneratorException {
-        if (null == wrapperConfiguration) {
-            throw new InvalidArgumentException("Actor canonical class name should not be null.");
-        }
-        String actorID = null;
-        String handlerName = null;
-        IMessageReceiver instance = null;
-        try {
-            actorID = (String) wrapperConfiguration.getValue(actorIdFieldName);
-            handlerName = (String) wrapperConfiguration.getValue(handlerFieldName);
-            if (null == actorID || null == handlerName || actorID.isEmpty() || handlerName.isEmpty()) {
-                throw new ReadValueException("Actor ID and handler name should not be null or empty.");
-            }
-        } catch (ReadValueException e) {
-            throw new InvalidArgumentException("Given wrapper configuration is incorrect.");
+    public IMessageReceiver generate(final Object objInstance, final String methodName)
+            throws InvalidArgumentException, ReceiverGeneratorException {
+        if (null == objInstance || null == methodName || methodName.isEmpty()) {
+            throw new InvalidArgumentException("One of the arguments null or empty.");
         }
         try {
-            Object actor = IOC.resolve(Keys.getOrAdd(actorID));
-            if (null == actor) {
-                throw new Exception("Actor not registered in IOC.");
-            }
             Class<IMessageReceiver> clazz = generateClass(
-                    actorID,
-                    handlerName,
-                    actor
+                    objInstance,
+                    methodName
             );
-            return clazz.getConstructor(new Class[]{IObject.class})
-                    .newInstance(new Object[]{wrapperConfiguration.getValue(this.wrapperFieldName)});
+            return clazz.getConstructor(new Class[]{objInstance.getClass()})
+                    .newInstance(new Object[]{objInstance});
         } catch (Throwable e) {
             throw new ReceiverGeneratorException(
                     "Could not generate message receiver because of the following error:",
@@ -90,61 +59,46 @@ public class ReceiverGenerator implements IReceiverGenerator {
     }
 
     private Class<IMessageReceiver> generateClass(
-            final String actorID,
-            final String handlerName,
-            final Object actor
+            final Object usersObject,
+            final String handlerName
     )
             throws Exception {
         ClassBuilder cb = new ClassBuilder("\t", "\n");
-        Class wrapperInterface = findWrapperInterface(actor, handlerName);
+        Class wrapperInterface = findWrapperInterface(usersObject, handlerName);
 
         // Add package name and imports
         cb
-                .addPackageName(actor.getClass().getPackage().getName())
-                .addImport(actor.getClass().getCanonicalName())
+                .addPackageName(usersObject.getClass().getPackage().getName())
+                .addImport(usersObject.getClass().getCanonicalName())
                 .addImport(wrapperInterface.getCanonicalName())
-                .addImport(FieldName.class.getCanonicalName())
-                .addImport(InvalidArgumentException.class.getCanonicalName())
-                .addImport(IObject.class.getCanonicalName())
-                .addImport(IObjectWrapper.class.getCanonicalName())
-                .addImport(IOC.class.getCanonicalName())
                 .addImport(IMessageProcessor.class.getCanonicalName())
                 .addImport(IMessageReceiver.class.getCanonicalName())
                 .addImport(AsynchronousOperationException.class.getCanonicalName())
-                .addImport(MessageReceiveException.class.getCanonicalName())
-                .addImport(Keys.class.getCanonicalName())
-                .addImport(WDSObject.class.getCanonicalName());
+                .addImport(MessageReceiveException.class.getCanonicalName());
 
         // Add class header
         cb
                 .addClass()
                 .setClassModifier(Modifiers.PUBLIC)
-                .setClassName(actorID + "_" + handlerName + "_" + "receiver")
+                .setClassName(usersObject.getClass().getSimpleName() + "_" + handlerName + "_" + "receiver")
                 .setInterfaces(IMessageReceiver.class.getSimpleName());
 
         // Add fields
         cb
                 .addField()
                 .setModifier(Modifiers.PRIVATE)
-                .setType(IObject.class.getSimpleName())
-                .setName("wrappedIObject");
+                .setType(usersObject.getClass().getSimpleName())
+                .setName("usersObject");
 
         // Add constructor
         cb
                 .addConstructor()
                 .setModifier(Modifiers.PUBLIC)
-                .setExceptions(InvalidArgumentException.class.getSimpleName())
                 .setParameters()
-                    .setType(IObject.class.getSimpleName())
-                    .setName("configuration")
+                    .setType(usersObject.getClass().getSimpleName())
+                    .setName("object")
                     .next()
-                .addStringToBody("try {")
-                .addStringToBody("\tthis.wrappedIObject = new WDSObject((IObject) configuration.getValue(new FieldName(\"wrapper\")));")
-                .addStringToBody("} catch (Throwable e) {")
-                .addStringToBody("throw new InvalidArgumentException(")
-                .addStringToBody("\"Could not create instance of \" + this.getClass().getCanonicalName() + \".\", e")
-                .addStringToBody(");")
-                .addStringToBody("}");
+                .addStringToBody("\tthis.usersObject = object;");
 
         // Add method
         cb
@@ -160,15 +114,12 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .setExceptions(AsynchronousOperationException.class.getSimpleName())
                 .addStringToBody("try {")
                 .addStringToBody(
-                        actor.getClass().getSimpleName() + " a = IOC.resolve(Keys.getOrAdd(\"" + actorID + "\"));"
+                        "this.usersObject." +
+                        handlerName +
+                        "((" +
+                        wrapperInterface.getSimpleName() +
+                        ") processor.getEnvironment());"
                 )
-                .addStringToBody("((IObjectWrapper) this.wrappedIObject).init(processor.getEnvironment());")
-                .addStringToBody(
-                        "IObjectWrapper wrapper = IOC.resolve(Keys.getOrAdd("
-                        + wrapperInterface.getSimpleName() + ".class.getCanonicalName()));"
-                )
-                .addStringToBody("wrapper.init(this.wrappedIObject);")
-                .addStringToBody("a." + handlerName + "((" + wrapperInterface.getSimpleName() + ") wrapper);")
                 .addStringToBody("} catch (Throwable e) {")
                 .addStringToBody("throw new MessageReceiveException(\"Could not execute receiver operation.\", e);")
                 .addStringToBody("}");

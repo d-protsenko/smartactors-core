@@ -71,16 +71,13 @@ public class ReceiverGeneratorTest {
         IObject configs = mock(IObject.class);
         IObject env = mock(IObject.class);
         IObject wrapperConfig = mock(IObject.class);
-        when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
-        when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
-        when(configs.getValue(new FieldName("wrapper"))).thenReturn(wrapperConfig);
         when(env.getValue(new FieldName("int"))).thenReturn(1);
         doNothing().when(env).setValue(new FieldName("int"), 2);
         IMessageProcessor processor = mock(IMessageProcessor.class);
-        when(processor.getEnvironment()).thenReturn(env);
+        when(processor.getEnvironment()).thenReturn(w);
         IReceiverGenerator rg = new ReceiverGenerator(null);
         assertNotNull(rg);
-        IMessageReceiver r = rg.generate(configs);
+        IMessageReceiver r = rg.generate(a, "doSomeWork");
         assertNotNull(r);
         r.receive(processor);
         assertTrue(w.getGetterUsed());
@@ -91,51 +88,17 @@ public class ReceiverGeneratorTest {
     public void checkInvalidArgumentExceptionOnNullParameter()
             throws Exception {
         IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(null);
-        fail();
-    }
-
-    @Test(expected = InvalidArgumentException.class)
-    public void checkInvalidArgumentExceptionOnWrongConfig()
-            throws Exception {
-        IObject configs = mock(IObject.class);
-        IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(configs);
+        rg.generate(null, null);
         fail();
     }
 
     @Test(expected = ReceiverGeneratorException.class)
-    public void checkReceiverGeneratorExceptionOnAbsentActorInIOC()
+    public void checkReceiverGeneratorExceptionOn()
             throws Exception {
-        IObject configs = mock(IObject.class);
-        when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
-        when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
-        when(configs.getValue(new FieldName("wrapper"))).thenReturn(null);
-
-        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
-        when(returnCustomActorStrategy.resolve()).thenReturn(null);
+        WrongClass a = new WrongClass();
 
         IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(configs);
-        fail();
-    }
-
-    @Test(expected = ReceiverGeneratorException.class)
-    public void checkReceiverGeneratorExceptionOnWrongWrapperConfig()
-            throws Exception {
-        CustomActor a = new CustomActor();
-        IObject configs = mock(IObject.class);
-        when(configs.getValue(new FieldName("actor"))).thenReturn("actorID");
-        when(configs.getValue(new FieldName("handler"))).thenReturn("doSomeWork");
-        when(configs.getValue(new FieldName("wrapper"))).thenReturn(null);
-
-        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
-        when(returnCustomActorStrategy.resolve()).thenReturn(a);
-
-        IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(configs);
+        rg.generate(a, "a");
         fail();
     }
 }

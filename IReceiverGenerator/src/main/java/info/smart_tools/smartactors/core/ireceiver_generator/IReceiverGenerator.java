@@ -12,13 +12,12 @@ public interface IReceiverGenerator {
 
     /**
      * Generates instance of {@link IMessageReceiver}.
-     * @param wrapperConfiguration wrapper configuration
-     * @return new instance of {@link IMessageReceiver}
+     * @param instance the instance of users class
+     * @param methodName the name of method
+     * @return the new instance of {@link IMessageReceiver}
      * @throws InvalidArgumentException if {@code params} responds inherent requirements
      * @throws ReceiverGeneratorException if class could not be generated
      */
-    IMessageReceiver generate(
-            IObject wrapperConfiguration
-    )
+    IMessageReceiver generate(Object instance, String methodName)
             throws InvalidArgumentException, ReceiverGeneratorException;
 }

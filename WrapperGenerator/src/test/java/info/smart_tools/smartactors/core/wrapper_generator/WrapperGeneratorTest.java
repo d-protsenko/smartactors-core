@@ -98,7 +98,12 @@ public class WrapperGeneratorTest {
     public void checkCreationAndUsageWrapperByInterface()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        wg.generate(IWrapper.class);
+        IWrapper w1 = wg.generate(IWrapper.class);
+        assertNotNull(w1);
+        // re-usage
+        IWrapper w2 = wg.generate(IWrapper.class);
+        assertNotNull(w2);
+        assertNotSame(w1, w2);
     }
 
     @Test (expected = WrapperGeneratorException.class)
