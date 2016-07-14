@@ -36,7 +36,7 @@ public class CreateAsyncOpPluginTest {
     public void setUp() throws Exception {
 
         mockStatic(IOC.class);
-        mockStatic(IKey.class);
+        mockStatic(Keys.class);
 
         IKey key1 = mock(IKey.class);
         IKey keyPool = mock(IKey.class);
