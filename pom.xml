@@ -58,7 +58,6 @@
         <module>IAsyncService</module>
         <module>EndpointGenerator</module>
         <module>EndpointHandler</module>
-        <module>IExchange</module>
         <module>NettyServer</module>
         <module>TcpServer</module>
         <module>HttpServer</module>
@@ -143,6 +142,7 @@
         <module>IFieldName</module>
         <module>MessageToBytesMapper</module>
         <module>IResponseSender</module>
+        <module>HttpResponseSender</module>
     </modules>
 
     <build>

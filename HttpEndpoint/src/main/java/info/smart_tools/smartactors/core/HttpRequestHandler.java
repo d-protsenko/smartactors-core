@@ -19,7 +19,6 @@ import java.util.Map;
 
 /**
  * Endpoint handler for HTTP requests.
- * TODO: deserialize message from different formats (e.g. xml/json/properties etc.) based on content-type.
  */
 public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, FullHttpRequest> {
     private final Map<String, IDeserializeStrategy> deserializeStrategies;
@@ -46,8 +45,10 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request) throws Exception {
         IObject environment = deserializeStrategies.get(request.headers().get(HttpHeaders.Names.CONTENT_TYPE))
                 .deserialize(request);
-        IFieldName context = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
-        environment.setValue(context, ctx);
+        IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
+        IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "request");
+        environment.setValue(contextFieldName, ctx);
+        environment.setValue(requestFieldName, request);
         return environment;
     }
 }

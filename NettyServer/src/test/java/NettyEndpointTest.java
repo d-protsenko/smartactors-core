@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.MessageRe
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.netty_client.NettyClient;
 import info.smart_tools.smartactors.core.netty_server.NettyServer;
-import info.smat_tools.smartactors.core.iexchange.IExchange;
+import info.smat_tools.smartactors.core.iexchange.IResponseSender;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -101,7 +101,7 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
 
     protected String receiveActualResponse(IMessage stubMessage, TRequest request) throws InterruptedException, ExecutionException {
         return sendRequest(request)
-                .thenApplyAsync(x -> this.<IExchange>getWithRetries(stubMessage, "exchange").write(stubMessage))
+                .thenApplyAsync(x -> this.<IResponseSender>getWithRetries(stubMessage, "exchange").write(stubMessage))
                 .thenApplyAsync(x -> this.<String>getWithRetries(stubMessage, "actualResponse"))
                 .get();
     }

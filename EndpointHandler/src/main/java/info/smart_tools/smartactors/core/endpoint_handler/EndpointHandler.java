@@ -6,16 +6,12 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smat_tools.smartactors.core.iexchange.IExchange;
 
 import java.util.concurrent.ExecutionException;
 
 /**
  * Base class with a common message handling logic from endpoints.
  * It will initiate message contexts, generate service fields etc...
- * TODO: 'IsRequest' field processing - do we need it now? Can't we just set a no-op realization of {@link IExchange}?
- * TODO: ID generation - will the user associate an ID with the message, or it should be done by server?
- * TODO: do we need an interface for this handler?
  *
  * @param <TContext> type of context associated with endpoint data channel.
  *                   It is used to avoid unnecessary new instances creation in endpoint.
