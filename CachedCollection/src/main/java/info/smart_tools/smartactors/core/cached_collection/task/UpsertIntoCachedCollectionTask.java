@@ -45,6 +45,14 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     /**
      * Prepares database query
      * @param query query object
+     *              <pre>
+     *              {
+     *                  "document" : {CACHED ITEM},
+     *                  "collectionName" : "COLLECTION_NAME"
+     *              }
+     *              </pre>
+     * The same query would be passed to the nested task's prepare method,
+     * but startDateTime field in document would be set to the current time.
      * @throws TaskPrepareException if error occurs in process of query preparing
      */
     @Override
