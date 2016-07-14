@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.create_user;
 
 import info.smart_tools.smartactors.actors.create_user.CreateUserActor;
+import info.smart_tools.smartactors.actors.create_user.wrapper.ActorParams;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -47,19 +48,23 @@ public class CreateUserPlugin implements IPlugin {
                         IOC.register(createCreateUserKey, new CreateNewInstanceStrategy(
                                 (args) -> {
                                     try {
-                                        return new CreateUserActor(() -> {
-                                            return (String) args[0];
-                                        });
-                                    } catch (InvalidArgumentException e) {
+                                        ActorParams params = IOC.resolve(
+                                                Keys.getOrAdd(ActorParams.class.toString()),
+                                                args[0]
+                                        );
+                                        return new CreateUserActor(params);
+                                    } catch (InvalidArgumentException | ResolutionException e) {
                                         throw new RuntimeException(e);
                                     }
                                 }
                         ));
-                    } catch (RegistrationException | InvalidArgumentException e) {
+                    } catch (RegistrationException e) {
                         throw new RuntimeException(e);
+                    } catch (InvalidArgumentException e) {
+                        throw new RuntimeException("Can't create actor with this args: ", e);
                     }
                 } catch (ResolutionException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Can't get ActorParams wrapper or Key for ActorParams", e);
                 }
             });
             bootstrap.add(item);
