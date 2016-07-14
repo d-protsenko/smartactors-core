@@ -3,9 +3,11 @@ package info.smart_tools.smartactors.plugin.create_async_operation;
 import info.smart_tools.smartactors.actor.create_async_operation.CreateAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -31,13 +33,14 @@ public class CreateAsyncOpPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey createAsyncOpKey = Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CreateAsyncOperationActorPlugin");
 
             item
                     .after("IOC")
                     .process(() -> {
                         try {
+                            IKey createAsyncOpKey = Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+
                             IOC.register(createAsyncOpKey, new CreateNewInstanceStrategy(
                                     (args) -> {
                                         try {
@@ -46,8 +49,8 @@ public class CreateAsyncOpPlugin implements IPlugin {
                                             throw new RuntimeException(e);
                                         }
                                     }));
-                        } catch (RegistrationException | InvalidArgumentException e) {
-                            throw new RuntimeException(e);
+                        } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
+                            throw new ActionExecuteException(e);
                         }
                     });
             bootstrap.add(item);

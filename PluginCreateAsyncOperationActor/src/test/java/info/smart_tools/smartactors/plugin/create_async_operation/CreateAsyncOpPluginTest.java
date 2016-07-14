@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.async_operation_collection.task.CreateA
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -52,18 +53,12 @@ public class CreateAsyncOpPluginTest {
     @Test
     public void MustCorrectLoadPlugin() throws Exception {
 
-        IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
-
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
-
-        verifyStatic();
-        Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
@@ -72,7 +67,15 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
+        verify(bootstrap).add(bootstrapItem);
+
+        IKey createAsyncOpKey = mock(IKey.class);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
+
         actionArgumentCaptor.getValue().execute();
+
+        verifyStatic();
+        Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -85,30 +88,10 @@ public class CreateAsyncOpPluginTest {
         whenNew(CreateAsyncOperationActor.class).withArguments(arg).thenReturn(actor);
 
         assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(arg) == actor);
-
-        verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
-        verify(bootstrap).add(bootstrapItem);
-    }
-
-    @Test
-    public void MustInCorrectLoadWhenKeysThrowException() throws ResolutionException {
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenThrow(new ResolutionException(""));
-
-        try {
-            plugin.load();
-        } catch (PluginException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
-            return;
-        }
-        assertTrue("Must throw exception, but was not", false);
     }
 
     @Test
     public void MustInCorrectLoadNewIBootstrapItemThrowException() throws Exception {
-        IKey cachedCollectionKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(cachedCollectionKey);
 
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenThrow(new InvalidArgumentException(""));
 
@@ -116,12 +99,41 @@ public class CreateAsyncOpPluginTest {
             plugin.load();
         } catch (PluginException e) {
 
-            verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
-
             verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
             return;
         }
         assertTrue("Must throw exception, but was not", false);
+    }
+
+    @Test
+    public void MustInCorrectLoadWhenKeysThrowException() throws Exception {
+
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
+
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+
+        plugin.load();
+
+        verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+
+        verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).process(actionArgumentCaptor.capture());
+
+        verify(bootstrap).add(bootstrapItem);
+
+        IKey createAsyncOpKey = mock(IKey.class);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenThrow(new ResolutionException(""));
+
+        try {
+            actionArgumentCaptor.getValue().execute();
+        } catch (ActionExecuteException e) {
+            verifyStatic();
+            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+            return;
+        }
+        assertTrue("Must throw exception", false);
     }
 }
