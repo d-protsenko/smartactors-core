@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core;
 
 
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
@@ -15,7 +16,7 @@ public interface IMessageMapper<TSerialized> {
      * @param serializedInput serialized message
      * @return a deserialized message
      */
-    IObject deserialize(TSerialized serializedInput);
+    IObject deserialize(TSerialized serializedInput) throws ResolutionException;
 
     /**
      * Serialize a {@link IMessage} into some format. From which it can be deserialized later.

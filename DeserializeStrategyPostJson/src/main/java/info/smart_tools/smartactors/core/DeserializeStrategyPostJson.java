@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core;
 
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import io.netty.handler.codec.http.FullHttpRequest;
 
@@ -32,6 +33,10 @@ public class DeserializeStrategyPostJson implements IDeserializeStrategy {
         for (int i = 0, size = request.content().capacity(); i < size; i++) {
             bytes[i] = request.content().getByte(i);
         }
-        return messageMapper.deserialize(bytes);
+        try {
+            return messageMapper.deserialize(bytes);
+        } catch (ResolutionException e) {
+            throw new DeserializationException("Failed to deserialize request");
+        }
     }
 }

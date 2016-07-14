@@ -141,6 +141,7 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>MessageToBytesMapper</module>
     </modules>
 
     <build>
