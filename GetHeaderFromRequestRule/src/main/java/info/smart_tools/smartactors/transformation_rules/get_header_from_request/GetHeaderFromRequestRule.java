@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.transformation_rules.get_header_from_reques
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * The rule that extract header from request
@@ -16,6 +17,13 @@ public class GetHeaderFromRequestRule implements IResolveDependencyStrategy {
      */
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) ((FullHttpRequest) args[0]).headers().get((String) args[1]);
+        try {
+            FullHttpRequest request = (FullHttpRequest) args[0];
+            HttpHeaders headers = request.headers();
+            String headerName = (String) args[1];
+            return (T) headers.get(headerName);
+        } catch (ClassCastException e) {
+            throw new ResolveDependencyStrategyException("Some of args or header value can't be casted");
+        }
     }
 }
