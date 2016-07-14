@@ -43,11 +43,6 @@ public class CheckUserByEmailActorPluginTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        IKey key1 = mock(IKey.class);
-        IKey keyPool = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(key1);
-        when(IOC.resolve(eq(key1), eq("CreateAsyncOperationActorPlugin"))).thenReturn(keyPool);
-
         bootstrap = mock(IBootstrap.class);
         plugin = new CheckUserByEmailActorPlugin(bootstrap);
     }
