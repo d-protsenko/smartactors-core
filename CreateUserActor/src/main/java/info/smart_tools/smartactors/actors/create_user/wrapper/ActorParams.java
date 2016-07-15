@@ -11,4 +11,5 @@ public interface ActorParams {
      * @throws ReadValueException
      */
     String getCollectionName() throws ReadValueException;
+    String getCollectionKey() throws ReadValueException;
 }
