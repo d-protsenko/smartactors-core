@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.plugin.collection_name;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -11,6 +10,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, CollectionNamePlugin.class, CollectionName.class})
+@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByNameIocStrategy.class, CollectionNamePlugin.class, CollectionName.class})
 @RunWith(PowerMockRunner.class)
 public class CollectionNamePluginTest {
 
@@ -74,8 +74,8 @@ public class CollectionNamePluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-            ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ResolveByNameIocStrategy> createNewInstanceStrategyArgumentCaptor =
+            ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
