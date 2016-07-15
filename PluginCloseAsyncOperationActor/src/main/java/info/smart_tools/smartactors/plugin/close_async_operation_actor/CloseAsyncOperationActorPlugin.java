@@ -17,7 +17,9 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.Arrays;
-
+/**
+ * Plugin for implement @CloseAsyncOperationActor
+ */
 public class CloseAsyncOperationActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -30,6 +32,10 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
         this.bootstrap = bootstrap;
     }
 
+    /**
+     * Loading plugin
+     * @throws PluginException throw when plugin can't be loaded
+     */
     @Override
     public void load() throws PluginException {
         try {
