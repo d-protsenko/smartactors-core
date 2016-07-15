@@ -39,6 +39,11 @@
             <artifactId>core.bootstrap_item</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.create_new_instance_strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!--testing-->
         <dependency>
