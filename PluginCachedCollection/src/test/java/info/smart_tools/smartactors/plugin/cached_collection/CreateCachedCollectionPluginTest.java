@@ -15,7 +15,9 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lambda_strategy.ResolveByCompositeNameIOCStrategy;
+import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByNameIocStrategy.class, CreateCachedCollectionPlugin.class})
+@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByCompositeNameIOCStrategy.class, CreateCachedCollectionPlugin.class})
 @RunWith(PowerMockRunner.class)
 public class CreateCachedCollectionPluginTest {
 
@@ -94,8 +96,8 @@ public class CreateCachedCollectionPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
-        ArgumentCaptor<ResolveByNameIocStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
+        ArgumentCaptor<ResolveByCompositeNameIOCStrategy> createNewInstanceStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(ResolveByCompositeNameIOCStrategy.class);
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
@@ -136,15 +138,21 @@ public class CreateCachedCollectionPluginTest {
         IObject config = mock(IObject.class);
         IPool connectionPool = mock(IPool.class);
 
-        when(IOC.resolve(iobjectKey)).thenReturn(config);
-        when(IOC.resolve(connectionPoolKey)).thenReturn(connectionPool);
-        when(IOC.resolve(collectionNameKey, collectionNameString)).thenReturn(collectionName);
 
         whenNew(CachedCollection.class).withArguments(config).thenReturn(cachedCollection);
 
+        WrapperGenerator wrapperGenerator = mock(WrapperGenerator.class);
+        whenNew(WrapperGenerator.class).withArguments(null).thenReturn(wrapperGenerator);
+
+        ConnectionOptions connectionOptionsWrapper = mock(ConnectionOptions.class);
+        when(wrapperGenerator.generate(ConnectionOptions.class)).thenReturn(connectionOptionsWrapper);
+
+        when(IOC.resolve(iobjectKey)).thenReturn(config);
+        when(IOC.resolve(connectionPoolKey, connectionOptionsWrapper)).thenReturn(connectionPool);
+        when(IOC.resolve(collectionNameKey, collectionNameString)).thenReturn(collectionName);
+
         assertTrue("Must return correct value", createNewInstanceStrategyArgumentCaptor.getValue().resolve(collectionNameString, keyName) == cachedCollection);
-//      TODO:: uncomment here and others when ResolveByNameStrategy would be replaced by ResolveByCompositeNameStrategy
-//        verify(collectionMap).get(collectionMapKey);
+        verify(collectionMap).get(collectionMapKey);
 
         verifyStatic();
         Keys.getOrAdd(IObject.class.toString());
@@ -158,15 +166,15 @@ public class CreateCachedCollectionPluginTest {
         verifyStatic();
         Keys.getOrAdd("PostgresConnectionPool");
 
-//        verifyStatic();
-//        IOC.resolve(connectionPoolKey);
+        verifyStatic();
+        IOC.resolve(connectionPoolKey, connectionOptionsWrapper);
 
         verify(connectionPoolField).out(config, connectionPool);
         verify(collectionNameField).out(config, collectionName);
         verify(keyNameField).out(config, keyName);
 
         verifyNew(CachedCollection.class).withArguments(config);
-//        verify(collectionMap).putIfAbsent(collectionMapKey, cachedCollection);
+        verify(collectionMap).putIfAbsent(collectionMapKey, cachedCollection);
         verify(bootstrap).add(bootstrapItem);
     }
 

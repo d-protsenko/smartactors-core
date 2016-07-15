@@ -16,8 +16,11 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lambda_strategy.ResolveByCompositeNameIOCStrategy;
+import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 
 
 /**
@@ -44,24 +47,27 @@ public class CreateCachedCollectionPlugin implements IPlugin {
 
             item
                 .after("IOC")
-                .after("CollectionNamePlugin")
+                .after("FieldPlugin")
                 .process(() -> {
                     try {
                         IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
                         IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
                         IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
                         IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
-                        //TODO:: change ResolveByNameIocStrategy to ResolveByCompositeNameIocStrategy
-                        IOC.register(cachedCollectionKey, new ResolveByNameIocStrategy(
+                        IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
                             (args) -> {
                                 try {
                                     CollectionName collectionName = IOC.resolve(Keys.getOrAdd(CollectionName.class.toString()), args[0]);
-                                    String keyName = String.valueOf(args[1]);
                                     if (collectionName == null) {
-                                        throw new RuntimeException("Can't resolve cached collection: key parameter is null");
+                                        throw new RuntimeException("Can't resolve cached collection: collectionName is null");
                                     }
+                                    String keyName = String.valueOf(args[1]);
+                                    //TODO:: clarify about generators
+                                    //TODO:: wrapperGenerator should be resolved by IOC
+                                    IWrapperGenerator wrapperGenerator = new WrapperGenerator(null);
+                                    ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
+                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
                                     IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);
                                     keyNameField.out(config, keyName);
