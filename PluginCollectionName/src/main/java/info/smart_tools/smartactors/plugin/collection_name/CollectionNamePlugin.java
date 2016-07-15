@@ -40,7 +40,6 @@ public class CollectionNamePlugin implements IPlugin {
                 .process(() -> {
                     try {
                         IKey collectionNameKey = Keys.getOrAdd(CollectionName.class.toString());
-                        //TODO:: replace ResolveByNameIocStrategy to ResolveByCompositeNameIocStrategy
                         IOC.register(collectionNameKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String name = String.valueOf(args[0]);
