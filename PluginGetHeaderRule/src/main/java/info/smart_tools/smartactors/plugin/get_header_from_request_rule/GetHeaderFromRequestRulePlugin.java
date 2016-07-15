@@ -37,8 +37,8 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey checkUserIsNewActorKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
-                            IOC.register(checkUserIsNewActorKey,
+                            IKey ruleKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+                            IOC.register(ruleKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> new GetHeaderFromRequestRule()
                                     )
