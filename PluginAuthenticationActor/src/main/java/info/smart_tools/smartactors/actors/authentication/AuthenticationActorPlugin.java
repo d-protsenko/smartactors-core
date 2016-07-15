@@ -13,6 +13,9 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+/**
+ * Plugin for Authentication actor
+ */
 public class AuthenticationActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -21,6 +24,10 @@ public class AuthenticationActorPlugin implements IPlugin {
         this.bootstrap = bootstrap;
     }
 
+    /**
+     * Load the plugin for Authentication actor
+     * @throws PluginException Throw when plugin can't be load
+     */
     @Override
     public void load() throws PluginException {
         try {
