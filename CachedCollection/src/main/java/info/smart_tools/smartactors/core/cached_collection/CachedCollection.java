@@ -34,8 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Implementation of cached collection
- * {@link ICachedCollection}
+ * Implementation of cached collection {@link ICachedCollection}
+ * Resolves IDatabaseTasks for each type of operations, constructs queries for task's prepare() method,
+ * sets connection from pool to task and executes it.
  */
 public class CachedCollection implements ICachedCollection {
 
@@ -55,7 +56,12 @@ public class CachedCollection implements ICachedCollection {
 
     /**
      * Constructor which initializes database tasks for db operations and connection pool for them.
-     * @param config configuration object with collection settings and pool.
+     * @param config configuration object with collection settings and pool. Contains
+     * {
+     *               "сollectionName": "name of database collection",
+     *               "connectionPool": "pool with connection objects needed for database tasks",
+     *               "keyName": "name of field which stores key value into document"
+     * }
      * @throws InvalidArgumentException Except when actor can't be created with @config
      */
     public CachedCollection(final IObject config) throws InvalidArgumentException {
@@ -78,6 +84,19 @@ public class CachedCollection implements ICachedCollection {
         }
     }
 
+    /**
+     * Looks for value by key inside cache, if cache doesn't return any result, collection
+     * resolves search task and constructs query for it. Query contains:
+     * {
+     *     "collectionName": "current collection name",
+     *     "keyName": "name of field which stores key value into document",
+     *     "keyValue": "cache key value for search"
+     * }
+     * Found object from DB would be saved into cache
+     * @param key for cache. Cache should store needed value by this string.
+     * @return list with found objects
+     * @throws GetCacheItemException if any errors occurred
+     */
     @Override
     public List<IObject> getItems(final String key) throws GetCacheItemException {
 
@@ -130,6 +149,16 @@ public class CachedCollection implements ICachedCollection {
         }
     }
 
+    /**
+     * Deletes object from cache and set active flag to false for object into DB.
+     * Query object for task contains:
+     * {
+     *     "collectionName": "current collection name",
+     *     "document": {iobject from message parameter}
+     * }
+     * @param message document for delete
+     * @throws DeleteCacheItemException
+     */
     @Override
     public void delete(final IObject message) throws DeleteCacheItemException {
         try {
@@ -183,6 +212,16 @@ public class CachedCollection implements ICachedCollection {
         }
     }
 
+    /**
+     * Adds or updates object into cache and into DB.
+     * Query object for task contains:
+     * {
+     *     "collectionName": "current collection name",
+     *     "document": {iobject from message parameter}
+     * }
+     * @param message document for upsert
+     * @throws UpsertCacheItemException
+     */
     @Override
     public void upsert(final IObject message) throws UpsertCacheItemException {
 
