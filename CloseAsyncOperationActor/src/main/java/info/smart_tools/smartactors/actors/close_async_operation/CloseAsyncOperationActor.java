@@ -19,7 +19,7 @@ public class CloseAsyncOperationActor {
      * @param params the params for constructor
      * @throws InvalidArgumentException
      */
-    CloseAsyncOperationActor(final ActorParams params) throws InvalidArgumentException {
+    public CloseAsyncOperationActor(final ActorParams params) throws InvalidArgumentException {
         try {
             collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.toString()), params.getCollectionName());
         } catch (Exception e) {
