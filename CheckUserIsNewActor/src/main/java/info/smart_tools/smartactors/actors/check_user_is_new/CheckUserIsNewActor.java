@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.actors.check_user_is_new;
 
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.MessageWrapper;
-import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
+import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -16,7 +16,7 @@ import java.util.List;
  * Actor check that this email was not registered before
  */
 public class CheckUserIsNewActor {
-    private CachedCollection collection;
+    private ICachedCollection collection;
 
     /**
      * Constructor
@@ -25,7 +25,10 @@ public class CheckUserIsNewActor {
      */
     public CheckUserIsNewActor(final ActorParams params) throws InvalidArgumentException {
         try {
-            collection = IOC.resolve(Keys.getOrAdd(CachedCollection.class.toString()), params.getCollectionName());
+            collection = IOC.resolve(
+                    Keys.getOrAdd(ICachedCollection.class.toString()),
+                    params.getCollectionName(),
+                    params.getCollectionKey());
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
         }
