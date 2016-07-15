@@ -41,6 +41,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
