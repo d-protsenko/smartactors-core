@@ -130,7 +130,7 @@ public class UserAuthByLoginActorTest {
         /* <Internal #2.1> Special mocks for private method UserAuthByLoginActor#validateLogin */
 
         /* <Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
-        when(passwordField.out(user)).thenReturn(PASSWORD);
+        when(passwordField.in(user)).thenReturn(PASSWORD);
         /* </Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
         authByLoginActor.authenticateUser(message);
@@ -283,7 +283,7 @@ public class UserAuthByLoginActorTest {
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
 
         try {
-            when(passwordField.out(user)).thenReturn(null);
+            when(passwordField.in(user)).thenReturn(null);
             authByLoginActor.authenticateUser(message);
         } catch (AuthenticateUserException e) {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG +
@@ -293,7 +293,7 @@ public class UserAuthByLoginActorTest {
 
         try {
             reset(passwordField);
-            when(passwordField.out(user)).thenReturn("");
+            when(passwordField.in(user)).thenReturn("");
             authByLoginActor.authenticateUser(message);
         } catch (AuthenticateUserException e) {
             assertEquals(e.getMessage(), AUTH_ERROR_MSG +
@@ -317,7 +317,7 @@ public class UserAuthByLoginActorTest {
         /* <Internal #2.1> Special mocks for private method UserAuthByLoginActor#validateLogin */
 
         /* <Internal #2.2> Mocks for private method UserAuthByLoginActor#resolveLogin */
-        when(passwordField.out(user)).thenReturn("invalidPassword");
+        when(passwordField.in(user)).thenReturn("invalidPassword");
         /* </Internal #2.2> Mocks for private method UserAuthByLoginActor#validatePassword */
         /* </General #2> Mocks for method public UserAuthByLoginActor#authenticateUser. */
 

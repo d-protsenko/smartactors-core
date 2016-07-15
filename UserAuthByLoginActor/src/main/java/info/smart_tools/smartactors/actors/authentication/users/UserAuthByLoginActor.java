@@ -9,12 +9,12 @@ import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.core.security.encoding.codecs.ICharSequenceC
 import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IEncoder;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import javax.annotation.Nonnull;
 
@@ -34,20 +33,18 @@ import javax.annotation.Nonnull;
 public class UserAuthByLoginActor {
     /** Name of a some collection in database where is users documents. */
     private String collection;
-    /**
-     * A cached compiled query for search user in database by login.
-     * The cached query hasn't parametrized.
-     * {@link IBufferedQuery}.
-     */
-    private IBufferedQuery bufferedQuery;
+
     /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
-    private final Field<IObject> LOGIN_F;
-    private final Field<String> PASSWORD_F;
-    private final Field<String> EQUALS_F;
+    private final IObject CRITERIA;
+    private final IObject PARAMETERS;
+    private final ISearchQuery SEARCH_QUERY;
 
-    /* ToDo : Needs message source {@see Spring Framework}. */
+    private final IField LOGIN_F;
+    private final IField PASSWORD_F;
+
+    /* ToDo : Needs message source. */
     private static final String AUTH_ERROR_MSG = "User authentication has been failed because: ";
 
     private static final String AUTH_ERROR_RESPONSE_MSG = "Такой почтовый адрес не зарегистрирован, либо пароль неверный. " +
@@ -61,10 +58,8 @@ public class UserAuthByLoginActor {
 
     {
         try {
-            /* ToDo : Needs IField interface. */
-            LOGIN_F = IOC.resolve(Keys.getOrAdd("Field"), "email");
-            PASSWORD_F = IOC.resolve(Keys.getOrAdd("Field"), "password");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd("Field"), "$eq");
+            LOGIN_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "email");
+            PASSWORD_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "password");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -84,6 +79,23 @@ public class UserAuthByLoginActor {
         try {
             checkParams(params);
 
+            // Init criteria and parameters objects.
+            CRITERIA = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+            PARAMETERS = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+            SEARCH_QUERY = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()), PARAMETERS);
+
+            // Const. parameters in this search query.
+            SEARCH_QUERY.setCollectionName(collection);
+            SEARCH_QUERY.setPageSize(1);
+            SEARCH_QUERY.setPageNumber(1);
+            SEARCH_QUERY.setCriteria(CRITERIA);
+
+            // Init. criteria for search query by login.
+            IField EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "$eq");
+            IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+            EQUALS_F.out(loginObject, "email");
+            LOGIN_F.out(CRITERIA, loginObject);
+
             this.collection = params.getCollection();
 
             IEncoder encoder = IOC.resolve(Keys.getOrAdd(IEncoder.class.toString() + "<-" + params.getEncoder()));
@@ -94,7 +106,8 @@ public class UserAuthByLoginActor {
                     params.getAlgorithm(),
                     encoder,
                     charSequenceCodec);
-        } catch (ResolutionException e) {
+
+        } catch (ResolutionException | ChangeValueException e) {
             throw new InvalidArgumentException(e.getMessage(), e);
         }
     }
@@ -118,9 +131,10 @@ public class UserAuthByLoginActor {
      */
     public void authenticateUser(@Nonnull final IUserAuthByLoginMessage message)
             throws InvalidArgumentException, AuthenticateUserException {
-        try (IPoolGuard poolGuard = IOC.resolve(Keys.getOrAdd("PostgresConnectionPoolGuard"))) {
+        try (IPoolGuard connectionPoolGuard = IOC.resolve(Keys.getOrAdd("PSQLConnectionPoolGuard"));
+                IPoolGuard taskPollGuard = IOC.resolve(Keys.getOrAdd("PSQLSearchTaskPoolGuard"))) {
             checkMsg(message);
-            IObject user = resolveLogin(message, poolGuard);
+            IObject user = resolveLogin(message, connectionPoolGuard, taskPollGuard);
             validatePassword(message, user);
             setSuccessResponse(message);
         } catch (ResolutionException e) {
@@ -129,19 +143,20 @@ public class UserAuthByLoginActor {
         }
     }
 
-    private IObject resolveLogin(final IUserAuthByLoginMessage message, final IPoolGuard poolGuard)
-            throws AuthenticateUserException {
+    private IObject resolveLogin(final IUserAuthByLoginMessage message,
+                                 final IPoolGuard connectionPoolGuard,
+                                 final IPoolGuard taskPoolGuard
+    ) throws AuthenticateUserException {
         try {
-            IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString() + "PSQL"));
-            ISearchQuery searchQuery = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()));
+            IDatabaseTask searchTask = (IDatabaseTask) taskPoolGuard.getObject();
 
-            searchTask.setConnection((StorageConnection) poolGuard.getObject());
-            searchTask.prepare(prepareQueryMsg(searchQuery, message));
+            searchTask.setConnection((StorageConnection) connectionPoolGuard.getObject());
+            searchTask.prepare(prepareQueryParams(message));
             searchTask.execute();
 
-            validateSearchResult(searchQuery, message);
+            validateSearchResult(SEARCH_QUERY, message);
 
-            return searchQuery.getSearchResult(0);
+            return SEARCH_QUERY.getSearchResult(0);
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException |
                 TaskSetConnectionException | TaskExecutionException | TaskPrepareException e) {
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
@@ -150,14 +165,6 @@ public class UserAuthByLoginActor {
 
     private void validateSearchResult(final ISearchQuery searchQuery, final IUserAuthByLoginMessage message)
             throws AuthenticateUserException {
-
-        this.bufferedQuery = searchQuery
-                .getBufferedQuery()
-                .orElseThrow(() -> {
-                    setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
-                    return new AuthenticateUserException("Search task didn't returned a buffered query!");
-                });
-
         if (searchQuery.countSearchResult() == 0) {
             setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
             throw new AuthenticateUserException(AUTH_ERROR_MSG +
@@ -173,7 +180,7 @@ public class UserAuthByLoginActor {
     private void validatePassword(final IUserAuthByLoginMessage message, final IObject user)
             throws AuthenticateUserException {
         try {
-            String password = PASSWORD_F.out(user);
+            String password = PASSWORD_F.in(user);
             if (password == null || password.isEmpty()) {
                 setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
@@ -189,26 +196,13 @@ public class UserAuthByLoginActor {
         }
     }
 
-    private IObject prepareQueryMsg(final ISearchQuery searchQuery, final IUserAuthByLoginMessage message)
+    // ToDo :: Add setParameters after feature/143_db_tasks_refactoring merge.
+    private IObject prepareQueryParams(final IUserAuthByLoginMessage message)
             throws ResolutionException, ChangeValueException, InvalidArgumentException {
+        LOGIN_F.out(PARAMETERS, message.getLogin());
+        // SEARCH_QUERY.setParameters(PARAMETERS);
 
-        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-        IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-
-        EQUALS_F.in(loginObject, message.getLogin());
-        LOGIN_F.in(query, loginObject);
-
-        searchQuery.setCollectionName(collection);
-        searchQuery.setPageSize(1);
-        searchQuery.setPageNumber(1);
-        searchQuery.setBufferedQuery(bufferedQuery);
-        searchQuery.setCriteria(query);
-
-        IObject[] initObjects = IOC.resolve(
-                Keys.getOrAdd(IObjectWrapper.class.toString() + ".getIObjects"),
-                searchQuery);
-
-        return initObjects[0];
+        return PARAMETERS;
     }
 
     private void setSuccessResponse(final IUserAuthByLoginMessage message) {
