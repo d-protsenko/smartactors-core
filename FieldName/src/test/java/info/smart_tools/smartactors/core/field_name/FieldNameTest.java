@@ -1,11 +1,13 @@
-package info.smart_tools.smartactors.core.ds_object;
+package info.smart_tools.smartactors.core.field_name;
 
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -22,6 +24,14 @@ public class FieldNameTest {
         assertEquals(fieldName1, fieldName2);
         assertNotEquals(fieldName1, fieldNameOther);
         assertNotEquals(fieldName2, fieldNameOther);
+        assertTrue(fieldName1.equals(fieldName2) && fieldName2.equals(fieldName1));
+        assertTrue(fieldName1.hashCode() == fieldName2.hashCode());
+        assertFalse(fieldName1.equals(fieldNameOther) && fieldNameOther.equals(fieldName1));
+        assertFalse(fieldName1.hashCode() == fieldNameOther.hashCode());
+        IFieldName fieldNameLink = fieldName1;
+        assertTrue(fieldName1.equals(fieldNameLink));
+        IFieldName nullObject = null;
+        assertFalse(fieldName1.equals(nullObject));
     }
 
     @Test
