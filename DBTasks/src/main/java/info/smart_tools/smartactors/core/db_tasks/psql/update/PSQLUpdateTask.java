@@ -77,9 +77,9 @@ public class PSQLUpdateTask extends CachedDatabaseTask {
             @Nonnull final IObject message
     ) throws QueryBuildException {
         try {
-            String collection = DBQueryFields.COLLECTION.in(message);
+            ICollectionName collection = DBQueryFields.COLLECTION.in(message);
             IObject document = DBQueryFields.DOCUMENT.in(message);
-            Long documentId = takeDocumentId(document, collection);
+            Long documentId = takeDocumentId(document, collection.toString());
             String documentJson = document.serialize();
 
             compiledQuery.setParameters((statement) -> {
@@ -113,6 +113,10 @@ public class PSQLUpdateTask extends CachedDatabaseTask {
     private Long takeDocumentId(final IObject document, final String collection)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         IField id = IDContainer.getIdFieldFor(collection);
-        return Long.parseLong(id.in(document));
+        try {
+            return id.in(document);
+        } catch (ClassCastException e) {
+            throw new InvalidArgumentException("Invalid document's id for updating!", e);
+        }
     }
 }

@@ -2,9 +2,6 @@ package info.smart_tools.smartactors.core.db_tasks.psql.update;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IQueryStatementBuilder;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 
 import javax.annotation.Nonnull;
@@ -17,7 +14,7 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
 
     private static final String[] TEMPLATE_PARTS = {"UPDATE ",
-            " AS tab SET document = docs.document FROM VALUES(?,?::jsonb)) " +
+            " AS tab SET document = docs.document FROM (VALUES(?,?::jsonb)) " +
                     "AS docs (id, document) WHERE tab.id = docs.id;" };
 
     private static final int TEMPLATE_SIZE = TEMPLATE_PARTS[0].length() + TEMPLATE_PARTS[1].length();
@@ -50,7 +47,7 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
         try {
             requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
 
-            QueryStatement preparedQuery = IOC.resolve(Keys.getOrAdd(QueryStatement.class.toString()));
+            QueryStatement preparedQuery = new QueryStatement();
             StringBuilder queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
 
             queryBuilder
@@ -60,7 +57,7 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
             preparedQuery.getBodyWriter().write(queryBuilder.toString());
 
             return preparedQuery;
-        } catch (IOException | ResolutionException | IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             throw new QueryBuildException("A query statement building error: " + e.getMessage(), e);
         }
     }

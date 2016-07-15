@@ -63,7 +63,7 @@ public class DBUpdateQueryExecutor implements IDBQueryExecutor {
         try {
             int nUpdated = query.executeUpdate();
             if (nUpdated != 1) {
-                throw new QueryExecutionException("Update query failed: wrong count of documents is updated.");
+                throw new QueryExecutionException("'Update query' execution failed: wrong count of documents is updated.");
             }
         } catch (QueryExecutionException e) {
             throw new TaskExecutionException("Update query execution failed because:" + e.getMessage(), e);

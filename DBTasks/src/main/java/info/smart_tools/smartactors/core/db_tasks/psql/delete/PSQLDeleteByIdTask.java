@@ -60,6 +60,8 @@ public class PSQLDeleteByIdTask extends CachedDatabaseTask {
                     getQueryStatementBuilder(collection.toString()));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
+        } catch (ClassCastException e) {
+            throw new QueryBuildException("Document id field must be of 'ICollectionName' type!");
         }
     }
 
@@ -75,6 +77,8 @@ public class PSQLDeleteByIdTask extends CachedDatabaseTask {
             return query;
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new QueryBuildException(e.getMessage(), e);
+        } catch (ClassCastException e) {
+            throw new QueryBuildException("Document id field must be of 'java.lang.Long' type!");
         }
     }
 

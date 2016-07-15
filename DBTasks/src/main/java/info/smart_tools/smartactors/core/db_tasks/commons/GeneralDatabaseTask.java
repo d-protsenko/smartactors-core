@@ -55,26 +55,25 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
      * @see GeneralDatabaseTask#setParameters(ICompiledQuery, IObject)
      * @see GeneralDatabaseTask#setInternalState(ICompiledQuery, IObject)
      *
-     * @param message - query message with parameters for insert query.
+     * @param queryMessage - query message with parameters for insert query.
      * @see info.smart_tools.smartactors.core.db_tasks.wrappers.insert.IInsertMessage
      *
      * @exception TaskPrepareException  when incoming message has a invalid format
      *              or errors in during preparation the task.
      */
     @Override
-    public void prepare(@Nonnull final IObject message) throws TaskPrepareException {
+    public void prepare(@Nonnull final IObject queryMessage) throws TaskPrepareException {
         try {
-            executable = isExecutable(message);
+            executable = isExecutable(queryMessage);
             if (executable) {
-                ICompiledQuery compiledQuery = takeCompiledQuery(connection, message);
-                setInternalState(setParameters(compiledQuery, message), message);
+                ICompiledQuery compiledQuery = takeCompiledQuery(connection, queryMessage);
+                setInternalState(setParameters(compiledQuery, queryMessage), queryMessage);
             }
         } catch (NullPointerException e) {
-            throw new TaskPrepareException("Can't prepare query because: Invalid given query message!");
-        } catch (ClassCastException e) {
-            throw new TaskPrepareException("Invalid collection field type!");
+            throw new TaskPrepareException("Invalid query message!", e);
         } catch (Throwable e) {
-            throw new TaskPrepareException("Can't prepare query because: " + e.getMessage(), e);
+            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getCause().getMessage();
+            throw new TaskPrepareException("Can't prepare query because: " + errorMessage, e);
         }
     }
 
@@ -83,7 +82,8 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
      * Task executes a specific query to the postgres database.
      * @see IDatabaseTask#execute()
      *
-     * Before execution the task must be done preparation else throws exception.
+     * Before the task execution must be done preparation else throws exception.
+     * After the task execution or a throwing exceptions, his internal state resets and needs re-preparing.
      * @see IDatabaseTask#prepare(IObject)
      * @see TaskExecutionException
      *
@@ -91,12 +91,16 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
      */
     @Override
     public void execute() throws TaskExecutionException {
+        checkInternalState();
         try {
             if (executable) {
                 execute(query, message);
             }
+            resetInternalState();
         } catch (Throwable e) {
-            throw new TaskExecutionException("Task execution has been failed because:" + e.getMessage(), e);
+            resetInternalState();
+            String errorMessage = e.getMessage() != null ? e.getMessage() : e.getCause().getMessage();
+            throw new TaskExecutionException("Task execution has been failed because: " + errorMessage, e);
         }
     }
 
@@ -125,14 +129,14 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
      * @return compiled query from query statement.
      * @exception  QueryBuildException when errors in during compilation query.
      */
-    protected @Nonnull ICompiledQuery createCompiledQuery(@Nonnull final IStorageConnection connection,
-                                                          @Nonnull final IQueryStatementBuilder queryStatementBuilder
+    protected @Nonnull ICompiledQuery compileQuery(@Nonnull final IStorageConnection connection,
+                                                   @Nonnull final IQueryStatementBuilder queryStatementBuilder
     ) throws QueryBuildException {
         try {
             QueryStatement queryStatement = queryStatementBuilder.build();
             return connection.compileQuery(queryStatement);
         } catch (NullPointerException e) {
-            throw new QueryBuildException("Query compile error because: Incoming parameters must not be a null!", e);
+            throw new QueryBuildException("Query compile error because: Invalid incoming parameters!", e);
         } catch (StorageException e) {
             throw new QueryBuildException("Query compile error: " + e.getMessage(), e);
         }
@@ -199,5 +203,16 @@ public abstract class GeneralDatabaseTask implements IDatabaseTask {
     private void setInternalState(final ICompiledQuery compiledQuery, final IObject queryMessage) {
         this.query = compiledQuery;
         this.message = queryMessage;
+    }
+
+    private void resetInternalState() {
+        executable = false;
+        setInternalState(null, null);
+    }
+
+    private void checkInternalState() throws TaskExecutionException {
+        if (query == null || message == null) {
+            throw new TaskExecutionException("Prepare task before execution!");
+        }
     }
 }

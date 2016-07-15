@@ -1,22 +1,26 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.create_collection;
 
+import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
+import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
+import info.smart_tools.smartactors.core.db_tasks.TestUtils;
+import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
+import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteByIdTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,12 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @SuppressWarnings("unchecked")
 public class PSQLCreateCollectionTaskTest {
-    private PSQLCreateCollectionTask task = PSQLCreateCollectionTask.create();
-    private static JDBCCompiledQuery compiledQuery = mock(JDBCCompiledQuery.class);
+    private static ICompiledQuery compiledQuery = mock(ICompiledQuery.class);
     private static IObject message = mock(IObject.class);
     private static IStorageConnection connection = mock(IStorageConnection.class);
-    private static IField collectionField;
-    private static IField indexesField;
+    private static IField collectionField = mock(IField.class);
+    private static IField indexesField = mock(IField.class);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -45,66 +48,96 @@ public class PSQLCreateCollectionTaskTest {
 
         IKey fieldKey = mock(IKey.class);
 
-        collectionField = mock(IField.class);
-        indexesField = mock(IField.class);
-
-        Map<String, String> indexes = new HashMap<>();
-        indexes.put("meta.tags", "tags");
-        ICollectionName collectionName = mock(ICollectionName.class);
-
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
-
         when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
-        when(collectionName.toString()).thenReturn("testCollection");
-        when(collectionField.in(message)).thenReturn(collectionName);
-        when(indexesField.in(message)).thenReturn(indexes);
         when(connection.getId()).thenReturn("testConnectionId");
         when(IOC.resolve(eq(fieldKey), eq("collection"))).thenReturn(collectionField);
         when(IOC.resolve(eq(fieldKey), eq("indexes"))).thenReturn(indexesField);
     }
 
     @Test
-    public void should_PrepareQuery() throws Exception {
-        task.setConnection(connection);
-        task.prepare(message);
+    public void should_PrepareCreateCollectionTask() throws Exception {
+        reset(collectionField, indexesField, connection);
+
+        IDatabaseTask createCollectionTask = PSQLCreateCollectionTask.create();
+        ICollectionName collectionName = mock(ICollectionName.class);
+        Map<String, String> indexes = new HashMap<>();
+        indexes.put("meta.tags", "tags");
+
+        when(indexesField.in(message)).thenReturn(indexes);
+        when(collectionName.toString()).thenReturn("testCollection");
+        when(collectionField.in(message)).thenReturn(collectionName);
+
+        createCollectionTask.setConnection(connection);
+        createCollectionTask.prepare(message);
 
         verify(collectionField, times(1)).in(message);
         verify(indexesField, times(1)).in(message);
         verify(connection).compileQuery(any());
     }
 
-    @Test(expected = TaskPrepareException.class)
-    public void should_ThrowsException_WithReason_InvalidMessage() throws Exception {
-        when(collectionField.in(message)).thenReturn(null);
-        when(indexesField.in(message)).thenReturn(null);
-        task.setConnection(connection);
-        task.prepare(message);
-    }
-
     @Test
-    public void should_ExecuteQuery() throws Exception {
-        field(PSQLCreateCollectionTask.class, "query").set(task, compiledQuery);
-        field(PSQLCreateCollectionTask.class, "message").set(task, message);
-        field(PSQLCreateCollectionTask.class, "executable").set(task, true);
-        task.execute();
+    public void should_ExecuteCreateCollectionTask() throws Exception {
+        IDatabaseTask createCollectionTask = PSQLCreateCollectionTask.create();
+
+        field(PSQLCreateCollectionTask.class, "query").set(createCollectionTask, compiledQuery);
+        field(PSQLCreateCollectionTask.class, "message").set(createCollectionTask, message);
+        field(PSQLCreateCollectionTask.class, "executable").set(createCollectionTask, true);
+
+        createCollectionTask.execute();
 
         verify(compiledQuery).execute();
+        Field[] fields = fields(GeneralDatabaseTask.class);
+        assertEquals(TestUtils.getValue(fields, createCollectionTask, "executable"), false);
     }
+
+    @Test()
+    public void should_ThrowsException_WithReason_InvalidMessage() throws Exception {
+        IDatabaseTask createCollectionTask = PSQLCreateCollectionTask.create();
+
+        when(collectionField.in(message)).thenReturn(null);
+        when(indexesField.in(message)).thenReturn(null);
+
+        try {
+            createCollectionTask.setConnection(connection);
+            createCollectionTask.prepare(message);
+        } catch (TaskPrepareException e) {
+            assertEquals(e.getMessage(), "Invalid query message!");
+            return;
+        }
+
+        throw new Exception("Test failed: exception didn't invoked!");
+    }
+
+    @Test()
+    public void should_ThrowsException_WithReason_Of_TaskDidNotPreparedBeforeExecute() throws Exception {
+        try {
+            IDatabaseTask createCollectionTask = PSQLDeleteByIdTask.create();
+            createCollectionTask.setConnection(connection);
+            createCollectionTask.execute();
+        } catch (TaskExecutionException e) {
+            assertEquals(e.getMessage(), "Prepare task before execution!");
+            return;
+        }
+
+        throw new Exception("Test failed: exception didn't invoked!");
+    }
+
 
     @Test
     public void should_SetConnection() throws Exception {
+        IDatabaseTask createCollectionTask = PSQLCreateCollectionTask.create();
+
         when(connection.getId()).thenReturn("testConnectionId");
-        IStorageConnection storageConnectionBefore = (IStorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
-        task.setConnection(connection);
-        IStorageConnection storageConnectionAfter = (IStorageConnection) MemberModifier.field(PSQLCreateCollectionTask.class, "connection").get(task);
+
+        IStorageConnection storageConnectionBefore =
+                (IStorageConnection) field(PSQLCreateCollectionTask.class, "connection").get(createCollectionTask);
+        createCollectionTask.setConnection(connection);
+        IStorageConnection storageConnectionAfter =
+                (IStorageConnection) field(PSQLCreateCollectionTask.class, "connection").get(createCollectionTask);
 
         assertNull(storageConnectionBefore);
         assertNotNull(storageConnectionAfter);
         assertEquals(connection, storageConnectionAfter);
-    }
-
-    @After
-    public void resetMocks() throws Exception {
-        reset(compiledQuery, message, collectionField, indexesField, connection);
     }
 }

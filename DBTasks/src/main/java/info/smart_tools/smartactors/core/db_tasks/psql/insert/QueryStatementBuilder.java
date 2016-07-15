@@ -12,9 +12,10 @@ import java.io.IOException;
  */
 class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
+    private StringBuilder queryBuilder;
 
-    private static final String[] TEMPLATE_PARTS = { "INSERT ",
-            "AS tab SET document = docs.document FROM VALUES(?::jsonb) RETURNING id;" };
+    private static final String[] TEMPLATE_PARTS = { "INSERT INTO ",
+            "(document) VALUES(?::jsonb) RETURNING id;" };
 
     private static final int TEMPLATE_SIZE = TEMPLATE_PARTS[0].length() + TEMPLATE_PARTS[1].length();
 
@@ -34,6 +35,12 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
      */
     QueryStatementBuilder withCollection(@Nonnull final String collectionName) {
         collection = collectionName;
+        queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
+        queryBuilder
+                .append(TEMPLATE_PARTS[0])
+                .append(collection)
+                .append(TEMPLATE_PARTS[1]);
+
         return this;
     }
 
@@ -44,15 +51,9 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
      */
     public QueryStatement build() throws QueryBuildException {
         try {
-            requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
-
+            requiresNonnull(collection, "The collection should not be a null or empty, " +
+                    "should try invoke 'withCollection'.");
             QueryStatement preparedQuery = new QueryStatement();
-            StringBuilder queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
-
-            queryBuilder
-                    .append(TEMPLATE_PARTS[0])
-                    .append(collection)
-                    .append(TEMPLATE_PARTS[1]);
             preparedQuery.getBodyWriter().write(queryBuilder.toString());
 
             return preparedQuery;

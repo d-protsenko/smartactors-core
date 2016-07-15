@@ -2,12 +2,15 @@ package info.smart_tools.smartactors.core.db_tasks.commons.executors;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
+import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -15,7 +18,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,15 +70,16 @@ public final class DBSearchQueryExecutor implements IDBQueryExecutor {
     public void execute(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws TaskExecutionException {
         try {
+            ICollectionName collectionName = DBQueryFields.COLLECTION.in(message);
             ResultSet resultSet = query.executeQuery();
-            List<IObject> resultObjects = new LinkedList<>();
+            List<IObject> resultObjects = new ArrayList<>();
             while (resultSet.next()) {
                 String jsonValue = resultSet.getString("document");
                 IObject object;
                 try {
                     object = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), jsonValue);
-                    IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "id");
-                    object.setValue(idFN, resultSet.getLong("id"));
+                    IField idFN = IDContainer.getIdFieldFor(collectionName.toString());
+                    idFN.out(object, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set document's id field.", e);
                 } catch (ResolutionException e) {
@@ -92,6 +96,8 @@ public final class DBSearchQueryExecutor implements IDBQueryExecutor {
             throw new TaskExecutionException("'Search query' execution has been failed: " + e.getMessage(), e);
         } catch (InvalidArgumentException | ChangeValueException e) {
             throw new TaskExecutionException("Error writing search result: " + e.getMessage(), e);
+        } catch (ReadValueException e) {
+            throw new TaskExecutionException("Error reading collection name from message: " + e.getMessage(), e);
         }
     }
 }

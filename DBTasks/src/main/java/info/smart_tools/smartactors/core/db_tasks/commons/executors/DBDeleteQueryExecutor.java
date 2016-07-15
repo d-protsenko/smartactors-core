@@ -62,7 +62,8 @@ public final class DBDeleteQueryExecutor implements IDBQueryExecutor {
         try {
             int nDeleted = query.executeUpdate();
             if (nDeleted != 1) {
-                throw new TaskExecutionException("'Delete task' has been failed: wrong count of documents is deleted.");
+                throw new TaskExecutionException("'Delete query' execution has been failed: " +
+                        "wrong count of documents is deleted.");
             }
         } catch (QueryExecutionException e) {
             throw new TaskExecutionException("'Delete task' execution has been failed because:" + e.getMessage(), e);

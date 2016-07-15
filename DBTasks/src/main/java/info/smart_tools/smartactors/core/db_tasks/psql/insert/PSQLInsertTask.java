@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 
 import javax.annotation.Nonnull;
@@ -78,11 +79,12 @@ public class PSQLInsertTask extends CachedDatabaseTask {
     protected ICompiledQuery setParameters(@Nonnull final ICompiledQuery query, @Nonnull final IObject message)
             throws QueryBuildException {
         try {
-            String document = DBQueryFields.DOCUMENT.in(message);
-            query.setParameters(statement -> statement.setString(1, document));
+            IObject document = DBQueryFields.DOCUMENT.in(message);
+            String documentJSON = document.serialize();
+            query.setParameters(statement -> statement.setString(1, documentJSON));
 
             return query;
-        } catch (ReadValueException | InvalidArgumentException e) {
+        } catch (ReadValueException | InvalidArgumentException | SerializeException e) {
             throw new QueryBuildException(e.getMessage(), e);
         }
     }

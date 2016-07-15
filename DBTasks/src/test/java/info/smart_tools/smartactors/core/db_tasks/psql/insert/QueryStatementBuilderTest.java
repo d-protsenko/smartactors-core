@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.db_tasks.psql.delete;
+package info.smart_tools.smartactors.core.db_tasks.psql.insert;
 
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import org.junit.Before;
@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-@SuppressWarnings("unchecked")
 public class QueryStatementBuilderTest {
     private QueryStatementBuilder builder;
     private String collection;
@@ -24,7 +23,7 @@ public class QueryStatementBuilderTest {
 
     @Test
     public void buildQueryStatementTest() throws Exception {
-        String validationStr = "DELETE FROM " + collection + " WHERE id = ?;";
+        String validationStr = "INSERT INTO " + collection + "(document) VALUES(?::jsonb) RETURNING id;";
 
         QueryStatement queryStatement = builder.build();
 

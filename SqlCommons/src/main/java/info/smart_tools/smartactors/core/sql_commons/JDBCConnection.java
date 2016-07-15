@@ -19,14 +19,14 @@ public class JDBCConnection implements IStorageConnection {
 
     private String id;
 
-    public JDBCConnection(Connection connection, JDBCConnectionOptions options) {
+    public JDBCConnection(final Connection connection, final JDBCConnectionOptions options) {
         this.connection = connection;
         this.options = options;
         this.id = String.valueOf(UUID.randomUUID());
     }
 
     @Override
-    public ICompiledQuery compileQuery(IPreparedQuery preparedQuery) throws StorageException {
+    public ICompiledQuery compileQuery(final IPreparedQuery preparedQuery) throws StorageException {
         try {
             return new JDBCCompiledQuery(((QueryStatement) preparedQuery).compile(connection));
         } catch (SQLException e) {
@@ -34,6 +34,8 @@ public class JDBCConnection implements IStorageConnection {
                     String.format("Error compiling query statement \"%s\": ",
                             ((QueryStatement)preparedQuery).bodyWriter.toString()),
                     e);
+        } catch (NullPointerException e) {
+            throw new StorageException("Incoming prepared query is null!", e);
         }
     }
 

@@ -29,7 +29,7 @@ public class SQLOrderWriter {
             ORDER_DIRECTION_ORDER_BY_ITEM_FN =
                     IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "order");
         } catch (ResolutionException e) {
-            throw new RuntimeException("Static block initialize error: " + e.getMessage(), e);
+            throw new RuntimeException("SQL order writer's fields initialize error: " + e.getMessage(), e);
         }
     }
 
@@ -47,7 +47,7 @@ public class SQLOrderWriter {
      * Writes an ORDER clause into the query statement.
      *
      * @param queryStatement - a compiled statement of query.
-     * @param order -
+     * @param order - custom result order.
      *
      * @throws QueryBuildException when:
      *              1. Writing body of query error;
@@ -71,9 +71,12 @@ public class SQLOrderWriter {
                         PSQLFieldPath.fromString(orderByItem.getValue(ORDER_FIELD_ORDER_BY_ITEM_FN).toString());
 
                 sortDirection = ("DESC".equalsIgnoreCase(String.valueOf(sortDirection))) ? "DESC" : "ASC";
-                queryStatement
-                        .getBodyWriter()
-                        .write(String.format("(%s)%s,", fieldPath.getSQLRepresentation(), sortDirection));
+                StringBuilder orderPart = new StringBuilder("(")
+                        .append(fieldPath.getSQLRepresentation())
+                        .append(")")
+                        .append(sortDirection)
+                        .append(",");
+                queryStatement.getBodyWriter().write(orderPart.toString());
             }
 
             queryStatement.getBodyWriter().write("(1)");

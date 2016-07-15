@@ -55,7 +55,7 @@ public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
     ) throws QueryBuildException {
         try {
             ICollectionName collection = DBQueryFields.COLLECTION.in(message);
-            return createCompiledQuery(
+            return compileQuery(
                     connection,
                     getQueryStatementBuilder(
                             collection.toString(),

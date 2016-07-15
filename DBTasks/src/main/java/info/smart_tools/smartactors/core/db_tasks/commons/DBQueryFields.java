@@ -44,9 +44,7 @@ public final class DBQueryFields {
             ORDER_BY = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "orderBy");
             CRITERIA = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "criteria");
         } catch (ResolutionException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new RuntimeException("Strategy for resolution of db queries fields doesn't exists!", e);
         }
     }
-
-    private DBQueryFields() { }
 }

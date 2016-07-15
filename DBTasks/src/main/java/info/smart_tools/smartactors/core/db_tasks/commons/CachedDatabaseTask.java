@@ -45,8 +45,12 @@ public abstract class CachedDatabaseTask extends GeneralDatabaseTask {
             if (compiledQuery != null) {
                 return compiledQuery;
             }
-            compiledQuery = createCompiledQuery(connection, queryStatementBuilder);
-            CACHED_COMPILED_QUERIES.put(hash, compiledQuery);
+            compiledQuery = compileQuery(connection, queryStatementBuilder);
+            try {
+                CACHED_COMPILED_QUERIES.put(hash, compiledQuery);
+            } catch (NullPointerException e) {
+                throw new QueryBuildException("Query compile error", e);
+            }
 
             return compiledQuery;
         } catch (NullPointerException e) {

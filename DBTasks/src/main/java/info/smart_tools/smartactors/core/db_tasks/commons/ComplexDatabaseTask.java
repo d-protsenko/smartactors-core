@@ -105,7 +105,7 @@ public abstract class ComplexDatabaseTask extends GeneralDatabaseTask {
             CACHED_COMPILED_QUERIES.clear();
         }
         compiledQuery = ComplexCompiledQuery.create(
-                createCompiledQuery(connection, queryStatementBuilder),
+                compileQuery(connection, queryStatementBuilder),
                 declaredParams);
         CACHED_COMPILED_QUERIES.put(hash, compiledQuery);
 

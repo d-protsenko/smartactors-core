@@ -27,10 +27,10 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
     private final SQLPagingWriter pagingWriter;
 
 
-    private final static String FIRST_PART_TEMPLATE = "SELECT * FROM ";
-    private final static String SECOND_PART_TEMPLATE = " WHERE";
+    private static final String FIRST_PART_TEMPLATE = "SELECT * FROM ";
+    private static final String SECOND_PART_TEMPLATE = " WHERE";
 
-    private final static int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() +
+    private static final int TEMPLATE_SIZE = FIRST_PART_TEMPLATE.length() +
             SECOND_PART_TEMPLATE.length();
 
     private SearchQueryStatementBuilder(final QueryConditionResolver conditionResolver,
@@ -42,6 +42,13 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
         this.pagingWriter = pagingWriter;
     }
 
+    /**
+     *
+     * @param conditionResolver
+     * @param orderWriter
+     * @param pagingWriter
+     * @return
+     */
     public static SearchQueryStatementBuilder create(final QueryConditionResolver conditionResolver,
                                                      final SQLOrderWriter orderWriter,
                                                      final SQLPagingWriter pagingWriter
@@ -50,11 +57,9 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
     }
 
     /**
-     * Appends collection name to final query statement.
      *
-     * @param collection - a collection name for which to create query statement.
-     *
-     * @return a link to yourself {@link SearchByIdQueryStatementBuilder}.
+     * @param collection
+     * @return
      */
     SearchQueryStatementBuilder withCollection(@Nonnull final String collection) {
         this.collection = collection;

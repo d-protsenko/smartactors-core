@@ -66,18 +66,6 @@ public class SQLPagingWriter {
     public void write(@Nonnull final QueryStatement queryStatement) throws QueryBuildException {
         try {
             queryStatement.getBodyWriter().write("LIMIT(?)OFFSET(?)");
-//            setters.add((statement, index) -> {
-//                int pageNumber = paging[0] - 1;
-//                int pageSize = paging[1];
-//
-//                pageNumber = (pageNumber < 0) ? 0 : pageNumber;
-//                pageSize = (pageSize > MAX_PAGE_SIZE) ?
-//                        MAX_PAGE_SIZE : ((pageSize < MIN_PAGE_SIZE) ? MIN_PAGE_SIZE : pageSize);
-//
-//                statement.setInt(index++, pageSize);
-//                statement.setInt(index++, pageSize * pageNumber);
-//                return index;
-//            });
         } catch (IOException e) {
             throw new QueryBuildException("Error while writing PAGING clause of search query SQL.", e);
         }

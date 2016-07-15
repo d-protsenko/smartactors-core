@@ -1,21 +1,17 @@
 package info.smart_tools.smartactors.core.db_tasks.commons;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
-import info.smart_tools.smartactors.core.db_tasks.wrappers.upsert.IUpsertMessage;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -56,6 +52,8 @@ public abstract class DBUpsertTask implements IDatabaseTask {
             IObject document = DBQueryFields.DOCUMENT.in(upsertMessage);
             prepareDocuments(collection.toString(), document);
             prepareSubTask(currentTask, upsertMessage);
+        } catch (NullPointerException e) {
+            throw new TaskPrepareException("Invalid query message!", e);
         } catch (Throwable e) {
             throw new TaskPrepareException("Can't prepare upsert task because: " + e.getMessage(), e);
         }
@@ -69,7 +67,11 @@ public abstract class DBUpsertTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
         try {
             currentTask.execute();
+            currentTask = null;
+        } catch (NullPointerException e) {
+            throw new TaskExecutionException("Prepare task before execution!");
         } catch (Throwable e) {
+            currentTask = null;
             throw new TaskExecutionException("'Upsert task' execution has been failed because:" + e.getMessage(), e);
         }
     }
@@ -112,20 +114,10 @@ public abstract class DBUpsertTask implements IDatabaseTask {
         return this;
     }
 
-    private IUpsertMessage takeMessageWrapper(final IObject message) throws QueryBuildException {
-        try {
-            return IOC.resolve(
-                    Keys.getOrAdd(IUpsertMessage.class.toString()),
-                    message);
-        } catch (ResolutionException e) {
-            throw new QueryBuildException(e.getMessage(), e);
-        }
-    }
-
     private void prepareDocuments(final String collection, final IObject document)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         IField idF = IDContainer.getIdFieldFor(collection);
-        String id = idF.in(document);
+        Object id = idF.in(document);
         currentTask = subTasks.get(id == null);
     }
 

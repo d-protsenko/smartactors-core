@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.db_tasks.commons.executors;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryExecutionException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
+import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -68,13 +69,8 @@ public final class DBInsertQueryExecutor implements IDBQueryExecutor {
             throws TaskExecutionException {
         try {
             ResultSet resultSet = query.executeQuery();
-            if (resultSet == null || !resultSet.first()) {
-                throw new TaskExecutionException("Query execution has been failed: " +
-                        "Database returned not enough generated ids");
-            }
-
             addIdsInResult(resultSet, message);
-        } catch (QueryExecutionException | SQLException e) {
+        } catch (QueryExecutionException e) {
             throw new TaskExecutionException("'Insert query' execution has been failed: " + e.getMessage(), e);
         }
     }
@@ -87,16 +83,19 @@ public final class DBInsertQueryExecutor implements IDBQueryExecutor {
             int docCounter = 0;
             while (resultSet.next()) {
                 try {
-                    String collection = DBQueryFields.COLLECTION.in(message);
-                    setDocumentId(DBQueryFields.DOCUMENT.in(message), collection, resultSet.getLong("id"));
+                    ICollectionName collection = DBQueryFields.COLLECTION.in(message);
+                    setDocumentId(DBQueryFields.DOCUMENT.in(message), collection.toString(), resultSet.getLong("id"));
                 } catch (ChangeValueException e) {
                     throw new TaskExecutionException("Could not set new id on inserted document.");
                 } catch (ReadValueException | InvalidArgumentException e) {
                     throw new TaskExecutionException("Could not read document with index " + docCounter + ".");
+                } catch (NullPointerException e) {
+                    throw new TaskExecutionException("Invalid qeury message!");
                 }
+
                 docCounter++;
             }
-            if (docCounter >= 1) {
+            if (docCounter > 1) {
                 throw new TaskExecutionException("Database returned too much of generated ids.");
             }
             if (docCounter < 1) {
@@ -104,6 +103,8 @@ public final class DBInsertQueryExecutor implements IDBQueryExecutor {
             }
         } catch (SQLException | ResolutionException e) {
             throw new TaskExecutionException(e.getMessage(), e);
+        } catch (NullPointerException e) {
+            throw new TaskExecutionException("Database didn't returned a result set.");
         }
     }
 
