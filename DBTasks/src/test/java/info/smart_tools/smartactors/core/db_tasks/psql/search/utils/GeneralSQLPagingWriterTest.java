@@ -110,7 +110,7 @@ public class GeneralSQLPagingWriterTest {
         int pageNumber = pagingWriter.takePageNumber(message);
 
         verify(pageNumberField).in(message);
-        assertEquals(pageNumber, 12);
+        assertEquals(pageNumber, 11);
     }
 
     @Test

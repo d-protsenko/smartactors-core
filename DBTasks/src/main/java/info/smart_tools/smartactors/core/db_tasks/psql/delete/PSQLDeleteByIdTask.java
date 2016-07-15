@@ -22,7 +22,6 @@ import javax.annotation.Nonnull;
  * Task for deletion documents from database.
  */
 public class PSQLDeleteByIdTask extends CachedDatabaseTask {
-    /**  */
     private final QueryStatementBuilder queryStatementBuilder;
     private final IDBQueryExecutor taskExecutor;
 

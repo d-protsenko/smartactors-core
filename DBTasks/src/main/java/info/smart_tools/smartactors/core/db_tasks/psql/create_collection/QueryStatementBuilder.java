@@ -86,6 +86,7 @@ final class QueryStatementBuilder implements IQueryStatementBuilder {
      *
      * @throws QueryBuildException when a some critical error in during building query statement.
      */
+    @Override
     public QueryStatement build() throws QueryBuildException {
         requiresNonnull(collection, "The collection should not be a null or empty, should try invoke 'withCollection'.");
         requiresNonnull(indexes, "The list of indexes should not be a null, should try invoke 'withIndexes'.");

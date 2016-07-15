@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Database task for search documents by id
+ * Database task for search documents by id.
  */
 public class PSQLSearchByIdTask extends CachedDatabaseTask {
     /**  */

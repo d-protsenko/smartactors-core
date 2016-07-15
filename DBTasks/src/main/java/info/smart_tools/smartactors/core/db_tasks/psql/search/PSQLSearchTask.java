@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Task for searching documents in database.
+ * Database task for search documents by criteria.
  */
 public class PSQLSearchTask extends ComplexDatabaseTask {
     private final SQLPagingWriter pagingWriter;
@@ -38,12 +38,6 @@ public class PSQLSearchTask extends ComplexDatabaseTask {
                 SQLPagingWriter.create(minPageSize, maxPageSize));
     }
 
-    /**
-     *
-     * @param minPageSize
-     * @param maxPageSize
-     * @return
-     */
     public static PSQLSearchTask create(final int minPageSize, final int maxPageSize) {
        return new PSQLSearchTask(minPageSize, maxPageSize);
     }

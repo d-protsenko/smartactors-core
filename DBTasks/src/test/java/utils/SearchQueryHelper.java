@@ -1,23 +1,23 @@
 package utils;
 
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 import java.util.*;
 
+import static org.mockito.Matchers.eq;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class SearchQueryHelper {
 
-    public static final String A_PARAM_NAME = "aSingleParam";
-    public static final String B_SINGLE_PARAM = "bSingleParam";
-    public static final String C_ARRAY_PARAM = "cArrayParam";
-
-    public static final IFieldName A_FN = mock(IFieldName.class);
-    public static final IFieldName E_FN = mock(IFieldName.class);
-    public static final IFieldName B_FN = mock(IFieldName.class);
-    public static final IFieldName C_FN = mock(IFieldName.class);
+    public static final String A_SINGLE_PARAM_NAME = "aSingleParam"; //$lt
+    public static final String B_SINGLE_PARAM_NAME = "bSingleParam"; //$lte
+    public static final String C_ARRAY_PARAM_NAME = "cArrayParam"; //$in
+    public static final Boolean E_SINGLE_PARAM_VALUE = true; //$isNull
 
     public static final String expectedResult = "WHERE(" +
             "(((((document#>'{a}')<to_json(?)::jsonb))" +
@@ -36,11 +36,15 @@ public class SearchQueryHelper {
         IObject b = mock(IObject.class);
         IObject c = mock(IObject.class);
 
+        IFieldName aFN = mock(IFieldName.class);
+        IFieldName eFN = mock(IFieldName.class);
+        IFieldName bFN = mock(IFieldName.class);
+        IFieldName cFN = mock(IFieldName.class);
 
-        when(A_FN.toString()).thenReturn("a");
-        when(E_FN.toString()).thenReturn("e");
-        when(B_FN.toString()).thenReturn("b");
-        when(C_FN.toString()).thenReturn("c");
+        when(aFN.toString()).thenReturn("a");
+        when(eFN.toString()).thenReturn("e");
+        when(bFN.toString()).thenReturn("b");
+        when(cFN.toString()).thenReturn("c");
 
         IFieldName orFN = mock(IFieldName.class);
         IFieldName ltFN = mock(IFieldName.class);
@@ -60,31 +64,31 @@ public class SearchQueryHelper {
 
         Iterator fBIterator = mock(Iterator.class);
         when(fBIterator.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
-        when(fBIterator.next()).thenReturn(new MapEntry(A_FN, a)).thenReturn(new MapEntry(E_FN, e));
+        when(fBIterator.next()).thenReturn(new MapEntry(aFN, a)).thenReturn(new MapEntry(eFN, e));
         when(firstBlock.iterator()).thenReturn(fBIterator);
 
         Iterator sBIterator = mock(Iterator.class);
         when(sBIterator.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
-        when(sBIterator.next()).thenReturn(new MapEntry(B_FN, b)).thenReturn(new MapEntry(C_FN, c));
+        when(sBIterator.next()).thenReturn(new MapEntry(bFN, b)).thenReturn(new MapEntry(cFN, c));
         when(secondBlock.iterator()).thenReturn(sBIterator);
 
         Iterator aIterator = mock(Iterator.class);
-        when(aIterator.next()).thenReturn(new MapEntry(ltFN, A_PARAM_NAME));
+        when(aIterator.next()).thenReturn(new MapEntry(ltFN, A_SINGLE_PARAM_NAME));
         when(aIterator.hasNext()).thenReturn(true).thenReturn(false);
         when(a.iterator()).thenReturn(aIterator);
 
         Iterator eIterator = mock(Iterator.class);
-        when(eIterator.next()).thenReturn(new MapEntry(nullFN, true));
+        when(eIterator.next()).thenReturn(new MapEntry(nullFN, E_SINGLE_PARAM_VALUE));
         when(eIterator.hasNext()).thenReturn(true).thenReturn(false);
         when(e.iterator()).thenReturn(eIterator);
 
         Iterator bIterator = mock(Iterator.class);
-        when(bIterator.next()).thenReturn(new MapEntry(lteFN, B_SINGLE_PARAM));
+        when(bIterator.next()).thenReturn(new MapEntry(lteFN, B_SINGLE_PARAM_NAME));
         when(bIterator.hasNext()).thenReturn(true).thenReturn(false);
         when(b.iterator()).thenReturn(bIterator);
 
         Iterator cIterator = mock(Iterator.class);
-        when(cIterator.next()).thenReturn(new MapEntry(inFN, Arrays.asList(C_ARRAY_PARAM, 3)));
+        when(cIterator.next()).thenReturn(new MapEntry(inFN, Arrays.asList(C_ARRAY_PARAM_NAME, 3)));
         when(cIterator.hasNext()).thenReturn(true).thenReturn(false);
         when(c.iterator()).thenReturn(cIterator);
 

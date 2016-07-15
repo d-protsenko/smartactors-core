@@ -13,9 +13,6 @@ import javax.annotation.Nonnull;
 import java.io.Writer;
 import java.util.List;
 
-/**
- *
- */
 final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder {
     private String collection;
     private Object criteria;
@@ -42,13 +39,6 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
         this.pagingWriter = pagingWriter;
     }
 
-    /**
-     *
-     * @param conditionResolver
-     * @param orderWriter
-     * @param pagingWriter
-     * @return
-     */
     public static SearchQueryStatementBuilder create(final QueryConditionResolver conditionResolver,
                                                      final SQLOrderWriter orderWriter,
                                                      final SQLPagingWriter pagingWriter
@@ -56,51 +46,28 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
         return new SearchQueryStatementBuilder(conditionResolver, orderWriter, pagingWriter);
     }
 
-    /**
-     *
-     * @param collection
-     * @return
-     */
     SearchQueryStatementBuilder withCollection(@Nonnull final String collection) {
         this.collection = collection;
         return this;
     }
 
-    /**
-     *
-     * @param criteria
-     * @return
-     */
     SearchQueryStatementBuilder withCriteria(final Object criteria) {
         this.criteria = criteria;
         return this;
     }
 
-    /**
-     *
-     * @param orderBy
-     * @return
-     */
     SearchQueryStatementBuilder withOrderBy(final List<IObject> orderBy) {
         this.orderBy = orderBy;
         return this;
     }
 
-    /**
-     *
-     * @param declaredParams
-     * @return
-     */
+    @Override
     public SearchQueryStatementBuilder withDeclaredParams(@Nonnull final List<IDeclaredParam> declaredParams) {
         this.declaredParams = declaredParams;
         return this;
     }
 
-    /**
-     *
-     * @return
-     * @throws QueryBuildException
-     */
+    @Override
     public QueryStatement build() throws QueryBuildException {
         try {
             QueryStatement queryStatement = new QueryStatement();

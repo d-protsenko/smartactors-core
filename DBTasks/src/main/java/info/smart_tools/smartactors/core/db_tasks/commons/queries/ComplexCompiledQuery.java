@@ -58,4 +58,14 @@ public final class ComplexCompiledQuery implements IComplexCompiledQuery {
     public List<IDeclaredParam> getDeclaredParams() {
         return declaredParameters;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ICompiledQuery && compiledQuery.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return compiledQuery.hashCode();
+    }
 }

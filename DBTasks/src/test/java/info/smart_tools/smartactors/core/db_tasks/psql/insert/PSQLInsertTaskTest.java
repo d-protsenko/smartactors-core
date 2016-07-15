@@ -59,6 +59,7 @@ public class PSQLInsertTaskTest {
         when(IOC.resolve(eq(fieldKey), eq("documentId"))).thenReturn(documentField);
         // Static block init.
         IField init = DBQueryFields.COLLECTION;
+        Thread.sleep(100);
     }
 
     @Test

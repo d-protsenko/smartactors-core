@@ -7,9 +7,6 @@ import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-/**
- *
- */
 class QueryStatementBuilder implements IQueryStatementBuilder {
     private String collection;
     private StringBuilder queryBuilder;
@@ -19,20 +16,12 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
 
     private static final int TEMPLATE_SIZE = TEMPLATE_PARTS[0].length() + TEMPLATE_PARTS[1].length();
 
-    /**
-     *
-     */
     protected QueryStatementBuilder() {}
 
     public static QueryStatementBuilder create() {
         return new QueryStatementBuilder();
     }
 
-    /**
-     *
-     * @param collectionName
-     * @return
-     */
     QueryStatementBuilder withCollection(@Nonnull final String collectionName) {
         collection = collectionName;
         queryBuilder = new StringBuilder(TEMPLATE_SIZE + collection.length());
@@ -44,11 +33,6 @@ class QueryStatementBuilder implements IQueryStatementBuilder {
         return this;
     }
 
-    /**
-     *
-     * @return
-     * @throws QueryBuildException
-     */
     public QueryStatement build() throws QueryBuildException {
         try {
             requiresNonnull(collection, "The collection should not be a null or empty, " +

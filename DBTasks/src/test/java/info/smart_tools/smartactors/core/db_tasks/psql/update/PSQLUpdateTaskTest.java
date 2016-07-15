@@ -28,7 +28,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.support.membermodification.MemberMatcher.field;
 import static org.powermock.api.support.membermodification.MemberMatcher.fields;
 
@@ -57,7 +59,7 @@ public class PSQLUpdateTaskTest {
         when(IOC.resolve(eq(fieldKey), eq("collection"))).thenReturn(collectionField);
         when(IOC.resolve(eq(fieldKey), eq("document"))).thenReturn(documentField);
         when(IOC.resolve(eq(fieldKey), eq("documentId"))).thenReturn(documentIdField);
-        when(IOC.resolve(eq(fieldKey), eq("testCollectionId"))).thenReturn(collectionIdField);
+
         // Static block init.
         IField init = DBQueryFields.COLLECTION;
     }
@@ -65,6 +67,13 @@ public class PSQLUpdateTaskTest {
     @Test
     public void should_PrepareUpdateTask() throws Exception {
         reset(collectionField, collectionIdField, documentField, connection);
+
+        mockStatic(IOC.class);
+        mockStatic(Keys.class);
+
+        IKey fieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
+        when(IOC.resolve(eq(fieldKey), eq("testCollectionId"))).thenReturn(collectionIdField);
 
         IDatabaseTask updateTask = PSQLUpdateTask.create();
         CollectionName collectionName = mock(CollectionName.class);

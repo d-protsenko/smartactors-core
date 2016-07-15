@@ -117,9 +117,10 @@ public class SearchQueryStatementBuilderTest {
         for (IDeclaredParam declaredParam : declaredParams) {
             assertTrue(parametersNames.contains(declaredParam.getName().toString()));
             IFieldName current = declaredParam.getName();
-            if (current.equals(SearchQueryHelper.A_FN) || current.equals(SearchQueryHelper.B_FN)) {
+            if (current.toString().equals(SearchQueryHelper.A_SINGLE_PARAM_NAME) ||
+                    current.equals(SearchQueryHelper.B_SINGLE_PARAM_NAME)) {
                 assertEquals(declaredParam.getCount(), 1);
-            } else if (current.equals(SearchQueryHelper.C_FN)) {
+            } else if (current.equals(SearchQueryHelper.C_ARRAY_PARAM_NAME)) {
                 assertEquals(declaredParam.getCount(), 3);
             }
         }

@@ -21,7 +21,6 @@ import java.util.Map;
  * Task for create collection with predefined indexes in psql database.
  */
 public class PSQLCreateCollectionTask extends GeneralDatabaseTask {
-    /**  */
     private final QueryStatementBuilder queryStatementBuilder;
     private final IDBQueryExecutor taskExecutor;
 

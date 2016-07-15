@@ -53,6 +53,7 @@ public class SQLPagingWriter {
      */
     public int takePageNumber(final IObject message) throws ReadValueException, InvalidArgumentException {
         int pageNumber = DBQueryFields.PAGE_NUMBER.in(message);
+        pageNumber -= 1;
         return pageNumber < 0 ? 0 : pageNumber;
     }
 
