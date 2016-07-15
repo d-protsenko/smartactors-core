@@ -45,13 +45,11 @@ public class CreateSessionPlugin implements IPlugin {
                     IOC.register(createSessionActorKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 try {
-                                    IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                                    Field<String> collectionNameF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "collectionName");
-                                    collectionNameF.in(iObject, (String) args[0]);
-                                    Field<IPool> connectionPoolF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "connectionPool");
-                                    connectionPoolF.in(iObject, connectionPool);
-
-                                    CreateSessionConfig param = IOC.resolve(Keys.getOrAdd(CreateSessionConfig.class.toString()), iObject);
+                                    CreateSessionConfig param = IOC.resolve(
+                                            Keys.getOrAdd(CreateSessionConfig.class.toString()),
+                                            args[0],
+                                            connectionPool
+                                    );
                                     return new CreateSessionActor(param);
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
