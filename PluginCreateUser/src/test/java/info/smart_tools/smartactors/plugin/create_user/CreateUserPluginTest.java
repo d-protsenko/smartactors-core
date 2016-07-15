@@ -2,12 +2,15 @@ package info.smart_tools.smartactors.plugin.create_user;
 
 import info.smart_tools.smartactors.actors.create_user.CreateUserActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -37,15 +40,28 @@ public class CreateUserPluginTest {
 
     @Test
     public void Should_CorrectLoadPlugin() throws Exception {
-        BootstrapItem item = mock(BootstrapItem.class);
-        PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(item);
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(bootstrapItem);
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         CreateUserActor actor = mock(CreateUserActor.class);
-        PowerMockito.whenNew(CreateUserActor.class).withArguments(any()).thenReturn(actor);
+        PowerMockito.whenNew(CreateUserActor.class).withAnyArguments().thenReturn(actor);
 
         plugin.load();
 
-        verify(bootstrap).add(eq(item));
+        PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateCreateUserActorPlugin");
+
+        ArgumentCaptor<IPoorAction>actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(bootstrapItem).process(actionArgumentCaptor.capture());
+
+        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        actionArgumentCaptor.getValue().execute();
+
+        PowerMockito.verifyStatic();
+        IOC.register(eq(createUserKey), createNewInstanceStrategyArgumentCaptor.capture());
+
+        verify(bootstrap).add(eq(bootstrapItem));
     }
 
 }
