@@ -33,22 +33,22 @@ public class CheckValidityAsyncOperationPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey operationKey = Keys.getOrAdd(CheckValidityAsyncOperationActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("CreateCheckValidityAsyncOperationActor");
 
             item.process(() -> {
                 try {
+                    IKey operationKey = Keys.getOrAdd(CheckValidityAsyncOperationActor.class.toString());
                     IOC.register(operationKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 return new CheckValidityAsyncOperationActor((IObject) args[0]);
                         }
                     ));
-                } catch (RegistrationException | InvalidArgumentException e) {
+                } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
                     throw new RuntimeException(e);
                 }
             });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load CheckValidityAsyncOperation plugin", e);
         }
     }
