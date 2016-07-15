@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -226,7 +227,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                                 methodPrefix +
                                 "_" +
                                 m.getName() +
-                                ".in(this.env);"
+                                ".in(this.env, "+ m.getReturnType().getSimpleName() + ".class);"
                         )
                         .addStringToBody("} catch(Throwable e) {")
                         .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")

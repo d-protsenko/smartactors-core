@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.wrapper_generator;
+package info.smart_tools.smartactors.core.field;
 
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  * Implementation of {@link IField}
@@ -29,21 +31,38 @@ public class Field implements IField {
     }
 
     @Override
-    public <T> T in(final IObject wdsObject)
-            throws ReadValueException, InvalidArgumentException, ClassCastException {
-        if (null == wdsObject) {
+    public <T> T in(final IObject obj)
+            throws ReadValueException, InvalidArgumentException {
+        if (null == obj) {
             throw new InvalidArgumentException("WDSObject should not be null.");
         }
 
-        return (T) wdsObject.getValue(fieldName);
+        return (T) obj.getValue(fieldName);
     }
 
     @Override
-    public <T> void out(final IObject wdsObject, final T in)
-            throws ChangeValueException, InvalidArgumentException {
-        if (null == wdsObject) {
+    public <T> T in(final IObject obj, final Class type)
+            throws ReadValueException, InvalidArgumentException {
+        if (null == obj || null == type) {
             throw new InvalidArgumentException("WDSObject should not be null.");
         }
-        wdsObject.setValue(fieldName, in);
+        Object value = obj.getValue(fieldName);
+        if (type == value.getClass()) {
+            return (T) value;
+        }
+        try {
+            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName() + value.getClass().getCanonicalName()), value);
+        } catch (Throwable e) {
+            throw new InvalidArgumentException("Could not cast value to required type.");
+        }
+    }
+
+    @Override
+    public <T> void out(final IObject obj, final T in)
+            throws ChangeValueException, InvalidArgumentException {
+        if (null == obj) {
+            throw new InvalidArgumentException("WDSObject should not be null.");
+        }
+        obj.setValue(fieldName, in);
     }
 }
