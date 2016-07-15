@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.sql_commons;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 import java.io.IOException;
@@ -29,9 +29,13 @@ public class Conditions {
             final Object queryParameter,
             final List<IDeclaredParam> parametersOrder
     ) throws QueryBuildException {
-        Writer writer = query.getBodyWriter();
-
         try {
+            if (queryParameter == null) {
+                writeDefaultEmptyCondition(query);
+                return;
+            }
+
+            Writer writer = query.getBodyWriter();
             if (IObject.class.isAssignableFrom(queryParameter.getClass())) {
                 Iterator<Map.Entry<IFieldName, Object>> paramIterator = ((IObject)queryParameter).iterator();
 

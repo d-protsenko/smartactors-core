@@ -4,7 +4,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.TestUtils;
+import utils.TestUtils;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteByIdTask;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -56,6 +57,8 @@ public class PSQLInsertTaskTest {
         when(IOC.resolve(eq(fieldKey), eq("collection"))).thenReturn(collectionField);
         when(IOC.resolve(eq(fieldKey), eq("document"))).thenReturn(documentField);
         when(IOC.resolve(eq(fieldKey), eq("documentId"))).thenReturn(documentField);
+        // Static block init.
+        IField init = DBQueryFields.COLLECTION;
     }
 
     @Test

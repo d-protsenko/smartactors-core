@@ -4,7 +4,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.TestUtils;
+import utils.TestUtils;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -48,6 +49,8 @@ public class PSQLDeleteByIdTaskTest {
         when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
         when(IOC.resolve(eq(fieldKey), eq("collection"))).thenReturn(collectionField);
         when(IOC.resolve(eq(fieldKey), eq("documentId"))).thenReturn(documentIdField);
+        // Static block init.
+        IField init = DBQueryFields.COLLECTION;
     }
 
     @Test

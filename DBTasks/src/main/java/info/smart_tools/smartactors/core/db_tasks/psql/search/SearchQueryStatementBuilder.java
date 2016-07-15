@@ -71,7 +71,7 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
      * @param criteria
      * @return
      */
-    SearchQueryStatementBuilder withCriteria(@Nonnull final Object criteria) {
+    SearchQueryStatementBuilder withCriteria(final Object criteria) {
         this.criteria = criteria;
         return this;
     }
@@ -81,7 +81,7 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
      * @param orderBy
      * @return
      */
-    SearchQueryStatementBuilder withOrderBy(@Nonnull final List<IObject> orderBy) {
+    SearchQueryStatementBuilder withOrderBy(final List<IObject> orderBy) {
         this.orderBy = orderBy;
         return this;
     }
@@ -116,6 +116,7 @@ final class SearchQueryStatementBuilder implements IComplexQueryStatementBuilder
                     .write(queryStatement, conditionResolver, null, criteria, declaredParams);
             orderWriter.write(queryStatement, orderBy);
             pagingWriter.write(queryStatement);
+            writer.write(";");
 
             return queryStatement;
         } catch (QueryBuildException e) {

@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -19,15 +19,15 @@ import java.util.List;
  * General writer an ORDER clause for psql db.
  */
 public class SQLOrderWriter {
-    private static final IFieldName ORDER_FIELD_ORDER_BY_ITEM_FN;
-    private static final IFieldName ORDER_DIRECTION_ORDER_BY_ITEM_FN;
+    private static final IField ORDER_FIELD_ORDER_BY_ITEM_FN;
+    private static final IField ORDER_DIRECTION_ORDER_BY_ITEM_FN;
 
     static {
         try {
             ORDER_FIELD_ORDER_BY_ITEM_FN =
-                    IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "field");
+                    IOC.resolve(Keys.getOrAdd(IField.class.toString()), "field");
             ORDER_DIRECTION_ORDER_BY_ITEM_FN =
-                    IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "order");
+                    IOC.resolve(Keys.getOrAdd(IField.class.toString()), "order");
         } catch (ResolutionException e) {
             throw new RuntimeException("SQL order writer's fields initialize error: " + e.getMessage(), e);
         }
@@ -56,9 +56,9 @@ public class SQLOrderWriter {
      */
     public void write(
             @Nonnull final QueryStatement queryStatement,
-            @Nonnull final List<IObject> order
+            final List<IObject> order
     ) throws QueryBuildException {
-        if (order.size() == 0) {
+        if (order == null || order.size() == 0) {
             return;
         }
 
@@ -66,9 +66,9 @@ public class SQLOrderWriter {
             queryStatement.getBodyWriter().write("ORDER BY");
 
             for (IObject orderByItem : order) {
-                String sortDirection = orderByItem.getValue(ORDER_DIRECTION_ORDER_BY_ITEM_FN).toString();
+                String sortDirection = ORDER_DIRECTION_ORDER_BY_ITEM_FN.in(orderByItem);
                 FieldPath fieldPath =
-                        PSQLFieldPath.fromString(orderByItem.getValue(ORDER_FIELD_ORDER_BY_ITEM_FN).toString());
+                        PSQLFieldPath.fromString(ORDER_FIELD_ORDER_BY_ITEM_FN.in(orderByItem));
 
                 sortDirection = ("DESC".equalsIgnoreCase(String.valueOf(sortDirection))) ? "DESC" : "ASC";
                 StringBuilder orderPart = new StringBuilder("(")

@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.db_tasks.commons;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.TestUtils;
+import utils.TestUtils;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -62,6 +62,9 @@ public class PSQLUpsertTaskTest {
         when(IOC.resolve(eq(fieldKey), eq("document"))).thenReturn(documentField);
         when(IOC.resolve(eq(fieldKey), eq("documentId"))).thenReturn(documentIdField);
         when(IOC.resolve(eq(fieldKey), eq("testCollectionId"))).thenReturn(collectionIdField);
+
+        // Static block init.
+        IField init = DBQueryFields.COLLECTION;
     }
 
     @Test

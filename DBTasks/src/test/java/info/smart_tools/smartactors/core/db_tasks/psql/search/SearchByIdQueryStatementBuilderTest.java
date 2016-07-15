@@ -1,11 +1,8 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -15,22 +12,11 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.eq;
-import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
 @SuppressWarnings("unchecked")
 public class SearchByIdQueryStatementBuilderTest {
-
-    @Before
-    public void setUp() throws Exception {
-        mockStatic(IOC.class);
-        QueryStatement queryStatement = new QueryStatement();
-        IKey queryStatementKey = mock(IKey.class);
-        when(Keys.getOrAdd(QueryStatement.class.toString())).thenReturn(queryStatementKey);
-        when(IOC.resolve(eq(queryStatementKey))).thenReturn(queryStatement);
-    }
 
     @Test
     public void buildQueryStatementTest() throws Exception {

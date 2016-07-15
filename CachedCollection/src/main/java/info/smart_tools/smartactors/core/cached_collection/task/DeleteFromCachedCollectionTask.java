@@ -45,6 +45,8 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
      *                  "collectionName" : "COLLECTION_NAME"
      *              }
      *              </pre>
+     * The same query would be passed to the nested task's prepare method,
+     * but isActive field in document would be set to false.
      * @throws TaskPrepareException if error occurs in process of query preparing
      */
     @Override

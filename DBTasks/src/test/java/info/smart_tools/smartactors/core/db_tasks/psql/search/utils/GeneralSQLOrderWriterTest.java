@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search.utils;
 
-import info.smart_tools.smartactors.core.db_tasks.wrappers.search.ISearchMessage;
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -28,16 +27,18 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest({ IOC.class, Keys.class })
 @SuppressWarnings("unchecked")
 public class GeneralSQLOrderWriterTest {
-    private SQLOrderWriter orderWriter;
+    private static SQLOrderWriter orderWriter;
+    private static IField field;
+    private static IField orderField;
 
-    @Before
-    public void setUp() throws ResolutionException {
+    @BeforeClass
+    public static void setUp() throws ResolutionException {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
         IKey fieldKey = mock(IKey.class);
-        IField field = mock(IField.class);
-        IField orderField = mock(IField.class);
+        field = mock(IField.class);
+        orderField = mock(IField.class);
 
         when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
         when(IOC.resolve(eq(fieldKey), eq("field"))).thenReturn(field);
@@ -47,20 +48,59 @@ public class GeneralSQLOrderWriterTest {
     }
 
     @Test
-    public void should_WritesDefaultORDERIntoQueryStatement() throws Exception {
-        ISearchMessage ISearchMessage = mock(ISearchMessage.class);
-        IObject orderItem = mock(IObject.class);
+    public void should_Write_DESC_ORDER_IntoQueryStatement() throws Exception {
+        reset(orderField, field);
 
+        QueryStatement queryStatement = new QueryStatement();
+        IObject orderItem = mock(IObject.class);
         List<IObject> orderByItems = new ArrayList<>(1);
         orderByItems.add(orderItem);
 
-        when(ISearchMessage.getOrderBy()).thenReturn(orderByItems);
-        when(orderItem.getValue(anyObject())).thenReturn("testOrderField").thenReturn("testOrderDirection");
+        when(field.in(orderItem)).thenReturn("testOrderField");
+        when(orderField.in(orderItem)).thenReturn("DESC");
 
-        QueryStatement queryStatement = new QueryStatement();
         orderWriter.write(queryStatement, orderByItems);
 
-        assertEquals("ORDER BY(document#>'{testOrderDirection}')ASC,(1)", queryStatement.getBodyWriter().toString());
-        verify(orderItem, times(2)).getValue(anyObject());
+        assertEquals("ORDER BY(document#>'{testOrderField}')DESC,(1)", queryStatement.getBodyWriter().toString());
+        verify(orderField).in(orderItem);
+        verify(field).in(orderItem);
+    }
+
+    @Test
+    public void should_WriteDefaultORDERIntoQueryStatement() throws Exception {
+        reset(orderField, field);
+
+        QueryStatement queryStatement = new QueryStatement();
+        IObject orderItem = mock(IObject.class);
+        List<IObject> orderByItems = new ArrayList<>(1);
+        orderByItems.add(orderItem);
+
+        when(field.in(orderItem)).thenReturn("testOrderField");
+        when(orderField.in(orderItem)).thenReturn(null);
+
+        orderWriter.write(queryStatement, orderByItems);
+
+        assertEquals("ORDER BY(document#>'{testOrderField}')ASC,(1)", queryStatement.getBodyWriter().toString());
+        verify(orderField).in(orderItem);
+        verify(field).in(orderItem);
+    }
+
+    @Test
+    public void should_NotWriteOrder_BecauseOrderIsNull() throws QueryBuildException {
+        QueryStatement queryStatement = new QueryStatement();
+
+        orderWriter.write(queryStatement, null);
+
+        assertEquals(queryStatement.getBodyWriter().toString(), "");
+    }
+
+    @Test
+    public void should_NotWriteOrder_BecauseOrderIsEmpty() throws QueryBuildException {
+        QueryStatement queryStatement = new QueryStatement();
+        List<IObject> orderByItems = new ArrayList<>(1);
+
+        orderWriter.write(queryStatement, orderByItems);
+
+        assertEquals(queryStatement.getBodyWriter().toString(), "");
     }
 }

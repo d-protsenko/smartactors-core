@@ -4,7 +4,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
-import info.smart_tools.smartactors.core.db_tasks.TestUtils;
+import utils.TestUtils;
+import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.GeneralDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteByIdTask;
@@ -53,6 +54,8 @@ public class PSQLCreateCollectionTaskTest {
         when(connection.getId()).thenReturn("testConnectionId");
         when(IOC.resolve(eq(fieldKey), eq("collection"))).thenReturn(collectionField);
         when(IOC.resolve(eq(fieldKey), eq("indexes"))).thenReturn(indexesField);
+        // Static block init.
+        IField init = DBQueryFields.COLLECTION;
     }
 
     @Test
