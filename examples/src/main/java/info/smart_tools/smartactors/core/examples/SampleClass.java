@@ -3,11 +3,15 @@ package info.smart_tools.smartactors.core.examples;
 /**
  *  Just a sample class with internal ID provided in constructor and correct equals() and hashCode() methods.
  */
-public class MyClass {
+public class SampleClass {
 
     private final String id;
 
-    public MyClass(final String id) {
+    /**
+     * Creates the class with specified id.
+     * @param id id for this instance of the class
+     */
+    public SampleClass(final String id) {
         this.id = id;
     }
 
@@ -19,7 +23,7 @@ public class MyClass {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MyClass that = (MyClass) o;
+        SampleClass that = (SampleClass) o;
 
         return id != null ? id.equals(that.id) : that.id == null;
     }
