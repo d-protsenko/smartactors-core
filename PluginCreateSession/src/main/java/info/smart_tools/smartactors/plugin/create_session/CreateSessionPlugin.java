@@ -37,7 +37,7 @@ public class CreateSessionPlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IKey createSessionActorKey = Keys.getOrAdd(CreateSessionActor.class.toString());
-            IBootstrapItem<String> item = new BootstrapItem("CreateSessionActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("CreateCreateSessionActorPlugin");
 
             item.process(() -> {
                 try {
