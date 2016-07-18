@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -54,13 +55,17 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                                     throw new RuntimeException("Can't resolve connection pool: connectionOptions is null");
                                 }
 
-                                return new Pool(connectionOptions.getMaxConnections(), () -> {
-                                    try {
-                                        return new PostgresConnection(connectionOptions);
-                                    } catch (StorageException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
+                                try {
+                                    return new Pool(connectionOptions.getMaxConnections(), () -> {
+                                        try {
+                                            return new PostgresConnection(connectionOptions);
+                                        } catch (StorageException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                } catch (ReadValueException e) {
+                                    throw new RuntimeException("Can't create PostgresConnectionPool", e);
+                                }
 
                             }));
                 } catch (RegistrationException | InvalidArgumentException e) {
