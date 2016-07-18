@@ -1,75 +1,67 @@
 package info.smart_tools.smartactors.core.http_response_sender;
 
 
-import info.smart_tools.smartactors.core.CompletableNettyFuture;
 import info.smart_tools.smartactors.core.IMessageMapper;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.HttpRequest;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Exchange object for received HTTP request.
  * It sends a response to the request and closes the connection.
  */
 public class HttpResponseSender implements IResponseSender {
-    private final IMessageMapper<byte[]> messageMapper;
-    private final String contentType;
-
-    public HttpResponseSender(
-            final String contentType,
-            final IMessageMapper<byte[]> messageMapper)
-            throws ResolutionException {
-        this.messageMapper = messageMapper;
-        this.contentType = contentType;
+    /**
+     * Constructor for http response sender
+     */
+    public HttpResponseSender() {
     }
 
     @Override
-    public CompletableFuture<Void> write(final IObject responseObject, final HttpRequest request,
-                                         final ChannelHandlerContext ctx) {
-        ByteBuf serializedMessage = Unpooled.wrappedBuffer(messageMapper.serialize(responseObject));
+    public void send(final IResponse responseObject,
+                     final ChannelHandlerContext ctx) {
         FullHttpResponse response =
-                new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, getResponseStatus(responseObject), serializedMessage);
-        response.headers().set(HttpHeaders.Names.CONTENT_TYPE, contentType);
-        //TODO:: Make OPTIONS request handler, which will be set this header
-        response.headers().set(HttpHeaders.Names.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, response.content().readableBytes());
-        response.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-
-        ChannelFuture writeFuture = ctx.writeAndFlush(response);
-
-        return CompletableNettyFuture.from(writeFuture);
+                new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, getResponseStatus(responseObject),
+                        Unpooled.wrappedBuffer(responseObject.getBody().getBytes()));
+        setHeaders(responseObject, response);
+        setCookies(responseObject, response);
+        ctx.writeAndFlush(response);
     }
 
-    private HttpResponseStatus getResponseStatus(final IObject responseMessage) {
-        try {
-            IFieldName exceptionFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "exception");
-            Exception ex = (Exception) responseMessage.getValue(exceptionFieldName);
-            if (ex != null) {
-                if (ex instanceof RuntimeException || ex.getCause() != null && ex.getCause() instanceof RuntimeException) {
-                    return HttpResponseStatus.INTERNAL_SERVER_ERROR;
-                }
-            }
-        } catch (ReadValueException ignored) {
-        } catch (ResolutionException e) {
-            e.printStackTrace();
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
+    private HttpResponseStatus getResponseStatus(final IResponse response) {
+        if (null != response.getEnvironment("statusCode")) {
+            return HttpResponseStatus.valueOf((Integer) response.getEnvironment("statusCode"));
         }
-
         return HttpResponseStatus.OK;
+    }
+
+    private void setHeaders(final IResponse responseObject, FullHttpResponse response) {
+        Map<String, Object> responseHeaders = (Map<String, Object>) responseObject.getEnvironment("headers");
+        if (null != responseHeaders) {
+            Set<String> keysSet = responseHeaders.keySet();
+            for (String key : keysSet) {
+                response.headers().set(key, responseHeaders.get(key));
+            }
+        }
+    }
+
+    private void setCookies(final IResponse responseObject, FullHttpResponse response) {
+        Map<String, String> cookies = (Map<String, String>) responseObject.getEnvironment("cookies");
+
+        if (null != cookies) {
+            Set<String> keysSet = cookies.keySet();
+            for (String key : keysSet) {
+                Cookie cookie = new DefaultCookie(
+                        key, cookies.get(key));
+                response.headers().set(HttpHeaders.Names.SET_COOKIE,
+                        ServerCookieEncoder.encode(cookie));
+            }
+        }
     }
 }

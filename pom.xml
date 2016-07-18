@@ -143,6 +143,10 @@
         <module>MessageToBytesMapper</module>
         <module>IResponseSender</module>
         <module>HttpResponseSender</module>
+        <module>ResponseSenderActor</module>
+        <module>IResponse</module>
+        <module>IResponseContentStrategy</module>
+        <module>IResponseEnvironmentStrategy</module>
     </modules>
 
     <build>

@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.http_server.HttpServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import io.netty.handler.codec.http.FullHttpRequest;
 
