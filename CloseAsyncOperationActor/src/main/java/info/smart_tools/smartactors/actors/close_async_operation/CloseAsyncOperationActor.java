@@ -37,14 +37,14 @@ public class CloseAsyncOperationActor {
      * @param message the message
      * @throws TaskExecutionException
      */
-    void completeAsyncOp(final CloseAsyncOpMessage message) throws TaskExecutionException {
+    void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {
             message.getOperationTokens().remove(message.getToken());
             collection.complete(message.getOperation());
         } catch (ReadValueException e) {
-            throw new TaskExecutionException("Can't read some of values in message", e);
+            throw new InvalidArgumentException("Can't read some of values in message", e);
         } catch (CompleteAsyncOperationException e) {
-            throw new TaskExecutionException("Can't close async operation with this parameters: " + message, e);
+            throw new InvalidArgumentException("Can't close async operation with this parameters: " + message, e);
         }
     }
 }
