@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.actors.response_sender_actor;
 import info.smart_tools.smartactors.actors.response_sender_actor.wrapper.ResponseMessage;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
@@ -14,7 +15,7 @@ public class ResponseSenderActor {
     public ResponseSenderActor() {
     }
 
-    public void sendResponse(final ResponseMessage message) throws ReadValueException, ResolutionException {
+    public void sendResponse(final ResponseMessage message) throws ReadValueException, ResolutionException, SerializeException {
         IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
         IResponseContentStrategy contentStrategy =
                 IOC.resolve(Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()), message.getEnvironment());

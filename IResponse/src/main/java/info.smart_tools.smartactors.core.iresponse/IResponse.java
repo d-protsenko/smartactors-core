@@ -9,5 +9,5 @@ public interface IResponse {
 
     byte[] getBody();
 
-    Object getEnvironment(String key);
+    <T> T getEnvironment(String key);
 }

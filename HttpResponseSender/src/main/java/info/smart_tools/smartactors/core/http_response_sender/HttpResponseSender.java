@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class HttpResponseSender implements IResponseSender {
                      final ChannelHandlerContext ctx) {
         FullHttpResponse response =
                 new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, getResponseStatus(responseObject),
-                        Unpooled.wrappedBuffer(responseObject.getBody().getBytes()));
+                        Unpooled.wrappedBuffer(responseObject.getBody()));
         setHeaders(responseObject, response);
         setCookies(responseObject, response);
         ctx.writeAndFlush(response);
@@ -42,23 +43,13 @@ public class HttpResponseSender implements IResponseSender {
     }
 
     private void setHeaders(final IResponse responseObject, FullHttpResponse response) {
-        Map<String, Object> responseHeaders = (Map<String, Object>) responseObject.getEnvironment("headers");
-        if (null != responseHeaders) {
-            Set<String> keysSet = responseHeaders.keySet();
-            for (String key : keysSet) {
-                response.headers().set(key, responseHeaders.get(key));
-            }
-        }
+        response.headers().set(responseObject.getEnvironment("headers"));
     }
 
     private void setCookies(final IResponse responseObject, FullHttpResponse response) {
-        Map<String, String> cookies = (Map<String, String>) responseObject.getEnvironment("cookies");
-
+        List<Cookie> cookies = responseObject.getEnvironment("cookies");
         if (null != cookies) {
-            Set<String> keysSet = cookies.keySet();
-            for (String key : keysSet) {
-                Cookie cookie = new DefaultCookie(
-                        key, cookies.get(key));
+            for (Cookie cookie : cookies) {
                 response.headers().set(HttpHeaders.Names.SET_COOKIE,
                         ServerCookieEncoder.encode(cookie));
             }

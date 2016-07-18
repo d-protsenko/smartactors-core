@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.response_content_json_strategy;
+package info.smart_tools.smartactors.plugin.response_environment_http_strategy.response_content_json_strategy;
 
 import com.google.common.base.Charsets;
 import info.smart_tools.smartactors.core.iobject.IObject;

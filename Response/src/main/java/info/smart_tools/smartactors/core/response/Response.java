@@ -29,7 +29,7 @@ public class Response implements IResponse {
     }
 
     @Override
-    public Object getEnvironment(String key) {
-        return environment.get(key);
+    public <T> T getEnvironment(String key) {
+        return (T) environment.get(key);
     }
 }
