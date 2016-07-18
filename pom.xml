@@ -41,6 +41,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
@@ -117,12 +118,18 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>PluginGetFormActor</module>
+        <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
-        <module>IField</module>
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
         <module>PluginIFieldName</module>
+        <module>IField</module>
+        <module>IPath</module>
+        <module>Path</module>
     </modules>
 
     <build>
