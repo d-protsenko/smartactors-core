@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.plugin.ifieldname;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -15,6 +13,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;
@@ -33,7 +30,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, CreateNewInstanceStrategy.class, IFieldNamePlugin.class, IFieldName.class, Function.class})
+@PrepareForTest({IOC.class, Keys.class, ResolveByNameIocStrategy.class, IFieldNamePlugin.class, IFieldName.class, Function.class})
 @RunWith(PowerMockRunner.class)
 public class IFieldNamePluginTest {
 
@@ -53,9 +50,6 @@ public class IFieldNamePluginTest {
     @Test
     public void MustCorrectLoadPlugin() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -63,7 +57,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -76,8 +69,8 @@ public class IFieldNamePluginTest {
         IKey iFieldNameKey = mock(IKey.class);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
@@ -85,33 +78,28 @@ public class IFieldNamePluginTest {
         Keys.getOrAdd(IFieldName.class.toString());
 
         verifyStatic();
-        IOC.register(eq(iFieldNameKey), createNewInstanceStrategyArgumentCaptor.capture());
+        IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
 
         String exampleFieldName = "exampleField";
         FieldName newFieldName = mock(FieldName.class);
         whenNew(FieldName.class).withArguments(exampleFieldName).thenReturn(newFieldName);
 
         assertTrue("Must return correct value",
-                createNewInstanceStrategyArgumentCaptor.getValue().resolve(exampleFieldName) == newFieldName);
+                resolveByNameIocStrategyArgumentCaptor.getValue().resolve(exampleFieldName) == newFieldName);
 
-        verify(fieldNamesMap).get(exampleFieldName);
         verifyNew(FieldName.class).withArguments(exampleFieldName);
-        verify(fieldNamesMap).put(exampleFieldName, newFieldName);
 
     }
 
     @Test
     public void MustInCorrectLoadPluginWhenNewBootstrapItemThrowException() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
 
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenThrow(new InvalidArgumentException(""));
 
         try {
             plugin.load();
         } catch (PluginException e) {
-            verifyNew(ConcurrentHashMap.class).withNoArguments();
             verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
             return;
         }
@@ -121,9 +109,6 @@ public class IFieldNamePluginTest {
     @Test
     public void MustInCorrectExecuteActionWhenKeysThrowException() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -131,7 +116,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -141,11 +125,7 @@ public class IFieldNamePluginTest {
 
         verify(bootstrap).add(item);
 
-        IKey iFieldNameKey = mock(IKey.class);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenThrow(new ResolutionException(""));
-
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
@@ -162,9 +142,6 @@ public class IFieldNamePluginTest {
     @Test
     public void MustInCorrectExecuteActionWhenNewCreateStrategyThrowException() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -172,7 +149,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -185,7 +161,7 @@ public class IFieldNamePluginTest {
         IKey iFieldNameKey = mock(IKey.class);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
 
-        whenNew(CreateNewInstanceStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
+        whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
@@ -194,7 +170,7 @@ public class IFieldNamePluginTest {
             verifyStatic();
             Keys.getOrAdd(IFieldName.class.toString());
 
-            verifyNew(CreateNewInstanceStrategy.class).withArguments(any());
+            verifyNew(ResolveByNameIocStrategy.class).withArguments(any());
             return;
         }
         assertTrue("Must throw Exception", false);
@@ -204,9 +180,6 @@ public class IFieldNamePluginTest {
     @Test
     public void MustInCorrectExecuteActionWhenIOCRegisterThrowException () throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -214,7 +187,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -227,8 +199,8 @@ public class IFieldNamePluginTest {
         IKey iFieldNameKey = mock(IKey.class);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
 
         doThrow(new RegistrationException("")).when(IOC.class);
         IOC.register(eq(iFieldNameKey), any());
@@ -240,18 +212,16 @@ public class IFieldNamePluginTest {
             Keys.getOrAdd(IFieldName.class.toString());
 
             verifyStatic();
-            IOC.register(eq(iFieldNameKey), createNewInstanceStrategyArgumentCaptor.capture());
+            IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
 
             String exampleFieldName = "exampleField";
             FieldName newFieldName = mock(FieldName.class);
             whenNew(FieldName.class).withArguments(exampleFieldName).thenReturn(newFieldName);
 
             assertTrue("Must return correct value",
-                    createNewInstanceStrategyArgumentCaptor.getValue().resolve(exampleFieldName) == newFieldName);
+                    resolveByNameIocStrategyArgumentCaptor.getValue().resolve(exampleFieldName) == newFieldName);
 
-            verify(fieldNamesMap).get(exampleFieldName);
             verifyNew(FieldName.class).withArguments(exampleFieldName);
-            verify(fieldNamesMap).put(exampleFieldName, newFieldName);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -260,9 +230,6 @@ public class IFieldNamePluginTest {
     @Test(expected = RuntimeException.class)
     public void MustInCorrectResolveDependencyWhenArgLength0() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -270,7 +237,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -285,18 +251,18 @@ public class IFieldNamePluginTest {
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
-        CreateNewInstanceStrategy createNewInstanceStrategy = mock(CreateNewInstanceStrategy.class);
-        whenNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(createNewInstanceStrategy);
+        ResolveByNameIocStrategy resolveByNameIocStrategy = mock(ResolveByNameIocStrategy.class);
+        whenNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(resolveByNameIocStrategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
         Keys.getOrAdd(IFieldName.class.toString());
 
-        verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
+        verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
         verifyStatic();
-        IOC.register(iFieldNameKey, createNewInstanceStrategy);
+        IOC.register(iFieldNameKey, resolveByNameIocStrategy);
 
         targetFuncArgumentCaptor.getValue().apply(new Object[0]);
 
@@ -305,9 +271,6 @@ public class IFieldNamePluginTest {
     @Test(expected = RuntimeException.class)
     public void MustInCorrectResolveDependencyWhenArg0IsNotString() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -315,7 +278,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -330,15 +292,15 @@ public class IFieldNamePluginTest {
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
-        CreateNewInstanceStrategy createNewInstanceStrategy = mock(CreateNewInstanceStrategy.class);
-        whenNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(createNewInstanceStrategy);
+        ResolveByNameIocStrategy createNewInstanceStrategy = mock(ResolveByNameIocStrategy.class);
+        whenNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(createNewInstanceStrategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
         Keys.getOrAdd(IFieldName.class.toString());
 
-        verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
+        verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
         verifyStatic();
         IOC.register(iFieldNameKey, createNewInstanceStrategy);
@@ -350,9 +312,6 @@ public class IFieldNamePluginTest {
     @Test
     public void MustInCorrectResolveDependencyWhenNewFieldNameThrowException() throws Exception {
 
-        ConcurrentHashMap<String, IFieldName> fieldNamesMap = mock(ConcurrentHashMap.class);
-        whenNew(ConcurrentHashMap.class).withNoArguments().thenReturn(fieldNamesMap);
-
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
@@ -360,7 +319,6 @@ public class IFieldNamePluginTest {
 
         plugin.load();
 
-        verifyNew(ConcurrentHashMap.class).withNoArguments();
         verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
 
         verify(item).after("IOC");
@@ -373,17 +331,17 @@ public class IFieldNamePluginTest {
         IKey iFieldNameKey = mock(IKey.class);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
 
-        CreateNewInstanceStrategy createNewInstanceStrategy = mock(CreateNewInstanceStrategy.class);
+        ResolveByNameIocStrategy createNewInstanceStrategy = mock(ResolveByNameIocStrategy.class);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
-        whenNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(createNewInstanceStrategy);
+        whenNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.capture()).thenReturn(createNewInstanceStrategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
         Keys.getOrAdd(IFieldName.class.toString());
 
-        verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
+        verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
         verifyStatic();
         IOC.register(iFieldNameKey, createNewInstanceStrategy);
