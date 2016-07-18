@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.ActorPara
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -24,7 +25,7 @@ public class CheckUserByEmailActor {
     /**
      * Constructor
      * @param params the constructor params
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
     public CheckUserByEmailActor(final ActorParams params) throws InvalidArgumentException {
         try {
@@ -32,8 +33,10 @@ public class CheckUserByEmailActor {
                     Keys.getOrAdd(ICachedCollection.class.toString()),
                     params.getCollectionName(),
                     params.getCollectionKey());
-        } catch (Exception e) {
-            throw new InvalidArgumentException(e);
+        } catch (ReadValueException e) {
+            throw new InvalidArgumentException("Can't read some of message values", e);
+        } catch (ResolutionException e) {
+            throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
     }
 
@@ -41,8 +44,8 @@ public class CheckUserByEmailActor {
     /**
      * Try to find user with this email in collection
      * @param message the message
-     * @throws NotFoundUserException
-     * @throws TaskExecutionException
+     * @throws NotFoundUserException Throw when user with this email not found
+     * @throws TaskExecutionException Throw in all of other reasons
      */
     public void checkUser(final MessageWrapper message) throws NotFoundUserException, TaskExecutionException {
         try {

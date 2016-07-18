@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.actors.create_user.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.create_user.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -20,7 +21,7 @@ public class CreateUserActor {
     /**
      * Constructor
      * @param params the actors params
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
     public CreateUserActor(final ActorParams params) throws InvalidArgumentException {
         try {
@@ -28,15 +29,17 @@ public class CreateUserActor {
                     Keys.getOrAdd(ICachedCollection.class.toString()),
                     params.getCollectionName(),
                     params.getCollectionKey());
-        } catch (Exception e) {
-            throw new InvalidArgumentException("Failed to initialize collection", e);
+        } catch (ReadValueException e) {
+            throw new InvalidArgumentException("Can't read some of message values", e);
+        } catch (ResolutionException e) {
+            throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
     }
 
     /**
      * Create a new user in collection
      * @param message the message
-     * @throws TaskExecutionException
+     * @throws TaskExecutionException Throw when can't get user or upsert his
      */
     public void create(final MessageWrapper message) throws TaskExecutionException {
         try {
