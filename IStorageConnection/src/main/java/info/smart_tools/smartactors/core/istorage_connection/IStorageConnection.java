@@ -19,7 +19,7 @@ public interface IStorageConnection {
      * Check if the connection is valid.
      *
      * @return {@code true} if the connection is valid
-     * @throws StorageException Throw when connection have internal errors
+     * @throws StorageException Throw whe query can't be compiled for one of reason
      */
     boolean validate() throws StorageException;
 
