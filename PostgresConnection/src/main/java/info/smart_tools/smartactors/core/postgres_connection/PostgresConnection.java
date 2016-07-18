@@ -84,7 +84,7 @@ public class PostgresConnection implements IStorageConnection {
         } catch (SQLException e) {
             throw new StorageException(
                     String.format("Error compiling query statement \"%s\": ",
-                            ((QueryStatement) preparedQuery).bodyWriter.toString()), e);
+                            ((QueryStatement) preparedQuery).getBodyWriter().toString()), e);
         }
     }
 
