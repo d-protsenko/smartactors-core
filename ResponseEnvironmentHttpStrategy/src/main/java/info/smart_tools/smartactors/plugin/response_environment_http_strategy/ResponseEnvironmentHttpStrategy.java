@@ -7,12 +7,16 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_environment_strategy.IResponseEnvironmentStrategy;
 
-public class ResponseEnvironmentHttpStrategy implements IResponseEnvironmentStrategy {
+/**
+ * {@link IResponseEnvironmentStrategy} implementation for http
+ */
+class ResponseEnvironmentHttpStrategy implements IResponseEnvironmentStrategy {
 
     @Override
-    public void setEnvironment(final IObject environment, IResponse response)
+    public void setEnvironment(final IObject environment, final IResponse response)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         response.setEnvironment("headers", HeadersExtractor.extract(environment));
         response.setEnvironment("cookies", CookieExtractor.extract(environment));
+        response.setEnvironment("statusCode", StatusCodeExtractor.extract(environment));
     }
 }

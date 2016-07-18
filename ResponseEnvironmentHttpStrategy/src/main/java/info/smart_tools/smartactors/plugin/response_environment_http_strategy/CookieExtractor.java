@@ -5,8 +5,21 @@ import io.netty.handler.codec.http.Cookie;
 
 import java.util.List;
 
-public class CookieExtractor {
-    public static List<Cookie> extract(IObject iObject) {
+/**
+ * Utility class for extracting cookies from environment
+ */
+final class CookieExtractor {
+
+    private CookieExtractor() {
+    }
+
+    /**
+     * Method, that extract cookies from environment
+     *
+     * @param environment Environment of the MessageProcessor
+     * @return extracted cookies
+     */
+    static List<Cookie> extract(final IObject environment) {
         return null;
     }
 }
