@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.core.iresponse;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
 
 public interface IResponse {
 
-    void setEnvironment(IObject environment);
+    void setEnvironment(String key, Object environment);
 
-    void setContext(IObject environment);
+    void setContent(byte[] response);
 
-    String getBody();
+    byte[] getBody();
 
     Object getEnvironment(String key);
 }

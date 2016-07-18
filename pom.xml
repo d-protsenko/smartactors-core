@@ -147,6 +147,8 @@
         <module>IResponse</module>
         <module>IResponseContentStrategy</module>
         <module>IResponseEnvironmentStrategy</module>
+        <module>Response</module>
+        <module>ResponseContentJsonStrategy</module>
     </modules>
 
     <build>

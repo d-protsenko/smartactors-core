@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.iresponse_content_strategy;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 
 /**
@@ -12,5 +13,5 @@ public interface IResponseContentStrategy {
      * @param responseObject IObject from environment
      * @param response
      */
-    void setContent(final IObject responseObject, IResponse response);
+    void setContent(final IObject responseObject, IResponse response) throws SerializeException;
 }
