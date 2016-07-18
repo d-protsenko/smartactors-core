@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +35,6 @@ public class IFieldNamePlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            Map<String, IFieldName> fieldNamesMap = new ConcurrentHashMap<>();
 
             IBootstrapItem<String> item = new BootstrapItem("IFieldNamePlugin");
 
@@ -44,30 +44,25 @@ public class IFieldNamePlugin implements IPlugin {
                         try {
                             IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.toString());
                             IOC.register(iFieldNameKey,
-                                    new CreateNewInstanceStrategy(
+                                    new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
                                                     String nameOfFieldName = (String) args[0];
-                                                    IFieldName result = fieldNamesMap.get(nameOfFieldName);
-
-                                                    if (result == null) {
-                                                        try {
-                                                            result = new FieldName(nameOfFieldName);
-                                                        } catch (InvalidArgumentException e) {
-                                                            throw new RuntimeException(
-                                                                    "Can't create FieldName with this name: "
-                                                                            + nameOfFieldName, e);
-                                                        }
-                                                        fieldNamesMap.put(nameOfFieldName, result);
-                                                    }
+                                                    IFieldName result = new FieldName(nameOfFieldName);
 
                                                     return result;
                                                 } catch (ClassCastException e) {
-                                                    throw new RuntimeException("Can't cast object to String: " + args[0], e);
+                                                    throw new RuntimeException("Can't cast object to String: " + args[0],
+                                                            e);
                                                 } catch (ArrayIndexOutOfBoundsException e) {
                                                     throw new RuntimeException(
                                                             "Can't get args: args must contain one or more elements " +
-                                                                    "and first element must be String", e);
+                                                                    "and first element must be String",
+                                                            e);
+                                                } catch (InvalidArgumentException e) {
+                                                    throw new RuntimeException(
+                                                            "Can't create new field name with this name: " + args[0],
+                                                            e);
                                                 }
                                         }
                                     )
