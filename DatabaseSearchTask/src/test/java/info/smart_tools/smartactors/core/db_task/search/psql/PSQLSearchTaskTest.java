@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.db_task.search.DBSearchTask;
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -18,14 +19,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
