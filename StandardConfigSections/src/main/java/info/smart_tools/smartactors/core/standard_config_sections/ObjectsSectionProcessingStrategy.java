@@ -8,7 +8,10 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.List;
 
@@ -55,14 +58,16 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
 
             for (IObject objDesc : section) {
                 Object kindId = objDesc.getValue(objectKindField);
+                IRoutedObjectCreator objectCreator = IOC.resolve(
+                        Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#" + String.valueOf(kindId)));
 
-                // TODO: Resolve & call object creation strategy
-                // TODO: Register object in router
+                objectCreator.createObject(router, objDesc);
             }
         } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"objects\" configuration section.", e);
+        } catch (ObjectCreationException e) {
+            throw new ConfigurationProcessingException("Could not create object described in \"objects\" section.", e);
         }
-        // TODO: Implement
     }
 
     @Override

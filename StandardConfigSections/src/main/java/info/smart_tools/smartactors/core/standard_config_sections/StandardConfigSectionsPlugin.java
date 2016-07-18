@@ -34,7 +34,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
             objectsSectionItem
                     .after("config_loader")
-                    .after("router_registration")
+                    .after("router")
                     .before("configure")
                     .process(() -> {
                         try {
@@ -70,11 +70,32 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
             bootstrap.add(mapsSectionItem);
 
+            /* "executor" section */
+            IBootstrapItem<String> executorSectionItem = new BootstrapItem("config_section:executor");
+
+            executorSectionItem
+                    .after("config_loader")
+                    .before("configure")
+                    .process(() -> {
+                        try {
+                            ISectionStrategiesStorage strategiesStorage =
+                                    IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), ISectionStrategiesStorage.class.getCanonicalName()));
+
+                            strategiesStorage.register(new ExecutorSectionProcessingStrategy());
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(executorSectionItem);
+
             /* "endpoints" section */
             IBootstrapItem<String> endpointsSectionItem = new BootstrapItem("config_section:endpoints");
 
             endpointsSectionItem
+                    .after("config_loader")
                     .after("config_section:maps")
+                    .after("config_section:executor")
                     .before("configure")
                     .process(() -> {
                         try {
@@ -86,6 +107,8 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             throw new ActionExecuteException(e);
                         }
                     });
+
+            bootstrap.add(endpointsSectionItem);
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
