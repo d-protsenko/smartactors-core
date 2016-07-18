@@ -142,7 +142,7 @@ public class CreateCachedCollectionPluginTest {
         whenNew(CachedCollection.class).withArguments(config).thenReturn(cachedCollection);
 
         WrapperGenerator wrapperGenerator = mock(WrapperGenerator.class);
-        whenNew(WrapperGenerator.class).withArguments(null).thenReturn(wrapperGenerator);
+        whenNew(WrapperGenerator.class).withArguments(any()).thenReturn(wrapperGenerator);
 
         ConnectionOptions connectionOptionsWrapper = mock(ConnectionOptions.class);
         when(wrapperGenerator.generate(ConnectionOptions.class)).thenReturn(connectionOptionsWrapper);

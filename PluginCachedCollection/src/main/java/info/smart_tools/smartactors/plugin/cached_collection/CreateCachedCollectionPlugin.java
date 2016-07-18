@@ -64,7 +64,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                     String keyName = String.valueOf(args[1]);
                                     //TODO:: clarify about generators
                                     //TODO:: wrapperGenerator should be resolved by IOC
-                                    IWrapperGenerator wrapperGenerator = new WrapperGenerator(null);
+                                    IWrapperGenerator wrapperGenerator = new WrapperGenerator(this.getClass().getClassLoader());
                                     ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
                                     IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
                                     IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
