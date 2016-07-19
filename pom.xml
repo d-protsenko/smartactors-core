@@ -148,6 +148,7 @@
         <module>InvalidStateException</module>
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
+        <module>ServerWithConfiguration</module>
     </modules>
 
     <build>
