@@ -6,13 +6,13 @@ import info.smart_tools.smartactors.core.chain_call_receiver.exceptions.ChainCho
 import info.smart_tools.smartactors.core.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
