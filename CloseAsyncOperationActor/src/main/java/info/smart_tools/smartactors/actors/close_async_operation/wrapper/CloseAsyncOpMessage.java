@@ -12,21 +12,21 @@ public interface CloseAsyncOpMessage {
     /**
      * Getter for token
      * @return token of async operation
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     String getToken() throws ReadValueException;
 
     /**
      * Return async operation
      * @return IObject async operation
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     IObject getOperation() throws ReadValueException;
 
     /**
      * Getter
      * @return list of tokens of async op's
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     List<String> getOperationTokens() throws ReadValueException;
 }

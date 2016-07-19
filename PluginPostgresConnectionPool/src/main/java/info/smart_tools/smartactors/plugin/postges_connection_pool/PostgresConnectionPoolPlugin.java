@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -44,28 +45,34 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
-            item.after("IOC").process(() -> {
-                try {
-                    IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
-                    IOC.register(postgresConnectionPoolKey, new CreateNewInstanceStrategy(
+            item
+                .after("IOC")
+                .process(() -> {
+                    try {
+                        IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
+                        IOC.register(postgresConnectionPoolKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
                                 if (connectionOptions == null) {
                                     throw new RuntimeException("Can't resolve connection pool: connectionOptions is null");
                                 }
 
-                                return new Pool(connectionOptions.getMaxConnections(), () -> {
-                                    try {
-                                        return new PostgresConnection(connectionOptions);
-                                    } catch (StorageException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
+                                try {
+                                    return new Pool(connectionOptions.getMaxConnections(), () -> {
+                                        try {
+                                            return new PostgresConnection(connectionOptions);
+                                        } catch (StorageException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                } catch (ReadValueException e) {
+                                    throw new RuntimeException("Can't create PostgresConnectionPool", e);
+                                }
 
                             }));
-                } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                    throw new RuntimeException(e);
-                }
+                    } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
             });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

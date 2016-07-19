@@ -44,7 +44,7 @@ public class PostgresConnectionPoolPluginTest {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin").thenReturn(bootstrapItem);
-        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.after("IOC")).thenReturn(bootstrapItem);
         plugin.load();
         verifyNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin");
         verify(bootstrap).add(eq(bootstrapItem));
