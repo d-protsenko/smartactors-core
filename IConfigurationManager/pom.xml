@@ -9,15 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.standard_config_sections</artifactId>
+    <artifactId>core.iconfiguration_manager</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iconfiguration_manager</artifactId>
+            <artifactId>core.iobject</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
-        <!-- Bootstrap & plugins -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
@@ -30,18 +29,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <!-- IOC -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -49,48 +37,27 @@
             <artifactId>core.ioc</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
-        <!-- Message exchanging system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>core.singleton_strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichain_storage</artifactId>
+            <artifactId>core.invalid_argument_exception</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouter</artifactId>
+            <artifactId>core.invalid_state_exception</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
-        <!-- Object creation -->
+        <!-- Test -->
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouted_object_creator</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <!-- Executor creation -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iqueue</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.blocking_queue</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.task_dispatcher</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.thread_pool</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

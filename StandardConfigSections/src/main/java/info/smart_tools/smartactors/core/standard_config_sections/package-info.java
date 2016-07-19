@@ -1,5 +1,5 @@
 /**
- * Contains implementations of {@link info.smart_tools.smartactors.core.config_loader.ISectionStrategy} for configuration sections:
+ * Contains implementations of {@link info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy} for configuration sections:
  * - "objects"
  * - "maps"
  * - "endpoints"

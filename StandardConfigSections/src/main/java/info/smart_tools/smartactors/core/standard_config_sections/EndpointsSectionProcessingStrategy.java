@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.config_loader.ISectionStrategy;
+import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 
 /**
@@ -40,7 +40,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
-    public void onLoadConfig(final IObject config) throws ReadValueException {
+    public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         // TODO: Implement
     }
 

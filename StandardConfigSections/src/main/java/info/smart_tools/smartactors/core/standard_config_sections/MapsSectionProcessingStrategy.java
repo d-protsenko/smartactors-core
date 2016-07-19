@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.config_loader.ISectionStrategy;
-import info.smart_tools.smartactors.core.config_loader.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -51,7 +51,7 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
 
     @Override
     public void onLoadConfig(final IObject config)
-            throws ReadValueException, ConfigurationProcessingException {
+            throws ConfigurationProcessingException {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
 
@@ -65,7 +65,7 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
                     throw new ConfigurationProcessingException("Could not create chain for map #'" + String.valueOf(mapId) + "'.", e);
                 }
             }
-        } catch (InvalidArgumentException | ResolutionException e) {
+        } catch (InvalidArgumentException | ResolutionException | ReadValueException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"maps\" section of configuration.", e);
         }
     }

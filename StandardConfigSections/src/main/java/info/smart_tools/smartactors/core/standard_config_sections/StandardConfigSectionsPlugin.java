@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.config_loader.ISectionStrategiesStorage;
+import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  *
@@ -33,16 +34,16 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> objectsSectionItem = new BootstrapItem("config_section:objects");
 
             objectsSectionItem
-                    .after("config_loader")
+                    .after("configuration_manager")
                     .after("router")
                     .before("configure")
                     .process(() -> {
                         try {
-                            ISectionStrategiesStorage strategiesStorage =
-                                    IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), ISectionStrategiesStorage.class.getCanonicalName()));
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            strategiesStorage.register(new ObjectsSectionProcessingStrategy());
-                        } catch (ResolutionException e) {
+                            configurationManager.addSectionStrategy(new ObjectsSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
                     });
@@ -53,17 +54,17 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> mapsSectionItem = new BootstrapItem("config_section:maps");
 
             mapsSectionItem
-                    .after("config_loader")
+                    .after("configuration_manager")
                     .after("receiver_chains_storage")
                     .after("receiver_chain")
                     .before("configure")
                     .process(() -> {
                         try {
-                            ISectionStrategiesStorage strategiesStorage =
-                                    IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), ISectionStrategiesStorage.class.getCanonicalName()));
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            strategiesStorage.register(new MapsSectionProcessingStrategy());
-                        } catch (ResolutionException e) {
+                            configurationManager.addSectionStrategy(new MapsSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
                     });
@@ -74,15 +75,15 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> executorSectionItem = new BootstrapItem("config_section:executor");
 
             executorSectionItem
-                    .after("config_loader")
+                    .after("configuration_manager")
                     .before("configure")
                     .process(() -> {
                         try {
-                            ISectionStrategiesStorage strategiesStorage =
-                                    IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), ISectionStrategiesStorage.class.getCanonicalName()));
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            strategiesStorage.register(new ExecutorSectionProcessingStrategy());
-                        } catch (ResolutionException e) {
+                            configurationManager.addSectionStrategy(new ExecutorSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
                     });
@@ -93,17 +94,17 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> endpointsSectionItem = new BootstrapItem("config_section:endpoints");
 
             endpointsSectionItem
-                    .after("config_loader")
+                    .after("configuration_manager")
                     .after("config_section:maps")
                     .after("config_section:executor")
                     .before("configure")
                     .process(() -> {
                         try {
-                            ISectionStrategiesStorage strategiesStorage =
-                                    IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), ISectionStrategiesStorage.class.getCanonicalName()));
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            strategiesStorage.register(new EndpointsSectionProcessingStrategy());
-                        } catch (ResolutionException e) {
+                            configurationManager.addSectionStrategy(new EndpointsSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
                     });

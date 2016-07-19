@@ -127,7 +127,7 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
-        <module>ConfigLoader</module>
+        <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
@@ -137,6 +137,8 @@
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
         <module>InvalidStateException</module>
+        <module>ConfigurationManager</module>
+        <module>PluginConfigurationManager</module>
     </modules>
 
     <build>

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
-import info.smart_tools.smartactors.core.config_loader.ISectionStrategy;
-import info.smart_tools.smartactors.core.config_loader.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -47,7 +47,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
-    public void onLoadConfig(final IObject config) throws ReadValueException, ConfigurationProcessingException {
+    public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject section = (IObject) config.getValue(name);
             int threadsCount = Integer.valueOf(String.valueOf(section.getValue(threadCountFieldName)));
@@ -64,7 +64,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             IOC.register(Keys.getOrAdd("task_dispatcher"), new SingletonStrategy(taskDispatcher));
             IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queue));
             IOC.register(Keys.getOrAdd("thread_pool"), new SingletonStrategy(threadPool));
-        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
+        } catch (InvalidArgumentException | ResolutionException | RegistrationException | ReadValueException e) {
             throw new ConfigurationProcessingException(e);
         }
     }
