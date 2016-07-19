@@ -77,7 +77,9 @@ public class ReceiverGeneratorTest {
         when(processor.getEnvironment()).thenReturn(w);
         IReceiverGenerator rg = new ReceiverGenerator(null);
         assertNotNull(rg);
-        IMessageReceiver r = rg.generate(a, "doSomeWork");
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        when(strategy.resolve()).thenReturn(w);
+        IMessageReceiver r = rg.generate(a, strategy, "doSomeWork");
         assertNotNull(r);
         r.receive(processor);
         assertTrue(w.getGetterUsed());
@@ -88,7 +90,7 @@ public class ReceiverGeneratorTest {
     public void checkInvalidArgumentExceptionOnNullParameter()
             throws Exception {
         IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(null, null);
+        rg.generate(null, null, null);
         fail();
     }
 
@@ -96,9 +98,10 @@ public class ReceiverGeneratorTest {
     public void checkReceiverGeneratorExceptionOn()
             throws Exception {
         CustomActor a = new CustomActor();
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
 
         IReceiverGenerator rg = new ReceiverGenerator(null);
-        rg.generate(a, "a");
+        rg.generate(a, strategy, "a");
         fail();
     }
 }
