@@ -44,11 +44,13 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
-            item.process(() -> {
-                try {
-                    IOC.register(postgresConnectionPoolKey, new CreateNewInstanceStrategy(
+            item
+                .after("IOC")
+                .process(() -> {
+                    try {
+                        IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
+                        IOC.register(postgresConnectionPoolKey, new CreateNewInstanceStrategy(
                             (args) -> {
                                 ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
                                 if (connectionOptions == null) {
@@ -68,12 +70,12 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                                 }
 
                             }));
-                } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new RuntimeException(e);
-                }
+                    } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
             });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load postgres connection pool plugin", e);
         }
     }
