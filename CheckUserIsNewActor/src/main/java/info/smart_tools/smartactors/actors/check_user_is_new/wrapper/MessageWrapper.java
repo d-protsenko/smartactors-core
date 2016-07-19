@@ -10,7 +10,7 @@ public interface MessageWrapper {
     /**
      * getter for email
      * @return email
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     String getEmail() throws ReadValueException;
 }
