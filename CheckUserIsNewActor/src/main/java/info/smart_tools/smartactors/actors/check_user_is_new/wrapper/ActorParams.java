@@ -10,7 +10,13 @@ public interface ActorParams {
     /**
      * getter for collection name
      * @return collection name
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     String getCollectionName() throws ReadValueException;
+
+    /**
+     * @return the key for target collection
+     * @throws ReadValueException Throw when can't correct read value
+     */
+    String getCollectionKey() throws ReadValueException;
 }
