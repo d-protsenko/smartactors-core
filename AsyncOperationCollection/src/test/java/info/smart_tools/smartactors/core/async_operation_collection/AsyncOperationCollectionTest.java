@@ -3,22 +3,21 @@ package info.smart_tools.smartactors.core.async_operation_collection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.wrapper.get_item.GetAsyncOperationQuery;
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
@@ -34,11 +33,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class, CollectionName.class, AsyncOperationCollection.class})
@@ -46,9 +50,10 @@ public class AsyncOperationCollectionTest {
     private AsyncOperationCollection testCollection;
     private IPool pool;
     private CollectionName collectionName;
+    private IField idField;
 
     @Before
-    public void prepare () throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException, QueryBuildException {
+    public void prepare () throws Exception {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
         mockStatic(CollectionName.class);
@@ -58,6 +63,16 @@ public class AsyncOperationCollectionTest {
         collectionName = mock(CollectionName.class);
 
         when(CollectionName.fromString("async_operation")).thenReturn(collectionName);
+
+        Key fieldNameKey = mock(Key.class);
+        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
+        String idBindingPath = "idBindingPath";
+        when(IOC.resolve(fieldNameKey, "id")).thenReturn(idBindingPath);
+
+        idField = mock(IField.class);
+        Key idKey = mock(Key.class);
+        when(Keys.getOrAdd(IField.class.toString())).thenReturn(idKey);
+        when(IOC.resolve(idKey, "id")).thenReturn(idField);
 
         testCollection = new AsyncOperationCollection(pool, "async_operation");
     }
@@ -569,6 +584,42 @@ public class AsyncOperationCollectionTest {
             IOC.resolve(getAsyncOperationTaskKey);
 
             verifyNew(SingletonStrategy.class).withArguments(getAsyncOperationTask);
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue("Must throw exception, but was not", false);
+    }
+
+    @Test
+    public void MustInCorrectGetAsyncOperationWhenFirstGetItemNullAndNestedTaskNull() throws
+            Exception {
+
+        String token = "token";
+
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(pool).thenReturn(poolGuard);
+
+        GetAsyncOperationTask getAsyncOperationTask = mock(GetAsyncOperationTask.class);
+        Key getAsyncOperationTaskKey = mock(Key.class);
+        when(Keys.getOrAdd(GetAsyncOperationTask.class.toString())).thenReturn(getAsyncOperationTaskKey);
+        when(IOC.resolve(getAsyncOperationTaskKey)).thenReturn(null);
+
+        Key nestedTaskKey = mock(Key.class);
+        when(Keys.getOrAdd(IDatabaseTask.class.toString())).thenReturn(nestedTaskKey);
+
+        when(IOC.resolve(nestedTaskKey, GetAsyncOperationTask.class.toString())).thenReturn(null);
+
+        try {
+            testCollection.getAsyncOperation(token);
+        } catch (GetAsyncOperationException e) {
+
+            verifyNew(PoolGuard.class).withArguments(pool);
+
+            verifyStatic();
+            Keys.getOrAdd(GetAsyncOperationTask.class.toString());
+            verifyStatic();
+            IOC.resolve(getAsyncOperationTaskKey);
 
             verify(poolGuard).close();
             return;
