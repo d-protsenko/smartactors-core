@@ -132,10 +132,16 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>ReceiverGenerator</module>
+        <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
+        <module>IReceiverGenerator</module>
+        <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
         <module>IField</module>
         <module>IPath</module>
         <module>Path</module>
+        <module>Field</module>
     </modules>
 
     <build>
