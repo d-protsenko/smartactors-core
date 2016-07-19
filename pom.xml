@@ -103,6 +103,7 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
@@ -136,6 +137,7 @@
         <module>HandlerRoutingReceiver</module>
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
+        <module>PluginIFieldName</module>
         <module>IField</module>
         <module>IPath</module>
         <module>Path</module>

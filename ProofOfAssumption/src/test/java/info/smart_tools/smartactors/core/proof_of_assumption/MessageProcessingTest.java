@@ -6,12 +6,12 @@ import info.smart_tools.smartactors.core.chain_call_receiver.exceptions.ChainCho
 import info.smart_tools.smartactors.core.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -134,7 +134,7 @@ public class MessageProcessingTest {
         ITask putTask = () -> {
             while (!mainThread.isInterrupted() && !Thread.interrupted()) {
                 try {
-                    new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain)).process(messageMock, contextMock);
+                    new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), new DSObject()).process(messageMock, contextMock);
                     Thread.sleep(PUT_INTERVAL);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -184,13 +184,13 @@ public class MessageProcessingTest {
                 new IObject[21],
                 new HashMap<>());
 
-        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countStartChain)).process(messageMock, contextMock);
+        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countStartChain), new DSObject()).process(messageMock, contextMock);
 
         for (int i = 0; i < PAYLOAD_MESSAGES; i++) {
-            new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain)).process(messageMock, contextMock);
+            new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), new DSObject()).process(messageMock, contextMock);
         }
 
-        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countEndChain)).process(messageMock, contextMock);
+        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countEndChain), new DSObject()).process(messageMock, contextMock);
 
         dispatcher.start();
 
@@ -371,7 +371,7 @@ public class MessageProcessingTest {
         //
 
         for (int i = 0; i < PAYLOAD_MESSAGES + MEASURE_MESSAGES; i++) {
-            new MessageProcessor(taskQueue, new MessageProcessingSequence(5, mainChain))
+            new MessageProcessor(taskQueue, new MessageProcessingSequence(5, mainChain), new DSObject())
                     .process(new DSObject(), new DSObject());
         }
 
