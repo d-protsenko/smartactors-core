@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.db_tasks.psql.search;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import info.smart_tools.smartactors.core.db_storage.interfaces.ICompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.ICollectionName;
@@ -8,7 +7,6 @@ import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.commons.DBQueryFields;
 import info.smart_tools.smartactors.core.db_tasks.commons.queries.IComplexCompiledQuery;
 import info.smart_tools.smartactors.core.db_tasks.psql.delete.PSQLDeleteByIdTask;
-import info.smart_tools.smartactors.core.db_tasks.psql.insert.PSQLInsertTask;
 import info.smart_tools.smartactors.core.db_tasks.utils.IDContainer;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -17,8 +15,6 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.IDeclaredParam;
-import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,11 +40,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.support.membermodification.MemberMatcher.field;
 import static org.powermock.api.support.membermodification.MemberMatcher.fields;
 
 @RunWith(PowerMockRunner.class)
