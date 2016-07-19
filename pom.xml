@@ -132,9 +132,10 @@
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>PluginIFieldName</module>
         <module>IField</module>
         <module>IPath</module>
-	<module>Path</module>
+        <module>Path</module>
     </modules>
 
     <build>
