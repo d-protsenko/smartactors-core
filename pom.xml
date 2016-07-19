@@ -41,6 +41,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
@@ -102,6 +103,7 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
@@ -122,10 +124,20 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>PluginGetFormActor</module>
+        <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>WDSObject</module>
+        <module>FieldName</module>
+        <module>IFieldName</module>
+        <module>PluginIFieldName</module>
         <module>IField</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
+        <module>IPath</module>
+        <module>Path</module>
     </modules>
 
     <build>
@@ -168,6 +180,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
