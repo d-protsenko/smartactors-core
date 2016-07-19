@@ -1,0 +1,96 @@
+options
+ {
+     STATIC=false;
+ }
+
+PARSER_BEGIN(Parser)
+
+package info.smart_tools.smartactors.actors.validate_form_data.parser;
+
+import java.lang.StringBuffer;
+import java.io.StringReader;
+import java.io.Reader;
+
+public class Parser {
+    
+    private String field;  // the validating field.
+    private Boolean result = true;
+    
+    public Parser(String rules, String field)
+    {
+        this((Reader)(new StringReader(rules)));
+        this.field = field;
+    }
+
+    public Boolean validate() {
+        try {
+            parse();
+            return result;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
+PARSER_END(Parser)
+
+/** Skip these characters, they are considered "white space" **/
+SKIP :                              
+{
+    " "
+    | "\t"
+    | "\r"
+    | "\n"
+
+}
+
+
+TOKEN: /*RESERVED TOKENS */
+{
+      <AND: "&&">
+   |  <COMPULSORY: "обязательное">
+   |  <RUSSIAN: "русский">
+   |  <ADDRESS: "адрес">
+   |  <HOUSE: "дом">
+   |  <EMAIL: "email">
+   |  <PASSWORD: "password">
+   |  <NUMERIC: "из цифр">
+   |  <BARCODE: "штрихкод">
+   |  <ARTICUL: "артикул">
+   |  <PHONE: "телефон">
+   |  <DIGIT: "число">
+}
+
+void parse() :
+{
+}
+{
+    expression()   <EOF>
+}
+
+void expression() :
+{
+}
+{  queryTerm()
+   (
+     (<AND>)
+     queryTerm() )*
+}
+
+void queryTerm() :
+{Token t;}
+{
+  ( t=<COMPULSORY>  {result &= field !="";}
+  | t=<RUSSIAN>     {result &= field.matches("[А-яё][-А-яЁё]+");}
+  | t=<ADDRESS>     {result &= field.matches("^[0-9а-яё\\s\\.,\\-;\\/\\(\\)]{1,255}$");}
+  | t=<HOUSE>       {result &= field.matches("^[0-9а-яa-zё\\/]{1,7}$");}
+  | t=<EMAIL>       {result &= field.matches("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");}
+  | t=<PASSWORD>    {result &= field.matches("^(?=.*[0-9])(?=.*[!@#$%^&*])[a-z0-9!@#$%^&*]{6,16}$");}
+  | t=<NUMERIC>     {result &= field.matches("^\\d+$");}
+  | t=<BARCODE>     {result &= field.matches("^[0-9]{13}$");}
+  | t=<ARTICUL>     {result &= field.matches("^[а-яё0-9.,\\/]{7,9}$");}
+  | t=<PHONE>       {result &= field.matches("^\\+7\\s9[0-9]{9}$");}
+  | t=<DIGIT>       {result &= field.matches("^[0-9]+(([.,])[0-9]{1,2})?$");}
+  )
+}
+
+
