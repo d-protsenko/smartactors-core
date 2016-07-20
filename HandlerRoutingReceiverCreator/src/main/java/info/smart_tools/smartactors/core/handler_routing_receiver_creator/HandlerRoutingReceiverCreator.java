@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.handler_routing_receiver_creator;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.handler_routing_receiver.HandlerRoutingReceiver;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -31,9 +32,9 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
     public HandlerRoutingReceiverCreator()
             throws ObjectCreationException {
         try {
-            this.name = new FieldName("name");
-            this.dependency = new FieldName("dependency");
-            this.wrapper = new FieldName("wrapper");
+            this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
+            this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");;
+            this.wrapper = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
         }
@@ -70,7 +71,7 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
                 handlerReceiversMap.put(m.getName(), handlerReceiver);
             }
             IMessageReceiver handlerRoutingReceiver = new HandlerRoutingReceiver(handlerReceiversMap);
-            router.register((String) description.getValue(this.name), handlerRoutingReceiver);
+            router.register(description.getValue(this.name), handlerRoutingReceiver);
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create receiver chain.", e);
         }
