@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.actors.create_user;
 
 import info.smart_tools.smartactors.actors.create_user.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.create_user.wrapper.MessageWrapper;
-import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
+import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -29,22 +29,31 @@ public class CreateUserActorTest {
 
     private CreateUserActor actor;
     private MessageWrapper message;
-    private CachedCollection collection;
+    private ICachedCollection collection;
 
     @Before
     public void setUp() throws Exception {
 
-        collection = mock(CachedCollection.class);
-        IKey collectionKey = mock(IKey.class);
+        collection = mock(ICachedCollection.class);
+        IKey cachedCollectionKey = mock(IKey.class);
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        when(Keys.getOrAdd(CachedCollection.class.toString())).thenReturn(collectionKey);
-        when(IOC.resolve(collectionKey, "user")).thenReturn(collection);
+        String collectionName = "user";
+        String collectionKeyName = "key";
 
         ActorParams params = mock(ActorParams.class);
-        when(params.getCollectionName()).thenReturn("user");
+        when(params.getCollectionName()).thenReturn(collectionName);
+        when(params.getCollectionKey()).thenReturn(collectionKeyName);
+
+        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
+        when(IOC.resolve(
+                cachedCollectionKey,
+                collectionName,
+                collectionKeyName)
+        ).thenReturn(collection);
+
         actor = new CreateUserActor(params);
         message = mock(MessageWrapper.class);
     }

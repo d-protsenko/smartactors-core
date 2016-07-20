@@ -29,6 +29,9 @@ public class CompileQueryPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
+    /**
+     * @param bootstrap Target bootstrap for adding strategy
+     */
     public CompileQueryPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
