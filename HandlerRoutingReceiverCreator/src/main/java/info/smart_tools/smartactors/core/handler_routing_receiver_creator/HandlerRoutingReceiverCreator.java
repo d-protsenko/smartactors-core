@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Implementation of {@link IRoutedObjectCreator}.
- * Generates {@code HandlerReceivers} and contains its to the new instance of {@link HandlerRoutingReceiver}.
+ * Generates {@code HandlerReceivers} and puts its to the new instance of {@link HandlerRoutingReceiver}.
  */
 public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
 
@@ -42,7 +42,7 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
             this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
             this.wrapper = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
         } catch (Throwable e) {
-            throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
+            throw new ObjectCreationException("Could not create instance of HandlerRoutingReceiverCreator.");
         }
     }
 

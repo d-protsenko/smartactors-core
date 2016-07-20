@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.actor_receiver_creator;
 import info.smart_tools.smartactors.core.actor_receiver.ActorReceiver;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.handler_routing_receiver.HandlerRoutingReceiver;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -20,25 +21,35 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of {@link IRoutedObjectCreator}.
+ * Generates {@code HandlerReceivers} and puts its to the new instance of {@link HandlerRoutingReceiver}.
+ * After that puts instance of {@link HandlerRoutingReceiver} to the new instance of {@link ActorReceiver}.
+ */
 public class ActorReceiverCreator implements IRoutedObjectCreator {
 
     private FieldName name;
     private FieldName dependency;
     private FieldName wrapper;
 
+    /**
+     * Default constructor.
+     * Create instance of {@link ActorReceiverCreator} and initialize private fields.
+     * @throws ObjectCreationException if {@link IOC} resolution failed.
+     */
     public ActorReceiverCreator()
             throws ObjectCreationException {
         try {
-            this.name = new FieldName("name");
-            this.dependency = new FieldName("dependency");
-            this.wrapper = new FieldName("wrapper");
+            this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
+            this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
+            this.wrapper = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
         }
     }
 
     @Override
-    public void createObject(IRouter router, IObject description)
+    public void createObject(final IRouter router, final IObject description)
             throws ObjectCreationException, InvalidArgumentException {
         try {
             Map<Object, IMessageReceiver> handlerReceiversMap = new HashMap<>();
