@@ -133,8 +133,6 @@
         <module>FieldName</module>
         <module>IFieldName</module>
         <module>ReceiverGenerator</module>
-        <module>ActorReceiver</module>
-        <module>HandlerRoutingReceiver</module>
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
