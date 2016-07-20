@@ -41,6 +41,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
@@ -102,6 +103,7 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
@@ -122,7 +124,12 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
+        <module>PluginGetFormActor</module>
+        <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>PluginIFieldName</module>
         <module>IField</module>
         <module>WDSObject</module>
         <module>FieldName</module>
@@ -131,6 +138,8 @@
         <module>StandardConfigSections</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
+        <module>IPath</module>
+        <module>Path</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
@@ -140,6 +149,7 @@
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
+        <module>ServerWithConfiguration</module>
     </modules>
 
     <build>
@@ -182,6 +192,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
