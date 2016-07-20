@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
  * Plugin.
@@ -45,7 +46,7 @@ public class CreateUserPlugin implements IPlugin {
                 try {
                     IKey createCreateUserKey = Keys.getOrAdd(CreateUserActor.class.toString());
                     try {
-                        IOC.register(createCreateUserKey, new CreateNewInstanceStrategy(
+                        IOC.register(createCreateUserKey, new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         ActorParams params = IOC.resolve(
