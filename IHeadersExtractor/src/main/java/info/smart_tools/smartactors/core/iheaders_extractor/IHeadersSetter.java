@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.iheaders_extractor;
 
 
 import info.smart_tools.smartactors.core.iobject.IObject;
-import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * Interface for extracting http headers from environment
