@@ -167,6 +167,7 @@
         <module>PluginIFieldName</module>
         <module>IPath</module>
         <module>Path</module>
+        <module>HttpRequestHandler</module>
     </modules>
 
     <build>

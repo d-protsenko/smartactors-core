@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> type of value returned by Future.
  */
-public class CompletableNettyFuture<T> extends CompletableFuture<T> {
+public final class CompletableNettyFuture<T> extends CompletableFuture<T> {
     private Future<T> nettyFuture;
 
     private CompletableNettyFuture(final Future<T> nettyFuture) {

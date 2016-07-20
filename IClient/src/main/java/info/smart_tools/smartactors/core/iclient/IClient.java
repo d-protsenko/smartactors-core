@@ -12,6 +12,11 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface IClient<Request> extends IAsyncService<IClient<Request>> {
 
+    /**
+     * Method to send request
+     * @param request request message
+     * @return
+     */
     CompletableFuture<Void> send(Request request);
 
     interface Creator {

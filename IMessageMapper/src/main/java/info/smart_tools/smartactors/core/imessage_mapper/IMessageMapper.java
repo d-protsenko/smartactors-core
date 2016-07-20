@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.imessage_mapper;
 
 
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core;
 
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import io.netty.handler.codec.http.FullHttpRequest;
 

@@ -15,9 +15,21 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  * Actor for sending response to client
  */
 public class ResponseSenderActor {
+    /**
+     * Constructor for actor
+     */
     public ResponseSenderActor() {
     }
 
+    /**
+     * Handler of the actor for send response
+     *
+     * @param message Wrapper of the actor
+     * @throws ReadValueException
+     * @throws ResolutionException
+     * @throws SerializeException
+     * @throws InvalidArgumentException
+     */
     public void sendResponse(final ResponseMessage message)
             throws ReadValueException, ResolutionException, SerializeException, InvalidArgumentException {
         IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
