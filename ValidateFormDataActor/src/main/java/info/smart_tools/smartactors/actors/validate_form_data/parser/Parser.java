@@ -48,7 +48,8 @@ public class Parser implements ParserConstants {
   }
 
   final public void queryTerm() throws ParseException {
- Token t;
+    boolean b;
+    Token t;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COMPULSORY:
       t = jj_consume_token(COMPULSORY);
@@ -90,15 +91,88 @@ public class Parser implements ParserConstants {
       t = jj_consume_token(PHONE);
                      result &= field.matches("^\u005c\u005c+7\u005c\u005cs9[0-9]{9}$");
       break;
-    case DIGIT:
-      t = jj_consume_token(DIGIT);
+    case DIGITS:
+      t = jj_consume_token(DIGITS);
                      result &= field.matches("^[0-9]+(([.,])[0-9]{1,2})?$");
       break;
     default:
       jj_la1[1] = jj_gen;
+     result &= compareTerm();
+    }
+  }
+
+  final public boolean compareTerm() throws ParseException {
+        Token tComparand1, tComparator, tComparand2;
+        double sComparand1, sComparand2;
+        String sComparator;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case LENGTH:
+      tComparand1 = jj_consume_token(LENGTH);
+                                  {sComparand1 = field.length();}
+      break;
+    case VALUE:
+      tComparand1 = jj_consume_token(VALUE);
+                                   sComparand1 = Double.parseDouble(field);
+      break;
+    case SUM:
+      tComparand1 = jj_consume_token(SUM);
+                                 sComparand1 = Double.parseDouble(field);
+      break;
+    case NUM_VALUE:
+      tComparand1 = jj_consume_token(NUM_VALUE);
+                                    sComparand1 = Double.parseDouble(tComparand1.toString());
+      break;
+    default:
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case LESSTHEN:
+      tComparator = jj_consume_token(LESSTHEN);
+                                  sComparator = tComparator.image;
+      break;
+    case MORETHEN:
+      tComparator = jj_consume_token(MORETHEN);
+                                  sComparator = tComparator.image;
+      break;
+    case EQUALS:
+      tComparator = jj_consume_token(EQUALS);
+                                sComparator = tComparator.image;
+      break;
+    case MOREEQUALS:
+      tComparator = jj_consume_token(MOREEQUALS);
+                                    sComparator = tComparator.image;
+      break;
+    case LESSEQUALS:
+      tComparator = jj_consume_token(LESSEQUALS);
+                                    sComparator = tComparator.image;
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VALUE:
+      tComparand2 = jj_consume_token(VALUE);
+                                sComparand2 = Double.parseDouble(field);
+      break;
+    case NUM_VALUE:
+      tComparand2 = jj_consume_token(NUM_VALUE);
+                                    sComparand2 = Double.parseDouble(tComparand2.toString());
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+            if (sComparator.equals(">")) {{if (true) return (sComparand1 > sComparand2);}}
+            if (sComparator.equals("<")) {{if (true) return (sComparand1 < sComparand2);}}
+            if (sComparator.equals("<=")) {{if (true) return (sComparand1 <= sComparand2);}}
+            if (sComparator.equals(">=")) {{if (true) return (sComparand1 >= sComparand2);}}
+            if (sComparator.equals("=")) {{if (true) return (sComparand1 == sComparand2);}}
+    throw new Error("Missing return statement in function");
   }
 
   /** Generated Token Manager. */
@@ -110,13 +184,13 @@ public class Parser implements ParserConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[2];
+  final private int[] jj_la1 = new int[5];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x1ffc0,};
+      jj_la1_0 = new int[] {0x20,0x1ffc0,0x1e0000,0x7c00000,0x140000,};
    }
 
   /** Constructor with InputStream. */
@@ -130,7 +204,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -144,7 +218,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -154,7 +228,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -164,7 +238,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -173,7 +247,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -182,7 +256,7 @@ public class Parser implements ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -233,12 +307,12 @@ public class Parser implements ParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[17];
+    boolean[] la1tokens = new boolean[27];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 5; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -247,7 +321,7 @@ public class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0; i < 27; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

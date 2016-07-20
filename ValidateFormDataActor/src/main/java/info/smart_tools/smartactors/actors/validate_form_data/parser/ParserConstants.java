@@ -33,7 +33,27 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int PHONE = 15;
   /** RegularExpression Id. */
-  int DIGIT = 16;
+  int DIGITS = 16;
+  /** RegularExpression Id. */
+  int LENGTH = 17;
+  /** RegularExpression Id. */
+  int VALUE = 18;
+  /** RegularExpression Id. */
+  int SUM = 19;
+  /** RegularExpression Id. */
+  int NUM_VALUE = 20;
+  /** RegularExpression Id. */
+  int DIGIT = 21;
+  /** RegularExpression Id. */
+  int MORETHEN = 22;
+  /** RegularExpression Id. */
+  int LESSTHEN = 23;
+  /** RegularExpression Id. */
+  int EQUALS = 24;
+  /** RegularExpression Id. */
+  int MOREEQUALS = 25;
+  /** RegularExpression Id. */
+  int LESSEQUALS = 26;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -57,6 +77,16 @@ public interface ParserConstants {
     "\"\\u0430\\u0440\\u0442\\u0438\\u043a\\u0443\\u043b\"",
     "\"\\u0442\\u0435\\u043b\\u0435\\u0444\\u043e\\u043d\"",
     "\"\\u0447\\u0438\\u0441\\u043b\\u043e\"",
+    "\"\\u0434\\u043b\\u0438\\u043d\\u0430\"",
+    "\"\\u0437\\u043d\\u0430\\u0447\\u0435\\u043d\\u0438\\u0435\"",
+    "\"\\u0441\\u0443\\u043c\\u043c\\u0430\"",
+    "<NUM_VALUE>",
+    "<DIGIT>",
+    "\">\"",
+    "\"<\"",
+    "\"=\"",
+    "\"=>\"",
+    "\"=<\"",
   };
 
 }

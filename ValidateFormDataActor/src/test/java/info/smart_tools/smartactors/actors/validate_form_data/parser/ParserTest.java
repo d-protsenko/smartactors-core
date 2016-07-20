@@ -29,5 +29,20 @@ public class ParserTest {
         assertTrue(new Parser(rules, "йцукен").validate());
     }
 
+    @Test
+    public void shouldRightValidateValue() throws Exception {
+        String rules = "значение > 80";
+        assertFalse(new Parser(rules, "5").validate());
+        assertFalse(new Parser(rules, "80").validate());
+        assertTrue(new Parser(rules, "100").validate());
+    }
+
+    @Test
+    public void shouldRightValidateLength() throws Exception {
+        String rules = "русский && длина > 4";
+        assertFalse(new Parser(rules, "ы").validate());
+        assertFalse(new Parser(rules, "dssdffs").validate());
+        assertTrue(new Parser(rules, "ываыавыа").validate());
+    }
 
 }
