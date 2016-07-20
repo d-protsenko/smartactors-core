@@ -41,6 +41,7 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
@@ -109,11 +110,17 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>IRouter</module>
+        <module>IChainStorage</module>
+        <module>MapRouter</module>
+        <module>ChainStorage</module>
+        <module>ChainCallReceiver</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
@@ -133,7 +140,6 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IField</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
@@ -153,6 +159,14 @@
         <module>IResponseStatusExtractor</module>
         <module>IChannelHandler</module>
         <module>ChannelHandlerNetty</module>
+        <module>PluginGetFormActor</module>
+        <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
+        <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>PluginIFieldName</module>
+        <module>IPath</module>
+        <module>Path</module>
     </modules>
 
     <build>
