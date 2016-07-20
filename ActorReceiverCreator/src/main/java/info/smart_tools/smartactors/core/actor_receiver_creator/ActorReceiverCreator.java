@@ -21,20 +21,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActorReceiverCreator implements IRoutedObjectCreator {
+
+    private FieldName name;
+    private FieldName dependency;
+    private FieldName wrapper;
+
+    public ActorReceiverCreator()
+            throws ObjectCreationException {
+        try {
+            this.name = new FieldName("name");
+            this.dependency = new FieldName("dependency");
+            this.wrapper = new FieldName("wrapper");
+        } catch (Throwable e) {
+            throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
+        }
+    }
+
     @Override
     public void createObject(IRouter router, IObject description)
             throws ObjectCreationException, InvalidArgumentException {
-
         try {
             Map<Object, IMessageReceiver> handlerReceiversMap = new HashMap<>();
-
-            String objectId = (String) description.getValue(new FieldName("name"));
-            String objectDependency = (String) description.getValue(new FieldName("dependency"));
-            IObject wrapperConfig = (IObject) description.getValue(new FieldName("wrapper"));
             IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()));
             IReceiverGenerator rg = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
-
-            Object object = IOC.resolve(Keys.getOrAdd(objectDependency), wrapperConfig);
+            Object object = IOC.resolve(
+                    Keys.getOrAdd((String) description.getValue(this.dependency)),
+                    (IObject) description.getValue(this.wrapper)
+            );
             for (Method m : object.getClass().getDeclaredMethods()) {
                 Class wrapperInterface = m.getParameterTypes()[0];
                 Object wrapper = wg.generate(wrapperInterface);
@@ -44,7 +57,7 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
             }
             IMessageReceiver handlerRoutingReceiver = new HandlerRoutingReceiver(handlerReceiversMap);
             IMessageReceiver actorReceiver = new ActorReceiver(handlerRoutingReceiver);
-            router.register(objectId, actorReceiver);
+            router.register((String) description.getValue(this.name) , actorReceiver);
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create receiver chain.", e);
         }
