@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Implementation of {@link IRoutedObjectCreator}.
+ * Generates {@code HandlerReceivers} and contains its to the new instance of {@link HandlerRoutingReceiver}.
  */
 public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
 
@@ -29,11 +30,16 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
     private FieldName dependency;
     private FieldName wrapper;
 
+    /**
+     * Default constructor.
+     * Create instance of {@link HandlerRoutingReceiverCreator} and initialize private fields.
+     * @throws ObjectCreationException if {@link IOC} resolution failed.
+     */
     public HandlerRoutingReceiverCreator()
             throws ObjectCreationException {
         try {
             this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");;
+            this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
             this.wrapper = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
@@ -41,7 +47,7 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
     }
 
     @Override
-    public void createObject(IRouter router, IObject description)
+    public void createObject(final IRouter router, final IObject description)
             throws ObjectCreationException, InvalidArgumentException {
 
         try {
