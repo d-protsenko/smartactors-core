@@ -1,9 +1,12 @@
 import info.smart_tools.smartactors.core.*;
+import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
+import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -78,9 +81,10 @@ public class HttpEndpointTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.toString());
-        IKey keyIObject = Keys.getOrAdd(IObject.class.toString());
-        IKey keyIFieldName = Keys.getOrAdd(FieldName.class.toString());
+        IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyChannelHandler = Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName());
+        IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyMessageProcessingSequence,
                 new CreateNewInstanceStrategy(
@@ -117,6 +121,16 @@ public class HttpEndpointTest {
                         }
                 )
         );
+        IOC.register(
+                keyChannelHandler,
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            IChannelHandler handler = new ChannelHandlerNetty();
+                            handler.init((ChannelHandlerContext) args[0]);
+                            return handler;
+                        }
+                )
+        );
 
         ChannelInboundHandler handler = new SimpleChannelInboundHandler<FullHttpResponse>(getResponseClass()) {
             @Override
@@ -140,7 +154,7 @@ public class HttpEndpointTest {
 
     @Test
     public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler() throws ResolutionException {
-        IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), "{\"hello\": \"world\"}");
+        IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
         HttpRequest request = createTestRequest();
         sendRequest(request);
@@ -173,7 +187,7 @@ public class HttpEndpointTest {
         request.headers().set(HttpHeaders.Names.HOST, "localhost");
         request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
         request.headers().set(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
-
+        request.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         return request;
     }
 }

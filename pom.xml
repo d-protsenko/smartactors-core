@@ -146,10 +146,13 @@
         <module>ResponseSenderActor</module>
         <module>IResponse</module>
         <module>IResponseContentStrategy</module>
-        <module>IResponseEnvironmentStrategy</module>
         <module>Response</module>
         <module>ResponseContentJsonStrategy</module>
-        <module>ResponseEnvironmentHttpStrategy</module>
+        <module>ICookiesExtractor</module>
+        <module>IHeadersExtractor</module>
+        <module>IResponseStatusExtractor</module>
+        <module>IChannelHandler</module>
+        <module>ChannelHandlerNetty</module>
     </modules>
 
     <build>

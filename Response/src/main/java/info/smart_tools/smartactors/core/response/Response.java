@@ -11,12 +11,6 @@ import java.util.Map;
  */
 public class Response implements IResponse {
     private byte[] content;
-    private Map<String, Object> environment = new HashMap<>();
-
-    @Override
-    public void setEnvironment(final String key, final Object environment) {
-        this.environment.put(key, environment);
-    }
 
     @Override
     public void setContent(final byte[] response) {
@@ -26,10 +20,5 @@ public class Response implements IResponse {
     @Override
     public byte[] getContent() {
         return content;
-    }
-
-    @Override
-    public <T> T getEnvironment(final String key) {
-        return (T) environment.get(key);
     }
 }

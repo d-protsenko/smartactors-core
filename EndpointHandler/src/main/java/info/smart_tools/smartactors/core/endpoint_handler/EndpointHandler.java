@@ -58,8 +58,8 @@ public abstract class EndpointHandler<TContext, TRequest> {
      */
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
-            IObject environment = getEnvironment(ctx, request);
             ScopeProvider.setCurrentScope(scope);
+            IObject environment = getEnvironment(ctx, request);
             environmentHandler.handle(environment, receiverChain);
         } catch (Exception e) {
             throw new ExecutionException("Failed to handle request to endpoint", e);
