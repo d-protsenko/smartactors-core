@@ -153,7 +153,8 @@
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>ServerWithConfiguration</module>
-        <module>ReceiverChainCreator</module>
+        <module>HandlerRoutingReceiverCreator</module>
+        <module>ActorReceiverCreator</module>
     </modules>
 
     <build>

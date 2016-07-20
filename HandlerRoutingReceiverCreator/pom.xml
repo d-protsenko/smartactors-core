@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.receiver_chain_creator</artifactId>
+    <artifactId>core.handler_routing_receiver_creator</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.receiver_chain_creator;
+package info.smart_tools.smartactors.core.handler_routing_receiver_creator;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.handler_routing_receiver.HandlerRoutingReceiver;
@@ -23,8 +23,6 @@ import java.util.Map;
  *
  */
 public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
-
-    private IResolveDependencyStrategy strategy;
 
     @Override
     public void createObject(IRouter router, IObject description)
@@ -56,7 +54,7 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
                         }
                 );
                 IMessageReceiver handlerReceiver = rg.generate(object, strategy, m.getName());
-                handlerReceiversMap.put(objectId, handlerReceiver);
+                handlerReceiversMap.put(m.getName(), handlerReceiver);
             }
             IMessageReceiver handlerRoutingReceiver = new HandlerRoutingReceiver(handlerReceiversMap);
             router.register(objectId, handlerRoutingReceiver);
