@@ -136,6 +136,7 @@
         <module>IField</module>
         <module>IPath</module>
         <module>Path</module>
+        <module>PluginGetAsyncOperation</module>
     </modules>
 
     <build>
