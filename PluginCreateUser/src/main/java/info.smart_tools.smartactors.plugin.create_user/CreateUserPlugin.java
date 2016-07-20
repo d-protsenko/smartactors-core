@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.plugin.create_user;
 import info.smart_tools.smartactors.actors.create_user.CreateUserActor;
 import info.smart_tools.smartactors.actors.create_user.wrapper.ActorParams;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
