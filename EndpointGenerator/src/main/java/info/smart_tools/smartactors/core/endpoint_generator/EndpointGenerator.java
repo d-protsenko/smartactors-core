@@ -17,12 +17,15 @@ import java.util.function.Function;
 /**
  * Generator of endpoints by protocol.
  */
-public class EndpointGenerator {
+public final class EndpointGenerator {
 
     private static HashMap<String, IEndpointCreator> endpoints = new HashMap<>();
 
     private static IFieldName typeField;
     private static String defaultEndpointType = "http";
+
+    private EndpointGenerator() {
+    }
 
     static {
         try {

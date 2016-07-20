@@ -2,11 +2,9 @@ package info.smart_tools.smartactors.core;
 
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -33,12 +31,10 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      * @param receiver              chain, that should receive message
      * @param deserializeStrategies map of the deserialize strategies, where key is content-type
      *                              and value is strategy for that content type
-     * @throws ResolutionException
      */
     public HttpRequestHandler(
             final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
-            final Map<String, IDeserializeStrategy> deserializeStrategies
-    ) throws ResolutionException {
+            final Map<String, IDeserializeStrategy> deserializeStrategies) {
         super(receiver, environmentHandler, scope);
         this.deserializeStrategies = deserializeStrategies;
     }

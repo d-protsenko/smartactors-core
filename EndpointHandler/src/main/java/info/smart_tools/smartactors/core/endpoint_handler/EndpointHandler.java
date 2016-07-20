@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -28,11 +27,9 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param scope scope for HttpRequestHandler
      * @param environmentHandler handler for environment
      * @param receiver chain, that should receive message
-     *
-     * @throws ResolutionException
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope) throws ResolutionException {
+                           final IScope scope) {
         this.scope = scope;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
@@ -45,7 +42,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param request request to the endpoint
      * @param ctx context of the request
      * @return a deserialized message
-     * @throws Exception
+     * @throws Exception if there is exception at environment getting
      */
     protected abstract IObject getEnvironment(TContext ctx, TRequest request) throws Exception;
 

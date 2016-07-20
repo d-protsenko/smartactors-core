@@ -14,7 +14,7 @@ public interface IResponseSender {
      * @param responseObject Object with content of the response
      * @param environment Environment of the message processor
      * @param ctx Channel handler from endpoint
-     * @throws ResolutionException
+     * @throws ResolutionException if there are some problems on resolving dependencies
      */
     void send(final IResponse responseObject, final IObject environment, final IChannelHandler ctx)
             throws ResolutionException;

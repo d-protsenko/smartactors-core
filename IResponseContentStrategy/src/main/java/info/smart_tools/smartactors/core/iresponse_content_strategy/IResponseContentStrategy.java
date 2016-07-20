@@ -11,7 +11,9 @@ public interface IResponseContentStrategy {
     /**
      * Method for setting content of the response, from {@link IObject} response
      * @param responseObject IObject from environment
-     * @param response
+     * @param response Response in which content should add
+     *
+     * @throws SerializeException if there is error on serialization
      */
-    void setContent(final IObject responseObject, IResponse response) throws SerializeException;
+    void setContent(final IObject responseObject, final IResponse response) throws SerializeException;
 }

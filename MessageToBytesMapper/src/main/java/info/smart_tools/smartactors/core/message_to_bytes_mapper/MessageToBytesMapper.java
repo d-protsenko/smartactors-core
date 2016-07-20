@@ -9,6 +9,9 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+/**
+ * Implementation of {@link IMessageMapper} which map message to byte array
+ */
 public class MessageToBytesMapper implements IMessageMapper<byte[]> {
 
     /**

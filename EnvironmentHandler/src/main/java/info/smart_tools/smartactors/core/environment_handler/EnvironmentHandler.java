@@ -23,6 +23,12 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     private final IQueue<ITask> taskQueue;
     private final int stackDepth;
 
+    /**
+     * Handler for environment from endpoint
+     * @param taskQueue Queue of the tasks
+     * @param stackDepth Stack depth of the {@link IMessageProcessor}
+     * @throws InvalidArgumentException if there is invalid arguments
+     */
     public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth) throws InvalidArgumentException {
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");

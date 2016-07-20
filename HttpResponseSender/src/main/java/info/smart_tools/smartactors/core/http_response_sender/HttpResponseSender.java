@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusSetter;
+import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -17,7 +17,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 
 /**
- * Exchange object for received HTTP request.
+ * Response sender object for received HTTP request.
  * It sends a response to the request and closes the connection.
  */
 public class HttpResponseSender implements IResponseSender {
@@ -26,7 +26,7 @@ public class HttpResponseSender implements IResponseSender {
      */
     private final ICookiesSetter cookiesSetter;
     private final IHeadersSetter headersSetter;
-    private final IResponseStatusSetter responseStatusSetter;
+    private final IResponseStatusExtractor responseStatusSetter;
     private final String name;
 
     /**
@@ -39,7 +39,7 @@ public class HttpResponseSender implements IResponseSender {
         this.name = name;
         cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()), name);
         headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersSetter.class.getCanonicalName()), name);
-        responseStatusSetter = IOC.resolve(Keys.getOrAdd(IResponseStatusSetter.class.getCanonicalName()), name);
+        responseStatusSetter = IOC.resolve(Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName()), name);
     }
 
     @Override

@@ -20,7 +20,7 @@ public abstract class NettyServer implements IAsyncService<NettyServer> {
     private final int port;
     private Channel channel;
 
-    public NettyServer(int port) {
+    public NettyServer(final int port) {
         this.port = port;
     }
 
@@ -31,7 +31,7 @@ public abstract class NettyServer implements IAsyncService<NettyServer> {
         final NettyServer me = this;
         final ChannelFuture channelFuture = bootstrap.bind(port).addListener(new ChannelFutureListener() {
             @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+            public void operationComplete(final ChannelFuture channelFuture) throws Exception {
                 me.channel = channelFuture.channel();
             }
         });
@@ -66,7 +66,7 @@ public abstract class NettyServer implements IAsyncService<NettyServer> {
         return ImmutableList.of();
     }
 
-    private <T> CompletableFuture<NettyServer> wrapToCompletableFuture(Future<T> future) {
+    private <T> CompletableFuture<NettyServer> wrapToCompletableFuture(final Future<T> future) {
         final NettyServer me = this;
         return CompletableNettyFuture.from(future).thenApply(x -> me);
     }

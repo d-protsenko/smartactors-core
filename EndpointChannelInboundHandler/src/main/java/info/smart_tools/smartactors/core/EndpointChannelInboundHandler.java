@@ -15,13 +15,19 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class EndpointChannelInboundHandler<TRequest> extends SimpleChannelInboundHandler<TRequest> {
     private EndpointHandler<ChannelHandlerContext, TRequest> handler;
 
-    public EndpointChannelInboundHandler(EndpointHandler<ChannelHandlerContext, TRequest> handler, Class<? extends TRequest> requestClass) {
+    /**
+     * Constructor
+     * @param handler Handler, that will receive requests
+     * @param requestClass Type of the request
+     */
+    public EndpointChannelInboundHandler(final EndpointHandler<ChannelHandlerContext, TRequest> handler,
+                                         final Class<? extends TRequest> requestClass) {
         super(requestClass);
         this.handler = handler;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TRequest request) throws Exception {
+    protected void channelRead0(final ChannelHandlerContext ctx, final TRequest request) throws Exception {
         handler.handle(ctx, request);
     }
 }

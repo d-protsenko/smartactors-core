@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class CompletableNettyFuture<T> extends CompletableFuture<T> {
     private Future<T> nettyFuture;
 
-    private CompletableNettyFuture(Future<T> nettyFuture) {
+    private CompletableNettyFuture(final Future<T> nettyFuture) {
         this.nettyFuture = nettyFuture;
     }
 
@@ -28,12 +28,12 @@ public class CompletableNettyFuture<T> extends CompletableFuture<T> {
      * @param <T>         type of value returned by Future
      * @return a {@link CompletableFuture} that wraps the given one
      */
-    public static <T> CompletableFuture<T> from(Future<T> nettyFuture) {
+    public static <T> CompletableFuture<T> from(final Future<T> nettyFuture) {
         CompletableFuture<T> result = new CompletableNettyFuture<>(nettyFuture);
 
         nettyFuture.addListener(new FutureListener<T>() {
             @Override
-            public void operationComplete(Future<T> future) throws Exception {
+            public void operationComplete(final Future<T> future) throws Exception {
                 if (future.isSuccess()) {
                     result.complete(future.getNow());
                 } else {
@@ -46,7 +46,7 @@ public class CompletableNettyFuture<T> extends CompletableFuture<T> {
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         boolean result = nettyFuture.cancel(mayInterruptIfRunning);
         super.cancel(mayInterruptIfRunning);
         return result;

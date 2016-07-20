@@ -15,17 +15,26 @@ import java.net.URI;
  * Client for HTTP server
  */
 public class HttpClient extends NettyClient<HttpRequest> {
-    public HttpClient(URI serverUri, ChannelInboundHandler inboundHandler) {
+    /**
+     * Constructor for http client
+     * @param serverUri URI of the server, that will receive requests
+     * @param inboundHandler Channel
+     */
+    public HttpClient(final URI serverUri, final ChannelInboundHandler inboundHandler) {
         super(serverUri, NioSocketChannel.class, inboundHandler);
     }
 
-    public HttpClient(IClientConfig clientConfig) {
+    /**
+     * Constructor with using client config
+     * @param clientConfig Configuration of the current client
+     */
+    public HttpClient(final IClientConfig clientConfig) {
         super(NioSocketChannel.class, clientConfig);
     }
 
     //TODO:: set maxContentLength from configuration
     @Override
-    protected ChannelPipeline setupPipeline(ChannelPipeline pipeline) {
+    protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         return super.setupPipeline(pipeline).addLast(new HttpClientCodec(), new HttpObjectAggregator(4096));
     }
 }

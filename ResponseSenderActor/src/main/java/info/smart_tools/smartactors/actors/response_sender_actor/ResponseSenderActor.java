@@ -11,6 +11,9 @@ import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseCon
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+/**
+ * Actor for sending response to client
+ */
 public class ResponseSenderActor {
     public ResponseSenderActor() {
     }
@@ -22,7 +25,7 @@ public class ResponseSenderActor {
                 IOC.resolve(Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()), message.getEnvironment());
         contentStrategy.setContent(message.getResponse(), response);
         IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                message.getProtocol());
+                message.getEnvironment());
         sender.send(response, message.getEnvironment(), message.getChannelHandler());
     }
 }

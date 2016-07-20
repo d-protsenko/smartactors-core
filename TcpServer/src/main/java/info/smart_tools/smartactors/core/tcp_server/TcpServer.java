@@ -45,7 +45,7 @@ public class TcpServer extends NettyServer {
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
-                    protected void initChannel(Channel ch) throws Exception {
+                    protected void initChannel(final Channel ch) throws Exception {
                         setupPipeline(ch.pipeline()).addLast(requestHandler);
                     }
                 })

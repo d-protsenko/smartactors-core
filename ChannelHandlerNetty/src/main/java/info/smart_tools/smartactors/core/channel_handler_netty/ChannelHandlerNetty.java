@@ -11,8 +11,8 @@ public class ChannelHandlerNetty implements IChannelHandler<ChannelHandlerContex
     private ChannelHandlerContext channelHandler;
 
     @Override
-    public void init(final ChannelHandlerContext channelHandler) {
-        this.channelHandler = channelHandler;
+    public void init(final ChannelHandlerContext handler) {
+        this.channelHandler = handler;
     }
 
     @Override

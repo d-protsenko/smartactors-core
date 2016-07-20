@@ -154,10 +154,10 @@
         <module>IResponseContentStrategy</module>
         <module>Response</module>
         <module>ResponseContentJsonStrategy</module>
-        <module>ICookiesExtractor</module>
-        <module>IHeadersExtractor</module>
         <module>IResponseStatusExtractor</module>
         <module>IChannelHandler</module>
+        <module>ICookiesSetter</module>
+        <module>IHeadersSetter</module>
         <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
         <module>GetCookieFromRequestRule</module>

@@ -28,16 +28,23 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
     private Class<? extends Channel> channelClass;
     private ChannelInboundHandler inboundHandler;
     private IClientConfig clientConfig;
-    private final static int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
-    private final static int DEFAULT_READ_TIMEOUT_SEC = 5;
+    private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
+    private static final int DEFAULT_READ_TIMEOUT_SEC = 5;
 
-    public NettyClient(URI serverUri, Class<? extends Channel> channelClass, ChannelInboundHandler inboundHandler) {
+    /**
+     * Constructor for netty client
+     * @param serverUri URI of the server
+     * @param channelClass
+     * @param inboundHandler
+     */
+    public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,
+                       final ChannelInboundHandler inboundHandler) {
         this.serverUri = serverUri;
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
     }
 
-    public NettyClient(Class<? extends Channel> channelClass, IClientConfig clientConfig) {
+    public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
         if (clientConfig == null) {
             throw new RuntimeException("Can't create NettyClient: client config is null");
         }
@@ -55,9 +62,10 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
     public CompletableFuture<IClient<TRequest>> start() {
         Bootstrap bootstrap = bootstrapClient();
         NettyClient<TRequest> me = this;
-        ChannelFuture future = bootstrap.connect(serverUri.getHost(), serverUri.getPort()).addListener(new ChannelFutureListener() {
+        ChannelFuture future = bootstrap.connect(serverUri.getHost(),
+                serverUri.getPort()).addListener(new ChannelFutureListener() {
             @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
+            public void operationComplete(final ChannelFuture future) throws Exception {
                 if (!future.isSuccess()) {
                     //TODO:: send message about connection failed
                     System.out.println("Connection failed!!!");
@@ -77,7 +85,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
      * @param request concrete request to send
      * @return a future object which can be used to wait a request transmission
      */
-    public CompletableFuture<Void> send(TRequest request) {
+    public CompletableFuture<Void> send(final TRequest request) {
         return CompletableNettyFuture.from(channel.writeAndFlush(request));
     }
 
@@ -94,7 +102,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
      * @param pipeline a communication pipeline
      * @return a given pipeline enriched with some input-handling logic.
      */
-    protected ChannelPipeline setupPipeline(ChannelPipeline pipeline) {
+    protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         return pipeline;
     }
 
@@ -110,21 +118,23 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
                 .channel(channelClass)
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
-                    protected void initChannel(Channel ch) throws Exception {
+                    protected void initChannel(final Channel ch) throws Exception {
                         ch.config().setConnectTimeoutMillis(
-                                clientConfig != null && clientConfig.getConnectionTimeout() != null ? clientConfig.getConnectionTimeout() : DEFAULT_CONNECTION_TIMEOUT_MILLIS
+                                clientConfig != null && clientConfig.getConnectionTimeout() != null ?
+                                        clientConfig.getConnectionTimeout() : DEFAULT_CONNECTION_TIMEOUT_MILLIS
                         );
 //                        ch.config().setOption(ChannelOption.SO_KEEPALIVE, clientConfig.getKeepAlive());
                         setupPipeline(ch.pipeline())
                                 .addLast(new ReadTimeoutHandler(
-                                        clientConfig != null && clientConfig.getReadTimeout() != null ? clientConfig.getReadTimeout() / 1000 : DEFAULT_READ_TIMEOUT_SEC
+                                        clientConfig != null && clientConfig.getReadTimeout() != null ?
+                                                clientConfig.getReadTimeout() / 1000 : DEFAULT_READ_TIMEOUT_SEC
                                 ))
                                 .addLast(inboundHandler);
                     }
                 });
     }
 
-    private <T> CompletableFuture<IClient<TRequest>> wrapToCompletableFuture(Future<T> future) {
+    private <T> CompletableFuture<IClient<TRequest>> wrapToCompletableFuture(final Future<T> future) {
         final NettyClient<TRequest> me = this;
         return CompletableNettyFuture.from(future).thenApply(x -> me);
     }

@@ -126,7 +126,7 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             IChannelHandler handler = new ChannelHandlerNetty();
-                            handler.init((ChannelHandlerContext) args[0]);
+                            handler.init(args[0]);
                             return handler;
                         }
                 )

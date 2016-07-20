@@ -7,13 +7,16 @@ import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseCon
 
 import java.nio.charset.Charset;
 
+/**
+ * Class for setting json content of the response
+ */
 public class ResponseContentJsonStrategy implements IResponseContentStrategy {
     @Override
-    public void setContent(final IObject responseObject, IResponse response) throws SerializeException {
+    public void setContent(final IObject responseObject, final IResponse response) throws SerializeException {
         response.setContent(serializeIObjectToJson(responseObject));
     }
 
-    private byte[] serializeIObjectToJson(IObject responseObject) throws SerializeException {
-        return ((String)responseObject.serialize()).getBytes(Charset.forName("UTF-8"));
+    private byte[] serializeIObjectToJson(final IObject responseObject) throws SerializeException {
+        return ((String) responseObject.serialize()).getBytes(Charset.forName("UTF-8"));
     }
 }

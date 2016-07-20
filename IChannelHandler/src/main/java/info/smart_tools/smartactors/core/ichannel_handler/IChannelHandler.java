@@ -2,11 +2,12 @@ package info.smart_tools.smartactors.core.ichannel_handler;
 
 /**
  * Interface for channel handler, that should send response to client
+ * @param <T> Type of channel handler
  */
 public interface IChannelHandler<T> {
     /**
      * Method for initialize channel handler
-     * @param channelHandler
+     * @param channelHandler Channel handler, which use for initialization
      */
     void init(T channelHandler);
 

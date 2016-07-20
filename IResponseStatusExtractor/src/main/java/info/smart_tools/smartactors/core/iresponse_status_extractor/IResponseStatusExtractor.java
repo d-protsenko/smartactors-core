@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 /**
  * Interface for extracting http response status from environment
  */
-public interface IResponseStatusSetter {
+public interface IResponseStatusExtractor {
     /**
      * Method for extracting http response status from environment
      *
