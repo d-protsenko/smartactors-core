@@ -98,7 +98,7 @@ public class CreateSessionActor {
 
                     Field countSearchResultF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "countSearchResult");
                     //TODO:: replace ()
-                    if ((Integer)countSearchResultF.in(searchQuery) == 0) {
+                    if (countSearchResultF.<Integer>in(searchQuery) == 0) {
                         throw new CreateSessionException("Cannot find session by sessionId: "
                                 + inputMessage.getSessionId()
                         );
@@ -106,7 +106,7 @@ public class CreateSessionActor {
 
                     Field searchResultField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "searchResult");
 
-                    IObject result = ((List<IObject>)searchResultField.in(searchQuery)).get(0);
+                    IObject result = (searchResultField.<List<IObject>>in(searchQuery)).get(0);
 
                     Field sessionF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "session");
                     Session fromDBSession = sessionF.in(result);
