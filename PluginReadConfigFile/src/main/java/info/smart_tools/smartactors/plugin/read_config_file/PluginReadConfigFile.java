@@ -42,6 +42,7 @@ public class PluginReadConfigFile implements IPlugin {
 
             readConfigItem
                     .after("configuration_manager")
+                    .after("iobject")
                     .before("configure")
                     .process(() -> {
                         try {

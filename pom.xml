@@ -150,6 +150,9 @@
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
         <module>ServerWithConfiguration</module>
+        <module>PluginIOCSimpleContainer</module>
+        <module>PluginIOCKeys</module>
+        <module>PluginDsobject</module>
     </modules>
 
     <build>

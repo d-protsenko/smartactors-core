@@ -46,7 +46,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
 
             item
-                .after("IOC")
+                .after("ioc")
                 .after("FieldPlugin")
                 .process(() -> {
                     try {
