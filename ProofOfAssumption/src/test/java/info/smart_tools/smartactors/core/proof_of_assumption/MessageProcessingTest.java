@@ -120,6 +120,8 @@ public class MessageProcessingTest {
         final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
 
+        final IObject config = new DSObject();
+
         IMessage messageMock = mock(IMessage.class);
         IObject contextMock = mock(IObject.class);
 
@@ -134,7 +136,8 @@ public class MessageProcessingTest {
         ITask putTask = () -> {
             while (!mainThread.isInterrupted() && !Thread.interrupted()) {
                 try {
-                    new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), new DSObject()).process(messageMock, contextMock);
+                    //TODO: fix nail new DSObject() or remove this TODO-
+                    new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), config).process(messageMock, contextMock);
                     Thread.sleep(PUT_INTERVAL);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -184,13 +187,16 @@ public class MessageProcessingTest {
                 new IObject[21],
                 new HashMap<>());
 
-        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countStartChain), new DSObject()).process(messageMock, contextMock);
+        //TODO: fix nail new DSObject() or remove this TODO
+        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countStartChain), config).process(messageMock, contextMock);
 
         for (int i = 0; i < PAYLOAD_MESSAGES; i++) {
-            new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), new DSObject()).process(messageMock, contextMock);
+            //TODO: fix nail new DSObject() or remove this TODO
+            new MessageProcessor(taskQueue, new MessageProcessingSequence(4, standardChain), config).process(messageMock, contextMock);
         }
 
-        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countEndChain), new DSObject()).process(messageMock, contextMock);
+        //TODO: fix nail new DSObject() or remove this TODO
+        new MessageProcessor(taskQueue, new MessageProcessingSequence(4, countEndChain), config).process(messageMock, contextMock);
 
         dispatcher.start();
 
@@ -217,14 +223,10 @@ public class MessageProcessingTest {
     @Test
     public void test_messageProcessingWithChainChoicePerformance()
             throws Exception {
-        final Thread mainThread = Thread.currentThread();
         final AtomicLong startNanoTime = new AtomicLong();
         final AtomicLong deltaTime = new AtomicLong();
         final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
-
-        IMessage messageMock = mock(IMessage.class);
-        IObject contextMock = mock(IObject.class);
 
         IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
@@ -371,6 +373,7 @@ public class MessageProcessingTest {
         //
 
         for (int i = 0; i < PAYLOAD_MESSAGES + MEASURE_MESSAGES; i++) {
+            //TODO: fix nail new DSObject() or remove this TODO
             new MessageProcessor(taskQueue, new MessageProcessingSequence(5, mainChain), new DSObject())
                     .process(new DSObject(), new DSObject());
         }
