@@ -1,17 +1,13 @@
 package info.smart_tools.smartactors.plugin.create_session;
 
 import info.smart_tools.smartactors.actors.create_session.CreateSessionActor;
-import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import jdk.nashorn.internal.runtime.linker.Bootstrap;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,11 +17,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-@PrepareForTest({IOC.class, Keys.class, CreateSessionActor.class})
+@PrepareForTest({IOC.class, Keys.class, CreateSessionPlugin.class})
 @RunWith(PowerMockRunner.class)
 public class CreateSessionPluginTest {
 
@@ -62,12 +57,12 @@ public class CreateSessionPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         Mockito.verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
         actionArgumentCaptor.getValue().execute();
 
         PowerMockito.verifyStatic();
-        IOC.register(Mockito.eq(actorKey), Mockito.eq(createNewInstanceStrategyArgumentCaptor.capture()));
+        IOC.register(Mockito.eq(actorKey), createNewInstanceStrategyArgumentCaptor.capture());
 
         CreateSessionActor actor = Mockito.mock(CreateSessionActor.class);
         PowerMockito.whenNew(CreateSessionActor.class).withAnyArguments().thenReturn(actor);
