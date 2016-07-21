@@ -137,6 +137,7 @@
         <module>IPath</module>
         <module>Path</module>
         <module>PluginIObject</module>
+        <module>ResolveByTypeStrategy</module>
     </modules>
 
     <build>
