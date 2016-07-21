@@ -176,6 +176,7 @@
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>
+        <module>ResponseStatusExtractor</module>
     </modules>
 
     <build>
