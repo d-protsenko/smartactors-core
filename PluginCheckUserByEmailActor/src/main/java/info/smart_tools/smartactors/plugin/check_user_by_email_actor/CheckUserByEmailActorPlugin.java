@@ -39,14 +39,14 @@ public class CheckUserByEmailActorPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey checkUserByEmailActorKey = Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+                            IKey checkUserByEmailActorKey = Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
                             IOC.register(checkUserByEmailActorKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> {
                                                 try {
                                                     ActorParams actorParams =
                                                             IOC.resolve(
-                                                                    Keys.getOrAdd(ActorParams.class.toString()),
+                                                                    Keys.getOrAdd(ActorParams.class.getCanonicalName()),
                                                                     args[0]);
                                                     return new CheckUserByEmailActor(actorParams);
                                                 } catch (ArrayIndexOutOfBoundsException e) {

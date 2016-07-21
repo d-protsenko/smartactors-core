@@ -67,12 +67,12 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+        Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -84,14 +84,14 @@ public class CheckUserByEmailActorPluginTest {
         CheckUserByEmailActor actor = mock(CheckUserByEmailActor.class);
         ActorParams actorParams = mock(ActorParams.class);
         IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
         when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
         whenNew(CheckUserByEmailActor.class).withArguments(actorParams).thenReturn(actor);
 
         assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(arg) == actor);
 
         verifyStatic();
-        Keys.getOrAdd(ActorParams.class.toString());
+        Keys.getOrAdd(ActorParams.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(actorParamsIKey, arg);
@@ -133,13 +133,13 @@ public class CheckUserByEmailActorPluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+            Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -165,7 +165,7 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -180,7 +180,7 @@ public class CheckUserByEmailActorPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+            Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -192,14 +192,14 @@ public class CheckUserByEmailActorPluginTest {
             CheckUserByEmailActor actor = mock(CheckUserByEmailActor.class);
             ActorParams actorParams = mock(ActorParams.class);
             IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+            when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
             when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
             whenNew(CheckUserByEmailActor.class).withArguments(actorParams).thenReturn(actor);
 
             assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
 
             verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
+            Keys.getOrAdd(ActorParams.class.getCanonicalName());
 
             verifyStatic();
             IOC.resolve(actorParamsIKey, arg);
@@ -230,7 +230,7 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -242,7 +242,7 @@ public class CheckUserByEmailActorPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+            Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -251,14 +251,14 @@ public class CheckUserByEmailActorPluginTest {
             CheckUserByEmailActor actor = mock(CheckUserByEmailActor.class);
             ActorParams actorParams = mock(ActorParams.class);
             IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+            when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
             when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
             whenNew(CheckUserByEmailActor.class).withArguments(actorParams).thenReturn(actor);
 
             assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
 
             verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
+            Keys.getOrAdd(ActorParams.class.getCanonicalName());
 
             verifyStatic();
             IOC.resolve(actorParamsIKey, arg);
@@ -289,7 +289,7 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -301,21 +301,21 @@ public class CheckUserByEmailActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+        Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
 
         IObject arg = mock(IObject.class);
 
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
         } catch (RuntimeException e) {
 
             verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
+            Keys.getOrAdd(ActorParams.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -341,7 +341,7 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -353,7 +353,7 @@ public class CheckUserByEmailActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+        Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
@@ -361,7 +361,7 @@ public class CheckUserByEmailActorPluginTest {
         IObject arg = mock(IObject.class);
 
         IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
         when(IOC.resolve(actorParamsIKey, arg)).thenThrow(new ResolutionException(""));
 
         try {
@@ -369,7 +369,7 @@ public class CheckUserByEmailActorPluginTest {
         } catch (RuntimeException e) {
 
             verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
+            Keys.getOrAdd(ActorParams.class.getCanonicalName());
 
             verifyStatic();
             IOC.resolve(actorParamsIKey, arg);
@@ -398,7 +398,7 @@ public class CheckUserByEmailActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserByEmailActor.class.toString())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -410,7 +410,7 @@ public class CheckUserByEmailActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CheckUserByEmailActor.class.toString());
+        Keys.getOrAdd(CheckUserByEmailActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
@@ -419,7 +419,7 @@ public class CheckUserByEmailActorPluginTest {
 
         ActorParams actorParams = mock(ActorParams.class);
         IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
         when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
         whenNew(CheckUserByEmailActor.class).withArguments(actorParams).thenThrow(new InvalidArgumentException(""));
 
@@ -428,7 +428,7 @@ public class CheckUserByEmailActorPluginTest {
         } catch (RuntimeException e) {
 
             verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
+            Keys.getOrAdd(ActorParams.class.getCanonicalName());
 
             verifyStatic();
             IOC.resolve(actorParamsIKey, arg);
