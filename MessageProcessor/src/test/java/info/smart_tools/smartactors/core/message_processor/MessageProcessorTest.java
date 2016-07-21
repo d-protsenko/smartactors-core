@@ -15,6 +15,8 @@ import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.wds_object.WDSObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -318,5 +320,50 @@ public class MessageProcessorTest {
         }
 
         messageProcessor.continueProcess(null);
+    }
+
+    @Test
+    public void Should_createWDSObject_When_wrapperSectionPresentInArgumentsObject()
+            throws Exception {
+        IMessageReceiver messageReceiverMock1 = mock(IMessageReceiver.class);
+        IObject receiverArguments1 = mock(IObject.class);
+        IObject receiverArguments2 = mock(IObject.class);
+        Object wrapperConfig = mock(Object.class);
+        WDSObject wrapperMock = mock(WDSObject.class);
+
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
+
+        when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
+                .thenReturn(responseMock);
+
+        messageProcessor.process(messageMock, contextMock);
+
+        doAnswer(invocationOnMock -> {
+            messageProcessor.pauseProcess();
+            return null;
+        }).when(messageReceiverMock1).receive(same(messageProcessor));
+
+        when(messageProcessingSequenceMock.getCurrentReceiver())
+                .thenReturn(messageReceiverMock1);
+        when(messageProcessingSequenceMock.getCurrentReceiverArguments())
+                .thenReturn(receiverArguments1);
+        when(receiverArguments1.getValue(eq(new FieldName("wrapper")))).thenReturn(wrapperConfig);
+        when(IOC.resolve(same(Keys.getOrAdd(WDSObject.class.getCanonicalName())), same(wrapperConfig))).thenReturn(wrapperMock);
+        when(messageProcessingSequenceMock.next())
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(false);
+
+        messageProcessor.execute();
+        assertSame(wrapperMock, messageProcessor.getEnvironment());
+
+        when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments2);
+        messageProcessor.execute();
+        assertNotSame(wrapperMock, messageProcessor.getEnvironment());
+
+        when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(receiverArguments1);
+        messageProcessor.execute();
+        assertSame(wrapperMock, messageProcessor.getEnvironment());
     }
 }
