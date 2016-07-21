@@ -141,6 +141,7 @@
         <module>PluginIObject</module>
         <module>ResolveByTypeStrategy</module>
         <module>ResolveStandardTypesStrategies</module>
+        <module>PluginResolveStandardTypesStrategies</module>
     </modules>
 
     <build>
