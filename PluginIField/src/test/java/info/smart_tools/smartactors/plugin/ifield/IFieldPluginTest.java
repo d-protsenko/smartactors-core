@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
+import info.smart_tools.smartactors.core.field.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
