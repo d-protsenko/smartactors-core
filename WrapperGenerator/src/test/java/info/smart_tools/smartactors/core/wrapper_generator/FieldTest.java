@@ -1,3 +1,4 @@
+/*
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.ds_object.DSObject;
@@ -29,9 +30,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
+*
  * Tests for Field
- */
+
+
 public class FieldTest {
 
     @Before
@@ -253,3 +255,4 @@ public class FieldTest {
     }
 
 }
+*/
