@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -21,7 +20,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -112,7 +113,7 @@ public class GetObjectFromCachedCollectionTaskTest {
     }
 
     @Test
-    public void MostCorrectlySetConnectionToNestedTask() throws TaskSetConnectionException {
+    public void MostCorrectlySetConnectionToNestedTask() {
 
         IStorageConnection connection = mock(IStorageConnection.class);
 

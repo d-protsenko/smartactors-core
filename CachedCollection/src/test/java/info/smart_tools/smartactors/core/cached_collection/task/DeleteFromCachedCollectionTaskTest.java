@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.cached_collection.exception.CreateCache
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -68,7 +67,7 @@ public class DeleteFromCachedCollectionTaskTest {
     }
 
     @Test
-    public void ShouldSetConnectionToNestedTask() throws TaskSetConnectionException {
+    public void ShouldSetConnectionToNestedTask() {
 
         IStorageConnection connection = mock(IStorageConnection.class);
         task.setConnection(connection);

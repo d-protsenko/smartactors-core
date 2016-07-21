@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnectio
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -108,7 +107,7 @@ public class CachedCollectionTest {
 
     @Test
     public void ShouldDeleteObject()
-        throws DeleteCacheItemException, ResolutionException, TaskSetConnectionException, IllegalAccessException, ReadValueException,
+        throws DeleteCacheItemException, ResolutionException, IllegalAccessException, ReadValueException,
         ChangeValueException, TaskPrepareException, TaskExecutionException, InvalidArgumentException {
 
         IObject query = mock(IObject.class);

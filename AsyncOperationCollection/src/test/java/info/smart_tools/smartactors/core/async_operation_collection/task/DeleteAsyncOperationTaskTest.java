@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.async_operation_collection.task;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import org.junit.Before;
@@ -34,7 +33,7 @@ public class DeleteAsyncOperationTaskTest {
     }
 
     @Test
-    public void MustCorrectSetConnection() throws TaskSetConnectionException {
+    public void MustCorrectSetConnection() {
 
         IStorageConnection connection = mock(IStorageConnection.class);
 

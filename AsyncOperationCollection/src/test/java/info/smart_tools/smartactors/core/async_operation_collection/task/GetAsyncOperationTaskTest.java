@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.async_operation_collection.task;
 import info.smart_tools.smartactors.core.db_storage.interfaces.IStorageConnection;
 import info.smart_tools.smartactors.core.db_tasks.IDatabaseTask;
 import info.smart_tools.smartactors.core.db_tasks.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.db_tasks.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -201,7 +200,7 @@ public class GetAsyncOperationTaskTest {
     }
 
     @Test
-    public void MustCorrectSetConnection() throws TaskSetConnectionException {
+    public void MustCorrectSetConnection() {
 
         IStorageConnection connection = mock(IStorageConnection.class);
 
