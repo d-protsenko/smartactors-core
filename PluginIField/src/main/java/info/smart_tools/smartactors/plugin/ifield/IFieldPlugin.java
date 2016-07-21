@@ -1,7 +1,6 @@
-package info.smart_tools.smartactors.plugin.field;
+package info.smart_tools.smartactors.plugin.ifield;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -14,15 +13,13 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.wrapper_generator.Field;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Plugin for registration of IOC strategy for Field
  */
-public class FieldPlugin implements IPlugin {
+public class IFieldPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -30,7 +27,7 @@ public class FieldPlugin implements IPlugin {
      * Constructor
      * @param bootstrap bootstrap element
      */
-    public FieldPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public IFieldPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -38,27 +35,20 @@ public class FieldPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            ConcurrentMap<String, IField> fieldMap = new ConcurrentHashMap<>();
-            IBootstrapItem<String> item = new BootstrapItem("FieldPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("IFieldPlugin");
             item
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IField.class.toString());
-                        IOC.register(fieldKey, new CreateNewInstanceStrategy(
+                        IKey fieldKey = Keys.getOrAdd(IField.class.getCanonicalName());
+                        IOC.register(fieldKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String fieldName = String.valueOf(args[0]);
-                                IField field = fieldMap.get(fieldName);
-                                if (field == null) {
-                                    try {
-                                        //TODO:: clarify key name
-                                        field = new Field(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName));
-                                        fieldMap.putIfAbsent(fieldName, field);
-                                    } catch (InvalidArgumentException | ResolutionException e) {
-                                        throw new RuntimeException("Can't resolve field: ", e);
-                                    }
+                                try {
+                                    return new Field(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName));
+                                } catch (InvalidArgumentException | ResolutionException e) {
+                                    throw new RuntimeException("Can't resolve ifield: ", e);
                                 }
-                                return field;
                             }));
                     } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
                         throw new RuntimeException(e);
@@ -66,7 +56,7 @@ public class FieldPlugin implements IPlugin {
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load field plugin", e);
+            throw new PluginException("Can't load ifield plugin", e);
         }
     }
 }

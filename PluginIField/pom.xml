@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.create_new_instance_strategy</artifactId>
+            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
 
