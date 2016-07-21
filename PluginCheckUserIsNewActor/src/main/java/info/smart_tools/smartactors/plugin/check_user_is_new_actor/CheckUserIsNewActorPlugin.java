@@ -40,14 +40,14 @@ public class CheckUserIsNewActorPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey checkUserIsNewActorKey = Keys.getOrAdd(CheckUserIsNewActor.class.toString());
+                            IKey checkUserIsNewActorKey = Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName());
                             IOC.register(checkUserIsNewActorKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> {
                                                 try {
                                                     ActorParams actorParams =
                                                             IOC.resolve(
-                                                                    Keys.getOrAdd(ActorParams.class.toString()),
+                                                                    Keys.getOrAdd(ActorParams.class.getCanonicalName()),
                                                                     args[0]);
                                                     return new CheckUserIsNewActor(actorParams);
                                                 } catch (ArrayIndexOutOfBoundsException e) {
