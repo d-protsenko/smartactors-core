@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.iobject;
+package info.smart_tools.smartactors.plugin.iobject_simple_impl;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -28,10 +29,10 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, IObjectPlugin.class, IObject.class})
+@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
 @RunWith(PowerMockRunner.class)
-public class IObjectPluginTest {
-    private IObjectPlugin plugin;
+public class IObjectSimpleImplPluginTest {
+    private IObjectSimpleImplPlugin plugin;
     private IBootstrap bootstrap;
 
     @Before
@@ -44,25 +45,25 @@ public class IObjectPluginTest {
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(keyGeneral);
-        when(IOC.resolve(eq(keyGeneral), eq("IObjectPlugin"))).thenReturn(keyPlugin);
+        when(IOC.resolve(eq(keyGeneral), eq("IObjectSimpleImplPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
-        plugin = new IObjectPlugin(bootstrap);
+        plugin = new IObjectSimpleImplPlugin(bootstrap);
     }
 
     @Test
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey IObjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(IObjectKey);
+        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("IObjectPlugin").thenReturn(bootstrapItem);
+        whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("IObjectPlugin");
+        verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -80,22 +81,22 @@ public class IObjectPluginTest {
     @Test(expected = PluginException.class)
     public void ShouldThrowPluginException_When_BootstrapItemThrowsException() throws Exception {
 
-        whenNew(BootstrapItem.class).withArguments("IObjectPlugin").thenThrow(new InvalidArgumentException(""));
+        whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenThrow(new InvalidArgumentException(""));
         plugin.load();
     }
 
     @Test(expected = RuntimeException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("IObjectPlugin").thenReturn(bootstrapItem);
+        whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("IObjectPlugin");
+        verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
