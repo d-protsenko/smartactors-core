@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.actors.create_session.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 
