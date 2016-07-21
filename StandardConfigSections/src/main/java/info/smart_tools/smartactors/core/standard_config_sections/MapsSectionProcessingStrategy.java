@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()));
 
             for (IObject mapDescription : section) {
-                Object mapId = mapDescription.getValue(mapIdFieldName);
+                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
                 try {
                     chainStorage.register(mapId, mapDescription);
                 } catch (ChainCreationException e) {
