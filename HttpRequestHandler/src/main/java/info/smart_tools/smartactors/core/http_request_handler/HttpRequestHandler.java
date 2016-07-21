@@ -16,6 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -46,8 +47,18 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 .deserialize(request);
         IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
+        IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+        IFieldName headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
+        IFieldName cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
+
         IChannelHandler channelHandler = IOC.resolve(Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName()), ctx);
-        environment.setValue(contextFieldName, channelHandler);
+        //create context of the MP
+        IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        context.setValue(channelFieldName, channelHandler);
+        context.setValue(cookiesFieldName, new ArrayList<IObject>());
+        context.setValue(headersFieldName, new ArrayList<IObject>());
+        //create environment
+        environment.setValue(contextFieldName, context);
         environment.setValue(requestFieldName, request);
         return environment;
     }

@@ -175,6 +175,7 @@
         <module>Path</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
+        <module>HttpHeadersSetter</module>
     </modules>
 
     <build>

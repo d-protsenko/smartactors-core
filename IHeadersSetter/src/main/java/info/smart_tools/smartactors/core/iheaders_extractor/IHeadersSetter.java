@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.iheaders_extractor;
 
 
+import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
@@ -14,6 +15,6 @@ public interface IHeadersSetter {
      * @param environment Environment of the message processor
      *
      */
-    void set(Object response, IObject environment);
+    void set(Object response, IObject environment) throws HeadersSetterException;
 
 }

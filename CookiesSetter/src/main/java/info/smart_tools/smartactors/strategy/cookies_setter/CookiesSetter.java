@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.cookies_setter;
+package info.smart_tools.smartactors.strategy.cookies_setter;
 
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;

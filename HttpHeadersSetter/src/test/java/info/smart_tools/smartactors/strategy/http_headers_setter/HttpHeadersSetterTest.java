@@ -1,11 +1,11 @@
-package info.smart_tools.smartactors.plugin.cookies_setter;
+package info.smart_tools.smartactors.strategy.http_headers_setter;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -20,21 +20,19 @@ import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByN
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersSetter;
 import io.netty.handler.codec.http.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-public class CookiesSetterTest {
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class HttpHeadersSetterTest {
     IField field;
 
     @Before
@@ -81,12 +79,12 @@ public class CookiesSetterTest {
     }
 
     @Test
-    public void testCookiesSetting() throws InvalidArgumentException, CookieSettingException, ReadValueException {
+    public void testSettingHeaders() throws InvalidArgumentException, ReadValueException, HeadersSetterException {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        CookiesSetter setter = new CookiesSetter();
+        HttpHeadersSetter headersSetter = new HttpHeadersSetter();
         IObject environment = new DSObject("{\n" +
                 "  \"context\": {\n" +
-                "    \"cookies\": [\n" +
+                "    \"headers\": [\n" +
                 "      {\n" +
                 "        \"name\": \"foo\", " +
                 "        \"value\": \"bar\"\n" +
@@ -100,7 +98,7 @@ public class CookiesSetterTest {
                 "}");
         IObject context = new DSObject(
                 " {" +
-                        "    \"cookies\": [\n" +
+                        "    \"headers\": [\n" +
                         "      {\n" +
                         "        \"name\": \"foo\", " +
                         "        \"value\": \"bar\"\n" +
@@ -111,81 +109,53 @@ public class CookiesSetterTest {
                         "      }\n" +
                         "    ]\n" +
                         "  }\n");
-        IObject cookie1 = new DSObject("{\n" +
+        IObject header1 = new DSObject("{\n" +
                 "        \"name\": \"foo\", " +
                 "        \"value\": \"bar\"\n" +
                 "      }");
-        IObject cookie2 = new DSObject("{\n" +
+        IObject header2 = new DSObject("{\n" +
                 "        \"name\": \"hello\", " +
                 "        \"value\": \"world\"\n" +
                 "      }");
-        List<String> cookiesGoodString = new ArrayList<>(2);
-        cookiesGoodString.add("foo=bar");
-        cookiesGoodString.add("hello=world");
-
-        List<IObject> cookies = new ArrayList<>(2);
-        cookies.add(cookie1);
-        cookies.add(cookie2);
+        List<String> headersGoodString = new ArrayList<>(2);
+        List<IObject> headers = new ArrayList<>(2);
+        headers.add(header1);
+        headers.add(header2);
         when(field.in(environment, IObject.class)).thenReturn(context);
-        when(field.in(context, List.class)).thenReturn(cookies);
-        setter.set(response, environment);
-        List<String> cookiesString = response.headers().getAll(HttpHeaders.Names.SET_COOKIE);
-        for (String cookie : cookiesString) {
-            assertEquals(cookiesGoodString.get(0), cookiesString.get(0));
-        }
+        when(field.in(context, List.class)).thenReturn(headers);
+        headersGoodString.add("foo=bar");
+        headersGoodString.add("hello=world");
+
+        headersSetter.set(response, environment);
+        assertEquals("bar", response.headers().get("foo"));
+        assertEquals("world", response.headers().get("hello"));
     }
 
     @Test
-    public void testCookiesSettingWithTime_ShouldSetDiscard()
-            throws InvalidArgumentException, CookieSettingException, ReadValueException {
+    public void testSettingEmptyHeaders() throws InvalidArgumentException, ReadValueException, HeadersSetterException {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        CookiesSetter setter = new CookiesSetter();
+        HttpHeadersSetter headersSetter = new HttpHeadersSetter();
         IObject environment = new DSObject("{\n" +
                 "  \"context\": {\n" +
-                "    \"cookies\": [\n" +
-                "      {\n" +
-                "        \"name\": \"foo\", " +
-                "        \"value\": \"bar\",\n" +
-                "         \"maxAge\": 12 \n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"hello\",  " +
-                "        \"value\": \"world\"\n" +
-                "      }\n" +
+                "    \"headers\": [" +
                 "    ]\n" +
                 "  }\n" +
                 "}");
         IObject context = new DSObject(
                 " {" +
-                        "    \"cookies\": [\n" +
-                        "      {\n" +
-                        "        \"name\": \"foo\", " +
-                        "        \"value\": \"bar\",\n" +
-                        "         \"maxAge\": 12 \n" +
-                        "      },\n" +
-                        "      {\n" +
-                        "        \"name\": \"hello\",  " +
-                        "        \"value\": \"world\"\n" +
-                        "      }\n" +
+                        "    \"headers\": [\n" +
                         "    ]\n" +
                         "  }\n");
-        IObject cookie1 = new DSObject("{\n" +
-                "        \"name\": \"foo\", " +
-                "        \"value\": \"bar\",\n" +
-                "         \"maxAge\": 12 \n" +
-                "      }");
-        IObject cookie2 = new DSObject("{\n" +
-                "        \"name\": \"hello\", " +
-                "        \"value\": \"world\"\n" +
-                "      }");
-        List<IObject> cookies = new ArrayList<>(2);
-        cookies.add(cookie1);
-        cookies.add(cookie2);
+        List<String> headersGoodString = new ArrayList<>(0);
+        List<IObject> headers = new ArrayList<>(2);
         when(field.in(environment, IObject.class)).thenReturn(context);
-        when(field.in(context, List.class)).thenReturn(cookies);
-        setter.set(response, environment);
-        List<String> cookiesString = response.headers().getAll(HttpHeaders.Names.SET_COOKIE);
-        assertTrue(cookiesString.get(0).lastIndexOf("Expires")>0);
-        assertFalse(cookiesString.get(1).lastIndexOf("Expires")>0);
+        when(field.in(context, List.class)).thenReturn(headers);
+        headersGoodString.add("foo=bar");
+        headersGoodString.add("hello=world");
+
+        headersSetter.set(response, environment);
+
+        assertNull(response.headers().get("foo"));
+        assertNull(response.headers().get("hello"));
     }
 }
