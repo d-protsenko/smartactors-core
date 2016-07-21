@@ -25,7 +25,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     /**
      * Constructor
      * @param upsertTask nested task for update operation
-     * @throws ResolutionException
+     * @throws ResolutionException Throw when task can't be created (for example, when can't resolve some of field)
      */
     public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) throws UpdateAsyncOperationException {
         this.upsertTask = upsertTask;

@@ -17,6 +17,9 @@ public class CollectionName implements ICollectionName {
         this.name = name;
     }
 
+    /**
+     * @return Name of CollectionName object
+     */
     @Override
     public String toString() {
         return this.name;

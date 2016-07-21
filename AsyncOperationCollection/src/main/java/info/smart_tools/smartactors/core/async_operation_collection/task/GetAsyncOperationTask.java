@@ -30,7 +30,7 @@ public class GetAsyncOperationTask implements IDatabaseTask {
     /**
      * Constructor
      * @param getItemTask nested task for read object
-     * @throws GetAsyncOperationException
+     * @throws GetAsyncOperationException Throw when task can't be created (for example, when can't resolve some of field)
      */
     public GetAsyncOperationTask(final IDatabaseTask getItemTask) throws GetAsyncOperationException {
         this.getItemTask = getItemTask;
