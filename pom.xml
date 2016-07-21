@@ -137,6 +137,7 @@
         <module>IField</module>
         <module>IPath</module>
         <module>Path</module>
+        <module>PluginGetAsyncOperation</module>
         <module>PluginIObject</module>
         <module>ResolveByTypeStrategy</module>
     </modules>
