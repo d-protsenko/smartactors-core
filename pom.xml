@@ -141,6 +141,7 @@
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
         <module>IField</module>
+        <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
         <module>WDSObject</module>
@@ -173,7 +174,7 @@
         <module>IPath</module>
         <module>Path</module>
         <module>HttpRequestHandler</module>
-        <module>Field</module>
+        <module>CookiesSetter</module>
     </modules>
 
     <build>

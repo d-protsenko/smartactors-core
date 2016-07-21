@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
+import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -127,7 +128,7 @@ public class HttpResponseSenderTest {
     }
 
     @Test
-    public void writeShouldCallSendMethod() throws ResolutionException, InvalidArgumentException {
+    public void writeShouldCallSendMethod() throws ResolutionException, InvalidArgumentException, CookieSettingException {
         HttpResponseSender sender = new HttpResponseSender("123");
         IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"foo\":\"bar\"}");
         when(responseStatusExtractor.extract(any(IObject.class))).thenReturn(200);
@@ -137,14 +138,4 @@ public class HttpResponseSenderTest {
         verify(headersExtractor, times(1)).set(any(FullHttpResponse.class), any(IObject.class));
         verify(ctx, times(1)).send(any(FullHttpResponse.class));
     }
-
-    @Test
-    public void writeShouldCallWriteAndFlushMethod() throws ResolutionException, InvalidArgumentException {
-        HttpResponseSender sender = new HttpResponseSender("123");
-        IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"foo\":\"bar\"}");
-        when(responseStatusExtractor.extract(any(IObject.class))).thenReturn(200);
-        when(response.getContent()).thenReturn("{\"foo\":\"bar\"}".getBytes());
-        sender.send(response, environment, ctx);
-    }
-
 }

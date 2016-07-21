@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
+import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 
 /**
  * Interface for response senders
@@ -17,5 +18,5 @@ public interface IResponseSender {
      * @throws ResolutionException if there are some problems on resolving dependencies
      */
     void send(final IResponse responseObject, final IObject environment, final IChannelHandler ctx)
-            throws ResolutionException;
+            throws ResponseSendingException;
 }

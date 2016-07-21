@@ -2,12 +2,14 @@ package info.smart_tools.smartactors.core.http_response_sender;
 
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
+import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
+import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.buffer.Unpooled;
@@ -44,13 +46,16 @@ public class HttpResponseSender implements IResponseSender {
 
     @Override
     public void send(final IResponse responseObject, final IObject environment,
-                     final IChannelHandler ctx) throws ResolutionException {
-        FullHttpResponse response = IOC.resolve(
-                Keys.getOrAdd(DefaultFullHttpResponse.class.getCanonicalName()),
+                     final IChannelHandler ctx) throws ResponseSendingException {
+        FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1, getResponseStatus(environment),
                 Unpooled.wrappedBuffer(responseObject.getContent()));
         headersSetter.set(response, environment);
-        cookiesSetter.set(response, environment);
+        try {
+            cookiesSetter.set(response, environment);
+        } catch (CookieSettingException e) {
+            throw new ResponseSendingException("Failed to set cookies to response", e);
+        }
         ctx.send(response);
     }
 

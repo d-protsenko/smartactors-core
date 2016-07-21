@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
+import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
@@ -31,7 +32,7 @@ public class ResponseSenderActor {
      * @throws InvalidArgumentException
      */
     public void sendResponse(final ResponseMessage message)
-            throws ReadValueException, ResolutionException, SerializeException, InvalidArgumentException {
+            throws ReadValueException, ResolutionException, SerializeException, InvalidArgumentException, ResponseSendingException {
         IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
         IResponseContentStrategy contentStrategy =
                 IOC.resolve(Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()), message.getEnvironment());
