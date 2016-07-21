@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.iobject;
+package info.smart_tools.smartactors.plugin.iobject_simple_impl;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -18,14 +17,14 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 /**
  *
  */
-public class IObjectPlugin implements IPlugin {
+public class IObjectSimpleImplPlugin implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
     /**
      * Constructor
      * @param bootstrap bootstrap element
      */
-    public IObjectPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public IObjectSimpleImplPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -33,12 +32,12 @@ public class IObjectPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("IObjectPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("IObjectSimpleImplPlugin");
             item
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IObject.class.getCanonicalName());
+                        IKey fieldKey = Keys.getOrAdd(IObjectImpl.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));
