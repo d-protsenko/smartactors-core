@@ -36,8 +36,12 @@ public class Field implements IField {
         if (null == obj) {
             throw new InvalidArgumentException("WDSObject should not be null.");
         }
+        Object value = obj.getValue(fieldName);
+        if (null == value) {
+            return null;
+        }
 
-        return (T) obj.getValue(fieldName);
+        return (T) value;
     }
 
     @Override
@@ -47,11 +51,14 @@ public class Field implements IField {
             throw new InvalidArgumentException("WDSObject should not be null.");
         }
         Object value = obj.getValue(fieldName);
+        if (null == value) {
+            return null;
+        }
         if (type == value.getClass()) {
             return (T) value;
         }
         try {
-            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName() + value.getClass().getCanonicalName()), value);
+            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName()), value);
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not cast value to required type.");
         }
