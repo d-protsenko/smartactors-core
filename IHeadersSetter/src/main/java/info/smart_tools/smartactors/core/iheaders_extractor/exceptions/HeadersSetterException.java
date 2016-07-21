@@ -1,23 +1,38 @@
 package info.smart_tools.smartactors.core.iheaders_extractor.exceptions;
 
 public class HeadersSetterException extends Exception {
+    /**
+     * Default constructor
+     */
     public HeadersSetterException() {
         super();
     }
 
-    public HeadersSetterException(String message) {
+    /**
+     * Constructor with specific error message
+     * @param message specific error message
+     */
+
+    public HeadersSetterException(final String message) {
         super(message);
     }
 
-    public HeadersSetterException(String message, Throwable cause) {
+    /**
+     * Constructor with specific error message and specific cause as arguments
+     * @param message specific error message
+     * @param cause specific cause
+     */
+
+    public HeadersSetterException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public HeadersSetterException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Constructor with specific cause as arguments
+     * @param cause specific cause
+     */
 
-    public HeadersSetterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public HeadersSetterException(final Throwable cause) {
+        super(cause);
     }
 }

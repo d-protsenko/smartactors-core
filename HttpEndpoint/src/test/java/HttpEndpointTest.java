@@ -1,5 +1,5 @@
 import info.smart_tools.smartactors.core.DeserializeStrategyPostJson;
-import info.smart_tools.smartactors.core.HttpClient;
+import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;

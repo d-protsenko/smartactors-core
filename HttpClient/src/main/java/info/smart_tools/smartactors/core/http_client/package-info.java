@@ -1,4 +1,4 @@
 /**
- * Created by sevenbits on 21.07.16.
+ * Package contains http client
  */
 package info.smart_tools.smartactors.core.http_client;

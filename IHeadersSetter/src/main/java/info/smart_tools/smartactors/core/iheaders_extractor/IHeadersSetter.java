@@ -13,7 +13,7 @@ public interface IHeadersSetter {
      *
      * @param response Response object in which headers will add
      * @param environment Environment of the message processor
-     *
+     * @throws HeadersSetterException if there are some problems on setting headers
      */
     void set(Object response, IObject environment) throws HeadersSetterException;
 

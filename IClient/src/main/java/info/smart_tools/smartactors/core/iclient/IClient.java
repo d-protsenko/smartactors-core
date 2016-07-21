@@ -15,7 +15,7 @@ public interface IClient<Request> extends IAsyncService<IClient<Request>> {
     /**
      * Method to send request
      * @param request request message
-     * @return
+     * @return completable future of the sending request
      */
     CompletableFuture<Void> send(Request request);
 
