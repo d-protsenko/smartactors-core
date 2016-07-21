@@ -38,8 +38,8 @@ public class CreateSessionActor {
 
     static {
         try {
-            SESSION_ID_F = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "sessionId");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "$eq");
+            SESSION_ID_F = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "sessionId");
+            EQUALS_F = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "$eq");
 
         } catch (ResolutionException e) {
             //TODO:: handle exception
@@ -52,11 +52,10 @@ public class CreateSessionActor {
      * @throws CreateSessionException for any occurred error
      */
     public CreateSessionActor(final CreateSessionConfig config) throws CreateSessionException {
-        //TODO:: replace CreateSessionConfig to IObject
         try {
             this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
-        } catch (ReadValueException | ChangeValueException e) {
+        } catch (ReadValueException e) {
             throw new CreateSessionException("Can't create Actor");
         }
     }
@@ -71,22 +70,22 @@ public class CreateSessionActor {
             String sessionId = inputMessage.getSessionId();
             if (sessionId == null || sessionId.equals("")) {
                 IObject authInfo = inputMessage.getAuthInfo();
-                Session newSession = IOC.resolve(Keys.getOrAdd(Session.class.toString()));
+                Session newSession = IOC.resolve(Keys.getOrAdd(Session.class.getCanonicalName()));
                 newSession.setAuthInfo(authInfo);
                 inputMessage.setSession(newSession);
             } else {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-                    IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.toString()), "PSQL");
-                    IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                    IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.getCanonicalName()), "PSQL");
+                    IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                    StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject());
+                    StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.getCanonicalName()), poolGuard.getObject());
                     prepareSearchQuery(searchQuery, inputMessage);
 
                     searchTask.setConnection(connection);
                     searchTask.prepare(searchQuery);
                     searchTask.execute();
 
-                    Field bufferedQueryF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "bufferedQuery");
+                    Field bufferedQueryF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "bufferedQuery");
                     try {
                         this.bufferedQuery = bufferedQueryF.in(searchQuery);
                         if (bufferedQuery == null) {
@@ -96,19 +95,18 @@ public class CreateSessionActor {
                         throw new CreateSessionException("Search task didn't returned a buffered query!", e);
                     }
 
-                    Field countSearchResultF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "countSearchResult");
-                    //TODO:: replace ()
+                    Field countSearchResultF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "countSearchResult");
                     if (countSearchResultF.<Integer>in(searchQuery) == 0) {
                         throw new CreateSessionException("Cannot find session by sessionId: "
                                 + inputMessage.getSessionId()
                         );
                     }
 
-                    Field searchResultField = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "searchResult");
+                    Field searchResultField = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "searchResult");
 
                     IObject result = (searchResultField.<List<IObject>>in(searchQuery)).get(0);
 
-                    Field sessionF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "session");
+                    Field sessionF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "session");
                     Session fromDBSession = sessionF.in(result);
                     if (fromDBSession == null) {
                         throw new CreateSessionException("Find session is null");
@@ -130,21 +128,21 @@ public class CreateSessionActor {
 
     private void prepareSearchQuery(final IObject searchQuery, final CreateSessionMessage inputMessage)
             throws ChangeValueException, InvalidArgumentException, ResolutionException, ReadValueException {
-        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-        IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
         EQUALS_F.out(sessionIdObject, inputMessage.getSessionId());
         SESSION_ID_F.out(query, sessionIdObject);
 
-        Field collectionNameF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "collectionName");
+        Field collectionNameF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collectionName);
-        Field pageSizeF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "pageSize");
+        Field pageSizeF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "pageSize");
         pageSizeF.out(searchQuery, 1);
-        Field pageNumberF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "pageNumber");
+        Field pageNumberF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "pageNumber");
         pageNumberF.out(searchQuery, 1);
-        Field bufferedQueryF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "bufferedQuery");
+        Field bufferedQueryF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "bufferedQuery");
         bufferedQueryF.out(searchQuery, this.bufferedQuery);
-        Field criteriaF = IOC.resolve(Keys.getOrAdd(Field.class.toString()), "criteria");
+        Field criteriaF = IOC.resolve(Keys.getOrAdd(Field.class.getCanonicalName()), "criteria");
         criteriaF.out(searchQuery, query);
 
     }

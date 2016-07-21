@@ -13,23 +13,20 @@ public interface CreateSessionMessage {
      * Returns sessionId for current session
      * @return String that contain sessionId
      * @throws ReadValueException Calling when try read value of variable
-     * @throws ChangeValueException Calling when try change value of variable
      */
-    String getSessionId() throws ReadValueException, ChangeValueException;
+    String getSessionId() throws ReadValueException;
 
     /**
      * Returns Authorization Info (example, device info)
      * @return IObject which contains auth info
-     * @throws ChangeValueException Calling when try read value of variable
      * @throws ReadValueException Calling when try change value of variable
      */
-    IObject getAuthInfo() throws ChangeValueException, ReadValueException;
+    IObject getAuthInfo() throws ReadValueException;
 
     /**
      * Set session in message
      * @param session Session
-     * @throws ReadValueException Calling when try read value of variable
      * @throws ChangeValueException Calling when try change value of variable
      */
-    void setSession(Session session) throws ReadValueException, ChangeValueException;
+    void setSession(Session session) throws ChangeValueException;
 }
