@@ -153,6 +153,8 @@
         <module>PluginIOCSimpleContainer</module>
         <module>PluginIOCKeys</module>
         <module>PluginDsobject</module>
+        <module>PluginScopedIOC</module>
+        <module>PluginScopeProvider</module>
     </modules>
 
     <build>

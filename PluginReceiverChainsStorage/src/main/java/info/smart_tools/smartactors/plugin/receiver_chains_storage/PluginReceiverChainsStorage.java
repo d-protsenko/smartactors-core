@@ -40,6 +40,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
 
             chainsStorageItem
                     .after("receiver_chain")
+                    .after("router")
                     .process(() -> {
                         try {
                             IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
