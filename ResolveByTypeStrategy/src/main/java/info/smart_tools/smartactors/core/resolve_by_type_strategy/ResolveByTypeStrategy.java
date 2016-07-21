@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.resolve_by_type_strategy;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,10 +36,8 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            IResolveDependencyStrategy result = resolveStrategies.get(args[0]);
-            if (null == result) {
-                throw new ResolveDependencyStrategyException("Failed to find resolve strategy");
-            }
+            IResolveDependencyStrategy strategy = resolveStrategies.get(Keys.getOrAdd(args[0].getClass().getCanonicalName()));
+            Object result = strategy.resolve(args[0]);
             return (T) result;
         } catch (Exception e) {
             throw new ResolveDependencyStrategyException("Object resolution failed.", e);

@@ -23,6 +23,11 @@
             <artifactId>core.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.named_keys_storage</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!-- Implementation -->
         <dependency>
