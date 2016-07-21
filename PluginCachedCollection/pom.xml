@@ -55,6 +55,18 @@
             <artifactId>core.postgres_connection</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <!--TODO:: remove dependencies from ds and wds if they're unnecessary-->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ds_object</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.wds_object</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
 
         <!--testing-->
         <dependency>
