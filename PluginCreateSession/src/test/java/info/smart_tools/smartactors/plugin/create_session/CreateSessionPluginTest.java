@@ -44,7 +44,7 @@ public class CreateSessionPluginTest {
     @Test
     public void ShouldAddNewItemDuringLoad() throws Exception {
         IKey actorKey = Mockito.mock(IKey.class);
-        when(Keys.getOrAdd(Mockito.eq(CreateSessionActor.class.toString()))).thenReturn(actorKey);
+        when(Keys.getOrAdd(Mockito.eq(CreateSessionActor.class.getCanonicalName()))).thenReturn(actorKey);
 
         BootstrapItem bootstrapItem = Mockito.mock(BootstrapItem.class);
         PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(bootstrapItem);

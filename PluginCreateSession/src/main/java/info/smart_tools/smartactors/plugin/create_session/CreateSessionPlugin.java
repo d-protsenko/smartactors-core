@@ -34,7 +34,7 @@ public class CreateSessionPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey createSessionActorKey = Keys.getOrAdd(CreateSessionActor.class.toString());
+            IKey createSessionActorKey = Keys.getOrAdd(CreateSessionActor.class.getCanonicalName());
             IBootstrapItem<String> item = new BootstrapItem("CreateCreateSessionActorPlugin");
 
             item.process(() -> {
@@ -44,7 +44,7 @@ public class CreateSessionPlugin implements IPlugin {
                             (args) -> {
                                 try {
                                     CreateSessionConfig param = IOC.resolve(
-                                            Keys.getOrAdd(CreateSessionConfig.class.toString()),
+                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
                                             args[0],
                                             connectionPool
                                     );
