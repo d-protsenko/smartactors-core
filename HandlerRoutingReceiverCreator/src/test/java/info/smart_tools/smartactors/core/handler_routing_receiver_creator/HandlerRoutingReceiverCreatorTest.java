@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.Obj
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -21,12 +22,17 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -53,14 +59,6 @@ public class HandlerRoutingReceiverCreatorTest {
                             }
                         })
         );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            return mock(IField.class);
-                        }
-                )
-        );
     }
 
     @Test
@@ -78,10 +76,18 @@ public class HandlerRoutingReceiverCreatorTest {
                         }
                 )
         );
+        IField field = mock(IField.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            return field;
+                        }
+                )
+        );
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IObject wrapper = mock(IObject.class);
         IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
@@ -102,14 +108,46 @@ public class HandlerRoutingReceiverCreatorTest {
         IOC.register(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
-        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class))).thenReturn(mr);
+        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class)))
+                .thenAnswer(new Answer<IMessageReceiver>() {
+                    @Override
+                    public IMessageReceiver answer(InvocationOnMock invocation) throws Throwable {
+                        Object[] args = invocation.getArguments();
+                        assertSame(args[0], a);
+                        assertEquals(((IResolveDependencyStrategy) args[1]).resolve().getClass(), MethodWrapper.class);
+                        assertEquals(args[2], "getSomeValue");
+                        return mr;
+                    }
+                });
 
         HandlerRoutingReceiverCreator hrrc = new HandlerRoutingReceiverCreator();
         IRouter router = new Router();
 
         hrrc.createObject(router, objectSection);
         assertEquals(((Router) router).map.size(), 1);
-        assertSame(router.route("actorID").getClass(), HandlerRoutingReceiver.class);
+        IMessageReceiver receiver = router.route("actorID");
+        assertSame(receiver.getClass(), HandlerRoutingReceiver.class);
+        // mock IMessageProcessor, IMessageProcessingSequence, IObject as current sequence
+        IMessageProcessor processor = mock(IMessageProcessor.class);
+        IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
+        IObject currentSequence = mock(IObject.class);
+        IObject env = mock(IObject.class);
+        when(processor.getEnvironment()).thenReturn(env);
+        when(processor.getSequence()).thenReturn(sequence);
+        when(sequence.getCurrentReceiverArguments()).thenReturn(currentSequence);
+        // configure mock of field
+        when(field.in(currentSequence)).thenReturn("getSomeValue");
+        doNothing().when(mr).receive(processor);
+        receiver.receive(processor);
+        verify(mr, times(1)).receive(processor);
+        verify(createSampleActorStrategy, times(1)).resolve(objectSection);
+        verify(rg, times(1)).generate(
+                any(CustomActor.class),
+                any(IResolveDependencyStrategy.class),
+                any(String.class)
+        );
+        verify(objectSection, times(1)).getValue(new FieldName("name"));
+        verify(objectSection, times(1)).getValue(new FieldName("dependency"));
     }
 
     @Test (expected = ObjectCreationException.class)
