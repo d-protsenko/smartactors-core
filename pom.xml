@@ -155,6 +155,7 @@
         <module>PluginDsobject</module>
         <module>PluginScopedIOC</module>
         <module>PluginScopeProvider</module>
+        <module>PluginMessagingIdentifiers</module>
     </modules>
 
     <build>
