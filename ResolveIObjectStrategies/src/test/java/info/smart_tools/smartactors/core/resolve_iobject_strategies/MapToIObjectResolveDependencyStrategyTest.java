@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -67,11 +68,13 @@ public class MapToIObjectResolveDependencyStrategyTest {
         Map<String, Object> map = new HashMap<>();
         map.put("key", "value");
         strategy.resolve(map);
+        fail();
     }
 
     @Test(expected = ResolveDependencyStrategyException.class)
     public void ShouldThrowException_When_NullIsPassed() throws Exception {
 
         strategy.resolve(null);
+        fail();
     }
 }
