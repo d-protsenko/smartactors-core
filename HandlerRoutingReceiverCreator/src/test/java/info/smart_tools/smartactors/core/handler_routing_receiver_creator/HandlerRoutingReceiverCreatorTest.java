@@ -64,7 +64,7 @@ public class HandlerRoutingReceiverCreatorTest {
     }
 
     @Test
-    public void checkCreation()
+    public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
@@ -82,12 +82,11 @@ public class HandlerRoutingReceiverCreatorTest {
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
         IObject wrapper = mock(IObject.class);
-        when(objectSection.getValue(new FieldName("wrapper"))).thenReturn(wrapper);
         IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
-        when(createSampleActorStrategy.resolve(wrapper))
+        when(createSampleActorStrategy.resolve(objectSection))
                 .thenReturn(a);
 
         // register wrapper generator
