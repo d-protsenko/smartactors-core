@@ -184,6 +184,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
