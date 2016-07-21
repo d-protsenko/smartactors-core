@@ -164,10 +164,16 @@
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>ReceiverGenerator</module>
+        <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
+        <module>IReceiverGenerator</module>
+        <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
         <module>IPath</module>
         <module>Path</module>
         <module>HttpRequestHandler</module>
+        <module>Field</module>
     </modules>
 
     <build>
