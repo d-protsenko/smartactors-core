@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -63,7 +64,7 @@ public class CreateSessionActorTest {
         key = mock(IKey.class);
         IKey sessionKey = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.actors.create_session.wrapper.Session"))).thenReturn(sessionKey);
+        when(IOC.resolve(eq(key), eq(Session.class.getCanonicalName()))).thenReturn(sessionKey);
         when(IOC.resolve(eq(sessionKey))).thenReturn(session);
 
         CreateSessionConfig config = mock(CreateSessionConfig.class);
@@ -74,11 +75,11 @@ public class CreateSessionActorTest {
 
         //IOC keys mock
         //TODO:: change path to Field when he's merged
-        when(IOC.resolve(eq(key), eq("class info.smart_tools.smartactors.core.wrapper_generator.Field"))).thenReturn(fieldKey);
-        when(IOC.resolve(eq(key), eq(IDatabaseTask.class.toString()))).thenReturn(iDatabaseTaskKey);
-        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection"))).thenReturn(storageConnectionKey);
-        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.core.iobject.IObject"))).thenReturn(iObjectKey);
-        when(IOC.resolve(eq(key), eq("interface info.smart_tools.smartactors.core.iobject.IFieldName"))).thenReturn(iFieldNameKey);
+        when(IOC.resolve(eq(key), eq(Field.class.getCanonicalName()))).thenReturn(fieldKey);
+        when(IOC.resolve(eq(key), eq(IDatabaseTask.class.getCanonicalName()))).thenReturn(iDatabaseTaskKey);
+        when(IOC.resolve(eq(key), eq(StorageConnection.class.getCanonicalName()))).thenReturn(storageConnectionKey);
+        when(IOC.resolve(eq(key), eq(IObject.class.getCanonicalName()))).thenReturn(iObjectKey);
+        when(IOC.resolve(eq(key), eq(IFieldName.class.getCanonicalName()))).thenReturn(iFieldNameKey);
 
         //mock constructor
         SESSION_ID_F = mock(Field.class);

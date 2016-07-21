@@ -11,8 +11,7 @@ public interface Session {
     /**
      * Set authorization info into session
      * @param authInfo authorization info: device info etc
-     * @throws ReadValueException Calling when try read value of variable
      * @throws ChangeValueException Calling when try change value of variable
      */
-    void setAuthInfo(IObject authInfo) throws ReadValueException, ChangeValueException;
+    void setAuthInfo(IObject authInfo) throws ChangeValueException;
 }
