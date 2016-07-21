@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
@@ -67,19 +68,11 @@ public class ActorReceiverCreatorTest {
         );
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_queue"),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            return mock(Queue.class);
-                        }
-                )
+                new SingletonStrategy(mock(Queue.class))
         );
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_busyness_flag"),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            return mock(AtomicBoolean.class);
-                        }
-                )
+                new SingletonStrategy(mock(AtomicBoolean.class))
         );
     }
 
