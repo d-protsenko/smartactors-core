@@ -153,12 +153,12 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.ioc_keys-0.2.0-SNAPSHOT.jar",
                     "plugin.load_scope_provider-0.2.0-SNAPSHOT.jar",
                     "plugin.map_router-0.2.0-SNAPSHOT.jar",
+                    "plugin.messaging_identifiers-0.2.0-SNAPSHOT.jar",
                     "plugin.read_config_file-0.2.0-SNAPSHOT.jar",
                     "plugin.receiver_chains_storage-0.2.0-SNAPSHOT.jar",
                     "plugin.scoped_ioc-0.2.0-SNAPSHOT.jar",
                     "plugin.scope_provider-0.2.0-SNAPSHOT.jar",
                     "plugin.standard_object_creators-0.2.0-SNAPSHOT.jar",
-                    "plugin.subscribe_scope_provider_on_scope_creation-0.2.0-SNAPSHOT.jar",
 
             };
 
