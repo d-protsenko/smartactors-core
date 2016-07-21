@@ -137,6 +137,7 @@
         <module>IPath</module>
         <module>Path</module>
         <module>PluginGetAsyncOperation</module>
+        <module>ResolveByTypeStrategy</module>
     </modules>
 
     <build>
@@ -179,6 +180,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${argLine}</argLine>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
