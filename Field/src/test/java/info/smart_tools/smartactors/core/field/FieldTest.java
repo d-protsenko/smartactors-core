@@ -106,7 +106,7 @@ public class FieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(1)).thenReturn("1");
-        IOC.register(Keys.getOrAdd(String.class.getCanonicalName()+Integer.class.getCanonicalName()), strategy);
+        IOC.register(Keys.getOrAdd(String.class.getCanonicalName()), strategy);
         IField field = new Field(new FieldName("a"));
         IObject env = mock(IObject.class);
         when(env.getValue(new FieldName("a"))).thenReturn(1);
@@ -153,5 +153,10 @@ public class FieldTest {
         fail();
     }
 
+    @Test
+    public void checkInMethodOnNullReturn()
+            throws Exception {
+
+    }
 }
 
