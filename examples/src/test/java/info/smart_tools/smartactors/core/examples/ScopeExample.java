@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples;
 
-import info.smart_tools.smartactors.core.examples.scope.SimpleIOC;
-import info.smart_tools.smartactors.core.examples.scope.SimpleIOCException;
+import info.smart_tools.smartactors.core.examples.scope.MyIOC;
+import info.smart_tools.smartactors.core.examples.scope.MyIOCException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.recursive_strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +36,7 @@ public class ScopeExample {
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException, ScopeException {
         initScopeForSystemIOC();
 
-        SimpleIOC.init();   // must be initialized before any scope creation
+        MyIOC.init();   // must be initialized before any scope creation
 
         Object systemScopeKey = ScopeProvider.createScope(null);
         systemScope = ScopeProvider.getScope(systemScopeKey);
@@ -140,36 +141,35 @@ public class ScopeExample {
     }
 
     @Test
-    public void sampleIOC() throws InvalidArgumentException, SimpleIOCException, ScopeProviderException {
+    public void sampleIOC() throws InvalidArgumentException, MyIOCException, ScopeProviderException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
 
-        IKey key = new Key("sample");
-        SampleClass main = new SampleClass("main");
-        SimpleIOC.register(key, main);
-        assertEquals(main, SimpleIOC.resolve(key));
+        IKey key = new Key("my");
+        MyClass main = new MyClass("main");
+        MyIOC.register(key, main);
+        assertEquals(main, MyIOC.resolve(key));
 
         ScopeProvider.setCurrentScope(workerScope);
-        assertEquals(main, SimpleIOC.resolve(key));
-
-        SampleClass worker = new SampleClass("worker");
-        SimpleIOC.register(key, worker);
-        assertEquals(worker, SimpleIOC.resolve(key));
+        assertEquals(main, MyIOC.resolve(key));
+        MyClass worker = new MyClass("worker");
+        MyIOC.register(key, worker);
+        assertEquals(worker, MyIOC.resolve(key));
 
         ScopeProvider.setCurrentScope(systemScope);
-        assertEquals(main, SimpleIOC.resolve(key));
+        assertEquals(main, MyIOC.resolve(key));
     }
 
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
         IKey key = Keys.getOrAdd("test");
-        SampleClass systemObject = new SampleClass("system");
+        MyClass systemObject = new MyClass("system");
         IOC.register(key, new SingletonStrategy(systemObject));
         assertEquals(systemObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(workerScope);
         assertEquals(systemObject, IOC.resolve(key));
-        SampleClass workerObject = new SampleClass("worker");
+        MyClass workerObject = new MyClass("worker");
         IOC.register(key, new SingletonStrategy(workerObject));
         assertEquals(workerObject, IOC.resolve(key));
 

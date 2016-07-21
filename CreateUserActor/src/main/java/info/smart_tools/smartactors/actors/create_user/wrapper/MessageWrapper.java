@@ -10,7 +10,7 @@ public interface MessageWrapper {
     /**
      * getter for User
      * @return user
-     * @throws ReadValueException Throw when can't correct read value
+     * @throws ReadValueException
      */
     IObject getUser() throws ReadValueException;
 }

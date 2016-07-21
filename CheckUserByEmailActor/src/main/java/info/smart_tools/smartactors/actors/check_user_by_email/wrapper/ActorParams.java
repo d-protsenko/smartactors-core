@@ -8,14 +8,8 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 public interface ActorParams {
     /**
      * Return the collection name for users
-     * @return Name of target collection
-     * @throws ReadValueException Throw when can't correct read value
+     * @return
+     * @throws ReadValueException
      */
     String getCollectionName() throws ReadValueException;
-
-    /**
-     * @return the key for target collection
-     * @throws ReadValueException Throw when can't correct read value
-     */
-    String getCollectionKey() throws ReadValueException;
 }

@@ -17,7 +17,7 @@ public interface IPool {
     /**
      * Stores an value to the pool after using
      * @param value given value
-     * @throws PoolPutException any if error occurred
+     * @throws PoolTakeException any if error occurred
      */
     void put(final Object value) throws PoolPutException;
 }

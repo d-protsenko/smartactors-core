@@ -40,7 +40,8 @@ public class ClassGenerator implements IClassGenerator<String> {
         }
         try {
             String fullClassName = packageName + "." + className;
-            Class<?> compiledClass = this.compiler.compile(fullClassName, source);
+            Class<?> compiledClass = this.compiler.compile(fullClassName, source, null);
+            //classLoader.
             return compiledClass;
         } catch (Throwable e) {
             throw new ClassGenerationException("Could not generate class.", e);

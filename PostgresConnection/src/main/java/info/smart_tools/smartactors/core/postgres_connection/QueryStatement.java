@@ -15,12 +15,9 @@ import java.util.List;
  *  {@link PreparedStatement} created using this text.
  */
 public class QueryStatement implements IPreparedQuery {
-    private StringWriter bodyWriter;
-    private List<SQLQueryParameterSetter> parameterSetters;
+    StringWriter bodyWriter;
+    List<SQLQueryParameterSetter> parameterSetters;
 
-    /**
-     * Boring constructor
-     */
     public QueryStatement() {
         this.bodyWriter = new StringWriter();
         this.parameterSetters = new LinkedList<>();
@@ -46,7 +43,7 @@ public class QueryStatement implements IPreparedQuery {
      *
      *  @param connection database connection to use for statement creation.
      *  @return created statement.
-     *  @throws SQLException Throw when can't prepare statement
+     *  @throws SQLException
      */
     public PreparedStatement compile(final Connection connection) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(this.bodyWriter.toString());

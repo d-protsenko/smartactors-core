@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.iwrapper_generator;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 
 /**

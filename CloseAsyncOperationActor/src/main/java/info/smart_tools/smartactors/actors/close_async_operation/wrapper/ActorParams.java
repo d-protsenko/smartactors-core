@@ -9,7 +9,7 @@ public interface ActorParams {
     /**
      *
      * @return the name of collection where async op's are stored
-     * @throws ReadValueException Throw when can't correct read value
+     * @throws ReadValueException
      */
     String getCollectionName() throws ReadValueException;
 }

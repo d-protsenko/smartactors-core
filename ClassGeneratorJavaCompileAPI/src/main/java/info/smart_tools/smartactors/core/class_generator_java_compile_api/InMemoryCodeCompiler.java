@@ -40,12 +40,14 @@ class InMemoryCodeCompiler {
      * compiled class
      * @param className full name of future class
      * @param sourceCodeInText code source
+     * @param additionalClassPaths additional class paths
      * @return compiled class
      * @throws Exception if any errors occurred
      */
     Class<?> compile(
             final String className,
-            final String sourceCodeInText
+            final String sourceCodeInText,
+            final String additionalClassPaths
     )
             throws Exception {
         try {
@@ -54,7 +56,7 @@ class InMemoryCodeCompiler {
         try {
             List<String> optionList = new ArrayList<>();
             if (null != this.classLoader) {
-                optionList.addAll(Arrays.asList("-classpath", getClassPath(this.classLoader)));
+                optionList.addAll(Arrays.asList("-classpath", getClassPath(this.classLoader, additionalClassPaths)));
             }
             SourceCode sourceCode = new SourceCode(className, sourceCodeInText);
             CompiledCode compiledCode = new CompiledCode(className);
@@ -81,9 +83,10 @@ class InMemoryCodeCompiler {
     /**
      * Return all class paths as instance of {@link String} form given instance of {@link ClassLoader}
      * @param classLoader instance of {@link ClassLoader}
+     * @param additionalClassPaths additional class paths
      * @return all class paths
      */
-    private static String getClassPath(final ClassLoader classLoader) {
+    private static String getClassPath(final ClassLoader classLoader, final String additionalClassPaths) {
         ClassLoader cl = classLoader;
         StringBuilder buf = new StringBuilder();
         buf.append(".");
@@ -94,21 +97,16 @@ class InMemoryCodeCompiler {
 
                 URL[] urls = ucl.getURLs();
                 for (URL url : urls) {
-                    String jarPathName = url.getFile();
-                    if (jarPathName.startsWith("file:")) {
-                        jarPathName = jarPathName.substring(
-                                jarPathName.indexOf("file:") + "file:".length(), jarPathName.indexOf("!/")
-                        );
-                    }
-                    buf.append(separator).append(
-                            jarPathName
-                    );
+                    buf.append(separator).append(url.getFile());
                 }
             } catch (Exception e) {
                 // do nothing
                 // because this try-catch check cast ClassLoader to URLClassLoader
             }
             cl = cl.getParent();
+        }
+        if (null != additionalClassPaths && !additionalClassPaths.isEmpty()) {
+            buf.append(separator).append(additionalClassPaths);
         }
 
         return buf.toString();

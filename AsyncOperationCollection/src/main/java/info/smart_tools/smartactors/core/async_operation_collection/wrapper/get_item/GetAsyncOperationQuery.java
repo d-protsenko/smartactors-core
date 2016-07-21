@@ -31,11 +31,7 @@ public interface GetAsyncOperationQuery {
      * @throws ReadValueException if error during get is occurred
      */
     String getToken() throws ReadValueException;
-
-    /**
-     * @return wrapped IObject which was chosen
-     * @throws ReadValueException
-     */
+    //TODO:: use getIObject from IObjectWrapper
     IObject wrapped() throws ReadValueException;
 
     /**

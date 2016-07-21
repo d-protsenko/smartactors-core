@@ -11,14 +11,14 @@ public interface MessageWrapper {
     /**
      * Return email from message
      * @return email
-     * @throws ReadValueException Throw when can't correct read value
+     * @throws ReadValueException
      */
     String getEmail() throws ReadValueException;
 
     /**
      * Setter for user
      * @param user the user from db
-     * @throws ChangeValueException Throw when can't correct change value
+     * @throws ChangeValueException
      */
     void setUser(IObject user) throws ChangeValueException;
 }

@@ -20,8 +20,7 @@ public class AuthenticationActor {
     /**
      * Validate the session
      * @param message the incoming message
-     * @throws TaskExecutionException Throw when one of parameters can't be read
-     * @throws AuthFailException Throw when auth info is null or auth info is not equal with session auth info
+     * @throws TaskExecutionException
      */
     public void authenticateSession(final AuthenticationMessage message) throws TaskExecutionException, AuthFailException {
         try {

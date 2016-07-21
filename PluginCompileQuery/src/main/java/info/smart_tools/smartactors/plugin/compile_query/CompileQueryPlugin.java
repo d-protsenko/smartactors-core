@@ -29,9 +29,6 @@ public class CompileQueryPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    /**
-     * @param bootstrap Target bootstrap for adding strategy
-     */
     public CompileQueryPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
@@ -40,13 +37,12 @@ public class CompileQueryPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
+            //Note:: resolve by name strategy for keys should be defined
+            IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
             Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
-            item
-                    .after("IOC")
-                    .process(() -> {
+            item.process(() -> {
                 try {
-                    IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
                         (args) -> {
                             StorageConnection connection = (StorageConnection) args[0];
@@ -74,12 +70,12 @@ public class CompileQueryPlugin implements IPlugin {
 
                             return query;
                         }));
-                } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
+                } catch (RegistrationException | InvalidArgumentException e) {
                     throw new RuntimeException(e);
                 }
             });
             bootstrap.add(item);
-        } catch (InvalidArgumentException e) {
+        } catch (ResolutionException | InvalidArgumentException e) {
             throw new PluginException("Can't load compile query plugin", e);
         }
     }
