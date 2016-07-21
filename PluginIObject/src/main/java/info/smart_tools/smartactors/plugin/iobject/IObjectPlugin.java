@@ -38,7 +38,7 @@ public class IObjectPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IObject.class.toString());
+                        IKey fieldKey = Keys.getOrAdd(IObject.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));

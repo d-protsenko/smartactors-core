@@ -54,7 +54,7 @@ public class IObjectPluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey IObjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(IObjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(IObjectKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectPlugin").thenReturn(bootstrapItem);
@@ -87,7 +87,7 @@ public class IObjectPluginTest {
     @Test(expected = RuntimeException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(IObject.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectPlugin").thenReturn(bootstrapItem);
