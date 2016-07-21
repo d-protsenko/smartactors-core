@@ -28,7 +28,6 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
 
     private FieldName name;
     private FieldName dependency;
-    private FieldName wrapper;
 
     /**
      * Default constructor.
@@ -40,7 +39,6 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
         try {
             this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
-            this.wrapper = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of HandlerRoutingReceiverCreator.");
         }
@@ -56,7 +54,7 @@ public class HandlerRoutingReceiverCreator implements IRoutedObjectCreator {
             IReceiverGenerator rg = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
             Object object = IOC.resolve(
                     Keys.getOrAdd((String) description.getValue(this.dependency)),
-                    (IObject) description.getValue(this.wrapper)
+                    description
             );
             for (Method m : object.getClass().getDeclaredMethods()) {
                 Class wrapperInterface = m.getParameterTypes()[0];

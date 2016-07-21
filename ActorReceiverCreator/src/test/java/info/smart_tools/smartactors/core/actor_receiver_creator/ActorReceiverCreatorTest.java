@@ -120,13 +120,11 @@ public class ActorReceiverCreatorTest {
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IObject wrapper = mock(IObject.class);
-        when(objectSection.getValue(new FieldName("wrapper"))).thenReturn(wrapper);
         IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
-        when(createSampleActorStrategy.resolve(wrapper))
+        when(createSampleActorStrategy.resolve(objectSection))
                 .thenReturn(a);
 
         ActorReceiverCreator arc = new ActorReceiverCreator();
@@ -151,6 +149,14 @@ public class ActorReceiverCreatorTest {
         doNothing().when(mr).receive(processor);
         actorReceiver.receive(processor);
         verify(mr, times(1)).receive(processor);
+        verify(createSampleActorStrategy, times(1)).resolve(objectSection);
+        verify(rg, times(1)).generate(
+                any(CustomActor.class),
+                any(IResolveDependencyStrategy.class),
+                any(String.class)
+        );
+        verify(objectSection, times(1)).getValue(new FieldName("name"));
+        verify(objectSection, times(1)).getValue(new FieldName("dependency"));
     }
 
     @Test (expected = ObjectCreationException.class)
