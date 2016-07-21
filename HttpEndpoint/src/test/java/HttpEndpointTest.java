@@ -1,4 +1,7 @@
-import info.smart_tools.smartactors.core.*;
+import info.smart_tools.smartactors.core.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.core.HttpClient;
+import info.smart_tools.smartactors.core.HttpEndpoint;
+import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;

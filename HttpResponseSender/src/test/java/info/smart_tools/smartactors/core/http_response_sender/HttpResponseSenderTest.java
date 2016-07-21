@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -14,6 +15,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
+import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
@@ -128,7 +130,8 @@ public class HttpResponseSenderTest {
     }
 
     @Test
-    public void writeShouldCallSendMethod() throws ResolutionException, InvalidArgumentException, CookieSettingException {
+    public void writeShouldCallSendMethod() throws
+            ResponseSendingException, ResolutionException, CookieSettingException, HeadersSetterException {
         HttpResponseSender sender = new HttpResponseSender("123");
         IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"foo\":\"bar\"}");
         when(responseStatusExtractor.extract(any(IObject.class))).thenReturn(200);

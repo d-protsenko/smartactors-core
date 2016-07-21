@@ -177,6 +177,7 @@
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>
         <module>ResponseStatusExtractor</module>
+        <module>PluginHttpEndpoint</module>
     </modules>
 
     <build>

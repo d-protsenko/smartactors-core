@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.netty_client.NettyClient;
@@ -105,8 +106,8 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
                 .get();
     }*/
 
-    protected void verifyMessageWasReceivedBySystem() throws MessageReceiveException {
-        verify(receiver, times(1)).receive(any(IMessageProcessor.class), any(IObject.class), any(IAction.class));
+    protected void verifyMessageWasReceivedBySystem() throws MessageReceiveException, AsynchronousOperationException {
+        verify(receiver, times(1)).receive(any(IMessageProcessor.class));
     }
 
     protected CompletableFuture<Void> sendRequest(TRequest request) {

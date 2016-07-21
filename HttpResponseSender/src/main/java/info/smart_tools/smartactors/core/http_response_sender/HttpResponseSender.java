@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -50,7 +51,11 @@ public class HttpResponseSender implements IResponseSender {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1, getResponseStatus(environment),
                 Unpooled.wrappedBuffer(responseObject.getContent()));
-        headersSetter.set(response, environment);
+        try {
+            headersSetter.set(response, environment);
+        } catch (HeadersSetterException e) {
+            throw new ResponseSendingException("Failed to set headers to response", e);
+        }
         try {
             cookiesSetter.set(response, environment);
         } catch (CookieSettingException e) {

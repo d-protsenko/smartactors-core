@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.http_client;
 
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.core.netty_client.NettyClient;
