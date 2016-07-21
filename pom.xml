@@ -106,6 +106,7 @@
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
+        <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
@@ -155,6 +156,9 @@
         <module>ServerWithConfiguration</module>
         <module>HandlerRoutingReceiverCreator</module>
         <module>ActorReceiverCreator</module>
+        <module>PluginGetAsyncOperation</module>
+        <module>PluginIObject</module>
+        <module>ResolveByTypeStrategy</module>
     </modules>
 
     <build>
