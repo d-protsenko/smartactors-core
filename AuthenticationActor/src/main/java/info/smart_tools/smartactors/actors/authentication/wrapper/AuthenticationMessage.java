@@ -8,14 +8,14 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 public interface AuthenticationMessage {
     /**
      * @return auth information from http request
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     String getRequestUserAgent() throws ReadValueException;
 
     /**
      * Set error to message if validation is failed
      * @return auth information from user session
-     * @throws ReadValueException
+     * @throws ReadValueException Throw when can't correct read value
      */
     String getSessionUserAgent() throws ReadValueException;
 }
