@@ -8,7 +8,11 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
  */
 public class DoubleToStringResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
-    public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
-        return null;
+    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+        try {
+            return (T) String.valueOf((double) args[0]);
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }

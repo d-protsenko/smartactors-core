@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 public class StringToBigDecimalResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) new BigDecimal((String) args[0]);
+        try {
+            return (T) new BigDecimal((String) args[0]);
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }

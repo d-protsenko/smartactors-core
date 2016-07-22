@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 public class StringToIntResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) new Integer((String) args[0]);
+        try {
+            return (T) new Integer((String) args[0]);
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }

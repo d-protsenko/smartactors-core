@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 public class StringToDateResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) LocalDateTime.parse((String) args[0]);
+        try {
+            return (T) LocalDateTime.parse((String) args[0]);
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }
