@@ -26,6 +26,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.eq;
 
 @PrepareForTest({IOC.class, Keys.class, ResolveByTypeStrategy.class, ResolveIObjectByTypeStrategiesPlugin.class})
 @RunWith(PowerMockRunner.class)
@@ -65,10 +66,6 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
 
         IKey strategyKey = PowerMockito.mock(IKey.class);
         PowerMockito.when(Keys.getOrAdd(IObject.class.getCanonicalName() + "convert")).thenReturn(strategyKey);
-        IKey mapKey = PowerMockito.mock(IKey.class);
-        PowerMockito.when(Keys.getOrAdd(Map.class.getCanonicalName())).thenReturn(mapKey);
-        IKey stringKey = PowerMockito.mock(IKey.class);
-        PowerMockito.when(Keys.getOrAdd(String.class.getCanonicalName())).thenReturn(stringKey);
 
         ResolveByTypeStrategy strategy = PowerMockito.mock(ResolveByTypeStrategy.class);
         PowerMockito.whenNew(ResolveByTypeStrategy.class).withNoArguments().thenReturn(strategy);
@@ -79,10 +76,10 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
 
         PowerMockito.verifyStatic();
-        IOC.register(Matchers.eq(strategyKey), Matchers.eq(strategy));
+        IOC.register(eq(strategyKey), eq(strategy));
 
-        Mockito.verify(strategy).register(Matchers.eq(mapKey), Matchers.any(MapToIObjectResolveDependencyStrategy.class));
-        Mockito.verify(strategy).register(Matchers.eq(stringKey), Matchers.any(StringToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(Map.class), Matchers.any(MapToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(String.class), Matchers.any(StringToIObjectResolveDependencyStrategy.class));
     }
 
     @Test(expected = PluginException.class)

@@ -48,12 +48,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                     try {
                         IKey typeStrategy = Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
                         ResolveByTypeStrategy resolveStrategy = new ResolveByTypeStrategy();
-                        resolveStrategy.register(
-                            Keys.getOrAdd(Map.class.getCanonicalName()), new MapToIObjectResolveDependencyStrategy()
-                        );
-                        resolveStrategy.register(
-                            Keys.getOrAdd(String.class.getCanonicalName()), new StringToIObjectResolveDependencyStrategy()
-                        );
+                        resolveStrategy.register(Map.class, new MapToIObjectResolveDependencyStrategy());
+                        resolveStrategy.register(String.class, new StringToIObjectResolveDependencyStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
                     } catch (ResolutionException | RegistrationException e) {
                         throw new RuntimeException(e);
