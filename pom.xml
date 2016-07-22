@@ -139,6 +139,7 @@
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
+        <module>ResolveObjectFromListStrategy</module>
         <module>IField</module>
         <module>IPath</module>
         <module>Path</module>
