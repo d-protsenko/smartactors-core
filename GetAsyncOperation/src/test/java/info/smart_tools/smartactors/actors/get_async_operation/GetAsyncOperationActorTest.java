@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.actor.get_async_operation;
+package info.smart_tools.smartactors.actors.get_async_operation;
 
-import info.smart_tools.smartactors.actor.get_async_operation.exception.GetAsyncOperationActorException;
-import info.smart_tools.smartactors.actor.get_async_operation.wrapper.GetAsyncOperationMessage;
+import info.smart_tools.smartactors.actors.get_async_operation.exception.GetAsyncOperationActorException;
+import info.smart_tools.smartactors.actors.get_async_operation.wrapper.GetAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;

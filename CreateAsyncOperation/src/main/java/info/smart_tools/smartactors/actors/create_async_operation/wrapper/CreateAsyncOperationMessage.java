@@ -1,10 +1,11 @@
-package info.smart_tools.smartactors.actor.create_async_operation.wrapper;
+package info.smart_tools.smartactors.actors.create_async_operation.wrapper;
 
+import info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
 /**
- * Wrapper for {@link info.smart_tools.smartactors.actor.create_async_operation.CreateAsyncOperationActor} handler
+ * Wrapper for {@link CreateAsyncOperationActor} handler
  */
 public interface CreateAsyncOperationMessage {
 

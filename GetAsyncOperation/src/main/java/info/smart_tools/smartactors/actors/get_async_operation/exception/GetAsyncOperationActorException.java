@@ -1,6 +1,6 @@
-package info.smart_tools.smartactors.actor.get_async_operation.exception;
+package info.smart_tools.smartactors.actors.get_async_operation.exception;
 
-import info.smart_tools.smartactors.actor.get_async_operation.GetAsyncOperationActor;
+import info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor;
 
 /**
  * Exception for error in {@link GetAsyncOperationActor}

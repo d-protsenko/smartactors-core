@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.actor.create_async_operation.wrapper;
+package info.smart_tools.smartactors.actors.create_async_operation.wrapper;
 
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 
