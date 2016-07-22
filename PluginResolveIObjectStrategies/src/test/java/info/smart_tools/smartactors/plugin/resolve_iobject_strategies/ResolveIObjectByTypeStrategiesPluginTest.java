@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -63,7 +64,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         Mockito.verify(bootstrap).add(item);
 
         IKey strategyKey = PowerMockito.mock(IKey.class);
-        PowerMockito.when(Keys.getOrAdd("MapToIObjectResolveDependencyStrategy")).thenReturn(strategyKey);
+        PowerMockito.when(Keys.getOrAdd(IObject.class.getCanonicalName() + "convert")).thenReturn(strategyKey);
         IKey mapKey = PowerMockito.mock(IKey.class);
         PowerMockito.when(Keys.getOrAdd(Map.class.getCanonicalName())).thenReturn(mapKey);
         IKey stringKey = PowerMockito.mock(IKey.class);
@@ -75,7 +76,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         PowerMockito.verifyStatic();
-        Keys.getOrAdd("MapToIObjectResolveDependencyStrategy");
+        Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
 
         PowerMockito.verifyStatic();
         IOC.register(Matchers.eq(strategyKey), Matchers.eq(strategy));
@@ -110,7 +111,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
 
         Mockito.verify(bootstrap).add(item);
 
-        PowerMockito.doThrow(new ResolutionException("")).when(Keys.getOrAdd("MapToIObjectResolveDependencyStrategy"));
+        PowerMockito.doThrow(new ResolutionException("")).when(Keys.getOrAdd(IObject.class.getCanonicalName() + "convert"));
         iPoorActionArgumentCaptor.getValue().execute();
         fail();
     }

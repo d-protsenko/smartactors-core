@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -45,7 +46,7 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey mapToIObjectStrategyKey = Keys.getOrAdd("MapToIObjectResolveDependencyStrategy");
+                        IKey typeStrategy = Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
                         ResolveByTypeStrategy resolveStrategy = new ResolveByTypeStrategy();
                         resolveStrategy.register(
                             Keys.getOrAdd(Map.class.getCanonicalName()), new MapToIObjectResolveDependencyStrategy()
@@ -53,7 +54,7 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                         resolveStrategy.register(
                             Keys.getOrAdd(String.class.getCanonicalName()), new StringToIObjectResolveDependencyStrategy()
                         );
-                        IOC.register(mapToIObjectStrategyKey, resolveStrategy);
+                        IOC.register(typeStrategy, resolveStrategy);
                     } catch (ResolutionException | RegistrationException e) {
                         throw new RuntimeException(e);
                     }
