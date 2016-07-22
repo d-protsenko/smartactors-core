@@ -140,6 +140,7 @@
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObject</module>
         <module>ResolveIObjectStrategies</module>
+        <module>PluginResolveIObjectStrategies</module>
         <module>ResolveByTypeStrategy</module>
     </modules>
 
