@@ -3,8 +3,6 @@ package info.smart_tools.smartactors.plugin.resolve_standard_types_strategies;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -13,19 +11,14 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.resolve_by_type_strategy.ResolveByTypeStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.DoubleToBigDecimalResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.StringToBigDecimalResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.StringToDateResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.DoubleToIntResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.StringToIntResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.*;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.*;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.*;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.*;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Plugin.
@@ -56,23 +49,23 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IKey stringKey = Keys.getOrAdd(String.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy stringStrategy = new ResolveByTypeStrategy();
 
-                            stringStrategy.register(Keys.getOrAdd(Object.class.getCanonicalName()),
+                            stringStrategy.register(Object.class,
                                     new ObjectToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(int.class.getCanonicalName()),
+                            stringStrategy.register(int.class,
                                     new IntToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(long.class.getCanonicalName()),
+                            stringStrategy.register(long.class,
                                     new LongToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(float.class.getCanonicalName()),
+                            stringStrategy.register(float.class,
                                     new FloatToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(double.class.getCanonicalName()),
+                            stringStrategy.register(double.class,
                                     new DoubleToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(boolean.class.getCanonicalName()),
+                            stringStrategy.register(boolean.class,
                                     new BooleanToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(byte.class.getCanonicalName()),
+                            stringStrategy.register(byte.class,
                                     new ByteToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(short.class.getCanonicalName()),
+                            stringStrategy.register(short.class,
                                     new ShortToStringResolveDependencyStrategy());
-                            stringStrategy.register(Keys.getOrAdd(char.class.getCanonicalName()),
+                            stringStrategy.register(char.class,
                                     new CharToStringResolveDependencyStrategy());
 
                             IOC.register(stringKey, stringStrategy);
@@ -81,9 +74,9 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy integerStrategy = new ResolveByTypeStrategy();
 
-                            integerStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
+                            integerStrategy.register(String.class,
                                     new StringToIntResolveDependencyStrategy());
-                            integerStrategy.register(Keys.getOrAdd(Double.class.getCanonicalName()),
+                            integerStrategy.register(Double.class,
                                     new DoubleToIntResolveDependencyStrategy());
 
                             IOC.register(integerKey, integerStrategy);
@@ -92,9 +85,9 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IKey bigDecimalKey = Keys.getOrAdd(BigDecimal.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy bigDecimalStrategy = new ResolveByTypeStrategy();
 
-                            bigDecimalStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
+                            bigDecimalStrategy.register(String.class,
                                     new StringToBigDecimalResolveDependencyStrategy());
-                            bigDecimalStrategy.register(Keys.getOrAdd(Double.class.getCanonicalName()),
+                            bigDecimalStrategy.register(Double.class,
                                     new DoubleToBigDecimalResolveDependencyStrategy());
 
                             IOC.register(bigDecimalKey, bigDecimalStrategy);
@@ -103,7 +96,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy localDateTimeStrategy = new ResolveByTypeStrategy();
 
-                            localDateTimeStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
+                            localDateTimeStrategy.register(String.class,
                                     new StringToDateResolveDependencyStrategy());
 
                             IOC.register(localDateTimeKey, localDateTimeStrategy);
