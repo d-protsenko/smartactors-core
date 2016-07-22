@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
  * Implementation of {@link IField}
@@ -34,7 +33,7 @@ public class Field implements IField {
     public <T> T in(final IObject obj)
             throws ReadValueException, InvalidArgumentException {
         if (null == obj) {
-            throw new InvalidArgumentException("WDSObject should not be null.");
+            throw new InvalidArgumentException("Argument should not be null.");
         }
         Object value = obj.getValue(fieldName);
         if (null == value) {
@@ -48,7 +47,7 @@ public class Field implements IField {
     public <T> T in(final IObject obj, final Class type)
             throws ReadValueException, InvalidArgumentException {
         if (null == obj || null == type) {
-            throw new InvalidArgumentException("WDSObject should not be null.");
+            throw new InvalidArgumentException("Argument should not be null.");
         }
         Object value = obj.getValue(fieldName);
         if (null == value) {
@@ -58,7 +57,10 @@ public class Field implements IField {
             return (T) value;
         }
         try {
-            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName() + "convert"), value);
+            return IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), type.getCanonicalName() + "convert"),
+                    value
+            );
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not cast value to required type.");
         }
@@ -68,7 +70,7 @@ public class Field implements IField {
     public <T> void out(final IObject obj, final T in)
             throws ChangeValueException, InvalidArgumentException {
         if (null == obj) {
-            throw new InvalidArgumentException("WDSObject should not be null.");
+            throw new InvalidArgumentException("Argument should not be null.");
         }
         obj.setValue(fieldName, in);
     }

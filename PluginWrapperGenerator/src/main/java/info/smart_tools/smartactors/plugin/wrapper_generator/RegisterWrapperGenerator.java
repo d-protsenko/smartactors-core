@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.receiver_generator;
+package info.smart_tools.smartactors.plugin.wrapper_generator;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -7,15 +7,14 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.ireceiver_generator.IReceiverGenerator;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.receiver_generator.ReceiverGenerator;
+import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 
 /**
- * Plugin creates instance of {@link ReceiverGenerator} and registers it into IOC.
+ * Plugin creates instance of {@link WrapperGenerator} and registers it into IOC,
  */
-public class InitializeReceiverGenerator implements IPlugin {
+public class RegisterWrapperGenerator implements IPlugin {
 
     /** Local storage for instance of {@link IBootstrap}*/
     private IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -25,7 +24,7 @@ public class InitializeReceiverGenerator implements IPlugin {
      * @param bootstrap instance of {@link IBootstrap}
      * @throws InvalidArgumentException if any errors occurred
      */
-    public InitializeReceiverGenerator(final IBootstrap<IBootstrapItem<String>> bootstrap)
+    public RegisterWrapperGenerator(final IBootstrap<IBootstrapItem<String>> bootstrap)
             throws InvalidArgumentException {
         if (null == bootstrap) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
@@ -38,14 +37,15 @@ public class InitializeReceiverGenerator implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("InitializeReceiverGenerator");
             item
+                    .after("IOC")
                     .process(
                             () -> {
                                 try {
-                                    IReceiverGenerator rg = new ReceiverGenerator(this.getClass().getClassLoader());
+                                    IWrapperGenerator rg = new WrapperGenerator(this.getClass().getClassLoader());
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(),
-                                                    ReceiverGenerator.class.getCanonicalName()
+                                                    WrapperGenerator.class.getCanonicalName()
                                             ),
                                             new SingletonStrategy(rg)
                                     );

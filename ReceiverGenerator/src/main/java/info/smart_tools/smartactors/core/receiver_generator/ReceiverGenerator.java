@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.receiver_generator;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
@@ -32,7 +31,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
      * Constructor.
      * Create new instance of {@link ReceiverGenerator} by given {@link ClassLoader}
      * @param classLoader the instance of {@link ClassLoader}
-     * @throws InvalidArgumentException if initialization inner instances of {@link FieldName} was failed
+     * @throws InvalidArgumentException if initialization of {@link ClassGenerator} was failed
      */
     public ReceiverGenerator(final ClassLoader classLoader)
             throws InvalidArgumentException {

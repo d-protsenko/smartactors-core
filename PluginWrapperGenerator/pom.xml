@@ -9,30 +9,59 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.receiver_generator</artifactId>
+    <artifactId>plugin.wrapper_generator</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.5</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
+
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ireceiver_generator</artifactId>
+            <artifactId>core.iplugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>core.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.class_generator</artifactId>
+            <artifactId>core.wrapper_generator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wds_object</artifactId>
+            <artifactId>core.bootstrap_item</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.singleton_strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -61,6 +90,7 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>

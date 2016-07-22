@@ -59,7 +59,7 @@ public class Server implements IServer {
             IWrapper wrapper = wg.generate(IWrapper.class);
 
             /** Check registration of IWrapper instance creation strategy to IOC */
-            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName()));
+            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName() + "convert"));
 
             /** Initialize wrapper */
             ((IObjectWrapper) wrapper).init(environment);
