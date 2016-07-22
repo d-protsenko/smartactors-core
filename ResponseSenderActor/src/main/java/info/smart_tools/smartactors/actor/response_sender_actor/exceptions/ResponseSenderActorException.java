@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.actor.response_sender_actor.exceptions;
 
+/**
+ * Exception for {@link info.smart_tools.smartactors.actor.response_sender_actor.ResponseSenderActor}
+ */
 public class ResponseSenderActorException extends Exception {
     /**
      * Constructor with specific error message

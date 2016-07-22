@@ -18,9 +18,4 @@ public interface IClient<Request> extends IAsyncService<IClient<Request>> {
      * @return completable future of the sending request
      */
     CompletableFuture<Void> send(Request request);
-
-    interface Creator {
-        IClient create(IClientConfig params)
-                throws ReadValueException, ChangeValueException;
-    }
 }

@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.core.iresponse_sender.exceptions;
 
 
+/**
+ * Exception for {@link info.smart_tools.smartactors.core.iresponse_sender.IResponseSender}
+ */
 public class ResponseSendingException extends Exception {
     /**
      * Default constructor

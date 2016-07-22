@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.core.icookies_extractor.exceptions;
 
+/**
+ * Exception for {@link info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter}
+ */
 public class CookieSettingException extends Exception {
 
     /**
