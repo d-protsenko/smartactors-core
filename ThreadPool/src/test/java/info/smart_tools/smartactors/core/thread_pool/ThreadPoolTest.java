@@ -1,9 +1,13 @@
 package info.smart_tools.smartactors.core.thread_pool;
 
+import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -45,6 +49,30 @@ public class ThreadPoolTest {
 
         verify(task1, timeout(200)).execute();
         verify(task1, timeout(100)).execute();
+    }
+
+    @Test
+    public void Should_setThreadsScopeToCreationScope()
+            throws Exception {
+        AtomicReference<IScope> threadScopeRef = new AtomicReference<>(null);
+        ITask task = mock(ITask.class);
+        Object scopeId = ScopeProvider.createScope(null);
+        IScope scope = ScopeProvider.getScope(scopeId);
+
+        ScopeProvider.setCurrentScope(scope);
+
+        threadPool = new ThreadPool(2);
+
+        doAnswer(invocation -> {
+            threadScopeRef.set(ScopeProvider.getCurrentScope());
+            return null;
+        }).when(task).execute();
+
+        assertTrue(threadPool.tryExecute(task));
+
+        verify(task, timeout(200)).execute();
+
+        assertSame(scope, threadScopeRef.get());
     }
 
     private class SleepingTask implements ITask {
