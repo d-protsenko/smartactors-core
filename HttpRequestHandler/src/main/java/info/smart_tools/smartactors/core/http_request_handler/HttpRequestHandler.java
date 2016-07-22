@@ -23,7 +23,6 @@ import java.util.Map;
  * Endpoint handler for HTTP requests.
  */
 public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, FullHttpRequest> {
-    private final Map<String, IDeserializeStrategy> deserializeStrategies;
 
     /**
      * Constructor for HttpRequestHandler
@@ -31,20 +30,16 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      * @param scope                 scope for HttpRequestHandler
      * @param environmentHandler    handler for environment
      * @param receiver              chain, that should receive message
-     * @param deserializeStrategies map of the deserialize strategies, where key is content-type
-     *                              and value is strategy for that content type
      */
     public HttpRequestHandler(
-            final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
-            final Map<String, IDeserializeStrategy> deserializeStrategies) {
+            final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver) {
         super(receiver, environmentHandler, scope);
-        this.deserializeStrategies = deserializeStrategies;
     }
 
     @Override
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request) throws Exception {
-        IObject environment = deserializeStrategies.get(request.headers().get(HttpHeaders.Names.CONTENT_TYPE))
-                .deserialize(request);
+        IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()), request);
+        IObject environment = deserializeStrategy.deserialize(request);
         IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
         IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");

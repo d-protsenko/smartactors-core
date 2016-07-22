@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.http_endpoint;
 
 
-import info.smart_tools.smartactors.core.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;

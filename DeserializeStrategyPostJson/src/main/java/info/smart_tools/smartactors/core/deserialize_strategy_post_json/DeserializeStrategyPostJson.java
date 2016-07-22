@@ -1,5 +1,6 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.deserialize_strategy_post_json;
 
+import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;

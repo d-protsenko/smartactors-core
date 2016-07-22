@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.http_endpoint;
 
-import info.smart_tools.smartactors.core.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
@@ -108,7 +108,7 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new DSObject((String) args[0]);
+                                return args.length>0 ? new DSObject((String) args[0]) : new DSObject();
                             } catch (InvalidArgumentException ignored) {
                             }
                             return null;
@@ -137,6 +137,10 @@ public class HttpEndpointTest {
                         }
                 )
         );
+        IOC.register(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> new DeserializeStrategyPostJson(mapperStub)
+                ));
 
         ChannelInboundHandler handler = new SimpleChannelInboundHandler<FullHttpResponse>(getResponseClass()) {
             @Override
@@ -177,7 +181,7 @@ public class HttpEndpointTest {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
-                environmentHandler, receiver, strategies);
+                environmentHandler, receiver);
     }
 
     protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException {

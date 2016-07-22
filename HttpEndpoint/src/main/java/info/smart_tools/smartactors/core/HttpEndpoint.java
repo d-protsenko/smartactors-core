@@ -21,15 +21,12 @@ public class HttpEndpoint extends HttpServer {
      * @param scope            scope for endpoint
      * @param handler          handler for environment
      * @param receiverChain    chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
-     * @param strategies       map of the deserialize strategies, where key is content-type
-     *                         and value is strategy for that content type
      */
     public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
-                        final IEnvironmentHandler handler, final IReceiverChain receiverChain,
-                        final Map<String, IDeserializeStrategy> strategies
+                        final IEnvironmentHandler handler, final IReceiverChain receiverChain
     ) {
         super(port, maxContentLength, new EndpointChannelInboundHandler<>(
-                new HttpRequestHandler(scope, handler, receiverChain, strategies),
+                new HttpRequestHandler(scope, handler, receiverChain),
                 FullHttpRequest.class
         ));
     }
