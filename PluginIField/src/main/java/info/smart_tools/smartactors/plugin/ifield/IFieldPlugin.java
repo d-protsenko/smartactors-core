@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.ifield;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -14,7 +15,6 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
 
 /**
  * Plugin for registration of IOC strategy for Field
