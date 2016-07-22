@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin.iobject</artifactId>
+    <artifactId>plugin.iobject_simple_impl</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
