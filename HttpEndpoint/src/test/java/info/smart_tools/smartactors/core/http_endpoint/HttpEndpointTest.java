@@ -1,3 +1,5 @@
+package info.smart_tools.smartactors.core.http_endpoint;
+
 import info.smart_tools.smartactors.core.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.HttpEndpoint;

@@ -158,7 +158,7 @@
         <module>IResponseStatusExtractor</module>
         <module>IChannelHandler</module>
         <module>ICookiesSetter</module>
-        <module>IHeadersSetter</module>
+        <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
         <module>GetCookieFromRequestRule</module>
