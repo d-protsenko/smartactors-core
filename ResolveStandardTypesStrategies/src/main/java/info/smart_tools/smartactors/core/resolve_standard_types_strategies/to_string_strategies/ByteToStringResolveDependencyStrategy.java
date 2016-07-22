@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 public class ByteToStringResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) String.valueOf((byte) args[0]);
+        try {
+            return (T) String.valueOf((byte) args[0]);
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }

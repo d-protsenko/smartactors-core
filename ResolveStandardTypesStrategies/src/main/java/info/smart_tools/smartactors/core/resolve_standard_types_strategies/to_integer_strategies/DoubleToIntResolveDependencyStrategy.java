@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 public class DoubleToIntResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) Integer.valueOf(((Double) args[0]).intValue());
+        try {
+            return (T) Integer.valueOf(((Double) args[0]).intValue());
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }

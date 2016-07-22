@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 public class ObjectToStringResolveDependencyStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-        return (T) args[0].toString();
+        try {
+            return (T) args[0].toString();
+        } catch (Exception e) {
+            throw new ResolveDependencyStrategyException(e);
+        }
     }
 }
