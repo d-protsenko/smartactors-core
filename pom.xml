@@ -138,7 +138,7 @@
         <module>IPath</module>
         <module>Path</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginIObject</module>
+        <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
         <module>ResolveByTypeStrategy</module>
