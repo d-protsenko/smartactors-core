@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.plugin.get_async_operation;
 
-import info.smart_tools.smartactors.actor.get_async_operation.GetAsyncOperationActor;
+import info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
