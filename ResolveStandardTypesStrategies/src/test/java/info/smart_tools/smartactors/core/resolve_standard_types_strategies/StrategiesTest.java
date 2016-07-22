@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bi
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.StringToDateResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.DoubleToIntResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.StringToIntResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.ObjectToStringResolveDependencyStrategy;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -42,5 +43,11 @@ public class StrategiesTest {
     public void StringToIntegerTest() throws Exception {
         IResolveDependencyStrategy strategy = new StringToIntResolveDependencyStrategy();
         assertEquals(strategy.resolve("2"), Integer.valueOf("2"));
+    }
+
+    @Test
+    public void IntegerToString() throws Exception {
+        IResolveDependencyStrategy strategy = new ObjectToStringResolveDependencyStrategy();
+        assertEquals(strategy.resolve(new Double("2.0")), "2.0");
     }
 }
