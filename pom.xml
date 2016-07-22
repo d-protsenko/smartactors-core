@@ -55,9 +55,7 @@
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
-        <module>IEndpointCreator</module>
         <module>IAsyncService</module>
-        <module>EndpointGenerator</module>
         <module>EndpointHandler</module>
         <module>NettyServer</module>
         <module>TcpServer</module>
