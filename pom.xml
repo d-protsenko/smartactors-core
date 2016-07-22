@@ -113,6 +113,7 @@
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
+        <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
@@ -178,6 +179,9 @@
         <module>HttpHeadersSetter</module>
         <module>ResponseStatusExtractor</module>
         <module>PluginHttpEndpoint</module>
+        <module>PluginGetAsyncOperation</module>
+        <module>PluginIObjectSimpleImpl</module>
+        <module>ResolveByTypeStrategy</module>
     </modules>
 
     <build>
