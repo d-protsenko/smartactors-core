@@ -58,7 +58,7 @@ public class Field implements IField {
             return (T) value;
         }
         try {
-            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName()), value);
+            return IOC.resolve(Keys.getOrAdd(type.getCanonicalName() + "convert"), value);
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not cast value to required type.");
         }
