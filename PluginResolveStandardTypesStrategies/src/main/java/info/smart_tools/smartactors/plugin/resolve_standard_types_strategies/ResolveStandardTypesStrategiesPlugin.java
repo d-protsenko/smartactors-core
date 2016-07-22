@@ -53,7 +53,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             // to String strategies
-                            IKey stringKey = Keys.getOrAdd(String.class.getCanonicalName());
+                            IKey stringKey = Keys.getOrAdd(String.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy stringStrategy = new ResolveByTypeStrategy();
 
                             stringStrategy.register(Keys.getOrAdd(Object.class.getCanonicalName()),
@@ -78,7 +78,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(stringKey, stringStrategy);
 
                             // to Integer strategies
-                            IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName());
+                            IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy integerStrategy = new ResolveByTypeStrategy();
 
                             integerStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
@@ -89,7 +89,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(integerKey, integerStrategy);
 
                             // to BigDecimal strategies
-                            IKey bigDecimalKey = Keys.getOrAdd(BigDecimal.class.getCanonicalName());
+                            IKey bigDecimalKey = Keys.getOrAdd(BigDecimal.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy bigDecimalStrategy = new ResolveByTypeStrategy();
 
                             bigDecimalStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
@@ -100,7 +100,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(bigDecimalKey, bigDecimalStrategy);
 
                             // to LocalDateTyme strategies
-                            IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName());
+                            IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy localDateTimeStrategy = new ResolveByTypeStrategy();
 
                             localDateTimeStrategy.register(Keys.getOrAdd(String.class.getCanonicalName()),
