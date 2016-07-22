@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.plugin.get_async_operation;
 
-import info.smart_tools.smartactors.actor.get_async_operation.GetAsyncOperationActor;
+import info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
- * Plugin for {@link info.smart_tools.smartactors.actor.get_async_operation.GetAsyncOperationActor}
+ * Plugin for {@link GetAsyncOperationActor}
  */
 public class GetAsyncOperationPlugin implements IPlugin {
 
@@ -41,9 +41,7 @@ public class GetAsyncOperationPlugin implements IPlugin {
                                 IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());
                                 try {
                                     IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
-                                            (args) -> {
-                                                return new GetAsyncOperationActor((IObject) args[0]);
-                                            }
+                                            (args) -> new GetAsyncOperationActor((IObject) args[0])
                                     ));
                                 } catch (RegistrationException | InvalidArgumentException e) {
                                     throw new RuntimeException(e);
