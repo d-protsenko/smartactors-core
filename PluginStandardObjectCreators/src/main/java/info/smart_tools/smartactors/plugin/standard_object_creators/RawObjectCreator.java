@@ -19,15 +19,13 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  *
  * <pre>
  *     {
- *         "class": "org.my.receiver.Receiver",     // class of the receiver (should implement {@link IMessageReceiver})
+ *         "dependency": "org.my.receiver.Receiver",// name of receiver dependency (should implement {@link IMessageReceiver})
  *         "name": "receiver"                       // identifier of the receiver in the router
  *     }
  * </pre>
- *
- * TODO: Pass arguments from configuration to receiver's constructor
  */
 public class RawObjectCreator implements IRoutedObjectCreator {
-    private final IFieldName classFieldName;
+    private final IFieldName dependencyFieldName;
     private final IFieldName nameFieldName;
 
     /**
@@ -37,7 +35,7 @@ public class RawObjectCreator implements IRoutedObjectCreator {
      */
     public RawObjectCreator()
             throws ResolutionException {
-        classFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "class");
+        dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
         nameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
     }
 
@@ -54,19 +52,15 @@ public class RawObjectCreator implements IRoutedObjectCreator {
 
         try {
             Object address = IOC.resolve(Keys.getOrAdd("route_from_object_name"), description.getValue(nameFieldName));
-            Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(description.getValue(classFieldName)));
+            Object receiver = IOC.resolve(Keys.getOrAdd(String.valueOf(description.getValue(dependencyFieldName))), description);
 
-            if (!IMessageReceiver.class.isAssignableFrom(clazz)) {
-                throw new ObjectCreationException("Required receiver class does not implement receiver interface.");
+            if (!(receiver instanceof IMessageReceiver)) {
+                throw new ObjectCreationException("Resolved dependency does not implement receiver interface.");
             }
 
-            router.register(address, (IMessageReceiver) clazz.newInstance());
-        } catch (ClassNotFoundException e) {
-            throw new ObjectCreationException("Required receiver class not found.", e);
+            router.register(address, (IMessageReceiver) receiver);
         } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new ObjectCreationException("Error occurred creating the receiver.", e);
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new ObjectCreationException("Could not invoke receiver's constructor.", e);
         }
     }
 }
