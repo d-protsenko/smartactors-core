@@ -3,13 +3,36 @@ package info.smart_tools.smartactors.core.ds_object;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.deser.KeyDeserializers;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.type.MapType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sun.xml.internal.fastinfoset.util.CharArray;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -40,9 +63,15 @@ public class DSObject implements IObject {
                     final SerializerProvider serializerProvider
             )
                     throws IOException {
-                jsonGenerator.writeRawValue(iObject.toString());
+                try {
+
+                    jsonGenerator.writeRawValue((String) iObject.serialize());
+                } catch (SerializeException e) {
+                    throw new IOException("Could not serialize DSObject.");
+                }
             }
         });
+        module.addDeserializer(Object.class, new ObjectDeserializer());
         OBJECT_MAPPER.registerModule(module);
     }
 
@@ -56,8 +85,8 @@ public class DSObject implements IObject {
         if (null == objectEntries) {
             throw new InvalidArgumentException("Argument should not be null.");
         }
-        this.body = new HashMap<>(0);
-        this.body.putAll(objectEntries);
+        this.body = new HashMap<IFieldName, Object>(0);
+        this.body.putAll( (HashMap<IFieldName, Object>) objectEntries);
     }
 
     /**
@@ -144,4 +173,26 @@ public class DSObject implements IObject {
             return this.iterator.next();
         }
     } 
+}
+
+/**
+ * Custom deserializer.
+ * Cast all nested json objects to {@link IObject.
+ */
+class ObjectDeserializer extends UntypedObjectDeserializer {
+
+    @Override
+    public Object deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException {
+        try {
+            if (JsonTokenId.ID_START_OBJECT == jp.getCurrentTokenId()) {
+                return new DSObject(
+                        (Map<IFieldName, Object>) jp.readValueAs(new TypeReference<Map<FieldName, Object>>() { })
+                );
+            }
+        } catch (Exception e) {
+            return super.deserialize(jp, ctxt);
+        }
+        return super.deserialize(jp, ctxt);
+    }
 }
