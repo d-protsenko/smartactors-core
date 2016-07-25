@@ -21,7 +21,7 @@ public interface CreateAsyncOperationMessage {
      * @return TTL for async operation
      * @throws ReadValueException if error during get is occurred
      */
-    String getExpiredTime() throws ReadValueException;
+    Long getExpiredTime() throws ReadValueException;
 
     /**
      * Setter
