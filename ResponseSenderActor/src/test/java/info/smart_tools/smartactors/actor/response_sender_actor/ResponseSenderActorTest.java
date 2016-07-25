@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.actor.response_sender_actor;
 
+import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
 import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
@@ -94,8 +95,7 @@ public class ResponseSenderActorTest {
 
     @Test
     public void testResponseSenderActorShouldHandleSend()
-            throws InvalidArgumentException, SerializeException, ReadValueException,
-            ChangeValueException, ResponseSendingException, ResolutionException {
+            throws InvalidArgumentException, ResponseSenderActorException, ChangeValueException, ResponseSendingException {
         IObject environment =
                 new DSObject("{\"config\": null, \"message\": null, \"response\": {\"hello\":\"world\"}}");
         IObject context = new DSObject();
