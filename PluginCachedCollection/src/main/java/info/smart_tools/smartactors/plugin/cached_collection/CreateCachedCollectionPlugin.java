@@ -46,8 +46,8 @@ public class CreateCachedCollectionPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
 
             item
-                .after("ioc")
-                .after("FieldPlugin")
+                .after("IOC")
+                .after("IFieldPlugin")
                 .process(() -> {
                     try {
                         IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());

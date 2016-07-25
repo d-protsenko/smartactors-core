@@ -16,7 +16,6 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
-
 public class IFieldNamePlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -32,11 +31,10 @@ public class IFieldNamePlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-
-            IBootstrapItem<String> item = new BootstrapItem("field_name");
+            IBootstrapItem<String> item = new BootstrapItem("IFieldNamePlugin");
 
             item
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());

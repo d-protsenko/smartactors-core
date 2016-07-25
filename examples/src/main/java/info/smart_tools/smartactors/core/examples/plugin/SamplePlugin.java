@@ -32,7 +32,7 @@ public class SamplePlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("SamplePlugin");    // our item name
-            item.after("ioc");                                                  // dependency, we need IOC
+            item.after("IOC");                                                  // dependency, we need IOC
             item.process(() -> {
                 try {
                     IKey key = Keys.getOrAdd("new SampleClass");
