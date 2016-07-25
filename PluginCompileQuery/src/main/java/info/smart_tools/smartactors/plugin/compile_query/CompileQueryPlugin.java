@@ -43,7 +43,7 @@ public class CompileQueryPlugin implements IPlugin {
             Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
             item
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                 try {
                     IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
