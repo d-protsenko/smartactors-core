@@ -46,15 +46,15 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
      */
     public ObjectsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "objects");
-        this.objectKindField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "kind");
+        this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "objects");
+        this.objectKindField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "kind");
     }
 
     @Override
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
-            IRouter router = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IRouter.class.getCanonicalName()));
+            IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
 
             for (IObject objDesc : section) {
                 Object kindId = objDesc.getValue(objectKindField);
