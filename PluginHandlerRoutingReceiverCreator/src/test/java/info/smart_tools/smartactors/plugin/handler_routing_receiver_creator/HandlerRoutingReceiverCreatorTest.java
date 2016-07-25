@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.actor_reveiver_creator;
+package info.smart_tools.smartactors.plugin.handler_routing_receiver_creator;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.field_name.FieldName;
@@ -32,8 +32,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-public class ActorReceiverCreatorPluginTest {
-
+public class HandlerRoutingReceiverCreatorTest {
     @Before
     public void init()
             throws Exception {
@@ -70,7 +69,7 @@ public class ActorReceiverCreatorPluginTest {
     public void checkPluginCreation()
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
-        IPlugin plugin = new ActorReceiverCreatorPlugin(bootstrap);
+        IPlugin plugin = new HandlerRoutingReceiverCreatorPlugin(bootstrap);
         assertNotNull(plugin);
         reset(bootstrap);
     }
@@ -78,7 +77,7 @@ public class ActorReceiverCreatorPluginTest {
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnCreation()
             throws Exception {
-        new ActorReceiverCreatorPlugin(null);
+        new HandlerRoutingReceiverCreatorPlugin(null);
         fail();
     }
 
@@ -99,7 +98,7 @@ public class ActorReceiverCreatorPluginTest {
         })
                 .when(bootstrap)
                 .add(any(IBootstrapItem.class));
-        IPlugin plugin = new ActorReceiverCreatorPlugin(bootstrap);
+        IPlugin plugin = new HandlerRoutingReceiverCreatorPlugin(bootstrap);
         plugin.load();
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
@@ -107,7 +106,7 @@ public class ActorReceiverCreatorPluginTest {
         IRoutedObjectCreator objectCreator = IOC.resolve(
                 IOC.resolve(
                         IOC.getKeyForKeyStorage(),
-                        IRoutedObjectCreator.class.getCanonicalName() + "#actor"
+                        IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"
                 )
         );
         assertNotNull(objectCreator);
@@ -118,7 +117,7 @@ public class ActorReceiverCreatorPluginTest {
     public void checkPluginExceptionOnPluginLoad()
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
-        IPlugin plugin = new ActorReceiverCreatorPlugin(bootstrap);
+        IPlugin plugin = new HandlerRoutingReceiverCreatorPlugin(bootstrap);
         doThrow(Exception.class).when(bootstrap).add(any(IBootstrapItem.class));
         plugin.load();
         fail();

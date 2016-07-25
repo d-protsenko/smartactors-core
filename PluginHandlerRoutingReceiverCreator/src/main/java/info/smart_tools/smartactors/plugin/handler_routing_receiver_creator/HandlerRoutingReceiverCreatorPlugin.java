@@ -4,11 +4,11 @@ import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.handler_routing_receiver_creator.HandlerRoutingReceiverCreator;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 /**
@@ -23,8 +23,13 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
 
     /**
      * @param bootstrap Target bootstrap for adding strategy
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public HandlerRoutingReceiverCreatorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public HandlerRoutingReceiverCreatorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap)
+            throws InvalidArgumentException {
+        if (null == bootstrap) {
+            throw new InvalidArgumentException("Incoming argument should not be null.");
+        }
         this.bootstrap = bootstrap;
     }
 
@@ -40,7 +45,8 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                                 try {
                                     HandlerRoutingReceiverCreator objectCreator = new HandlerRoutingReceiverCreator();
                                     IOC.register(
-                                            Keys.getOrAdd(
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(),
                                                     IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"
                                             ),
                                             new SingletonStrategy(objectCreator)
