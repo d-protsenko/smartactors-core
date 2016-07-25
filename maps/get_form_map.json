@@ -3,7 +3,7 @@
     {
       "actor": "createSessionActor",
       "handler": "resolve",
-      "info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage": {
+      "wrapper": {
         "in_getSessionId": "message/sessionId",
         "out_setSession": "message/session"
       }
@@ -11,7 +11,7 @@
     {
       "actor": "authenticationActor",
       "handler": "authenticateSession",
-      "info.smart_tools.smartactors.actors.authentication.wrapper.AuthenticationMessage": {
+      "wrapper": {
         "in_getRequestUserAgent": [
           {
             "name": "getUserAgentFromRequestRule",
@@ -25,9 +25,16 @@
       }
     },
     {
+      "actor": "asyncOpsActor",
+      "handler": "createOperation",
+      "wrapper": {
+        "in_getIObject": "message"
+      }
+    },
+    {
       "actor": "getFormActor",
       "handler": "getForm",
-      "info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage": {
+      "wrapper": {
         "in_getFormKey": "message/formKey",
         "out_setForm": "response/form"
       }
