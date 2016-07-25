@@ -46,8 +46,8 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
      */
     public MapsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "maps");
-        this.mapIdFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "id");
+        this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maps");
+        this.mapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
 
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()));
+            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             for (IObject mapDescription : section) {
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));

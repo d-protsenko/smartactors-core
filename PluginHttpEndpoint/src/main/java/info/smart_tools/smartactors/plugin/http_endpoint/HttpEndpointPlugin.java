@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -24,6 +25,7 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
@@ -95,6 +97,12 @@ public class HttpEndpointPlugin implements IPlugin {
                                             new SingletonStrategy(
                                                     sender
                                             ));
+
+                                    IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
+                                    IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
+                                                    (args) -> new DSObject()
+                                            )
+                                    );
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }

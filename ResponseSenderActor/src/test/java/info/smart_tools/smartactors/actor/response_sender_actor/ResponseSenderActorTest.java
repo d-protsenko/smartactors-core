@@ -95,8 +95,8 @@ public class ResponseSenderActorTest {
 
     @Test
     public void testResponseSenderActorShouldHandleSend()
-            throws InvalidArgumentException, SerializeException, ReadValueException,
-            ChangeValueException, ResponseSendingException, ResolutionException, ResponseSenderActorException {
+            throws InvalidArgumentException, SerializeException, ReadValueException, ResolutionException,
+            InvalidArgumentException, ResponseSenderActorException, ChangeValueException, ResponseSendingException {
         IObject environment =
                 new DSObject("{\"config\": null, \"message\": null, \"response\": {\"hello\":\"world\"}}");
         IObject context = new DSObject();
