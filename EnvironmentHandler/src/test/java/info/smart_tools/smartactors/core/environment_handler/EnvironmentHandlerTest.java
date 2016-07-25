@@ -73,6 +73,7 @@ public class EnvironmentHandlerTest {
         IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.toString());
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
         IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.toString());
+        IKey keyFieldName = Keys.getOrAdd(FieldName.class.toString());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
@@ -99,6 +100,18 @@ public class EnvironmentHandlerTest {
         );
         IOC.register(
                 keyIFieldName,
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                return new FieldName((String) args[0]);
+                            } catch (InvalidArgumentException ignored) {
+                            }
+                            return null;
+                        }
+                )
+        );
+        IOC.register(
+                keyFieldName,
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
