@@ -66,8 +66,7 @@ public class CreateAsyncOperationActorTest {
 
         String sessionId = "sessionId";
         when(message.getSessionId()).thenReturn(sessionId);
-        String token = "11-11-2020";
-        when(message.getExpiredTime()).thenReturn(token);
+        when(message.getExpiredTime()).thenReturn(4L);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
@@ -77,7 +76,7 @@ public class CreateAsyncOperationActorTest {
         actor.create(message);
 
         verify(data).setSessionId(sessionId);
-        verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), eq(token));
+        verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), anyString());
         verify(message).setAsyncOperationToken(anyString());
     }
 
