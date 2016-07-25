@@ -53,7 +53,7 @@ public class Field implements IField {
         if (null == value) {
             return null;
         }
-        if (type == value.getClass()) {
+        if (type == value.getClass() || type.isAssignableFrom(value.getClass())) {
             return (T) value;
         }
         try {

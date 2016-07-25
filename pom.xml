@@ -149,6 +149,7 @@
         <module>PluginResolveIObjectStrategies</module>
         <module>ResolveByTypeStrategy</module>
         <module>PluginWrapperGenerator</module>
+        <module>PluginFieldName</module>
     </modules>
 
     <build>
