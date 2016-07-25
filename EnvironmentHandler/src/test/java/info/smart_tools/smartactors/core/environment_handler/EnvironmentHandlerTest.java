@@ -3,14 +3,15 @@ package info.smart_tools.smartactors.core.environment_handler;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
@@ -140,7 +141,7 @@ public class EnvironmentHandlerTest {
             verify(messageProcessor, times(1)).process(
                     IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "message"))),
                     IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "context"))));
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | ChangeValueException e) {
             e.printStackTrace();
         }
     }
