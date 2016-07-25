@@ -16,7 +16,7 @@ public class ResolveObjectFromListDependencyStrategy implements IResolveDependen
 
             return (T) list.get(objectIndex);
         } catch (Exception e) {
-            throw new ResolveDependencyStrategyException("Can't create IObject from Map.", e);
+            throw new ResolveDependencyStrategyException("Can't get Object from List.", e);
         }
     }
 }
