@@ -38,10 +38,10 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    ActorReceiverCreator ac = new ActorReceiverCreator();
+                                    ActorReceiverCreator objectCreator = new ActorReceiverCreator();
                                     IOC.register(
                                             Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
-                                            new SingletonStrategy(ac)
+                                            new SingletonStrategy(objectCreator)
                                     );
                                 } catch (Exception e) {
                                     throw new RuntimeException(

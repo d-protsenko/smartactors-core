@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
  * Plugin creates new instance of {@link HandlerRoutingReceiverCreator} and
  * register its into IOC.
  */
-public class HandlerRoutiongReceiverCreatorPlugin implements IPlugin {
+public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
 
     /** Local storage for instance of {@link IBootstrap} */
     private IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -24,7 +24,7 @@ public class HandlerRoutiongReceiverCreatorPlugin implements IPlugin {
     /**
      * @param bootstrap Target bootstrap for adding strategy
      */
-    public HandlerRoutiongReceiverCreatorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public HandlerRoutingReceiverCreatorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
