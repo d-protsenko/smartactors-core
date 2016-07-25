@@ -75,7 +75,7 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
     public void tearDown() throws ExecutionException, InterruptedException {
         CompletableFuture.allOf(endpoint.stop()).get();
     }
-
+/*
     @Test
     public void whenEndpointReceivesRequest_ItShouldPlaceExchangeObjectIntoMessage_WhichCanBeUsedToSendResponse() throws Exception {
         IMessage stubMessage = IOC.resolve(Keys.getOrAdd(IMessage.class.toString()));
@@ -93,12 +93,12 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
         });
 
         TRequest request = createTestRequest();
-       /* String actualResponse = receiveActualResponse(stubMessage, request);
+        String actualResponse = receiveActualResponse(stubMessage, request);
 
         verifyMessageWasReceivedBySystem();
-        assertThat(actualResponse).isEqualTo("response");*/
+        assertThat(actualResponse).isEqualTo("response");
     }
-
+*/
     /*protected String receiveActualResponse(IMessage stubMessage, TRequest request) throws InterruptedException, ExecutionException {
         return sendRequest(request)
                 .thenApplyAsync(x -> this.<IResponseSender>getWithRetries(stubMessage, "exchange").send(stubMessage))

@@ -200,7 +200,6 @@
         <module>HttpHeadersSetter</module>
         <module>ResponseStatusExtractor</module>
         <module>PluginHttpEndpoint</module>
-        <module>EndpointHandler</module>
     </modules>
 
     <build>
