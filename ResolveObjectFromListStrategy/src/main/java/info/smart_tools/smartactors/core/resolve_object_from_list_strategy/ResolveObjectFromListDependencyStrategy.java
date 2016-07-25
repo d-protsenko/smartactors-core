@@ -5,6 +5,10 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 
 import java.util.List;
 
+/**
+ * Resolve element from list. List should be passed as a first argument and index of element as a second
+ * argument of a resolve function.
+ */
 public class ResolveObjectFromListDependencyStrategy implements IResolveDependencyStrategy {
 
     @Override
