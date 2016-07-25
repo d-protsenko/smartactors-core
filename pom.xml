@@ -159,6 +159,8 @@
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObject</module>
         <module>ResolveByTypeStrategy</module>
+        <module>PluginActorReceiverCreator</module>
+        <module>PluginHandlerRoutingReceiverCreator</module>
     </modules>
 
     <build>
