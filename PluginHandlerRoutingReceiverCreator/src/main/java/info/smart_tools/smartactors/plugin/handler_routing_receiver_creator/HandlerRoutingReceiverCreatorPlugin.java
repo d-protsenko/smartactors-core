@@ -34,6 +34,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("HandlerRoutingReceiverCreator");
             item
                     .after("IOC")
+                    .before("configure")
                     .process(
                             () -> {
                                 try {
