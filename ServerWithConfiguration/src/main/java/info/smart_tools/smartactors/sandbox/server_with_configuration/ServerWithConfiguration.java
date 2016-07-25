@@ -149,6 +149,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.configuration_manager-0.2.0-SNAPSHOT.jar",
                     "plugin.dsobject-0.2.0-SNAPSHOT.jar",
                     "plugin.ifieldname-0.2.0-SNAPSHOT.jar",
+                    "plugin.fieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.immutable_receiver_chain-0.2.0-SNAPSHOT.jar",
                     "plugin.ioc_keys-0.2.0-SNAPSHOT.jar",
                     "plugin.load_scope_provider-0.2.0-SNAPSHOT.jar",
@@ -159,7 +160,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.scoped_ioc-0.2.0-SNAPSHOT.jar",
                     "plugin.scope_provider-0.2.0-SNAPSHOT.jar",
                     "plugin.standard_object_creators-0.2.0-SNAPSHOT.jar",
-
+                    "plugin.http_endpoint-0.2.0-SNAPSHOT.jar"
             };
 
             for (String jarName : coreJars) {

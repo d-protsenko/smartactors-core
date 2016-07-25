@@ -51,7 +51,7 @@ In the method at the first you should declare the `BootstrapItem` provided by yo
     
 Here you declare that your item must be initialized after initialization of 'IOC' item.
  
-    item.after("ioc");
+    item.after("IOC");
 
 ### Initialization callback    
     

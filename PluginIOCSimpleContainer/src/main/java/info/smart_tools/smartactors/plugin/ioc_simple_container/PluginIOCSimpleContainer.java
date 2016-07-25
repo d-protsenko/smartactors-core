@@ -47,8 +47,8 @@ public class PluginIOCSimpleContainer implements IPlugin {
 
             bootstrap.add(iocContainerItem);
 
-            /* "ioc" - after this item IOC should be ready to use i.e. strategy for key resolution should be registered */
-            IBootstrapItem<String> iocItem = new BootstrapItem("ioc");
+            /* "IOC" - after this item IOC should be ready to use i.e. strategy for key resolution should be registered */
+            IBootstrapItem<String> iocItem = new BootstrapItem("IOC");
 
             iocItem
                     .after("ioc_container")

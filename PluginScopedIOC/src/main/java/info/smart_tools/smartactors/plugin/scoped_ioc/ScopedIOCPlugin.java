@@ -61,8 +61,8 @@ public class ScopedIOCPlugin implements IPlugin {
 
             bootstrap.add(containerItem);
 
-            /* "ioc" - barrier after which the IOC should be ready to use */
-            IBootstrapItem<String> iocItem = new BootstrapItem("ioc");
+            /* "IOC" - barrier after which the IOC should be ready to use */
+            IBootstrapItem<String> iocItem = new BootstrapItem("IOC");
 
             iocItem
                     .after("ioc_container")

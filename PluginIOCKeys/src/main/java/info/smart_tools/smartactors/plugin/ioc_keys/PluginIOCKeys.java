@@ -33,7 +33,7 @@ public class PluginIOCKeys implements IPlugin {
 
             iocKeysItem
                     .after("ioc_container")
-                    .before("ioc")
+                    .before("IOC")
                     .process(() -> {
                         try {
                             IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy());

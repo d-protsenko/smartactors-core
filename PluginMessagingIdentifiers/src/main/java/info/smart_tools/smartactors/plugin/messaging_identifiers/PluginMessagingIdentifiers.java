@@ -38,7 +38,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
             IBootstrapItem<String> strategiesItem = new BootstrapItem("messaging_identifiers");
 
             strategiesItem
-                    .after("ioc")
+                    .after("IOC")
                     .after("field_name")
                     .before("configure")
                     .process(() -> {

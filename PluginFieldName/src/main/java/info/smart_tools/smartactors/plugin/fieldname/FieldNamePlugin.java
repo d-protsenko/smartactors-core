@@ -31,13 +31,13 @@ public class FieldNamePlugin implements IPlugin{
     public void load() throws PluginException {
         try {
 
-            IBootstrapItem<String> item = new BootstrapItem("FieldNamePlugin");
+            IBootstrapItem<String> item = new BootstrapItem("field_name");
 
             item
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.toString());
+                            IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
                             IOC.register(iFieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {

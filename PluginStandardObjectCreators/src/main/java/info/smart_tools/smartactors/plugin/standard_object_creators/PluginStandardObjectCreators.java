@@ -35,7 +35,7 @@ public class PluginStandardObjectCreators implements IPlugin {
             BootstrapItem creatorsItem = new BootstrapItem("standard_object_creators");
 
             creatorsItem
-                    .after("ioc")
+                    .after("IOC")
                     .after("field_name")
                     .before("configure")
                     .process(() -> {

@@ -35,7 +35,7 @@ public class PluginReceiverChain implements IPlugin {
             BootstrapItem receiverChainItem = new BootstrapItem("receiver_chain");
 
             receiverChainItem
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(

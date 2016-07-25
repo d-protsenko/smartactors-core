@@ -39,7 +39,7 @@ public class PluginConfigurationManager implements IPlugin {
             IBootstrapItem<String> configurationManagerItem = new BootstrapItem("configuration_manager");
 
             configurationManagerItem
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()),
