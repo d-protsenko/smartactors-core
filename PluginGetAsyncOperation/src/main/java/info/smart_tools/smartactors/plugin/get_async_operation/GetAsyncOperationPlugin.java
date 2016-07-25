@@ -35,21 +35,21 @@ public class GetAsyncOperationPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateGetAsyncOperationActor");
             item
-                    //.after("IOC");
-                        .process(() -> {
+                    .after("IOC")
+                    .process(() -> {
+                        try {
+                            IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());
                             try {
-                                IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());
-                                try {
-                                    IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
-                                            (args) -> new GetAsyncOperationActor((IObject) args[0])
-                                    ));
-                                } catch (RegistrationException | InvalidArgumentException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            } catch (ResolutionException e) {
-                                throw  new RuntimeException(e);
+                                IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
+                                        (args) -> new GetAsyncOperationActor((IObject) args[0])
+                                ));
+                            } catch (RegistrationException | InvalidArgumentException e) {
+                                throw new RuntimeException(e);
                             }
-                        });
+                        } catch (ResolutionException e) {
+                            throw  new RuntimeException(e);
+                        }
+                    });
             bootstrap.add(item);
         } catch (Exception e) {
             throw new PluginException("Can't load GetAsyncOperationPlugin", e);
