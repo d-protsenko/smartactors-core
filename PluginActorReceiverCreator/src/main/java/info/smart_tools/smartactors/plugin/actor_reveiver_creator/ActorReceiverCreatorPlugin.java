@@ -40,6 +40,7 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ActorReceiverCreator");
             item
                     .after("IOC")
+                    .before("configure")
                     .process(
                             () -> {
                                 try {
