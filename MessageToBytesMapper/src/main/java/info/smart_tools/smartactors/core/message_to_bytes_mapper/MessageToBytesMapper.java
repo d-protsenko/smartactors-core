@@ -16,6 +16,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
 
     /**
      * Deserialize bytes array of json string to IObject
+     *
      * @param serializedInput Array of bytes, that should be deserialize
      * @return {@link IObject} interpretation of serializedInput
      * @throws ResolutionException
@@ -23,7 +24,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
     @Override
     public IObject deserialize(final byte[] serializedInput) throws ResolutionException {
         String string = IOC.resolve(Keys.getOrAdd(String.class.toString()), serializedInput);
-        if(serializedInput.length==0){
+        if (serializedInput.length == 0) {
             return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         }
         return IOC.resolve(Keys.getOrAdd(DSObject.class.toString()), string);
