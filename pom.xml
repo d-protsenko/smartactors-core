@@ -148,6 +148,8 @@
         <module>ResolveByTypeStrategy</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
+        <module>CObject</module>
+        <module>PluginConfigurationObject</module>
     </modules>
 
     <build>
