@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.tcp_server;
 
-import com.google.common.collect.ImmutableList;
 import info.smart_tools.smartactors.core.netty_server.NettyServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -12,6 +11,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,6 +60,6 @@ public class TcpServer extends NettyServer {
 
     @Override
     protected List<EventLoopGroup> getEventLoopGroups() {
-        return ImmutableList.of(masterGroup, childGroup);
+        return Arrays.asList(masterGroup, childGroup);
     }
 }

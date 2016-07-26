@@ -52,6 +52,7 @@ public class HttpEndpointPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpEndpoint");
             item
                     .after("IOC")
+                    .before("configure")
                     .process(
                             () -> {
                                 try {

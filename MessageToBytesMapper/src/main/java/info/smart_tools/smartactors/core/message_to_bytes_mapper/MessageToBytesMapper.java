@@ -23,7 +23,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
      */
     @Override
     public IObject deserialize(final byte[] serializedInput) throws ResolutionException {
-        String string = IOC.resolve(Keys.getOrAdd(String.class.toString()), serializedInput);
+        String string = new String(serializedInput);
         if (serializedInput.length == 0) {
             return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         }

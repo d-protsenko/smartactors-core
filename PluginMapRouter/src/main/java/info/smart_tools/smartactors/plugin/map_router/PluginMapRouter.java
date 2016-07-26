@@ -38,7 +38,7 @@ public class PluginMapRouter implements IPlugin {
             BootstrapItem routerItem = new BootstrapItem("router");
 
             routerItem
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(
