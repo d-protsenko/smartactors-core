@@ -206,6 +206,7 @@
         <module>PluginHandlerRoutingReceiverCreator</module>
         <module>SSLContextProvider</module>
         <module>HttpsServer</module>
+        <module>HttpsEndpoint</module>
     </modules>
 
     <build>

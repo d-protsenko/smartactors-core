@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider
 import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
 import info.smart_tools.smartactors.core.tcp_server.TcpServer;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -30,7 +31,7 @@ public class HttpsServer extends TcpServer {
      * @param maxContentLength max length of the content
      * @param contextProvider  ssl context provider
      */
-    public HttpsServer(final int port, final ChannelHandler requestHandler, final int maxContentLength,
+    public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength,
                        final SSLContextProvider contextProvider) {
         super(port, requestHandler);
         this.contextProvider = contextProvider;
