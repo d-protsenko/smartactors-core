@@ -32,7 +32,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
     private IField criteriaEqualsIsActiveField;
     private IField criteriaDateToStartDateTimeField;
     //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
     /**
      * @param getItemTask Target task for getting items
@@ -63,6 +63,20 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
      *                  "collectionName" : "COLLECTION _NAME"
      *              }    
      *              </pre>
+     * Query which would be passed to the nested task:
+     * TODO:: change this format after finish task's refactoring
+     *              <pre>
+     *              {
+     *                  "pageSize": 100,
+     *                  "pageNumber": 1,
+     *                  "collectionName" : "COLLECTION _NAME",
+     *                  "criteria": {
+     *                      "isActive": {"$eq": true},
+     *                      "startDateTime": {"date-to": "now"},
+     *                      "<keyName>": {"$eq": "<keyValue>"}
+     *                  }
+     *              }
+     *              </pre>
      * @throws TaskPrepareException Throw when some was incorrect in preparing query
      */
     @Override
@@ -83,10 +97,8 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             getItemTask.prepare(queryForNestedTask);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create searchQuery from input query", e);
-        } catch (ChangeValueException | ReadValueException e) {
+        } catch (InvalidArgumentException | ChangeValueException | ReadValueException e) {
             throw new TaskPrepareException("Can't change value in one of IObjects", e);
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
         }
     }
 
