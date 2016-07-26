@@ -19,8 +19,8 @@ You should do the following to perform a database query.
 
 1. Resolve [IoC](IOCExample.html) dependency to take command object which interacts with DB.
 
-        ITask task = IOC.resolve<ITask>(
-            Keys.get("command_name"),               // each command has it's own unique name
+        ITask task = IOC.resolve(
+            Keys.getOrAdd("command_name"),               // each command has it's own unique name
             connection,                             // object - connection to the DB
             "collection_name",                      // each document belongs to the collection
             other comma-separated parameters        // the set of parameters depends on the command
@@ -117,10 +117,10 @@ Get the document by id.
 
         void Handle(final IGetDocumentMessage mes) {
     
-            IPool pool = IOC.resolve<IPool>(Keys.getOrAdd("PostgresConnectionPool"));
+            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
             try (PoolGuard guard = new PoolGuard(pool)) {
                  
-                ITask task = IOC.resolve<ITask>(
+                ITask task = IOC.resolve(
                     Keys.getOrAdd("db.collection.getbyid"),
                     guard.getObject(),
                     mes.collectionName(),
