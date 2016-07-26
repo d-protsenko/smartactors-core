@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.netty_server;
 
-import com.google.common.collect.ImmutableList;
 import info.smart_tools.smartactors.core.CompletableNettyFuture;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import io.netty.bootstrap.AbstractBootstrap;
@@ -10,6 +9,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.Future;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -63,7 +63,7 @@ public abstract class NettyServer implements IAsyncService<NettyServer> {
      * @return a list of {@link EventLoopGroup} used by the server
      */
     protected List<EventLoopGroup> getEventLoopGroups() {
-        return ImmutableList.of();
+        return Collections.emptyList();
     }
 
     private <T> CompletableFuture<NettyServer> wrapToCompletableFuture(final Future<T> future) {
