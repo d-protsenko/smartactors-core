@@ -149,6 +149,7 @@
         <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
+        <module>PluginFieldName</module>
     </modules>
 
     <build>

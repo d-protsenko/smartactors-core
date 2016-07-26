@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.ds_object;
+package info.smart_tools.smartactors.core.proof_of_assumption.perfomance_of_jackson;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -52,7 +52,6 @@ public class DSObject implements IObject {
                 }
             }
         });
-        module.addDeserializer(Object.class, new ObjectDeserializer());
         OBJECT_MAPPER.registerModule(module);
     }
 
@@ -154,26 +153,4 @@ public class DSObject implements IObject {
             return this.iterator.next();
         }
     } 
-}
-
-/**
- * Custom deserializer.
- * Cast all nested json objects to {@link IObject.
- */
-class ObjectDeserializer extends UntypedObjectDeserializer {
-
-    @Override
-    public Object deserialize(final JsonParser jp, final DeserializationContext ctxt)
-            throws IOException {
-        try {
-            if (JsonTokenId.ID_START_OBJECT == jp.getCurrentTokenId()) {
-                return new DSObject(
-                        (Map<IFieldName, Object>) jp.readValueAs(new TypeReference<Map<FieldName, Object>>() { })
-                );
-            }
-        } catch (Exception e) {
-            return super.deserialize(jp, ctxt);
-        }
-        return super.deserialize(jp, ctxt);
-    }
 }

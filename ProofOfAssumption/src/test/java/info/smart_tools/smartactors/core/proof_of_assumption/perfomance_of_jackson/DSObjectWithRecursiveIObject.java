@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.ds_object;
+package info.smart_tools.smartactors.core.proof_of_assumption.perfomance_of_jackson;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Json implementation of {@link IObject}
  */
-public class DSObject implements IObject {
+public class DSObjectWithRecursiveIObject implements IObject {
 
     private Map<IFieldName, Object> body;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -48,7 +48,7 @@ public class DSObject implements IObject {
 
                     jsonGenerator.writeRawValue((String) iObject.serialize());
                 } catch (SerializeException e) {
-                    throw new IOException("Could not serialize DSObject.");
+                    throw new IOException("Could not serialize DSObjectWithRecursiveIObject.");
                 }
             }
         });
@@ -57,11 +57,11 @@ public class DSObject implements IObject {
     }
 
     /**
-     * Create new instance of {@link DSObject} by given body of pairs {@link IFieldName}, {@link Object}
+     * Create new instance of {@link DSObjectWithRecursiveIObject} by given body of pairs {@link IFieldName}, {@link Object}
      * @param objectEntries map of pairs {@link IFieldName}, {@link Object}
      * @throws InvalidArgumentException if argument is null
      */
-    public DSObject(final Map<IFieldName, Object> objectEntries)
+    public DSObjectWithRecursiveIObject(final Map<IFieldName, Object> objectEntries)
             throws InvalidArgumentException {
         if (null == objectEntries) {
             throw new InvalidArgumentException("Argument should not be null.");
@@ -71,11 +71,11 @@ public class DSObject implements IObject {
     }
 
     /**
-     * Serialize incoming string and create new instance of {@link DSObject}
+     * Serialize incoming string and create new instance of {@link DSObjectWithRecursiveIObject}
      * @param body incoming string data
      * @throws InvalidArgumentException if any errors occurred on object creation
      */
-    public DSObject(final String body)
+    public DSObjectWithRecursiveIObject(final String body)
             throws InvalidArgumentException {
         try {
             this.body = OBJECT_MAPPER.reader(new TypeReference<Map<FieldName, Object>>() { }).readValue(body);
@@ -85,9 +85,9 @@ public class DSObject implements IObject {
     }
 
     /**
-     * Create empty instance of {@link DSObject}
+     * Create empty instance of {@link DSObjectWithRecursiveIObject}
      */
-    public DSObject() {
+    public DSObjectWithRecursiveIObject() {
         this.body = new HashMap<>(0);
     }
 
@@ -167,7 +167,7 @@ class ObjectDeserializer extends UntypedObjectDeserializer {
             throws IOException {
         try {
             if (JsonTokenId.ID_START_OBJECT == jp.getCurrentTokenId()) {
-                return new DSObject(
+                return new DSObjectWithRecursiveIObject(
                         (Map<IFieldName, Object>) jp.readValueAs(new TypeReference<Map<FieldName, Object>>() { })
                 );
             }
