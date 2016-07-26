@@ -38,7 +38,7 @@ public class DeserializeStrategyPostJson implements IDeserializeStrategy {
         try {
             return messageMapper.deserialize(bytes);
         } catch (ResolutionException e) {
-            throw new DeserializationException("Failed to deserialize request");
+            throw new DeserializationException("Failed to deserialize request", e);
         }
     }
 }

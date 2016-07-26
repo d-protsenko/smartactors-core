@@ -26,7 +26,6 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
@@ -54,6 +53,11 @@ public class HttpEndpointPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpEndpoint");
             item
                     .after("IOC")
+                    .after("message_processor")
+                    .after("message_processing_sequence")
+                    .after("response")
+                    .after("response_content_strategy")
+                    .before("configure")
                     .process(
                             () -> {
                                 try {

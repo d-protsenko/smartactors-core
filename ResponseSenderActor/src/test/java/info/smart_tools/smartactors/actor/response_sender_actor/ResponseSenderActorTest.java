@@ -112,15 +112,15 @@ public class ResponseSenderActorTest {
 class Wrapper implements IObjectWrapper, ResponseMessage {
     IObject environment;
 
-    @Override
-    public IChannelHandler getChannelHandler() {
-        return null;
-    }
-
-    @Override
-    public IObject getResponse() {
-        return null;
-    }
+//    @Override
+//    public IChannelHandler getChannelHandler() {
+//        return null;
+//    }
+//
+//    @Override
+//    public IObject getResponse() {
+//        return null;
+//    }
 
     @Override
     public void init(IObject environment) {

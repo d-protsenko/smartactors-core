@@ -45,15 +45,17 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     public void handle(final IObject environment, final IReceiverChain receiverChain) {
         try {
             IMessageProcessingSequence processingSequence =
-                    IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.toString()), stackDepth, receiverChain);
+                    IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
             IMessageProcessor messageProcessor =
-                    IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.toString()), taskQueue, processingSequence);
-            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "message");
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.toString()), "context");
-            IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(messageFieldName));
-            IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(contextFieldName));
+                    IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, processingSequence);
+            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "message");
+            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
+            IObject message = (IObject) environment.getValue(messageFieldName);
+            IObject context = (IObject) environment.getValue(contextFieldName);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
+            // TODO: @ValchukDmitry, replace by checked exception!!!
+            throw new RuntimeException(e);
         }
     }
 }

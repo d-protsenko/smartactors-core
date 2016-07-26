@@ -35,7 +35,7 @@ public class PluginDSObject implements IPlugin {
             IBootstrapItem<String> dsObjectItem = new BootstrapItem("iobject");
 
             dsObjectItem
-                    .after("ioc")
+                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),

@@ -1,12 +1,32 @@
 {
   "objects": [
-
+    {
+      "kind": "stateless_actor",
+      "dependency": "ResponseSenderActor",
+      "name": "respond"
+    }
   ],
   "maps": [
-
+    {
+      "id": "httpChain",
+      "steps": [
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    }
   ],
   "endpoints": [
-
+    {
+      "name": "mainHttpEp",
+      "type": "http",
+      "port": 9909,
+      "startChain": "httpChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5
+    }
   ],
   "executor": {
     "threadCount": 4,

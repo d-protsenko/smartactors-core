@@ -207,6 +207,11 @@
         <module>SSLContextProvider</module>
         <module>HttpsServer</module>
         <module>HttpsEndpoint</module>
+        <module>PluginMessageProcessorAndSequence</module>
+        <module>PluginResponseSenderActor</module>
+        <module>PluginWDSObject</module>
+        <module>PluginResponse</module>
+        <module>PluginResponseJsonContentStrategy</module>
     </modules>
 
     <build>

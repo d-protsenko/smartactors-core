@@ -39,18 +39,14 @@ public class CookiesSetter implements ICookiesSetter {
     @Override
     public void set(final Object response, final IObject environment) throws CookieSettingException {
         FullHttpResponse httpResponse = (FullHttpResponse) response;
-        IFieldName contextFieldName;
-        IField contextField = null;
-        IFieldName cookiesFieldName = null;
-        IField cookiesField = null;
-        IFieldName cookieName = null;
-        IFieldName cookieValue = null;
-        IFieldName maxAgeFieldName = null;
+        IField contextField;
+        IField cookiesField;
+        IFieldName cookieName;
+        IFieldName cookieValue;
+        IFieldName maxAgeFieldName;
         try {
-            contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), contextFieldName);
-            cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
-            cookiesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), cookiesFieldName);
+            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
+            cookiesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
             cookieName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             cookieValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
             maxAgeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxAge");
