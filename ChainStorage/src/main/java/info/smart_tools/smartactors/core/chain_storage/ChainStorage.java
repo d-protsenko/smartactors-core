@@ -48,7 +48,7 @@ public class ChainStorage implements IChainStorage {
             chainsMap.put(
                     chainId,
                     IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.toString()),
+                            IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
                             chainId, description, this, router));
         } catch (ResolutionException  e) {
             throw new ChainCreationException("Could not create a chain", e);
