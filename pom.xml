@@ -204,6 +204,7 @@
         <module>PluginHttpEndpoint</module>
         <module>PluginActorReceiverCreator</module>
         <module>PluginHandlerRoutingReceiverCreator</module>
+        <module>SSLContextProvider</module>
     </modules>
 
     <build>
