@@ -73,9 +73,9 @@ public class PostgresUpsertTaskTest {
         IOC.register(
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy(
-                        (a) -> {
+                        (args) -> {
                             try {
-                                return new Key((String) a[0]);
+                                return new Key((String) args[0]);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -84,9 +84,9 @@ public class PostgresUpsertTaskTest {
         IOC.register(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new CreateNewInstanceStrategy(
-                        (arg) -> {
+                        (args) -> {
                             try {
-                                return new FieldName(String.valueOf(arg[0]));
+                                return new FieldName(String.valueOf(args[0]));
                             } catch (InvalidArgumentException e) {
                                 throw new RuntimeException(e);
                             }
@@ -104,7 +104,7 @@ public class PostgresUpsertTaskTest {
         when(compiledQuery.getPreparedStatement()).thenReturn(statement);
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
-        task = new PostgresUpsertTask();
+        task = new PostgresUpsertTask(connection);
         document = mock(IObject.class);
         message = mock(UpsertMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
@@ -123,14 +123,14 @@ public class PostgresUpsertTaskTest {
         when(document.getValue(testFieldName)).thenReturn("testValue");
         when(resultSet.getLong(1)).thenReturn(123L);
 
-        task.setConnection(connection);
-        task.prepare(message);
+        task.prepare(null); // the message will be resolved by IOC
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
         // implementation details of PostgresConnection
         // verify(statement).setString(eq(1), any(String.class));
         verify(statement).execute();
+        verify(resultSet).next();
         verify(connection).commit();
         verify(document).setValue(eq(idFieldName), eq(123L));
     }
@@ -141,8 +141,7 @@ public class PostgresUpsertTaskTest {
         when(document.getValue(testFieldName)).thenReturn("testValue");
         when(document.getValue(idFieldName)).thenReturn(123L);
 
-        task.setConnection(connection);
-        task.prepare(message);
+        task.prepare(null); // the message will be resolved by IOC
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));

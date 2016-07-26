@@ -3,11 +3,11 @@ package info.smart_tools.smartactors.core.postgres_upsert_task;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
@@ -50,6 +50,10 @@ public class PostgresUpsertTask implements IDatabaseTask {
      */
     private IStorageConnection connection;
 
+    public PostgresUpsertTask(IStorageConnection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
@@ -62,11 +66,6 @@ public class PostgresUpsertTask implements IDatabaseTask {
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
-    }
-
-    @Override
-    public void setConnection(final IStorageConnection connection) throws TaskSetConnectionException {
-        this.connection = connection;
     }
 
     @Override
@@ -95,15 +94,20 @@ public class PostgresUpsertTask implements IDatabaseTask {
         try {
             PostgresSchema.insert(preparedQuery, collection);
             preparedQuery.pushParameterSetter((statement, index) -> {
-                statement.setString(index++, document.toString());
+                try {
+                    statement.setString(index++, document.serialize());
+                } catch (SerializeException e) {
+                    throw new RuntimeException(e);
+                }
                 return index;
             });
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
+            resultSet.next();
             long id = resultSet.getLong(1);
-            document.setValue(idField, id);
+            document.setValue(idField, id);     // TODO: add ID field before inserting to DB, the field must be in DB.
             connection.commit();
         } catch (Exception e) {
             try {
