@@ -119,7 +119,27 @@ public class PostgresUpsertTask implements IDatabaseTask {
      * Updates the document
      * @param id id of the document to be updated
      */
-    private void update(final Object id) {
+    private void update(final Object id) throws TaskExecutionException {
+        QueryStatement preparedQuery = new QueryStatement();
+        try {
+            PostgresSchema.update(preparedQuery, collection);
+            preparedQuery.pushParameterSetter((statement, index) -> {
+                statement.setLong(index++, Long.parseLong(String.valueOf(id)));     // TODO: use IoC to convert
+                statement.setString(index++, document.toString());
+                return index;
+            });
+            JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
+            PreparedStatement statement = compiledQuery.getPreparedStatement();
+            statement.execute();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (StorageException e1) {
+                // ignoring rollback failure
+            }
+            throw new TaskExecutionException("Update failed", e);
+        }
     }
 
 }

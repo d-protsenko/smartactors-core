@@ -120,7 +120,7 @@ public class PostgresUpsertTaskTest {
     @Test
     public void testInsert() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
         FieldName testFieldName = new FieldName("testField");
-        when(document.getValue(eq(testFieldName))).thenReturn("testValue");
+        when(document.getValue(testFieldName)).thenReturn("testValue");
         when(resultSet.getLong(1)).thenReturn(123L);
 
         task.setConnection(connection);
@@ -128,9 +128,30 @@ public class PostgresUpsertTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-//        verify(statement).setString(eq(1), any(String.class));    // implementation details of PostgresConnection
+        // implementation details of PostgresConnection
+        // verify(statement).setString(eq(1), any(String.class));
         verify(statement).execute();
+        verify(connection).commit();
         verify(document).setValue(eq(idFieldName), eq(123L));
+    }
+
+    @Test
+    public void testUpdate() throws InvalidArgumentException, ReadValueException, TaskSetConnectionException, TaskPrepareException, TaskExecutionException, StorageException, SQLException, ChangeValueException {
+        FieldName testFieldName = new FieldName("testField");
+        when(document.getValue(testFieldName)).thenReturn("testValue");
+        when(document.getValue(idFieldName)).thenReturn(123L);
+
+        task.setConnection(connection);
+        task.prepare(message);
+        task.execute();
+
+        verify(connection).compileQuery(any(QueryStatement.class));
+        // implementation details of PostgresConnection
+        // verify(statement).setString(eq(1), eq(123L));
+        // verify(statement).setString(eq(2), any(String.class));
+        verify(statement).execute();
+        verify(connection).commit();
+        verify(document, never()).setValue(any(), any());
     }
 
 }
