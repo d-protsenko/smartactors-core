@@ -90,10 +90,10 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
 
                 String endpointName = (String) endpoint.getValue(endpointNameFieldName);
                 String type = (String) endpoint.getValue(typeFieldName);
-                Integer port = (Integer) endpoint.getValue(portFieldName);
+                Integer port = Integer.valueOf(String.valueOf(endpoint.getValue(portFieldName)));
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
-                Integer stackDepth = (Integer) endpoint.getValue(stackDepthFieldName);
-                Integer maxContentLength = (Integer) endpoint.getValue(maxContentLengthFieldName);
+                Integer stackDepth = Integer.valueOf(String.valueOf(endpoint.getValue(stackDepthFieldName)));
+                Integer maxContentLength = Integer.valueOf(String.valueOf(endpoint.getValue(maxContentLengthFieldName)));
 
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
                 IReceiverChain chain = chainStorage.resolve(mapId);
