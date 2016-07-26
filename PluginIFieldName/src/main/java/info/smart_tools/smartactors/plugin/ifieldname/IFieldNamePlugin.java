@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.plugin.ifieldname;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -16,9 +15,6 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class IFieldNamePlugin implements IPlugin {
 
