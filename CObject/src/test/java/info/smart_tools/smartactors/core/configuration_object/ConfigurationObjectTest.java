@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -254,6 +255,13 @@ public class ConfigurationObjectTest {
     }
 
     @Test (expected = InvalidArgumentException.class)
+    public void checkCreationExceptionOnNullArg()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(null);
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
     public void checkExceptionOnNullArgInGetValueMethod()
             throws Exception {
         ConfigurationObject co = new ConfigurationObject(this.dsObject);
@@ -292,5 +300,15 @@ public class ConfigurationObjectTest {
         assertNull(co.iterator());
     }
 
+    @Test (expected = ReadValueException.class)
+    public void checkReadValueExceptionOnUseGetValueMethod() throws Exception {
+        Object scopeId = ScopeProvider.createScope(null);
+        IScope oldScope = ScopeProvider.getCurrentScope();
+        ScopeProvider.setCurrentScope(ScopeProvider.getScope(scopeId));
 
+        ConfigurationObject co = new ConfigurationObject(this.dsObject);
+        co.getValue(new FieldName("in_getIntValue"));
+        ScopeProvider.setCurrentScope(oldScope);
+        fail();
+    }
 }

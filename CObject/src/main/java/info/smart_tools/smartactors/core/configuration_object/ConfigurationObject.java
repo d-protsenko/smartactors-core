@@ -22,6 +22,9 @@ public class ConfigurationObject implements IObject {
 
     public ConfigurationObject(final IObject source)
             throws InvalidArgumentException {
+        if (null == source) {
+            throw new InvalidArgumentException("Argument should not be null.");
+        }
         this.source = source;
     }
 
