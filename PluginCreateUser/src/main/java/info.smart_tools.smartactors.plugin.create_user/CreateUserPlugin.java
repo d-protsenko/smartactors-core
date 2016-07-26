@@ -43,13 +43,13 @@ public class CreateUserPlugin implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IKey createCreateUserKey = Keys.getOrAdd(CreateUserActor.class.toString());
+                    IKey createCreateUserKey = Keys.getOrAdd(CreateUserActor.class.getCanonicalName());
                     try {
                         IOC.register(createCreateUserKey, new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         ActorParams params = IOC.resolve(
-                                                Keys.getOrAdd(ActorParams.class.toString()),
+                                                Keys.getOrAdd(ActorParams.class.getCanonicalName()),
                                                 args[0]
                                         );
                                         return new CreateUserActor(params);

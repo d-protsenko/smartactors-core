@@ -33,7 +33,7 @@ public class CreateUserPluginTest {
         IKey key = mock(IKey.class);
         createUserKey = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        when(IOC.resolve(eq(key), eq(CreateUserActor.class.toString()))).thenReturn(createUserKey);
+        when(IOC.resolve(eq(key), eq(CreateUserActor.class.getCanonicalName()))).thenReturn(createUserKey);
 
         plugin = new CreateUserPlugin(bootstrap);
     }
