@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.idatabase_task;
 
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.ITask;
 
 /**
@@ -20,5 +20,10 @@ public interface IDatabaseTask extends ITask {
      */
     void prepare(IObject query) throws TaskPrepareException;
 
-    void setConnection(StorageConnection connection) throws TaskSetConnectionException;
+    /**
+     * Sets the connection to the database
+     * @param connection connection to set
+     * @throws TaskSetConnectionException when something goes wrong
+     */
+    void setConnection(IStorageConnection connection) throws TaskSetConnectionException;
 }
