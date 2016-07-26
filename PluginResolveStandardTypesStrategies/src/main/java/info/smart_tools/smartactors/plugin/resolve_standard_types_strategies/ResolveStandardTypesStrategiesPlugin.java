@@ -12,13 +12,33 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_type_strategy.ResolveByTypeStrategy;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.*;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.*;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.*;
-import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.*;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.DoubleToBigDecimalResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.StringToBigDecimalResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.StringToDateResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.DoubleToIntResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.StringToIntResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.BooleanArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.ByteArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.CharArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.DoubleArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.FloatArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.IntArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.LongArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.ObjectArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_list_strategies.ShortArrayToListResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.BooleanToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.ByteToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.CharToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.DoubleToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.FloatToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.IntToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.LongToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.ObjectToStringResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_string_strategies.ShortToStringResolveDependencyStrategy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Plugin.
@@ -92,7 +112,7 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
 
                             IOC.register(bigDecimalKey, bigDecimalStrategy);
 
-                            // to LocalDateTyme strategies
+                            // to LocalDateTime strategies
                             IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName() + "convert");
                             ResolveByTypeStrategy localDateTimeStrategy = new ResolveByTypeStrategy();
 
@@ -100,6 +120,23 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                                     new StringToDateResolveDependencyStrategy());
 
                             IOC.register(localDateTimeKey, localDateTimeStrategy);
+
+                            // to list strategies
+                            IKey listKey = Keys.getOrAdd(List.class.getCanonicalName() + "convert");
+                            ResolveByTypeStrategy listStrategy = new ResolveByTypeStrategy();
+
+                            listStrategy.register(boolean[].class, new BooleanArrayToListResolveDependencyStrategy());
+                            listStrategy.register(byte[].class, new ByteArrayToListResolveDependencyStrategy());
+                            listStrategy.register(char[].class, new CharArrayToListResolveDependencyStrategy());
+                            listStrategy.register(double[].class, new DoubleArrayToListResolveDependencyStrategy());
+                            listStrategy.register(float[].class, new FloatArrayToListResolveDependencyStrategy());
+                            listStrategy.register(int[].class, new IntArrayToListResolveDependencyStrategy());
+                            listStrategy.register(long[].class, new LongArrayToListResolveDependencyStrategy());
+                            listStrategy.register(Object[].class, new ObjectArrayToListResolveDependencyStrategy());
+                            listStrategy.register(short[].class, new ShortArrayToListResolveDependencyStrategy());
+
+                            IOC.register(listKey, listStrategy);
+
                         } catch (RegistrationException | ResolutionException e) {
                             throw new RuntimeException(e);
                         }
