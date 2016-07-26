@@ -64,6 +64,8 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             IOC.register(Keys.getOrAdd("task_dispatcher"), new SingletonStrategy(taskDispatcher));
             IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queue));
             IOC.register(Keys.getOrAdd("thread_pool"), new SingletonStrategy(threadPool));
+
+            taskDispatcher.start();
         } catch (InvalidArgumentException | ResolutionException | RegistrationException | ReadValueException e) {
             throw new ConfigurationProcessingException(e);
         }

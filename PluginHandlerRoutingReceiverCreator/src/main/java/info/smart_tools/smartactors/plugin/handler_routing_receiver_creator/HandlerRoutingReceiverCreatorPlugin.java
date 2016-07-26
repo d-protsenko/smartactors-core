@@ -40,6 +40,8 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
             item
                     .after("IOC")
                     .before("configure")
+                    .after("InitializeReceiverGenerator")
+                    .after("InitializeWrapperGenerator")
                     .process(
                             () -> {
                                 try {

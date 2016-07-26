@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin.response_content_json_strategy</artifactId>
+    <artifactId>core.response_content_json_strategy</artifactId>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

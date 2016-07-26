@@ -1,10 +1,20 @@
 {
   "objects": [
+    {
+      "kind": "stateless_actor",
+      "dependency": "ResponseSenderActor",
+      "name": "respond"
+    }
   ],
   "maps": [
     {
       "id": "httpChain",
-      "steps": [],
+      "steps": [
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
       "exceptional": []
     }
   ],

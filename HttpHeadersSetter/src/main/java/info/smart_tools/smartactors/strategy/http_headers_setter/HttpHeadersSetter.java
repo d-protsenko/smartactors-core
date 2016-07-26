@@ -32,17 +32,13 @@ public class HttpHeadersSetter implements IHeadersSetter {
     @Override
     public void set(final Object response, final IObject environment) throws HeadersSetterException {
         FullHttpResponse httpResponse = (FullHttpResponse) response;
-        IFieldName contextFieldName;
-        IField contextField = null;
-        IFieldName headersFieldName = null;
-        IField headersField = null;
-        IFieldName headerName = null;
-        IFieldName headerValue = null;
+        IField contextField;
+        IField headersField;
+        IFieldName headerName;
+        IFieldName headerValue;
         try {
-            contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), contextFieldName);
-            headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
-            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), headersFieldName);
+            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
+            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
             headerName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             headerValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
         } catch (ResolutionException e) {
