@@ -42,7 +42,7 @@ public class CreateSessionActor {
             EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
         } catch (ResolutionException e) {
-            //TODO:: handle exception
+           throw new RuntimeException(e);
         }
     }
 
