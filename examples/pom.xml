@@ -119,6 +119,16 @@
             <version>${core.version}</version>
         </dependency>
         <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.istorage_connection</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ipool</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
@@ -133,18 +143,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.recursive_strategy_container</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ipool</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istorage_connection</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

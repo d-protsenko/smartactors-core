@@ -49,6 +49,16 @@ Additional parameters:
 The Upsert command checks the existence of value of the "collection_nameID" field, if the ID field is absent it inserts the document, otherwise it updates the document.
 When the document is successfully inserted, the command adds the field "collection_nameID" to the document.
 
+#### Example
+
+    ITask task = IOC.resolve(
+            Keys.getOrAdd("db.collection.upsert"),
+            connection,
+            collectionName,
+            document
+    );
+    task.execute();
+
 ### Insert
 
 Adds new object to the collection.
@@ -103,6 +113,24 @@ Additional parameters:
 
 If the object with such id does not exist, the `TaskExecutionException` is thrown.
 
+#### Example
+
+    ITask task = IOC.resolve(
+            Keys.getOrAdd("db.collection.getbyid"),
+            connection,
+            collectionName,
+            documentiId,
+            (IAction<IObject>) foundDoc -> {
+                try {
+                    System.out.println("Found");
+                    System.out.println((String) doc.serialize());
+                } catch (SerializeException e) {
+                    throw new ActionExecuteException(e);
+                }
+            }
+    );
+    task.execute();    
+
 ## Example of usage
 
 Get the document by id.
@@ -132,3 +160,5 @@ Get the document by id.
             
         }
     }
+
+Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details how IOC should be initialized for the tasks.
