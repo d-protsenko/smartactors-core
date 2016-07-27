@@ -136,6 +136,18 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ipool</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.istorage_connection</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
