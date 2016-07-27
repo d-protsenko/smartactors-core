@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.plugin.postgres_connection_pool;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -10,6 +9,7 @@ import info.smart_tools.smartactors.core.pool.Pool;
 import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.plugin.postges_connection_pool.PostgresConnectionPoolPlugin;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +20,17 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.function.Supplier;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, PostgresConnectionPoolPlugin.class, IPoorAction.class, Pool.class, CreateNewInstanceStrategy.class})
+@PrepareForTest({IOC.class, Keys.class, PostgresConnectionPoolPlugin.class, IPoorAction.class, Pool.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
 public class PostgresConnectionPoolPluginTest {
     private PostgresConnectionPoolPlugin plugin;
@@ -67,7 +71,7 @@ public class PostgresConnectionPoolPluginTest {
         verifyStatic();
         Keys.getOrAdd("PostgresConnectionPool");
 
-        ArgumentCaptor<CreateNewInstanceStrategy> strategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ApplyFunctionToArgumentsStrategy> strategyArgumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
         verifyStatic();
         IOC.register(eq(postgresConnectionPoolKey), strategyArgumentCaptor.capture());
 
