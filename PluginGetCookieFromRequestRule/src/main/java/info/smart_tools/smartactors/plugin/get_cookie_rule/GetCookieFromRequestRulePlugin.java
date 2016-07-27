@@ -37,7 +37,7 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey ruleKey = Keys.getOrAdd(GetCookieFromRequestRule.class.toString());
+                            IKey ruleKey = Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName());
                             IOC.register(ruleKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> new GetCookieFromRequestRule()
