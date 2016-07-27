@@ -1,7 +1,10 @@
 package info.smart_tools.smartactors.core.class_generator_java_compile_api;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -62,16 +65,23 @@ class InMemoryCodeCompiler {
             ExtendedStandardJavaFileManager fileManager = new ExtendedStandardJavaFileManager(
                     javac.getStandardFileManager(null, null, null), compiledCode, this.classLoader
             );
-
+            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             CompilationTask task = javac.getTask(
                     null,
                     fileManager,
-                    null,
+                    diagnostics,
                     optionList,
                     null,
                     compilationUnits
             );
-            task.call();
+            if (!task.call()) {
+                StringBuilder s = new StringBuilder();
+                for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
+                    s.append("\n" + diagnostic);
+                }
+                throw new Exception("Failed to compile " + className + s.toString());
+
+            }
             return this.classLoader.loadClass(className);
         } catch (Throwable e) {
             throw new Exception(e);
