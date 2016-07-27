@@ -42,7 +42,7 @@ public class MessageToBytesMapperTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.getOrAdd(DSObject.class.toString());
+        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
         IKey keyString = Keys.getOrAdd(String.class.toString());
         IKey keyEmptyIObject = Keys.getOrAdd("EmptyIObject");
         IOC.register(keyIObject,
@@ -77,7 +77,7 @@ public class MessageToBytesMapperTest {
     @Test
     public void messageToBytesMapperShouldReturnDeserializedIObject() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
-        IObject iObject = IOC.resolve(Keys.getOrAdd(DSObject.class.toString()), "{\"hello\": \"world\"}");
+        IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
         byte[] bytes = iObject.serialize().toString().getBytes();
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));

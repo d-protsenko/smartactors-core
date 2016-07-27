@@ -69,11 +69,10 @@ public class EnvironmentHandlerTest {
         );
         IKey keyIObjectByString = Keys.getOrAdd("IObjectByString");
         IKey keyIObject = Keys.getOrAdd(IObject.class.toString());
-        IKey keyIMessageProcessingSequence = Keys.getOrAdd(IMessageProcessingSequence.class.toString());
-        IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.toString());
+        IKey keyIMessageProcessingSequence = Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName());
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
-        IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.toString());
-        IKey keyFieldName = Keys.getOrAdd(FieldName.class.toString());
+        IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
@@ -127,7 +126,7 @@ public class EnvironmentHandlerTest {
     @Test
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor() throws ResolutionException, InvalidArgumentException, RegistrationException {
         messageProcessor = mock(IMessageProcessor.class);
-        IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.toString());
+        IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
         IOC.register(
                 keyIMessageProcessor,
                 new SingletonStrategy(messageProcessor)
@@ -152,8 +151,8 @@ public class EnvironmentHandlerTest {
         handler.handle(environment, chain);
         try {
             verify(messageProcessor, times(1)).process(
-                    IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "message"))),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.toString()), environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "context"))));
+                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")),
+                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context")));
         } catch (ReadValueException | ChangeValueException e) {
             e.printStackTrace();
         }

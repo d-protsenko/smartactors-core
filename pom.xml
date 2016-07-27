@@ -160,7 +160,6 @@
         <module>ICookiesSetter</module>
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
-        <module>PluginCreateSession</module>
         <module>PluginGetFormActor</module>
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
@@ -173,8 +172,6 @@
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
         <module>FieldName</module>
-        <module>ValidateFormDataActor</module>
-        <module>PluginGetHeaderRule</module>
         <module>PluginIFieldName</module>
         <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
@@ -182,13 +179,10 @@
         <module>HandlerRoutingReceiver</module>
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
-        <module>PluginIFieldName</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
         <module>IPath</module>
         <module>Path</module>
-        <module>IConfigurationManager</module>
-        <module>StandardConfigSections</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
@@ -209,12 +203,6 @@
         <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
-        <module>ReceiverGenerator</module>
-        <module>IReceiverGenerator</module>
-        <module>PluginReceiverGenerator</module>
-        <module>PluginCheckUserIsNewActor</module>
-        <module>IPath</module>
-        <module>Path</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>
