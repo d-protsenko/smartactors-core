@@ -35,7 +35,7 @@ public class RegisterWrapperGenerator implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("InitializeReceiverGenerator");
+            IBootstrapItem<String> item = new BootstrapItem("InitializeWrapperGenerator");
             item
                     .after("IOC")
                     .process(
