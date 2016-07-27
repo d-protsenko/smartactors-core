@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.actor_reveiver_creator;
 
 import info.smart_tools.smartactors.core.actor_receiver_creator.ActorReceiverCreator;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -9,7 +10,11 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implementation of {@link IPlugin}.
@@ -46,6 +51,14 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                     .process(
                             () -> {
                                 try {
+                                    IOC.register(
+                                            Keys.getOrAdd("actor_receiver_queue"),
+                                            new CreateNewInstanceStrategy(args -> new ConcurrentLinkedQueue()));
+
+                                    IOC.register(
+                                            Keys.getOrAdd("actor_receiver_busyness_flag"),
+                                            new CreateNewInstanceStrategy(args -> new AtomicBoolean(false)));
+
                                     ActorReceiverCreator objectCreator = new ActorReceiverCreator();
                                     IOC.register(
                                             IOC.resolve(
