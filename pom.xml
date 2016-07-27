@@ -148,7 +148,8 @@
         <module>PluginIFieldName</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>IPath</module>
-        <module>Path</module>
+	    <module>Path</module>
+        <module>PluginGetCookieFromRequestRule</module>
         <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
