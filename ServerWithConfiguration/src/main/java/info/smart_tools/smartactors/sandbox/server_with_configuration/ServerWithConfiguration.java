@@ -202,7 +202,7 @@ public class ServerWithConfiguration implements IServer {
                     "jackson-databind-2.5.2.jar",
                     "junit-4.12.jar",
                     "mockito-all-2.0.2-beta.jar",
-                    "netty-all-4.0.24.Final.jar",
+                    "netty-all-4.1.2.Final.jar",
                     "plugin.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "plugin.configuration_manager-0.2.0-SNAPSHOT.jar",
                     "plugin.dsobject-0.2.0-SNAPSHOT.jar",

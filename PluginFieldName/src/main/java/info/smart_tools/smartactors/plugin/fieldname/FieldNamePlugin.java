@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -24,6 +25,7 @@ public class FieldNamePlugin implements IPlugin {
 
     /**
      * Constructor
+     *
      * @param bootstrap bootstrap element
      */
     public FieldNamePlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
@@ -42,6 +44,28 @@ public class FieldNamePlugin implements IPlugin {
                         try {
                             IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
                             IOC.register(iFieldNameKey,
+                                    new ResolveByNameIocStrategy(
+                                            (args) -> {
+                                                try {
+                                                    String nameOfFieldName = (String) args[0];
+                                                    return new FieldName(nameOfFieldName);
+                                                } catch (ClassCastException e) {
+                                                    throw new RuntimeException("Can't cast object to String: " + args[0],
+                                                            e);
+                                                } catch (ArrayIndexOutOfBoundsException e) {
+                                                    throw new RuntimeException(
+                                                            "Can't get args: args must contain one or more elements " +
+                                                                    "and first element must be String",
+                                                            e);
+                                                } catch (InvalidArgumentException e) {
+                                                    throw new RuntimeException(
+                                                            "Can't create new field name with this name: " + args[0],
+                                                            e);
+                                                }
+                                            }
+                                    )
+                            );
+                            IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {

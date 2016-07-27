@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
+import info.smart_tools.smartactors.core.field.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
