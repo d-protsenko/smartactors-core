@@ -51,4 +51,11 @@ public class PostgresSchemaTest {
                 "WHERE tab.id = docs.id", body.toString());
     }
 
+    @Test
+    public void testGetById() throws QueryBuildException {
+        PostgresSchema.getById(statement, collection);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE id = ?", body.toString());
+    }
+
 }

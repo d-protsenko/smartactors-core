@@ -91,4 +91,24 @@ public final class PostgresSchema {
         }
     }
 
+    /**
+     * Fills the statement body with the collection name for the SELECT statement to find the document by ID.
+     * @param statement statement to fill the body
+     * @param collection collection name to use as the table name
+     */
+    public static void getById(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
+        Writer writer = statement.getBodyWriter();
+        try {
+            writer.write("SELECT ");
+            writer.write(DOCUMENT_COLUMN);
+            writer.write(" FROM ");
+            writer.write(collection.toString());
+            writer.write(" WHERE ");
+            writer.write(ID_COLUMN);
+            writer.write(" = ?");
+        } catch (IOException e) {
+            throw new QueryBuildException("Failed to build getById body", e);
+        }
+    }
+
 }
