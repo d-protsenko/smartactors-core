@@ -146,6 +146,8 @@
         <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
+        <module>ResolveIObjectStrategies</module>
+        <module>PluginResolveIObjectStrategies</module>
         <module>ResolveByTypeStrategy</module>
         <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
