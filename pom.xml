@@ -135,6 +135,7 @@
         <module>PluginCreateAsyncOperationActor</module>
         <module>WDSObject</module>
         <module>FieldName</module>
+        <module>ValidateFormDataActor</module>
         <module>IFieldName</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
