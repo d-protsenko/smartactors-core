@@ -65,12 +65,12 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetCookieFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(GetCookieFromRequestRule.class.toString());
+        Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -121,13 +121,13 @@ public class GetCookieFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(GetCookieFromRequestRule.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (RuntimeException e) {
             verifyStatic();
-            Keys.getOrAdd(GetCookieFromRequestRule.class.toString());
+            Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -153,7 +153,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetCookieFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -168,7 +168,7 @@ public class GetCookieFromRequestRulePluginTest {
         } catch (RuntimeException e) {
 
             verifyStatic();
-            Keys.getOrAdd(GetCookieFromRequestRule.class.toString());
+            Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -209,7 +209,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetCookieFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -221,7 +221,7 @@ public class GetCookieFromRequestRulePluginTest {
         } catch (RuntimeException e) {
 
             verifyStatic();
-            Keys.getOrAdd(GetCookieFromRequestRule.class.toString());
+            Keys.getOrAdd(GetCookieFromRequestRule.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
