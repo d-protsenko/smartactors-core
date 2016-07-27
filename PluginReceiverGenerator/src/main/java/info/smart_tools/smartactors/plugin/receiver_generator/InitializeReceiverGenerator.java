@@ -13,8 +13,7 @@ import info.smart_tools.smartactors.core.receiver_generator.ReceiverGenerator;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 /**
- * Plugin creates instance of {@link ReceiverGenerator} and register its into IOC,
- * adds some needed strategies for correctly work of {@link ReceiverGenerator}.
+ * Plugin creates instance of {@link ReceiverGenerator} and registers it into IOC.
  */
 public class InitializeReceiverGenerator implements IPlugin {
 
@@ -39,13 +38,15 @@ public class InitializeReceiverGenerator implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("InitializeReceiverGenerator");
             item
-                    .after("IOC")
                     .process(
                             () -> {
                                 try {
-                                    IReceiverGenerator rg = new ReceiverGenerator(null);
+                                    IReceiverGenerator rg = new ReceiverGenerator(this.getClass().getClassLoader());
                                     IOC.register(
-                                            Keys.getOrAdd(ReceiverGenerator.class.getCanonicalName()),
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(),
+                                                    ReceiverGenerator.class.getCanonicalName()
+                                            ),
                                             new SingletonStrategy(rg)
                                     );
                                 } catch (Exception e) {

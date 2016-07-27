@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -61,7 +60,9 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            instance = IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
+            instance = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+            );
         } catch (ResolutionException e) {
             // do nothing
             // ToDo: need refactoring
@@ -76,7 +77,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
             // ToDo: replace this strategy to the future plugin for WrapperGenerator
             IOC.register(
-                    Keys.getOrAdd(targetInterface.getCanonicalName()),
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper"),
                     new ApplyFunctionToArgumentsStrategy(
                             (arg) ->  {
                                 try {
@@ -88,7 +89,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                     )
             );
 
-            return IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
+            return IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+            );
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",

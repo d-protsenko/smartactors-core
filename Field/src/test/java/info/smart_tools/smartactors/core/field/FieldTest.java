@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
@@ -106,7 +105,10 @@ public class FieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(1)).thenReturn("1");
-        IOC.register(Keys.getOrAdd(String.class.getCanonicalName()+Integer.class.getCanonicalName()), strategy);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), String.class.getCanonicalName() + "convert"),
+                strategy
+        );
         IField field = new Field(new FieldName("a"));
         IObject env = mock(IObject.class);
         when(env.getValue(new FieldName("a"))).thenReturn(1);

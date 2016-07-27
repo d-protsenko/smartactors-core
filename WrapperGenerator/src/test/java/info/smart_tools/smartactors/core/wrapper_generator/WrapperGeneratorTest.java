@@ -1,38 +1,19 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link WrapperGenerator}
@@ -58,40 +39,6 @@ public class WrapperGeneratorTest {
                             }
                         })
         );
-        IOC.register(
-                Keys.getOrAdd(FieldName.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new FieldName((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                Keys.getOrAdd(DSObject.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new DSObject();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
-                        (a) -> a[1]
-                )
-        );
-
-        fillBinding();
-    }
-
-    private void fillBinding()
-            throws Exception {
     }
 
     @Test
