@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.actors.authentication.exception;
+package info.smart_tools.smartactors.plugin.authentication.exception;
 
 /**
  * Exception for error in {@link info.smart_tools.smartactors.actors.authentication}

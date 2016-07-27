@@ -147,6 +147,7 @@
         <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
         <module>PluginCheckUserIsNewActor</module>
+        <module>PluginAuthenticationActor</module>
         <module>IPath</module>
 	    <module>Path</module>
         <module>PluginGetCookieFromRequestRule</module>
