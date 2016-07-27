@@ -165,6 +165,7 @@
         <module>PluginFieldName</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
+        <module>PluginCreateUser</module>
     </modules>
 
     <build>
