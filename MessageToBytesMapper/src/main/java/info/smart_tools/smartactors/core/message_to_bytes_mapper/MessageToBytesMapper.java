@@ -27,7 +27,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
         if (serializedInput.length == 0) {
             return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         }
-        return IOC.resolve(Keys.getOrAdd(DSObject.class.toString()), string);
+        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), string);
     }
 
     @Override
