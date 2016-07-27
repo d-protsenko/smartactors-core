@@ -2,19 +2,18 @@ package info.smart_tools.smartactors.actors.validate_form_data;
 
 import info.smart_tools.smartactors.actors.validate_form_data.exception.ValidateFormException;
 import info.smart_tools.smartactors.actors.validate_form_data.wrapper.ValidateFormDataMessage;
-import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.field.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import java.util.Iterator;
 import java.util.Map;
 
