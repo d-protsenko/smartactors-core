@@ -70,6 +70,7 @@ public class ChainStorageTest {
 
         assertSame(chainMock, storage.resolve(idMock));
     }
+/*
 
     @Test
     public void Should_resolveAndStoreChains()
@@ -99,6 +100,7 @@ public class ChainStorageTest {
 
         Mockito.verify(mapMock).put(chainId, receiverChainMock);
     }
+*/
 
     @Test
     public void Should_wrapExceptionsThrownByIOC()

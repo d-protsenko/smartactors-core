@@ -1,5 +1,5 @@
 {
-  "authorisation_map": [
+  "steps": [
     {
       "actor": "createSessionActor",
       "handler": "resolve",
@@ -41,5 +41,9 @@
         "out_setAsyncOperationToken": "response/token"
       }
     }
-  ]
+  ],
+  "exceptional": [
+
+  ],
+  "id": "123"
 }
