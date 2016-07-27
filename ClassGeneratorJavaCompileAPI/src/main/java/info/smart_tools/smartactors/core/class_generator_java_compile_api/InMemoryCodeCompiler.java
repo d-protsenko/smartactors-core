@@ -77,7 +77,9 @@ class InMemoryCodeCompiler {
             if (!task.call()) {
                 StringBuilder s = new StringBuilder();
                 for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-                    s.append("\n" + diagnostic);
+                    s
+                            .append("\n")
+                            .append(diagnostic);
                 }
                 throw new Exception("Failed to compile " + className + s.toString());
 
