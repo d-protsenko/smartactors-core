@@ -30,18 +30,23 @@ public class PostgresSchemaTest {
     }
 
     @Test
+    public void testNextId() throws QueryBuildException {
+        PostgresSchema.nextId(statement, collection);
+        assertEquals("SELECT nextval('test_collection_id_seq') AS id", body.toString());
+    }
+
+    @Test
     public void testInsert() throws QueryBuildException {
         PostgresSchema.insert(statement, collection);
-        assertEquals("INSERT INTO test_collection (document) " +
-                "VALUES (?::jsonb) " +
-                "RETURNING id AS id", body.toString());
+        assertEquals("INSERT INTO test_collection (id, document) " +
+                "VALUES (?, ?::jsonb)", body.toString());
     }
 
     @Test
     public void testUpdate() throws QueryBuildException {
         PostgresSchema.update(statement, collection);
         assertEquals("UPDATE test_collection AS tab " +
-                "SET tab.document = docs.document " +
+                "SET document = docs.document " +
                 "FROM (VALUES (?, ?::jsonb)) AS docs (id, document) " +
                 "WHERE tab.id = docs.id", body.toString());
     }

@@ -198,13 +198,34 @@ public class DBCollectionServer implements IServer {
 
                 task.execute();
             }
+            System.out.println("Inserted");
+            System.out.println((String) document.serialize());
 
+            document.setValue(testField, "new value");
+            try (PoolGuard guard = new PoolGuard(pool)) {
+
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.upsert"),
+                        guard.getObject(),
+                        "test",
+                        document
+                );
+
+                task.execute();
+            }
+            System.out.println("Updated");
             System.out.println((String) document.serialize());
         } catch (Exception e) {
             throw new ServerExecutionException(e);
         }
     }
 
+    /**
+     * Runs the server
+     * @param args ignored
+     * @throws ServerInitializeException when the server initialization failed
+     * @throws ServerExecutionException when the server execution failed
+     */
     public static void main(final String[] args) throws ServerInitializeException, ServerExecutionException {
         IServer server = new DBCollectionServer();
         server.initialize();

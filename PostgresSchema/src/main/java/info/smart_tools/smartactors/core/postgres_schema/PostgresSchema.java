@@ -11,7 +11,7 @@ import java.io.Writer;
  * A set of static methods to take statements to be executed in the Postgres database.
  * The statements are to perform operations over jsonb documents.
  */
-public class PostgresSchema {
+public final class PostgresSchema {
 
     /**
      * Name of the ID column.
@@ -29,10 +29,30 @@ public class PostgresSchema {
     }
 
     /**
+     * Fills the statement body with the sequence name for the collection for 'nextval' query
+     * to select the next document ID from the database.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void nextId(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
+        Writer writer = statement.getBodyWriter();
+        try {
+            writer.write("SELECT nextval('");
+            writer.write(collection.toString());
+            writer.write("_");
+            writer.write(ID_COLUMN);
+            writer.write("_seq') AS id");
+        } catch (IOException e) {
+            throw new QueryBuildException("Failed to build nextId body", e);
+        }
+    }
+
+    /**
      * Fills the statement body with the collection name for the INSERT statement.
      * @param statement statement to fill the body
      * @param collection collection name to use as the table name
-     * @throws QueryBuildException if the document body cannot be built
+     * @throws QueryBuildException if the statement body cannot be built
      */
     public static void insert(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
         Writer writer = statement.getBodyWriter();
@@ -40,13 +60,12 @@ public class PostgresSchema {
             writer.write("INSERT INTO ");
             writer.write(collection.toString());
             writer.write(" (");
-            writer.write(DOCUMENT_COLUMN);
-            writer.write(") VALUES (?::jsonb) ");
-            writer.write("RETURNING ");
             writer.write(ID_COLUMN);
-            writer.write(" AS id");
+            writer.write(", ");
+            writer.write(DOCUMENT_COLUMN);
+            writer.write(") VALUES (?, ?::jsonb)");
         } catch (IOException e) {
-            throw new QueryBuildException("Failed to build query body", e);
+            throw new QueryBuildException("Failed to build insert body", e);
         }
     }
 
@@ -54,7 +73,7 @@ public class PostgresSchema {
      * Fills the statement body with the collection name for the UPDATE statement
      * @param statement statement to fill the body
      * @param collection collection name to use as the table name
-     * @throws QueryBuildException if the document body cannot be built
+     * @throws QueryBuildException if the statement body cannot be built
      */
     public static void update(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
         Writer writer = statement.getBodyWriter();
@@ -62,13 +81,13 @@ public class PostgresSchema {
             writer.write("UPDATE ");
             writer.write(collection.toString());
             writer.write(" AS tab ");
-            writer.write("SET tab.");
+            writer.write("SET ");
             writer.write(DOCUMENT_COLUMN);
             writer.write(" = docs.document FROM (VALUES (?, ?::jsonb)) AS docs (id, document) WHERE tab.");
             writer.write(ID_COLUMN);
             writer.write(" = docs.id");
         } catch (IOException e) {
-            throw new QueryBuildException("Failed to build query body", e);
+            throw new QueryBuildException("Failed to build update body", e);
         }
     }
 

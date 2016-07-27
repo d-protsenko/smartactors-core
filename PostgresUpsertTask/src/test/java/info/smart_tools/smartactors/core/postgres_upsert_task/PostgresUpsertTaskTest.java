@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -36,6 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -126,13 +128,40 @@ public class PostgresUpsertTaskTest {
         task.prepare(null); // the message will be resolved by IOC
         task.execute();
 
-        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(connection, times(2)).compileQuery(any(QueryStatement.class));   // two queries: select ID and insert
         // implementation details of PostgresConnection
-        // verify(statement).setString(eq(1), any(String.class));
-        verify(statement).execute();
+        // verify(statement).setString(eq(1), eq(123L));
+        // verify(statement).setString(eq(2), any(String.class));
+        verify(statement, times(2)).execute();      // select ID and insert
         verify(resultSet).next();
         verify(connection).commit();
         verify(document).setValue(eq(idFieldName), eq(123L));
+    }
+
+    @Test
+    public void testInsertFailure() throws InvalidArgumentException, ReadValueException, SQLException, TaskPrepareException, TaskExecutionException, StorageException, ChangeValueException, DeleteValueException {
+        FieldName testFieldName = new FieldName("testField");
+        when(document.getValue(testFieldName)).thenReturn("testValue");
+        when(resultSet.getLong(1)).thenReturn(123L);
+        when(statement.execute()).thenReturn(true).thenThrow(SQLException.class);
+
+        task.prepare(null); // the message will be resolved by IOC
+        try {
+            task.execute();
+            fail();
+        } catch (TaskExecutionException e) {
+            // pass
+        }
+
+        verify(connection, times(2)).compileQuery(any(QueryStatement.class));   // two queries: select ID and insert
+        // implementation details of PostgresConnection
+        // verify(statement).setString(eq(1), eq(123L));
+        // verify(statement).setString(eq(2), any(String.class));
+        verify(statement, times(2)).execute();      // select ID and insert
+        verify(resultSet).next();
+        verify(document).setValue(eq(idFieldName), eq(123L));
+        verify(connection).rollback();
+        verify(document).deleteField(eq(idFieldName));
     }
 
     @Test

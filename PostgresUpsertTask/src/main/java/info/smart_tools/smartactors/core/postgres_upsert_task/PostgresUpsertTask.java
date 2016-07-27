@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_upsert_task;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -15,10 +16,12 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * The database task which is able to upsert documents into Postgres database.
@@ -50,7 +53,11 @@ public class PostgresUpsertTask implements IDatabaseTask {
      */
     private IStorageConnection connection;
 
-    public PostgresUpsertTask(IStorageConnection connection) {
+    /**
+     * Creates the task
+     * @param connection the database connection where to perform upserts
+     */
+    public PostgresUpsertTask(final IStorageConnection connection) {
         this.connection = connection;
     }
 
@@ -90,29 +97,21 @@ public class PostgresUpsertTask implements IDatabaseTask {
      * Inserts the document
      */
     private void insert() throws TaskExecutionException {
-        QueryStatement preparedQuery = new QueryStatement();
         try {
-            PostgresSchema.insert(preparedQuery, collection);
-            preparedQuery.pushParameterSetter((statement, index) -> {
-                try {
-                    statement.setString(index++, document.serialize());
-                } catch (SerializeException e) {
-                    throw new RuntimeException(e);
-                }
-                return index;
-            });
+            Object id = nextId();
+            QueryStatement preparedQuery = new QueryStatement();
+            PostgresSchema.insert(preparedQuery, collection);           // TODO: move the preparation steps to prepare method
+            document.setValue(idField, id);
+            setIdAndDocumentParameters(preparedQuery, id);
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
-            ResultSet resultSet = statement.getResultSet();
-            resultSet.next();
-            long id = resultSet.getLong(1);
-            document.setValue(idField, id);     // TODO: add ID field before inserting to DB, the field must be in DB.
             connection.commit();
         } catch (Exception e) {
             try {
+                document.deleteField(idField);
                 connection.rollback();
-            } catch (StorageException e1) {
+            } catch (Exception e1) {
                 // ignoring rollback failure
             }
             throw new TaskExecutionException("Insert failed", e);
@@ -120,18 +119,46 @@ public class PostgresUpsertTask implements IDatabaseTask {
     }
 
     /**
+     * Retreives the next ID for the inserting document.
+     * @return the new ID for the document
+     */
+    private Object nextId() throws QueryBuildException, StorageException, SQLException {
+        QueryStatement preparedQuery = new QueryStatement();
+        PostgresSchema.nextId(preparedQuery, collection);
+        JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
+        PreparedStatement statement = compiledQuery.getPreparedStatement();
+        statement.execute();
+        ResultSet resultSet = statement.getResultSet();
+        resultSet.next();
+        return resultSet.getLong(1);
+    }
+
+    /**
+     * Sets two parameters to the query: id and document
+     * @param query query where to set parameters using {@link QueryStatement#pushParameterSetter(SQLQueryParameterSetter)}
+     * @param id id of the document, is converted to long
+     * @throws SerializeException if the document cannot be converted to string
+     */
+    private void setIdAndDocumentParameters(final QueryStatement query, final Object id)
+            throws SerializeException {
+        long sqlId = Long.parseLong(String.valueOf(id));    // TODO: use IoC to convert
+        String sqlDoc = document.serialize();
+        query.pushParameterSetter((statement, index) -> {
+            statement.setLong(index++, sqlId);
+            statement.setString(index++, sqlDoc);
+            return index;
+        });
+    }
+
+    /**
      * Updates the document
      * @param id id of the document to be updated
      */
     private void update(final Object id) throws TaskExecutionException {
-        QueryStatement preparedQuery = new QueryStatement();
         try {
+            QueryStatement preparedQuery = new QueryStatement();
             PostgresSchema.update(preparedQuery, collection);
-            preparedQuery.pushParameterSetter((statement, index) -> {
-                statement.setLong(index++, Long.parseLong(String.valueOf(id)));     // TODO: use IoC to convert
-                statement.setString(index++, document.toString());
-                return index;
-            });
+            setIdAndDocumentParameters(preparedQuery, id);
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
