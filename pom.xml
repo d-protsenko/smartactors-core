@@ -103,6 +103,7 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCollectionName</module>
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
@@ -131,24 +132,33 @@
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>IField</module>
+        <module>PluginCreateAsyncOperationActor</module>
         <module>WDSObject</module>
         <module>FieldName</module>
         <module>IFieldName</module>
+        <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
-        <module>IField</module>
+        <module>PluginCheckUserIsNewActor</module>
         <module>IPath</module>
         <module>Path</module>
         <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
+        <module>ResolveIObjectStrategies</module>
+        <module>PluginResolveIObjectStrategies</module>
         <module>ResolveByTypeStrategy</module>
+        <module>ResolveStandardTypesStrategies</module>
+        <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
+        <module>PluginCheckValidityAsyncOperationActor</module>
+        <module>CheckValidityAsyncOperationActor</module>
     </modules>
 
     <build>
@@ -193,6 +203,43 @@
                     <argLine>${argLine}</argLine>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useLastCommittedRevision>true</useLastCommittedRevision>
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Version>${core.version}-${buildNumber}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.2</version>
             </plugin>
         </plugins>
     </build>
@@ -314,4 +361,7 @@
         </repository>
     </distributionManagement>
 
+    <scm>
+        <connection>scm:git:git@github.com:SmartTools/smartactors-core.git</connection>
+    </scm>
 </project>

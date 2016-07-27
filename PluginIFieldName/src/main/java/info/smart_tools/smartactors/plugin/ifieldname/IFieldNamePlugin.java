@@ -16,6 +16,9 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
+/**
+ * Plugin registers strategy for resolving field name by field name interface
+ */
 public class IFieldNamePlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
