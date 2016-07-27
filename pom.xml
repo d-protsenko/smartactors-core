@@ -360,4 +360,7 @@
         </repository>
     </distributionManagement>
 
+    <scm>
+        <connection>scm:git:git@github.com:SmartTools/smartactors-core.git</connection>
+    </scm>
 </project>
