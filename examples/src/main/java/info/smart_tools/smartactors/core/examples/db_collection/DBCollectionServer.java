@@ -4,6 +4,8 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -11,6 +13,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -26,6 +29,8 @@ import info.smart_tools.smartactors.core.pool.Pool;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
+import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -93,7 +98,17 @@ public class DBCollectionServer implements IServer {
         IOC.register(
                 Keys.getOrAdd(IObject.class.getCanonicalName()),
                 new CreateNewInstanceStrategy(
-                        (args) -> new DSObject()
+                        (args) -> {
+                            try {
+                                switch (args.length) {
+                                    case 0: return new DSObject();
+                                    case 1: return new DSObject(String.valueOf(args[0]));
+                                    default: throw new InvalidArgumentException("cannot instantiate DSObject");
+                                }
+                            } catch (InvalidArgumentException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                 )
         );
     }
@@ -123,8 +138,12 @@ public class DBCollectionServer implements IServer {
     private void initDBStrategies() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IFieldName collectionNameField = IOC.resolve(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
+        IFieldName idField = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
         IFieldName documentField = IOC.resolve(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()), "document");
+        IFieldName callbackField = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
 
         IOC.register(
                 Keys.getOrAdd(UpsertMessage.class.getCanonicalName()),
@@ -153,6 +172,41 @@ public class DBCollectionServer implements IServer {
                 )
         );
         IOC.register(
+                Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new GetByIdMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) message.getValue(collectionNameField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public Object getId() throws ReadValueException {
+                                    try {
+                                        return message.getValue(idField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IAction<IObject> getCallback() throws ReadValueException {
+                                    try {
+                                        return (IAction<IObject>) message.getValue(callbackField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+
+        IOC.register(
                 Keys.getOrAdd("db.collection.upsert"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -175,12 +229,39 @@ public class DBCollectionServer implements IServer {
                         }
                 )
         );
+        IOC.register(
+                Keys.getOrAdd("db.collection.getbyid"),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                Object id = args[2];
+                                IAction<IObject> callback = (IAction<IObject>) args[3];
+                                IDatabaseTask task = new PostgresGetByIdTask(connection);    // TODO: cache tasks
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                query.setValue(collectionNameField, collectionName);
+                                query.setValue(idField, id);
+                                query.setValue(callbackField, callback);
+
+                                task.prepare(query);    // TODO: reuse cached tasks
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
+        );
     }
 
     @Override
     public void start() throws ServerExecutionException {
         try {
             IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IFieldName idField = IOC.resolve(
+                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "testID");
             IFieldName testField = IOC.resolve(
                     Keys.getOrAdd(IFieldName.class.getCanonicalName()), "test");
             document.setValue(testField, "value");
@@ -188,14 +269,12 @@ public class DBCollectionServer implements IServer {
             ConnectionOptions options = new TestConnectionOptions();
             IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
             try (PoolGuard guard = new PoolGuard(pool)) {
-
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.upsert"),
                         guard.getObject(),
                         "test",
                         document
                 );
-
                 task.execute();
             }
             System.out.println("Inserted");
@@ -203,18 +282,34 @@ public class DBCollectionServer implements IServer {
 
             document.setValue(testField, "new value");
             try (PoolGuard guard = new PoolGuard(pool)) {
-
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.upsert"),
                         guard.getObject(),
                         "test",
                         document
                 );
-
                 task.execute();
             }
             System.out.println("Updated");
             System.out.println((String) document.serialize());
+
+            try (PoolGuard guard = new PoolGuard(pool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.getbyid"),
+                        guard.getObject(),
+                        "test",
+                        document.getValue(idField),
+                        (IAction<IObject>) doc -> {
+                            try {
+                                System.out.println("Found");
+                                System.out.println((String) doc.serialize());
+                            } catch (SerializeException e) {
+                                throw new ActionExecuteException(e);
+                            }
+                        }
+                );
+                task.execute();
+            }
         } catch (Exception e) {
             throw new ServerExecutionException(e);
         }
