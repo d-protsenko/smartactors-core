@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -27,7 +27,7 @@ import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesM
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
-import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersSetter;
+import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -67,9 +67,9 @@ public class HttpEndpointPlugin implements IPlugin {
                                     IOC.register(cookiesSetterKey,
                                             new SingletonStrategy(cookiesSetter));
 
-                                    IHeadersSetter headersSetter = new HttpHeadersSetter();
+                                    IHeadersExtractor headersSetter = new HttpHeadersExtractor();
 
-                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersSetter.class.getCanonicalName());
+                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
                                     IOC.register(headersSetterKey,
                                             new SingletonStrategy(headersSetter));
 

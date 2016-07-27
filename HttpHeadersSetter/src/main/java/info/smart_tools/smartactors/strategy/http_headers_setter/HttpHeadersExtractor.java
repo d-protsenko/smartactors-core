@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.strategy.http_headers_setter;
 
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -29,7 +29,7 @@ import java.util.List;
  * </pre>
  */
 
-public class HttpHeadersSetter implements IHeadersSetter {
+public class HttpHeadersExtractor implements IHeadersExtractor {
     @Override
     public void set(final Object response, final IObject environment) throws HeadersSetterException {
         FullHttpResponse httpResponse = (FullHttpResponse) response;

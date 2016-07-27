@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class HttpResponseSenderTest {
     private IChannelHandler ctx;
     private ICookiesSetter cookiesExtractor;
-    private IHeadersSetter headersExtractor;
+    private IHeadersExtractor headersExtractor;
     private IResponseStatusExtractor responseStatusExtractor;
     private IResponse response;
 
@@ -45,7 +45,7 @@ public class HttpResponseSenderTest {
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
         ctx = mock(IChannelHandler.class);
         cookiesExtractor = mock(ICookiesSetter.class);
-        headersExtractor = mock(IHeadersSetter.class);
+        headersExtractor = mock(IHeadersExtractor.class);
         responseStatusExtractor = mock(IResponseStatusExtractor.class);
         response = mock(IResponse.class);
 
@@ -70,7 +70,7 @@ public class HttpResponseSenderTest {
         IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
         IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
         IKey keyCookiesExtractor = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
-        IKey keyHeadersExtractor = Keys.getOrAdd(IHeadersSetter.class.getCanonicalName());
+        IKey keyHeadersExtractor = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
         IKey keyResponseStatusExtractor = Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName());
         IKey keyFullHttpResponse = Keys.getOrAdd(DefaultFullHttpResponse.class.getCanonicalName());
 

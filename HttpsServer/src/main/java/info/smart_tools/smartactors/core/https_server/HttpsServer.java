@@ -20,8 +20,9 @@ import javax.net.ssl.SSLEngine;
  */
 public class HttpsServer extends TcpServer {
 
-    private final SSLContextProvider contextProvider;
+    private SSLContextProvider contextProvider;
     private final int maxContentLength;
+    private boolean sslEnable = false;
 
     /**
      * Constructor
@@ -29,27 +30,42 @@ public class HttpsServer extends TcpServer {
      * @param port             port of the tcp server
      * @param requestHandler   channel for tcp server
      * @param maxContentLength max length of the content
-     * @param contextProvider  ssl context provider
      */
-    public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength,
-                       final SSLContextProvider contextProvider) {
+    public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength) {
         super(port, requestHandler);
-        this.contextProvider = contextProvider;
         this.maxContentLength = maxContentLength;
+    }
+
+    /**
+     * Method for turning on https
+     *
+     * @param contextProvider context provider for ssl
+     */
+    public void setSSL(final SSLContextProvider contextProvider) {
+        this.contextProvider = contextProvider;
+        sslEnable = true;
     }
 
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
-        SSLEngine sslEngine = null;
-        try {
-            sslEngine = contextProvider.get().createSSLEngine();
-        } catch (SSLContextProviderException e) {
+        if (sslEnable) {
+            SSLEngine sslEngine = null;
+            try {
+                sslEngine = contextProvider.get().createSSLEngine();
+            } catch (SSLContextProviderException ignored) {
+            }
+
+            sslEngine.setUseClientMode(false);
+
+            return pipeline.addLast(
+                    new HttpServerCodec(),
+                    new HttpObjectAggregator(maxContentLength)
+            ).addFirst("ssl", new SslHandler(sslEngine));
         }
 
-        sslEngine.setUseClientMode(false);
-        return super.setupPipeline(pipeline).addLast(
+        return pipeline.addLast(
                 new HttpServerCodec(),
                 new HttpObjectAggregator(maxContentLength)
-        ).addFirst("ssl", new SslHandler(sslEngine));
+        );
     }
 }
