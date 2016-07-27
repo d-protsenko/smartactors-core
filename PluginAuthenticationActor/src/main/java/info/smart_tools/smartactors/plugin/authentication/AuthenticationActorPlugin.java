@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.authentication;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -44,8 +45,8 @@ public class AuthenticationActorPlugin implements IPlugin {
                                     throw new RuntimeException(e);
                                 }
                             }));
-                } catch (RegistrationException e) {
-                    throw new RuntimeException(e);
+                } catch (RegistrationException | InvalidArgumentException e) {
+                    throw new ActionExecuteException(e);
                 }
             });
             bootstrap.add(item);
