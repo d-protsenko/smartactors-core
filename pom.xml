@@ -168,9 +168,7 @@
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>WDSObject</module>
-        <module>FieldName</module>
         <module>ValidateFormDataActor</module>
-        <module>IFieldName</module>
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
@@ -185,7 +183,6 @@
         <module>Path</module>
         <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
-        <module>ActorReceiver</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
@@ -204,12 +201,8 @@
         <module>PluginScopedIOC</module>
         <module>PluginScopeProvider</module>
         <module>PluginMessagingIdentifiers</module>
-        <module>ReceiverGenerator</module>
-        <module>IReceiverGenerator</module>
-        <module>PluginReceiverGenerator</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
-        <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>

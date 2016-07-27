@@ -4,21 +4,12 @@
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
-    },
-    {
-      "kind": "actor",
-      "dependency": "info.smart_tools.smartactors.actors.get_form.GetFormActor",
-      "name": "getFormActor"
     }
   ],
   "maps": [
     {
       "id": "httpChain",
       "steps": [
-        {
-          "target": "getFormActor",
-          "handler": "getForm"
-        },
         {
           "target": "respond",
           "handler": "sendResponse"
