@@ -103,6 +103,7 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCollectionName</module>
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
