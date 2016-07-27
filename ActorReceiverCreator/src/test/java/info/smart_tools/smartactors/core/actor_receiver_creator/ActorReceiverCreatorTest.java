@@ -85,7 +85,7 @@ public class ActorReceiverCreatorTest {
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
     }
 
-    @Test
+/*    @Test
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
@@ -157,7 +157,7 @@ public class ActorReceiverCreatorTest {
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));
         verify(objectSection, times(1)).getValue(new FieldName("dependency"));
-    }
+    }*/
 
     @Test (expected = ObjectCreationException.class)
     public void checkCreationExceptionOnWrongFieldNameStrategy()
