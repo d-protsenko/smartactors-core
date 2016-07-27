@@ -67,7 +67,7 @@ public class DSObject implements IObject {
             throw new InvalidArgumentException("Argument should not be null.");
         }
         this.body = new HashMap<IFieldName, Object>(0);
-        this.body.putAll( (HashMap<IFieldName, Object>) objectEntries);
+        this.body.putAll((HashMap<IFieldName, Object>) objectEntries);
     }
 
     /**
