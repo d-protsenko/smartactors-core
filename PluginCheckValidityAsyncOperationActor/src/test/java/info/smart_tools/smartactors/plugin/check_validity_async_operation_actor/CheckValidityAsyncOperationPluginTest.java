@@ -17,7 +17,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,7 +37,7 @@ public class CheckValidityAsyncOperationPluginTest {
         IKey key = Mockito.mock(IKey.class);
         operationKey = Mockito.mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        PowerMockito.when(Keys.getOrAdd(CheckValidityAsyncOperationActor.class.toString())).thenReturn(operationKey);
+        PowerMockito.when(Keys.getOrAdd(CheckValidityAsyncOperationActor.class.getCanonicalName())).thenReturn(operationKey);
 
         bootstrap = Mockito.mock(IBootstrap.class);
         plugin = new CheckValidityAsyncOperationPlugin(bootstrap);

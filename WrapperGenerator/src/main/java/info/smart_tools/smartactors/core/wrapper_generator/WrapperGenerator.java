@@ -1,26 +1,29 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wrapper_generator.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.core.wrapper_generator.class_builder.Modifiers;
+import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -39,32 +42,9 @@ public class WrapperGenerator implements IWrapperGenerator {
      * Constructor.
      * Create new instance of {@link WrapperGenerator} by given {@link ClassLoader}
      * @param classLoader the instance of {@link ClassLoader}
-     * @throws WrapperGeneratorException if generation of wrapper has been failed by any reasons
      */
-    public WrapperGenerator(final ClassLoader classLoader)
-            throws WrapperGeneratorException {
-        try {
-            this.classGenerator = new ClassGenerator(classLoader);
-            IResolveDependencyStrategy targetStrategy =  new ApplyFunctionToArgumentsStrategy(
-                    (a) -> {
-                        try {
-                            ((IObject) a[0]).setValue(
-                                    IOC.resolve(
-                                            Keys.getOrAdd(IFieldName.class.getCanonicalName()), (String) a[1]
-                                    ),
-                                    a[2]
-                            );
-                            return a[0];
-                        } catch (Throwable e) {
-                            throw new RuntimeException("Resolution error in 'target' strategy.");
-                        }
-                    }
-            );
-            IOC.resolve(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), "target", targetStrategy);
-
-        } catch (Throwable e) {
-            throw new WrapperGeneratorException("Could not registry 'target' strategy.", e);
-        }
+    public WrapperGenerator(final ClassLoader classLoader) {
+        this.classGenerator = new ClassGenerator(classLoader);
     }
 
     @Override
@@ -80,9 +60,12 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            instance = IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
+            instance = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+            );
         } catch (ResolutionException e) {
             // do nothing
+            // ToDo: need refactoring
         }
         if (null != instance) {
             return instance;
@@ -92,8 +75,9 @@ public class WrapperGenerator implements IWrapperGenerator {
             Class<T> clazz = generateClass(targetInterface);
 
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
+            // ToDo: replace this strategy to the future plugin for WrapperGenerator
             IOC.register(
-                    Keys.getOrAdd(targetInterface.getCanonicalName()),
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper"),
                     new ApplyFunctionToArgumentsStrategy(
                             (arg) ->  {
                                 try {
@@ -105,7 +89,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                     )
             );
 
-            return IOC.resolve(Keys.getOrAdd(targetInterface.getCanonicalName()));
+            return IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+            );
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",
@@ -123,15 +109,20 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addPackageName(targetInterface.getPackage().getName())
                 .addImport(IField.class.getCanonicalName())
-                .addImport(InField.class.getCanonicalName())
-                .addImport(OutField.class.getCanonicalName())
+                .addImport(Field.class.getCanonicalName())
+                .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
                 .addImport(IObjectWrapper.class.getCanonicalName())
                 .addImport(ReadValueException.class.getCanonicalName())
                 .addImport(ChangeValueException.class.getCanonicalName())
-                .addImport(IFieldName.class.getCanonicalName());
+                .addImport(IFieldName.class.getCanonicalName())
+                .addImport(DeleteValueException.class.getCanonicalName())
+                .addImport(SerializeException.class.getCanonicalName())
+                .addImport(Iterator.class.getCanonicalName())
+                .addImport(Map.class.getCanonicalName())
+                .addImport(HashMap.class.getCanonicalName());
 
         Map<Class<?>, String> types = new HashMap<>();
         for (Method m : targetInterface.getMethods()) {
@@ -157,23 +148,27 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .setClassModifier(Modifiers.PUBLIC)
                         .setClassName(targetInterface.getSimpleName() + "Impl")
                         .setInterfaces("IObjectWrapper")
+                        .setInterfaces("IObject")
                         .setInterfaces(targetInterface.getSimpleName());
 
         // Add class fields
         for (Method m : targetInterface.getMethods()) {
-            String genericType;
             String methodPrefix;
             if (Void.TYPE == m.getGenericReturnType()) {
-                genericType = m.getGenericParameterTypes()[0].getTypeName();
                 methodPrefix = "out";
             } else {
-                genericType = m.getReturnType().getTypeName();
                 methodPrefix = "in";
             }
             cb
                     .addField().setModifier(Modifiers.PRIVATE).setType("IField")
                             .setName("fieldFor_" + methodPrefix + "_" + m.getName());
         }
+        cb
+                .addField()
+                .setModifier(Modifiers.PRIVATE)
+                .setType(Map.class.getSimpleName())
+                .setInnerGenericType(IFieldName.class.getSimpleName() + "," + Field.class.getSimpleName())
+                .setName("fields");
 
         // Add class constructors
         StringBuilder builder = new StringBuilder();
@@ -186,11 +181,10 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append("_")
                     .append(m.getName())
                     .append(" = new ")
-                    .append(methodPrefix.equals("out") ? "Out" : "In")
-                    .append("Field(\"")
-                    .append(targetInterface.getCanonicalName())
-                    .append("/").append(methodPrefix).append("_").append(m.getName()).append("\"" + ");\n");
+                    .append("Field(new FieldName(\"")
+                    .append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
         }
+        builder.append("this.fields = new HashMap<>();\n");
         builder
                 .append("\t\t").append("} catch (Exception e) {\n").append("\t\t\t")
                 .append("throw new InvalidArgumentException(\"\", e);\n")
@@ -236,7 +230,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                                 methodPrefix +
                                 "_" +
                                 m.getName() +
-                                ".in(this.env);"
+                                ".in(this.env, "+ m.getReturnType().getSimpleName() + ".class);"
                         )
                         .addStringToBody("} catch(Throwable e) {")
                         .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")
@@ -260,6 +254,71 @@ public class WrapperGenerator implements IWrapperGenerator {
                         .addStringToBody("}");
             }
         }
+        // Add 'IObject' methods
+
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType(Object.class.getSimpleName())
+                .setName("getValue")
+                .addParameter()
+                .setType(IFieldName.class.getSimpleName())
+                .setName("name")
+                .next()
+                .setExceptions(ReadValueException.class.getSimpleName())
+                .setExceptions(InvalidArgumentException.class.getSimpleName())
+                .addStringToBody("Field field = fields.get(name);")
+                .addStringToBody("if (null == field) {")
+                .addStringToBody("\tfield = new Field(name);")
+                .addStringToBody("\tfields.put(name, field);")
+                .addStringToBody("}")
+                .addStringToBody("return new Field(name).in(this.env);");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("void")
+                .setName("setValue")
+                .addParameter()
+                .setType(IFieldName.class.getSimpleName())
+                .setName("name")
+                .next()
+                .addParameter()
+                .setType(Object.class.getSimpleName())
+                .setName("value")
+                .next()
+                .setExceptions(ChangeValueException.class.getSimpleName())
+                .setExceptions(InvalidArgumentException.class.getSimpleName())
+                .addStringToBody("Field field = fields.get(name);")
+                .addStringToBody("if (null == field) {")
+                .addStringToBody("\tfield = new Field(name);")
+                .addStringToBody("\tfields.put(name, field);")
+                .addStringToBody("}")
+                .addStringToBody("new Field(name).out(env, value);");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("void")
+                .setName("deleteField")
+                .addParameter()
+                .setType(IFieldName.class.getSimpleName())
+                .setName("name")
+                .next()
+                .setExceptions(DeleteValueException.class.getSimpleName())
+                .setExceptions(InvalidArgumentException.class.getSimpleName())
+                .addStringToBody("throw new DeleteValueException(\"Method not implemented.\");");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("<T> T")
+                .setName("serialize")
+                .setExceptions(SerializeException.class.getSimpleName())
+                .addStringToBody("throw new SerializeException(\"Method not implemented.\");");
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("Iterator<Map.Entry<IFieldName, Object>>")
+                .setName("iterator")
+                .addStringToBody("return null;");
 
         return (Class<T>) classGenerator.generate(cb.buildClass().toString());
     }

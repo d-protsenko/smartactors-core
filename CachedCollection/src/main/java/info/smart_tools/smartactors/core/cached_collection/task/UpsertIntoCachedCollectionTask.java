@@ -27,7 +27,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
     private IField startDateTimeField;
     //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
     /**
      * @param upsertTask Target update task
@@ -45,6 +45,14 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     /**
      * Prepares database query
      * @param query query object
+     *              <pre>
+     *              {
+     *                  "document" : {CACHED ITEM},
+     *                  "collectionName" : "COLLECTION_NAME"
+     *              }
+     *              </pre>
+     * The same query would be passed to the nested task's prepare method,
+     * but startDateTime field in document would be set to the current time.
      * @throws TaskPrepareException if error occurs in process of query preparing
      */
     @Override
