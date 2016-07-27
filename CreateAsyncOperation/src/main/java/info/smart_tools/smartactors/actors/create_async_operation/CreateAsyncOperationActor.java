@@ -12,12 +12,17 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
  * Actor for creation asynchronous operation
  */
 public class CreateAsyncOperationActor {
+
+    //TODO:: this format should be setted for whole project?
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
     /**
      * Constructor needed for registry actor
@@ -41,10 +46,11 @@ public class CreateAsyncOperationActor {
             //TODO:: move generate to util class and add server number
             String token = String.valueOf(UUID.randomUUID());
             IAsyncOperationCollection collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.toString()));
-            String expiredTime = message.getExpiredTime();
+            Long amountOfHoursToExpireFromNow = message.getExpiredTime();
+            String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
+            //TODO:: use wrapper generator or field or get this iobject from configuration json of a map
             AuthOperationData authOperationData = IOC.resolve(Keys.getOrAdd(AuthOperationData.class.toString()));
             authOperationData.setSessionId(message.getSessionId());
-//            collection.createAsyncOperation(((IObjectWrapper) authOperationData).getIObjects()[0], token, expiredTime);
             collection.createAsyncOperation(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), authOperationData), token, expiredTime);
 
             //NOTE: this setter should set token to session and to response!

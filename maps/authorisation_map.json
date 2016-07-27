@@ -37,7 +37,7 @@
       "handler": "createOperation",
       "wrapper": {
         "in_getSessionId": "message/sessionId",
-        "in_getExpiredTime": "message/expiredTime",
+        "in_getExpiredTime": "const/4",
         "out_setAsyncOperationToken": "response/token"
       }
     }
