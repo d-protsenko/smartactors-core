@@ -1,8 +1,7 @@
 package info.smart_tools.smartactors.plugin.create_async_operation;
 
-import info.smart_tools.smartactors.actor.create_async_operation.CreateAsyncOperationActor;
-import info.smart_tools.smartactors.actor.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
+import info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor;
+import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
@@ -31,7 +30,12 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @PrepareForTest({IOC.class, Keys.class, CreateAsyncOpPlugin.class, CreateNewInstanceStrategy.class})
 @RunWith(PowerMockRunner.class)

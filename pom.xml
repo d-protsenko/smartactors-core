@@ -108,12 +108,14 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCollectionName</module>
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
+        <module>CreateSession</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -158,6 +160,7 @@
         <module>ICookiesSetter</module>
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
+        <module>PluginCreateSession</module>
         <module>PluginGetFormActor</module>
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
@@ -165,7 +168,19 @@
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>WDSObject</module>
+        <module>FieldName</module>
+        <module>ValidateFormDataActor</module>
+        <module>IFieldName</module>
+        <module>PluginCheckUserByEmailActor</module>
+        <module>PluginGetHeaderRule</module>
+        <module>ReceiverGenerator</module>
+        <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
+        <module>IReceiverGenerator</module>
+        <module>PluginReceiverGenerator</module>
         <module>PluginIFieldName</module>
+        <module>PluginCheckUserIsNewActor</module>
+        <module>PluginAuthenticationActor</module>
         <module>IPath</module>
         <module>Path</module>
         <module>IConfigurationManager</module>
@@ -192,6 +207,9 @@
         <module>ReceiverGenerator</module>
         <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
+        <module>PluginCloseAsyncOperationActor</module>
+        <module>PluginGetCookieFromRequestRule</module>
+        <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>
@@ -213,6 +231,8 @@
         <module>PluginWDSObject</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
+        <module>PluginCheckValidityAsyncOperationActor</module>
+        <module>CheckValidityAsyncOperationActor</module>
     </modules>
 
     <build>
@@ -378,4 +398,7 @@
         </repository>
     </distributionManagement>
 
+    <scm>
+        <connection>scm:git:git@github.com:SmartTools/smartactors-core.git</connection>
+    </scm>
 </project>
