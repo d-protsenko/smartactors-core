@@ -139,6 +139,7 @@
         <module>FieldName</module>
         <module>ValidateFormDataActor</module>
         <module>IFieldName</module>
+        <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
         <module>ActorReceiver</module>
@@ -149,7 +150,7 @@
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
         <module>IPath</module>
-	    <module>Path</module>
+        <module>Path</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>Field</module>
         <module>PluginGetAsyncOperation</module>
