@@ -212,6 +212,7 @@
         <module>PluginWDSObject</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
+        <module>PluginHttpsEndpoint</module>
     </modules>
 
     <build>

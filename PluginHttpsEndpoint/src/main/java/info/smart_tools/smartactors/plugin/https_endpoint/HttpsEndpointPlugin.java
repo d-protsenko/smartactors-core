@@ -1,7 +1,5 @@
-package info.smart_tools.smartactors.plugin.http_endpoint;
+package info.smart_tools.smartactors.plugin.https_endpoint;
 
-
-import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
@@ -9,6 +7,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
+import info.smart_tools.smartactors.core.https_endpoint.HttpsEndpoint;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
@@ -32,9 +31,9 @@ import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseSt
 import io.netty.channel.ChannelHandlerContext;
 
 /**
- * Plugin, that register {@link HttpEndpoint} and {@link HttpResponseSender} at {@link IOC}
+ * Plugin for register all dependencies for http/https endpoint
  */
-public class HttpEndpointPlugin implements IPlugin {
+public class HttpsEndpointPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -43,7 +42,7 @@ public class HttpEndpointPlugin implements IPlugin {
      *
      * @param bootstrap bootstrap
      */
-    public HttpEndpointPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public HttpsEndpointPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -62,7 +61,7 @@ public class HttpEndpointPlugin implements IPlugin {
                             () -> {
                                 try {
                                     ICookiesSetter cookiesSetter = new CookiesSetter();
-                                    IKey httpEndpointKey = Keys.getOrAdd(HttpEndpoint.class.getCanonicalName());
+                                    IKey httpEndpointKey = Keys.getOrAdd("https_endpoint");
                                     IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
                                     IOC.register(cookiesSetterKey,
                                             new SingletonStrategy(cookiesSetter));
@@ -82,7 +81,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                     IOC.register(httpEndpointKey,
                                             new CreateNewInstanceStrategy(
                                                     (args) ->
-                                                            new HttpEndpoint((Integer) args[0],
+                                                            new HttpsEndpoint((Integer) args[0],
                                                                     (Integer) args[1], (IScope) args[2],
                                                                     (IEnvironmentHandler) args[3],
                                                                     (IReceiverChain) args[4]
@@ -125,9 +124,8 @@ public class HttpEndpointPlugin implements IPlugin {
                                 }
                             }
                     );
-            bootstrap.add(item);
         } catch (Exception e) {
-            throw new PluginException("Can't load \"CreateHttpEndpoint\" plugin", e);
+            throw new PluginException("Can't load \"CreateHttpsEndpoint\" plugin", e);
         }
     }
 }
