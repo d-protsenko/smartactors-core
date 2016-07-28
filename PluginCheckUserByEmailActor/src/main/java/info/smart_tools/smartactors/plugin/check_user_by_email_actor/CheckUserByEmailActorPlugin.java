@@ -68,11 +68,11 @@ public class CheckUserByEmailActorPlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get CheckUserByEmailActor key");
+                            throw new ActionExecuteException("Can't get CheckUserByEmailActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("Can't get create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("Can't get register new strategy", e);
                         }
                     });
             bootstrap.add(item);
