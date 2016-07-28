@@ -45,8 +45,10 @@ public class AuthenticationActorPlugin implements IPlugin {
                                     throw new RuntimeException(e);
                                 }
                             }));
-                } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException("AuthenticationActor plugin can't load", e);
+                } catch (InvalidArgumentException e) {
+                    throw new ActionExecuteException("AuthenticationActor plugin can't load: can't get create strategy", e);
+                } catch (RegistrationException e) {
+                    throw new ActionExecuteException("AuthenticationActor plugin can't load: can't get register new strategy", e);
                 }
             });
             bootstrap.add(item);
