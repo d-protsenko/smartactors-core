@@ -12,18 +12,24 @@ import info.smart_tools.smartactors.core.async_operation_collection.wrapper.upda
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
@@ -33,6 +39,7 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Implementation of collection for asynchronous operations
@@ -64,8 +71,27 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
     @Override
     public IObject getAsyncOperation(final String token) throws GetAsyncOperationException {
+        try (IPoolGuard guard = new PoolGuard(connectionPool)) {
+            IObject result = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            //TODO: add strategy for query
+            IObject getItemQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
 
-        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            IDatabaseTask getItemTask = IOC.resolve(
+                Keys.getOrAdd("db.collection.getbyid"),
+                guard.getObject(),
+                collectionName,
+                getItemQuery,
+                (IAction<IObject>) doc -> {
+                    try {
+                        result.setValue(new FieldName("result"), doc);
+                    } catch (ChangeValueException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                }
+            );
+            getItemTask.execute();
+
+/*        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
             IDatabaseTask getItemTask = IOC.resolve(Keys.getOrAdd(GetAsyncOperationTask.class.toString()));
             if (getItemTask == null) {
                 IDatabaseTask nestedTask = IOC.resolve(
@@ -82,24 +108,21 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             getItemQuery.setToken(token);
             getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
             getItemTask.prepare(getItemQuery.wrapped());
-            getItemTask.execute();
-            List<IObject> searchResult = getItemQuery.getSearchResult();
-            if (searchResult == null || searchResult.isEmpty()) {
+            getItemTask.execute();*/
+
+            IObject searchResult = (IObject) result.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "result"));
+            if (searchResult == null) {
                 throw new GetAsyncOperationException("Can't find operation.");
             }
 
-            return searchResult.get(0);
+            return searchResult;
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve object during get operation.", e);
-        } catch (InvalidArgumentException | RegistrationException e) {
+        } catch (InvalidArgumentException e) {
             throw new GetAsyncOperationException("Can't register strategy for getItem task.", e);
         } catch (PoolGuardException e) {
             throw new GetAsyncOperationException("Can't get connection from pool.", e);
-        } catch (ReadValueException | ChangeValueException e) {
-            throw new GetAsyncOperationException("Can't read asynchronous operation.", e);
-        } catch (TaskSetConnectionException e) {
-            throw new GetAsyncOperationException("Can't set connection to read task.", e);
-        } catch (TaskPrepareException e) {
+        } catch (ReadValueException e) {
             throw new GetAsyncOperationException("Error during preparing read task.", e);
         } catch (TaskExecutionException e) {
             throw new GetAsyncOperationException("Error during execution read task.", e);
@@ -107,31 +130,50 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     }
 
     @Override
-    public void createAsyncOperation(final IObject data, final String token, final String expiredTime)
-        throws CreateAsyncOperationException {
-
-        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-            IDatabaseTask task = IOC.resolve(Keys.getOrAdd(CreateAsyncOperationTask.class.toString()));
-            if (task == null) {
-                IDatabaseTask nestedTask = IOC.resolve(
-                        Keys.getOrAdd(IDatabaseTask.class.toString()), CreateAsyncOperationTask.class.toString()
-                );
-                if (nestedTask == null) {
-                    throw new CreateAsyncOperationException("Can't create nested task for createtItem task.");
-                }
-                task = new CreateAsyncOperationTask(nestedTask);
-                IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(task));
-            }
+    public void createAsyncOperation(final IObject data, final String token, final String expiredTime) throws CreateAsyncOperationException {
+        try {
             CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(CreateOperationQuery.class.toString()));
-            query.setCollectionName(collectionName);
             query.setAsyncData(data);
             query.setExpiredTime(expiredTime);
             query.setToken(token);
-            task.setConnection((StorageConnection) poolGuard.getObject());
-            task.prepare(query.getIObject());
-            task.execute();
+
+            try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+
+
+                IDatabaseTask createItemTask = IOC.resolve(
+                        Keys.getOrAdd("db.collection.getbyid"),
+                        poolGuard.getObject(),
+                        collectionName,
+                        query
+                );
+
+
+                /*IDatabaseTask task = IOC.resolve(Keys.getOrAdd(CreateAsyncOperationTask.class.toString()));
+                if (task == null) {
+                    IDatabaseTask nestedTask = IOC.resolve(
+                            Keys.getOrAdd(IDatabaseTask.class.toString()), CreateAsyncOperationTask.class.toString()
+                    );
+                    if (nestedTask == null) {
+                        throw new CreateAsyncOperationException("Can't create nested task for createtItem task.");
+                    }
+                    task = new CreateAsyncOperationTask(nestedTask);
+                    IOC.register(Keys.getOrAdd(GetAsyncOperationTask.class.toString()), new SingletonStrategy(task));
+                }
+                CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(CreateOperationQuery.class.toString()));
+                query.setCollectionName(collectionName);
+                query.setAsyncData(data);
+                query.setExpiredTime(expiredTime);
+                query.setToken(token);
+                task.setConnection((StorageConnection) poolGuard.getObject());
+                task.prepare(query.getIObject());*/
+
+
+                createItemTask.execute();
+            } catch (Exception e) {
+                throw new CreateAsyncOperationException("Failed to create async operation.");
+            }
         } catch (Exception e) {
-            throw new CreateAsyncOperationException("Failed to create async operation.");
+            throw new CreateAsyncOperationException("Failed to create async operation.", e);
         }
     }
 
@@ -139,7 +181,16 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public void complete(final IObject asyncOperation) throws CompleteAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-            IDatabaseTask updateTask = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationTask.class.toString()));
+
+            ITask updateTask = IOC.resolve(Keys.getOrAdd("db.async_ops_collection.complete"),
+                    poolGuard.getObject(),
+                    collectionName,
+                    asyncOperation
+            );
+
+            updateTask.execute();
+
+            /*IDatabaseTask updateTask = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationTask.class.toString()));
             if (updateTask == null) {
                 IDatabaseTask nestedTask = IOC.resolve(
                     Keys.getOrAdd(IDatabaseTask.class.toString()), UpdateAsyncOperationTask.class.toString()
@@ -155,24 +206,13 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             upsertQuery.setUpdateItem(asyncOperation);
 
             updateTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-            updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), upsertQuery));
-            updateTask.execute();
+            updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), upsertQuery));*/
         } catch (TaskExecutionException e) {
             throw new CompleteAsyncOperationException("Error during execution complete.", e);
         } catch (PoolGuardException e) {
             throw new CompleteAsyncOperationException("Can't get connection from pool.", e);
-        } catch (TaskSetConnectionException e) {
-            throw new CompleteAsyncOperationException("Can't set connection to update task.", e);
-        } catch (TaskPrepareException e) {
-            throw new CompleteAsyncOperationException("Error during preparing update task.", e);
-        } catch (InvalidArgumentException | RegistrationException e) {
-            throw new CompleteAsyncOperationException("Can't register strategy for update task.", e);
-        } catch (ChangeValueException e) {
-            throw new CompleteAsyncOperationException("Can't complete async operation.", e);
         } catch (ResolutionException e) {
             throw new CompleteAsyncOperationException("Can't resolve async operation object.", e);
-        } catch (UpdateAsyncOperationException e) {
-            throw new CompleteAsyncOperationException("Can't create new UpdateAsyncOperationTask.", e);
         }
     }
 
@@ -180,7 +220,17 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public void delete(final String token) throws DeleteAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-            IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()));
+
+            ITask task = IOC.resolve(
+                    Keys.getOrAdd("db.async_ops_collection.delete"),
+                    poolGuard.getObject(),
+                    collectionName,
+                    token
+            );
+            task.execute();
+
+            task.execute();
+            /*IDatabaseTask deleteTask = IOC.resolve(Keys.getOrAdd(DeleteAsyncOperationTask.class.toString()));
             if (deleteTask == null) {
                 IDatabaseTask nestedTask = IOC.resolve(
                     Keys.getOrAdd(IDatabaseTask.class.toString()), DeleteAsyncOperationTask.class.toString()
@@ -197,24 +247,14 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             deleteQuery.setDocumentIds(Collections.singletonList(idField.in(deleteItem)));
 
             deleteTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-            deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));
-            deleteTask.execute();
+            deleteTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), deleteQuery));*/
+
         } catch (TaskExecutionException e) {
             throw new DeleteAsyncOperationException("Error during execution complete.", e);
         } catch (PoolGuardException e) {
             throw new DeleteAsyncOperationException("Can't get connection from pool.", e);
-        } catch (TaskSetConnectionException e) {
-            throw new DeleteAsyncOperationException("Can't set connection to update task.", e);
-        } catch (TaskPrepareException e) {
-            throw new DeleteAsyncOperationException("Error during preparing update task.", e);
-        } catch (InvalidArgumentException | RegistrationException e) {
-            throw new DeleteAsyncOperationException("Can't register strategy for update task.", e);
-        } catch (ReadValueException | ChangeValueException e) {
-            throw new DeleteAsyncOperationException("Can't complete async operation.", e);
         } catch (ResolutionException e) {
-            throw new DeleteAsyncOperationException("Can't resolve async operation object.", e);
-        } catch (GetAsyncOperationException e) {
-            throw new DeleteAsyncOperationException("Can't get async operation by token.", e);
+            throw new DeleteAsyncOperationException("Can't get Task from IOC", e);
         }
     }
 }

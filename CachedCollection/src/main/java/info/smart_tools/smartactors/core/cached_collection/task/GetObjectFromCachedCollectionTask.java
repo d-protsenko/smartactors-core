@@ -25,7 +25,6 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask getItemTask;
     private IStorageConnection connection;
-
     private IField collectionNameField;
     private IField pageSizeField;
     private IField pageNumberField;

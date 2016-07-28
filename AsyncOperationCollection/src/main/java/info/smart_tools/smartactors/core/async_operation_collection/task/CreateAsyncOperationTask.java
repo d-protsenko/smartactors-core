@@ -77,11 +77,6 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     }
 
     @Override
-    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        this.task.setConnection(connection);
-    }
-
-    @Override
     public void execute() throws TaskExecutionException {
         this.task.execute();
     }
