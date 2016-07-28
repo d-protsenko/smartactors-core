@@ -64,7 +64,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public AsyncOperationCollection(final IPool connectionPool, final String collectionName) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
         try {
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
             this.collectionName = CollectionName.fromString(collectionName);
         } catch (QueryBuildException e) {
             throw new InvalidArgumentException("Can't create async operations collection.", e);
@@ -77,8 +77,6 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public IObject getAsyncOperation(final String token) throws GetAsyncOperationException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             IObject result = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            //TODO: add strategy for query
-            IObject getItemQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
 
             IDatabaseTask getItemTask = IOC.resolve(
                 Keys.getOrAdd("db.async_ops_collection.get"),
