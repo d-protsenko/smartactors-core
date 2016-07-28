@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.get_async_operation;
 
 import info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -34,20 +35,21 @@ public class GetAsyncOperationPlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateGetAsyncOperationActor");
+
             item
                     .after("IOC")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());
-                            try {
-                                IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
-                                        (args) -> new GetAsyncOperationActor((IObject) args[0])
-                                ));
-                            } catch (RegistrationException | InvalidArgumentException e) {
-                                throw new RuntimeException(e);
-                            }
+                            IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
+                                    (args) -> new GetAsyncOperationActor((IObject) args[0])
+                            ));
                         } catch (ResolutionException e) {
-                            throw  new RuntimeException(e);
+                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't get GetAsyncOperationActor key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't get create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't get register new strategy", e);
                         }
                     });
             bootstrap.add(item);
