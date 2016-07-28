@@ -43,6 +43,9 @@ public class DBCreateCollectionTask implements IDatabaseTask {
         put("id", "CREATE INDEX ON %1$s USING BTREE ((%2$s));\nCREATE INDEX ON %1$s USING HASH ((%2$s));\n");
     }};
 
+    /**
+     * Default constructor
+     */
     public DBCreateCollectionTask() {}
 
     @Override
@@ -82,7 +85,6 @@ public class DBCreateCollectionTask implements IDatabaseTask {
                         IOException |
                         QueryBuildException |
                         ResolutionException |
-                        ChangeValueException |
                         ReadValueException e
                 ) {
                     throw new QueryStatementFactoryException("Error while initialize update query.", e);
