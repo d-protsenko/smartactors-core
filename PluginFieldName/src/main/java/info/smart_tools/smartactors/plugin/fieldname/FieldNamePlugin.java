@@ -64,11 +64,11 @@ public class FieldNamePlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get IFieldName key");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't get create strategy");
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't get register new strategy");
                         }
                     });
             bootstrap.add(item);
