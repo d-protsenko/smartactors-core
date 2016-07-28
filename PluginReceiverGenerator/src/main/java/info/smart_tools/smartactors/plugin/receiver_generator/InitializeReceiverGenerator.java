@@ -38,15 +38,13 @@ public class InitializeReceiverGenerator implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("InitializeReceiverGenerator");
             item
+                    .after("IOC")
                     .process(
                             () -> {
                                 try {
                                     IReceiverGenerator rg = new ReceiverGenerator(this.getClass().getClassLoader());
                                     IOC.register(
-                                            IOC.resolve(
-                                                    IOC.getKeyForKeyStorage(),
-                                                    ReceiverGenerator.class.getCanonicalName()
-                                            ),
+                                            Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()),
                                             new SingletonStrategy(rg)
                                     );
                                 } catch (Exception e) {

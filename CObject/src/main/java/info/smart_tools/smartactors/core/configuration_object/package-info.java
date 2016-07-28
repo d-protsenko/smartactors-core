@@ -1,0 +1,5 @@
+/**
+ * Package contains implementation of {@link info.smart_tools.smartactors.core.iobject.IObject}.
+ * This implementation gets value on {@code getValue} method, leads it in to the canonical form and returns result.
+ */
+package info.smart_tools.smartactors.core.configuration_object;

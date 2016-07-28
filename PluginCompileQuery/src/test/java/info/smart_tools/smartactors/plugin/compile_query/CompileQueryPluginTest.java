@@ -6,12 +6,10 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatementFactory;
@@ -124,6 +122,64 @@ public class CompileQueryPluginTest {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CompileQueryPlugin").thenReturn(bootstrapItem);
+        when(bootstrapItem.after("IOC")).thenReturn(bootstrapItem);
+
+        plugin.load();
+
+        verifyNew(BootstrapItem.class).withArguments("CompileQueryPlugin");
+        verify(bootstrapItem).after("IOC");
+
+        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(bootstrapItem).process(iPoorActionArgumentCaptor.capture());
+
+        iPoorActionArgumentCaptor.getValue().execute();
+
+        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        verifyStatic();
+        IOC.register(eq(compiledQueryKey), createNewInstanceStrategyArgumentCaptor.capture());
+
+        StorageConnection connection = mock(StorageConnection.class);
+        String task = "task";
+        QueryStatementFactory factory = mock(QueryStatementFactory.class);
+
+        String id = "id";
+        when(connection.getId()).thenReturn(id);
+
+        QueryKey queryKey = mock(QueryKey.class);
+        when(QueryKey.create(task, id)).thenReturn(queryKey);
+
+        QueryStatement queryStatement = mock(QueryStatement.class);
+        when(factory.create()).thenReturn(queryStatement);
+
+        CompiledQuery query = mock(CompiledQuery.class);
+        when(connection.compileQuery(queryStatement)).thenReturn(query);
+
+        assertTrue("Must be equal", createNewInstanceStrategyArgumentCaptor.getValue().resolve(connection, task, factory) == query);
+
+        verify(connection).getId();
+        verifyStatic();
+        QueryKey.create(task, id);
+        verify(queryMap).get(queryKey);
+
+        verify(factory).create();
+        verify(connection).compileQuery(queryStatement);
+        verify(queryMap).put(queryKey, query);
+
+        verify(bootstrap).add(eq(bootstrapItem));
+    }
+
+    @Test
+    public void MustInCorrectLoadPluginWhenKeysThrowException1() throws Exception {
+
+        IKey compiledQueryKey = mock(IKey.class);
+        when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(compiledQueryKey);
+
+        HashMap<QueryKey, CompiledQuery> queryMap = mock(HashMap.class);
+        whenNew(HashMap.class).withNoArguments().thenReturn(queryMap);
+
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("CompileQueryPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(any())).thenReturn(bootstrapItem);
 
         plugin.load();
@@ -172,7 +228,7 @@ public class CompileQueryPluginTest {
     }
 
     @Test
-    public void MustInCorrectExecuteInIPoorActionWhenThrowRegistrationException() throws Exception {
+    public void MustInCorrectExecuteInIPoorActionWhenThrowRegistrationException2() throws Exception {
 
         IKey cachedCollectionKey = mock(IKey.class);
         when(Keys.getOrAdd(CompiledQuery.class.toString())).thenReturn(cachedCollectionKey);
