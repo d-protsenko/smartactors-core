@@ -26,7 +26,7 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 //        when(ISearchQuery.getOrderBy(0)).thenReturn(orderItem);
 //        when(orderItem.getValue(anyObject())).thenReturn("testOrderField").thenReturn("testOrderDirection");
 //
-//        when(fieldPath.getSQLRepresentation()).thenReturn("testSQLStrField");
+//        when(fieldPath.toSQL()).thenReturn("testSQLStrField");
 //
 //        IKey fieldPathKey = mock(IKey.class);
 //        IKey strKey = mock(IKey.class);
@@ -43,7 +43,7 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 //        assertTrue("ORDER BY(testSQLStrField)ASC,(1)".equals(queryStatement.getBodyWriter().toString()));
 //
 //        verify(orderItem, times(2)).getValue(anyObject());
-//        verify(fieldPath, times(1)).getSQLRepresentation();
+//        verify(fieldPath, times(1)).toSQL();
 //        verifyStatic(times(1));
 //        Keys.getOrAdd(PostgresFieldPath.class.toString());
 //        verifyStatic(times(1));

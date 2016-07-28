@@ -3,8 +3,9 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 
 /**
+ * Valid field path for Postgres database to represent path in jsonb document.
+ * If it's the path in
  * {@see FiledPath} {@link FieldPath}
- * Valid field path for psql database.
  */
 public class PostgresFieldPath implements FieldPath {
     private String path;
@@ -20,10 +21,10 @@ public class PostgresFieldPath implements FieldPath {
     }
 
     /**
-     * {@see FieldPath#getSQLRepresentation()} {@link FieldPath#getSQLRepresentation()}
+     * {@see FieldPath#toSQL()} {@link FieldPath#toSQL()}
      * @return valid representation of field path.
      */
-    public String getSQLRepresentation() {
+    public String toSQL() {
         return this.path;
     }
 
@@ -33,6 +34,7 @@ public class PostgresFieldPath implements FieldPath {
             throw new QueryBuildException("Invalid field path: " + path);
         }
 
+        // TODO: add a special support for ID column (it depends on collection name)
 //        if (path.equals("id")) {
 //            return new PostgresFieldPath(PostgresSchema.ID_COLUMN, Schema.ID_TO_JSONB_CAST_FUNCTION);
 //        }

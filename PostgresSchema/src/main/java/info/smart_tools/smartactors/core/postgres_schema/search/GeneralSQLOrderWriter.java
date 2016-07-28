@@ -70,7 +70,7 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 //                sortDirection = ("DESC".equalsIgnoreCase(String.valueOf(sortDirection))) ? "DESC" : "ASC";
 //                queryStatement
 //                        .getBodyWriter()
-//                        .write(String.format("(%s)%s,", fieldPath.getSQLRepresentation(), sortDirection));
+//                        .write(String.format("(%s)%s,", fieldPath.toSQL(), sortDirection));
 //            }
 //
 //            queryStatement.getBodyWriter().write("(1)");

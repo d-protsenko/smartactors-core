@@ -25,8 +25,8 @@ public class ConditionsTest {
 
     private StringWriter body;
     private QueryStatement query;
-    private QueryConditionWriter writer;
-    private QueryConditionWriterResolver resolver;
+    private ConditionWriter writer;
+    private ConditionWriterResolver resolver;
     private FieldPath fieldPath;
     private Object queryParameter;
     private List<SQLQueryParameterSetter> setters;
@@ -38,7 +38,7 @@ public class ConditionsTest {
         query = mock(QueryStatement.class);
         when(query.getBodyWriter()).thenReturn(body);
 
-        writer = mock(QueryConditionWriter.class);
+        writer = mock(ConditionWriter.class);
         doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
@@ -51,7 +51,7 @@ public class ConditionsTest {
                 return null;
             }}).when(writer).write(same(query), any(), any(), any(), any());
 
-        resolver = mock(QueryConditionWriterResolver.class);
+        resolver = mock(ConditionWriterResolver.class);
         when(resolver.resolve(any())).thenReturn(writer);
         when(resolver.toString()).thenReturn("resolver");
 

@@ -34,7 +34,7 @@ final class Operators {
         }
 
         try {
-            query.getBodyWriter().write(String.format(format, contextFieldPath.getSQLRepresentation()));
+            query.getBodyWriter().write(String.format(format, contextFieldPath.toSQL()));
 
             setters.add((statement, index) -> {
                 statement.setObject(index++, queryParameter);
@@ -55,7 +55,7 @@ final class Operators {
      */
     private static void writeFieldExistsCheckCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final ConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -72,7 +72,7 @@ final class Operators {
             }
             Boolean isNull = Boolean.parseBoolean(isNullStr);
             String condition = isNull ? "(%s) is null" : "(%s) is not null";
-            query.getBodyWriter().write(String.format(condition, contextFieldPath.getSQLRepresentation()));
+            query.getBodyWriter().write(String.format(condition, contextFieldPath.toSQL()));
         } catch (IOException e) {
             throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
@@ -88,7 +88,7 @@ final class Operators {
      */
     private static void writeFieldInArrayCheckCondition(
             final QueryStatement query,
-            final QueryConditionWriterResolver resolver,
+            final ConditionWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -111,7 +111,7 @@ final class Operators {
                 return;
             }
 
-            writer.write(String.format("((%s)in(", contextFieldPath.getSQLRepresentation()));
+            writer.write(String.format("((%s)in(", contextFieldPath.toSQL()));
 
             for (int i = paramAsList.size(); i > 0; --i) {
                 writer.write(String.format("to_json(?)::jsonb%s", (i == 1) ? "" : ","));
@@ -130,7 +130,7 @@ final class Operators {
         }
     }
 
-    private static QueryConditionWriter formattedCheckWriter(final String format) {
+    private static ConditionWriter formattedCheckWriter(final String format) {
         return (query, resolver, contextFieldPath, queryParameter, setters) ->
             writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
     }
@@ -139,7 +139,7 @@ final class Operators {
      * Registers operators.
      * @param resolver Resolver for writing queries by operators
      */
-    public static void addAll(final ConditionsResolverBase resolver) {
+    public static void addAll(final PostgresConditionWriterResolver resolver) {
         // Basic field comparison operators
         resolver.addOperator("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
         resolver.addOperator("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
