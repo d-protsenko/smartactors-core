@@ -41,8 +41,10 @@ public class PluginReceiverChain implements IPlugin {
                             IOC.register(
                                     Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
                                     new ImmutableReceiverChainResolutionStrategy());
-                        } catch (ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't get register new strategy", e);
                         }
                     });
 
