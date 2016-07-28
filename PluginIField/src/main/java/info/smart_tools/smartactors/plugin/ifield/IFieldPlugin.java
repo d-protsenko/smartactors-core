@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.ifield;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -47,16 +48,20 @@ public class IFieldPlugin implements IPlugin {
                                 try {
                                     return new Field(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName));
                                 } catch (InvalidArgumentException | ResolutionException e) {
-                                    throw new RuntimeException("Can't resolve ifield: ", e);
+                                    throw new RuntimeException("Can't resolve IField: ", e);
                                 }
                             }));
-                    } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                        throw new RuntimeException(e);
+                    } catch (ResolutionException e) {
+                        throw new ActionExecuteException("IField plugin can't load: can't get IField key", e);
+                    } catch (InvalidArgumentException e) {
+                        throw new ActionExecuteException("IField plugin can't load: can't get create strategy", e);
+                    } catch (RegistrationException e) {
+                        throw new ActionExecuteException("IField plugin can't load: can't get register new strategy", e);
                     }
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load ifield plugin", e);
+            throw new PluginException("Can't load IField plugin", e);
         }
     }
 }
