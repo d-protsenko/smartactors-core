@@ -1,10 +1,8 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -68,11 +66,6 @@ public class CreateCachedCollectionTask implements IDatabaseTask {
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new TaskPrepareException("Can't prepare query for create cached collection", e);
         }
-    }
-
-    @Override
-    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        createCollectionTask.setConnection(connection);
     }
 
     /**

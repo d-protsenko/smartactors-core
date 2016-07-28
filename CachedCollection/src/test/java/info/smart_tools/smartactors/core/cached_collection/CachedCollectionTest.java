@@ -130,7 +130,6 @@ public class CachedCollectionTest {
 
         collection.delete(query);
 
-        verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
         verify(collectionNameField).out(eq(deleteQuery), eq(collectionName));
@@ -169,7 +168,7 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(deleteTask).setConnection(eq(connection));
+//        verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -193,7 +192,6 @@ public class CachedCollectionTest {
 
         collection.upsert(query);
 
-        verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -222,7 +220,6 @@ public class CachedCollectionTest {
         try {
             collection.upsert(query);
         } catch (UpsertCacheItemException e) {
-            verify(upsertTask).setConnection(eq(connection));
             verify(upsertTask).prepare(upsertQuery);
             verify(upsertTask).execute();
             verify(specificKeyNameField, never()).in(eq(query));
@@ -267,7 +264,6 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -295,7 +291,6 @@ public class CachedCollectionTest {
 
         List<IObject> items = collection.getItems("key");
 
-        verify(readTask).setConnection(eq(connection));
         verify(readTask).prepare(eq(readQuery));
         verify(readTask).execute();
         assertEquals(items.get(0), searchResult);
@@ -331,7 +326,7 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(readTask).setConnection(eq(connection));
+//        verify(readTask).setConnection(eq(connection));
         verify(readTask).prepare(readQuery);
         verify(readTask).execute();
     }

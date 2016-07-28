@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
@@ -45,15 +44,8 @@ public class UpsertIntoCachedCollectionTaskTest {
         when(IOC.resolve(keyField, "document/startDateTime")).thenReturn(startDateTimeField);
 
         upsertTask = mock(IDatabaseTask.class);
-        task = new UpsertIntoCachedCollectionTask(upsertTask);
-    }
-
-    @Test
-    public void ShouldSetConnectionToNestedTask() throws TaskSetConnectionException {
-
-        StorageConnection connection = mock(StorageConnection.class);
-        task.setConnection(connection);
-        verify(upsertTask).setConnection(eq(connection));
+        IStorageConnection connection = mock(IStorageConnection.class);
+        task = new UpsertIntoCachedCollectionTask(connection);
     }
 
     @Test
