@@ -40,8 +40,8 @@ public class FieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.toString());
-                            IOC.register(iFieldNameKey,
+                            IKey FieldNameKey = Keys.getOrAdd(FieldName.class.toString());
+                            IOC.register(FieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
