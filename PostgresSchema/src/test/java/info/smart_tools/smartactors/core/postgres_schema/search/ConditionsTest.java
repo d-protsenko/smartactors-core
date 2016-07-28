@@ -4,11 +4,8 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -29,7 +26,6 @@ public class ConditionsTest {
     private QueryWriterResolver resolver;
     private FieldPath fieldPath;
     private Object queryParameter;
-    private List<SQLQueryParameterSetter> setters;
 
     @Before
     public void setUp() throws QueryBuildException {
@@ -39,17 +35,16 @@ public class ConditionsTest {
         when(query.getBodyWriter()).thenReturn(body);
 
         writer = mock(QueryWriter.class);
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                String resolver = String.valueOf(args[1]);
-                String path = String.valueOf(args[2]);
-                String param = String.valueOf(args[3]);
-                List setters = (List) args[4];
-                setters.add(param);
-                body.write(String.format(" %s, %s, %s, %s ", resolver, path, param, setters));
-                return null;
-            }}).when(writer).write(same(query), any(), any(), any(), any());
+        List setters = new ArrayList();
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            String resolver1 = String.valueOf(args[1]);
+            String path = String.valueOf(args[2]);
+            String param = String.valueOf(args[3]);
+            setters.add(param);
+            body.write(String.format(" %s, %s, %s, %s ", resolver1, path, param, setters));
+            return null;
+        }).when(writer).write(same(query), any(), any(), any());
 
         resolver = mock(QueryWriterResolver.class);
         when(resolver.resolve(any())).thenReturn(writer);
@@ -57,49 +52,47 @@ public class ConditionsTest {
 
         fieldPath = mock(FieldPath.class);
         when(fieldPath.toString()).thenReturn("fieldPath");
-
-        setters = new ArrayList<>();
     }
 
     @Test
     public void testAndOnIObject() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new DSObject("{ \"a\": \"b\", \"c\": \"d\" }");
-        Conditions.writeAndCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeAndCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("( resolver, fieldPath, b, [b] AND resolver, fieldPath, d, [b, d] )", body.toString());
     }
 
     @Test
     public void testAndOnList() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new ArrayList() {{ add("a"); add("b"); }};
-        Conditions.writeAndCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeAndCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("( resolver, fieldPath, a, [a] AND resolver, fieldPath, b, [a, b] )", body.toString());
     }
 
     @Test
     public void testOrOnIObject() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new DSObject("{ \"a\": \"b\", \"c\": \"d\" }");
-        Conditions.writeOrCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeOrCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("( resolver, fieldPath, b, [b] OR resolver, fieldPath, d, [b, d] )", body.toString());
     }
 
     @Test
     public void testOrOnList() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new ArrayList() {{ add("a"); add("b"); }};
-        Conditions.writeOrCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeOrCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("( resolver, fieldPath, a, [a] OR resolver, fieldPath, b, [a, b] )", body.toString());
     }
 
     @Test
     public void testNotOnIObject() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new DSObject("{ \"a\": \"b\", \"c\": \"d\" }");
-        Conditions.writeNotCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeNotCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("(NOT( resolver, fieldPath, b, [b] AND resolver, fieldPath, d, [b, d] ))", body.toString());
     }
 
     @Test
     public void testNotOnList() throws QueryBuildException, InvalidArgumentException {
         queryParameter = new ArrayList() {{ add("a"); add("b"); }};
-        Conditions.writeNotCondition(query, resolver, fieldPath, queryParameter, setters);
+        Conditions.writeNotCondition(query, resolver, fieldPath, queryParameter);
         assertEquals("(NOT( resolver, fieldPath, a, [a] AND resolver, fieldPath, b, [a, b] ))", body.toString());
     }
 

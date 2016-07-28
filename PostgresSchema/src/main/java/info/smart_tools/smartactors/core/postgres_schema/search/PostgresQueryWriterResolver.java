@@ -74,11 +74,11 @@ public class PostgresQueryWriterResolver implements QueryWriterResolver {
         throws QueryBuildException {
         final FieldPath path = this.resolveFieldName(fieldName);
 
-        return (query, resolver, contextFieldName, queryParameter, setters) -> {
+        return (query, resolver, contextFieldName, queryParameter) -> {
             if (contextFieldName != null) {
                 throw new QueryBuildException("Field names not allowed inside of field context");
             }
-            this.resolve(null).write(query, resolver, path, queryParameter, setters);
+            this.resolve(null).write(query, resolver, path, queryParameter);
         };
     }
 

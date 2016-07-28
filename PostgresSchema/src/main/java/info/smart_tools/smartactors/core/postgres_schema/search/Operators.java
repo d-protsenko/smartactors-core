@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
 
 import java.io.IOException;
@@ -60,25 +59,23 @@ final class Operators {
      * @return the condition writer ready to be added to basic resolver
      */
     private static QueryWriter formattedCheckWriter(final String format) {
-        return (query, resolver, contextFieldPath, queryParameter, setters) ->
-                writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
+        return (query, resolver, contextFieldPath, queryParameter) ->
+                writeFieldCheckCondition(format, query, contextFieldPath, queryParameter);
     }
 
     /**
      * Writes part of sql query with basic field comparison operators
      * @param format sql string for condition. Contains '%s' for field path and '?' for parameters
-     * @param query query statement object which body is written
+     * @param query query statement object where to write the body and add parameter setters
      * @param contextFieldPath current field path, for example document#>'{field}'
      * @param queryParameter current value of the query parameter
-     * @param setters the list of query setters to be appended
      * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldCheckCondition(
             final String format,
             final QueryStatement query,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -88,7 +85,7 @@ final class Operators {
         try {
             query.getBodyWriter().write(String.format(format, contextFieldPath.toSQL()));
 
-            setters.add((statement, index) -> {
+            query.pushParameterSetter((statement, index) -> {
                 statement.setObject(index++, queryParameter);
                 return index;
             });
@@ -99,19 +96,17 @@ final class Operators {
 
     /**
      * Writes part of sql query which checks existence of field in the document
-     * @param query query statement object which body is written
+     * @param query query statement object where to write body and add parameter setters
      * @param resolver resolver for nested operators, is ignored here
      * @param contextFieldPath current field path, for example document#>'{field}'
      * @param queryParameter current parameter value. Must be boolean: if 'true' check field is null, if 'false' check the field is not null
-     * @param setters the list of query setters to be appended
      * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldExistsCheckCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -133,19 +128,17 @@ final class Operators {
 
     /**
      * Writes part of sql query which checks the value is presented in the array.
-     * @param query query statement object which body is written
+     * @param query query statement object where to write body and add parameter setters
      * @param resolver resolver for nested operators, is ignored here
      * @param contextFieldPath current field path, for example document#>'{field}'
      * @param queryParameter current parameter value
-     * @param setters the list of query setters to be appended
      * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldInArrayCheckCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
@@ -173,7 +166,7 @@ final class Operators {
 
             writer.write("))");
 
-            setters.add((statement, index) -> {
+            query.pushParameterSetter((statement, index) -> {
                 for (Object obj : paramAsList) {
                     statement.setObject(index++, obj);
                 }

@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -26,59 +25,53 @@ public final class Conditions {
 
     /**
      * Writes the AND condition.
-     * @param query the query into which body to write the condition
+     * @param query the query into which body to write the condition and add parameter setters
      * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
-     * @param setters a list of parameter setters to be added to the query, is filled by the call
      * @throws QueryBuildException if the query cannot be built
      */
     public static void writeAndCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
-        writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter, setters);
+        writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter);
     }
 
     /**
      * Writes the OR condition.
-     * @param query the query into which body to write the condition
+     * @param query the query into which body to write the condition and add parameter setters
      * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
-     * @param setters a list of parameter setters to be added to the query, is filled by the call
      * @throws QueryBuildException if the query cannot be built
      */
     public static void writeOrCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
-        writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter, setters);
+        writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter);
     }
 
     /**
      * Writes the NOT condition
-     * @param query the query into which body to write the condition
+     * @param query the query into which body to write the condition and add parameter setters
      * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
-     * @param setters a list of parameter setters to be added to the query, is filled by the call
      * @throws QueryBuildException if the query cannot be built
      */
     public static void writeNotCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
-        writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter, setters);
+        writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter);
     }
 
     /**
@@ -96,11 +89,10 @@ public final class Conditions {
      * @param prefix prefix to prepend the whole condition, typically a bracket (
      * @param postfix postfix to postpone the whole condition, typically a bracket )
      * @param delimiter characters to separate condition elements, for example "AND"
-     * @param query the query into which body to write the condition
+     * @param query the query into which body to write the condition and add parameter setters
      * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
-     * @param setters a list of parameter setters to be added to the query, is filled by the call
      * @throws QueryBuildException
      */
     private static void writeCompositeCondition(
@@ -110,8 +102,7 @@ public final class Conditions {
             final QueryStatement query,
             final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
-            final Object queryParameter,
-            final List<SQLQueryParameterSetter> setters
+            final Object queryParameter
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();
 
@@ -129,7 +120,7 @@ public final class Conditions {
                 while (paramIterator.hasNext()) {
                     Map.Entry<IFieldName, Object> entry = paramIterator.next();
                     String key = String.valueOf(entry.getKey());
-                    resolver.resolve(key).write(query, resolver, contextFieldPath, entry.getValue(), setters);
+                    resolver.resolve(key).write(query, resolver, contextFieldPath, entry.getValue());
                     if (paramIterator.hasNext()) {
                         writer.write(delimiter);
                     }
@@ -152,7 +143,7 @@ public final class Conditions {
                 Iterator<?> iterator = paramAsList.iterator();
                 while (iterator.hasNext()) {
                     Object entry = iterator.next();
-                    resolved.write(query, resolver, contextFieldPath, entry, setters);
+                    resolved.write(query, resolver, contextFieldPath, entry);
                     if (iterator.hasNext()) {
                         writer.write(delimiter);
                     }

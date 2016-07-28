@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSe
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +42,6 @@ public class OperatorsTest {
 
         List<String> operatorsNames = new ArrayList<>(OPERATORS_NUMBER);
         List<FieldPath> fieldsPaths = new ArrayList<>(OPERATORS_NUMBER);
-        List<SQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
         List<String> result = new ArrayList<>(OPERATORS_NUMBER);
 
         operatorsNames.addAll(
@@ -65,13 +65,15 @@ public class OperatorsTest {
                         "(to_tsvector('russian',(document#>'{fulltext}')::text))@@(to_tsquery(russian,?))"));
 
         for (int i = 0; i < OPERATORS_NUMBER; ++i) {
-            QueryStatement queryStatement = new QueryStatement();
+            StringWriter body = new StringWriter();
+            QueryStatement queryStatement = mock(QueryStatement.class);
+            when(queryStatement.getBodyWriter()).thenReturn(body);
             resolver
                     .resolve(operatorsNames.get(i))
-                    .write(queryStatement, resolver, fieldsPaths.get(i), queryParam, setters);
-            assertEquals(queryStatement.getBodyWriter().toString().trim(), result.get(i));
+                    .write(queryStatement, resolver, fieldsPaths.get(i), queryParam);
+            assertEquals(body.toString().trim(), result.get(i));
+            verify(queryStatement).pushParameterSetter(any());
         }
-        assertEquals(setters.size(), 10);
     }
 
     @Test
@@ -84,13 +86,13 @@ public class OperatorsTest {
         QueryStatement queryStatementIsNull = new QueryStatement();
         resolver
                 .resolve("$isNull")
-                .write(queryStatementIsNull, resolver, fieldPath, "true", setters);
+                .write(queryStatementIsNull, resolver, fieldPath, "true");
         assertEquals(queryStatementIsNull.getBodyWriter().toString().trim(), "(document#>'{isNull}') is null");
 
         QueryStatement queryStatementIsNotNull = new QueryStatement();
         resolver
                 .resolve("$isNull")
-                .write(queryStatementIsNotNull, resolver, fieldPath, "false", setters);
+                .write(queryStatementIsNotNull, resolver, fieldPath, "false");
         assertEquals(queryStatementIsNotNull.getBodyWriter().toString().trim(), "(document#>'{isNull}') is not null");
     }
 
@@ -103,27 +105,30 @@ public class OperatorsTest {
         FieldPath fieldPath = PostgresFieldPath.fromString(operatorName.replace("$", ""));
         List<Integer> queryParam = new ArrayList<>(Arrays.asList(1, 10, 100));
 
-        QueryStatement queryStatement = new QueryStatement();
+        StringWriter body = new StringWriter();
+        QueryStatement queryStatement = mock(QueryStatement.class);
+        when(queryStatement.getBodyWriter()).thenReturn(body);
+
         resolver
                 .resolve(operatorName)
-                .write(queryStatement, resolver, fieldPath, queryParam, setters);
+                .write(queryStatement, resolver, fieldPath, queryParam);
         assertEquals(queryStatement.getBodyWriter().toString().trim(),
                 "((document#>'{in}')in(to_json(?)::jsonb,to_json(?)::jsonb,to_json(?)::jsonb))");
-        assertEquals(setters.size(), 1);
+        verify(queryStatement).pushParameterSetter(any());
     }
 
     @Test(expected = QueryBuildException.class)
     public void writeFieldCheckCondition_ContextFieldPath_IsNull_Test() throws QueryBuildException {
         resolver
                 .resolve("$eq")
-                .write(new QueryStatement(), resolver, null, "param", new ArrayList<>());
+                .write(new QueryStatement(), resolver, null, "param");
     }
 
     @Test(expected = QueryBuildException.class)
     public void writeFieldExistsCheckCondition_ContextFieldPath_IsNull_Test() throws QueryBuildException {
         resolver
                 .resolve("$isNull")
-                .write(new QueryStatement(), resolver, null, "true", new ArrayList<>());
+                .write(new QueryStatement(), resolver, null, "true");
     }
 
     @Test(expected = QueryBuildException.class)
@@ -131,14 +136,14 @@ public class OperatorsTest {
         resolver
                 .resolve("$isNull")
                 .write(new QueryStatement(), resolver,
-                        PostgresFieldPath.fromString("fieldPath"), "invalidParam", new ArrayList<>());
+                        PostgresFieldPath.fromString("fieldPath"), "invalidParam");
     }
 
     @Test(expected = QueryBuildException.class)
     public void writeFieldInArrayCheckCondition_ContextFieldPath_IsNull_Test() throws QueryBuildException {
         resolver
                 .resolve("$in")
-                .write(new QueryStatement(), resolver, null, "param", new ArrayList<>());
+                .write(new QueryStatement(), resolver, null, "param");
     }
 
     @Test(expected = QueryBuildException.class)
@@ -146,7 +151,7 @@ public class OperatorsTest {
         resolver
                 .resolve("$in")
                 .write(new QueryStatement(), resolver,
-                        PostgresFieldPath.fromString("fieldPath"), "invalidParam", new ArrayList<>());
+                        PostgresFieldPath.fromString("fieldPath"), "invalidParam");
     }
 
 }
