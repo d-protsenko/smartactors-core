@@ -53,11 +53,11 @@ public class PluginDSObject implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Dsobject plugin can't load: can't get Dsobject key");
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get Dsobject key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Dsobject plugin can't load: can't get create strategy");
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Dsobject plugin can't load: can't get register new strategy");
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get register new strategy", e);
                         }
                     });
 
