@@ -1,11 +1,13 @@
 package info.smart_tools.smartactors.core.https_server;
 
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider;
 import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
 import info.smart_tools.smartactors.core.tcp_server.TcpServer;
+import info.smart_tools.smartactors.core.tcp_server.exceptions.ServerInitializationException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelPipeline;
@@ -39,10 +41,15 @@ public class HttpsServer extends TcpServer {
     /**
      * Method for turning on https
      *
-     * @param contextProvider context provider for ssl
+     * @param configuration configuration of endpoint
+     * @throws ServerInitializationException if there are problems on resolving {@link SSLContextProvider}
      */
-    public void setSSL(final SSLContextProvider contextProvider) {
-        this.contextProvider = contextProvider;
+    public void setSSL(final IObject configuration) throws ServerInitializationException {
+        try {
+            this.contextProvider = IOC.resolve(Keys.getOrAdd(SSLContextProvider.class.getCanonicalName()), configuration);
+        } catch (ResolutionException e) {
+            throw new ServerInitializationException("Failed to resolve ssl context provider", e);
+        }
         sslEnable = true;
     }
 
