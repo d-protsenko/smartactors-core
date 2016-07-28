@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
@@ -21,26 +22,29 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 public class CreateAsyncOperationTask implements IDatabaseTask {
 
     private IDatabaseTask task;
+    private IStorageConnection connection;
 
     private IField asyncDataField;
     private IField doneFlagField;
     private IField tokenField;
     private IField expiredTimeField;
     private IField documentField;
+    private IField collectionNameField;
     /**
      * Constructor
-     * @param task the insert DB task
+     * @param connection
      * @throws CreateAsyncOperationTask Throw when task can't be created (for example, when can't resolve some of field)
      */
-    public CreateAsyncOperationTask(final IDatabaseTask task) throws CreateAsyncOperationException {
-        this.task = task;
+    public CreateAsyncOperationTask(final IStorageConnection connection) throws CreateAsyncOperationException {
+        this.connection = connection;
 
         try {
-            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "asyncData");
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "done");
-            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "token");
-            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "expiredTime");
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
+            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "asyncData");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "done");
+            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
+            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "expiredTime");
+            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new CreateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -59,20 +63,16 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-
-            IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-
-            asyncDataField.out(document, asyncDataField.in(query));
-            doneFlagField.out(document, false);
-            tokenField.out(document, tokenField.in(query));
-            expiredTimeField.out(document, expiredTimeField.in(query));
-            documentField.out(query, document);
-
-            task.prepare(query);
+            task = IOC.resolve(
+                    Keys.getOrAdd("db.collection.insert"),
+                    connection,
+                    collectionNameField.in(query),
+                    documentField.in(query)
+            );
         } catch (ResolutionException e) {
-            throw new TaskPrepareException("Can't resolve objects during prepare create async operation", e);
-        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
-            throw new TaskPrepareException("Can't prepare query for create async operation cause one of IField.out operation down", e);
+            throw new TaskPrepareException("Can't create ISearchQuery from input query", e);
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new TaskPrepareException("Can't change value in one of IObjects", e);
         }
     }
 

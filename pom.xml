@@ -146,6 +146,7 @@
         <module>ResolveByTypeStrategy</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
+        <module>PluginAsyncOpsCollection</module>
     </modules>
 
     <build>
