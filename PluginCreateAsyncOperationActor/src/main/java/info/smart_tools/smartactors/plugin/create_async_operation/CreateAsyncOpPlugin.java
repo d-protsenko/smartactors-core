@@ -49,8 +49,12 @@ public class CreateAsyncOpPlugin implements IPlugin {
                                             throw new RuntimeException(e);
                                         }
                                     }));
-                        } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("CreateAsyncOperationActor plugin can't load: can't get CreateAsyncOperationActor key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("CreateAsyncOperationActor plugin can't load: can't get create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("CreateAsyncOperationActor plugin can't load: can't get register new strategy", e);
                         }
                     });
             bootstrap.add(item);
