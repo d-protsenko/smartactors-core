@@ -40,8 +40,12 @@ public class PluginIOCSimpleContainer implements IPlugin {
                             field.setAccessible(true);
                             field.set(null, new Container());
                             field.setAccessible(false);
-                        } catch (NoSuchFieldException | IllegalAccessException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (IllegalAccessException e) {
+                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: access to field denied", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: can't get create strategy", e);
+                        } catch (NoSuchFieldException e) {
+                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: field with name 'container' is not found", e);
                         }
                     });
 
