@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.resolve_iobject_strategies;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -51,8 +52,10 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                         resolveStrategy.register(Map.class, new MapToIObjectResolveDependencyStrategy());
                         resolveStrategy.register(String.class, new StringToIObjectResolveDependencyStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
-                    } catch (ResolutionException | RegistrationException e) {
-                        throw new RuntimeException(e);
+                    } catch (ResolutionException e) {
+                        throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't get ResolveIObjectByTypeStrategies key", e);
+                    } catch (RegistrationException e) {
+                        throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't get register new strategy", e);
                     }
                 });
             bootstrap.add(item);
