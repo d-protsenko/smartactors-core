@@ -42,6 +42,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                     .before("configure")
                     .after("InitializeReceiverGenerator")
                     .after("InitializeWrapperGenerator")
+                    .after("IFieldPlugin")
                     .process(
                             () -> {
                                 try {

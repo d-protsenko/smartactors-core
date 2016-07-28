@@ -43,6 +43,7 @@ public class PluginReadConfigFile implements IPlugin {
             readConfigItem
                     .after("configuration_manager")
                     .after("iobject")
+                    .after("ConfigurationObject")
                     .before("configure")
                     .process(() -> {
                         try {
@@ -54,8 +55,9 @@ public class PluginReadConfigFile implements IPlugin {
                                     Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
                             IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), configString);
+                            IObject cObject = IOC.resolve(Keys.getOrAdd("configuration object"), config);
 
-                            configurationManager.setInitialConfig(config);
+                            configurationManager.setInitialConfig(cObject);
                         } catch (FileNotFoundException e) {
                             throw new ActionExecuteException("Configuration file not found.", e);
                         } catch (IOException | ResolutionException | InvalidArgumentException | InvalidStateException e) {
