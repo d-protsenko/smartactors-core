@@ -74,11 +74,11 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get CloseAsyncOperationActor key");
+                            throw new ActionExecuteException("CloseAsyncOperationActor plugin can't load: can't get CloseAsyncOperationActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("CloseAsyncOperationActor plugin can't load: can't get create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("CloseAsyncOperationActor plugin can't load: can't get register new strategy", e);
                         }
                     });
             bootstrap.add(item);
