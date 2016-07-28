@@ -41,11 +41,11 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByCompositeNameIOCStrategy.class, CreateCachedCollectionPlugin.class})
+@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByCompositeNameIOCStrategy.class, CachedCollectionPlugin.class})
 @RunWith(PowerMockRunner.class)
-public class CreateCachedCollectionPluginTest {
+public class CachedCollectionPluginTest {
 
-    private CreateCachedCollectionPlugin plugin;
+    private CachedCollectionPlugin plugin;
     private IBootstrap bootstrap;
 
     @Before
@@ -57,10 +57,10 @@ public class CreateCachedCollectionPluginTest {
         IKey key1 = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key1);
-        when(IOC.resolve(eq(key1), eq("CreateCachedCollectionPlugin"))).thenReturn(keyPlugin);
+        when(IOC.resolve(eq(key1), eq("CachedCollectionPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
-        plugin = new CreateCachedCollectionPlugin(bootstrap);
+        plugin = new CachedCollectionPlugin(bootstrap);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class CreateCachedCollectionPluginTest {
         when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin").thenReturn(bootstrapItem);
+        whenNew(BootstrapItem.class).withArguments("CachedCollectionPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         IKey iFieldKey = mock(IKey.class);
@@ -91,7 +91,7 @@ public class CreateCachedCollectionPluginTest {
         plugin.load();
 
 
-        verifyNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin");
+        verifyNew(BootstrapItem.class).withArguments("CachedCollectionPlugin");
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -181,7 +181,7 @@ public class CreateCachedCollectionPluginTest {
     @Test(expected = PluginException.class)
     public void MustIncorrectLoadPluginWhenKeysThrowException() throws Exception {
 
-        whenNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin").thenThrow(new InvalidArgumentException(""));
+        whenNew(BootstrapItem.class).withArguments("CachedCollectionPlugin").thenThrow(new InvalidArgumentException(""));
 
         plugin.load();
     }
@@ -193,7 +193,7 @@ public class CreateCachedCollectionPluginTest {
         when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin").thenReturn(bootstrapItem);
+        whenNew(BootstrapItem.class).withArguments("CachedCollectionPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         IKey iFieldKey = mock(IKey.class);
@@ -226,7 +226,7 @@ public class CreateCachedCollectionPluginTest {
             verifyStatic();
             Keys.getOrAdd(ICachedCollection.class.toString());
 
-            verifyNew(BootstrapItem.class).withArguments("CreateCachedCollectionPlugin");
+            verifyNew(BootstrapItem.class).withArguments("CachedCollectionPlugin");
 
             verifyStatic(times(3));
             Keys.getOrAdd(IField.class.toString());

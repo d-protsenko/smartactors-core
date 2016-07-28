@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -21,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Task must search objects with target task
  */
-public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
+public class GetItemFromCachedCollectionTask implements IDatabaseTask {
 
     private IDatabaseTask getItemTask;
     private IStorageConnection connection;
@@ -39,8 +38,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
      * @param connection storage connection for executing query
      * @throws CreateCachedCollectionTaskException for error during creating
      */
-    public GetObjectFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
-//        this.getItemTask = getItemTask;
+    public GetItemFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
@@ -51,7 +49,7 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             this.criteriaEqualsIsActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "criteria/isActive/$eq");
             this.criteriaDateToStartDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "criteria/startDateTime/$date-to");
         } catch (ResolutionException e) {
-            throw new CreateCachedCollectionTaskException("Can't create GetObjectFromCachedCollectionTask.", e);
+            throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }
     }
 
@@ -104,8 +102,6 @@ public class GetObjectFromCachedCollectionTask implements IDatabaseTask {
             String keyValue = keyValueField.in(query);
             IField criteriaEqualsKeyField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), keyName + "/$eq/" + keyValue);
             criteriaEqualsKeyField.in(queryForNestedTask);
-//            this action should be made during IOC.resolve()
-//            getItemTask.prepare(queryForNestedTask);
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create searchQuery from input query", e);
         } catch (InvalidArgumentException | ChangeValueException | ReadValueException e) {

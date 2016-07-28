@@ -142,6 +142,7 @@
         <module>Field</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
+        <module>PluginDBTasks</module>
         <module>ResolveByTypeStrategy</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>

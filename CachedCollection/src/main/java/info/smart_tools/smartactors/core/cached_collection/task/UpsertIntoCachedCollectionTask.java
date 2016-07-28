@@ -27,6 +27,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
     private IField startDateTimeField;
     private IField collectionNameField;
+    private IField documentField;
     //TODO:: this format should be setted for whole project?
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
@@ -35,11 +36,11 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
      * @throws CreateCachedCollectionTaskException for create task error
      */
     public UpsertIntoCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
-//        this.upsertTask = upsertTask;
         this.connection = connection;
         try {
             this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/startDateTime");
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
+            this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create UpsertIntoCachedCollectionTask.", e);
         }
@@ -69,10 +70,8 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
                 Keys.getOrAdd("db.collection.upsert"),
                 connection,
                 collectionNameField.in(query),
-                query
+                documentField.in(query)
             );
-//            this action should be made during IOC.resolve()
-//            upsertTask.prepare(query);
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException | ResolutionException e) {
             throw new TaskPrepareException("Can't prepare query for upsert into cached collection", e);
         }

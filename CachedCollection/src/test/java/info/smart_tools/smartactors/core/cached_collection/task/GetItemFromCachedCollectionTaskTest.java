@@ -31,9 +31,9 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class, LocalDateTime.class})
-public class GetObjectFromCachedCollectionTaskTest {
+public class GetItemFromCachedCollectionTaskTest {
 
-    private GetObjectFromCachedCollectionTask testTask;
+    private GetItemFromCachedCollectionTask testTask;
     private IDatabaseTask targetTask;
 
     private IField pageSizeField;
@@ -70,7 +70,7 @@ public class GetObjectFromCachedCollectionTaskTest {
 
         targetTask = mock(IDatabaseTask.class);
         IStorageConnection connection = mock(IStorageConnection.class);
-        testTask = new GetObjectFromCachedCollectionTask(connection);
+        testTask = new GetItemFromCachedCollectionTask(connection);
     }
 
     @Test

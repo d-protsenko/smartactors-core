@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCache
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.task.GetObjectFromCachedCollectionTask;
+import info.smart_tools.smartactors.core.cached_collection.task.GetItemFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -284,7 +284,7 @@ public class CachedCollectionTest {
 
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
+        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
         when(IOC.resolve(keyTask)).thenReturn(readTask);
 
         when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
@@ -311,13 +311,13 @@ public class CachedCollectionTest {
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
         IDatabaseTask nestedTask = mock(IDatabaseTask.class);
-        GetObjectFromCachedCollectionTask readTask = mock(GetObjectFromCachedCollectionTask.class);
+        GetItemFromCachedCollectionTask readTask = mock(GetItemFromCachedCollectionTask.class);
         IKey keyIDBTask = mock(IKey.class);
         IKey keyTask = mock(IKey.class);
         when(Keys.getOrAdd(IDatabaseTask.class.toString())).thenReturn(keyIDBTask);
-        when(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
-        when(IOC.resolve(keyIDBTask, GetObjectFromCachedCollectionTask.class.toString())).thenReturn(nestedTask);
-        whenNew(GetObjectFromCachedCollectionTask.class).withArguments(nestedTask).thenReturn(readTask);
+        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
+        when(IOC.resolve(keyIDBTask, GetItemFromCachedCollectionTask.class.toString())).thenReturn(nestedTask);
+        whenNew(GetItemFromCachedCollectionTask.class).withArguments(nestedTask).thenReturn(readTask);
 
         when(searchResultField.in(readQuery)).thenReturn(Collections.EMPTY_LIST);
 
