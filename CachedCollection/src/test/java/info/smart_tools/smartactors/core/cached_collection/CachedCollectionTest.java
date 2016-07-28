@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCache
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.task.GetObjectFromCachedCollectionTask;
+import info.smart_tools.smartactors.core.cached_collection.task.GetItemFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
@@ -130,7 +130,6 @@ public class CachedCollectionTest {
 
         collection.delete(query);
 
-        verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
         verify(collectionNameField).out(eq(deleteQuery), eq(collectionName));
@@ -169,7 +168,7 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(deleteTask).setConnection(eq(connection));
+//        verify(deleteTask).setConnection(eq(connection));
         verify(deleteTask).prepare(eq(deleteQuery));
         verify(deleteTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -193,7 +192,6 @@ public class CachedCollectionTest {
 
         collection.upsert(query);
 
-        verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -222,7 +220,6 @@ public class CachedCollectionTest {
         try {
             collection.upsert(query);
         } catch (UpsertCacheItemException e) {
-            verify(upsertTask).setConnection(eq(connection));
             verify(upsertTask).prepare(upsertQuery);
             verify(upsertTask).execute();
             verify(specificKeyNameField, never()).in(eq(query));
@@ -267,7 +264,6 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(upsertTask).setConnection(eq(connection));
         verify(upsertTask).prepare(eq(upsertQuery));
         verify(upsertTask).execute();
         verify(specificKeyNameField).in(eq(query));
@@ -288,14 +284,13 @@ public class CachedCollectionTest {
 
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
+        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
         when(IOC.resolve(keyTask)).thenReturn(readTask);
 
         when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
 
         List<IObject> items = collection.getItems("key");
 
-        verify(readTask).setConnection(eq(connection));
         verify(readTask).prepare(eq(readQuery));
         verify(readTask).execute();
         assertEquals(items.get(0), searchResult);
@@ -316,13 +311,13 @@ public class CachedCollectionTest {
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
         IDatabaseTask nestedTask = mock(IDatabaseTask.class);
-        GetObjectFromCachedCollectionTask readTask = mock(GetObjectFromCachedCollectionTask.class);
+        GetItemFromCachedCollectionTask readTask = mock(GetItemFromCachedCollectionTask.class);
         IKey keyIDBTask = mock(IKey.class);
         IKey keyTask = mock(IKey.class);
         when(Keys.getOrAdd(IDatabaseTask.class.toString())).thenReturn(keyIDBTask);
-        when(Keys.getOrAdd(GetObjectFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
-        when(IOC.resolve(keyIDBTask, GetObjectFromCachedCollectionTask.class.toString())).thenReturn(nestedTask);
-        whenNew(GetObjectFromCachedCollectionTask.class).withArguments(nestedTask).thenReturn(readTask);
+        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
+        when(IOC.resolve(keyIDBTask, GetItemFromCachedCollectionTask.class.toString())).thenReturn(nestedTask);
+        whenNew(GetItemFromCachedCollectionTask.class).withArguments(nestedTask).thenReturn(readTask);
 
         when(searchResultField.in(readQuery)).thenReturn(Collections.EMPTY_LIST);
 
@@ -331,7 +326,7 @@ public class CachedCollectionTest {
         verifyStatic();
         IOC.register(eq(keyTask), any(SingletonStrategy.class));
 
-        verify(readTask).setConnection(eq(connection));
+//        verify(readTask).setConnection(eq(connection));
         verify(readTask).prepare(readQuery);
         verify(readTask).execute();
     }

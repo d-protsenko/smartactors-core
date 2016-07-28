@@ -2,10 +2,8 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.core.cached_collection.wrapper.CreateCachedCollectionQuery;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -98,15 +96,6 @@ public class CreateCachedCollectionTaskTest {
         testTask.execute();
 
         verify(task).execute();
-    }
-
-    @Test
-    public void MustCorrectSetConnectionForTargetTask() throws TaskSetConnectionException {
-        StorageConnection connection = mock(StorageConnection.class);
-
-        testTask.setConnection(connection);
-
-        verify(task).setConnection(connection);
     }
 
     @Test(expected = TaskExecutionException.class)
