@@ -67,5 +67,6 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
         }
         httpResponse.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpResponse.content().readableBytes());
         httpResponse.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+        httpResponse.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
     }
 }

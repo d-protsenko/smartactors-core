@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNet
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -27,9 +28,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     /**
      * Constructor for HttpRequestHandler
      *
-     * @param scope                 scope for HttpRequestHandler
-     * @param environmentHandler    handler for environment
-     * @param receiver              chain, that should receive message
+     * @param scope              scope for HttpRequestHandler
+     * @param environmentHandler handler for environment
+     * @param receiver           chain, that should receive message
      */
     public HttpRequestHandler(
             final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver) {
@@ -39,7 +40,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     @Override
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request) throws Exception {
         IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()), request);
-        IObject environment = deserializeStrategy.deserialize(request);
+        IObject message = deserializeStrategy.deserialize(request);
+        IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+        IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
         IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
         IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
@@ -53,6 +56,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         context.setValue(cookiesFieldName, new ArrayList<IObject>());
         context.setValue(headersFieldName, new ArrayList<IObject>());
         //create environment
+        environment.setValue(messageFieldName, message);
         environment.setValue(contextFieldName, context);
         environment.setValue(requestFieldName, request);
         return environment;

@@ -1,5 +1,5 @@
 {
-  "authorisation_map": [
+  "steps": [
     {
       "actor": "createSessionActor",
       "handler": "resolve",
@@ -37,9 +37,13 @@
       "handler": "createOperation",
       "wrapper": {
         "in_getSessionId": "message/sessionId",
-        "in_getExpiredTime": "message/expiredTime",
+        "in_getExpiredTime": "const/4",
         "out_setAsyncOperationToken": "response/token"
       }
     }
-  ]
+  ],
+  "exceptional": [
+
+  ],
+  "id": "123"
 }

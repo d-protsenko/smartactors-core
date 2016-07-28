@@ -202,7 +202,7 @@ public class ServerWithConfiguration implements IServer {
                     "jackson-databind-2.5.2.jar",
                     "junit-4.12.jar",
                     "mockito-all-2.0.2-beta.jar",
-                    "netty-all-4.0.24.Final.jar",
+                    "netty-all-4.1.2.Final.jar",
                     "plugin.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "plugin.configuration_manager-0.2.0-SNAPSHOT.jar",
                     "plugin.dsobject-0.2.0-SNAPSHOT.jar",
@@ -211,6 +211,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
                     "plugin.ifieldname-0.2.0-SNAPSHOT.jar",
+                    "plugin.fieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.immutable_receiver_chain-0.2.0-SNAPSHOT.jar",
                     "plugin.ioc_keys-0.2.0-SNAPSHOT.jar",
                     "plugin.load_scope_provider-0.2.0-SNAPSHOT.jar",
@@ -226,13 +227,13 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.scoped_ioc-0.2.0-SNAPSHOT.jar",
                     "plugin.scope_provider-0.2.0-SNAPSHOT.jar",
                     "plugin.standard_object_creators-0.2.0-SNAPSHOT.jar",
+                    "plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
                     "plugin.wds_object-0.2.0-SNAPSHOT.jar",
                     "plugin.wrapper_generator-0.2.0-SNAPSHOT.jar",
                     "strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar",
                     "strategy.cookies_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.http_headers_setter-0.2.0-SNAPSHOT.jar",
-                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar",
-
+                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar"
             };
 
             for (String jarName : coreJars) {
