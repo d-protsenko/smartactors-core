@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.bootstrap;
 
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,7 +73,8 @@ class TopologicalSort {
             for (String dependency : dependencies) {
                 IBootstrapItem<String> afterItem = nameToItemMap.get(dependency);
                 if (null == afterItem) {
-                    throw new Exception("Reference to a non-existing dependency.");
+                    throw new Exception(MessageFormat.format("Reference to non-exist dependency \"{0}\" from item \"{1}\".",
+                            dependency, item.getItemName()));
                 }
                 numberedDependencies.add(itemToNumberMap.get(afterItem));
             }

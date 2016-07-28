@@ -48,7 +48,7 @@ public class RegisterWrapperGenerator implements IPlugin {
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(),
-                                                    WrapperGenerator.class.getCanonicalName()
+                                                    IWrapperGenerator.class.getCanonicalName()
                                             ),
                                             new SingletonStrategy(rg)
                                     );

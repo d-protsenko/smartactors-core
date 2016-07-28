@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,17 +56,23 @@ import java.util.List;
  * </pre>
  */
 public class ImmutableReceiverChainResolutionStrategy implements IResolveDependencyStrategy {
+    private static final int CHAIN_ID_ARG_INDEX = 0;
+    private static final int DESCRIPTION_ARG_INDEX = 1;
+    private static final int STORAGE_ARG_INDEX = 2;
+    private static final int ROUTER_ARG_INDEX = 3;
+
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            Object chainId = args[0];
-            IObject description = (IObject) args[1];
-            IChainStorage chainStorage = (IChainStorage) args[2];
-            IRouter router = (IRouter) args[3];
+            Object chainId = args[CHAIN_ID_ARG_INDEX];
+            IObject description = (IObject) args[DESCRIPTION_ARG_INDEX];
+            IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
+            IRouter router = (IRouter) args[ROUTER_ARG_INDEX];
 
-            IKey fieldNameKey = IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName());
-            IKey receiverIdKey = IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject");
-            IKey chainIdKey = IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id");
+            IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+            IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
+            IKey chainIdKey = Keys.getOrAdd("chain_id");
+
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
             IFieldName exceptionClassFieldName = IOC.resolve(fieldNameKey, "class");
@@ -95,7 +102,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chain);
             }
 
-            return (T) new ImmutableReceiverChain(chainId.toString(), receivers, arguments, exceptionalChainsMap);
+            return (T) new ImmutableReceiverChain(String.valueOf(chainId), receivers, arguments, exceptionalChainsMap);
         } catch (ChainNotFoundException | ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);
