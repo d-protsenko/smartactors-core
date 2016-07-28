@@ -62,12 +62,9 @@
         <module>HttpServer</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
-        <module>DBCreateCollectionTask</module>
-        <module>DBUpsertTask</module>
-        <module>DBFindByIdTask</module>
-        <module>DatabaseDeleteTask</module>
-        <module>DatabaseSearchTask</module>
-        <module>DBInsertTask</module>
+        <module>PostgresGetByIdTask</module>
+        <module>PostgresUpsertTask</module>
+        <module>PostgresSchema</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -115,7 +112,6 @@
         <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
-        <module>CreateSession</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -132,7 +128,6 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
-        <module>PluginCreateSession</module>
         <module>HttpEndpoint</module>
         <module>IMessageMapper</module>
         <module>IDeserializeStrategy</module>
@@ -213,6 +208,7 @@
         <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
+        <module>PluginAsyncOpsCollection</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>

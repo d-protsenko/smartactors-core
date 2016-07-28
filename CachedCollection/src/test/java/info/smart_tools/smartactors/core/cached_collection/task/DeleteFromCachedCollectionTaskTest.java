@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -11,7 +10,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +21,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -30,8 +29,10 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class DeleteFromCachedCollectionTaskTest {
 
     private DeleteFromCachedCollectionTask task;
-    private IDatabaseTask upsertTask;
+    private IField collectionNameField;
     private IField isActiveField;
+    private IField documentField;
+    private IStorageConnection connection;
 
     @Before
     public void setUp() throws ReadValueException, ChangeValueException, CreateCachedCollectionTaskException, ResolutionException {
@@ -40,11 +41,14 @@ public class DeleteFromCachedCollectionTaskTest {
         mockStatic(Keys.class);
 
         isActiveField = mock(IField.class);
+        collectionNameField = mock(IField.class);
+        documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "document/isActive")).thenReturn(isActiveField);
-        upsertTask = mock(IDatabaseTask.class);
-        IStorageConnection connection = mock(IStorageConnection.class);
+        when(IOC.resolve(keyField, "document")).thenReturn(documentField);
+        when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
+        connection = mock(IStorageConnection.class);
         task = new DeleteFromCachedCollectionTask(connection);
     }
 
@@ -52,11 +56,20 @@ public class DeleteFromCachedCollectionTaskTest {
     public void ShouldCorrectPrepareObjectForDeleting() throws Exception {
 
         IObject query = mock(IObject.class);
+        IObject doc = mock(IObject.class);
+        when(collectionNameField.in(query)).thenReturn("collectionName");
+        when(documentField.in(query)).thenReturn(doc);
 
         task.prepare(query);
 
         verify(isActiveField).out(query, false);
-        verify(upsertTask).prepare(query);
+        verifyStatic();
+        IOC.resolve(
+            Keys.getOrAdd("db.collection.upsert"),
+            connection,
+            "collectionName",
+            doc
+        );
     }
 
     @Test(expected = TaskPrepareException.class)
@@ -66,12 +79,5 @@ public class DeleteFromCachedCollectionTaskTest {
         doThrow(new ChangeValueException("")).when(isActiveField).out(srcQuery, false);
 
         task.prepare(srcQuery);
-    }
-
-    @Test
-    public void ShouldExecuteNestedTask() throws TaskExecutionException {
-
-        task.execute();
-        verify(upsertTask).execute();
     }
 }
