@@ -85,7 +85,15 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
                     }
                     String className = je.getName().substring(0, je.getName().length() - CLASS_EXTENSION.length());
                     className = className.replace('/', '.');
-                    Class clazz = classLoader.loadClass(className);
+                    Class clazz;
+                    try {
+                        clazz = classLoader.loadClass(className);
+                    } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                        System.err.println("\n\n\nError loading class " + className + ":");
+                        e.printStackTrace();
+                        continue;
+                    }
+
                     if (Arrays.asList(clazz.getInterfaces()).contains(IPlugin.class)) {
                         creator.execute(clazz);
                     }
