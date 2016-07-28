@@ -46,7 +46,7 @@ public class AuthenticationActorPlugin implements IPlugin {
                                 }
                             }));
                 } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecuteException("AuthenticationActor plugin couldn't be loaded", e);
                 }
             });
             bootstrap.add(item);
