@@ -112,7 +112,6 @@
         <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
-        <module>CreateSession</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -129,7 +128,6 @@
         <module>ToWrapperConverterStrategy</module>
         <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
-        <module>PluginCreateSession</module>
         <module>HttpEndpoint</module>
         <module>IMessageMapper</module>
         <module>IDeserializeStrategy</module>
