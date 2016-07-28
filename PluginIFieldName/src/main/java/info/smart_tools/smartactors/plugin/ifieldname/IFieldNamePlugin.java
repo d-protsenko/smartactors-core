@@ -34,14 +34,13 @@ public class IFieldNamePlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-
             IBootstrapItem<String> item = new BootstrapItem("IFieldNamePlugin");
 
             item
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.toString());
+                            IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
                             IOC.register(iFieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
