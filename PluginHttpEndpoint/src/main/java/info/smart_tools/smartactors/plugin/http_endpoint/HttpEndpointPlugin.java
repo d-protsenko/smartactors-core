@@ -9,13 +9,17 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -120,8 +124,12 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     }
                                             ));
 
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't get create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't get register new strategy", e);
                                 }
                             }
                     );
