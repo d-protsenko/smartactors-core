@@ -46,6 +46,7 @@ public class DBTasksPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("DBTasksPlugin");
             item
                 .after("IOC")
+                .after("IFieldPlugin")
                 .process(() -> {
                     try {
 

@@ -24,19 +24,20 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
 
     private IField collectionNameField;
     private IField isActiveField;
+    private IField documentField;
 
     /**
      * @param connection storage connection for executing query
      * @throws CreateCachedCollectionTaskException for create task error
      */
     public DeleteFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
-//        this.updateTask = updateTask;
         this.connection = connection;
         try {
             this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document/isActive");
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
+            this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
-            throw new CreateCachedCollectionTaskException("Can't create GetObjectFromCachedCollectionTask.", e);
+            throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }
     }
 
@@ -62,10 +63,8 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
                 Keys.getOrAdd("db.collection.upsert"),
                 connection,
                 collectionNameField.in(query),
-                query
+                documentField.in(query)
             );
-//            this action should be made during IOC.resolve()
-//            updateTask.prepare(query);
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException | ResolutionException e) {
             throw new TaskPrepareException("Can't prepare query for delete from cached collection", e);
         }
