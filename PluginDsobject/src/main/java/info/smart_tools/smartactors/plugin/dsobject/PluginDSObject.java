@@ -52,8 +52,12 @@ public class PluginDSObject implements IPlugin {
                                             throw new RuntimeException("Invalid arguments for IObject creation.");
                                         }
                                     }));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get Dsobject key");
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get create strategy");
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("Dsobject plugin can't load: can't get register new strategy");
                         }
                     });
 
