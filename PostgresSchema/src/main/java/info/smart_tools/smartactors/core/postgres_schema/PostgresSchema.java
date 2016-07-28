@@ -16,11 +16,17 @@ public final class PostgresSchema {
     /**
      * Name of the ID column.
      */
-    private static final String ID_COLUMN = "id";
+    public static final String ID_COLUMN = "id";
     /**
      * Name of the DOCUMENT column.
      */
-    private static final String DOCUMENT_COLUMN = "document";
+    public static final String DOCUMENT_COLUMN = "document";
+
+    /**
+     * Dictionary for Full Text Search
+     * TODO: don't hardcode
+     */
+    public static final String FTS_DICTIONARY = "russian";
 
     /**
      * Private constructor to avoid instantiation.
