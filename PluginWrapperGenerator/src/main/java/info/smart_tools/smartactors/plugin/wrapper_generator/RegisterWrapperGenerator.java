@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.plugin.wrapper_generator;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -49,8 +52,12 @@ public class RegisterWrapperGenerator implements IPlugin {
                                             ),
                                             new SingletonStrategy(rg)
                                     );
-                                } catch (Exception e) {
-                                    throw new RuntimeException("Could not initialize receiver generator.", e);
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("RegisterWrapperGenerator plugin can't load: can't get RegisterWrapperGenerator key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("RegisterWrapperGenerator plugin can't load: can't get create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("RegisterWrapperGenerator plugin can't load: can't get register new strategy", e);
                                 }
                             }
                         );
