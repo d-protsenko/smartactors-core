@@ -1,25 +1,77 @@
 package info.smart_tools.smartactors.core.postgres_schema.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
 /**
- * Class for constructing queries with comparison operators and parameters
+ * A set of methods which writes query parts for comparison operators and their parameters.
  */
 final class Operators {
-    private Operators(){}
 
     /**
-     * Writes sql-query with basic field comparison operators
-     * @param format Sql string for condition. Contains '%s' for field path and '?' for parameters
-     * @param query Query statement object with part of sql query (select...) and parameter setters
-     * @param contextFieldPath Field path, for example document#>'{field}'
-     * @throws QueryBuildException
+     * Private constructor to avoid instantiation.
+     */
+    private Operators() {
+    }
+
+    /**
+     * Registers all operators to the resolver.
+     * @param resolver resolver to write queries with all these operators
+     */
+    public static void addAll(final PostgresQueryWriterResolver resolver) {
+
+        // Basic field comparison operators
+        resolver.addQueryWriter("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$lt", formattedCheckWriter("((%s)<to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$gt", formattedCheckWriter("((%s)>to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$lte", formattedCheckWriter("((%s)<=to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$gte", formattedCheckWriter("((%s)>=to_json(?)::jsonb)"));
+
+        //Check on present
+        resolver.addQueryWriter("$isNull", Operators::writeFieldExistsCheckCondition);
+
+        // ISO 8601 date/time operators
+        /*TODO: Find a way to build an index on date/time field.*/
+        resolver.addQueryWriter("$date-from", formattedCheckWriter("(parse_timestamp_immutable(%s)>=(?)::timestamp)"));
+        resolver.addQueryWriter("$date-to", formattedCheckWriter("(parse_timestamp_immutable(%s)<=(?)::timestamp)"));
+
+        // Value in list check
+        resolver.addQueryWriter("$in", Operators::writeFieldInArrayCheckCondition);
+
+        // Tags operators
+        resolver.addQueryWriter("$hasTag", formattedCheckWriter("((%s)??(?))"));
+
+        // Fulltext search
+        resolver.addQueryWriter("$fulltext", formattedCheckWriter(
+                String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
+                        PostgresSchema.FTS_DICTIONARY, PostgresSchema.FTS_DICTIONARY)));
+    }
+
+    /**
+     * Creates the condition writer based on the format string.
+     * @param format format string, contains '%s' for field path and '?' for parameters
+     * @return the condition writer ready to be added to basic resolver
+     */
+    private static QueryWriter formattedCheckWriter(final String format) {
+        return (query, resolver, contextFieldPath, queryParameter, setters) ->
+                writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
+    }
+
+    /**
+     * Writes part of sql query with basic field comparison operators
+     * @param format sql string for condition. Contains '%s' for field path and '?' for parameters
+     * @param query query statement object which body is written
+     * @param contextFieldPath current field path, for example document#>'{field}'
+     * @param queryParameter current value of the query parameter
+     * @param setters the list of query setters to be appended
+     * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldCheckCondition(
             final String format,
@@ -30,7 +82,7 @@ final class Operators {
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
-            throw new QueryBuildException("Field check conditions not allowed outside of field context.");
+            throw new QueryBuildException("Field check conditions not allowed outside of field context");
         }
 
         try {
@@ -41,21 +93,22 @@ final class Operators {
                 return index;
             });
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
+            throw new QueryBuildException("Query search conditions write failed because of exception", e);
         }
     }
 
     /**
-     * Writes sql-query which checks existence of field into document
-     * @param query Query statement object with part of sql query (select...) and parameter setters
-     * @param resolver Resolver with lambdas for writing sql by operators
-     * @param contextFieldPath Field path, for example document#>'{field}'
-     * @param queryParameter Parameter value. Should be boolean: if true check field is null and vice versa
-     * @throws QueryBuildException
+     * Writes part of sql query which checks existence of field in the document
+     * @param query query statement object which body is written
+     * @param resolver resolver for nested operators, is ignored here
+     * @param contextFieldPath current field path, for example document#>'{field}'
+     * @param queryParameter current parameter value. Must be boolean: if 'true' check field is null, if 'false' check the field is not null
+     * @param setters the list of query setters to be appended
+     * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldExistsCheckCondition(
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -79,30 +132,31 @@ final class Operators {
     }
 
     /**
-     *
-     * @param query Query statement object with part of sql query (select...) and parameter setters
-     * @param resolver Resolver with lambdas for writing sql by operators
-     * @param contextFieldPath Field path, for example document#>'{field}'
-     * @param queryParameter Parameter value.
-     * @throws QueryBuildException
+     * Writes part of sql query which checks the value is presented in the array.
+     * @param query query statement object which body is written
+     * @param resolver resolver for nested operators, is ignored here
+     * @param contextFieldPath current field path, for example document#>'{field}'
+     * @param queryParameter current parameter value
+     * @param setters the list of query setters to be appended
+     * @throws QueryBuildException if something goes wrong
      */
     private static void writeFieldInArrayCheckCondition(
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
     ) throws QueryBuildException {
 
         if (contextFieldPath == null) {
-            throw new QueryBuildException("Operator \"$in\" not allowed outside of field context.");
+            throw new QueryBuildException("Operator \"$in\" not allowed outside of field context");
         }
 
-        if (!List.class.isAssignableFrom(queryParameter.getClass())) {
-            throw new QueryBuildException("Parameter of \"$in\" operator should be an JSON array.");
+        if (!(queryParameter instanceof List)) {
+            throw new QueryBuildException("\"$in\" operator must be applied only to JSON array");
         }
 
-        List<Object> paramAsList = (List<Object>) queryParameter;
+        List paramAsList = (List) queryParameter;
         Writer writer = query.getBodyWriter();
 
         try {
@@ -125,46 +179,9 @@ final class Operators {
                 }
                 return index;
             });
+
         } catch (IOException e) {
-            throw new QueryBuildException("Query search conditions write failed because of exception.", e);
+            throw new QueryBuildException("Query search conditions write failed because of exception", e);
         }
-    }
-
-    private static ConditionWriter formattedCheckWriter(final String format) {
-        return (query, resolver, contextFieldPath, queryParameter, setters) ->
-            writeFieldCheckCondition(format, query, contextFieldPath, queryParameter, setters);
-    }
-
-    /**
-     * Registers operators.
-     * @param resolver Resolver for writing queries by operators
-     */
-    public static void addAll(final PostgresConditionWriterResolver resolver) {
-        // Basic field comparison operators
-        resolver.addOperator("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
-        resolver.addOperator("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
-        resolver.addOperator("$lt", formattedCheckWriter("((%s)<to_json(?)::jsonb)"));
-        resolver.addOperator("$gt", formattedCheckWriter("((%s)>to_json(?)::jsonb)"));
-        resolver.addOperator("$lte", formattedCheckWriter("((%s)<=to_json(?)::jsonb)"));
-        resolver.addOperator("$gte", formattedCheckWriter("((%s)>=to_json(?)::jsonb)"));
-
-        //Check on present
-        resolver.addOperator("$isNull", Operators::writeFieldExistsCheckCondition);
-
-        // ISO 8601 date/time operators
-        /*TODO: Find a way to build an index on date/time field.*/
-        resolver.addOperator("$date-from", formattedCheckWriter("(parse_timestamp_immutable(%s)>=(?)::timestamp)"));
-        resolver.addOperator("$date-to", formattedCheckWriter("(parse_timestamp_immutable(%s)<=(?)::timestamp)"));
-
-        // Value in list check
-        resolver.addOperator("$in", Operators::writeFieldInArrayCheckCondition);
-
-        // Tags operators
-        resolver.addOperator("$hasTag", formattedCheckWriter("((%s)??(?))"));
-
-//        // Fulltext search
-//        resolver.addOperator("$fulltext", formattedCheckWriter(
-//                String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
-//                        Schema.FTS_DICTIONARY, Schema.FTS_DICTIONARY)));
     }
 }

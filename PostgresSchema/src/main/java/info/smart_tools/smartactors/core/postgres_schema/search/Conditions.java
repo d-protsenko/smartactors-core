@@ -2,10 +2,10 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -27,7 +27,7 @@ public final class Conditions {
     /**
      * Writes the AND condition.
      * @param query the query into which body to write the condition
-     * @param resolver a resolver which able to return correct {@link ConditionWriter}
+     * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
      * @param setters a list of parameter setters to be added to the query, is filled by the call
@@ -35,7 +35,7 @@ public final class Conditions {
      */
     public static void writeAndCondition(
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -46,7 +46,7 @@ public final class Conditions {
     /**
      * Writes the OR condition.
      * @param query the query into which body to write the condition
-     * @param resolver a resolver which able to return correct {@link ConditionWriter}
+     * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
      * @param setters a list of parameter setters to be added to the query, is filled by the call
@@ -54,7 +54,7 @@ public final class Conditions {
      */
     public static void writeOrCondition(
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -65,7 +65,7 @@ public final class Conditions {
     /**
      * Writes the NOT condition
      * @param query the query into which body to write the condition
-     * @param resolver a resolver which able to return correct {@link ConditionWriter}
+     * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
      * @param setters a list of parameter setters to be added to the query, is filled by the call
@@ -73,7 +73,7 @@ public final class Conditions {
      */
     public static void writeNotCondition(
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -88,7 +88,7 @@ public final class Conditions {
      */
     private static void writeDefaultEmptyCondition(final QueryStatement query)
         throws IOException {
-        query.getBodyWriter().write("(true)");
+        query.getBodyWriter().write("(TRUE)");
     }
 
     /**
@@ -97,7 +97,7 @@ public final class Conditions {
      * @param postfix postfix to postpone the whole condition, typically a bracket )
      * @param delimiter characters to separate condition elements, for example "AND"
      * @param query the query into which body to write the condition
-     * @param resolver a resolver which able to return correct {@link ConditionWriter}
+     * @param resolver a resolver which able to return correct {@link QueryWriter}
      * @param contextFieldPath current path to object field
      * @param queryParameter current query parameter value, the argument to the condition
      * @param setters a list of parameter setters to be added to the query, is filled by the call
@@ -108,7 +108,7 @@ public final class Conditions {
             final String postfix,
             final String delimiter,
             final QueryStatement query,
-            final ConditionWriterResolver resolver,
+            final QueryWriterResolver resolver,
             final FieldPath contextFieldPath,
             final Object queryParameter,
             final List<SQLQueryParameterSetter> setters
@@ -147,7 +147,7 @@ public final class Conditions {
 
                 writer.write(prefix);
 
-                ConditionWriter resolved = resolver.resolve(null);
+                QueryWriter resolved = resolver.resolve(null);
 
                 Iterator<?> iterator = paramAsList.iterator();
                 while (iterator.hasNext()) {

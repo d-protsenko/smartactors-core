@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.postgres_schema.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.SQLQueryParameterSetter;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -25,8 +25,8 @@ public class ConditionsTest {
 
     private StringWriter body;
     private QueryStatement query;
-    private ConditionWriter writer;
-    private ConditionWriterResolver resolver;
+    private QueryWriter writer;
+    private QueryWriterResolver resolver;
     private FieldPath fieldPath;
     private Object queryParameter;
     private List<SQLQueryParameterSetter> setters;
@@ -38,7 +38,7 @@ public class ConditionsTest {
         query = mock(QueryStatement.class);
         when(query.getBodyWriter()).thenReturn(body);
 
-        writer = mock(ConditionWriter.class);
+        writer = mock(QueryWriter.class);
         doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
@@ -51,7 +51,7 @@ public class ConditionsTest {
                 return null;
             }}).when(writer).write(same(query), any(), any(), any(), any());
 
-        resolver = mock(ConditionWriterResolver.class);
+        resolver = mock(QueryWriterResolver.class);
         when(resolver.resolve(any())).thenReturn(writer);
         when(resolver.toString()).thenReturn("resolver");
 

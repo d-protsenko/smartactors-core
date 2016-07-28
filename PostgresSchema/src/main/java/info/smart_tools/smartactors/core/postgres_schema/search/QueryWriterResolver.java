@@ -3,9 +3,9 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 
 /**
- * Resolves a {@link ConditionWriter} for specific condition object key.
+ * Resolves a {@link QueryWriter} for specific condition object key.
  */
-public interface ConditionWriterResolver {
+public interface QueryWriterResolver {
 
     /**
      * Returns the writer to write the specific query condition identified by the key
@@ -14,6 +14,6 @@ public interface ConditionWriterResolver {
      * @return ConditionWriter found for this condition key
      * @throws QueryBuildException if something goes wrong
      */
-    ConditionWriter resolve(String conditionKey) throws QueryBuildException;
+    QueryWriter resolve(String conditionKey) throws QueryBuildException;
 
 }
