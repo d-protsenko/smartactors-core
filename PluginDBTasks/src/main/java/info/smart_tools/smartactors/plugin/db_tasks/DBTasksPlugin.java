@@ -20,6 +20,8 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
+import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -58,6 +60,8 @@ public class DBTasksPlugin implements IPlugin {
                             Keys.getOrAdd(IField.class.getCanonicalName()), "document");
                         IField callbackField = IOC.resolve(
                             Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+                        IField criteriaField = IOC.resolve(
+                                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
 
                         //registration upsert task & message
                         IOC.register(
@@ -171,6 +175,69 @@ public class DBTasksPlugin implements IPlugin {
                                     }
                                 }
                             )
+                        );
+
+
+                        //registration search task & message
+                        IOC.register(
+                                Keys.getOrAdd(SearchMessage.class.getCanonicalName()),
+                                new ApplyFunctionToArgumentsStrategy(
+                                        (args) -> {
+                                            IObject message = (IObject) args[0];
+                                            return new SearchMessage() {
+                                                @Override
+                                                public CollectionName getCollectionName() throws ReadValueException {
+                                                    try {
+                                                        return (CollectionName) collectionNameField.in(message);
+                                                    } catch (Exception e) {
+                                                        throw new ReadValueException(e);
+                                                    }
+                                                }
+                                                @Override
+                                                public IObject getCriteria() throws ReadValueException {
+                                                    try {
+                                                        return criteriaField.in(message);
+                                                    } catch (Exception e) {
+                                                        throw new ReadValueException(e);
+                                                    }
+                                                }
+                                                @Override
+                                                public IAction<IObject[]> getCallback() throws ReadValueException {
+                                                    try {
+                                                        return (IAction<IObject[]>) callbackField.in(message);
+                                                    } catch (Exception e) {
+                                                        throw new ReadValueException(e);
+                                                    }
+                                                }
+                                            };
+                                        }
+                                )
+                        );
+                        IOC.register(
+                                Keys.getOrAdd("db.collection.search"),
+                                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                new ApplyFunctionToArgumentsStrategy(
+                                        (args) -> {
+                                            try {
+                                                IStorageConnection connection = (IStorageConnection) args[0];
+                                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                IObject criteria = (IObject) args[2];
+                                                IAction<IObject> callback = (IAction<IObject>) args[3];
+                                                IDatabaseTask task = new PostgresSearchTask(connection);
+
+                                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                                collectionNameField.out(query, collectionName);
+                                                criteriaField.out(query, criteria);
+                                                callbackField.out(query, callback);
+
+                                                task.prepare(query);
+                                                return task;
+                                            } catch (Exception e) {
+                                                throw new RuntimeException("Can't resolve getbyid db task.", e);
+                                            }
+                                        }
+                                )
                         );
                     } catch (ResolutionException e) {
                         throw new ActionExecuteException("Can't resolve fields for db task.", e);

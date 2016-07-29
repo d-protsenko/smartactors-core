@@ -64,6 +64,7 @@
         <module>IDatabaseTask</module>
         <module>PostgresGetByIdTask</module>
         <module>PostgresUpsertTask</module>
+        <module>PostgresSearchTask</module>
         <module>PostgresSchema</module>
         <!-- /database tasks modules -->
         <module>examples</module>

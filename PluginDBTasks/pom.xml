@@ -84,6 +84,11 @@
             <artifactId>core.postgres_getbyid_task</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.postgres_search_task</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!--testing-->
         <dependency>
