@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.postgres_connection.SQLQueryParameterSetter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,9 +77,6 @@ public class OperatorsTest {
 
     @Test
     public void writeFieldExistsCheckConditionTest() throws Exception {
-        final int OPERATORS_NUMBER = 1;
-
-        List<SQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
         FieldPath fieldPath = PostgresFieldPath.fromString("isNull");
 
         QueryStatement queryStatementIsNull = new QueryStatement();
@@ -99,9 +95,7 @@ public class OperatorsTest {
     @Test
     public void writeFieldInArrayCheckConditionTest() throws Exception {
         final String operatorName = "$in";
-        final int OPERATORS_NUMBER = 1;
 
-        List<SQLQueryParameterSetter> setters = new ArrayList<>(OPERATORS_NUMBER);
         FieldPath fieldPath = PostgresFieldPath.fromString(operatorName.replace("$", ""));
         List<Integer> queryParam = new ArrayList<>(Arrays.asList(1, 10, 100));
 
