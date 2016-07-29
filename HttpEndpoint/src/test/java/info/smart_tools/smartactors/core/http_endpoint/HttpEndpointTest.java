@@ -108,7 +108,7 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return args.length>0 ? new DSObject((String) args[0]) : new DSObject();
+                                return args.length > 0 ? new DSObject((String) args[0]) : new DSObject();
                             } catch (InvalidArgumentException ignored) {
                             }
                             return null;
@@ -141,6 +141,10 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> new DeserializeStrategyPostJson(mapperStub)
                 ));
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                        (args) -> new DSObject()
+                )
+        );
 
         ChannelInboundHandler handler = new SimpleChannelInboundHandler<FullHttpResponse>(getResponseClass()) {
             @Override
