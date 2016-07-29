@@ -17,6 +17,9 @@ public class SampleActor {
             String s = wrapper.getSomeField();
             wrapper.setSomeValueForRequest(s + "_transformed");
             wrapper.setCurrentActorState(this.state);
+            if (wrapper.resetState()) {
+                this.state = 0;
+            }
         } catch (Exception e) {
             throw new SampleException();
         }
