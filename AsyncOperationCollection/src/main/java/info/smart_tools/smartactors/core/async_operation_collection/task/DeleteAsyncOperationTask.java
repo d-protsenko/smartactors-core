@@ -41,7 +41,8 @@ public class DeleteAsyncOperationTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            deleteTask = IOC.resolve(Keys.getOrAdd("db.collection.delete"),
+            deleteTask = IOC.resolve(
+                    Keys.getOrAdd("db.collection.delete"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

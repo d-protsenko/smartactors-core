@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
+import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -43,6 +44,7 @@ public class GetFormActor {
             List<IObject> forms = collection.getItems(message.getFormKey());
             IFormsStrategy strategy = IOC.resolve(Keys.getOrAdd(IFormsStrategy.class.toString()), message.getFormKey());
             message.setForm(strategy.getForm(forms));
+
         } catch (Exception e) {
             throw new GetFormActorException("Failed to get form from collection", e);
         }

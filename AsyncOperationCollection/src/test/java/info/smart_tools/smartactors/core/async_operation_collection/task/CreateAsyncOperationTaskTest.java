@@ -1,3 +1,4 @@
+/*
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
@@ -281,4 +282,4 @@ public class CreateAsyncOperationTaskTest {
         }
         assertTrue("Must throw exception", false);
     }
-}
+}*/
