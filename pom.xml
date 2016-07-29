@@ -229,6 +229,8 @@
         <module>PluginCreateUser</module>
         <module>CObject</module>
         <module>PluginConfigurationObject</module>
+        <module>SampleActor</module>
+        <module>PluginSampleActor</module>
     </modules>
 
     <build>

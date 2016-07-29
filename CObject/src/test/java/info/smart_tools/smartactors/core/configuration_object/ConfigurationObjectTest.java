@@ -1,11 +1,8 @@
 package info.smart_tools.smartactors.core.configuration_object;
 
-import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
@@ -33,7 +30,7 @@ import static org.junit.Assert.fail;
  */
 public class ConfigurationObjectTest {
 
-    private IObject dsObject;
+    private String configString;
 
     @Before
     public void init()
@@ -54,6 +51,23 @@ public class ConfigurationObjectTest {
                             }
                         })
         );
+
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return new ConfigurationObject((String) a[0]);
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Could not create new instance of Configuration Object."
+                                );
+                            }
+                        }
+                )
+        );
         IOC.register(
                 IOC.resolve(
                         IOC.getKeyForKeyStorage(), "configuration object default strategy"
@@ -61,11 +75,7 @@ public class ConfigurationObjectTest {
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
-                                if (obj instanceof IObject) {
-                                    return new ConfigurationObject((IObject) obj);
-                                }
-                                return obj;
+                                return a[0];
                             } catch (Throwable e) {
                                 throw new RuntimeException(
                                         "Error in configuration 'default' rule.", e
@@ -81,12 +91,13 @@ public class ConfigurationObjectTest {
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
+                                Object obj = a[0];
                                 if (obj instanceof String) {
-                                    IObject innerObject = new DSObject();
+                                    IObject innerObject = new ConfigurationObject();
                                     innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
                                     innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
-                                    return new ArrayList<IObject>() {{ add(new ConfigurationObject(innerObject)); }};
+
+                                    return new ArrayList<IObject>() {{ add(innerObject); }};
                                 }
                                 return obj;
                             } catch (Throwable e) {
@@ -104,14 +115,14 @@ public class ConfigurationObjectTest {
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
+                                Object obj = a[0];
                                 if (obj instanceof String) {
-                                    IObject innerObject = new DSObject();
+                                    IObject innerObject = new ConfigurationObject();
                                     innerObject.setValue(new FieldName("name"), "wds_target_strategy");
                                     innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
 
                                     return new ArrayList<List<IObject>>() {{
-                                        add(new ArrayList<IObject>() {{  add(new ConfigurationObject(innerObject)); }});
+                                        add(new ArrayList<IObject>() {{  add(innerObject); }});
                                     }};
                                 }
                                 if (obj instanceof List) {
@@ -161,8 +172,7 @@ public class ConfigurationObjectTest {
                                 }
                                 return IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyStorage(), resolvedKey),
-                                        a[0],
-                                        a[1]
+                                        a[0]
                                 );
                             } catch (Throwable e) {
                                 throw new RuntimeException(
@@ -172,7 +182,7 @@ public class ConfigurationObjectTest {
                         }
                 )
         );
-        this.dsObject = new DSObject("{\n" +
+        this.configString = "{\n" +
                 "  \"wrapper\": {\n" +
                 "    \"in_getIntValue\": \"message/IntValue\",\n" +
                 "    \"out_setIntValue\": \"response/IntValue\",\n" +
@@ -227,13 +237,13 @@ public class ConfigurationObjectTest {
                 "      }]\n" +
                 "    ]\n" +
                 "  }\n" +
-                "}");
+                "}";
     }
 
     @Test
     public void checkCreationAndResolutionSomeFields()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(this.dsObject);
+        ConfigurationObject co = new ConfigurationObject(this.configString);
 
         List<IObject> in_getIntValue = (List<IObject>) ((IObject)co.getValue(new FieldName("wrapper"))).getValue(new FieldName("in_getIntValue"));
         assertEquals(in_getIntValue.get(0).getValue(new FieldName("name")), "wds_getter_strategy");
@@ -257,14 +267,14 @@ public class ConfigurationObjectTest {
     @Test (expected = InvalidArgumentException.class)
     public void checkCreationExceptionOnNullArg()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(null);
+        ConfigurationObject co = new ConfigurationObject("");
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkExceptionOnNullArgInGetValueMethod()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(this.dsObject);
+        ConfigurationObject co = new ConfigurationObject(this.configString);
         co.getValue(null);
         fail();
     }
@@ -272,23 +282,15 @@ public class ConfigurationObjectTest {
     @Test (expected = DeleteValueException.class)
     public void checkExceptionOnUseDeleteFieldMethod()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(new DSObject());
+        ConfigurationObject co = new ConfigurationObject(this.configString);
         co.deleteField(null);
-        fail();
-    }
-
-    @Test (expected = ChangeValueException.class)
-    public void checkExceptionOnUseSetValueMethod()
-            throws Exception {
-        ConfigurationObject co = new ConfigurationObject(new DSObject());
-        co.setValue(null, null);
         fail();
     }
 
     @Test (expected = SerializeException.class)
     public void checkExceptionOnUseSerializeMethod()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(new DSObject());
+        ConfigurationObject co = new ConfigurationObject(this.configString);
         co.serialize();
         fail();
     }
@@ -296,7 +298,7 @@ public class ConfigurationObjectTest {
     @Test
     public void checkNullOnTryToGetIterator()
             throws Exception {
-        ConfigurationObject co = new ConfigurationObject(new DSObject());
+        ConfigurationObject co = new ConfigurationObject(this.configString);
         assertNull(co.iterator());
     }
 
@@ -306,7 +308,7 @@ public class ConfigurationObjectTest {
         IScope oldScope = ScopeProvider.getCurrentScope();
         ScopeProvider.setCurrentScope(ScopeProvider.getScope(scopeId));
 
-        ConfigurationObject co = new ConfigurationObject(this.dsObject);
+        ConfigurationObject co = new ConfigurationObject(this.configString);
         co.getValue(new FieldName("in_getIntValue"));
         ScopeProvider.setCurrentScope(oldScope);
         fail();

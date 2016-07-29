@@ -243,6 +243,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
                 this.wrappedEnvironment = wrappedEnvironmentCache.get(wrapperConfig);
             } else {
                 this.wrappedEnvironment = IOC.resolve(Keys.getOrAdd(WDSObject.class.getCanonicalName()), wrapperConfig);
+                this.wrappedEnvironment.init(this.environment);
                 this.wrappedEnvironmentCache.put(wrapperConfig, this.wrappedEnvironment);
             }
         }

@@ -4,12 +4,26 @@
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
+    },
+    {
+      "kind": "actor",
+      "dependency": "SampleActor",
+      "name": "sample-actor"
     }
   ],
   "maps": [
     {
       "id": "httpChain",
       "steps": [
+        {
+          "target": "sample-actor",
+          "handler": "transformAndPutForResponse",
+          "wrapper": {
+            "in_getSomeField": "message/Field",
+            "out_setSomeValueForRequest": "response/TransformedField",
+            "out_setCurrentActorState": "response/CurrentState"
+          }
+        },
         {
           "target": "respond",
           "handler": "sendResponse"
