@@ -34,7 +34,7 @@ public class CreateSessionPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CreateCreateSessionActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("CreateSessionActorPlugin");
 
             item
                 .after("IOC")
