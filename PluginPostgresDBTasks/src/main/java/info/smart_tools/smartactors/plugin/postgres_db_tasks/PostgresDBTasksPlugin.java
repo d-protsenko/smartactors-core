@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
@@ -247,7 +248,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                 IObject criteria = (IObject) args[2];
                                 IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
-                                IDatabaseTask task = new PostgresGetByIdTask(connection);
+                                IDatabaseTask task = new PostgresSearchTask(connection);
 
                                 IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 

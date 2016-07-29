@@ -28,10 +28,10 @@ import java.util.List;
  *  {
  *      "collectionName": CollectionName object,
  *      "criteria": {
- *          "criteria": {
+ *          "filter": {
  *              "$or": [
- *                  "a": { "$eq": "b" },
- *                  "b": { "$gt": 42 }
+ *                  { "a": { "$eq": "b" } },
+ *                  { "b": { "$gt": 42 } }
  *              ]
  *          }
  *      },
