@@ -18,19 +18,20 @@ public class HttpsEndpoint extends HttpsServer {
     /**
      * Constructor for endpoint
      *
-     * @param port             port of the endpoint
-     * @param maxContentLength max length of the content
-     * @param scope            scope for endpoint
-     * @param handler          handler for environment
-     * @param receiverChain    chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
-     
+     * @param port               port of the endpoint
+     * @param maxContentLength   max length of the content
+     * @param scope              scope for endpoint
+     * @param handler            handler for environment
+     * @param receiverChain      chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
+     * @param sslContextProvider provider for ssl context
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
-                         final IEnvironmentHandler handler, final IReceiverChain receiverChain
+                         final IEnvironmentHandler handler, final IReceiverChain receiverChain,
+                         final SSLContextProvider sslContextProvider
     ) {
         super(port, new EndpointChannelInboundHandler<>(
                         new HttpRequestHandler(scope, handler, receiverChain),
                         FullHttpRequest.class),
-                maxContentLength);
+                maxContentLength, sslContextProvider);
     }
 }

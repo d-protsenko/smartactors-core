@@ -16,8 +16,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 
 /**
@@ -30,6 +28,7 @@ public class SSLContextProvider {
     private String keyPass;
     private String certPath;
     private String certType;
+    private boolean initialized = false;
 
     /**
      * Method for initialize {@link SSLContextProvider}
@@ -57,11 +56,16 @@ public class SSLContextProvider {
             keyPass = (String) params.getValue(keyPassFieldName);
             certPath = (String) params.getValue(certPathFieldName);
             certType = (String) params.getValue(certTypeFieldName);
+            initialized = storePass != null && keyPass != null && certPath != null && certType != null;
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new SSLContextProviderException("An exception on getting values from parameters", e);
         }
     }
 
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     /**
      * Method for getting ssl context

@@ -33,9 +33,12 @@ public class HttpsServer extends TcpServer {
      * @param requestHandler   channel for tcp server
      * @param maxContentLength max length of the content
      */
-    public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength) {
+    public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength,
+                       final SSLContextProvider sslContextProvider) {
         super(port, requestHandler);
         this.maxContentLength = maxContentLength;
+        this.contextProvider = sslContextProvider;
+        this.sslEnable = sslContextProvider.isInitialized();
     }
 
     /**

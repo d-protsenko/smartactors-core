@@ -230,6 +230,7 @@
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
+        <module>PluginHttpsEndpoint</module>
     </modules>
 
     <build>

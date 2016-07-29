@@ -56,6 +56,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     private final IFieldName stackDepthFieldName;
     private final IFieldName maxContentLengthFieldName;
     private final IFieldName endpointNameFieldName;
+    private final IFieldName queueFieldName;
 
     /**
      * The constructor.
@@ -75,6 +76,8 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "maxContentLength");
         this.endpointNameFieldName =
                 IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "endpointName");
+        this.queueFieldName =
+                IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "queue");
     }
 
     @Override
@@ -94,7 +97,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 endpoint.setValue(startChainNameFieldName, chain);
-
+                endpoint.setValue(queueFieldName, queue);
                 IAsyncService endpointService =
                         IOC.resolve(Keys.getOrAdd(type + "_endpoint"), endpoint);
                 endpointService.start();

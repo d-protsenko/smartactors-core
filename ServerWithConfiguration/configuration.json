@@ -21,7 +21,7 @@
   "endpoints": [
     {
       "name": "mainHttpEp",
-      "type": "http",
+      "type": "https",
       "port": 9909,
       "startChain": "httpChain",
       "maxContentLength": 4098,
