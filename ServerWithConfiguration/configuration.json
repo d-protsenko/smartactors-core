@@ -21,7 +21,8 @@
           "wrapper": {
             "in_getSomeField": "message/Field",
             "out_setSomeValueForRequest": "response/TransformedField",
-            "out_setCurrentActorState": "response/CurrentState"
+            "out_setCurrentActorState": "response/CurrentState",
+            "in_resetState": "message/Reset"
           }
         },
         {

@@ -10,4 +10,6 @@ public interface SampleWrapper {
     void setSomeValueForRequest(String value) throws ChangeValueException;
 
     void setCurrentActorState(Integer state) throws ChangeValueException;
+
+    Boolean resetState() throws ReadValueException;
 }
