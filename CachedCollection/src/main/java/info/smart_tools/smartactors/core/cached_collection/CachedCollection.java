@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -18,6 +20,7 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -91,43 +94,28 @@ public class CachedCollection implements ICachedCollection {
     public List<IObject> getItems(final String key) throws GetCacheItemException {
 
         try {
-            List<IObject> items = map.get(key);
+            final List<IObject> items = map.get(key);
             if (items == null || items.isEmpty()) {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-                    IObject getItemQuery = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-                    //TODO:: add lambda as a parameter? Add key value field as a parameter?
                     IDatabaseTask getItemTask = IOC.resolve(
-                        Keys.getOrAdd("db.cached_collection.get_item"),
-                        poolGuard.getObject(),
-                        collectionName,
-                        getItemQuery
+                            Keys.getOrAdd("db.cached_collection.get_item"),
+                            poolGuard.getObject(),
+                            collectionName,
+                            keyName,
+                            key,
+                            (IAction<IObject[]>) foundDocs -> {
+                                try {
+                                    items.addAll(Arrays.asList(foundDocs));
+                                } catch (Exception e) {
+                                    throw new ActionExecuteException(e);
+                                }
+                            }
                     );
-//                this actions should be made into strategy during resolving task
-//                TODO:: make strategy with this logic
-//                    if (getItemTask == null) {
-                        //NOTE:: we should have strategy for creating nested tasks for task-facade with smth like map
-                        //with name of task-facade as a key
-//                        IDatabaseTask nestedTask = IOC.resolve(
-//                            Keys.getOrAdd(IDatabaseTask.class.toString()), GetItemFromCachedCollectionTask.class.toString()
-//                        );
-//                        if (nestedTask == null) {
-//                            throw new GetCacheItemException("Can't create nested task for getItem task.");
-//                        }
-//                        getItemTask = new GetItemFromCachedCollectionTask(nestedTask);
-//                        IOC.register(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString()), new SingletonStrategy(getItemTask));
-//                    }
-//                    collectionNameField.out(getItemQuery, collectionName);
-//                    keyNameField.out(getItemQuery, keyName);
-//                    keyValueField.out(getItemQuery, key);
-//                    getItemTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-//                    getItemTask.prepare(getItemQuery);
+
                     getItemTask.execute();
-                    items = searchResultField.in(getItemQuery);
                     map.put(key, items);
                 } catch (PoolGuardException e) {
                     throw new GetCacheItemException("Can't get connection from pool.", e);
-                } catch (InvalidArgumentException e) {
-                    throw new GetCacheItemException("Can't register strategy for getItem task.", e);
                 }
             }
 
@@ -136,8 +124,6 @@ public class CachedCollection implements ICachedCollection {
             throw new GetCacheItemException("Error during execution read task.", e);
         } catch (ResolutionException e) {
             throw new GetCacheItemException("Can't resolve cached object.", e);
-        } catch (ReadValueException e) {
-            throw new GetCacheItemException("Can't read cached object.", e);
         }
     }
 
