@@ -29,7 +29,7 @@ public final class PostgresSchema {
 
     /**
      * Dictionary for Full Text Search
-     * TODO: don't hardcode
+     * TODO: don't hardcode Russian
      */
     public static final String FTS_DICTIONARY = "russian";
 

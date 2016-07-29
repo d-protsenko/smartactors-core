@@ -93,11 +93,11 @@ Command name: `db.collection.search`
 
 Additional parameters:
 
-- criteria — filter for documents which should be selected from the collection
+- criteria — search criteria for documents which should be selected from the collection
 
     TBD
 
-- callback — lambda of type `Function<IObject[]>` which receives the set of selected documents 
+- callback — lambda of type `IAction<IObject[]>` which receives the set of selected documents 
 
 ### GetById
 
@@ -109,7 +109,7 @@ Additional parameters:
 
 - id — unique identifier of the document in the collection
 
-- callback — lambda of type `Function<IObject>` which receives the document got by id
+- callback — lambda of type `IAction<IObject>` which receives the document got by id
 
 If the object with such id does not exist, the `TaskExecutionException` is thrown.
 
