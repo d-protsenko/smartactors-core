@@ -31,6 +31,8 @@ import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
+import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -140,6 +142,8 @@ public class DBCollectionServer implements IServer {
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
         IFieldName idField = IOC.resolve(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
+        IFieldName criteriaField = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()), "criteria");
         IFieldName documentField = IOC.resolve(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()), "document");
         IFieldName callbackField = IOC.resolve(
@@ -205,6 +209,40 @@ public class DBCollectionServer implements IServer {
                         }
                 )
         );
+        IOC.register(
+                Keys.getOrAdd(SearchMessage.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new SearchMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) message.getValue(collectionNameField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getCriteria() throws ReadValueException {
+                                    try {
+                                        return (IObject) message.getValue(criteriaField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IAction<IObject[]> getCallback() throws ReadValueException {
+                                    try {
+                                        return (IAction<IObject[]>) message.getValue(callbackField);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
 
         IOC.register(
                 Keys.getOrAdd("db.collection.upsert"),
@@ -244,6 +282,31 @@ public class DBCollectionServer implements IServer {
 
                                 query.setValue(collectionNameField, collectionName);
                                 query.setValue(idField, id);
+                                query.setValue(callbackField, callback);
+
+                                task.prepare(query);    // TODO: reuse cached tasks
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getOrAdd("db.collection.search"),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject criteria = (IObject) args[2];
+                                IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
+                                IDatabaseTask task = new PostgresSearchTask(connection);    // TODO: cache tasks
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                query.setValue(collectionNameField, collectionName);
+                                query.setValue(criteriaField, criteria);
                                 query.setValue(callbackField, callback);
 
                                 task.prepare(query);    // TODO: reuse cached tasks
@@ -301,8 +364,28 @@ public class DBCollectionServer implements IServer {
                         document.getValue(idField),
                         (IAction<IObject>) doc -> {
                             try {
-                                System.out.println("Found");
+                                System.out.println("Found by id");
                                 System.out.println((String) doc.serialize());
+                            } catch (SerializeException e) {
+                                throw new ActionExecuteException(e);
+                            }
+                        }
+                );
+                task.execute();
+            }
+
+            try (PoolGuard guard = new PoolGuard(pool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.search"),
+                        guard.getObject(),
+                        "test",
+                        new DSObject(String.format("{ \"filter\": { \"%s\": { \"$eq\": \"new value\" } } }", testField.toString())),
+                        (IAction<IObject[]>) docs -> {
+                            try {
+                                for (IObject doc : docs) {
+                                    System.out.println("Found by " + testField);
+                                    System.out.println((String) doc.serialize());
+                                }
                             } catch (SerializeException e) {
                                 throw new ActionExecuteException(e);
                             }
