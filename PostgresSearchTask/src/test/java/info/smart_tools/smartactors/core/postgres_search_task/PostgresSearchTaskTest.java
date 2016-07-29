@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -41,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,7 +53,6 @@ public class PostgresSearchTaskTest {
 
     private IDatabaseTask task;
     private SearchMessage message;
-    private IFieldName idFieldName;
     private IStorageConnection connection;
     private JDBCCompiledQuery compiledQuery;
     private PreparedStatement statement;
@@ -122,7 +123,7 @@ public class PostgresSearchTaskTest {
         task = new PostgresSearchTask(connection);
         message = mock(SearchMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
-        idFieldName = new FieldName("testID");
+        when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
 
         IOC.register(
                 Keys.getOrAdd(SearchMessage.class.getCanonicalName()),
@@ -132,7 +133,6 @@ public class PostgresSearchTaskTest {
 
     @Test
     public void testSearch() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
         final List<IObject> results = new ArrayList<>();
         when(message.getCallback()).thenReturn(docs -> results.addAll(Arrays.asList(docs)));
         when(resultSet.next()).thenReturn(true, true, false);
@@ -149,53 +149,43 @@ public class PostgresSearchTaskTest {
         assertEquals(2, results.size());
     }
 
-//    @Test
-//    public void testGetByIdFailure() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-//        when(message.getId()).thenReturn(123L);
-//        IAction<IObject> callback = mock(IAction.class);
-//        when(message.getCallback()).thenReturn(callback);
-//        when(statement.execute()).thenThrow(SQLException.class);
-//
-//        task.prepare(null); // the message will be resolved by IOC
-//        try {
-//            task.execute();
-//            fail();
-//        } catch (TaskExecutionException e) {
-//            // pass
-//        }
-//
-//        verify(connection).compileQuery(any(QueryStatement.class));
-//        // implementation details of PostgresConnection
-//        // verify(statement).setLong(eq(1), eq(123L));
-//        verify(statement).execute();
-//        verifyZeroInteractions(resultSet);
-//        verifyZeroInteractions(callback);
-//        verify(connection).rollback();
-//    }
-//
-//    @Test
-//    public void testGetByIdNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-//        when(message.getId()).thenReturn(123L);
-//        IAction<IObject> callback = mock(IAction.class);
-//        when(message.getCallback()).thenReturn(callback);
-//        when(resultSet.next()).thenReturn(false);
-//        when(resultSet.getString(anyInt())).thenThrow(SQLException.class);
-//
-//        task.prepare(null); // the message will be resolved by IOC
-//        try {
-//            task.execute();
-//            fail();
-//        } catch (TaskExecutionException e) {
-//            // pass
-//        }
-//
-//        verify(connection).compileQuery(any(QueryStatement.class));
-//        // implementation details of PostgresConnection
-//        // verify(statement).setLong(eq(1), eq(123L));
-//        verify(statement).execute();
-//        verify(resultSet).next();
-//        verify(connection).commit();
-//        verifyZeroInteractions(callback);
-//    }
+    @Test
+    public void testSearchFailure() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
+        IAction<IObject[]> callback = mock(IAction.class);
+        when(message.getCallback()).thenReturn(callback);
+        when(statement.execute()).thenThrow(SQLException.class);
+
+        task.prepare(null); // the message will be resolved by IOC
+        try {
+            task.execute();
+            fail();
+        } catch (TaskExecutionException e) {
+            // pass
+        }
+
+        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(statement).execute();
+        verifyZeroInteractions(resultSet);
+        verifyZeroInteractions(callback);
+        verify(connection).rollback();
+    }
+
+    @Test
+    public void testSearchNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
+        final List<IObject> results = new ArrayList<>();
+        when(message.getCallback()).thenReturn(docs -> results.addAll(Arrays.asList(docs)));
+        when(resultSet.next()).thenReturn(false);
+        when(resultSet.getString(anyInt())).thenThrow(SQLException.class);
+
+        task.prepare(null); // the message will be resolved by IOC
+        task.execute();
+
+        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(statement).execute();
+        verify(resultSet, times(1)).next();
+        verify(resultSet, times(0)).getString(anyInt());
+        verify(connection).commit();
+        assertEquals(0, results.size());
+    }
 
 }
