@@ -50,12 +50,15 @@ public class CachedCollectionTasksPlugin implements IPlugin {
                     try {
                         IField collectionNameField = IOC.resolve(
                             Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-                        IField idField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "id");
                         IField documentField = IOC.resolve(
                             Keys.getOrAdd(IField.class.getCanonicalName()), "document");
                         IField callbackField = IOC.resolve(
                             Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+                        IField keyNameField = IOC.resolve(
+                            Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
+                        IField keyField = IOC.resolve(
+                            Keys.getOrAdd(IField.class.getCanonicalName()), "key");
+
 
                         IOC.register(
                             Keys.getOrAdd("db.cached_collection.upsert"),
@@ -113,12 +116,15 @@ public class CachedCollectionTasksPlugin implements IPlugin {
                             new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
-                                        //TODO:: write strategy
                                         IStorageConnection connection = (IStorageConnection) args[0];
                                         CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                         IDatabaseTask task = new GetItemFromCachedCollectionTask(connection);
 
                                         IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                        collectionNameField.out(query, collectionName);
+                                        keyNameField.out(query, args[2]);
+                                        keyField.out(query, args[3]);
+                                        callbackField.out(query, args[4]);
 
                                         task.prepare(query);
                                         return task;
