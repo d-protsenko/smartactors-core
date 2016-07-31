@@ -19,6 +19,9 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.Arrays;
 
+/**
+ * Plugin for load IOC-strategy for check user is new actor
+ */
 public class CheckUserIsNewActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
