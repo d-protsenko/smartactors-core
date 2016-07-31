@@ -35,7 +35,7 @@ public class CloseAsyncOperationActor {
     /**
      * Remove token from session and mark operation as complete
      * @param message the message
-     * @throws TaskExecutionException Throw when can't read some value from message or have invalid parameters
+     * @throws InvalidArgumentException Throw when can't read some value from message or have invalid parameters
      */
     void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {
