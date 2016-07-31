@@ -21,6 +21,10 @@ public class AuthenticationActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
+    /**
+     * Constructor
+     * @param bootstrap bootstrap element
+     */
     public AuthenticationActorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
