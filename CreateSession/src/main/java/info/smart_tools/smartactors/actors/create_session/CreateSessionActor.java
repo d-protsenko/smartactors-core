@@ -78,7 +78,10 @@ public class CreateSessionActor {
                     IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.getCanonicalName()), "PSQL");
                     IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                    StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.getCanonicalName()), poolGuard.getObject());
+                    StorageConnection connection = IOC.resolve(
+                            Keys.getOrAdd(StorageConnection.class.getCanonicalName()),
+                            poolGuard.getObject()
+                    );
                     prepareSearchQuery(searchQuery, inputMessage);
 
                     searchTask.setConnection(connection);
