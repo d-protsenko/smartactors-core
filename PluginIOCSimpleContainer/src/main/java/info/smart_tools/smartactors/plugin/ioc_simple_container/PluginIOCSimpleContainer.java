@@ -9,8 +9,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ioc_container_simple.Container;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 import java.lang.reflect.Field;
 
@@ -54,21 +52,7 @@ public class PluginIOCSimpleContainer implements IPlugin {
 
             iocItem
                     .after("ioc_container")
-                    .process(() -> {
-                        try {
-                            IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
-                                    (args) -> {
-                                        try {
-                                            return new Key((String) args[0]);
-                                        } catch (InvalidArgumentException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    })
-                            );
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+                    .process(() -> { });
 
             bootstrap.add(iocItem);
         } catch (InvalidArgumentException e) {

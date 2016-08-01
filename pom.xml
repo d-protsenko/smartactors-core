@@ -203,7 +203,7 @@
         <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
-        <module>PluginDBTasks</module>
+        <module>PluginPostgresDBTasks</module>
         <module>ResolveByTypeStrategy</module>
         <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>

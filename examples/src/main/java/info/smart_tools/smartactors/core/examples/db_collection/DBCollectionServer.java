@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionO
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.postges_connection_pool.PostgresConnectionPoolPlugin;
 import info.smart_tools.smartactors.plugin.postgres_db_tasks.PostgresDBTasksPlugin;
@@ -33,6 +34,7 @@ public class DBCollectionServer implements IServer {
         try {
             Bootstrap bootstrap = new Bootstrap();
             new PluginIOCSimpleContainer(bootstrap).load();
+            new PluginIOCKeys(bootstrap).load();
             new IFieldNamePlugin(bootstrap).load();
             new IFieldPlugin(bootstrap).load();
             new PostgresDBTasksPlugin(bootstrap).load();
