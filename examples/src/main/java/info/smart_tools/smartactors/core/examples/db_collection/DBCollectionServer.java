@@ -106,7 +106,10 @@ public class DBCollectionServer implements IServer {
                         Keys.getOrAdd("db.collection.search"),
                         guard.getObject(),
                         "test",
-                        new DSObject(String.format("{ \"filter\": { \"%s\": { \"$eq\": \"new value\" } } }", testField.toString())),
+                        new DSObject(String.format(
+                                "{ \"filter\": { \"%s\": { \"$eq\": \"new value\" } }," +
+                                "  \"page\": { \"size\": 2, \"number\": 2 } }",
+                                testField.toString())),
                         (IAction<IObject[]>) docs -> {
                             try {
                                 for (IObject doc : docs) {
