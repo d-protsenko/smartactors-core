@@ -94,6 +94,10 @@ public class ServerWithConfiguration implements IServer {
                     "actors.sample_actor-0.2.0-SNAPSHOT.jar",
                     "plugin.sample_actor-0.2.0-SNAPSHOT.jar",
 
+                    "core.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_choice_strategy-0.2.0-SNAPSHOT.jar",
+
                     "core.actor_receiver-0.2.0-SNAPSHOT.jar",
                     "core.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "core.blocking_queue-0.2.0-SNAPSHOT.jar",
