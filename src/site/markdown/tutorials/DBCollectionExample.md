@@ -85,20 +85,6 @@ When this field is present in the document, it's be tried to delete the object f
 
 If the document is absent in the collection, no error appears because the absence of the document with the specified id is the target postcondition, the field "collection_nameID" is deleted from the in-memory document. 
 
-### Search
-
-Searching of the document in the collection.
-
-Command name: `db.collection.search`
-
-Additional parameters:
-
-- criteria — search criteria for documents which should be selected from the collection
-
-    TBD
-
-- callback — lambda of type `IAction<IObject[]>` which receives the set of selected documents 
-
 ### GetById
 
 Takes the document by it's id.
@@ -108,10 +94,9 @@ Command name: `db.collection.getbyid`
 Additional parameters:
 
 - id — unique identifier of the document in the collection
-
 - callback — lambda of type `IAction<IObject>` which receives the document got by id
 
-If the object with such id does not exist, the `TaskExecutionException` is thrown.
+If the document with such id does not exist, the `TaskExecutionException` is thrown.
 
 #### Example
 
@@ -122,8 +107,78 @@ If the object with such id does not exist, the `TaskExecutionException` is throw
             documentiId,
             (IAction<IObject>) foundDoc -> {
                 try {
-                    System.out.println("Found");
+                    System.out.println("Found by id");
                     System.out.println((String) doc.serialize());
+                } catch (SerializeException e) {
+                    throw new ActionExecuteException(e);
+                }
+            }
+    );
+    task.execute();
+
+### Search
+
+Searching of the document in the collection.
+
+Command name: `db.collection.search`
+
+Additional parameters:
+
+- criteria — search criteria for documents which should be selected from the collection, the `IObject` document
+- callback — lambda of type `IAction<IObject[]>` which receives the set of selected documents
+
+If no documents for the specified criteria were found, the callback function receives empty array.
+ 
+#### Criteria
+ 
+The search criteria is the complex IObject which contains a set of conditions and operators.
+For example, it may look like this.
+
+    {
+        "filter": {
+            "$or": [
+                { "a": { "$eq": "b" } },
+                { "b": { "$gt": 42 } }
+            ]
+        }
+    }
+  
+Conditions joins operators together.
+Operators match the specified document field against the specified criteria.
+
+Available conditions:
+
+* `$and` — ANDs operators and nested conditions
+* `$or` — ORs operators and nested conditions
+* `$not` — negate all nested operators and conditions, is equivalent to NOT(conditionA) AND NOT(conditionB)
+   
+Available operators:
+
+* `$eq` — test for equality of the document field and the specified value
+* `$neq` — test for not equality
+* `$lt` — "less than", the document field is less than the specified value
+* `$gt` — "greater than", the document field is larger than the specified value
+* `$lte` — less or equal
+* `$gte` — greater or equal
+* `$isNull` — checks for null if the specified value is "true" or checks for not null if "false"
+* `$date-from` — greater or equal for datetime fields
+* `$date-to` — less or equal for datetime fields
+* `$in` — checks for equality to any of the specified values in the array
+* `$hasTag` — check the document field is JSON document contains the specified value as field name or value
+    
+#### Example
+    
+    ITask task = IOC.resolve(
+            Keys.getOrAdd("db.collection.search"),
+            connection,
+            collectionName,
+            new DSObject(String.format("{ \"filter\": { \"%s\": { \"$eq\": \"some value\" } } }", testField.toString())),
+            (IAction<IObject[]>) docs -> {
+                try {
+                    for (IObject doc : docs) {
+                        System.out.println("Found by " + testField);
+                        System.out.println((String) doc.serialize());
+                    }
                 } catch (SerializeException e) {
                     throw new ActionExecuteException(e);
                 }
@@ -131,7 +186,7 @@ If the object with such id does not exist, the `TaskExecutionException` is throw
     );
     task.execute();    
 
-## Example of usage
+## More complete example
 
 Get the document by id.
 
@@ -161,4 +216,4 @@ Get the document by id.
         }
     }
 
-Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details how IOC should be initialized for the tasks.
+Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details.

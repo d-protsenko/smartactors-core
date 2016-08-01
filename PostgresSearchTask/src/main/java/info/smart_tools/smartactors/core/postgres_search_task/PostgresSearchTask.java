@@ -28,10 +28,10 @@ import java.util.List;
  *  {
  *      "collectionName": CollectionName object,
  *      "criteria": {
- *          "criteria": {
+ *          "filter": {
  *              "$or": [
- *                  "a": { "$eq": "b" },
- *                  "b": { "$gt": 42 }
+ *                  { "a": { "$eq": "b" } },
+ *                  { "b": { "$gt": 42 } }
  *              ]
  *          }
  *      },
@@ -42,7 +42,7 @@ import java.util.List;
  * <p>
  *     The criteria is the IObject which contains a set of conditions and operators.
  *     Conditions joins operators together.
- *     Operators match the specified document field agains the specified criteria.
+ *     Operators match the specified document field against the specified criteria.
  * </p>
  * <p>
  *     Available conditions:

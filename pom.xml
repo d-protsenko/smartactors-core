@@ -62,10 +62,10 @@
         <module>HttpServer</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
-        <module>PostgresGetByIdTask</module>
-        <module>PostgresUpsertTask</module>
-        <module>PostgresSearchTask</module>
         <module>PostgresSchema</module>
+        <module>PostgresUpsertTask</module>
+        <module>PostgresGetByIdTask</module>
+        <module>PostgresSearchTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -203,7 +203,7 @@
         <module>PluginIObjectSimpleImpl</module>
         <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
-        <module>PluginDBTasks</module>
+        <module>PluginPostgresDBTasks</module>
         <module>ResolveByTypeStrategy</module>
         <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>

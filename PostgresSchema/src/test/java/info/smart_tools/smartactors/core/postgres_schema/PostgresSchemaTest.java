@@ -1,24 +1,17 @@
 package info.smart_tools.smartactors.core.postgres_schema;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
+import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
+import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,44 +31,12 @@ public class PostgresSchemaTest {
     private StringWriter body;
 
     @BeforeClass
-    public static void initIOC() throws ScopeProviderException, InvalidArgumentException, ResolutionException, RegistrationException {
-        ScopeProvider.subscribeOnCreationNewScope(
-                scope -> {
-                    try {
-                        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-                    } catch (Exception e) {
-                        throw new Error(e);
-                    }
-                }
-        );
-
-        Object keyOfMainScope = ScopeProvider.createScope(null);
-        IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
-        ScopeProvider.setCurrentScope(mainScope);
-
-        IOC.register(
-                IOC.getKeyForKeyStorage(),
-                new ResolveByNameIocStrategy(
-                        (args) -> {
-                            try {
-                                return new Key((String) args[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
-                new CreateNewInstanceStrategy(
-                        (args) -> {
-                            try {
-                                return new FieldName(String.valueOf(args[0]));
-                            } catch (InvalidArgumentException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
+    public static void initIOC() throws PluginException, ProcessExecutionException {
+        Bootstrap bootstrap = new Bootstrap();
+        new PluginIOCSimpleContainer(bootstrap).load();
+        new PluginIOCKeys(bootstrap).load();
+        new IFieldNamePlugin(bootstrap).load();
+        bootstrap.start();
     }
 
     @Before
@@ -122,6 +83,16 @@ public class PostgresSchemaTest {
         assertEquals("SELECT document FROM test_collection " +
                 "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
         verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithPaging() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"page\": { \"size\": 10, \"number\": 3 } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
     }
 
 }

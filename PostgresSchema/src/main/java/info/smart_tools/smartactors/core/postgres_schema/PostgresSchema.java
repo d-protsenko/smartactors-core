@@ -3,10 +3,13 @@ package info.smart_tools.smartactors.core.postgres_schema;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_schema.search.PagingWriter;
 import info.smart_tools.smartactors.core.postgres_schema.search.PostgresQueryWriterResolver;
 
 import java.io.IOException;
@@ -134,7 +137,11 @@ public final class PostgresSchema {
      *          "$or": [
      *              "a": { "$eq": "b" },
      *              "b": { "$gt": 42 }
- *              ]
+     *          ]
+     *      },
+     *      "page": {
+     *          "size": 50,
+     *          "number": 2
      *      }
      *  }
      *     </pre>
@@ -146,19 +153,59 @@ public final class PostgresSchema {
      */
     public static void search(final QueryStatement statement, final CollectionName collection, final IObject criteria)
             throws QueryBuildException {
-        Writer writer = statement.getBodyWriter();
         try {
-            IFieldName filterField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
-            IObject filter = (IObject) criteria.getValue(filterField);
-            PostgresQueryWriterResolver resolver = new PostgresQueryWriterResolver();
+            Writer writer = statement.getBodyWriter();
+
             writer.write("SELECT ");
             writer.write(DOCUMENT_COLUMN);
             writer.write(" FROM ");
             writer.write(collection.toString());
-            writer.write(" WHERE ");
-            resolver.resolve(null).write(statement, resolver, null, filter);
+
+            writeSearchWhere(statement, criteria);
+            writeSeachPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
+        }
+    }
+
+    private static void writeSearchWhere(QueryStatement statement, IObject criteria) throws Exception {
+        IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        Writer writer = statement.getBodyWriter();
+        try {
+            IFieldName filterField = IOC.resolve(fieldNameKey, "filter");
+            IObject filter = (IObject) criteria.getValue(filterField);
+            writer.write(" WHERE ");
+            PostgresQueryWriterResolver resolver = new PostgresQueryWriterResolver();
+            resolver.resolve(null).write(statement, resolver, null, filter);
+        } catch (ReadValueException e) {
+            // no filter in the criteria, ignoring
+        }
+    }
+
+    private static void writeSeachPaging(QueryStatement statement, IObject criteria) throws Exception {
+        IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        Writer writer = statement.getBodyWriter();
+        try {
+            IFieldName pageField = IOC.resolve(fieldNameKey, "page");
+            IObject page = (IObject) criteria.getValue(pageField);
+            if (page == null) {
+                return; // no page in the criteria, ignoring
+            }
+            writer.write(" ");
+            Integer size;
+            Integer number;
+            try {
+                IFieldName sizeField = IOC.resolve(fieldNameKey, "size");
+                size = (Integer) page.getValue(sizeField);
+                IFieldName numberField = IOC.resolve(fieldNameKey, "number");
+                number = (Integer) page.getValue(numberField);
+            } catch (Exception e) {
+                throw new QueryBuildException("wrong page format: " + page.serialize(), e);
+            }
+            PagingWriter paging = new PagingWriter();
+            paging.write(statement, number, size);
+        } catch (ReadValueException e) {
+            // no page in the criteria, ignoring
         }
     }
 
