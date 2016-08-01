@@ -1,13 +1,10 @@
 package info.smart_tools.smartactors.sandbox.server_with_configuration;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
-import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
-import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
+import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.DependencyResolvingFeatureManager;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
-import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
@@ -16,23 +13,21 @@ import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVis
 import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 
 import java.net.URL;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  *
  */
 public class ServerWithConfiguration implements IServer {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         ServerWithConfiguration server = new ServerWithConfiguration();
         server.initialize();
         server.start();
@@ -58,24 +53,13 @@ public class ServerWithConfiguration implements IServer {
                     visitor
             );
 
-            // FS listener creation
-            // TODO: Get from configuration
-            IPath coreJarsDir = new Path("plugins");
-            Files.createDirectories(FileSystems.getDefault().getPath(coreJarsDir.getPath()));
-
-            IFilesystemTracker jarFilesTracker = new FilesystemTracker(
-                    (path) -> path.getPath().endsWith(".jar"),
-                    ListenerTask::new);
-
-            jarFilesTracker.start(coreJarsDir);
-            jarFilesTracker.addErrorHandler((e) -> {
-                System.out.println("Server initialization failed!");
-                e.printStackTrace();
-            });
-
             // FeatureManager & Feature creation
-            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
-
+            IFeatureManager featureManager = new DependencyResolvingFeatureManager(
+                    System.getProperty("user.home") + "/smartactors-plugins-repo",
+                    new HashMap<String, String>() {{
+                        put("local_repo", "file://" + System.getProperty("user.home") + "/.m2/repository/");
+                    }}
+            );
 
             IFeature coreFeature = featureManager.newFeature("smartactors.core");
             coreFeature.whenPresent(files -> {
@@ -87,7 +71,7 @@ public class ServerWithConfiguration implements IServer {
                 }
             });
 
-            String[] coreJars = {
+/*            String[] coreJars = {
                     "actor.response_sender-0.2.0-SNAPSHOT.jar",
 
 
@@ -273,10 +257,42 @@ public class ServerWithConfiguration implements IServer {
                     "core.postgres_schema-0.2.0-SNAPSHOT.jar",
 
                     "postgresql-9.4-1206-jdbc42.jar"
+=======*/
+            String[] coreArtifacts = {
+                    "info.smart_tools.smartactors:core.standard_config_sections:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.actor_receiver_creator:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.configuration_manager:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.dsobject:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.configuration_object:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.field:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.fieldname:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.handler_routing_receiver_creator:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.http_endpoint:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.ifieldname:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.fieldname:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.immutable_receiver_chain:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.ioc_keys:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.load_scope_provider:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.map_router:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.message_processor_and_sequence:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.messaging_identifiers:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.read_config_file:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.receiver_chains_storage:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.receiver_generator:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.response:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.response_content_json_strategy:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.response_sender_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.sample_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.scoped_ioc:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.scope_provider:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.standard_object_creators:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.http_endpoint:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.wds_object:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.wrapper_generator:0.2.0-SNAPSHOT"
             };
 
-            for (String jarName : coreJars) {
-                coreFeature.requireFile(jarName);
+            for (String artifact : coreArtifacts) {
+                coreFeature.requireFile(artifact);
             }
 
             coreFeature.listen();
