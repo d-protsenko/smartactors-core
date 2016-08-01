@@ -18,7 +18,10 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,7 +60,9 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
                     Keys.getOrAdd((String) description.getValue(this.dependency)),
                     description
             );
-            for (Method m : object.getClass().getDeclaredMethods()) {
+            List<Method> methods = new LinkedList<>(Arrays.asList(object.getClass().getDeclaredMethods()));
+            methods.removeIf(Method::isSynthetic);
+            for (Method m : methods) {
                 Class wrapperInterface = m.getParameterTypes()[0];
                 Object wrapper = wg.generate(wrapperInterface);
                 IResolveDependencyStrategy strategy = new SingletonStrategy(wrapper);

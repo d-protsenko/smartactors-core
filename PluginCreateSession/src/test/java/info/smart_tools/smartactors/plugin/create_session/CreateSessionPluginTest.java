@@ -49,10 +49,11 @@ public class CreateSessionPluginTest {
         BootstrapItem bootstrapItem = Mockito.mock(BootstrapItem.class);
         PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
-        PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateCreateSessionActorPlugin");
+        PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateSessionActorPlugin");
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         Mockito.verify(bootstrapItem).process(actionArgumentCaptor.capture());
