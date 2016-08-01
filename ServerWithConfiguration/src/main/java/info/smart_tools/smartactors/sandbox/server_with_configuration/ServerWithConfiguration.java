@@ -193,6 +193,7 @@ public class ServerWithConfiguration implements IServer {
                     "core.recursive_scope-0.2.0-SNAPSHOT.jar",
                     "core.resolve_by_name_ioc_strategy-0.2.0-SNAPSHOT.jar",
                     "core.resolve_by_name_ioc_with_lambda_strategy-0.2.0-SNAPSHOT.jar",
+                    "core.resolve_by_composite_name_ioc_with_lambda_strategy-0.2.0-SNAPSHOT.jar",
                     "core.response-0.2.0-SNAPSHOT.jar",
                     "core.response_content_json_strategy-0.2.0-SNAPSHOT.jar",
                     "core.scope_provider-0.2.0-SNAPSHOT.jar",
@@ -247,7 +248,27 @@ public class ServerWithConfiguration implements IServer {
                     "strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar",
                     "strategy.cookies_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.http_headers_setter-0.2.0-SNAPSHOT.jar",
-                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar"
+                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar",
+
+                    "actor.get_form-0.2.0-SNAPSHOT.jar",
+                    "core.cached_collection-0.2.0-SNAPSHOT.jar",
+                    "plugin.cached_collection-0.2.0-SNAPSHOT.jar",
+                    "plugin.get_form_actor-0.2.0-SNAPSHOT.jar",
+                    "plugin.collection_name-0.2.0-SNAPSHOT.jar",
+                    "core.db_storage-0.2.0-SNAPSHOT.jar",
+                    "core.pool-0.2.0-SNAPSHOT.jar",
+                    "plugin.dsobject-0.2.0-SNAPSHOT.jar",
+                    "core.postgres_connection-0.2.0-SNAPSHOT.jar",
+                    "plugin.postgres_connection_pool-0.2.0-SNAPSHOT.jar",
+                    "core.istorage_connection-0.2.0-SNAPSHOT.jar",
+
+                    "plugin.postgres_db_tasks-0.2.0-SNAPSHOT.jar",
+                    "core.postgres_getbyid_task-0.2.0-SNAPSHOT.jar",
+                    "core.postgres_search_task-0.2.0-SNAPSHOT.jar",
+                    "core.postgres_upsert_task-0.2.0-SNAPSHOT.jar",
+                    "core.postgres_schema-0.2.0-SNAPSHOT.jar",
+
+                    "postgresql-9.4-1206-jdbc42.jar"
             };
 
             for (String jarName : coreJars) {

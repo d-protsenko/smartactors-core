@@ -36,7 +36,7 @@ public class GetAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "token");
+            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
             collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve one of fields", e);

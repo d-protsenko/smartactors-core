@@ -190,7 +190,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             upsertQuery.setUpdateItem(asyncOperation);
 
             updateTask.setConnection(IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject()));
-            updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), upsertQuery));*/
+            updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), upsertQuery));*/
         } catch (TaskExecutionException e) {
             throw new CompleteAsyncOperationException("Error during execution complete.", e);
         } catch (PoolGuardException e) {

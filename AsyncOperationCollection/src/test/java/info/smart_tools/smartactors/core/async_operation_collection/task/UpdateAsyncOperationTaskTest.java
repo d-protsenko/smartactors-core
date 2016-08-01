@@ -39,7 +39,7 @@ public class UpdateAsyncOperationTaskTest {
         doneFlagField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "document/done")).thenReturn(doneFlagField);
 
@@ -48,7 +48,7 @@ public class UpdateAsyncOperationTaskTest {
         testTask = new UpdateAsyncOperationTask(targetTask);
 
         verifyStatic();
-        Keys.getOrAdd(IField.class.toString());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "document/done");

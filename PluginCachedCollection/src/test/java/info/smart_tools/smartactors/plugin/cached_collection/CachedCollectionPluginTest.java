@@ -67,14 +67,14 @@ public class CachedCollectionPluginTest {
     public void MustCorrectLoadPlugin() throws Exception {
 
         IKey cachedCollectionKey = mock(IKey.class);
-        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
+        when(Keys.getOrAdd(ICachedCollection.class.getCanonicalName())).thenReturn(cachedCollectionKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CachedCollectionPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         IKey iFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(iFieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
 
         IField connectionPoolField = mock(IField.class);
         when(IOC.resolve(iFieldKey, "connectionPool")).thenReturn(connectionPoolField);
@@ -101,10 +101,10 @@ public class CachedCollectionPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(ICachedCollection.class.toString());
+        Keys.getOrAdd(ICachedCollection.class.getCanonicalName());
 
         verifyStatic(times(3));
-        Keys.getOrAdd(IField.class.toString());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(iFieldKey, "connectionPool");
@@ -127,13 +127,13 @@ public class CachedCollectionPluginTest {
         CachedCollection cachedCollection = mock(CachedCollection.class);
 
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(iobjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iobjectKey);
 
         IKey connectionPoolKey = mock(IKey.class);
         when(Keys.getOrAdd("PostgresConnectionPool")).thenReturn(connectionPoolKey);
 
         IKey collectionNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(CollectionName.class.toString())).thenReturn(collectionNameKey);
+        when(Keys.getOrAdd(CollectionName.class.getCanonicalName())).thenReturn(collectionNameKey);
 
         IObject config = mock(IObject.class);
         IPool connectionPool = mock(IPool.class);
@@ -155,13 +155,13 @@ public class CachedCollectionPluginTest {
         verify(collectionMap).get(collectionMapKey);
 
         verifyStatic();
-        Keys.getOrAdd(IObject.class.toString());
+        Keys.getOrAdd(IObject.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(iobjectKey);
 
         verifyStatic();
-        Keys.getOrAdd(CollectionName.class.toString());
+        Keys.getOrAdd(CollectionName.class.getCanonicalName());
 
         verifyStatic();
         Keys.getOrAdd("PostgresConnectionPool");
@@ -190,14 +190,14 @@ public class CachedCollectionPluginTest {
     public void MustInCorrectExecuteInIPoorActionWhenThrowRegistrationException() throws Exception {
 
         IKey cachedCollectionKey = mock(IKey.class);
-        when(Keys.getOrAdd(ICachedCollection.class.toString())).thenReturn(cachedCollectionKey);
+        when(Keys.getOrAdd(ICachedCollection.class.getCanonicalName())).thenReturn(cachedCollectionKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CachedCollectionPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
 
         IKey iFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(iFieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
 
         IField connectionPoolField = mock(IField.class);
         when(IOC.resolve(iFieldKey, "connectionPool")).thenReturn(connectionPoolField);
@@ -224,12 +224,12 @@ public class CachedCollectionPluginTest {
             actionArgumentCaptor.getValue().execute();
         } catch (RuntimeException e) {
             verifyStatic();
-            Keys.getOrAdd(ICachedCollection.class.toString());
+            Keys.getOrAdd(ICachedCollection.class.getCanonicalName());
 
             verifyNew(BootstrapItem.class).withArguments("CachedCollectionPlugin");
 
             verifyStatic(times(3));
-            Keys.getOrAdd(IField.class.toString());
+            Keys.getOrAdd(IField.class.getCanonicalName());
 
             verifyStatic();
             IOC.resolve(iFieldKey, "connectionPool");

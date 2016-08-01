@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -60,18 +61,18 @@ public class CachedCollection implements ICachedCollection {
     public CachedCollection(final IObject config) throws InvalidArgumentException {
         try {
             this.map = new ConcurrentHashMap<>();
-            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
-            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
-            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
-            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyValue");
-            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
-            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "isActive");
-            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
+            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
+            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
+            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyValue");
+            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "isActive");
+            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "searchResult");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
-            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), keyName);
+            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), keyName);
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }
@@ -94,7 +95,7 @@ public class CachedCollection implements ICachedCollection {
     public List<IObject> getItems(final String key) throws GetCacheItemException {
 
         try {
-            final List<IObject> items = map.get(key);
+            final List<IObject> items = map.computeIfAbsent(key, (k) -> new LinkedList<>());
             if (items == null || items.isEmpty()) {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                     IDatabaseTask getItemTask = IOC.resolve(

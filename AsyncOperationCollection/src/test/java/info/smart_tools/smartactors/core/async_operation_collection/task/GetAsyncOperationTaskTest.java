@@ -56,7 +56,7 @@ public class GetAsyncOperationTaskTest {
         tokenField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "pageNumber")).thenReturn(pageNumberField);
 
@@ -72,7 +72,7 @@ public class GetAsyncOperationTaskTest {
         testTask = new GetAsyncOperationTask(testConnection);
 
         verifyStatic(times(5));
-        Keys.getOrAdd(IField.class.toString());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "pageNumber");
@@ -97,7 +97,7 @@ public class GetAsyncOperationTaskTest {
 
         IObject futureCriteriaObject = mock(IObject.class);
         Key ioBjectKey = mock(Key.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(ioBjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(ioBjectKey);
         when(IOC.resolve(ioBjectKey)).thenReturn(futureCriteriaObject);
 
         String token = "tiptoken";
@@ -107,7 +107,7 @@ public class GetAsyncOperationTaskTest {
         testTask.prepare(testQuery);
 
         verifyStatic();
-        Keys.getOrAdd(IObject.class.toString());
+        Keys.getOrAdd(IObject.class.getCanonicalName());
         verifyStatic();
         IOC.resolve(ioBjectKey);
 
@@ -127,7 +127,7 @@ public class GetAsyncOperationTaskTest {
 
         IObject testQuery = mock(IObject.class);
 
-        when(Keys.getOrAdd(IObject.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         testTask.prepare(testQuery);
     }
@@ -138,7 +138,7 @@ public class GetAsyncOperationTaskTest {
         IObject testQuery = mock(IObject.class);
 
         Key ioBjectKey = mock(Key.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(ioBjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(ioBjectKey);
         when(IOC.resolve(ioBjectKey)).thenThrow(new ResolutionException(""));
 
         testTask.prepare(testQuery);
@@ -151,7 +151,7 @@ public class GetAsyncOperationTaskTest {
 
         IObject futureCriteriaObject = mock(IObject.class);
         Key ioBjectKey = mock(Key.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(ioBjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(ioBjectKey);
         when(IOC.resolve(ioBjectKey)).thenReturn(futureCriteriaObject);
 
         when(tokenField.in(testQuery)).thenThrow(new ReadValueException());
@@ -161,7 +161,7 @@ public class GetAsyncOperationTaskTest {
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IObject.class.toString());
+            Keys.getOrAdd(IObject.class.getCanonicalName());
             verifyStatic();
             IOC.resolve(ioBjectKey);
 
@@ -178,7 +178,7 @@ public class GetAsyncOperationTaskTest {
 
         IObject futureCriteriaObject = mock(IObject.class);
         Key ioBjectKey = mock(Key.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(ioBjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(ioBjectKey);
         when(IOC.resolve(ioBjectKey)).thenReturn(futureCriteriaObject);
 
         String token = "tiptoken";
@@ -192,7 +192,7 @@ public class GetAsyncOperationTaskTest {
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IObject.class.toString());
+            Keys.getOrAdd(IObject.class.getCanonicalName());
             verifyStatic();
             IOC.resolve(ioBjectKey);
 

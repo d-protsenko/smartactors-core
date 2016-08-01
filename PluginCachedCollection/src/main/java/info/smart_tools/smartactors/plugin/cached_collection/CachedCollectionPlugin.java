@@ -13,6 +13,8 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -48,27 +50,67 @@ public class CachedCollectionPlugin implements IPlugin {
 
             item
                 .after("IOC")
+                .after("CollectionNamePlugin")
                 .after("IFieldPlugin")
                 .process(() -> {
                     try {
-                        IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
-                        IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
-                        IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
-                        IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
+                        IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.getCanonicalName());
+                        IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
+                        IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+                        IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
                         IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
                             (args) -> {
                                 try {
-                                    CollectionName collectionName = IOC.resolve(Keys.getOrAdd(CollectionName.class.toString()), args[0]);
+                                    String collectionName = (String) args[0];
                                     if (collectionName == null) {
                                         throw new RuntimeException("Can't resolve cached collection: collectionName is null");
                                     }
                                     String keyName = String.valueOf(args[1]);
                                     //TODO:: clarify about generators
                                     //TODO:: wrapperGenerator should be resolved by IOC
-                                    IWrapperGenerator wrapperGenerator = new WrapperGenerator(this.getClass().getClassLoader());
-                                    ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
+                                    ConnectionOptions connectionOptionsWrapper = new ConnectionOptions() {
+                                        @Override
+                                        public String getUrl() throws ReadValueException {
+                                            return "jdbc:postgresql://localhost:5432/test_async";
+                                        }
+
+                                        @Override
+                                        public String getUsername() throws ReadValueException {
+                                            return "test_user";
+                                        }
+
+                                        @Override
+                                        public String getPassword() throws ReadValueException {
+                                            return "qwerty";
+                                        }
+
+                                        @Override
+                                        public Integer getMaxConnections() throws ReadValueException {
+                                            return 10;
+                                        }
+
+                                        @Override
+                                        public void setUrl(String url) throws ChangeValueException {
+
+                                        }
+
+                                        @Override
+                                        public void setUsername(String username) throws ChangeValueException {
+
+                                        }
+
+                                        @Override
+                                        public void setPassword(String password) throws ChangeValueException {
+
+                                        }
+
+                                        @Override
+                                        public void setMaxConnections(Integer maxConnections) throws ChangeValueException {
+
+                                        }
+                                    };
                                     IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
-                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);
                                     keyNameField.out(config, keyName);

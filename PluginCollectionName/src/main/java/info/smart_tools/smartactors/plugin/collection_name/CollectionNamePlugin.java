@@ -37,9 +37,10 @@ public class CollectionNamePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CollectionNamePlugin");
             item
                 .after("IOC")
+                .before("configure")
                 .process(() -> {
                     try {
-                        IKey collectionNameKey = Keys.getOrAdd(CollectionName.class.toString());
+                        IKey collectionNameKey = Keys.getOrAdd(CollectionName.class.getCanonicalName());
                         IOC.register(collectionNameKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String name = String.valueOf(args[0]);

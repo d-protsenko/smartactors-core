@@ -51,7 +51,7 @@ public class CreateAsyncOperationActor {
             //TODO:: use wrapper generator or field or get this iobject from configuration json of a map
             AuthOperationData authOperationData = IOC.resolve(Keys.getOrAdd(AuthOperationData.class.toString()));
             authOperationData.setSessionId(message.getSessionId());
-            collection.createAsyncOperation(IOC.resolve(Keys.getOrAdd(IObject.class.toString()), authOperationData), token, expiredTime);
+            collection.createAsyncOperation(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), authOperationData), token, expiredTime);
 
             //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);
