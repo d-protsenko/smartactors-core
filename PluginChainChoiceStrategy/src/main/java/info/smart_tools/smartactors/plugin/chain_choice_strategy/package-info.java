@@ -4,4 +4,4 @@
  * Plugin creates and register into IOC {@link info.smart_tools.smartactors.core.chain_call_receiver.IChainChoiceStrategy}
  * strategy.
  */
-package info.smart_tools.smartactors.plugin.chain_call_receiver_strategy;
+package info.smart_tools.smartactors.plugin.chain_choice_strategy;

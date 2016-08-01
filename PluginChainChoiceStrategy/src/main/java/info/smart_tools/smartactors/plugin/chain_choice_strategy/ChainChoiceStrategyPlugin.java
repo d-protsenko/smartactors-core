@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.chain_call_receiver_strategy;
+package info.smart_tools.smartactors.plugin.chain_choice_strategy;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.chain_call_receiver.IChainChoiceStrategy;
@@ -65,14 +65,14 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                                             new SingletonStrategy(strategy));
                                 } catch (Exception e) {
                                     throw new RuntimeException(
-                                            "Could not create or register chain call receiver.", e
+                                            "Could not create or register chain choice strategy.", e
                                     );
                                 }
                             }
                     );
             this.bootstrap.add(item);
         } catch (Throwable e) {
-            throw new PluginException("Could not load 'ChainCallReceiver plugin'", e);
+            throw new PluginException("Could not load 'ChainChoiceStrategy plugin'", e);
         }
     }
 }
