@@ -96,11 +96,8 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
             IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IObject filterObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-          //  collectionNameField.out(queryForNestedTask, collectionNameField.in(query));
-          //  criteriaDateToStartDateTimeField.out(queryForNestedTask, LocalDateTime.now().format(FORMATTER));
             keyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), (String) keyNameField.in(query));
             String keyValue = keyValueField.in(query);
-
 
             IObject eqKeyObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             equalsField.out(eqKeyObject, keyValue);
@@ -108,11 +105,11 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
 
             IObject isActiveObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             equalsField.out(isActiveObject, true);
-        //    isActiveField.out(filterObject, isActiveObject);
+            isActiveField.out(filterObject, isActiveObject);
 
             IObject dateObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             dateToField.out(dateObject, LocalDateTime.now().format(FORMATTER));
-        //    startDateTimeField.out(filterObject, dateObject);
+            startDateTimeField.out(filterObject, dateObject);
 
             filterField.out(queryForNestedTask, filterObject);
 

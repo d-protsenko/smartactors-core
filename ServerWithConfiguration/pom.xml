@@ -11,9 +11,6 @@
 
     <artifactId>sandbox.server_with_configuration</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>plugins</module>
-    </modules>
 
     <dependencies>
         <dependency>
