@@ -120,8 +120,6 @@ public class DependencyResolvingFeatureManager implements IFeatureManager {
         synchronized (lock) {
             try {
                 return resolveArtifactsInner(artifactIds);
-            } catch (FeatureManagementException e) {
-                throw e;
             } catch (Exception e) {
                 throw new FeatureManagementException("Could not resolve artifacts.", e);
             }
