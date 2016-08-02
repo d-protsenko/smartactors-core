@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider
 import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
 import info.smart_tools.smartactors.core.tcp_server.TcpServer;
 import info.smart_tools.smartactors.core.tcp_server.exceptions.ServerInitializationException;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelPipeline;
@@ -61,7 +62,7 @@ public class HttpsServer extends TcpServer {
         if (sslEnable) {
             SSLEngine sslEngine = null;
             try {
-                sslEngine = contextProvider.get().createSSLEngine();
+                sslEngine = contextProvider.get().newEngine(ByteBufAllocator.DEFAULT);
             } catch (SSLContextProviderException ignored) {
             }
 

@@ -7,6 +7,8 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -26,7 +28,7 @@ import java.util.Scanner;
  */
 public class SSLContextProvider {
 
-    private SSLContext sslContext = null;
+    private SslContext sslContext = null;
     private String keyPass;
     private String certKey;
     private String certPath;
@@ -41,36 +43,23 @@ public class SSLContextProvider {
      * @throws SSLContextProviderException if there are not all fields at endpoint configuration
      */
     public void init(final IObject params) throws SSLContextProviderException {
-        IFieldName certKeyFieldName = null;
+        IFieldName certPassFieldName = null;
         IFieldName certPathFieldName = null;
         IFieldName keyPassFieldName = null;
         try {
-            certKeyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certKey");
-            certPathFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "keystorePath");
-            keyPassFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "keystorePass");
+            certPassFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPass");
+            certPathFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPath");
         } catch (ResolutionException e) {
             throw new SSLContextProviderException("An exception on resolving \"FieldName\"", e);
         }
         try {
-            certKey = (String) params.getValue(certKeyFieldName);
-            keyPass = (String) params.getValue(keyPassFieldName);
+            certKey = (String) params.getValue(certPassFieldName);
             certPath = (String) params.getValue(certPathFieldName);
             initialized = certKey != null && certPath != null;
 
             if (initialized) {
-                final KeyStore keyStore = KeyStore.getInstance("JKS");
-                try (final InputStream is = new FileInputStream(certPath)) {
-                    keyStore.load(is, certKey.toCharArray());
-                }
-                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory
-                        .getDefaultAlgorithm());
-                kmf.init(keyStore, keyPass.toCharArray());
-                final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory
-                        .getDefaultAlgorithm());
-                tmf.init(keyStore);
-
-                sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+                SslContextBuilder sslContextBuilder = SslContextBuilder.forServer(new File(certPath), new File(certKey));
+                sslContext = sslContextBuilder.build();
             }
         } catch (Exception e) {
             throw new SSLContextProviderException("An exception on getting values from parameters", e);
@@ -88,7 +77,7 @@ public class SSLContextProvider {
      * @return ssl context
      * @throws SSLContextProviderException if there are some problems on getting ssl context
      */
-    public SSLContext get() throws SSLContextProviderException {
+    public SslContext get() throws SSLContextProviderException {
         return sslContext;
     }
 
