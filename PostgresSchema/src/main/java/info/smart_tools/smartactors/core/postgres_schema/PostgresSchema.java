@@ -143,6 +143,10 @@ public final class PostgresSchema {
      *          "size": 50,
      *          "number": 2
      *      }
+     *      "sort": [
+     *          { "a": "asc" },
+     *          { "b": "desc" }
+     *      ]
      *  }
      *     </pre>
      * </p>
