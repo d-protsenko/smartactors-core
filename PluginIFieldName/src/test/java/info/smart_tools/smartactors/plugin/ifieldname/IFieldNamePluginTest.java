@@ -67,7 +67,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
                 ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
@@ -75,8 +75,8 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IFieldName.class.toString());
 
+        Keys.getOrAdd(IFieldName.class.getCanonicalName());
         verifyStatic();
         IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
 
@@ -93,10 +93,7 @@ public class IFieldNamePluginTest {
 
     @Test
     public void MustInCorrectLoadPluginWhenNewBootstrapItemThrowException() throws Exception {
-
-
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenThrow(new InvalidArgumentException(""));
-
         try {
             plugin.load();
         } catch (PluginException e) {
@@ -125,14 +122,14 @@ public class IFieldNamePluginTest {
 
         verify(bootstrap).add(item);
 
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IFieldName.class.toString());
+            Keys.getOrAdd(IFieldName.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -159,7 +156,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 
@@ -168,7 +165,7 @@ public class IFieldNamePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IFieldName.class.toString());
+            Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
             verifyNew(ResolveByNameIocStrategy.class).withArguments(any());
             return;
@@ -182,7 +179,6 @@ public class IFieldNamePluginTest {
 
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
-
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
@@ -197,7 +193,8 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
                 ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
@@ -209,7 +206,7 @@ public class IFieldNamePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IFieldName.class.toString());
+            Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
             verifyStatic();
             IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
@@ -231,6 +228,7 @@ public class IFieldNamePluginTest {
     public void MustInCorrectResolveDependencyWhenArgLength0() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
+
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
@@ -247,7 +245,8 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -257,7 +256,7 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IFieldName.class.toString());
+        Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -272,6 +271,7 @@ public class IFieldNamePluginTest {
     public void MustInCorrectResolveDependencyWhenArg0IsNotString() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
+
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
@@ -288,7 +288,8 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -298,7 +299,7 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IFieldName.class.toString());
+        Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -329,7 +330,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
 
         ResolveByNameIocStrategy createNewInstanceStrategy = mock(ResolveByNameIocStrategy.class);
 
@@ -339,7 +340,8 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IFieldName.class.toString());
+
+        Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 

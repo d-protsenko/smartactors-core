@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.plugin.authentication;
 
+import info.smart_tools.smartactors.actors.authentication.AuthenticationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
  * Plugin for Authentication actor
@@ -36,12 +36,14 @@ public class AuthenticationActorPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
-            item.after("IOC").process(() -> {
-                try {
-                    IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
+            item
+                .after("IOC")
+                .before("configure")
+                .process(() -> {
+                    try {
+                        IOC.register(Keys.getOrAdd(AuthenticationActor.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
                                     return new AuthenticationActor();
@@ -49,12 +51,12 @@ public class AuthenticationActorPlugin implements IPlugin {
                                     throw new RuntimeException(e);
                                 }
                             }));
-                } catch (RegistrationException | InvalidArgumentException e) {
+                } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);
                 }
             });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load AuthenticationActor plugin", e);
         }
     }

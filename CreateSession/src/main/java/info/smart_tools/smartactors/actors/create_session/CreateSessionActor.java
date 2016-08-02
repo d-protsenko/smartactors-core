@@ -6,7 +6,6 @@ package info.smart_tools.smartactors.actors.create_session;
 import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactors.actors.create_session.wrapper.Session;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -35,12 +34,13 @@ public class CreateSessionActor {
 
     private static IField SESSION_ID_F;
     private static IField EQUALS_F;
+    private static IField AUTH_INFO_F;
 
     static {
         try {
             SESSION_ID_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
             EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-
+            AUTH_INFO_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
         } catch (ResolutionException e) {
            throw new RuntimeException(e);
         }
@@ -70,17 +70,17 @@ public class CreateSessionActor {
             String sessionId = inputMessage.getSessionId();
             if (sessionId == null || sessionId.equals("")) {
                 IObject authInfo = inputMessage.getAuthInfo();
-                Session newSession = IOC.resolve(Keys.getOrAdd(Session.class.getCanonicalName()));
-                newSession.setAuthInfo(authInfo);
+                IObject newSession = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                AUTH_INFO_F.out(newSession, authInfo);
                 inputMessage.setSession(newSession);
             } else {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                    //TODO:: change for new tasks
                     IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.getCanonicalName()), "PSQL");
                     IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
                     StorageConnection connection = IOC.resolve(
-                            Keys.getOrAdd(StorageConnection.class.getCanonicalName()),
-                            poolGuard.getObject()
+                        Keys.getOrAdd(StorageConnection.class.getCanonicalName()), poolGuard.getObject()
                     );
                     prepareSearchQuery(searchQuery, inputMessage);
 
@@ -110,7 +110,7 @@ public class CreateSessionActor {
                     IObject result = (searchResultField.<List<IObject>>in(searchQuery)).get(0);
 
                     IField sessionF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "session");
-                    Session fromDBSession = sessionF.in(result);
+                    IObject fromDBSession = sessionF.in(result);
                     if (fromDBSession == null) {
                         throw new CreateSessionException("Find session is null");
                     }
@@ -122,10 +122,10 @@ public class CreateSessionActor {
                     throw new CreateSessionException("Error during find session by sessionId: " + inputMessage.getSessionId(), e);
                 }
             }
-        } catch (ReadValueException | ChangeValueException e) {
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new CreateSessionException("Cannot create or find session by sessionId", e);
         } catch (ResolutionException e) {
-            throw new CreateSessionException("Error because cannot resolve Session.class", e);
+            throw new CreateSessionException("Resolution error", e);
         }
     }
 

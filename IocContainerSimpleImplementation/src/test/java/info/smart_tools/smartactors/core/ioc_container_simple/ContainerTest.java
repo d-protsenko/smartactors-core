@@ -37,7 +37,7 @@ public class ContainerTest {
         IKey key1 = container.getIocKey();
         IKey key2 = container.getKeyForKeyStorage();
         assertNull(key1);
-        assertNull(key2);
+        assertNotNull(key2);
     }
 
     @Test (expected = ResolutionException.class)

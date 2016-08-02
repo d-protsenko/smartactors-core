@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
@@ -12,6 +13,11 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.wds_object.WDSObject;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Task that performs on a message actions defined by a message processing sequence.
@@ -25,6 +31,9 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private IObject message;
     private IObject response;
     private IObject environment;
+    private WDSObject wrappedEnvironment;
+
+    private Map<Object, WDSObject> wrappedEnvironmentCache;
 
     private IFieldName configFieldName;
     private IFieldName messageFieldName;
@@ -32,6 +41,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private IFieldName responseFieldName;
     private IFieldName sequenceFieldName;
     private IFieldName argumentsFieldName;
+    private IFieldName wrapperFieldName;
 
     /**
      * True if processing was interrupted (using {@link #pauseProcess()}) during execution of last receiver.
@@ -92,6 +102,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         this.asyncOpDepth = 0;
 
         this.environment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+        this.wrappedEnvironment = null;
+        this.wrappedEnvironmentCache = new WeakHashMap<>();
 
         configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "config");
         messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message");
@@ -99,6 +111,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "response");
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
+        wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
     }
 
     @Override
@@ -179,7 +192,11 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
     @Override
     public IObject getEnvironment() {
-        return environment;
+        if (null != this.wrappedEnvironment) {
+            return this.wrappedEnvironment;
+        } else {
+            return environment;
+        }
     }
 
     @Override
@@ -198,6 +215,9 @@ public class MessageProcessor implements ITask, IMessageProcessor {
                 this.asyncOpDepth = 0;
                 this.asyncException = null;
                 this.environment.setValue(argumentsFieldName, messageProcessingSequence.getCurrentReceiverArguments());
+
+                refreshWrappedEnvironment();
+
                 messageProcessingSequence.getCurrentReceiver().receive(this);
             } catch (Throwable e) {
                 messageProcessingSequence.catchException(e, context);
@@ -209,6 +229,23 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         } catch (final Exception e1) {
             complete();
             throw new TaskExecutionException("Exception occurred while handling exception occurred in message receiver.", e1);
+        }
+    }
+
+    private void refreshWrappedEnvironment()
+            throws ReadValueException, InvalidArgumentException, ResolutionException {
+        Object wrapperConfig = messageProcessingSequence.getCurrentReceiverArguments().getValue(wrapperFieldName);
+
+        if (null == wrapperConfig) {
+            this.wrappedEnvironment = null;
+        } else {
+            if (this.wrappedEnvironmentCache.containsKey(wrapperConfig)) {
+                this.wrappedEnvironment = wrappedEnvironmentCache.get(wrapperConfig);
+            } else {
+                this.wrappedEnvironment = IOC.resolve(Keys.getOrAdd(WDSObject.class.getCanonicalName()), wrapperConfig);
+                this.wrappedEnvironment.init(this.environment);
+                this.wrappedEnvironmentCache.put(wrapperConfig, this.wrappedEnvironment);
+            }
         }
     }
 

@@ -34,10 +34,11 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetHeaderFromRequestRulePlugin");
 
             item
-                    .after("IOC")
+                .after("IOC")
+                .before("configure")
                     .process(() -> {
                         try {
-                            IKey ruleKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+                            IKey ruleKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName());
                             IOC.register(ruleKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> new GetHeaderFromRequestRule()
