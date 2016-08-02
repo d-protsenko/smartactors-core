@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.plugin.authentication;
+package info.smart_tools.smartactors.actors.authentication;
 
-import info.smart_tools.smartactors.plugin.authentication.exception.AuthFailException;
-import info.smart_tools.smartactors.plugin.authentication.wrapper.AuthenticationMessage;
+import info.smart_tools.smartactors.actors.authentication.exception.AuthFailException;
+import info.smart_tools.smartactors.actors.authentication.wrapper.AuthenticationMessage;
 import org.junit.Before;
 import org.junit.Test;
 import static org.powermock.api.mockito.PowerMockito.mock;

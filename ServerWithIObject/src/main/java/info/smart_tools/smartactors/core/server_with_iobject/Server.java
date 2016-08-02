@@ -184,16 +184,28 @@ public class Server implements IServer {
             throws Exception {
         IOC.register(
                 IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return new ConfigurationObject((String) a[0]);
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Could not create new instance of Configuration Object."
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
                         IOC.getKeyForKeyStorage(), "configuration object default strategy"
                 ),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
-                                if (obj instanceof IObject) {
-                                    return new ConfigurationObject((IObject) obj);
-                                }
-                                return obj;
+                                return a[0];
                             } catch (Throwable e) {
                                 throw new RuntimeException(
                                         "Error in configuration 'default' rule.", e
@@ -209,12 +221,13 @@ public class Server implements IServer {
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
+                                Object obj = a[0];
                                 if (obj instanceof String) {
-                                    IObject innerObject = new DSObject();
+                                    IObject innerObject = new ConfigurationObject();
                                     innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
                                     innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
-                                    return new ArrayList<IObject>() {{ add(new ConfigurationObject(innerObject)); }};
+
+                                    return new ArrayList<IObject>() {{ add(innerObject); }};
                                 }
                                 return obj;
                             } catch (Throwable e) {
@@ -232,14 +245,14 @@ public class Server implements IServer {
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
-                                Object obj = ((IObject) a[0]).getValue((IFieldName) a[1]);
+                                Object obj = a[0];
                                 if (obj instanceof String) {
-                                    IObject innerObject = new DSObject();
+                                    IObject innerObject = new ConfigurationObject();
                                     innerObject.setValue(new FieldName("name"), "wds_target_strategy");
                                     innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
 
                                     return new ArrayList<List<IObject>>() {{
-                                        add(new ArrayList<IObject>() {{  add(new ConfigurationObject(innerObject)); }});
+                                        add(new ArrayList<IObject>() {{  add(innerObject); }});
                                     }};
                                 }
                                 if (obj instanceof List) {
@@ -289,8 +302,7 @@ public class Server implements IServer {
                                 }
                                 return IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyStorage(), resolvedKey),
-                                        a[0],
-                                        a[1]
+                                        a[0]
                                 );
                             } catch (Throwable e) {
                                 throw new RuntimeException(
@@ -300,7 +312,7 @@ public class Server implements IServer {
                         }
                 )
         );
-        this.ds_config = new DSObject("{\n" +
+        this.co_config = new DSObject("{\n" +
                 "  \"wrapper\": {\n" +
                 "    \"in_getIntValue\": [{\n" +
                 "      \"name\": \"wds_getter_strategy\",\n" +
@@ -364,6 +376,5 @@ public class Server implements IServer {
                 "    ]\n" +
                 "  }\n" +
                 "}");
-        this.co_config = new ConfigurationObject(this.ds_config);
     }
 }

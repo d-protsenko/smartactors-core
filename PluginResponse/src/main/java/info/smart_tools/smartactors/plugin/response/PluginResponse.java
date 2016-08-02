@@ -36,6 +36,8 @@ public class PluginResponse implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("ActorReceiverCreator")
+                    .before("HandlerRoutingReceiverCreator")
                     .process(() -> {
                         try {
                             IOC.register(

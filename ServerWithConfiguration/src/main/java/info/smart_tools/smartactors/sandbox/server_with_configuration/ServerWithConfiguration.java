@@ -31,6 +31,13 @@ import java.util.Collection;
  *
  */
 public class ServerWithConfiguration implements IServer {
+
+    public static void main(String[] args) throws Exception {
+        ServerWithConfiguration server = new ServerWithConfiguration();
+        server.initialize();
+        server.start();
+    }
+
     @Override
     public void initialize() throws ServerInitializeException {
         try {
@@ -82,6 +89,15 @@ public class ServerWithConfiguration implements IServer {
 
             String[] coreJars = {
                     "actor.response_sender-0.2.0-SNAPSHOT.jar",
+
+
+                    "actors.sample_actor-0.2.0-SNAPSHOT.jar",
+                    "plugin.sample_actor-0.2.0-SNAPSHOT.jar",
+
+                    "core.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_choice_strategy-0.2.0-SNAPSHOT.jar",
+
                     "core.actor_receiver-0.2.0-SNAPSHOT.jar",
                     "core.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "core.blocking_queue-0.2.0-SNAPSHOT.jar",
