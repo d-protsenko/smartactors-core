@@ -45,12 +45,13 @@ public class CreateSessionPlugin implements IPlugin {
                     IOC.register(createSessionActorKey, new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
-                                    CreateSessionConfig param = IOC.resolve(
-                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
-                                            args[0],
-                                            connectionPool
-                                    );
+                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), new TestConnectionOptions());
+//                                    CreateSessionConfig param = IOC.resolve(
+//                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
+//                                            args[0],
+//                                            connectionPool
+//                                    );
+                                    CreateSessionConfig param = new CreateSessionConfigImpl(connectionPool);
                                     return new CreateSessionActor(param);
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
