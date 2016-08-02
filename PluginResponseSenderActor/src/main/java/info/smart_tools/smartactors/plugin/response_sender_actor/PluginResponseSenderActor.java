@@ -43,8 +43,12 @@ public class PluginResponseSenderActor implements IPlugin {
                                     Keys.getOrAdd("ResponseSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new ResponseSenderActor()));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get ResponseSenderActor key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't register new strategy", e);
                         }
                     });
 

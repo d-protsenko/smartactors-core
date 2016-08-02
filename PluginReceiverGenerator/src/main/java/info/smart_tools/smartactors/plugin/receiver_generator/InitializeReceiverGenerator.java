@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.plugin.receiver_generator;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -47,8 +50,12 @@ public class InitializeReceiverGenerator implements IPlugin {
                                             Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()),
                                             new SingletonStrategy(rg)
                                     );
-                                } catch (Exception e) {
-                                    throw new RuntimeException("Could not initialize receiver generator.", e);
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't get InitializeReceiverGenerator key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't register new strategy", e);
                                 }
                             }
                         );

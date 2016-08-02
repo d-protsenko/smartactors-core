@@ -44,8 +44,12 @@ public class PluginConfigurationManager implements IPlugin {
                         try {
                             IOC.register(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()),
                                     new SingletonStrategy(new ConfigurationManager()));
-                        } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't get ConfigurationManager key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't register new strategy", e);
                         }
                     });
 
@@ -63,7 +67,7 @@ public class PluginConfigurationManager implements IPlugin {
 
                             configurationManager.configure();
                         } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecuteException("ConfigurationManager plugin can't load", e);
                         }
                     });
 

@@ -35,6 +35,7 @@ public class FieldNamePluginTest {
 
     private FieldNamePlugin plugin;
     private IBootstrap bootstrap;
+    private String bootstrapArgument;
 
     @Before
     public void setUp() throws Exception {
@@ -44,19 +45,20 @@ public class FieldNamePluginTest {
 
         bootstrap = mock(IBootstrap.class);
         plugin = new FieldNamePlugin(bootstrap);
+        bootstrapArgument = "FieldNamePlugin";
     }
 
     @Test
     public void MustCorrectLoadPlugin() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -94,12 +96,12 @@ public class FieldNamePluginTest {
     public void MustInCorrectLoadPluginWhenNewBootstrapItemThrowException() throws Exception {
 
 
-        whenNew(BootstrapItem.class).withArguments("field_name").thenThrow(new InvalidArgumentException(""));
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenThrow(new InvalidArgumentException(""));
 
         try {
             plugin.load();
         } catch (PluginException e) {
-            verifyNew(BootstrapItem.class).withArguments("field_name");
+            verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -109,13 +111,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectExecuteActionWhenKeysThrowException() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -142,13 +144,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectExecuteActionWhenNewCreateStrategyThrowException() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -180,13 +182,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectExecuteActionWhenIOCRegisterThrowException () throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -230,13 +232,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectResolveDependencyWhenArgLength0() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -271,13 +273,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectResolveDependencyWhenArg0IsNotString() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
@@ -312,13 +314,13 @@ public class FieldNamePluginTest {
     public void MustInCorrectResolveDependencyWhenNewFieldNameThrowException() throws Exception {
 
         BootstrapItem item = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("field_name").thenReturn(item);
+        whenNew(BootstrapItem.class).withArguments(bootstrapArgument).thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
 
         plugin.load();
 
-        verifyNew(BootstrapItem.class).withArguments("field_name");
+        verifyNew(BootstrapItem.class).withArguments(bootstrapArgument);
 
         verify(item).after("IOC");
 
