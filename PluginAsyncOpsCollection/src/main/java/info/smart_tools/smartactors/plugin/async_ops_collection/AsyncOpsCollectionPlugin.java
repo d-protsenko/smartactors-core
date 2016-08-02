@@ -10,6 +10,8 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -46,15 +48,52 @@ public class AsyncOpsCollectionPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey cachedCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.toString());
+                            IKey cachedCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
                             IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
                                     (args) -> {
                                         try {
                                             String collectionName = String.valueOf(args[0]);
-                                            //TODO:: clarify about generators
-                                            //TODO:: wrapperGenerator should be resolved by IOC
-                                            IWrapperGenerator wrapperGenerator = new WrapperGenerator(this.getClass().getClassLoader());
-                                            ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
+                                            ConnectionOptions connectionOptionsWrapper = new ConnectionOptions() {
+                                                @Override
+                                                public String getUrl() throws ReadValueException {
+                                                    return "jdbc:postgresql://localhost:5432/test_async";
+                                                }
+
+                                                @Override
+                                                public String getUsername() throws ReadValueException {
+                                                    return "test_user";
+                                                }
+
+                                                @Override
+                                                public String getPassword() throws ReadValueException {
+                                                    return "qwerty";
+                                                }
+
+                                                @Override
+                                                public Integer getMaxConnections() throws ReadValueException {
+                                                    return 10;
+                                                }
+
+                                                @Override
+                                                public void setUrl(String url) throws ChangeValueException {
+
+                                                }
+
+                                                @Override
+                                                public void setUsername(String username) throws ChangeValueException {
+
+                                                }
+
+                                                @Override
+                                                public void setPassword(String password) throws ChangeValueException {
+
+                                                }
+
+                                                @Override
+                                                public void setMaxConnections(Integer maxConnections) throws ChangeValueException {
+
+                                                }
+                                            };
                                             IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
 
                                             return new AsyncOperationCollection(connectionPool, collectionName);

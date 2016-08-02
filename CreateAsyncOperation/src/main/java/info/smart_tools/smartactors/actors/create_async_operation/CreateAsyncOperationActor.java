@@ -45,8 +45,8 @@ public class CreateAsyncOperationActor {
         try {
             //TODO:: move generate to util class and add server number
             String token = String.valueOf(UUID.randomUUID());
-            IAsyncOperationCollection collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.toString()));
-            Long amountOfHoursToExpireFromNow = message.getExpiredTime();
+            IAsyncOperationCollection collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), "operation");
+            Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
             String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
             //TODO:: use wrapper generator or field or get this iobject from configuration json of a map
             AuthOperationData authOperationData = IOC.resolve(Keys.getOrAdd(AuthOperationData.class.toString()));

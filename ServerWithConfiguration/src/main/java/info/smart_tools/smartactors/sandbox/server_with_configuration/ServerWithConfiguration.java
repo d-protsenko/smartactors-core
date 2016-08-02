@@ -105,11 +105,16 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.chain_call_receiver:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.chain_choice_strategy:0.2.0-SNAPSHOT",
 
+                    "info.smart_tools.smartactors:plugin.resolve_standard_types_strategies:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.resolve_iobject_strategies:0.2.0-SNAPSHOT",
+
                     "info.smart_tools.smartactors:plugin.get_form_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.postgres_db_tasks:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.postgres_connection_pool:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.cached_collection:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.collection_name:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.collection_name:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.create_async_operation_plugin:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.async_ops_collection:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

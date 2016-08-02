@@ -66,7 +66,7 @@ public class CreateAsyncOperationActorTest {
 
         String sessionId = "sessionId";
         when(message.getSessionId()).thenReturn(sessionId);
-        when(message.getExpiredTime()).thenReturn(4L);
+        when(message.getExpiredTime()).thenReturn(4);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);

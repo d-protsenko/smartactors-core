@@ -7,6 +7,11 @@
       "collectionName": "forms"
     },
     {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor",
+      "name": "createAsyncOpsActor"
+    },
+    {
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
@@ -29,7 +34,7 @@
       "exceptional": []
     },
     {
-      "id": "myChain",
+      "id": "authorisation_map",
       "steps": [
         {
           "target": "getFormActor",
@@ -37,6 +42,15 @@
           "wrapper": {
             "in_getFormKey": "message/formKey",
             "out_setForm": "response/form"
+          }
+        },
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getSessionId": "message/sessionId",
+            "in_getExpiredTime": "consts/4",
+            "out_setAsyncOperationToken": "response/token"
           }
         },
         {

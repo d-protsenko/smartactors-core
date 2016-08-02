@@ -37,10 +37,10 @@ public class CreateAsyncOpPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("configure")
                     .process(() -> {
                         try {
-                            IKey createAsyncOpKey = Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
-
+                            IKey createAsyncOpKey = Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
                             IOC.register(createAsyncOpKey, new CreateNewInstanceStrategy(
                                     (args) -> {
                                         try {
