@@ -12,6 +12,12 @@
       "name": "createAsyncOpsActor"
     },
     {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.close_async_operation.CloseAsyncOperationActor",
+      "name": "closeAsyncOpActor",
+      "collectionName": "operation"
+    },
+    {
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
@@ -51,6 +57,15 @@
             "in_getSessionId": "message/sessionId",
             "in_getExpiredTime": "consts/4",
             "out_setAsyncOperationToken": "response/token"
+          }
+        },
+        {
+          "target": "closeAsyncOpActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "in_getOperation": "message/asyncOperation",
+            "in_getOperationTokens": "message/asyncOpsTokens"
           }
         },
         {

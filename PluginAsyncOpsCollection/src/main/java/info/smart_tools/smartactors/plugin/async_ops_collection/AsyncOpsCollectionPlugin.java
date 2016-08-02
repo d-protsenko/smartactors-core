@@ -46,10 +46,11 @@ public class AsyncOpsCollectionPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("configure")
                     .process(() -> {
                         try {
-                            IKey cachedCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
-                            IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
+                            IKey asyncCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
+                            IOC.register(asyncCollectionKey, new ResolveByCompositeNameIOCStrategy(
                                     (args) -> {
                                         try {
                                             String collectionName = String.valueOf(args[0]);
