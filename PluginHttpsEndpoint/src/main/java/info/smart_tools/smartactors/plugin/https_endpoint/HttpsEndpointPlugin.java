@@ -40,6 +40,9 @@ import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtr
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 /**
  * Plugin for register http/https endpoint at IOC
  */
@@ -157,6 +160,18 @@ public class HttpsEndpointPlugin implements IPlugin {
                                             )
                                     );
 
+
+                                    IOC.register(Keys.getOrAdd(FileInputStream.class.getCanonicalName()),
+                                            new CreateNewInstanceStrategy(
+                                                    (args) -> {
+                                                        try {
+                                                            return new FileInputStream((String) args[0]);
+                                                        } catch (FileNotFoundException e) {
+                                                        }
+                                                        return null;
+                                                    }
+                                            ));
+
                                     IOC.register(httpsEndpointKey,
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
@@ -169,7 +184,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                                     IOC.resolve(
                                                                             Keys.getOrAdd(SSLContextProvider.class.getCanonicalName()),
                                                                             configuration
-                                                                            );
+                                                                    );
                                                             return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
                                                                     (Integer) configuration.getValue(maxContentLengthFieldName),
                                                                     ScopeProvider.getCurrentScope(), environmentHandler,

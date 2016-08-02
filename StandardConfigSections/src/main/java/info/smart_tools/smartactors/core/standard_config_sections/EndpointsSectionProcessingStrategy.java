@@ -42,7 +42,15 @@ import java.util.List;
  *                 // . . .
  *             },
  *             {
- *                 // . . .
+ *                 "name": "httpsEndpointName",
+ *                 "type": "https",
+ *                 "port": 9909,
+ *                 "startChain": "mainChain",
+ *                 "maxContentLength": 4098,
+ *                 "stackDepth": 5,
+ *                 "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/cert.pem",
+ *                 "keyPass": "123456",
+ *                 "storePass": "123456"
  *             }
  *         ]
  *     }

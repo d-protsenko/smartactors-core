@@ -22,10 +22,13 @@
     {
       "name": "mainHttpEp",
       "type": "https",
-      "port": 9909,
+      "port": 8443,
       "startChain": "httpChain",
       "maxContentLength": 4098,
-      "stackDepth": 5
+      "stackDepth": 5,
+      "keystorePath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/examplekeystore.jks",
+      "certKey": "123456",
+      "keystorePass": "123456"
     }
   ],
   "executor": {
