@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.authentication.wrapper;
+package info.smart_tools.smartactors.actors.authentication.wrapper;
 
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
