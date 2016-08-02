@@ -68,9 +68,9 @@ public class IFieldNamePlugin implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("IFieldName plugin can't load: can't get IFieldName key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("IFieldName plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("IFieldName plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("IFieldName plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("IFieldName plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

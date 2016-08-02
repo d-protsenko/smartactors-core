@@ -43,7 +43,7 @@ public class PluginIOCSimpleContainer implements IPlugin {
                         } catch (IllegalAccessException e) {
                             throw new ActionExecuteException("IOCSimpleContainer plugin can't load: access to field denied", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: can't create strategy", e);
                         } catch (NoSuchFieldException e) {
                             throw new ActionExecuteException("IOCSimpleContainer plugin can't load: field with name 'container' is not found", e);
                         }

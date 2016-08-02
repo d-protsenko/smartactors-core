@@ -73,7 +73,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't get MessagingIdentifiers key", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't register new strategy", e);
                         }
                     });
 

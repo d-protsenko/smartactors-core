@@ -76,9 +76,9 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get MessageProcessorAndSequence key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
                     });
 

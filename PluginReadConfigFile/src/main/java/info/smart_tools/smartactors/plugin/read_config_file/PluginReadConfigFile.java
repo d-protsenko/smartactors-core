@@ -64,7 +64,7 @@ public class PluginReadConfigFile implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: can't get ReadConfigFile key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't create strategy", e);
                         } catch (InvalidStateException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration is already parsed", e);
                         } catch (IOException e) {

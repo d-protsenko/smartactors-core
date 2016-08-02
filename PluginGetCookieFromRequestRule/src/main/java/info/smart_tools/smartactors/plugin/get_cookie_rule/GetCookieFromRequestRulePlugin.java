@@ -47,9 +47,9 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't get GetCookieFromRequestRule key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

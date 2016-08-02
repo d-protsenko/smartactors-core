@@ -46,9 +46,9 @@ public class PluginResponseSenderActor implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get ResponseSenderActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get create strategy", e);
+                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't register new strategy", e);
                         }
                     });
 

@@ -44,7 +44,7 @@ public class PluginReceiverChain implements IPlugin {
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't get register new strategy", e);
+                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't register new strategy", e);
                         }
                     });
 
