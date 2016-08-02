@@ -69,11 +69,11 @@ public class CheckUserIsNewActorPlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get CheckUserIsNewActor key");
+                            throw new ActionExecuteException("CheckUserIsNewActor plugin can't load: can't get CheckUserIsNewActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("CheckUserIsNewActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("CheckUserIsNewActor plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

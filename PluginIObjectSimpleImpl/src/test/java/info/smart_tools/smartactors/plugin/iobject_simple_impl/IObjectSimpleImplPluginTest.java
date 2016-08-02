@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.iobject_simple_impl;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -85,7 +86,7 @@ public class IObjectSimpleImplPluginTest {
         plugin.load();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ActionExecuteException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
         when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));

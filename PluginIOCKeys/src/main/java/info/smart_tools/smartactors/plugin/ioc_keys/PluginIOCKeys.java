@@ -38,7 +38,7 @@ public class PluginIOCKeys implements IPlugin {
                         try {
                             IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy());
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecuteException("IOCKeys plugin can't load: can't register new strategy", e);
                         }
                     });
 

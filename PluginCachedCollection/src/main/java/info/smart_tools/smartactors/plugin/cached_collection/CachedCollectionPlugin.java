@@ -12,8 +12,6 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -77,7 +75,7 @@ public class CachedCollectionPlugin implements IPlugin {
                                 }
                             }));
                 } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                    throw new ActionExecuteException("Error during registration strategy for cached collection.", e);
+                    throw new ActionExecuteException("CreateCachedCollection plugin can't load", e);
                 }
             });
             bootstrap.add(item);

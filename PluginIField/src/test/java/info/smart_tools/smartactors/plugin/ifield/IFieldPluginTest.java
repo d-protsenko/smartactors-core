@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.ifield;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -139,7 +140,7 @@ public class IFieldPluginTest {
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(IField.class.getCanonicalName());
@@ -177,7 +178,7 @@ public class IFieldPluginTest {
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(IField.class.getCanonicalName());

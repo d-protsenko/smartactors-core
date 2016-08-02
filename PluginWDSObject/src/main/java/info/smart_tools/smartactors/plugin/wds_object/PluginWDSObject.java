@@ -51,8 +51,12 @@ public class PluginWDSObject implements IPlugin {
                                             throw new RuntimeException(e);
                                         }
                                     }));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("WDSObject plugin can't load: can't get WDSObject key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("WDSObject plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("WDSObject plugin can't load: can't register new strategy", e);
                         }
                     });
 

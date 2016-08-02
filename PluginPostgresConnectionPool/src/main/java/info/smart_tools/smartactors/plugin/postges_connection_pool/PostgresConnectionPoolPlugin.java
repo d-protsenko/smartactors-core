@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.postges_connection_pool;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -71,8 +72,12 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                                 }
 
                             }));
-                    } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                        throw new RuntimeException(e);
+                    } catch (ResolutionException e) {
+                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't get PostgresConnectionPool key", e);
+                    } catch (InvalidArgumentException e) {
+                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't create strategy", e);
+                    } catch (RegistrationException e) {
+                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't register new strategy", e);
                     }
             });
             bootstrap.add(item);
