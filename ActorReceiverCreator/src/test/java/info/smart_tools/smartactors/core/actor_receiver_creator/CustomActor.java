@@ -10,7 +10,7 @@ public class CustomActor {
         wrapper.setA(true);
     }
 
-    void getSomeValue(IMethodWrapper wrapper) {
+    public void getSomeValue(IMethodWrapper wrapper) {
         this.methodVisited = true;
     }
 }
