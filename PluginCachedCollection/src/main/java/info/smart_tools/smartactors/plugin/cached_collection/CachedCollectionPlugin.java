@@ -64,47 +64,7 @@ public class CachedCollectionPlugin implements IPlugin {
                                     String keyName = String.valueOf(args[1]);
                                     //TODO:: clarify about generators
                                     //TODO:: wrapperGenerator should be resolved by IOC
-                                    ConnectionOptions connectionOptionsWrapper = new ConnectionOptions() {
-                                        @Override
-                                        public String getUrl() throws ReadValueException {
-                                            return "jdbc:postgresql://localhost:5432/test_async";
-                                        }
-
-                                        @Override
-                                        public String getUsername() throws ReadValueException {
-                                            return "test_user";
-                                        }
-
-                                        @Override
-                                        public String getPassword() throws ReadValueException {
-                                            return "qwerty";
-                                        }
-
-                                        @Override
-                                        public Integer getMaxConnections() throws ReadValueException {
-                                            return 10;
-                                        }
-
-                                        @Override
-                                        public void setUrl(String url) throws ChangeValueException {
-
-                                        }
-
-                                        @Override
-                                        public void setUsername(String username) throws ChangeValueException {
-
-                                        }
-
-                                        @Override
-                                        public void setPassword(String password) throws ChangeValueException {
-
-                                        }
-
-                                        @Override
-                                        public void setMaxConnections(Integer maxConnections) throws ChangeValueException {
-
-                                        }
-                                    };
+                                    ConnectionOptions connectionOptionsWrapper = new ConnectionOptionsTestImpl();
                                     IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
                                     IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                     connectionPoolField.out(config, connectionPool);
