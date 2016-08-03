@@ -76,11 +76,18 @@
       "exceptional": []
     },
     {
-      "id": "myChainOther",
+      "id": "finishAuthMap",
       "steps": [
         {
-          "target": "respond",
-          "handler": "sendResponse"
+          "target": "getAsyncOpActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+
         }
       ],
       "exceptional": []

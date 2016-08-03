@@ -234,6 +234,7 @@
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>PluginValidationFormActor</module>
     </modules>
 
     <build>
