@@ -50,11 +50,6 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     }
 
     @Override
-    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        upsertTask.setConnection(connection);
-    }
-
-    @Override
     public void execute() throws TaskExecutionException {
         upsertTask.execute();
     }

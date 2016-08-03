@@ -10,6 +10,8 @@ How to use IObject (TBD)
 
 How to use Wrappers (TBD)
 
+[How to work with database collections](DBCollectionExample.html)
+
 ## Developing application
 
 [How to write Actor](ActorExample.html)

@@ -7,8 +7,6 @@ import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import io.netty.handler.codec.http.FullHttpRequest;
 
-import java.util.Map;
-
 /**
  * Endpoint for http connection
  */
