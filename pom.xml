@@ -235,6 +235,9 @@
         <module>PluginChainChoiceStrategy</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>MessageBus</module>
+        <module>IMessageBusContainer</module>
+        <module>MessageBusContainerWithScope</module>
     </modules>
 
     <build>
