@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.core.thread_pool;
 
+import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -12,6 +15,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ThreadPool implements IThreadPool {
     private final BlockingQueue<ThreadImpl> threadsQueue;
+    private IScope scope;
 
     /**
      * The constructor.
@@ -23,6 +27,12 @@ public class ThreadPool implements IThreadPool {
 
         for (int i = 0; i < threadCount; i++) {
             threadsQueue.offer(new ThreadImpl(this));
+        }
+
+        try {
+            this.scope = ScopeProvider.getCurrentScope();
+        } catch (ScopeProviderException e) {
+            this.scope = null;
         }
     }
 
@@ -48,5 +58,9 @@ public class ThreadPool implements IThreadPool {
         if (!threadsQueue.offer(thread)) {
             thread.interrupt();
         }
+    }
+
+    IScope getScope() {
+        return this.scope;
     }
 }

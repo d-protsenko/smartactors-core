@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.core.thread_pool;
 
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,9 +35,11 @@ class ThreadImpl {
                 }
 
                 try {
+                    ScopeProvider.setCurrentScope(pool.getScope());
                     setTaskRef.get().execute();
-                } catch (TaskExecutionException e) {
+                } catch (TaskExecutionException | ScopeProviderException e) {
                     // TODO: Handle
+                    e.printStackTrace();
                 }
 
                 setTaskRef.set(null);

@@ -5,9 +5,12 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,6 +23,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Container implements IContainer {
 
     private Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<IKey, IResolveDependencyStrategy>();
+
+    private final IKey keyForKeyStorage;
+
+    /**
+     * The constructor.
+     *
+     * @throws InvalidArgumentException if fails to construct key storage
+     */
+    public Container()
+            throws InvalidArgumentException {
+        keyForKeyStorage = new Key(UUID.randomUUID().toString());
+    }
 
     /**
      * Return specific instance of {@link IKey} for container ID
@@ -36,7 +51,7 @@ public class Container implements IContainer {
      */
     @Override
     public IKey getKeyForKeyStorage() {
-        return null;
+        return keyForKeyStorage;
     }
 
     /**
@@ -54,7 +69,7 @@ public class Container implements IContainer {
             IResolveDependencyStrategy strategy = storage.get(key);
             return (T) strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionException("Resolution of dependency failed.");
+            throw new ResolutionException("Resolution of dependency failed.", e);
         }
     }
 

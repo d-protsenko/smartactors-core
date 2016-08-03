@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>transformation_rule.getHeader_from_request</artifactId>
+    <artifactId>transformation_rule.get_header_from_request</artifactId>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.0.24.Final</version>
+            <version>4.1.2.Final</version>
         </dependency>
         <!-- /server -->
     </dependencies>

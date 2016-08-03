@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.ActorParams
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -21,7 +22,7 @@ public class CheckUserIsNewActor {
     /**
      * Constructor
      * @param params the actor params
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
     public CheckUserIsNewActor(final ActorParams params) throws InvalidArgumentException {
         try {
@@ -29,15 +30,17 @@ public class CheckUserIsNewActor {
                     Keys.getOrAdd(ICachedCollection.class.toString()),
                     params.getCollectionName(),
                     params.getCollectionKey());
-        } catch (Exception e) {
-            throw new InvalidArgumentException(e);
+        } catch (ReadValueException e) {
+            throw new InvalidArgumentException("Can't read some of message values", e);
+        } catch (ResolutionException e) {
+            throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
     }
 
     /**
      * Check that this email was not registered before
      * @param message the message, contain email
-     * @throws Exception
+     * @throws Exception Throw always
      */
     public void check(final MessageWrapper message) throws Exception {
         try {
