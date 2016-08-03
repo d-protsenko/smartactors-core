@@ -109,23 +109,6 @@
         }
       ],
       "exceptional": []
-    },
-    {
-      "id": "finishAuthMap",
-      "steps": [
-        {
-          "target": "getAsyncOpActor",
-          "handler": "getOperation",
-          "wrapper": {
-            "in_getToken": "message/token",
-            "out_setAsyncOperation": "message/asyncOperation"
-          }
-        },
-        {
-
-        }
-      ],
-      "exceptional": []
     }
   ],
   "endpoints": [
