@@ -37,7 +37,7 @@ public class GetFormActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetFormActorPlugin");
             item
                 .after("IOC")
-                .after("CachedCollectionPlugin")
+                .after("CreateCachedCollectionPlugin")
                 .before("configure")
                 .process(() -> {
                     try {

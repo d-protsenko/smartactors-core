@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionO
 public class ConnectionOptionsTestImpl implements ConnectionOptions {
     @Override
     public String getUrl() throws ReadValueException {
-        return "jdbc:postgresql://localhost:5432/test_async";
+        return "jdbc:postgresql://localhost:5432/test_db";
     }
 
     @Override

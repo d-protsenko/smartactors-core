@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.actors.create_async_operation;
 
 import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.actors.create_async_operation.wrapper.AuthOperationData;
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
@@ -49,9 +48,8 @@ public class CreateAsyncOperationActor {
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
             String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
             //TODO:: use wrapper generator or field or get this iobject from configuration json of a map
-            AuthOperationData authOperationData = IOC.resolve(Keys.getOrAdd(AuthOperationData.class.toString()));
-            authOperationData.setSessionId(message.getSessionId());
-            collection.createAsyncOperation(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), authOperationData), token, expiredTime);
+            IObject authOperationData = message.getOperationData();
+            collection.createAsyncOperation(authOperationData, token, expiredTime);
 
             //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);

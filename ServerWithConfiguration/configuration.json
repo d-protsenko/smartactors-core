@@ -4,7 +4,7 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.get_form.GetFormActor",
       "name": "getFormActor",
-      "collectionName": "forms"
+      "collectionName": "form"
     },
     {
       "kind": "actor",
@@ -89,18 +89,9 @@
           "target": "createAsyncOpsActor",
           "handler": "create",
           "wrapper": {
-            "in_getSessionId": "message/sessionId",
+            "in_getOperationData": "response/form",
             "in_getExpiredTime": "const/4",
             "out_setAsyncOperationToken": "response/token"
-          }
-        },
-        {
-          "target": "closeAsyncOpActor",
-          "handler": "completeAsyncOp",
-          "wrapper": {
-            "in_getToken": "message/token",
-            "in_getOperation": "message/asyncOperation",
-            "in_getOperationTokens": "message/asyncOpsTokens"
           }
         },
         {
