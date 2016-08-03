@@ -33,7 +33,15 @@ import java.util.List;
  *                  { "a": { "$eq": "b" } },
  *                  { "b": { "$gt": 42 } }
  *              ]
- *          }
+ *          },
+ *          "page": {
+ *              "size": 50,
+ *              "number": 2
+ *          },
+ *          "sort": [
+ *              { "a": "asc" },
+ *              { "b": "desc" }
+ *          ]
  *      },
  *      "callback": IAction callback to receive found documents
  *  }

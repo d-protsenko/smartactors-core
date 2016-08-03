@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementatin of ConditionWriterResolver for Postgres database and jsonb documents.
+ * Resolves writers of query for Postgres database and jsonb documents.
  */
 public class PostgresQueryWriterResolver implements QueryWriterResolver {
 
