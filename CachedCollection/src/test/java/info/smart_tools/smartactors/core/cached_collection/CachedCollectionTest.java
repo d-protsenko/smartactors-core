@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
@@ -44,7 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class CachedCollectionTest {
 
     private ICachedCollection collection;
-    private StorageConnection connection;
+    private IStorageConnection connection;
     private String collectionName;
 
     private IField collectionNameField;
@@ -90,7 +91,7 @@ public class CachedCollectionTest {
         when(IOC.resolve(mockKeyField, keyName)).thenReturn(specificKeyNameField);
 
         IPool connectionPool = mock(IPool.class);
-        connection = mock(StorageConnection.class);
+        connection = mock(IStorageConnection.class);
         collectionName = mock(String.class);
         when(connectionPool.take()).thenReturn(connection);
         when(connectionPoolField.in(config)).thenReturn(connectionPool);

@@ -157,6 +157,8 @@
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
+        <module>CreateSession</module>
+        <module>PluginCreateSession</module>
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
