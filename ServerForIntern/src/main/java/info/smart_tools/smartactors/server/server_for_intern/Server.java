@@ -114,6 +114,7 @@ public class Server implements IServer {
             try {
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
+                System.out.println("--------------------------------- Core plugins has been loaded ---------------------------------");
                 loadUsersPlugins();
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
@@ -159,6 +160,7 @@ public class Server implements IServer {
             try {
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
+                System.out.println("--------------------------------- Users plugins has been loaded ---------------------------------");
                 loadStarterPlugins();
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
@@ -201,6 +203,7 @@ public class Server implements IServer {
         IFeature starterFeature = featureManager.newFeature("smartactors.starter", jarFilesTracker);
         starterFeature.whenPresent(files -> {
             try {
+                System.out.println("--------------------------------- Start system ---------------------------------");
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
             } catch (Throwable e) {
