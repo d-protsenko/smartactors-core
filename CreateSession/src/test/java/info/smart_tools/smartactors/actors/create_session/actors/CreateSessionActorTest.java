@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.actors.create_session.CreateSessionActor;
 import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactors.actors.create_session.wrapper.Session;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
@@ -29,14 +28,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Collections;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(IOC.class)
 public class CreateSessionActorTest {
-    private Session session;
+    private IObject session;
     private CreateSessionMessage inputMessage;
     private IObject authInfo;
     private CreateSessionActor actor;
@@ -51,11 +52,12 @@ public class CreateSessionActorTest {
 
     private IField SESSION_ID_F;
     private IField EQUALS_F;
+    private IField AUTH_INFO_F;
 
     @org.junit.Before
     public void setUp() throws Exception {
         inputMessage = mock(CreateSessionMessage.class);
-        session = mock(Session.class);
+        session = mock(IObject.class);
         authInfo = mock(IObject.class);
         when(inputMessage.getAuthInfo()).thenReturn(authInfo);
 
@@ -63,7 +65,6 @@ public class CreateSessionActorTest {
         key = mock(IKey.class);
         IKey sessionKey = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        when(IOC.resolve(eq(key), eq(Session.class.getCanonicalName()))).thenReturn(sessionKey);
         when(IOC.resolve(eq(sessionKey))).thenReturn(session);
 
         CreateSessionConfig config = mock(CreateSessionConfig.class);
@@ -83,25 +84,22 @@ public class CreateSessionActorTest {
         //mock constructor
         SESSION_ID_F = mock(IField.class);
         EQUALS_F = mock(IField.class);
+        AUTH_INFO_F = mock(IField.class);
         when(IOC.resolve(eq(fieldKey), eq("sessionId"))).thenReturn(SESSION_ID_F);
         when(IOC.resolve(eq(fieldKey), eq("$eq"))).thenReturn(EQUALS_F);
+        when(IOC.resolve(eq(fieldKey), eq("authInfo"))).thenReturn(AUTH_INFO_F);
 
         actor = new CreateSessionActor(config);
     }
 
     @Test
-    public void Should_insertNewSessionInMessage_When_SessionIdIsNull() throws ChangeValueException, ReadValueException, CreateSessionException {
+    public void Should_insertNewSessionInMessage_When_SessionIdIsNull() throws Exception {
         when(inputMessage.getSessionId()).thenReturn(null);
+        IObject authInfo = mock(IObject.class);
+        when(inputMessage.getAuthInfo()).thenReturn(authInfo);
+        when(IOC.resolve(eq(iObjectKey))).thenReturn(session);
         actor.resolveSession(inputMessage);
-        verify(session).setAuthInfo(eq(authInfo));
-        verify(inputMessage).setSession(eq(session));
-    }
-
-    @Test
-    public void Should_insertNewSessionInMessage_When_SessionIdEqualEmptyString() throws CreateSessionException, ReadValueException, ChangeValueException {
-        when(inputMessage.getSessionId()).thenReturn("");
-        actor.resolveSession(inputMessage);
-        verify(session).setAuthInfo(eq(authInfo));
+        verify(AUTH_INFO_F).out(eq(session), eq(authInfo));
         verify(inputMessage).setSession(eq(session));
     }
 
@@ -339,7 +337,7 @@ public class CreateSessionActorTest {
 
         IField sessionF = mock(IField.class);
         when(IOC.resolve(eq(fieldKey), eq("session"))).thenReturn(sessionF);
-        Session sessionFromDB = mock(Session.class);
+        IObject sessionFromDB = mock(IObject.class);
         when(sessionF.in(result)).thenReturn(sessionFromDB);
 
         actor.resolveSession(inputMessage);

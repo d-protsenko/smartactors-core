@@ -232,6 +232,14 @@
         <module>PluginHttpsEndpoint</module>
         <module>ISslEngineProvider</module>
         <module>SslEngineProvider</module>
+        <module>CObject</module>
+        <module>PluginConfigurationObject</module>
+        <module>SampleActor</module>
+        <module>PluginSampleActor</module>
+        <module>PluginChainCallReceiver</module>
+        <module>PluginChainChoiceStrategy</module>
+        <module>ServerForIntern</module>
+        <module>PluginStarter</module>
     </modules>
 
     <build>

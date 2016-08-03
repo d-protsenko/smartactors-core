@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -253,7 +254,7 @@ public class CompileQueryPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(CompiledQuery.class.toString());

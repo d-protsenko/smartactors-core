@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.resolve_standard_types_strategies;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -109,7 +110,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         fail();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ActionExecuteException.class)
     public void ShouldThrowException_When_InternalErrorIsOccurred() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);

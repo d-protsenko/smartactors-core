@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.iobject_simple_impl;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -41,8 +42,12 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));
-                    } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                        throw new RuntimeException(e);
+                    } catch (ResolutionException e) {
+                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't get IObjectSimpleImpl key", e);
+                    } catch (InvalidArgumentException e) {
+                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't create strategy", e);
+                    } catch (RegistrationException e) {
+                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't register new strategy", e);
                     }
                 });
             bootstrap.add(item);

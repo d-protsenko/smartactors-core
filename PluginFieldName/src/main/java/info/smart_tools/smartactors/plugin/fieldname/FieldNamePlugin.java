@@ -25,7 +25,6 @@ public class FieldNamePlugin implements IPlugin {
 
     /**
      * Constructor
-     *
      * @param bootstrap bootstrap element
      */
     public FieldNamePlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
@@ -36,7 +35,7 @@ public class FieldNamePlugin implements IPlugin {
     public void load() throws PluginException {
         try {
 
-            IBootstrapItem<String> item = new BootstrapItem("field_name");
+            IBootstrapItem<String> item = new BootstrapItem("FieldNamePlugin");
 
             item
                     .after("IOC")
@@ -88,11 +87,11 @@ public class FieldNamePlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get IFieldName key");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't create strategy");
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("FieldName plugin can't load: can't register new strategy");
                         }
                     });
             bootstrap.add(item);

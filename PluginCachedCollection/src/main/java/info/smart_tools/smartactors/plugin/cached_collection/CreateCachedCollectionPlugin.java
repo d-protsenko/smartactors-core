@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -78,7 +79,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                 }
                             }));
                 } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                    throw new RuntimeException(e);
+                    throw new ActionExecuteException("CreateCachedCollection plugin can't load", e);
                 }
             });
             bootstrap.add(item);

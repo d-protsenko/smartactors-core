@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.core.server_with_iobject;
 
+import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -18,14 +20,20 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
 import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link IServer} with
  */
 public class Server implements IServer {
+
+    private IObject ds_config;
+    private IObject co_config;
 
     @Override
     public void initialize() throws ServerInitializeException {
@@ -33,6 +41,7 @@ public class Server implements IServer {
             scopeInit();
             registerKeysStorageStrategyAndFieldNameStrategy();
             registerWrapperGenerator();
+            initObjects();
         } catch (Throwable e) {
             throw new ServerInitializeException("Could not initialize server.");
         }
@@ -60,7 +69,7 @@ public class Server implements IServer {
             /** Check registration of IWrapper instance creation strategy to IOC */
             IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName() + "wrapper"));
 
-            WDSObject wds = new WDSObject(((IObject) getWDSConfig().getValue(new FieldName("wrapper"))));
+            WDSObject wds = new WDSObject(((IObject) this.co_config.getValue(new FieldName("wrapper"))));
 
             /** Initialize wrapper */
             wds.init(environment);
@@ -171,9 +180,139 @@ public class Server implements IServer {
         return obj;
     }
 
-    private IObject getWDSConfig()
+    private void initObjects()
             throws Exception {
-        IObject config = new DSObject("{\n" +
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return new ConfigurationObject((String) a[0]);
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Could not create new instance of Configuration Object."
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object default strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return a[0];
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Error in configuration 'default' rule.", e
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object in_ strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Object obj = a[0];
+                                if (obj instanceof String) {
+                                    IObject innerObject = new ConfigurationObject();
+                                    innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
+                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
+
+                                    return new ArrayList<IObject>() {{ add(innerObject); }};
+                                }
+                                return obj;
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Error in configuration 'wrapper' rule.", e
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object out_ strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Object obj = a[0];
+                                if (obj instanceof String) {
+                                    IObject innerObject = new ConfigurationObject();
+                                    innerObject.setValue(new FieldName("name"), "wds_target_strategy");
+                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
+
+                                    return new ArrayList<List<IObject>>() {{
+                                        add(new ArrayList<IObject>() {{  add(innerObject); }});
+                                    }};
+                                }
+                                if (obj instanceof List) {
+                                    for (Object o : (List) obj) {
+                                        if (o instanceof List) {
+                                            for (Object innerObject : (List) o) {
+                                                if (((IObject) innerObject).getValue(new FieldName("name")).equals("target")) {
+                                                    ((IObject) innerObject).setValue(new FieldName("name"), "wds_target_strategy");
+                                                    ((IObject) innerObject).setValue(new FieldName("args"), new ArrayList<String>() {{
+                                                                add("local/value");
+                                                                add((String) ((List) ((IObject) innerObject)
+                                                                        .getValue(new FieldName("args"))).get(0));
+                                                            }}
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return obj;
+                            } catch (Throwable e) {
+                                throw new RuntimeException("Error in configuration 'wrapper' rule.", e);
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "resolve key for configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Map<String, String> keys = new HashMap<String, String>() {{
+                                    put("in_", "configuration object in_ strategy");
+                                    put("out_", "configuration object out_ strategy");
+                                }};
+                                char[] symbols = a[1].toString().toCharArray();
+                                String resolvedKey = "configuration object default strategy";
+                                StringBuilder key = new StringBuilder();
+                                for (char c : symbols) {
+                                    key.append(c);
+                                    if (null != keys.get(key.toString())) {
+                                        resolvedKey = keys.get(key.toString());
+                                        break;
+                                    }
+                                }
+                                return IOC.resolve(
+                                        IOC.resolve(IOC.getKeyForKeyStorage(), resolvedKey),
+                                        a[0]
+                                );
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Configuration object key resolution failed."
+                                );
+                            }
+                        }
+                )
+        );
+        this.co_config = new DSObject("{\n" +
                 "  \"wrapper\": {\n" +
                 "    \"in_getIntValue\": [{\n" +
                 "      \"name\": \"wds_getter_strategy\",\n" +
@@ -237,98 +376,5 @@ public class Server implements IServer {
                 "    ]\n" +
                 "  }\n" +
                 "}");
-//
-//        List<IObject> list_in_getIntValue= new ArrayList<>();
-//        IObject in_getIntValue = new DSObject("{\n" +
-//                "      \"name\": \"wds_getter_strategy\",\n" +
-//                "      \"args\": [\"message/IntValue\"]\n" +
-//                "    }");
-//        list_in_getIntValue.add(in_getIntValue);
-//        config.setValue(new FieldName("in_getIntValue"), list_in_getIntValue);
-//
-//        ArrayList<IObject> inner_list_out_setIntValue = new ArrayList<>();
-//        List<List<IObject>> list_out_setIntValue = new ArrayList<List<IObject>>();
-//        list_out_setIntValue.add(inner_list_out_setIntValue);
-//        IObject out_setIntValue = new DSObject("{\n" +
-//                "        \"name\": \"wds_target_strategy\",\n" +
-//                "        \"args\": [\"local/value\", \"response/IntValue\"]\n" +
-//                "      }");
-//        inner_list_out_setIntValue.add(out_setIntValue);
-//        config.setValue(new FieldName("out_setIntValue"), list_out_setIntValue);
-//
-//        List<IObject> list_in_getStringValue = new ArrayList<>();
-//        IObject in_getStringValue = new DSObject("{\n" +
-//                "      \"name\": \"wds_getter_strategy\",\n" +
-//                "      \"args\": [\"message/StringValue\"]\n" +
-//                "    }");
-//        list_in_getStringValue.add(in_getStringValue);
-//        config.setValue(new FieldName("in_getStringValue"), list_in_getStringValue);
-//
-//        ArrayList<IObject> inner_list_out_setStringValue = new ArrayList<>();
-//        List<List<IObject>> list_out_setStringValue = new ArrayList<List<IObject>>();
-//        list_out_setStringValue.add(inner_list_out_setStringValue);
-//        IObject out_setStringValue = new DSObject("{\n" +
-//                "        \"name\": \"wds_target_strategy\",\n" +
-//                "        \"args\": [\"local/value\", \"response/StringValue\"]\n" +
-//                "      }");
-//        inner_list_out_setStringValue.add(out_setStringValue);
-//        config.setValue(new FieldName("out_setStringValue"), list_out_setStringValue);
-//
-//        List<IObject> list_in_getListOfInt = new ArrayList<>();
-//        IObject in_getListOfInt = new DSObject("{\n" +
-//                "      \"name\": \"wds_getter_strategy\",\n" +
-//                "      \"args\": [\"message/ListOfInt\"]\n" +
-//                "    }");
-//        list_in_getListOfInt.add(in_getListOfInt);
-//        config.setValue(new FieldName("in_getListOfInt"), list_in_getListOfInt);
-//
-//        ArrayList<IObject> inner_list_out_setListOfInt = new ArrayList<>();
-//        List<List<IObject>> list_out_setListOfInt = new ArrayList<List<IObject>>();
-//        list_out_setListOfInt.add(inner_list_out_setListOfInt);
-//        IObject out_setListOfInt = new DSObject("{\n" +
-//                "        \"name\": \"wds_target_strategy\",\n" +
-//                "        \"args\": [\"local/value\", \"response/ListOfInt\"]\n" +
-//                "      }");
-//        inner_list_out_setListOfInt.add(out_setListOfInt);
-//        config.setValue(new FieldName("out_setListOfInt"), list_out_setListOfInt);
-//
-//        List<IObject> list_in_getListOfString = new ArrayList<>();
-//        IObject in_getListOfString = new DSObject();
-//        list_in_getListOfString.add(in_getListOfString);
-//        config.setValue(new FieldName("in_getListOfString"), list_in_getListOfString);
-//
-//        ArrayList<IObject> inner_list_out_setListOfString = new ArrayList<>();
-//        List<List<IObject>> list_out_setListOfString = new ArrayList<List<IObject>>();
-//        list_out_setListOfString.add(inner_list_out_setListOfString);
-//        IObject out_setListOfString = new DSObject("");
-//        inner_list_out_.add(out_);
-//        config.setValue(new FieldName("out_"), list_out_);
-//
-//        List<IObject> list_in_ = new ArrayList<>();
-//        IObject in_ = new DSObject();
-//        list_in_.add(in_);
-//        config.setValue(new FieldName("in_"), list_in_);
-//
-//        ArrayList<IObject> inner_list_out_ = new ArrayList<>();
-//        List<List<IObject>> list_out_ = new ArrayList<List<IObject>>();
-//        list_out_.add(inner_list_out_);
-//        IObject out_ = new DSObject("");
-//        inner_list_out_.add(out_);
-//        config.setValue(new FieldName("out_"), list_out_);
-//
-//
-//        List<IObject> list_in_ = new ArrayList<>();
-//        IObject in_ = new DSObject();
-//        list_in_.add(in_);
-//        config.setValue(new FieldName("in_"), list_in_);
-//
-//        ArrayList<IObject> inner_list_out_ = new ArrayList<>();
-//        List<List<IObject>> list_out_ = new ArrayList<List<IObject>>();
-//        list_out_.add(inner_list_out_);
-//        IObject out_ = new DSObject("");
-//        inner_list_out_.add(out_);
-//        config.setValue(new FieldName("out_"), list_out_);
-
-        return config;
     }
 }

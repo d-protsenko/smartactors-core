@@ -31,6 +31,13 @@ import java.util.Collection;
  *
  */
 public class ServerWithConfiguration implements IServer {
+
+    public static void main(String[] args) throws Exception {
+        ServerWithConfiguration server = new ServerWithConfiguration();
+        server.initialize();
+        server.start();
+    }
+
     @Override
     public void initialize() throws ServerInitializeException {
         try {
@@ -82,6 +89,15 @@ public class ServerWithConfiguration implements IServer {
 
             String[] coreJars = {
                     "actor.response_sender-0.2.0-SNAPSHOT.jar",
+
+
+                    "actors.sample_actor-0.2.0-SNAPSHOT.jar",
+                    "plugin.sample_actor-0.2.0-SNAPSHOT.jar",
+
+                    "core.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_choice_strategy-0.2.0-SNAPSHOT.jar",
+
                     "core.actor_receiver-0.2.0-SNAPSHOT.jar",
                     "core.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "core.blocking_queue-0.2.0-SNAPSHOT.jar",
@@ -137,6 +153,7 @@ public class ServerWithConfiguration implements IServer {
                     "core.invalid_argument_exception-0.2.0-SNAPSHOT.jar",
                     "core.invalid_state_exception-0.2.0-SNAPSHOT.jar",
                     "core.iobject-0.2.0-SNAPSHOT.jar",
+                    "core.configuration_object-0.2.0-SNAPSHOT.jar",
                     "core.iobject_wrapper-0.2.0-SNAPSHOT.jar",
                     "core.ioc-0.2.0-SNAPSHOT.jar",
                     "core.ioc_container-0.2.0-SNAPSHOT.jar",
@@ -208,6 +225,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "plugin.configuration_manager-0.2.0-SNAPSHOT.jar",
                     "plugin.dsobject-0.2.0-SNAPSHOT.jar",
+                    "plugin.configuration_object-0.2.0-SNAPSHOT.jar",
                     "plugin.field-0.2.0-SNAPSHOT.jar",
                     "plugin.fieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar",

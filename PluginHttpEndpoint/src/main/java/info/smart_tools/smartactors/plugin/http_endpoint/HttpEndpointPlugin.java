@@ -10,12 +10,14 @@ import info.smart_tools.smartactors.core.deserialize_strategy_post_json.Deserial
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
@@ -194,8 +196,12 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     }
                                             ));
 
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
                                 }
                             }
                     );
