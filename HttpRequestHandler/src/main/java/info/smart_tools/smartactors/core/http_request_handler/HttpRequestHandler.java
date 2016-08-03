@@ -52,10 +52,10 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         context.setValue(channelFieldName, channelHandler);
         context.setValue(cookiesFieldName, new ArrayList<IObject>());
         context.setValue(headersFieldName, new ArrayList<IObject>());
+        context.setValue(requestFieldName, request);
         //create environment
         environment.setValue(messageFieldName, message);
         environment.setValue(contextFieldName, context);
-        environment.setValue(requestFieldName, request);
         return environment;
     }
 }
