@@ -48,8 +48,12 @@ public class PluginReceiverChainsStorage implements IPlugin {
                             IOC.register(
                                     Keys.getOrAdd(IChainStorage.class.getCanonicalName()),
                                     new SingletonStrategy(new ChainStorage(new ConcurrentHashMap<>(), router)));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't register new strategy", e);
                         }
                     });
 

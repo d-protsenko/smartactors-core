@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.invalid_state_exception.InvalidStateException;
@@ -59,9 +60,15 @@ public class PluginReadConfigFile implements IPlugin {
 
                             configurationManager.setInitialConfig(cObject);
                         } catch (FileNotFoundException e) {
-                            throw new ActionExecuteException("Configuration file not found.", e);
-                        } catch (IOException | ResolutionException | InvalidArgumentException | InvalidStateException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration file not found.", e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't get ReadConfigFile key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't create strategy", e);
+                        } catch (InvalidStateException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration is already parsed", e);
+                        } catch (IOException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't read configuration file", e);
                         }
                     });
 

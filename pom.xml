@@ -229,6 +229,10 @@
         <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
+        <module>PluginChainCallReceiver</module>
+        <module>PluginChainChoiceStrategy</module>
+        <module>ServerForIntern</module>
+        <module>PluginStarter</module>
     </modules>
 
     <build>

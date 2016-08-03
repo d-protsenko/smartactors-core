@@ -28,5 +28,5 @@ public interface CreateSessionMessage {
      * @param session Session
      * @throws ChangeValueException Calling when try change value of variable
      */
-    void setSession(Session session) throws ChangeValueException;
+    void setSession(IObject session) throws ChangeValueException;
 }

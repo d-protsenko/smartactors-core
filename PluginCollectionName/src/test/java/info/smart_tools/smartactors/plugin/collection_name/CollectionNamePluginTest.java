@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.collection_name;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -101,7 +102,7 @@ public class CollectionNamePluginTest {
         plugin.load();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ActionExecuteException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
         when(Keys.getOrAdd(CollectionName.class.toString())).thenThrow(new ResolutionException(""));

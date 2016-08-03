@@ -29,6 +29,9 @@ public class DBInsertTask implements IDatabaseTask {
     private QueryStatement queryStatement;
     private StorageConnection connection;
 
+    /**
+     * Default constructor
+     */
     public DBInsertTask() {
     }
 
