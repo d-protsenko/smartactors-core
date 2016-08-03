@@ -144,7 +144,7 @@ public final class PostgresSchema {
      *      "page": {
      *          "size": 50,
      *          "number": 2
-     *      }
+     *      },
      *      "sort": [
      *          { "a": "asc" },
      *          { "b": "desc" }

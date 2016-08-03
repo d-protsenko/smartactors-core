@@ -131,7 +131,7 @@ If no documents for the specified criteria were found, the callback function rec
  
 #### Criteria
  
-The search criteria is the complex IObject which contains a set of conditions and operators.
+The search criteria is the complex IObject which contains three parts: filter, pagination control and sorting order.
 For example, it may look like this.
 
     {
@@ -140,10 +140,24 @@ For example, it may look like this.
                 { "a": { "$eq": "b" } },
                 { "b": { "$gt": 42 } }
             ]
-        }
+        },
+        "page": {
+             "size": 50,
+             "number": 2
+        },
+        "sort": [
+             { "a": "asc" },
+             { "b": "desc" }
+         ]
     }
-  
-Conditions joins operators together.
+
+##### Filter
+
+Filter is the criterion to filter the resulting documents. 
+It's the equivalent of SQL WHERE clause.
+
+The filter is the set of conditions and operators.
+Conditions join operators together.
 Operators match the specified document field against the specified criteria.
 
 Available conditions:
@@ -165,6 +179,22 @@ Available operators:
 * `$date-to` — less or equal for datetime fields
 * `$in` — checks for equality to any of the specified values in the array
 * `$hasTag` — check the document field is JSON document contains the specified value as field name or value
+
+##### Page
+
+Page criterion is used for pagination.
+You may define the page size and page number.
+
+This is equivalent of SQL LIMIT and OFFSET clauses.
+However, here you must work in terms of pages, while SQL works in terms of rows to skip.
+
+##### Sort
+
+Sort criterion is used to determine the order of documents in the result.
+It's the equivalent of SQL ORDER BY clause.
+
+Because the sorting order is important, you define the ordered array of sort conditions.
+You define the pair: the document field name and the sort direction: "asc" or "desc".
     
 #### Example
     
@@ -172,7 +202,13 @@ Available operators:
             Keys.getOrAdd("db.collection.search"),
             connection,
             collectionName,
-            new DSObject(String.format("{ \"filter\": { \"%s\": { \"$eq\": \"some value\" } } }", testField.toString())),
+            new DSObject(String.format(
+                "{ " +
+                    "\"filter\": { \"%1$s\": { \"$eq\": \"new value\" } }," +
+                    "\"page\": { \"size\": 2, \"number\": 2 }," +
+                    "\"sort\": [ { \"%1$s\": \"asc\" } ]" +
+                "}",
+                testField.toString())),
             (IAction<IObject[]>) docs -> {
                 try {
                     for (IObject doc : docs) {
