@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.server.server_for_intern;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -7,6 +8,7 @@ import org.junit.Test;
  */
 public class ServerTest {
 
+    @Ignore
     @Test
     public void checkServer()
             throws Exception {
