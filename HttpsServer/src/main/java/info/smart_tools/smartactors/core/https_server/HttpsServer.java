@@ -3,13 +3,10 @@ package info.smart_tools.smartactors.core.https_server;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider;
-import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
 import info.smart_tools.smartactors.core.tcp_server.TcpServer;
 import info.smart_tools.smartactors.core.tcp_server.exceptions.ServerInitializationException;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -23,34 +20,35 @@ import javax.net.ssl.SSLEngine;
  */
 public class HttpsServer extends TcpServer {
 
-    private SSLContextProvider contextProvider;
+    private ISslEngineProvider engineProvider;
     private final int maxContentLength;
     private boolean sslEnable = false;
 
     /**
      * Constructor
      *
-     * @param port             port of the tcp server
-     * @param requestHandler   channel for tcp server
-     * @param maxContentLength max length of the content
+     * @param port              port of the tcp server
+     * @param requestHandler    channel for tcp server
+     * @param maxContentLength  max length of the content
+     * @param sslEngineProvider provider of {@link SSLEngine}
      */
     public HttpsServer(final int port, final ChannelInboundHandler requestHandler, final int maxContentLength,
-                       final SSLContextProvider sslContextProvider) {
+                       final ISslEngineProvider sslEngineProvider) {
         super(port, requestHandler);
         this.maxContentLength = maxContentLength;
-        this.contextProvider = sslContextProvider;
-        this.sslEnable = sslContextProvider.isInitialized();
+        this.engineProvider = sslEngineProvider;
+        this.sslEnable = sslEngineProvider.isInitialized();
     }
 
     /**
      * Method for turning on https
      *
      * @param configuration configuration of endpoint
-     * @throws ServerInitializationException if there are problems on resolving {@link SSLContextProvider}
+     * @throws ServerInitializationException if there are problems on resolving {@link ISslEngineProvider}
      */
     public void setSSL(final IObject configuration) throws ServerInitializationException {
         try {
-            this.contextProvider = IOC.resolve(Keys.getOrAdd(SSLContextProvider.class.getCanonicalName()), configuration);
+            this.engineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()), configuration);
         } catch (ResolutionException e) {
             throw new ServerInitializationException("Failed to resolve ssl context provider", e);
         }
@@ -61,13 +59,8 @@ public class HttpsServer extends TcpServer {
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         if (sslEnable) {
             SSLEngine sslEngine = null;
-            try {
-                sslEngine = contextProvider.get().newEngine(ByteBufAllocator.DEFAULT);
-            } catch (SSLContextProviderException ignored) {
-            }
-
+            sslEngine = engineProvider.get();
             sslEngine.setUseClientMode(false);
-
             return pipeline.addLast(
                     new HttpServerCodec(),
                     new HttpObjectAggregator(maxContentLength)

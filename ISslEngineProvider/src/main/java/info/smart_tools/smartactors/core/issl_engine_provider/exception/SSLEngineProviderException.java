@@ -1,14 +1,14 @@
-package info.smart_tools.smartactors.core.ssl_context_provider.exceptions;
+package info.smart_tools.smartactors.core.issl_engine_provider.exception;
 
 /**
- * Exception for {@link info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider}
+ * Exception for {@link info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider}
  */
-public class SSLContextProviderException extends Exception {
+public class SSLEngineProviderException extends Exception {
     /**
      * Constructor with specific error message
      * @param message specific error message
      */
-    public SSLContextProviderException(final String message) {
+    public SSLEngineProviderException(final String message) {
         super(message);
     }
 
@@ -17,7 +17,7 @@ public class SSLContextProviderException extends Exception {
      * @param message specific error message
      * @param cause specific cause
      */
-    public SSLContextProviderException(final String message, final Throwable cause) {
+    public SSLEngineProviderException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -25,7 +25,7 @@ public class SSLContextProviderException extends Exception {
      * Constructor with specific cause as arguments
      * @param cause specific cause
      */
-    public SSLContextProviderException(final Throwable cause) {
+    public SSLEngineProviderException(final Throwable cause) {
         super(cause);
     }
 }

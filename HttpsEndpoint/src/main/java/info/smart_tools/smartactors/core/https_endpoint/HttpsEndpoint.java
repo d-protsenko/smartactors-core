@@ -6,8 +6,8 @@ import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler
 import info.smart_tools.smartactors.core.https_server.HttpsServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
@@ -27,7 +27,7 @@ public class HttpsEndpoint extends HttpsServer {
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
                          final IEnvironmentHandler handler, final IReceiverChain receiverChain,
-                         final SSLContextProvider sslContextProvider
+                         final ISslEngineProvider sslContextProvider
     ) {
         super(port, new EndpointChannelInboundHandler<>(
                         new HttpRequestHandler(scope, handler, receiverChain),

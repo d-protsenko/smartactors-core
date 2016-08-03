@@ -106,10 +106,12 @@ public class ServerWithConfiguration implements IServer {
                     "core.filesystem_tracker-0.2.0-SNAPSHOT.jar",
                     "core.handler_routing_receiver-0.2.0-SNAPSHOT.jar",
                     "core.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar",
+                    "core.http_endpoint-0.2.0-SNAPSHOT.jar",
                     "core.https_endpoint-0.2.0-SNAPSHOT.jar",
                     "core.http_request_handler-0.2.0-SNAPSHOT.jar",
                     "core.http_response_sender-0.2.0-SNAPSHOT.jar",
                     "core.https_server-0.2.0-SNAPSHOT.jar",
+                    "core.http_server-0.2.0-SNAPSHOT.jar",
                     "core.iaction-0.2.0-SNAPSHOT.jar",
                     "core.iasync_service-0.2.0-SNAPSHOT.jar",
                     "core.ibootstrap-0.2.0-SNAPSHOT.jar",
@@ -234,7 +236,8 @@ public class ServerWithConfiguration implements IServer {
                     "strategy.cookies_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.http_headers_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar",
-                    "core.ssl_context_provider-0.2.0-SNAPSHOT.jar"
+                    "core.ssl_engine_provider-0.2.0-SNAPSHOT.jar",
+                    "core.issl_engine_provider-0.2.0-SNAPSHOT.jar"
             };
 
             for (String jarName : coreJars) {

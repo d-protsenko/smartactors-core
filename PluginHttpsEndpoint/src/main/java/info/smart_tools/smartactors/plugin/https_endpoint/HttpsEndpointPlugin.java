@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.plugin.https_endpoint;
 
+import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
@@ -28,13 +29,14 @@ import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
+import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.ssl_context_provider.SSLContextProvider;
-import info.smart_tools.smartactors.core.ssl_context_provider.exceptions.SSLContextProviderException;
+import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
@@ -128,13 +130,13 @@ public class HttpsEndpointPlugin implements IPlugin {
                                     IOC.register(responseStatusExtractorKey,
                                             new SingletonStrategy(responseStatusExtractor));
 
-                                    IOC.register(Keys.getOrAdd(SSLContextProvider.class.getCanonicalName()),
+                                    IOC.register(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
-                                                        SSLContextProvider sslContextProvider = new SSLContextProvider();
+                                                        ISslEngineProvider sslContextProvider = new SslEngineProvider();
                                                         try {
                                                             sslContextProvider.init((IObject) args[0]);
-                                                        } catch (SSLContextProviderException ignored) {
+                                                        } catch (SSLEngineProviderException e) {
                                                         }
                                                         return sslContextProvider;
                                                     }
@@ -180,9 +182,9 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
                                                                     configuration);
-                                                            SSLContextProvider sslContextProvider = (SSLContextProvider)
+                                                            ISslEngineProvider sslContextProvider =
                                                                     IOC.resolve(
-                                                                            Keys.getOrAdd(SSLContextProvider.class.getCanonicalName()),
+                                                                            Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
                                                                             configuration
                                                                     );
                                                             return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
@@ -190,6 +192,25 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                                     ScopeProvider.getCurrentScope(), environmentHandler,
                                                                     (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                                                     sslContextProvider);
+                                                        } catch (ReadValueException | InvalidArgumentException
+                                                                | ScopeProviderException | ResolutionException e) {
+                                                        }
+                                                        return null;
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(Keys.getOrAdd("http_endpoint"),
+                                            new CreateNewInstanceStrategy(
+                                                    (args) -> {
+                                                        IObject configuration = (IObject) args[0];
+                                                        try {
+                                                            IEnvironmentHandler environmentHandler = IOC.resolve(
+                                                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                                                    configuration);
+                                                            return new HttpEndpoint((Integer) configuration.getValue(portFieldName),
+                                                                    (Integer) configuration.getValue(maxContentLengthFieldName),
+                                                                    ScopeProvider.getCurrentScope(), environmentHandler,
+                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName));
                                                         } catch (ReadValueException | InvalidArgumentException
                                                                 | ScopeProviderException | ResolutionException e) {
                                                         }

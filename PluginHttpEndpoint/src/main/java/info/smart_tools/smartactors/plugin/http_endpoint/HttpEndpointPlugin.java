@@ -108,7 +108,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                             );
 
                                     ICookiesSetter cookiesSetter = new CookiesSetter();
-                                    IKey httpEndpointKey = Keys.getOrAdd(HttpEndpoint.class.getCanonicalName());
+                                    IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
                                     IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
                                     IOC.register(cookiesSetterKey,
                                             new SingletonStrategy(cookiesSetter));

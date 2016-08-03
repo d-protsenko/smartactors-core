@@ -219,7 +219,6 @@
         <module>PluginHttpEndpoint</module>
         <module>PluginActorReceiverCreator</module>
         <module>PluginHandlerRoutingReceiverCreator</module>
-        <module>SSLContextProvider</module>
         <module>HttpsServer</module>
         <module>HttpsEndpoint</module>
         <module>PluginMessageProcessorAndSequence</module>
@@ -231,6 +230,8 @@
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
         <module>PluginHttpsEndpoint</module>
+        <module>ISslEngineProvider</module>
+        <module>SslEngineProvider</module>
     </modules>
 
     <build>
