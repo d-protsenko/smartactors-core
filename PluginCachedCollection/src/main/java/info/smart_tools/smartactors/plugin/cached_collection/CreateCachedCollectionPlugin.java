@@ -25,7 +25,7 @@ import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lamb
  * Plugin for registration strategy of create cached collection with IOC.
  * IOC resolve method waits collectionName as a first parameter and keyName as a second parameter.
  */
-public class CachedCollectionPlugin implements IPlugin {
+public class CreateCachedCollectionPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -33,7 +33,7 @@ public class CachedCollectionPlugin implements IPlugin {
      * Constructor
      * @param bootstrap bootstrap
      */
-    public CachedCollectionPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public CreateCachedCollectionPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -41,7 +41,7 @@ public class CachedCollectionPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CachedCollectionPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
 
             item
                 .after("IOC")
@@ -80,7 +80,7 @@ public class CachedCollectionPlugin implements IPlugin {
             });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load CachedCollectionPlugin plugin", e);
+            throw new PluginException("Can't load CreateCollectionActor plugin", e);
         }
     }
 }
