@@ -61,6 +61,13 @@ public class PluginConfigurationManager implements IPlugin {
             configureItem
                     .after("configuration_manager")
                     .process(() -> {
+                        try {
+                            IConfigurationManager configurationManager = IOC.resolve(
+                                Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                            configurationManager.configure();
+                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
+                            throw new ActionExecuteException("ConfigurationManager plugin can't load", e);
+                        }
                     });
 
             bootstrap.add(configureItem);
