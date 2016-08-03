@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNet
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -15,10 +14,8 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaders;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Endpoint handler for HTTP requests.

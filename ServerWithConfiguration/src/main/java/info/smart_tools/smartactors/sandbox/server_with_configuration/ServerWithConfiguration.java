@@ -115,7 +115,11 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.collection_name:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.create_async_operation_plugin:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.close_async_operation_actor:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.async_ops_collection:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.async_ops_collection:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.create_session_plugin:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.authentication_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

@@ -217,7 +217,7 @@ public class WDSObjectTest {
         when(rule11.getValue(new FieldName("name"))).thenReturn("wds_target_strategy");
         when(rule11.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("response/stringValue");}});
         when(rule21.getValue(new FieldName("name"))).thenReturn("TransformToInt");
-        when(rule21.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("consts/2"); add("message/stringValue");}});
+        when(rule21.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("const/2"); add("message/stringValue");}});
         when(rule22.getValue(new FieldName("name"))).thenReturn("wds_target_strategy");
         when(rule22.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("response/intValue");}});
         doNothing().when(response).setValue(new FieldName("stringValue"), "1");
