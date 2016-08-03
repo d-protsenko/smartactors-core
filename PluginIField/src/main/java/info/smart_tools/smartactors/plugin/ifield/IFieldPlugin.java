@@ -36,9 +36,10 @@ public class IFieldPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> item = new BootstrapItem("IFieldPlugin");
+            BootstrapItem item = new BootstrapItem("IFieldPlugin");
             item
                 .after("IOC")
+                .after("IFieldNamePlugin")
                 .process(() -> {
                     try {
                         IKey fieldKey = Keys.getOrAdd(IField.class.getCanonicalName());
