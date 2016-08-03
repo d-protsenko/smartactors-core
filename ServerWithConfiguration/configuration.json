@@ -13,9 +13,19 @@
     },
     {
       "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor",
+      "name": "getAsyncOpsActor"
+    },
+    {
+      "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.close_async_operation.CloseAsyncOperationActor",
       "name": "closeAsyncOpActor",
       "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.validate_form_data.ValidateFormDataActor",
+      "name": "validationFormActor"
     },
     {
       "kind": "stateless_actor",
@@ -97,6 +107,54 @@
         {
           "target": "respond",
           "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "finishAuthMap",
+      "steps": [
+        {
+          "target": "createSessionActor",
+          "handler": "resolveSession",
+          "wrapper": {
+            "in_getSessionId": "message/sessionId",
+            "in_getAuthInfo": "message/authInfo",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "authenticationActor",
+          "handler": "authenticateSession",
+          "wrapper": {
+            "in_getRequestUserAgent": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+          }
+        },
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "validationFormActor",
+          "handler": "validate",
+          "wrapper": {
+            "in_getFormFromRequest": "message/form",
+            "in_getForm": "message/asyncOperation/body",
+            "out_setFormData": "message/form"
+          }
         }
       ],
       "exceptional": []
