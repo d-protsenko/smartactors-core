@@ -107,8 +107,11 @@ public class DBCollectionServer implements IServer {
                         guard.getObject(),
                         "test",
                         new DSObject(String.format(
-                                "{ \"filter\": { \"%s\": { \"$eq\": \"new value\" } }," +
-                                "  \"page\": { \"size\": 2, \"number\": 2 } }",
+                                "{ " +
+                                        "\"filter\": { \"%1$s\": { \"$eq\": \"new value\" } }," +
+                                        "\"page\": { \"size\": 2, \"number\": 2 }," +
+                                        "\"sort\": [ { \"%1$s\": \"asc\" } ]" +
+                                "}",
                                 testField.toString())),
                         (IAction<IObject[]>) docs -> {
                             try {
