@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.plugin.async_ops_collection;
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.task.UpdateAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -132,6 +134,30 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
 
                                                     task.prepare(query);
                                                     return task;
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException("Can't resolve upsert db task.", e);
+                                                }
+                                            }
+                                    )
+                            );
+
+                            IOC.register(
+                                    Keys.getOrAdd("db.async_ops_collection.complete"),
+                                    //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    //TODO:: write strategy
+                                                    IStorageConnection connection = (IStorageConnection) args[0];
+                                                    CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                    IObject asyncOperation = (IObject) args[2];
+                                                    IDatabaseTask updateTask = new UpdateAsyncOperationTask(connection);
+                                                    UpdateAsyncOperationQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationQuery.class.toString()));
+                                                    upsertQuery.setCollectionName(collectionName);
+                                                    upsertQuery.setUpdateItem(asyncOperation);
+
+                                                    updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), upsertQuery));
+                                                    return updateTask;
                                                 } catch (Exception e) {
                                                     throw new RuntimeException("Can't resolve upsert db task.", e);
                                                 }
