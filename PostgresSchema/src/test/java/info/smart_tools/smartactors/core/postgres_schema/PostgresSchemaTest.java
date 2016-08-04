@@ -121,4 +121,19 @@ public class PostgresSchemaTest {
         verify(statement, times(2)).pushParameterSetter(any());
     }
 
+    @Test
+    public void testCreate() throws QueryBuildException {
+        PostgresSchema.create(statement, collection, null);
+        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL);\n", body.toString());
+    }
+
+    @Test
+    public void testCreateWithIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject indexes = new DSObject("{ \"a\": \"ordered\", \"b\": { \"fulltext\": \"english\" } }");
+        PostgresSchema.create(statement, collection, indexes);
+        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL);\n" +
+                "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                "CREATE INDEX ON test_collection USING GIN ((to_tsvector('english',(document#>'{b}')::text)));\n", body.toString());
+    }
+
 }

@@ -9,13 +9,13 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.postgres_schema.search.OrderWriter;
-import info.smart_tools.smartactors.core.postgres_schema.search.PagingWriter;
-import info.smart_tools.smartactors.core.postgres_schema.search.PostgresQueryWriterResolver;
+import info.smart_tools.smartactors.core.postgres_schema.search.*;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A set of static methods to take statements to be executed in the Postgres database.
@@ -39,9 +39,69 @@ public final class PostgresSchema {
     public static final String FTS_DICTIONARY = "russian";
 
     /**
+     * Set of index creation templates.
+     * Each template can be passed to String.format()
+     * and has parameters:
+     * 1 - collection name
+     * 2 - document field access expression
+     * 3 - index parameter
+     */
+    private static final Map<String, String> INDEX_CREATION_TEMPLATES = new HashMap<String, String>() {{
+        put("ordered", "CREATE INDEX ON %1$s USING BTREE ((%2$s));\n");
+//        put("tags", "CREATE INDEX ON %1$s USING GIN ((%2$s));\n");
+        put("fulltext", "CREATE INDEX ON %1$s USING GIN ((to_tsvector('%3$s',(%2$s)::text)));\n");
+//        put("datetime", "CREATE INDEX ON %1$s USING BTREE ((parse_timestamp_immutable(%2$s)));\n");
+    }};
+
+    /**
      * Private constructor to avoid instantiation.
      */
     private PostgresSchema() {
+    }
+
+    /**
+     * Fills the statement body with the CREATE TABLE sentence and CREATE INDEX sentences
+     * to create the desired collection and it's indexes.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param indexes document describing a set of indexes to create
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void create(final QueryStatement statement, final CollectionName collection, IObject indexes) throws QueryBuildException {
+        Writer body = statement.getBodyWriter();
+        try {
+            body.write("CREATE TABLE ");
+            body.write(collection.toString ());
+            body.write(" (");
+            body.write(ID_COLUMN);
+            body.write(" bigserial PRIMARY KEY, ");
+            body.write(DOCUMENT_COLUMN);
+            body.write(" jsonb NOT NULL);\n");
+            if (indexes != null) {
+                for (Map.Entry<IFieldName, Object> entry : indexes) {
+                    writeCreateIndex(body, collection, entry.getKey(), entry.getValue());
+                }
+            }
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    private static void writeCreateIndex(final Writer body, final CollectionName collection,
+                                         final IFieldName fieldName, final Object indexDefinition)
+            throws QueryBuildException, IOException {
+        String indexType = null;
+        String indexParameter = null;
+        if (indexDefinition instanceof String) {
+            indexType = ((String) indexDefinition).toLowerCase();
+        } else if (indexDefinition instanceof IObject) {
+            Map.Entry<IFieldName, Object> entry = ((IObject) indexDefinition).iterator().next();
+            indexType = entry.getKey().toString().toLowerCase();
+            indexParameter = entry.getValue().toString();
+        }
+        String template = INDEX_CREATION_TEMPLATES.get(indexType);
+        FieldPath field = PostgresFieldPath.fromString(fieldName.toString());
+        body.write(String.format(template, collection.toString(), field.toSQL(), indexParameter));
     }
 
     /**
@@ -52,13 +112,13 @@ public final class PostgresSchema {
      * @throws QueryBuildException if the statement body cannot be built
      */
     public static void nextId(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
-            writer.write("SELECT nextval('");
-            writer.write(collection.toString());
-            writer.write("_");
-            writer.write(ID_COLUMN);
-            writer.write("_seq') AS id");
+            body.write("SELECT nextval('");
+            body.write(collection.toString());
+            body.write("_");
+            body.write(ID_COLUMN);
+            body.write("_seq') AS id");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build nextId body", e);
         }
@@ -71,15 +131,15 @@ public final class PostgresSchema {
      * @throws QueryBuildException if the statement body cannot be built
      */
     public static void insert(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
-            writer.write("INSERT INTO ");
-            writer.write(collection.toString());
-            writer.write(" (");
-            writer.write(ID_COLUMN);
-            writer.write(", ");
-            writer.write(DOCUMENT_COLUMN);
-            writer.write(") VALUES (?, ?::jsonb)");
+            body.write("INSERT INTO ");
+            body.write(collection.toString());
+            body.write(" (");
+            body.write(ID_COLUMN);
+            body.write(", ");
+            body.write(DOCUMENT_COLUMN);
+            body.write(") VALUES (?, ?::jsonb)");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build insert body", e);
         }
@@ -92,16 +152,16 @@ public final class PostgresSchema {
      * @throws QueryBuildException if the statement body cannot be built
      */
     public static void update(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
-            writer.write("UPDATE ");
-            writer.write(collection.toString());
-            writer.write(" AS tab ");
-            writer.write("SET ");
-            writer.write(DOCUMENT_COLUMN);
-            writer.write(" = docs.document FROM (VALUES (?, ?::jsonb)) AS docs (id, document) WHERE tab.");
-            writer.write(ID_COLUMN);
-            writer.write(" = docs.id");
+            body.write("UPDATE ");
+            body.write(collection.toString());
+            body.write(" AS tab ");
+            body.write("SET ");
+            body.write(DOCUMENT_COLUMN);
+            body.write(" = docs.document FROM (VALUES (?, ?::jsonb)) AS docs (id, document) WHERE tab.");
+            body.write(ID_COLUMN);
+            body.write(" = docs.id");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build update body", e);
         }
@@ -114,15 +174,15 @@ public final class PostgresSchema {
      * @throws QueryBuildException if the statement body cannot be built
      */
     public static void getById(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
-            writer.write("SELECT ");
-            writer.write(DOCUMENT_COLUMN);
-            writer.write(" FROM ");
-            writer.write(collection.toString());
-            writer.write(" WHERE ");
-            writer.write(ID_COLUMN);
-            writer.write(" = ?");
+            body.write("SELECT ");
+            body.write(DOCUMENT_COLUMN);
+            body.write(" FROM ");
+            body.write(collection.toString());
+            body.write(" WHERE ");
+            body.write(ID_COLUMN);
+            body.write(" = ?");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build getById body", e);
         }
@@ -160,16 +220,16 @@ public final class PostgresSchema {
     public static void search(final QueryStatement statement, final CollectionName collection, final IObject criteria)
             throws QueryBuildException {
         try {
-            Writer writer = statement.getBodyWriter();
+            Writer body = statement.getBodyWriter();
 
-            writer.write("SELECT ");
-            writer.write(DOCUMENT_COLUMN);
-            writer.write(" FROM ");
-            writer.write(collection.toString());
+            body.write("SELECT ");
+            body.write(DOCUMENT_COLUMN);
+            body.write(" FROM ");
+            body.write(collection.toString());
 
             writeSearchWhere(statement, criteria);
             writeSearchOrder(statement, criteria);
-            writeSeachPaging(statement, criteria);
+            writeSearchPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
         }
@@ -177,11 +237,11 @@ public final class PostgresSchema {
 
     private static void writeSearchWhere(QueryStatement statement, IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
             IFieldName filterField = IOC.resolve(fieldNameKey, "filter");
             IObject filter = (IObject) criteria.getValue(filterField);
-            writer.write(" WHERE ");
+            body.write(" WHERE ");
             PostgresQueryWriterResolver resolver = new PostgresQueryWriterResolver();
             resolver.resolve(null).write(statement, resolver, null, filter);
         } catch (ReadValueException e) {
@@ -191,14 +251,14 @@ public final class PostgresSchema {
 
     private static void writeSearchOrder(QueryStatement statement, IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
             IFieldName sortField = IOC.resolve(fieldNameKey, "sort");
             List<IObject> sortItems = (List<IObject>) criteria.getValue(sortField);
             if (sortItems == null || sortItems.isEmpty()) {
                 return; // no sort in the criteria, ignoring
             }
-            writer.write(" ");
+            body.write(" ");
             OrderWriter order = new OrderWriter();
             order.write(statement, sortItems);
         } catch (ReadValueException e) {
@@ -206,16 +266,16 @@ public final class PostgresSchema {
         }
     }
 
-    private static void writeSeachPaging(QueryStatement statement, IObject criteria) throws Exception {
+    private static void writeSearchPaging(QueryStatement statement, IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        Writer writer = statement.getBodyWriter();
+        Writer body = statement.getBodyWriter();
         try {
             IFieldName pageField = IOC.resolve(fieldNameKey, "page");
             IObject page = (IObject) criteria.getValue(pageField);
             if (page == null) {
                 return; // no page in the criteria, ignoring
             }
-            writer.write(" ");
+            body.write(" ");
             Integer size;
             Integer number;
             try {

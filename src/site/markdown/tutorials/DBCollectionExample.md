@@ -20,7 +20,7 @@ You should do the following to perform a database query.
 1. Resolve [IoC](IOCExample.html) dependency to take command object which interacts with DB.
 
         ITask task = IOC.resolve(
-            Keys.getOrAdd("command_name"),               // each command has it's own unique name
+            Keys.getOrAdd("command_name"),          // each command has it's own unique name
             connection,                             // object - connection to the DB
             "collection_name",                      // each document belongs to the collection
             other comma-separated parameters        // the set of parameters depends on the command
@@ -35,6 +35,37 @@ You should do the following to perform a database query.
     If the command cannot be executed, `task.execute()` throws `TaskExecutionException`.
 
 ## Database commands
+
+### Create collection
+
+Creates the collection in the database to be used in the following database queries.
+Use this task on an initialization step, to create all necessary collections on the first server start.
+
+Command name: `db.collection.create`
+
+Additional parameters:
+
+- indexes — `IObject` — object specifying the set of additional indexes to create on collection.
+
+#### Indexes
+
+ID of the document is always the primary key, so GetById always use index. 
+You can specify additional indexes to do Search more effectively,
+add fields you need to search by.
+
+The example of indexes object:
+
+    {
+        "a": "ordered",
+        "b": { "fulltext": "english" }
+    }
+
+You should define the document field name and the index type.
+
+Available index types:
+
+* `ordered` — typical btree ordered index, to be used to test for equality, ranges, for sorting, etc...
+* `fulltext` — full text index, you have to declare the language of the text field
 
 ### Upsert
 
