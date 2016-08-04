@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.http_request_handler;
 
 
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
 import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;

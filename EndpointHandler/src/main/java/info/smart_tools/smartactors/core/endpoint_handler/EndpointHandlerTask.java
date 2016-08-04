@@ -13,8 +13,8 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
  * {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
  */
 public class EndpointHandlerTask<TContext, TRequest> implements ITask {
-    private final TContext context;
-    private final TRequest request;
+    private final Object context;
+    private final Object request;
     private final IEnvironmentExtractor environmentExtractor;
     private final IEnvironmentHandler environmentHandler;
     private final IReceiverChain receiverChain;
@@ -28,8 +28,8 @@ public class EndpointHandlerTask<TContext, TRequest> implements ITask {
      * @param environmentHandler   handler for environment
      * @param receiverChain        chain that receive message from current endpoint
      */
-    public EndpointHandlerTask(final IEnvironmentExtractor environmentExtractor, final TContext context,
-                               final TRequest request, final IEnvironmentHandler environmentHandler,
+    public EndpointHandlerTask(final IEnvironmentExtractor environmentExtractor, final Object context,
+                               final Object request, final IEnvironmentHandler environmentHandler,
                                final IReceiverChain receiverChain) {
         this.environmentExtractor = environmentExtractor;
         this.context = context;

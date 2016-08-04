@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.deserialize_strategy_post_json.Deserial
 import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
 import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.HttpEndpoint;
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.http_environment_extractor;
 
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
+import info.smart_tools.smartactors.core.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_extractor.IEnvironmentExtractor;
 import info.smart_tools.smartactors.core.ienvironment_extractor.exceptions.EnvironmentExtractionException;
@@ -13,6 +13,8 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+
+import java.util.ArrayList;
 
 /**
  * Environment extractor for http request
@@ -30,7 +32,7 @@ public class HttpEnvironmentExtractor implements IEnvironmentExtractor {
      *
      * @throws EnvironmentExtractionException if there are some problems on resolving field name
      */
-    HttpEnvironmentExtractor() throws EnvironmentExtractionException {
+    public HttpEnvironmentExtractor() throws EnvironmentExtractionException {
         try {
             messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
@@ -76,6 +78,8 @@ public class HttpEnvironmentExtractor implements IEnvironmentExtractor {
             //create context of the MP
             context.setValue(channelFieldName, channelHandler);
             context.setValue(requestFieldName, request);
+            context.setValue(headersFieldName, new ArrayList<>());
+            context.setValue(cookiesFieldName, new ArrayList<>());
             //create environment
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);

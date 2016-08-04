@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_post_json;
 
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -28,7 +28,7 @@ public class DeserializeStrategyPostJson implements IDeserializeStrategy {
      *
      * @param inputRequest Http request, that should be deserialize
      * @return {@link IObject} deserializated json
-     * @throws info.smart_tools.smartactors.core.exceptions.DeserializationException
+     * @throws info.smart_tools.smartactors.core.ideserialize_strategy.exceptions.DeserializationException
      */
     @Override
     public IObject deserialize(final Object inputRequest) throws DeserializationException {

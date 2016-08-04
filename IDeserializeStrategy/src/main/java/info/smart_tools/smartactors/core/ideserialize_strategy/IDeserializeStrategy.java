@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.ideserialize_strategy;
 
 
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
+import info.smart_tools.smartactors.core.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**

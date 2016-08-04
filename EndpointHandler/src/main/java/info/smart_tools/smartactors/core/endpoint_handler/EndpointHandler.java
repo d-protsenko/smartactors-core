@@ -79,9 +79,10 @@ public abstract class EndpointHandler<TContext, TRequest> {
         try {
             ScopeProvider.setCurrentScope(scope);
             TRequest buffRequest = (TRequest) ((FullHttpRequest) request).copy();
-            ITask endpointTask = new EndpointHandlerTask(environmentExtractor, ctx, buffRequest, environmentHandler, receiverChain);
+            ITask endpointTask = IOC.resolve(Keys.getOrAdd(EndpointHandlerTask.class.getCanonicalName()),
+                    environmentExtractor, ctx, buffRequest, environmentHandler, receiverChain);
             taskQueue.put(endpointTask);
-        } catch (ScopeProviderException | InterruptedException e) {
+        } catch (ResolutionException | ScopeProviderException | InterruptedException e) {
             throw new ExecutionException("Failed to put task to queue of the tasks", e);
         }
     }

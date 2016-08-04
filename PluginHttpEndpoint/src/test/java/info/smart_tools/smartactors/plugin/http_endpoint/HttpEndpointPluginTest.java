@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.plugin.http_endpoint;
 
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.HttpEndpoint;
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;

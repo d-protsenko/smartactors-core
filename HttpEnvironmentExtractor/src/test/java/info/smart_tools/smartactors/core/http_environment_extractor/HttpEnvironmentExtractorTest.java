@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.http_environment_extractor;
 
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
+import info.smart_tools.smartactors.core.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_extractor.exceptions.EnvironmentExtractionException;
