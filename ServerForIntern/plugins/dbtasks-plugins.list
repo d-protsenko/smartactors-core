@@ -1,6 +1,3 @@
-actors.sample_actor-0.2.0-SNAPSHOT.jar
-plugin.sample_actor-0.2.0-SNAPSHOT.jar
-
 plugin.postgres_db_tasks-0.2.0-SNAPSHOT.jar
 core.postgres_schema-0.2.0-SNAPSHOT.jar
 core.postgres_getbyid_task-0.2.0-SNAPSHOT.jar
