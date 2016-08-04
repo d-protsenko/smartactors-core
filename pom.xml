@@ -233,6 +233,8 @@
         <module>PluginChainChoiceStrategy</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>IEnvironmentExtractor</module>
+        <module>HttpEnvironmentExtractor</module>
     </modules>
 
     <build>

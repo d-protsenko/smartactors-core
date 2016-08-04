@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
@@ -65,12 +66,17 @@ public class EndpointsSectionProcessingStrategyTest {
 
         IOC.register(httpEndpointKey,
                 new CreateNewInstanceStrategy(
-                        (args) ->
-                                new HttpEndpoint((Integer) args[0],
+                        (args) -> {
+                            try {
+                                return new HttpEndpoint((Integer) args[0],
                                         (Integer) args[1], (IScope) args[2],
                                         (IEnvironmentHandler) args[3],
                                         (IReceiverChain) args[4]
-                                )
+                                );
+                            } catch (EndpointException e) {
+                            }
+                            return null;
+                        }
                 )
         );
 

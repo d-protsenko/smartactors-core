@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNet
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -85,12 +86,17 @@ public class HttpEndpointPlugin implements IPlugin {
 
                                     IOC.register(httpEndpointKey,
                                             new CreateNewInstanceStrategy(
-                                                    (args) ->
-                                                            new HttpEndpoint((Integer) args[0],
+                                                    (args) -> {
+                                                        try {
+                                                            return new HttpEndpoint((Integer) args[0],
                                                                     (Integer) args[1], (IScope) args[2],
                                                                     (IEnvironmentHandler) args[3],
                                                                     (IReceiverChain) args[4]
-                                                            )
+                                                            );
+                                                        } catch (EndpointException e) {
+                                                        }
+                                                        return null;
+                                                    }
                                             )
                                     );
                                     IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
@@ -129,7 +135,8 @@ public class HttpEndpointPlugin implements IPlugin {
                                 } catch (InvalidArgumentException e) {
                                     throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
+                                    throw new ActionExecuteException(
+                                            "EndpointCollection plugin can't load: can't register new strategy", e);
                                 }
                             }
                     );

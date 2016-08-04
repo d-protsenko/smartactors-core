@@ -248,6 +248,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
                     "plugin.wds_object-0.2.0-SNAPSHOT.jar",
                     "plugin.wrapper_generator-0.2.0-SNAPSHOT.jar",
+                    "plugin.starter-0.2.0-SNAPSHOT.jar",
                     "strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar",
                     "strategy.cookies_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.http_headers_setter-0.2.0-SNAPSHOT.jar",
