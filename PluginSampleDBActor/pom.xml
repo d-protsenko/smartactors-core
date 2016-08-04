@@ -67,7 +67,6 @@
             <version>${core.version}</version>
         </dependency>
 
-
     </dependencies>
 
 </project>

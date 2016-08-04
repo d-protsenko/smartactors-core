@@ -16,6 +16,11 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.postgres_db_tasks</artifactId>
             <version>${core.version}</version>
         </dependency>
