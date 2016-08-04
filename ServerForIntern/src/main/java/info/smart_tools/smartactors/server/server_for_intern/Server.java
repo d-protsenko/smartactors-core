@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
 import info.smart_tools.smartactors.core.filesystem_tracker.FilesystemTracker;
 import info.smart_tools.smartactors.core.filesystem_tracker.ListenerTask;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
@@ -47,6 +48,7 @@ public class Server implements IServer {
     private IPath pluginsPath = new Path("plugins");
     private IPath starterPath = new Path("starter");
     private IFeatureManager featureManager;
+    private BootstrapItems items = new BootstrapItems();
 
     public static void main(final String[] args) throws Exception {
         Server server = new Server();
@@ -113,7 +115,7 @@ public class Server implements IServer {
         coreFeature.whenPresent(files -> {
             try {
                 pluginLoader.loadPlugin(files);
-                bootstrap.start();
+                items.setItems(bootstrap.start());
                 System.out.println("--------------------------------- Core plugins has been loaded ---------------------------------");
                 loadUsersPlugins();
             } catch (Throwable e) {
@@ -129,7 +131,7 @@ public class Server implements IServer {
 
     private void loadUsersPlugins()
             throws Exception {
-        IBootstrap bootstrap = new Bootstrap();
+        IBootstrap bootstrap = new Bootstrap(items.getItems());
         IPluginCreator creator = new PluginCreator();
         IPluginLoaderVisitor<String> visitor = new PluginLoaderVisitor<>();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
@@ -159,7 +161,7 @@ public class Server implements IServer {
         pluginsFeature.whenPresent(files -> {
             try {
                 pluginLoader.loadPlugin(files);
-                bootstrap.start();
+                items.setItems(bootstrap.start());
                 System.out.println("--------------------------------- Users plugins has been loaded ---------------------------------");
                 loadStarterPlugins();
             } catch (Throwable e) {
@@ -175,7 +177,7 @@ public class Server implements IServer {
 
     private void loadStarterPlugins()
             throws Exception {
-        IBootstrap bootstrap = new Bootstrap();
+        IBootstrap bootstrap = new Bootstrap(items.getItems());
         IPluginCreator creator = new PluginCreator();
         IPluginLoaderVisitor<String> visitor = new PluginLoaderVisitor<>();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
@@ -205,7 +207,7 @@ public class Server implements IServer {
             try {
                 System.out.println("--------------------------------- Start system ---------------------------------");
                 pluginLoader.loadPlugin(files);
-                bootstrap.start();
+                items.setItems(bootstrap.start());
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
             }
@@ -239,5 +241,17 @@ public class Server implements IServer {
         while (s.hasNext()) {
             this.starterPlugins.add(s.next());
         }
+    }
+}
+
+class BootstrapItems {
+    private List<IBootstrapItem<String>> items = new ArrayList<>();
+
+    public List<IBootstrapItem<String>> getItems() {
+        return items;
+    }
+
+    public void setItems(final List<IBootstrapItem<String>> items) {
+        this.items = items;
     }
 }
