@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.DependencyResolvingFeatureManager;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
-import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
@@ -54,7 +53,7 @@ public class ServerWithConfiguration implements IServer {
             );
 
             // FeatureManager & Feature creation
-            IFeatureManager featureManager = new DependencyResolvingFeatureManager(
+            DependencyResolvingFeatureManager featureManager = new DependencyResolvingFeatureManager(
                     System.getProperty("user.home") + "/smartactors-plugins-repo",
                     new HashMap<String, String>() {{
                         put("local_repo", "file://" + System.getProperty("user.home") + "/.m2/repository/");
