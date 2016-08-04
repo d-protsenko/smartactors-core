@@ -152,7 +152,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/body",
+            "in_getForm": "message/asyncOperation/body/form",
             "out_setFormData": "message/form"
           }
         }

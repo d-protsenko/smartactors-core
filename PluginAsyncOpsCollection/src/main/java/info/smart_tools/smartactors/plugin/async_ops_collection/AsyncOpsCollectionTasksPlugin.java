@@ -73,6 +73,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
 
                                                     collectionNameField.out(query, collectionName);
                                                     tokenField.out(query, id);
+                                                    callbackField.out(query, args[3]);
 
                                                     task.prepare(query);
                                                     return task;

@@ -36,7 +36,6 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     private IField dateToField;
     private IField startDateTimeField;
 
-    private IField criteriaDateToStartDateTimeField;
     //TODO:: this format should be setted for whole project?
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
@@ -56,7 +55,6 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
             this.filterField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
             this.dateToField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$date-to");
             this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "startDateTime");
-            this.criteriaDateToStartDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter/startDateTime/$date-to");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }

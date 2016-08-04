@@ -81,9 +81,9 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                 guard.getObject(),
                 collectionName,
                 token,
-                (IAction<IObject>) doc -> {
+                (IAction<IObject[]>) docs -> {
                     try {
-                        result.setValue(new FieldName("result"), doc);
+                        result.setValue(new FieldName("result"), docs[0]);
                     } catch (ChangeValueException e) {
                         throw new ActionExecuteException(e);
                     }
