@@ -166,6 +166,8 @@
         <module>ICodec</module>
         <module>Codec</module>
         <module>MDPasswordEncoder</module>
+        <module>PluginUserAuthByLoginActor</module>
+        <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
