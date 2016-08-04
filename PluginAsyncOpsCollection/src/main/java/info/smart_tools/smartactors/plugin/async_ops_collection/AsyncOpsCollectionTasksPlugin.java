@@ -150,13 +150,14 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     //TODO:: write strategy
                                                     IStorageConnection connection = (IStorageConnection) args[0];
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                                    IObject asyncOperation = (IObject) args[2];
-                                                    IDatabaseTask updateTask = new UpdateAsyncOperationTask(connection);
-                                                    UpdateAsyncOperationQuery upsertQuery = IOC.resolve(Keys.getOrAdd(UpdateAsyncOperationQuery.class.toString()));
-                                                    upsertQuery.setCollectionName(collectionName);
-                                                    upsertQuery.setUpdateItem(asyncOperation);
+                                                    IObject document = (IObject) args[2];
 
-                                                    updateTask.prepare(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), upsertQuery));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    collectionNameField.out(query, collectionName);
+                                                    documentField.out(query, document);
+
+                                                    IDatabaseTask updateTask = new UpdateAsyncOperationTask(connection);
+                                                    updateTask.prepare(query);
                                                     return updateTask;
                                                 } catch (Exception e) {
                                                     throw new RuntimeException("Can't resolve upsert db task.", e);

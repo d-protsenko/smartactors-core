@@ -156,14 +156,14 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
 
     @Override
-    public void complete(final IObject asyncOperation) throws CompleteAsyncOperationException {
+    public void complete(final IObject document) throws CompleteAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
 
             ITask updateTask = IOC.resolve(Keys.getOrAdd("db.async_ops_collection.complete"),
                     poolGuard.getObject(),
                     collectionName,
-                    asyncOperation
+                    document
             );
 
             updateTask.execute();

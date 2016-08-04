@@ -39,11 +39,15 @@ public class CloseAsyncOperationActor {
     /**
      * Remove token from session and mark operation as comlete
      * @param message the message
+     *                <pre>
+     *                {
+     *
+     *                }
+     *                </pre>
      * @throws TaskExecutionException
      */
     void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {
-            message.getOperationTokens().remove(message.getToken());
             collection.complete(message.getOperation());
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't read some of values in message", e);
