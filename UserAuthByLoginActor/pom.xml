@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wrapper_generator</artifactId>
+            <artifactId>core.itask</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -45,11 +45,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.db_storage</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.db_search_task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
