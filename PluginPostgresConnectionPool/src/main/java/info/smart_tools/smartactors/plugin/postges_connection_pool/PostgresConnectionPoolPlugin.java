@@ -47,8 +47,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
             item
-                // TODO: return this dependency when it'll be possible to rerun Bootstrap for non-core plugins
-//                .after("IOC")
+                .after("IOC")
                 .process(() -> {
                     try {
                         IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");

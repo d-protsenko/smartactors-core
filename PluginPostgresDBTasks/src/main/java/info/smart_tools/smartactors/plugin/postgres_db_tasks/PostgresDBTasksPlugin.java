@@ -47,9 +47,8 @@ public class PostgresDBTasksPlugin implements IPlugin {
         try {
             BootstrapItem item = new BootstrapItem("PostgresDBTasksPlugin");
             item
-                // TODO: return these dependencies when it'll be possible to rerun Bootstrap for non-core plugins
-//                .after("IOC")
-//                .after("IFieldPlugin")
+                .after("IOC")
+                .after("IFieldPlugin")
                 .process(() -> {
                     try {
                         registerUpsertTask();

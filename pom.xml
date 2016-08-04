@@ -233,6 +233,8 @@
         <module>PluginChainChoiceStrategy</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>SampleDBActor</module>
+        <module>PluginSampleDBActor</module>
     </modules>
 
     <build>
