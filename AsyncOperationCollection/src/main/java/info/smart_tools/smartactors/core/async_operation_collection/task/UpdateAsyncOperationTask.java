@@ -10,7 +10,9 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
@@ -19,20 +21,25 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  */
 public class UpdateAsyncOperationTask implements IDatabaseTask {
 
+    private IStorageConnection connection;
     private IDatabaseTask upsertTask;
 
     private IField doneFlagField;
+    private IField documentField;
+    private IField collectionNameField;
 
     /**
      * Constructor
-     * @param upsertTask nested task for update operation
+     * @param connection connection for executing operations
      * @throws ResolutionException Throw when task can't be created (for example, when can't resolve some of field)
      */
-    public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) throws UpdateAsyncOperationException {
-        this.upsertTask = upsertTask;
+    public UpdateAsyncOperationTask(final IStorageConnection connection) throws UpdateAsyncOperationException {
+        this.connection = connection;
 
         try {
             doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document/done");
+            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -43,8 +50,11 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
 
         try {
             doneFlagField.out(query, true);
-            upsertTask.prepare(query);
-        } catch (ChangeValueException | InvalidArgumentException e) {
+            upsertTask = IOC.resolve(Keys.getOrAdd("db.collection.upsert"),
+                    connection,
+                    collectionNameField.in(query),
+                    documentField.in(query));
+        } catch (ReadValueException | ChangeValueException | ResolutionException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
         }
     }
