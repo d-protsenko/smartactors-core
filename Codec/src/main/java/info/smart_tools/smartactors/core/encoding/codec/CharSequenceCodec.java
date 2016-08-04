@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.encoding.codec;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.security.encoding.codecs.ICharSequenceCodec;
 import info.smart_tools.smartactors.core.security.encoding.decoders.DecodingException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
@@ -11,22 +12,38 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  *
  */
-public class UTF8 implements ICharSequenceCodec {
+public class CharSequenceCodec implements ICharSequenceCodec {
     private final CharsetEncoder encoder;
     private final CharsetDecoder decoder;
 
-    private UTF8() {
-        final Charset charsetUTF8 = Charset.forName("UTF-8");
-        this.encoder = charsetUTF8.newEncoder();
-        this.decoder = charsetUTF8.newDecoder();
+
+    private CharSequenceCodec(final String name) throws InvalidArgumentException {
+        try {
+            final Charset charsetUTF8 = Charset.forName(name);
+            this.encoder = charsetUTF8.newEncoder();
+            this.decoder = charsetUTF8.newDecoder();
+        } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+            throw new InvalidArgumentException("Error during create charset.", e);
+        }
     }
 
-    public static UTF8 create() {
-        return new UTF8();
+    /**
+     * Factory method for create charset
+     * @param name of charset
+     * @return charset instance
+     * @throws InvalidArgumentException if any error is occurred
+     */
+    public static CharSequenceCodec create(final String name) throws InvalidArgumentException {
+        if (name == null) {
+            throw new InvalidArgumentException("Charset name can't be null");
+        }
+        return new CharSequenceCodec(name);
     }
 
     /**

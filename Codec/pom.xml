@@ -17,6 +17,11 @@
             <artifactId>core.security.encoding</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!-- http://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
         <dependency>

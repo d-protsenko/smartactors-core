@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.encoding.codec;
 
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.security.encoding.codecs.ICharSequenceCodec;
 import info.smart_tools.smartactors.core.security.encoding.decoders.DecodingException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
@@ -11,8 +12,8 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
 
-public class UTF8Test {
-    private final ICharSequenceCodec utf8 = UTF8.create();
+public class CharSequenceCodecTest {
+    private ICharSequenceCodec utf8;
 
     private final String SOURCE_MSG = "Hello my young friend. " +
             "You can see how it's is a nice text will converted to some shit, " +
@@ -22,7 +23,8 @@ public class UTF8Test {
     private byte[] UTF_8_MSG;
 
     @Before
-    public void setUp() throws UnsupportedEncodingException {
+    public void setUp() throws UnsupportedEncodingException, InvalidArgumentException {
+        utf8 = CharSequenceCodec.create("utf-8");
         UTF_8_MSG = SOURCE_MSG.getBytes("UTF-8");
     }
 
