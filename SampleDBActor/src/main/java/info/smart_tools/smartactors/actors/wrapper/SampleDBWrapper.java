@@ -8,7 +8,9 @@ public interface SampleDBWrapper {
 
     String getCollectionName() throws ReadValueException;
 
-    Object getDocumentId() throws ReadValueException;
+//    Object getDocumentId() throws ReadValueException;
+
+    IObject getDocument() throws ReadValueException;
 
     void setDocument(IObject document) throws ChangeValueException;
 

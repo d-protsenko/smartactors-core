@@ -85,7 +85,7 @@
           "handler": "getDocumentById",
           "wrapper": {
             "in_getCollectionName": "message/collection",
-            "in_getDocumentId": "message/id",
+            "in_getDocument": "message/document",
             "out_setDocument": "response/found"
           }
         },
