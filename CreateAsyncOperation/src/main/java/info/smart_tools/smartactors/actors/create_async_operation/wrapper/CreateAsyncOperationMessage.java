@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.actors.create_async_operation.wrapper;
 
 import info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
@@ -14,14 +15,14 @@ public interface CreateAsyncOperationMessage {
      * @return session identifier
      * @throws ReadValueException if error during get is occurred
      */
-    String getSessionId() throws ReadValueException;
+    IObject getOperationData() throws ReadValueException;
 
     /**
      * Getter
      * @return TTL for async operation
      * @throws ReadValueException if error during get is occurred
      */
-    Long getExpiredTime() throws ReadValueException;
+    Integer getExpiredTime() throws ReadValueException;
 
     /**
      * Setter

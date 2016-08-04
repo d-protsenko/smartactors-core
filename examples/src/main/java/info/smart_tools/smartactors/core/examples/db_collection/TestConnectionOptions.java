@@ -11,17 +11,17 @@ public class TestConnectionOptions implements ConnectionOptions {
 
     @Override
     public String getUrl() throws ReadValueException {
-        return "jdbc:postgresql://localhost:5432/test";
+        return "jdbc:postgresql://localhost:5432/test_async";
     }
 
     @Override
     public String getUsername() throws ReadValueException {
-        return "test";
+        return "test_user";
     }
 
     @Override
     public String getPassword() throws ReadValueException {
-        return "test";
+        return "qwerty";
     }
 
     @Override

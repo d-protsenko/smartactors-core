@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.actors.create_async_operation;
 
 import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.actors.create_async_operation.wrapper.AuthOperationData;
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
@@ -66,11 +65,11 @@ public class CreateAsyncOperationActorTest {
 
         String sessionId = "sessionId";
         when(message.getSessionId()).thenReturn(sessionId);
-        when(message.getExpiredTime()).thenReturn(4L);
+        when(message.getExpiredTime()).thenReturn(4);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(dataKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
         when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
 
         actor.create(message);
@@ -87,7 +86,7 @@ public class CreateAsyncOperationActorTest {
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(dataKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
         when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
         doThrow(new CreateAsyncOperationException("exception")).when(collection).createAsyncOperation(any(), any(), any());
 

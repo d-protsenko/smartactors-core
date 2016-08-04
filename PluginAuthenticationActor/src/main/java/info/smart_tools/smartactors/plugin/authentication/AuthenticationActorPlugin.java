@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -41,8 +40,7 @@ public class AuthenticationActorPlugin implements IPlugin {
                     .before("configure")
                     .process(() -> {
                         try {
-                            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
-                            IOC.register(cachedCollectionKey, new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getOrAdd(AuthenticationActor.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {
                                             return new AuthenticationActor();

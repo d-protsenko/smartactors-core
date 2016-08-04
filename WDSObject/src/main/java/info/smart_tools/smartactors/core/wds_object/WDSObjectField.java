@@ -24,7 +24,7 @@ public class WDSObjectField implements IField {
     private static final String FIELD_ARGS = "args";
     private static final String FIELD_NAME = "name";
     private static final String LOCAL_KEYWORD = "local";
-    private static final String CONST_KEYWORD = "consts";
+    private static final String CONST_KEYWORD = "const";
     private static final String DEFAULT_KEYWORD = "default";
     private static final String SPLITTER = "\\/";
     private static final String INNER_SETTER_STRATEGY_NAME = "wds_target_strategy";

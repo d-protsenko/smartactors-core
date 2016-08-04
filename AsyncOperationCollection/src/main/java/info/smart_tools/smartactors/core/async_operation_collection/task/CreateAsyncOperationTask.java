@@ -64,7 +64,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.insert"),
+                    Keys.getOrAdd("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

@@ -23,12 +23,10 @@ import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
@@ -48,6 +46,7 @@ public class Server implements IServer {
     private IPath corePath = new Path("core");
     private IPath pluginsPath = new Path("plugins");
     private IPath starterPath = new Path("starter");
+    private IFeatureManager featureManager;
 
     public static void main(final String[] args) throws Exception {
         Server server = new Server();
@@ -59,6 +58,7 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         try {
+            this.featureManager = new FeatureManager();
             getCorePluginsList();
             getUserPluginsList();
             getStarterList();
@@ -105,21 +105,16 @@ public class Server implements IServer {
                 (path) -> path.getPath().endsWith(".jar"),
                 ListenerTask::new);
 
-        jarFilesTracker.start(coreJarsDir);
         jarFilesTracker.addErrorHandler((e) -> {
             System.out.println("Server initialization failed!");
             e.printStackTrace();
         });
-
-        // FeatureManager & Feature creation
-        IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
-
-
-        IFeature coreFeature = featureManager.newFeature("smartactors.core");
+        IFeature coreFeature = this.featureManager.newFeature("smartactors.core", jarFilesTracker);
         coreFeature.whenPresent(files -> {
             try {
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
+                System.out.println("--------------------------------- Core plugins has been loaded ---------------------------------");
                 loadUsersPlugins();
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
@@ -129,6 +124,7 @@ public class Server implements IServer {
             coreFeature.requireFile(jarName);
         }
         coreFeature.listen();
+        jarFilesTracker.start(coreJarsDir);
     }
 
     private void loadUsersPlugins()
@@ -155,32 +151,26 @@ public class Server implements IServer {
                 (path) -> path.getPath().endsWith(".jar"),
                 ListenerTask::new);
 
-        jarFilesTracker.start(usersJarsDir);
         jarFilesTracker.addErrorHandler((e) -> {
             System.out.println("Server initialization failed!");
             e.printStackTrace();
         });
-
-        // FeatureManager & Feature creation
-        IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
-
-
-        IFeature pluginsFeature = featureManager.newFeature("smartactors.plugins");
+        IFeature pluginsFeature = featureManager.newFeature("smartactors.plugins", jarFilesTracker);
         pluginsFeature.whenPresent(files -> {
             try {
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
+                System.out.println("--------------------------------- Users plugins has been loaded ---------------------------------");
                 loadStarterPlugins();
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
             }
         });
-
         for (String jarName : this.usersPlugins) {
             pluginsFeature.requireFile(jarName);
         }
-
         pluginsFeature.listen();
+        jarFilesTracker.start(usersJarsDir);
     }
 
     private void loadStarterPlugins()
@@ -206,32 +196,25 @@ public class Server implements IServer {
         IFilesystemTracker jarFilesTracker = new FilesystemTracker(
                 (path) -> path.getPath().endsWith(".jar"),
                 ListenerTask::new);
-
-        jarFilesTracker.start(starterJarsDir);
         jarFilesTracker.addErrorHandler((e) -> {
             System.out.println("Server initialization failed!");
             e.printStackTrace();
         });
-
-        // FeatureManager & Feature creation
-        IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
-
-
-        IFeature starterFeature = featureManager.newFeature("smartactors.starter");
+        IFeature starterFeature = featureManager.newFeature("smartactors.starter", jarFilesTracker);
         starterFeature.whenPresent(files -> {
             try {
+                System.out.println("--------------------------------- Start system ---------------------------------");
                 pluginLoader.loadPlugin(files);
                 bootstrap.start();
             } catch (Throwable e) {
                 throw new RuntimeException("Plugin loading failed.", e);
             }
         });
-
         for (String jarName : this.starterPlugins) {
             starterFeature.requireFile(jarName);
         }
-
         starterFeature.listen();
+        jarFilesTracker.start(starterJarsDir);
     }
 
     private void getCorePluginsList()

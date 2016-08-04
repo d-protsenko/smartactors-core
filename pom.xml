@@ -157,6 +157,8 @@
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
+        <module>CreateSession</module>
+        <module>PluginCreateSession</module>
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
@@ -237,8 +239,10 @@
         <module>PluginSampleActor</module>
         <module>PluginChainCallReceiver</module>
         <module>PluginChainChoiceStrategy</module>
+        <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>PluginValidationFormActor</module>
     </modules>
 
     <build>

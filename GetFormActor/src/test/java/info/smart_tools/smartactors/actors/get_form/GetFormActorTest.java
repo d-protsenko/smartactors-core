@@ -54,7 +54,7 @@ public class GetFormActorTest {
         when(IOC.resolve(eq(strategyKey), anyObject())).thenReturn(strategy);
 
         IKey fieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(eq(fieldKey), anyObject())).thenReturn(field);
 
         when(collection.getItems(key)).thenReturn(objects);

@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.plugin.cached_collection;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -17,11 +16,9 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lambda_strategy.ResolveByCompositeNameIOCStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 
 
 /**
@@ -51,24 +48,23 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                 .after("IFieldPlugin")
                 .process(() -> {
                     try {
-                        IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.toString());
-                        IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
-                        IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
-                        IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
+                        IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.getCanonicalName());
+                        IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
+                        IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+                        IField keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
                         IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
                             (args) -> {
                                 try {
-                                    CollectionName collectionName = IOC.resolve(Keys.getOrAdd(CollectionName.class.toString()), args[0]);
+                                    String collectionName = (String) args[0];
                                     if (collectionName == null) {
                                         throw new RuntimeException("Can't resolve cached collection: collectionName is null");
                                     }
                                     String keyName = String.valueOf(args[1]);
                                     //TODO:: clarify about generators
                                     //TODO:: wrapperGenerator should be resolved by IOC
-                                    IWrapperGenerator wrapperGenerator = new WrapperGenerator(this.getClass().getClassLoader());
-                                    ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
+                                    ConnectionOptions connectionOptionsWrapper = new ConnectionOptionsTestImpl();
                                     IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
-                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
+                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);
                                     keyNameField.out(config, keyName);
