@@ -48,6 +48,7 @@ public class CloseAsyncOperationActor {
      */
     void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {
+            message.getOperationTokens().remove(message.getToken());
             collection.complete(message.getOperation());
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't read some of values in message", e);
