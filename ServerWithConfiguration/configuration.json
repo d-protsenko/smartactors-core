@@ -101,6 +101,8 @@
           "wrapper": {
             "in_getOperationData": "response/form",
             "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "out_setSessionIdInData": "response/form/sessionId",
             "out_setAsyncOperationToken": "response/token"
           }
         },
@@ -168,6 +170,8 @@
           "wrapper": {
             "in_getOperationData": "message/form",
             "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "out_setSessionIdInData": "message/form/sessionId",
             "out_setAsyncOperationToken": "response/token"
           }
         }
