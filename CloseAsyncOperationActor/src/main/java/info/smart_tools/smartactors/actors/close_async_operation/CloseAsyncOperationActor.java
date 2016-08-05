@@ -46,7 +46,7 @@ public class CloseAsyncOperationActor {
      *                </pre>
      * @throws TaskExecutionException
      */
-    void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
+    public void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {
             message.getOperationTokens().remove(message.getToken());
             collection.complete(message.getOperation());
