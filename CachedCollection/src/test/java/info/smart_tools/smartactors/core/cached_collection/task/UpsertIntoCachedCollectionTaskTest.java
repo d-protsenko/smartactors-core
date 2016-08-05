@@ -1,19 +1,13 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertIntoCachedCollectionQuery;
-import info.smart_tools.smartactors.core.cached_collection.wrapper.upsert.UpsertItem;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +15,9 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.time.LocalDateTime;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -38,93 +26,58 @@ public class UpsertIntoCachedCollectionTaskTest {
 
     private UpsertIntoCachedCollectionTask task;
     private IDatabaseTask upsertTask;
-    private IKey iocKey;
+
+    private IField startDateTimeField;
+    private IField collectionNameField;
+    private IField documentField;
+    private IStorageConnection connection;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, ResolutionException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        iocKey = mock(IKey.class);
-        when(Keys.getOrAdd(anyString())).thenReturn(iocKey);
+        startDateTimeField = mock(IField.class);
+        collectionNameField = mock(IField.class);
+        documentField = mock(IField.class);
+        IKey keyField = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(IOC.resolve(keyField, "document/startDateTime")).thenReturn(startDateTimeField);
+        when(IOC.resolve(keyField, "document")).thenReturn(documentField);
+        when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
 
         upsertTask = mock(IDatabaseTask.class);
-        task = new UpsertIntoCachedCollectionTask(upsertTask);
+        connection = mock(IStorageConnection.class);
+        task = new UpsertIntoCachedCollectionTask(connection);
     }
 
     @Test
-    public void ShouldSetConnectionToNestedTask() throws TaskSetConnectionException {
+    public void ShouldPrepareUpsertQuery() throws Exception {
 
-        StorageConnection connection = mock(StorageConnection.class);
-        task.setConnection(connection);
-        verify(upsertTask).setConnection(eq(connection));
-    }
+        IObject query = mock(IObject.class);
+        IObject doc = mock(IObject.class);
+        when(collectionNameField.in(query)).thenReturn("collectionName");
+        when(documentField.in(query)).thenReturn(doc);
 
-    @Test
-    public void ShouldExecuteNestedTask() throws TaskExecutionException {
+        when(startDateTimeField.in(query)).thenReturn(null);
+        task.prepare(query);
 
-        task.execute();
-        verify(upsertTask).execute();
-    }
-
-    @Test
-    public void ShouldPrepareUpsertQuery() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
-
-        IObject rawQuery = mock(IObject.class);
-        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
-        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
-
-        IObject wrapped = mock(IObject.class);
-        when(query.wrapped()).thenReturn(wrapped);
-        UpsertItem upsertItem = mock(UpsertItem.class);
-        when(query.getUpsertItem()).thenReturn(upsertItem);
-
-        task.prepare(rawQuery);
-
-        verify(upsertItem).setStartDateTime(any(LocalDateTime.class));
-        verify(upsertTask).prepare(eq(wrapped));
+        verifyStatic();
+        IOC.resolve(
+            Keys.getOrAdd("db.collection.upsert"),
+            connection,
+            "collectionName",
+            doc
+        );
     }
 
     @Test(expected = TaskPrepareException.class)
-    public void ShouldThrowException_When_ResolutionExceptionIsThrown() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
+    public void ShouldThrowException_When_ResolutionExceptionIsThrown() throws Exception {
 
         IObject rawQuery = mock(IObject.class);
-        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenThrow(ResolutionException.class);
+        when(startDateTimeField.in(rawQuery)).thenThrow(ChangeValueException.class);
 
         task.prepare(rawQuery);
-    }
-
-    @Test(expected = TaskPrepareException.class)
-    public void ShouldInCorrectPrepareUpsertQueryWhenMessageThrowException() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
-
-        IObject rawQuery = mock(IObject.class);
-        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
-        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
-
-        when(query.getUpsertItem()).thenThrow(new ReadValueException());
-
-        task.prepare(rawQuery);
-    }
-
-    @Test
-    public void ShouldInCorrectPrepareUpsertQueryWhenUpsertItemThrowException() throws ResolutionException, ReadValueException, TaskPrepareException, ChangeValueException {
-
-        IObject rawQuery = mock(IObject.class);
-        UpsertIntoCachedCollectionQuery query = mock(UpsertIntoCachedCollectionQuery.class);
-        when(IOC.resolve(eq(iocKey), any(IObject.class))).thenReturn(query);
-
-        UpsertItem upsertItem = mock(UpsertItem.class);
-        when(query.getUpsertItem()).thenReturn(upsertItem);
-
-        when(upsertItem.getStartDateTime()).thenThrow(new ReadValueException());
-
-        try {
-            task.prepare(rawQuery);
-        } catch (TaskPrepareException e) {
-            verify(query).getUpsertItem();
-            return;
-        }
-        assertTrue("Must throw new exception", false);
     }
 }

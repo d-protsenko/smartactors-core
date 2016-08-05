@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.core.server_with_iobject;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iserver.IServer;
@@ -16,24 +18,30 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
+import info.smart_tools.smartactors.core.wds_object.WDSObject;
 import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link IServer} with
  */
 public class Server implements IServer {
 
+    private IObject ds_config;
+    private IObject co_config;
+
     @Override
     public void initialize() throws ServerInitializeException {
         try {
             scopeInit();
-            registerKeysStorageStrategy();
+            registerKeysStorageStrategyAndFieldNameStrategy();
             registerWrapperGenerator();
-            registerConverterStrategies();
+            initObjects();
         } catch (Throwable e) {
             throw new ServerInitializeException("Could not initialize server.");
         }
@@ -44,10 +52,7 @@ public class Server implements IServer {
             throws ServerExecutionException {
         try {
             /** Get wrapper generator by IOC.resolve */
-            IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.toString()));
-
-            /** Get bindings */
-            IObject bindings = getBinding();
+            IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()));
 
             /** Get message, context, response */
             IObject message = getMessage();
@@ -59,13 +64,16 @@ public class Server implements IServer {
             environment.setValue(new FieldName("response"), response);
 
             /** Generate wrapper class by given interface and create instance of generated class */
-            IWrapper wrapper = wg.generate(IWrapper.class, bindings);
+            IWrapper wrapper = wg.generate(IWrapper.class);
 
             /** Check registration of IWrapper instance creation strategy to IOC */
-            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.toString()));
+            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName() + "wrapper"));
+
+            WDSObject wds = new WDSObject(((IObject) this.co_config.getValue(new FieldName("wrapper"))));
 
             /** Initialize wrapper */
-            ((IObjectWrapper) wrapper).init(environment);
+            wds.init(environment);
+            ((IObjectWrapper) wrapper).init(wds);
 
             /** Wrapper usage: get values */
             Integer i = wrapper.getIntValue();
@@ -106,7 +114,7 @@ public class Server implements IServer {
         ScopeProvider.setCurrentScope(mainScope);
     }
 
-    private void registerKeysStorageStrategy()
+    private void registerKeysStorageStrategyAndFieldNameStrategy()
             throws Exception {
         IOC.register(
                 IOC.getKeyForKeyStorage(),
@@ -120,150 +128,23 @@ public class Server implements IServer {
                         }
                 )
         );
+        IOC.register(
+                Keys.getOrAdd(FieldName.class.getCanonicalName()),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            try {
+                                return new FieldName((String) a[0]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+        );
     }
 
     private void registerWrapperGenerator()
             throws Exception {
         IWrapperGenerator wg = new WrapperGenerator(null);
-        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.toString()), new SingletonStrategy(wg));
-    }
-
-    private void registerConverterStrategies()
-            throws Exception {
-        IOC.register(Keys.getOrAdd("ToListOfInt"),
-                new CreateNewInstanceStrategy(
-                        (arg) -> {
-                            try {
-                                return arg[0];
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
-        IOC.register(Keys.getOrAdd("ToListOfString"),
-                new CreateNewInstanceStrategy(
-                        (arg) -> {
-                            try {
-                                return arg[0];
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
-    }
-
-    private IObject getBinding()
-            throws Exception {
-        IObject binding = new DSObject();
-        IObject bindingForIWrapper = new DSObject();
-
-        IObject getIntValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IntValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setIntValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IntValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject getStringValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"StringValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setStringValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"StringValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject getListOfInt = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfInt\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"ToListOfInt\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setListOfInt = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfInt\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject getListOfString = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfString\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"message\",\n" +
-                "\t\"UseStrategy\":  \"ToListOfString\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setListOfString = new DSObject("{\n" +
-                "\t\"ValueName\":    \"ListOfString\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"response\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject getBoolValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"BoolValue\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setBoolValue = new DSObject("{\n" +
-                "\t\"ValueName\":    \"BoolValue\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject getIObject = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IObject\",\n" +
-                "\t\"MethodType\":   \"get\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-        IObject setIObject = new DSObject("{\n" +
-                "\t\"ValueName\":    \"IObject\",\n" +
-                "\t\"MethodType\":   \"set\",\n" +
-                "\t\"Resource\":     \"context\",\n" +
-                "\t\"UseStrategy\":  \"\",\n" +
-                "\t\"CheckWrapper\": false\n" +
-                "}");
-
-        bindingForIWrapper.setValue(new FieldName("getIntValue"), getIntValue);
-        bindingForIWrapper.setValue(new FieldName("setIntValue"), setIntValue);
-        bindingForIWrapper.setValue(new FieldName("getStringValue"), getStringValue);
-        bindingForIWrapper.setValue(new FieldName("setStringValue"), setStringValue);
-        bindingForIWrapper.setValue(new FieldName("getListOfInt"), getListOfInt);
-        bindingForIWrapper.setValue(new FieldName("setListOfInt"), setListOfInt);
-        bindingForIWrapper.setValue(new FieldName("getListOfString"), getListOfString);
-        bindingForIWrapper.setValue(new FieldName("setListOfString"), setListOfString);
-        bindingForIWrapper.setValue(new FieldName("getBoolValue"), getBoolValue);
-        bindingForIWrapper.setValue(new FieldName("setBoolValue"), setBoolValue);
-        bindingForIWrapper.setValue(new FieldName("getIObject"), getIObject);
-        bindingForIWrapper.setValue(new FieldName("setIObject"), setIObject);
-        bindingForIWrapper.setValue(
-                new FieldName("initMethodParameters"),
-                new String[]{"message", "context", "response"}
-        );
-
-        binding.setValue(new FieldName(IWrapper.class.toString()), bindingForIWrapper);
-
-        return binding;
+        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()), new SingletonStrategy(wg));
     }
 
     private IObject getMessage()
@@ -299,4 +180,201 @@ public class Server implements IServer {
         return obj;
     }
 
+    private void initObjects()
+            throws Exception {
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return new ConfigurationObject((String) a[0]);
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Could not create new instance of Configuration Object."
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object default strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                return a[0];
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Error in configuration 'default' rule.", e
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object in_ strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Object obj = a[0];
+                                if (obj instanceof String) {
+                                    IObject innerObject = new ConfigurationObject();
+                                    innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
+                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
+
+                                    return new ArrayList<IObject>() {{ add(innerObject); }};
+                                }
+                                return obj;
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Error in configuration 'wrapper' rule.", e
+                                );
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object out_ strategy"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Object obj = a[0];
+                                if (obj instanceof String) {
+                                    IObject innerObject = new ConfigurationObject();
+                                    innerObject.setValue(new FieldName("name"), "wds_target_strategy");
+                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
+
+                                    return new ArrayList<List<IObject>>() {{
+                                        add(new ArrayList<IObject>() {{  add(innerObject); }});
+                                    }};
+                                }
+                                if (obj instanceof List) {
+                                    for (Object o : (List) obj) {
+                                        if (o instanceof List) {
+                                            for (Object innerObject : (List) o) {
+                                                if (((IObject) innerObject).getValue(new FieldName("name")).equals("target")) {
+                                                    ((IObject) innerObject).setValue(new FieldName("name"), "wds_target_strategy");
+                                                    ((IObject) innerObject).setValue(new FieldName("args"), new ArrayList<String>() {{
+                                                                add("local/value");
+                                                                add((String) ((List) ((IObject) innerObject)
+                                                                        .getValue(new FieldName("args"))).get(0));
+                                                            }}
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return obj;
+                            } catch (Throwable e) {
+                                throw new RuntimeException("Error in configuration 'wrapper' rule.", e);
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "resolve key for configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+                            try {
+                                Map<String, String> keys = new HashMap<String, String>() {{
+                                    put("in_", "configuration object in_ strategy");
+                                    put("out_", "configuration object out_ strategy");
+                                }};
+                                char[] symbols = a[1].toString().toCharArray();
+                                String resolvedKey = "configuration object default strategy";
+                                StringBuilder key = new StringBuilder();
+                                for (char c : symbols) {
+                                    key.append(c);
+                                    if (null != keys.get(key.toString())) {
+                                        resolvedKey = keys.get(key.toString());
+                                        break;
+                                    }
+                                }
+                                return IOC.resolve(
+                                        IOC.resolve(IOC.getKeyForKeyStorage(), resolvedKey),
+                                        a[0]
+                                );
+                            } catch (Throwable e) {
+                                throw new RuntimeException(
+                                        "Configuration object key resolution failed."
+                                );
+                            }
+                        }
+                )
+        );
+        this.co_config = new DSObject("{\n" +
+                "  \"wrapper\": {\n" +
+                "    \"in_getIntValue\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"message/IntValue\"]\n" +
+                "    }],\n" +
+                "    \"out_setIntValue\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/IntValue\"]\n" +
+                "      }]\n" +
+                "    ],\n" +
+                "    \"in_getStringValue\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"message/StringValue\"]\n" +
+                "    }],\n" +
+                "    \"out_setStringValue\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/StringValue\"]\n" +
+                "      }]\n" +
+                "    ],\n" +
+                "    \"in_getListOfInt\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"message/ListOfInt\"]\n" +
+                "    }],\n" +
+                "    \"out_setListOfInt\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/ListOfInt\"]\n" +
+                "      }]\n" +
+                "    ],\n" +
+                "    \"in_getListOfString\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"message/ListOfString\"]\n" +
+                "    }],\n" +
+                "    \"out_setListOfString\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/ListOfString\"]\n" +
+                "      }]\n" +
+                "    ],\n" +
+                "    \"in_getBoolValue\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"context/BoolValue\"]\n" +
+                "    }],\n" +
+                "    \"out_setBoolValue\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/BoolValue\"]\n" +
+                "      }]\n" +
+                "    ],\n" +
+                "    \"in_getIObject\": [{\n" +
+                "      \"name\": \"wds_getter_strategy\",\n" +
+                "      \"args\": [\"context/IObject\"]\n" +
+                "    }],\n" +
+                "    \"out_setIObject\": [\n" +
+                "      [{\n" +
+                "        \"name\": \"wds_target_strategy\",\n" +
+                "        \"args\": [\"local/value\", \"response/IObject\"]\n" +
+                "      }]\n" +
+                "    ]\n" +
+                "  }\n" +
+                "}");
+    }
 }

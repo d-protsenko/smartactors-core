@@ -6,31 +6,48 @@ import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManag
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Implementation of {@link IFeatureManager}.
  */
 public class FeatureManager implements IFeatureManager {
-    private IFilesystemTracker filesystemTracker;
+    private final BlockingQueue<ExecutionPair> queue = new LinkedBlockingQueue<>(10);
 
     /**
      * The constructor.
      *
-     * @param filesystemTracker the {@link IFilesystemTracker} instance to use
      * @throws InvalidArgumentException if {@code filesystemTracker} is {@code null}
      */
-    public FeatureManager(final IFilesystemTracker filesystemTracker)
+    public FeatureManager()
             throws InvalidArgumentException {
-        if (null == filesystemTracker) {
-            throw new InvalidArgumentException("Filesystem tracker should not be null.");
-        }
 
-        this.filesystemTracker = filesystemTracker;
+        Runnable queueWorker = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        queue.take().execute();
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (Exception e) {
+                    throw new RuntimeException("FeatureManager queue processing has been failed.", e);
+                }
+            }
+        };
+        new Thread(queueWorker).start();
     }
 
     @Override
-    public IFeature newFeature(final String name) throws FeatureManagementException {
+    public IFeature newFeature(final String name, final IFilesystemTracker tracker)
+            throws FeatureManagementException, InvalidArgumentException {
+        if (null == tracker) {
+            throw new InvalidArgumentException("Tracke should not be null.");
+        }
         try {
-            return new Feature(name, this.filesystemTracker);
+            return new Feature(name, tracker, this.queue);
         } catch (InvalidArgumentException e) {
             throw new FeatureManagementException("Error creating new feature.", e);
         }

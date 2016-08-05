@@ -41,20 +41,31 @@
         <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
+        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
+        <module>IMessage</module>
+        <module>IQueue</module>
+        <module>BlockingQueue</module>
+        <module>IThreadPool</module>
+        <module>ThreadPool</module>
+        <module>ITaskDispatcher</module>
+        <module>TaskDispatcher</module>
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <module>IAsyncService</module>
+        <module>EndpointHandler</module>
+        <module>NettyServer</module>
+        <module>TcpServer</module>
+        <module>HttpServer</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
-        <module>DBCreateCollectionTask</module>
-        <module>DBUpsertTask</module>
-        <module>DBFindByIdTask</module>
-        <module>DatabaseDeleteTask</module>
-        <module>DatabaseSearchTask</module>
-        <module>DBInsertTask</module>
+        <module>PostgresSchema</module>
+        <module>PostgresUpsertTask</module>
+        <module>PostgresGetByIdTask</module>
+        <module>PostgresSearchTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -88,12 +99,150 @@
         <module>IPool</module>
         <module>Pool</module>
         <module>PoolGuard</module>
+        <module>IResourceSource</module>
+        <module>MessageProcessor</module>
+        <module>ReceiverChain</module>
+        <module>MessageProcessingSequence</module>
+        <module>MessageProcessingInterfaces</module>
+        <module>ExceptionHandlingReceivers</module>
         <module>PluginCompileQuery</module>
+        <module>PluginCollectionName</module>
+        <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
+        <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
+        <module>IRouter</module>
+        <module>IChainStorage</module>
+        <module>MapRouter</module>
+        <module>ChainStorage</module>
+        <module>ChainCallReceiver</module>
+        <module>CloseAsyncOperationActor</module>
+        <module>GetFormActor</module>
+        <module>AuthenticationActor</module>
+        <module>CheckUserByEmailActor</module>
+        <module>AsyncOperationCollection</module>
+        <module>CreateAsyncOperation</module>
+        <module>GetAsyncOperation</module>
+        <module>ToWrapperConverterStrategy</module>
+        <module>IObjectWrapper</module>
+        <module>CreateUserActor</module>
+        <module>HttpEndpoint</module>
+        <module>IMessageMapper</module>
+        <module>IDeserializeStrategy</module>
+        <module>EndpointChannelInboundHandler</module>
+        <module>NettyClient</module>
+        <module>IClient</module>
+        <module>HttpClient</module>
+        <module>CompletableNettyFuture</module>
+        <module>DeserializeStrategyPostJson</module>
+        <module>IField</module>
+        <module>Field</module>
+        <module>IEnvironmentHandler</module>
+        <module>EnvironmentHandler</module>
+        <module>IFieldName</module>
+        <module>MessageToBytesMapper</module>
+        <module>IResponseSender</module>
+        <module>HttpResponseSender</module>
+        <module>ResponseSenderActor</module>
+        <module>IResponse</module>
+        <module>IResponseContentStrategy</module>
+        <module>Response</module>
+        <module>ResponseContentJsonStrategy</module>
+        <module>IResponseStatusExtractor</module>
+        <module>IChannelHandler</module>
+        <module>ICookiesSetter</module>
+        <module>IHeadersExtractor</module>
+        <module>ChannelHandlerNetty</module>
+        <module>PluginGetFormActor</module>
+        <module>CreateSession</module>
+        <module>PluginCreateSession</module>
+        <module>GetCookieFromRequestRule</module>
+        <module>GetHeaderFromRequestRule</module>
+        <module>CheckUserIsNewActor</module>
+        <module>ApplyFunctionToArgumentsStrategy</module>
+        <module>PluginCreateAsyncOperationActor</module>
+        <module>UserAuthByLoginActor</module>
+        <module>ICodec</module>
+        <module>Codec</module>
+        <module>MDPasswordEncoder</module>
+        <module>PluginUserAuthByLoginActor</module>
+        <module>PluginPasswordEncoder</module>
+        <module>WDSObject</module>
+        <module>ValidateFormDataActor</module>
+        <module>PluginCheckUserByEmailActor</module>
+        <module>PluginGetHeaderRule</module>
+        <module>ReceiverGenerator</module>
+        <module>FieldName</module>
+        <module>PluginIFieldName</module>
+        <module>IConfigurationManager</module>
+        <module>StandardConfigSections</module>
+        <module>ActorReceiver</module>
+        <module>HandlerRoutingReceiver</module>
+        <module>IReceiverGenerator</module>
+        <module>PluginReceiverGenerator</module>
+        <module>PluginCheckUserIsNewActor</module>
+        <module>PluginAuthenticationActor</module>
+        <module>IPath</module>
+        <module>Path</module>
+        <module>PluginMapRouter</module>
+        <module>PluginReceiverChain</module>
+        <module>PluginReceiverChainsStorage</module>
+        <module>IRoutedObjectCreator</module>
+        <module>PluginStandardObjectCreators</module>
+        <module>InvalidStateException</module>
+        <module>ConfigurationManager</module>
+        <module>PluginConfigurationManager</module>
+        <module>PluginReadConfigFile</module>
+        <module>ServerWithConfiguration</module>
+        <module>HandlerRoutingReceiverCreator</module>
+        <module>ActorReceiverCreator</module>
+        <module>PluginIOCSimpleContainer</module>
+        <module>PluginIOCKeys</module>
+        <module>PluginDsobject</module>
+        <module>PluginScopedIOC</module>
+        <module>PluginScopeProvider</module>
+        <module>PluginMessagingIdentifiers</module>
+        <module>PluginCloseAsyncOperationActor</module>
+        <module>PluginGetCookieFromRequestRule</module>
+        <module>PluginGetAsyncOperation</module>
+        <module>PluginIObjectSimpleImpl</module>
+        <module>ResolveIObjectStrategies</module>
+        <module>PluginResolveIObjectStrategies</module>
+        <module>PluginPostgresDBTasks</module>
+        <module>ResolveByTypeStrategy</module>
+        <module>ResolveStandardTypesStrategies</module>
+        <module>PluginResolveStandardTypesStrategies</module>
+        <module>PluginWrapperGenerator</module>
+        <module>PluginFieldName</module>
+        <module>PluginAsyncOpsCollection</module>
+        <module>HttpRequestHandler</module>
+        <module>CookiesSetter</module>
+        <module>HttpHeadersSetter</module>
+        <module>ResponseStatusExtractor</module>
+        <module>PluginHttpEndpoint</module>
+        <module>PluginActorReceiverCreator</module>
+        <module>PluginHandlerRoutingReceiverCreator</module>
+        <module>PluginMessageProcessorAndSequence</module>
+        <module>PluginResponseSenderActor</module>
+        <module>PluginWDSObject</module>
+        <module>PluginResponse</module>
+        <module>PluginResponseJsonContentStrategy</module>
+        <module>PluginCheckValidityAsyncOperationActor</module>
+        <module>CheckValidityAsyncOperationActor</module>
+        <module>PluginCreateUser</module>
+        <module>CObject</module>
+        <module>PluginConfigurationObject</module>
+        <module>SampleActor</module>
+        <module>PluginSampleActor</module>
+        <module>PluginChainCallReceiver</module>
+        <module>PluginChainChoiceStrategy</module>
+        <module>DependencyResolvingFeatureManager</module>
+        <module>ServerForIntern</module>
+        <module>PluginStarter</module>
+        <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
     </modules>
 
@@ -139,43 +288,6 @@
                     <argLine>${argLine}</argLine>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <useLastCommittedRevision>true</useLastCommittedRevision>
-                    <shortRevisionLength>7</shortRevisionLength>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Version>${core.version}-${buildNumber}</Implementation-Version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
         </plugins>
     </build>
@@ -282,6 +394,21 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <failOnWarning>false</failOnWarning>
+                </configuration>
+            </plugin>
         </plugins>
     </reporting>
 
@@ -300,5 +427,4 @@
     <scm>
         <connection>scm:git:git@github.com:SmartTools/smartactors-core.git</connection>
     </scm>
-
 </project>

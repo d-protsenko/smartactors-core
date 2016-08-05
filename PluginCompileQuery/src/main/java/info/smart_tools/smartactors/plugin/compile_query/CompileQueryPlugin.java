@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -29,6 +30,9 @@ public class CompileQueryPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
+    /**
+     * @param bootstrap Target bootstrap for adding strategy
+     */
     public CompileQueryPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
@@ -37,12 +41,13 @@ public class CompileQueryPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            //Note:: resolve by name strategy for keys should be defined
-            IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
             Map<QueryKey, CompiledQuery> queryMap = new HashMap<>();
             IBootstrapItem<String> item = new BootstrapItem("CompileQueryPlugin");
-            item.process(() -> {
+            item
+                    .after("IOC")
+                    .process(() -> {
                 try {
+                    IKey compiledQueryKey = Keys.getOrAdd(CompiledQuery.class.toString());
                     IOC.register(compiledQueryKey, new CreateNewInstanceStrategy(
                         (args) -> {
                             StorageConnection connection = (StorageConnection) args[0];
@@ -70,12 +75,16 @@ public class CompileQueryPlugin implements IPlugin {
 
                             return query;
                         }));
-                } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new RuntimeException(e);
+                } catch (ResolutionException e) {
+                    throw new ActionExecuteException("CompileQuery plugin can't load: can't get CompileQuery key", e);
+                } catch (InvalidArgumentException e) {
+                    throw new ActionExecuteException("CompileQuery plugin can't load: can't create strategy", e);
+                } catch (RegistrationException e) {
+                    throw new ActionExecuteException("CompileQuery plugin can't load: can't register new strategy", e);
                 }
             });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load compile query plugin", e);
         }
     }

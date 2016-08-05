@@ -5,39 +5,44 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
+import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 
-import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Implementation of {@link IFeature}.
  */
 class Feature implements IFeature {
     private Set<String> expectedFileNames;
-    private List<File> presentFiles;
-    private List<IAction<Collection<File>>> actions;
+    private List<IPath> presentFiles;
+    private List<IAction<Collection<IPath>>> actions;
     private boolean isListening;
     private boolean isPresent;
     private final Object lock;
     private String name;
-    private IAction<File> fileHandleAction;
+    private IAction<IPath> fileHandleAction;
     private IFilesystemTracker filesystemTracker;
+    private FileSystem fileSystem = FileSystems.getDefault();
+    private BlockingQueue<ExecutionPair> queue;
+
 
     /**
      * Action to execute when filesystem tracker notifies feature about new files.
      */
-    private class FileHandlerAction implements IAction<File> {
+    private class FileHandlerAction implements IAction<IPath> {
         @Override
-        public void execute(final File file)
+        public void execute(final IPath file)
                 throws ActionExecuteException {
             synchronized (Feature.this.lock) {
-                String fileName = file.getName();
+                String fileName = fileSystem.getPath(file.getPath()).getFileName().toString();
 
                 if (expectedFileNames.contains(fileName)) {
                     presentFiles.add(file);
@@ -53,14 +58,11 @@ class Feature implements IFeature {
 
             List<ActionExecuteException> exceptions = new LinkedList<>();
 
-            for (IAction<Collection<File>> action : actions) {
+            for (IAction<Collection<IPath>> action : actions) {
                 try {
-                    action.execute(new ArrayList<>(presentFiles));
-                } catch (InvalidArgumentException e) {
-                    //TODO: may be need another action
-                    throw new ActionExecuteException(e);
-                } catch (ActionExecuteException e) {
-                    exceptions.add(e);
+                    queue.put(new ExecutionPair(action, presentFiles));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
 
@@ -83,10 +85,11 @@ class Feature implements IFeature {
      *
      * @param name                  name of the feature
      * @param filesystemTracker     {@link IFilesystemTracker} instance to use
+     * @param queue the queue of parent {@link info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager}
      * @throws InvalidArgumentException if {@code name} is {@code null}
      * @throws InvalidArgumentException if {@code filesystemTracker} is {@code null}
      */
-    Feature(final String name, final IFilesystemTracker filesystemTracker)
+    Feature(final String name, final IFilesystemTracker filesystemTracker, final BlockingQueue<ExecutionPair> queue)
             throws InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Feature name should not be null.");
@@ -96,6 +99,11 @@ class Feature implements IFeature {
             throw new InvalidArgumentException("File system tracker should not be null.");
         }
 
+        if (null == queue) {
+            throw new InvalidArgumentException("Queue should not be null.");
+        }
+
+        this.queue = queue;
         this.expectedFileNames = new HashSet<>();
         this.presentFiles = new LinkedList<>();
         this.actions = new LinkedList<>();
@@ -120,16 +128,14 @@ class Feature implements IFeature {
     }
 
     @Override
-    public void whenPresent(final IAction<Collection<File>> action)
+    public void whenPresent(final IAction<Collection<IPath>> action)
             throws FeatureManagementException {
         synchronized (this.lock) {
             if (isPresent) {
                 try {
-                    action.execute(presentFiles);
-                } catch (ActionExecuteException e) {
-                    throw new FeatureManagementException("Error occurred executing action for a feature that already is present:", e);
-                } catch (InvalidArgumentException e) {
-                    throw new FeatureManagementException("Invalid function argument.", e);
+                    queue.put(new ExecutionPair(action, presentFiles));
+                } catch (InterruptedException e) {
+                    throw new FeatureManagementException("Was interrupted when wait.", e);
                 }
             } else {
                 actions.add(action);
@@ -160,3 +166,5 @@ class Feature implements IFeature {
         return this.name;
     }
 }
+
+

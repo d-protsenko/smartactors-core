@@ -3,9 +3,9 @@ package info.smart_tools.smartactors.core.db_task.search;
 import info.smart_tools.smartactors.core.db_storage.interfaces.CompiledQuery;
 import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -50,7 +50,7 @@ public abstract class DBSearchTask implements IDatabaseTask {
                 String jsonValue = resultSet.getString("document");
                 IObject object;
                 try {
-                    object = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), jsonValue);
+                    object = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), jsonValue);
                     IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "id");
                     object.setValue(idFN, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {

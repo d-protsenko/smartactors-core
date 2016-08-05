@@ -1,68 +1,50 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
+import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.wrapper_generator.IWrapper;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
+import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
-import java.lang.Integer;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import java.util.Iterator;
 import java.util.Map;
-import java.lang.Boolean;
+import java.util.HashMap;
+import java.lang.Integer;
+import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
 import java.util.List;
 import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
-import java.lang.String;
-import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
 
-public class IWrapperImpl implements IObjectWrapper, IWrapper {
-    private Field<java.lang.Integer> fieldFor_getIntValue;
-    private Field<Integer> fieldFor_setIntValue;
-    private Field<java.lang.String> fieldFor_getStringValue;
-    private Field<java.lang.String> fieldFor_setStringValue;
-    private Field<info.smart_tools.smartactors.core.wrapper_generator.TestClass> fieldFor_getTestClassValue;
-    private Field<info.smart_tools.smartactors.core.wrapper_generator.TestClass> fieldFor_setTestClassValue;
-    private Field<java.util.List> fieldFor_getListOfInt;
-    private Field<java.util.List<java.lang.Integer>> fieldFor_setListOfInt;
-    private Field<java.util.List> fieldFor_getListOfString;
-    private Field<java.util.List<java.lang.String>> fieldFor_setListOfString;
-    private Field<java.util.List> fieldFor_getListOfTestClasses;
-    private Field<java.util.List<info.smart_tools.smartactors.core.wrapper_generator.TestClass>> fieldFor_setListOfTestClasses;
-    private Field<java.lang.Boolean> fieldFor_getBoolValue;
-    private Field<Boolean> fieldFor_setBoolValue;
-    private Field<info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper> fieldFor_getWrappedIObject;
-    private Field<info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper> fieldFor_setWrappedIObject;
-    private Field<info.smart_tools.smartactors.core.iobject.IObject> fieldFor_getIObject;
-    private Field<info.smart_tools.smartactors.core.iobject.IObject> fieldFor_setIObject;
-    private Field<info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper> fieldFor_getInnerMapByName;
-    private Field<java.util.Map<java.lang.String, info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper>> fieldFor_setStringIInnerMap;
+public class IWrapperImpl implements IObjectWrapper, IObject, IWrapper {
+    private IField fieldFor_in_getIntValue;
+    private IField fieldFor_out_setListOfTestClasses;
+    private IField fieldFor_out_setIntValue;
+    private IField fieldFor_out_transform;
+    private IField fieldFor_in_getTestClassValue;
+    private IField fieldFor_out_setTestClassValue;
+    private IField fieldFor_in_getListOfTestClasses;
+    private IField fieldFor_out_wrappedIObject;
+    private IField fieldFor_in_wrappedIObject;
+    private Map<IFieldName,Field> fields;
     private IObject env;
 
     public IWrapperImpl() throws InvalidArgumentException  {
         try {
-            this.fieldFor_getIntValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getIntValue");
-            this.fieldFor_setIntValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setIntValue");
-            this.fieldFor_getStringValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getStringValue");
-            this.fieldFor_setStringValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setStringValue");
-            this.fieldFor_getTestClassValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getTestClassValue");
-            this.fieldFor_setTestClassValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setTestClassValue");
-            this.fieldFor_getListOfInt = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getListOfInt");
-            this.fieldFor_setListOfInt = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setListOfInt");
-            this.fieldFor_getListOfString = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getListOfString");
-            this.fieldFor_setListOfString = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setListOfString");
-            this.fieldFor_getListOfTestClasses = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getListOfTestClasses");
-            this.fieldFor_setListOfTestClasses = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setListOfTestClasses");
-            this.fieldFor_getBoolValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getBoolValue");
-            this.fieldFor_setBoolValue = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setBoolValue");
-            this.fieldFor_getWrappedIObject = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getWrappedIObject");
-            this.fieldFor_setWrappedIObject = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setWrappedIObject");
-            this.fieldFor_getIObject = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getIObject");
-            this.fieldFor_setIObject = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setIObject");
-            this.fieldFor_getInnerMapByName = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/getInnerMapByName");
-            this.fieldFor_setStringIInnerMap = new Field<>("binding/info.smart_tools.smartactors.core.wrapper_generator.IWrapper/setStringIInnerMap");
+            this.fieldFor_in_getIntValue = new Field(new FieldName("in_getIntValue"));
+            this.fieldFor_out_setListOfTestClasses = new Field(new FieldName("out_setListOfTestClasses"));
+            this.fieldFor_out_setIntValue = new Field(new FieldName("out_setIntValue"));
+            this.fieldFor_out_transform = new Field(new FieldName("out_transform"));
+            this.fieldFor_in_getTestClassValue = new Field(new FieldName("in_getTestClassValue"));
+            this.fieldFor_out_setTestClassValue = new Field(new FieldName("out_setTestClassValue"));
+            this.fieldFor_in_getListOfTestClasses = new Field(new FieldName("in_getListOfTestClasses"));
+            this.fieldFor_out_wrappedIObject = new Field(new FieldName("out_wrappedIObject"));
+            this.fieldFor_in_wrappedIObject = new Field(new FieldName("in_wrappedIObject"));
+            this.fields = new HashMap<>();
         } catch (Exception e) {
             throw new InvalidArgumentException("", e);
         }
@@ -85,97 +67,7 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
 
     public java.lang.Integer getIntValue() throws ReadValueException  {
         try {
-            return fieldFor_getIntValue.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
-        }
-
-    }
-
-    public void setIntValue(int value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setIntValue.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
-    public java.lang.String getStringValue() throws ReadValueException  {
-        try {
-            return fieldFor_getStringValue.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
-        }
-
-    }
-
-    public void setStringValue(java.lang.String value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setStringValue.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
-    public info.smart_tools.smartactors.core.wrapper_generator.TestClass getTestClassValue() throws ReadValueException  {
-        try {
-            return fieldFor_getTestClassValue.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
-        }
-
-    }
-
-    public void setTestClassValue(info.smart_tools.smartactors.core.wrapper_generator.TestClass value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setTestClassValue.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
-    public java.util.List<java.lang.Integer> getListOfInt() throws ReadValueException  {
-        try {
-            return fieldFor_getListOfInt.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
-        }
-
-    }
-
-    public void setListOfInt(java.util.List<java.lang.Integer> value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setListOfInt.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
-    public java.util.List<java.lang.String> getListOfString() throws ReadValueException  {
-        try {
-            return fieldFor_getListOfString.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
-        }
-
-    }
-
-    public void setListOfString(java.util.List<java.lang.String> value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setListOfString.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
-
-    }
-
-    public java.util.List<info.smart_tools.smartactors.core.wrapper_generator.TestClass> getListOfTestClasses() throws ReadValueException  {
-        try {
-            return fieldFor_getListOfTestClasses.out(this.env);
+            return fieldFor_in_getIntValue.in(this.env, Integer.class);
         } catch(Throwable e) {
             throw new ReadValueException("Could not get value from iobject.", e);
         }
@@ -184,82 +76,108 @@ public class IWrapperImpl implements IObjectWrapper, IWrapper {
 
     public void setListOfTestClasses(java.util.List<info.smart_tools.smartactors.core.wrapper_generator.TestClass> value) throws ChangeValueException  {
         try {
-            this.fieldFor_setListOfTestClasses.in(this.env, value);
+            this.fieldFor_out_setListOfTestClasses.out(this.env, value);
         } catch (Throwable e) {
             throw new ChangeValueException("Could not set value from iobject.", e);
         }
 
     }
 
-    public java.lang.Boolean getBoolValue() throws ReadValueException  {
+    public void setIntValue(int value) throws ChangeValueException  {
         try {
-            return fieldFor_getBoolValue.out(this.env);
+            this.fieldFor_out_setIntValue.out(this.env, value);
+        } catch (Throwable e) {
+            throw new ChangeValueException("Could not set value from iobject.", e);
+        }
+
+    }
+
+    public void transform(java.lang.Integer value) throws ChangeValueException  {
+        try {
+            this.fieldFor_out_transform.out(this.env, value);
+        } catch (Throwable e) {
+            throw new ChangeValueException("Could not set value from iobject.", e);
+        }
+
+    }
+
+    public info.smart_tools.smartactors.core.wrapper_generator.TestClass getTestClassValue() throws ReadValueException  {
+        try {
+            return fieldFor_in_getTestClassValue.in(this.env, TestClass.class);
         } catch(Throwable e) {
             throw new ReadValueException("Could not get value from iobject.", e);
         }
 
     }
 
-    public void setBoolValue(boolean value) throws ChangeValueException  {
+    public void setTestClassValue(info.smart_tools.smartactors.core.wrapper_generator.TestClass value) throws ChangeValueException  {
         try {
-            this.fieldFor_setBoolValue.in(this.env, value);
+            this.fieldFor_out_setTestClassValue.out(this.env, value);
         } catch (Throwable e) {
             throw new ChangeValueException("Could not set value from iobject.", e);
         }
 
     }
 
-    public info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper getWrappedIObject() throws ReadValueException  {
+    public java.util.List<info.smart_tools.smartactors.core.wrapper_generator.TestClass> getListOfTestClasses() throws ReadValueException  {
         try {
-            return fieldFor_getWrappedIObject.out(this.env);
+            return fieldFor_in_getListOfTestClasses.in(this.env, List.class);
         } catch(Throwable e) {
             throw new ReadValueException("Could not get value from iobject.", e);
         }
 
     }
 
-    public void setWrappedIObject(info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper value) throws ChangeValueException  {
+    public void wrappedIObject(info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper value) throws ChangeValueException  {
         try {
-            this.fieldFor_setWrappedIObject.in(this.env, value);
+            this.fieldFor_out_wrappedIObject.out(this.env, value);
         } catch (Throwable e) {
             throw new ChangeValueException("Could not set value from iobject.", e);
         }
 
     }
 
-    public info.smart_tools.smartactors.core.iobject.IObject getIObject() throws ReadValueException  {
+    public info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper wrappedIObject() throws ReadValueException  {
         try {
-            return fieldFor_getIObject.out(this.env);
+            return fieldFor_in_wrappedIObject.in(this.env, IInnerWrapper.class);
         } catch(Throwable e) {
             throw new ReadValueException("Could not get value from iobject.", e);
         }
 
     }
 
-    public void setIObject(info.smart_tools.smartactors.core.iobject.IObject value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setIObject.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
+    public Object getValue(IFieldName name) throws ReadValueException, InvalidArgumentException  {
+        Field field = fields.get(name);
+        if (null == field) {
+            field = new Field(name);
+            fields.put(name, field);
         }
+        return new Field(name).in(this.env);
 
     }
 
-    public info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper getInnerMapByName() throws ReadValueException  {
-        try {
-            return fieldFor_getInnerMapByName.out(this.env);
-        } catch(Throwable e) {
-            throw new ReadValueException("Could not get value from iobject.", e);
+    public void setValue(IFieldName name, Object value) throws ChangeValueException, InvalidArgumentException  {
+        Field field = fields.get(name);
+        if (null == field) {
+            field = new Field(name);
+            fields.put(name, field);
         }
+        new Field(name).out(env, value);
 
     }
 
-    public void setStringIInnerMap(java.util.Map<java.lang.String, info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper> value) throws ChangeValueException  {
-        try {
-            this.fieldFor_setStringIInnerMap.in(this.env, value);
-        } catch (Throwable e) {
-            throw new ChangeValueException("Could not set value from iobject.", e);
-        }
+    public void deleteField(IFieldName name) throws DeleteValueException, InvalidArgumentException  {
+        throw new DeleteValueException("Method not implemented.");
+
+    }
+
+    public <T> T serialize() throws SerializeException  {
+        throw new SerializeException("Method not implemented.");
+
+    }
+
+    public Iterator<Map.Entry<IFieldName, Object>> iterator()  {
+        return null;
 
     }
 
