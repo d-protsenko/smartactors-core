@@ -237,6 +237,7 @@
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
+        <module>MailingActor</module>
     </modules>
 
     <build>
