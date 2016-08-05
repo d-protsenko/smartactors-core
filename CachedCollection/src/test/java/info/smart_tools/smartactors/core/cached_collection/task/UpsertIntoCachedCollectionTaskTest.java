@@ -1,15 +1,13 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,11 +15,9 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -32,6 +28,9 @@ public class UpsertIntoCachedCollectionTaskTest {
     private IDatabaseTask upsertTask;
 
     private IField startDateTimeField;
+    private IField collectionNameField;
+    private IField documentField;
+    private IStorageConnection connection;
 
     @Before
     public void setUp() throws Exception {
@@ -40,39 +39,37 @@ public class UpsertIntoCachedCollectionTaskTest {
         mockStatic(Keys.class);
 
         startDateTimeField = mock(IField.class);
+        collectionNameField = mock(IField.class);
+        documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "document/startDateTime")).thenReturn(startDateTimeField);
+        when(IOC.resolve(keyField, "document")).thenReturn(documentField);
+        when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
 
         upsertTask = mock(IDatabaseTask.class);
-        task = new UpsertIntoCachedCollectionTask(upsertTask);
-    }
-
-    @Test
-    public void ShouldSetConnectionToNestedTask() throws TaskSetConnectionException {
-
-        StorageConnection connection = mock(StorageConnection.class);
-        task.setConnection(connection);
-        verify(upsertTask).setConnection(eq(connection));
-    }
-
-    @Test
-    public void ShouldExecuteNestedTask() throws TaskExecutionException {
-
-        task.execute();
-        verify(upsertTask).execute();
+        connection = mock(IStorageConnection.class);
+        task = new UpsertIntoCachedCollectionTask(connection);
     }
 
     @Test
     public void ShouldPrepareUpsertQuery() throws Exception {
 
-        IObject rawQuery = mock(IObject.class);
+        IObject query = mock(IObject.class);
+        IObject doc = mock(IObject.class);
+        when(collectionNameField.in(query)).thenReturn("collectionName");
+        when(documentField.in(query)).thenReturn(doc);
 
-        when(startDateTimeField.in(rawQuery)).thenReturn(null);
-        task.prepare(rawQuery);
+        when(startDateTimeField.in(query)).thenReturn(null);
+        task.prepare(query);
 
-        verify(upsertTask).prepare(eq(rawQuery));
-        verify(startDateTimeField).out(eq(rawQuery), anyString());
+        verifyStatic();
+        IOC.resolve(
+            Keys.getOrAdd("db.collection.upsert"),
+            connection,
+            "collectionName",
+            doc
+        );
     }
 
     @Test(expected = TaskPrepareException.class)

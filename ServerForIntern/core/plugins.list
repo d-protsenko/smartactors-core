@@ -133,7 +133,6 @@ plugin.fieldname-0.2.0-SNAPSHOT.jar
 plugin.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar
 plugin.http_endpoint-0.2.0-SNAPSHOT.jar
 plugin.ifieldname-0.2.0-SNAPSHOT.jar
-plugin.fieldname-0.2.0-SNAPSHOT.jar
 plugin.immutable_receiver_chain-0.2.0-SNAPSHOT.jar
 plugin.ioc_keys-0.2.0-SNAPSHOT.jar
 plugin.load_scope_provider-0.2.0-SNAPSHOT.jar
