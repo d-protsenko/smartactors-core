@@ -129,8 +129,11 @@ public class PostgresSchemaTest {
 
     @Test
     public void testCreateWithIndexes() throws QueryBuildException, InvalidArgumentException {
-        IObject indexes = new DSObject("{ \"a\": \"ordered\", \"b\": { \"fulltext\": \"english\" } }");
-        PostgresSchema.create(statement, collection, indexes);
+        IObject options = new DSObject("{ \"indexes\": [" +
+                "{ \"fields\": [ \"a\" ], \"type\": \"ordered\" }," +
+                "{ \"fields\": [ \"b\" ], \"type\": \"fulltext\", \"language\": \"english\" } " +
+                "] }");
+        PostgresSchema.create(statement, collection, options);
         assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL);\n" +
                 "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
                 "CREATE INDEX ON test_collection USING GIN ((to_tsvector('english',(document#>'{b}')::text)));\n", body.toString());

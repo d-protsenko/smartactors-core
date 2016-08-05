@@ -45,27 +45,48 @@ Command name: `db.collection.create`
 
 Additional parameters:
 
-- indexes — `IObject` — object specifying the set of additional indexes to create on collection.
+- options — `IObject` — object specifying the set of additional options for the collection creation.
 
 #### Indexes
 
 ID of the document is always the primary key, so GetById always use index. 
-You can specify additional indexes to do Search more effectively,
-add fields you need to search by.
+You can specify additional indexes to do Search more effectively, 
+just define array of index definitions as "indexes" in the options.
 
-The example of indexes object:
+The example of options object with indexes:
 
     {
-        "a": "ordered",
-        "b": { "fulltext": "english" }
+        "indexes": [
+            {
+                "fields": [ "a", "b" ],
+                "type": "ordered"
+            },
+            {
+                "fields": [ "date" ],
+                "type": "datetime"
+            },
+            {
+                "fields": [ "tags" ],
+                "type": "tags"
+            },
+            {
+                "fields" [ "text" ],
+                "type": "fulltext",
+                "language": "english"
+            }
+
+        ]        
     }
 
-You should define the document field name and the index type.
+You should define the document fields to index (as array because the order of fields in compound index is important), 
+the type of the index and possible parameters depending on the index type.
 
 Available index types:
 
 * `ordered` — typical btree ordered index, to be used to test for equality, ranges, for sorting, etc...
-* `fulltext` — full text index, you have to declare the language of the text field
+* `datetime` — btree index containing conversion to datetime, use it to optimize `$date-from` and `$date-to` search operators.
+* `tags` — an index for fields containing arrays of tags, use it to optimize `$hasTag` search operator. 
+* `fulltext` — full text index, requires additional `language` parameter, use it to optimize `$fulltext` search operator.
 
 ### Upsert
 
@@ -209,7 +230,8 @@ Available operators:
 * `$date-from` — greater or equal for datetime fields
 * `$date-to` — less or equal for datetime fields
 * `$in` — checks for equality to any of the specified values in the array
-* `$hasTag` — check the document field is JSON document contains the specified value as field name or value
+* `$hasTag` — check the document field which is an array of tags contains the specified tag value
+* `$fulltext` — full text search over a text field
 
 ##### Page
 
