@@ -118,9 +118,7 @@ public class UserAuthByLoginActor {
         } catch (PoolGuardException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
             try {
                 setFailResponse(message, INTERNAL_ERROR_MSG);
-            } catch (ChangeValueException e1) {
-                throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
-            }
+            } catch (ChangeValueException ignored) { }
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }

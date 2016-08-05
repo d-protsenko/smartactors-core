@@ -3,48 +3,50 @@ package info.smart_tools.smartactors.actor.change_password;
 import info.smart_tools.smartactors.actor.change_password.exception.ChangePasswordException;
 import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePasswordConfig;
 import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePasswordMessage;
-import info.smart_tools.smartactors.actor.change_password.wrapper.User;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.db_task.insert.psql.DBInsertTask;
-import info.smart_tools.smartactors.core.db_task.search.psql.PSQLSearchTask;
-import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
-import info.smart_tools.smartactors.core.db_task.search.wrappers.ISearchQuery;
-import info.smart_tools.smartactors.core.ds_object.FieldName;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.core.wrapper_generator.Field;
-import info.smart_tools.smartactors.core.wrapper_generator.IObjectWrapper;
+import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
+import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Changes user password
  */
 public class ChangePasswordActor {
 
-    private CollectionName collectionName;
-    private IBufferedQuery bufferedQuery;
+    private static final String CHANGE_PASSWORD_ERROR_MSG = "Changing password has been failed because: ";
 
-    private static final Field<IObject> USER_ID_F;
-    private static final Field<String> EQUALS_F;
-    private static final IFieldName MESSAGE_FN;
+    private String collectionName;
+    private IPool connectionPool;
+    private IPasswordEncoder passwordEncoder;
+
+    private static final IField USER_ID_F;
+    private static final IField PASSWORD_F;
+    private static final IField EQUALS_F;
 
     static {
         try {
-            USER_ID_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "userId"));
-            EQUALS_F = new Field<>(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "$eq"));
-            MESSAGE_FN = new FieldName("message");
-        } catch (ResolutionException | InvalidArgumentException e) {
+            USER_ID_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
+            PASSWORD_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+        } catch (ResolutionException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -52,12 +54,20 @@ public class ChangePasswordActor {
     /**
      * Constructor
      * @param params contains collection name
+     * @throws ChangePasswordException if error during create is occurred
      */
-    public ChangePasswordActor(final ChangePasswordConfig params) {
+    public ChangePasswordActor(final ChangePasswordConfig params) throws ChangePasswordException {
         try {
             this.collectionName = params.getCollectionName();
-        } catch (ReadValueException e) {
-            e.printStackTrace();
+            this.connectionPool = params.getConnectionPool();
+            this.passwordEncoder = IOC.resolve(
+                Keys.getOrAdd("PasswordEncoder"),
+                params.getAlgorithm(),
+                params.getEncoder(),
+                params.getCharset()
+            );
+        } catch (ResolutionException | ReadValueException e) {
+            throw new ChangePasswordException("Can't create change password actor");
         }
     }
 
@@ -71,71 +81,99 @@ public class ChangePasswordActor {
      */
     public void changePassword(final ChangePasswordMessage message) throws ChangePasswordException {
 
-        //TODO:: clarify about PG resolving
-        try (IPoolGuard poolGuard = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"))) {
-            IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(PSQLSearchTask.class.toString()));
-            ISearchQuery searchQuery = IOC.resolve(Keys.getOrAdd(ISearchQuery.class.toString()));
-
-            StorageConnection connection = IOC.resolve(Keys.getOrAdd(StorageConnection.class.toString()), poolGuard.getObject());
-            searchTask.setConnection(connection);
-            searchTask.prepare(prepareQueryMsg(searchQuery, message));
-            searchTask.execute();
-
-            this.bufferedQuery = searchQuery
-                .getBufferedQuery()
-                .orElseThrow(() -> new ChangePasswordException("Search task didn't returned a buffered query!"));
-
-            if (searchQuery.countSearchResult() == 0) {
-                throw new ChangePasswordException("Error during change password: can't find user by identifier: " + message.getUserId());
+        try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+            if (isNullOrEmpty(message.getUserId()) || isNullOrEmpty(message.getPassword())) {
+                setFailResponse(message, "User identifier or password is empty");
+                throw new ChangePasswordException("Invalid message format!");
             }
 
-            IObject userObj = searchQuery.getSearchResult(0);
-            User user = IOC.resolve(Keys.getOrAdd(User.class.toString()));
-            ((IObjectWrapper) user).init(userObj);
-            //TODO:: password validation and encoding
-            user.setPassword(message.getPassword());
+            IObject searchQuery = prepareQueryParams(message);
+            List<IObject> items = new LinkedList<>();
+            ITask searchTask = IOC.resolve(
+                Keys.getOrAdd("db.collection.search"),
+                poolGuard.getObject(),
+                collectionName,
+                searchQuery,
+                (IAction<IObject[]>) foundDocs -> {
+                    try {
+                        items.addAll(Arrays.asList(foundDocs));
+                    } catch (Exception e) {
+                        throw new ActionExecuteException(e);
+                    }
+                }
+            );
+            searchTask.execute();
 
-            IDatabaseTask insertTask = IOC.resolve(Keys.getOrAdd(DBInsertTask.class.toString()));
-            //TODO:: uncomment when IUpsertQueryMessage would be added to dev
-//            IUpsertQueryMessage queryMessage = IOC.resolve(Keys.getOrAdd(IUpsertQueryMessage.class.toString()));
-            insertTask.setConnection(connection);
-//            insertTask.prepare(prepareInsertQuery(queryMessage, userObj));
-            insertTask.execute();
+            validateSearchResult(items, message);
+            IObject user = items.get(0);
+            PASSWORD_F.out(user, passwordEncoder.encode(message.getPassword()));
 
+            ITask upsertTask = IOC.resolve(
+                Keys.getOrAdd("db.collection.upsert"),
+                poolGuard.getObject(),
+                collectionName,
+                user
+            );
+            upsertTask.execute();
+        } catch (PoolGuardException | ReadValueException | TaskExecutionException | ResolutionException |
+            ChangeValueException | InvalidArgumentException | EncodingException e) {
 
-        } catch (ReadValueException | TaskSetConnectionException | TaskExecutionException | ResolutionException | ChangeValueException
-            | InvalidArgumentException | TaskPrepareException e) {
             throw new ChangePasswordException("Error during change password.", e);
         }
     }
 
-    private IObject prepareQueryMsg(final ISearchQuery searchQuery, final ChangePasswordMessage message)
-        throws ResolutionException, ChangeValueException, ReadValueException, InvalidArgumentException {
+    private void validateSearchResult(final List<IObject> searchResult, final ChangePasswordMessage message)
+        throws ChangePasswordException {
 
-        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-        IObject userIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.toString()));
-
-        EQUALS_F.in(userIdObject, message.getUserId());
-        USER_ID_F.in(query, userIdObject);
-
-        searchQuery.setCollectionName(collectionName.toString());
-        searchQuery.setPageSize(1);
-        searchQuery.setPageNumber(1);
-        searchQuery.setBufferedQuery(bufferedQuery);
-        searchQuery.setCriteria(query);
-
-        IObject[] initObjects = IOC.resolve(
-            Keys.getOrAdd(IObjectWrapper.class.toString() + ".getIObjects"),
-            searchQuery);
-
-        return initObjects[0];
+        try {
+            if (searchResult.isEmpty()) {
+                setFailResponse(message, "Can't find user with such identifier: " + message.getUserId());
+                throw new ChangePasswordException(CHANGE_PASSWORD_ERROR_MSG +
+                    "user with identifier: [" + message.getUserId() + "] doesn't exist!");
+            }
+            if (searchResult.size() > 1) {
+                setFailResponse(message, "There are several users with such identifier: " + message.getUserId());
+                throw new ChangePasswordException(CHANGE_PASSWORD_ERROR_MSG +
+                    "too many users with identifier: [" + message.getUserId() + "]!");
+            }
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new ChangePasswordException(CHANGE_PASSWORD_ERROR_MSG + e.getMessage(), e);
+        }
     }
 
-    //TODO:: uncomment when IUpsertQueryMessage would be added to dev
-//    private IObject prepareInsertQuery(final IUpsertQueryMessage insertQuery, final IObject user) throws ResolutionException {
-//
-//        insertQuery.setCollectionName(collectionName);
-//        insertQuery.setDocument(user);
-//        return ((IObjectWrapper) insertQuery).getEnvironmentIObject(MESSAGE_FN);
-//    }
+    private IObject prepareQueryParams(final ChangePasswordMessage message)
+        throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
+
+
+        IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        collectionNameF.out(searchQuery, this.collectionName);
+        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
+        pageSizeF.out(page, 1);
+        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
+        pageNumberF.out(page, 1);
+        IField pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
+        pageF.out(searchQuery, page);
+        IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+        filterF.out(searchQuery, filter);
+
+
+        IObject userIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        EQUALS_F.out(userIdObject, message.getUserId());
+        USER_ID_F.out(filter, userIdObject);
+
+        return searchQuery;
+    }
+
+    private void setFailResponse(final ChangePasswordMessage message, final String errorMessage) throws ChangeValueException {
+        message.setAuthStatus("FAIL");
+        message.setAuthMessage(errorMessage);
+    }
+
+    private boolean isNullOrEmpty(final String str) {
+        return str == null || str.isEmpty();
+    }
 }
