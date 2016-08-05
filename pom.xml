@@ -164,6 +164,12 @@
         <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
+        <module>UserAuthByLoginActor</module>
+        <module>ICodec</module>
+        <module>Codec</module>
+        <module>MDPasswordEncoder</module>
+        <module>PluginUserAuthByLoginActor</module>
+        <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
