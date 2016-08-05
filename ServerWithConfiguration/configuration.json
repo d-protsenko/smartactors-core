@@ -158,6 +158,44 @@
         }
       ],
       "exceptional": []
+    },
+    {
+      "id" : "createAsyncOp",
+      "steps" : [
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getOperationData": "message/form",
+            "in_getExpiredTime": "const/4",
+            "out_setAsyncOperationToken": "response/token"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id" : "closeAsyncOp",
+      "steps" : [
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/asyncOperation",
+            "in_getOperationTokens": "message/form/tokens",
+            "in_getToken": "message/token"
+          }
+        }
+      ],
+      "exceptional": []
     }
   ],
   "endpoints": [

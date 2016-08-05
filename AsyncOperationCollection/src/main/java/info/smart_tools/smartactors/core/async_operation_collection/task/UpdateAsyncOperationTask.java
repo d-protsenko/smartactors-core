@@ -37,7 +37,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document/done");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "done");
             documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
             collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
@@ -49,11 +49,12 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
 
         try {
-            doneFlagField.out(query, true);
+            IObject document = documentField.in(query);
+            doneFlagField.out(document, true);
             upsertTask = IOC.resolve(Keys.getOrAdd("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
-                    documentField.in(query));
+                    document);
         } catch (ReadValueException | ChangeValueException | ResolutionException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
         }
