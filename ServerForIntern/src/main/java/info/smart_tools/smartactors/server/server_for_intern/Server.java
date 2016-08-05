@@ -127,6 +127,7 @@ public class Server implements IServer {
         }
         coreFeature.listen();
         jarFilesTracker.start(coreJarsDir);
+        System.out.println("--------------------------------- Loading plugins from " + this.corePath + " listed in " + this.corePath + File.separator + PLUGIN_FILE_NAME + " ---------------------------------");
     }
 
     private void loadUsersPlugins()
@@ -173,6 +174,7 @@ public class Server implements IServer {
         }
         pluginsFeature.listen();
         jarFilesTracker.start(usersJarsDir);
+        System.out.println("--------------------------------- Loading plugins from " + this.pluginsPath + " listed in " + this.pluginsPath + File.separator + PLUGIN_FILE_NAME + " ---------------------------------");
     }
 
     private void loadStarterPlugins()
@@ -217,6 +219,7 @@ public class Server implements IServer {
         }
         starterFeature.listen();
         jarFilesTracker.start(starterJarsDir);
+        System.out.println("--------------------------------- Loading plugins from " + this.starterPath + " listed in " + this.starterPath + File.separator + PLUGIN_FILE_NAME + " ---------------------------------");
     }
 
     private void getCorePluginsList()
