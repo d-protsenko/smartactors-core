@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 /**
  * Interface for extracting http headers from environment
  */
-public interface IHeadersSetter {
+public interface IHeadersExtractor {
     /**
      * Method for setting http headers from environment
      *

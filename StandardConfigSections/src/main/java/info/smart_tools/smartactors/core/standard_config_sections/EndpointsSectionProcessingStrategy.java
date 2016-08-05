@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
@@ -41,7 +42,15 @@ import java.util.List;
  *                 // . . .
  *             },
  *             {
- *                 // . . .
+ *                 "name": "httpsEndpointName",
+ *                 "type": "https",
+ *                 "port": 9909,
+ *                 "startChain": "mainChain",
+ *                 "maxContentLength": 4098,
+ *                 "stackDepth": 5,
+ *                 "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/cert.pem",
+ *                 "keyPass": "123456",
+ *                 "storePass": "123456"
  *             }
  *         ]
  *     }
@@ -55,6 +64,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     private final IFieldName stackDepthFieldName;
     private final IFieldName maxContentLengthFieldName;
     private final IFieldName endpointNameFieldName;
+    private final IFieldName queueFieldName;
 
     /**
      * The constructor.
@@ -74,6 +84,8 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "maxContentLength");
         this.endpointNameFieldName =
                 IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "endpointName");
+        this.queueFieldName =
+                IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "queue");
     }
 
     @Override
@@ -87,28 +99,25 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 // TODO: 25.07.16 add endpoint type
                 // TODO: 25.07.16 remove stack depth from endpoint config
                 // TODO: 25.07.16 add endpoint name
-
-                String endpointName = (String) endpoint.getValue(endpointNameFieldName);
                 String type = (String) endpoint.getValue(typeFieldName);
-                Integer port = Integer.valueOf(String.valueOf(endpoint.getValue(portFieldName)));
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
-                Integer stackDepth = Integer.valueOf(String.valueOf(endpoint.getValue(stackDepthFieldName)));
-                Integer maxContentLength = Integer.valueOf(String.valueOf(endpoint.getValue(maxContentLengthFieldName)));
-
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
                 IReceiverChain chain = chainStorage.resolve(mapId);
-                IEnvironmentHandler environmentHandler = new EnvironmentHandler(queue, stackDepth);
+
+                endpoint.setValue(startChainNameFieldName, chain);
+                endpoint.setValue(queueFieldName, queue);
                 IAsyncService endpointService =
-                        IOC.resolve(Keys.getOrAdd(HttpEndpoint.class.getCanonicalName()), port, maxContentLength,
-                                ScopeProvider.getCurrentScope(), environmentHandler, chain);
+                        IOC.resolve(Keys.getOrAdd(type + "_endpoint"), endpoint);
                 endpointService.start();
             }
-        } catch (ReadValueException | InvalidArgumentException | ScopeProviderException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        } catch (ChangeValueException e) {
+            e.printStackTrace();
         }
     }
 

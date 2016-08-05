@@ -35,6 +35,7 @@ public class SampleActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("SampleActorActorPlugin");
 
             item
+                    .after("IOC")
                     .process(() -> {
                 try {
                     IOC.register(Keys.getOrAdd("SampleActor"), new ApplyFunctionToArgumentsStrategy(

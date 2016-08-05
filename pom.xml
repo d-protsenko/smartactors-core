@@ -217,6 +217,8 @@
         <module>PluginHttpEndpoint</module>
         <module>PluginActorReceiverCreator</module>
         <module>PluginHandlerRoutingReceiverCreator</module>
+        <module>HttpsServer</module>
+        <module>HttpsEndpoint</module>
         <module>PluginMessageProcessorAndSequence</module>
         <module>PluginResponseSenderActor</module>
         <module>PluginWDSObject</module>
@@ -225,6 +227,9 @@
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
+        <module>PluginHttpsEndpoint</module>
+        <module>ISslEngineProvider</module>
+        <module>SslEngineProvider</module>
         <module>CObject</module>
         <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
@@ -233,6 +238,8 @@
         <module>PluginChainChoiceStrategy</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>SampleDBActor</module>
+        <module>PluginSampleDBActor</module>
     </modules>
 
     <build>
