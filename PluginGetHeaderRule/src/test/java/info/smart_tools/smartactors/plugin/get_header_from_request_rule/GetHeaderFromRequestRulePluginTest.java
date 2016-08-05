@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.get_header_from_request_rule;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -125,7 +126,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
             verifyStatic();
             Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
             return;
@@ -165,7 +166,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
@@ -218,7 +219,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());

@@ -27,6 +27,7 @@ public class AuthenticationActorPlugin implements IPlugin {
 
     /**
      * Load the plugin for Authentication actor
+     *
      * @throws PluginException Throw when plugin can't be load
      */
     @Override
@@ -35,22 +36,26 @@ public class AuthenticationActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
             item
-                .after("IOC")
-                .before("configure")
-                .process(() -> {
-                    try {
-                        IOC.register(Keys.getOrAdd(AuthenticationActor.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
-                            (args) -> {
-                                try {
-                                    return new AuthenticationActor();
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }));
-                } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
-                }
-            });
+                    .after("IOC")
+                    .before("configure")
+                    .process(() -> {
+                        try {
+                            IOC.register(Keys.getOrAdd(AuthenticationActor.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
+                                    (args) -> {
+                                        try {
+                                            return new AuthenticationActor();
+                                        } catch (Exception e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }));
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't get AuthenticationActor key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't register new strategy", e);
+                        }
+                    });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load AuthenticationActor plugin", e);

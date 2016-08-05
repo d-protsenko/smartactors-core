@@ -52,7 +52,7 @@ import java.util.concurrent.ExecutionException;
 public class AsyncOperationCollection implements IAsyncOperationCollection {
 
     private IPool connectionPool;
-    private CollectionName collectionName;
+    private String collectionName;
     private IField idField;
 
     /**
@@ -65,9 +65,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
         this.connectionPool = connectionPool;
         try {
             this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
-            this.collectionName = CollectionName.fromString(collectionName);
-        } catch (QueryBuildException e) {
-            throw new InvalidArgumentException("Can't create async operations collection.", e);
+            this.collectionName = collectionName;
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't create field", e);
         }
@@ -83,9 +81,9 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                 guard.getObject(),
                 collectionName,
                 token,
-                (IAction<IObject>) doc -> {
+                (IAction<IObject[]>) docs -> {
                     try {
-                        result.setValue(new FieldName("result"), doc);
+                        result.setValue(new FieldName("result"), docs[0]);
                     } catch (ChangeValueException e) {
                         throw new ActionExecuteException(e);
                     }
@@ -115,11 +113,6 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     @Override
     public void createAsyncOperation(final IObject data, final String token, final String expiredTime) throws CreateAsyncOperationException {
         try {
-            CreateOperationQuery query = IOC.resolve(Keys.getOrAdd(CreateOperationQuery.class.toString()));
-            query.setAsyncData(data);
-            query.setExpiredTime(expiredTime);
-            query.setToken(token);
-
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
 
 
@@ -127,6 +120,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                         Keys.getOrAdd("db.async_ops_collection.create"),
                         poolGuard.getObject(),
                         collectionName,
+                        data,
                         token,
                         expiredTime
                 );
@@ -162,14 +156,14 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
 
     @Override
-    public void complete(final IObject asyncOperation) throws CompleteAsyncOperationException {
+    public void complete(final IObject document) throws CompleteAsyncOperationException {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
 
             ITask updateTask = IOC.resolve(Keys.getOrAdd("db.async_ops_collection.complete"),
                     poolGuard.getObject(),
                     collectionName,
-                    asyncOperation
+                    document
             );
 
             updateTask.execute();

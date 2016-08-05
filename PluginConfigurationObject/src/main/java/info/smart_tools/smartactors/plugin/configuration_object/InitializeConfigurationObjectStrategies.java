@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -181,9 +182,9 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                             )
                                     );
                                 } catch (Exception e) {
-                                    throw new RuntimeException(
-                                            "Could not create or register some strategies for ConfigurationObject.", e)
-                                            ;
+                                    throw new ActionExecuteException(
+                                            "Could not create or register some strategies for ConfigurationObject.",
+                                            e);
                                 }
                             }
                         );

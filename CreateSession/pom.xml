@@ -43,11 +43,6 @@
             <artifactId>core.wrapper_generator</artifactId>
             <version>${core.version}</version>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.db_search_task</artifactId>
-            <version>${core.version}</version>
-        </dependency>
 
         <!-- Tests -->
         <dependency>

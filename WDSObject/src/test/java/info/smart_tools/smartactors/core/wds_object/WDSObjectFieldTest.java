@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.wds_object;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -146,9 +145,9 @@ public class WDSObjectFieldTest {
         IObject env = mock(IObject.class);
         IObject message = mock(IObject.class);
         when(rule1.getValue(new FieldName("name"))).thenReturn("GetValue");
-        when(rule1.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("consts/CONST"); add("message/intValue");}});
+        when(rule1.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("const/CONST"); add("message/intValue");}});
         when(rule2.getValue(new FieldName("name"))).thenReturn("Transform");
-        when(rule2.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("consts/abc");}});
+        when(rule2.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("const/abc");}});
         when(env.getValue(new FieldName("message"))).thenReturn(message);
         when(message.getValue(new FieldName("intValue"))).thenReturn(1);
         IField field = new WDSObjectField(new ArrayList<IObject>(){{add(rule1);add(rule2);}});
@@ -212,7 +211,7 @@ public class WDSObjectFieldTest {
         when(rule1.getValue(new FieldName("name"))).thenReturn("GetValue");
         when(rule1.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("message/intValue");}});
         when(rule2.getValue(new FieldName("name"))).thenReturn("Transform");
-        when(rule2.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("consts/CONST"); add("local/value");}});
+        when(rule2.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("const/CONST"); add("local/value");}});
         when(rule3.getValue(new FieldName("name"))).thenReturn("wds_target_strategy");
         when(rule3.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("response/intValue");}});
         when(env.getValue(new FieldName("message"))).thenReturn(message);

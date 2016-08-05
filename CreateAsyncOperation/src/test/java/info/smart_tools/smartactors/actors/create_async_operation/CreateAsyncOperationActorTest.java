@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.actors.create_async_operation;
 
 import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.actors.create_async_operation.wrapper.AuthOperationData;
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
@@ -35,25 +34,12 @@ public class CreateAsyncOperationActorTest {
     private CreateAsyncOperationActor actor;
     private CreateAsyncOperationMessage message;
     private IAsyncOperationCollection collection;
-    private AuthOperationData data;
 
     @Before
     public void setUp() throws ResolutionException {
 
-        collection = mock(IAsyncOperationCollection.class);
-        IKey collectionKey = mock(IKey.class);
-
-        data = mock(AuthOperationData.class);
-        IKey dataKey = mock(IKey.class);
-
         mockStatic(IOC.class);
         mockStatic(Keys.class);
-
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.toString())).thenReturn(collectionKey);
-        when(IOC.resolve(collectionKey)).thenReturn(collection);
-
-        when(Keys.getOrAdd(AuthOperationData.class.toString())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey)).thenReturn(data);
 
         actor = new CreateAsyncOperationActor(mock(IObject.class));
         message = mock(CreateAsyncOperationMessage.class);
@@ -64,6 +50,12 @@ public class CreateAsyncOperationActorTest {
         throws ReadValueException, CreateAsyncOperationActorException, ChangeValueException, ResolutionException,
                 CreateAsyncOperationException {
 
+        collection = mock(IAsyncOperationCollection.class);
+        IKey collectionKey = mock(IKey.class);
+
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(IOC.resolve(collectionKey, "operation")).thenReturn(collection);
+
         String sessionId = "sessionId";
         when(message.getSessionId()).thenReturn(sessionId);
         when(message.getExpiredTime()).thenReturn(4);
@@ -71,11 +63,12 @@ public class CreateAsyncOperationActorTest {
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
+        when(message.getOperationData()).thenReturn(asyncDataObj);
 
         actor.create(message);
 
-        verify(data).setSessionId(sessionId);
+        verify(message).getSessionId();
+        verify(message).setSessionIdInData(sessionId);
         verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), anyString());
         verify(message).setAsyncOperationToken(anyString());
     }
@@ -85,10 +78,21 @@ public class CreateAsyncOperationActorTest {
         throws ReadValueException, CreateAsyncOperationActorException, ChangeValueException, ResolutionException,
         CreateAsyncOperationException {
 
+        collection = mock(IAsyncOperationCollection.class);
+        IKey collectionKey = mock(IKey.class);
+
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(IOC.resolve(collectionKey, "operation")).thenReturn(collection);
+
+        String sessionId = "sessionId";
+        when(message.getSessionId()).thenReturn(sessionId);
+        when(message.getExpiredTime()).thenReturn(4);
+
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
         when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
+        when(message.getOperationData()).thenReturn(asyncDataObj);
+
         doThrow(new CreateAsyncOperationException("exception")).when(collection).createAsyncOperation(any(), any(), any());
 
         actor.create(message);

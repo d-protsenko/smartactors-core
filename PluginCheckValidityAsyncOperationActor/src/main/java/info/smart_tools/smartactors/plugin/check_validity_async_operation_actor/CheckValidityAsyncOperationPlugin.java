@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.check_validity_async_operation_actor
 
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -46,8 +47,12 @@ public class CheckValidityAsyncOperationPlugin implements IPlugin {
                                 return new CheckValidityAsyncOperationActor((IObject) args[0]);
                         }
                     ));
-                } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                    throw new RuntimeException(e);
+                } catch (ResolutionException e) {
+                    throw new ActionExecuteException("CheckValidityAsyncOperationActor plugin can't load: can't get CheckValidityAsyncOperationActor key", e);
+                } catch (InvalidArgumentException e) {
+                    throw new ActionExecuteException("CheckValidityAsyncOperationActor plugin can't load: can't create strategy", e);
+                } catch (RegistrationException e) {
+                    throw new ActionExecuteException("CheckValidityAsyncOperationActor plugin can't load: can't register new strategy", e);
                 }
             });
             bootstrap.add(item);

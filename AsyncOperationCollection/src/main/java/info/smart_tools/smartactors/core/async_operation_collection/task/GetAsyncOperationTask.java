@@ -16,16 +16,22 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+import java.time.LocalDateTime;
+
 /**
  * Task-facade for read task for async operations collection
  */
 public class GetAsyncOperationTask implements IDatabaseTask {
 
+
     private IDatabaseTask getItemTask;
     private IStorageConnection connection;
 
-    private IField tokenField;
     private IField collectionNameField;
+    private IField callbackField;
+    private IField equalsField;
+    private IField filterField;
+    private IField tokenField;
 
     /**
      * Constructor
@@ -36,8 +42,11 @@ public class GetAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            this.callbackField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+            this.equalsField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+            this.filterField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+            this.tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
+            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -54,15 +63,28 @@ public class GetAsyncOperationTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
+            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject filterObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+            String token = tokenField.in(query);
+
+            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            equalsField.out(eqKeyObject, token);
+            tokenField.out(filterObject, eqKeyObject);
+
+            filterField.out(queryForNestedTask, filterObject);
+
+
             getItemTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.getbyid"),
+                    Keys.getOrAdd("db.collection.search"),
                     connection,
                     collectionNameField.in(query),
-                    tokenField.in(query)
+                    queryForNestedTask,
+                    callbackField.in(query)
             );
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Can't create ISearchQuery from input query", e);
-        } catch (ReadValueException | InvalidArgumentException e) {
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't change value in one of IObjects", e);
         }
     }

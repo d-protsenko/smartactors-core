@@ -9,11 +9,13 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.core.postgres_schema.search.OrderWriter;
 import info.smart_tools.smartactors.core.postgres_schema.search.PagingWriter;
 import info.smart_tools.smartactors.core.postgres_schema.search.PostgresQueryWriterResolver;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 /**
  * A set of static methods to take statements to be executed in the Postgres database.
@@ -142,7 +144,11 @@ public final class PostgresSchema {
      *      "page": {
      *          "size": 50,
      *          "number": 2
-     *      }
+     *      },
+     *      "sort": [
+     *          { "a": "asc" },
+     *          { "b": "desc" }
+     *      ]
      *  }
      *     </pre>
      * </p>
@@ -162,6 +168,7 @@ public final class PostgresSchema {
             writer.write(collection.toString());
 
             writeSearchWhere(statement, criteria);
+            writeSearchOrder(statement, criteria);
             writeSeachPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
@@ -179,6 +186,23 @@ public final class PostgresSchema {
             resolver.resolve(null).write(statement, resolver, null, filter);
         } catch (ReadValueException e) {
             // no filter in the criteria, ignoring
+        }
+    }
+
+    private static void writeSearchOrder(QueryStatement statement, IObject criteria) throws Exception {
+        IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        Writer writer = statement.getBodyWriter();
+        try {
+            IFieldName sortField = IOC.resolve(fieldNameKey, "sort");
+            List<IObject> sortItems = (List<IObject>) criteria.getValue(sortField);
+            if (sortItems == null || sortItems.isEmpty()) {
+                return; // no sort in the criteria, ignoring
+            }
+            writer.write(" ");
+            OrderWriter order = new OrderWriter();
+            order.write(statement, sortItems);
+        } catch (ReadValueException e) {
+            // no sort in the criteria, ignoring
         }
     }
 

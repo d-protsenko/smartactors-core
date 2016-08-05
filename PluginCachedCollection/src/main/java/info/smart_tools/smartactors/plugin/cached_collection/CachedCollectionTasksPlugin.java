@@ -44,100 +44,100 @@ public class CachedCollectionTasksPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CachedCollectionTasksPlugin");
 
             item
-                .after("IOC")
-                .after("IFieldPlugin")
-                .process(() -> {
-                    try {
-                        IField collectionNameField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-                        IField documentField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-                        IField callbackField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
-                        IField keyNameField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
-                        IField keyField = IOC.resolve(
-                            Keys.getOrAdd(IField.class.getCanonicalName()), "key");
+                    .after("IOC")
+                    .after("IFieldPlugin")
+                    .process(() -> {
+                        try {
+                            IField collectionNameField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+                            IField documentField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+                            IField callbackField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+                            IField keyNameField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
+                            IField keyField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "key");
 
 
-                        IOC.register(
-                            Keys.getOrAdd("db.cached_collection.upsert"),
-                            //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
-                            new ApplyFunctionToArgumentsStrategy(
-                                (args) -> {
-                                    try {
-                                        IStorageConnection connection = (IStorageConnection) args[0];
-                                        CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                        IObject document = (IObject) args[2];
-                                        IDatabaseTask task = new UpsertIntoCachedCollectionTask(connection);
+                            IOC.register(
+                                    Keys.getOrAdd("db.cached_collection.upsert"),
+                                    //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    IStorageConnection connection = (IStorageConnection) args[0];
+                                                    CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                    IObject document = (IObject) args[2];
+                                                    IDatabaseTask task = new UpsertIntoCachedCollectionTask(connection);
 
-                                        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                                        collectionNameField.out(query, collectionName);
-                                        documentField.out(query, document);
+                                                    collectionNameField.out(query, collectionName);
+                                                    documentField.out(query, document);
 
-                                        task.prepare(query);
-                                        return task;
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("Can't resolve upsert db task.", e);
-                                    }
-                                }
-                            )
-                        );
+                                                    task.prepare(query);
+                                                    return task;
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException("Can't resolve upsert db task.", e);
+                                                }
+                                            }
+                                    )
+                            );
 
-                        IOC.register(
-                            Keys.getOrAdd("db.cached_collection.delete"),
-                            //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
-                            new ApplyFunctionToArgumentsStrategy(
-                                (args) -> {
-                                    try {
-                                        IStorageConnection connection = (IStorageConnection) args[0];
-                                        CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                        IObject document = (IObject) args[2];
-                                        IDatabaseTask task = new DeleteFromCachedCollectionTask(connection);
+                            IOC.register(
+                                    Keys.getOrAdd("db.cached_collection.delete"),
+                                    //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    IStorageConnection connection = (IStorageConnection) args[0];
+                                                    CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                    IObject document = (IObject) args[2];
+                                                    IDatabaseTask task = new DeleteFromCachedCollectionTask(connection);
 
-                                        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                                        collectionNameField.out(query, collectionName);
-                                        documentField.out(query, document);
+                                                    collectionNameField.out(query, collectionName);
+                                                    documentField.out(query, document);
 
-                                        task.prepare(query);
-                                        return task;
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("Can't resolve upsert db task.", e);
-                                    }
-                                }
-                            )
-                        );
+                                                    task.prepare(query);
+                                                    return task;
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException("Can't resolve upsert db task.", e);
+                                                }
+                                            }
+                                    )
+                            );
 
-                        IOC.register(
-                            Keys.getOrAdd("db.cached_collection.get_item"),
-                            //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
-                            new ApplyFunctionToArgumentsStrategy(
-                                (args) -> {
-                                    try {
-                                        IStorageConnection connection = (IStorageConnection) args[0];
-                                        CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                        IDatabaseTask task = new GetItemFromCachedCollectionTask(connection);
+                            IOC.register(
+                                    Keys.getOrAdd("db.cached_collection.get_item"),
+                                    //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    IStorageConnection connection = (IStorageConnection) args[0];
+                                                    CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                    IDatabaseTask task = new GetItemFromCachedCollectionTask(connection);
 
-                                        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                                        collectionNameField.out(query, collectionName);
-                                        keyNameField.out(query, args[2]);
-                                        keyField.out(query, args[3]);
-                                        callbackField.out(query, args[4]);
+                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    collectionNameField.out(query, collectionName);
+                                                    keyNameField.out(query, args[2]);
+                                                    keyField.out(query, args[3]);
+                                                    callbackField.out(query, args[4]);
 
-                                        task.prepare(query);
-                                        return task;
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("Can't resolve upsert db task.", e);
-                                    }
-                                }
-                            )
-                        );
-                    } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                                                    task.prepare(query);
+                                                    return task;
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException("Can't resolve upsert db task.", e);
+                                                }
+                                            }
+                                    )
+                            );
+                        } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load CachedCollectionTasksPlugin plugin", e);

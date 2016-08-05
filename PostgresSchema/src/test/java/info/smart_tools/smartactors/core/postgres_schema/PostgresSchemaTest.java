@@ -91,7 +91,33 @@ public class PostgresSchemaTest {
                 " \"page\": { \"size\": 10, \"number\": 3 } }");
         PostgresSchema.search(statement, collection, criteria);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) LIMIT(?)OFFSET(?)", body.toString());
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithSorting() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"sort\": [ { \"a\": \"desc\" } ] }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
+                "ORDER BY(document#>'{a}')DESC", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithPagingAndSorting() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"page\": { \"size\": 10, \"number\": 3 }, " +
+                " \"sort\": [ { \"a\": \"desc\" } ] }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
+                "ORDER BY(document#>'{a}')DESC " +
+                "LIMIT(?)OFFSET(?)",
+                body.toString());
         verify(statement, times(2)).pushParameterSetter(any());
     }
 

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.actors.create_async_operation.wrapper;
 
 import info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 
@@ -14,7 +15,7 @@ public interface CreateAsyncOperationMessage {
      * @return session identifier
      * @throws ReadValueException if error during get is occurred
      */
-    String getSessionId() throws ReadValueException;
+    IObject getOperationData() throws ReadValueException;
 
     /**
      * Getter
@@ -22,6 +23,20 @@ public interface CreateAsyncOperationMessage {
      * @throws ReadValueException if error during get is occurred
      */
     Integer getExpiredTime() throws ReadValueException;
+
+    /**
+     * Getter
+     * @return Return sessionId of user
+     * @throws ReadValueException
+     */
+    String getSessionId() throws ReadValueException;
+
+    /**
+     * Must set sessionId in target asyncData
+     * @param sessionId Target sessionId
+     * @throws ChangeValueException
+     */
+    void setSessionIdInData(String sessionId) throws ChangeValueException;
 
     /**
      * Setter

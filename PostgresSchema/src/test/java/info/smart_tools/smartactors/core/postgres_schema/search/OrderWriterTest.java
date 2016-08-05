@@ -2,12 +2,14 @@ package info.smart_tools.smartactors.core.postgres_schema.search;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -31,7 +33,8 @@ public class OrderWriterTest {
 
     @Test
     public void should_WritesORDERClauseIntoQueryStatement() throws Exception {
-        IObject sortMessage = new DSObject("{ \"testField\": \"desc\", \"anotherTestField\": \"asc\" }");
+        IObject criteriaMessage = new DSObject("{ \"sort\": [ { \"testField\": \"desc\" }, { \"anotherTestField\": \"asc\" } ] }");
+        List<IObject> sortMessage = (List<IObject>) criteriaMessage.getValue(new FieldName("sort"));
         orderWriter.write(query, sortMessage);
         assertEquals("ORDER BY(document#>'{testField}')DESC,(document#>'{anotherTestField}')ASC", body.toString());
         verify(query, times(0)).pushParameterSetter(any());
@@ -39,8 +42,10 @@ public class OrderWriterTest {
 
     @Test(expected = QueryBuildException.class)
     public void should_FailOnWrongDirection() throws Exception {
-        IObject sortMessage = new DSObject("{ \"testField\": 1 }");
+        IObject criteriaMessage = new DSObject("{ \"sort\": [ { \"testField\": 1 } ] }");
+        List<IObject> sortMessage = (List<IObject>) criteriaMessage.getValue(new FieldName("sort"));
         orderWriter.write(query, sortMessage);
         fail();
     }
+
 }

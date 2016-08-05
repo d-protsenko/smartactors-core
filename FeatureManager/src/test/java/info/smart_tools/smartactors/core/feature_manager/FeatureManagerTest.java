@@ -16,19 +16,19 @@ public class FeatureManagerTest {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_filesystemTrackerIsNull()
             throws Exception {
-        new FeatureManager(null);
+        new FeatureManager().newFeature("bug", null);
     }
 
     @Test(expected = FeatureManagementException.class)
     public void Should_newFeatureThrow_When_FeatureConstructorThrows()
             throws Exception {
-        new FeatureManager(mock(IFilesystemTracker.class)).newFeature(null);
+        new FeatureManager().newFeature(null, mock(IFilesystemTracker.class));
     }
 
     @Test
     public void Should_createNewFeatures()
             throws Exception {
-        IFeature feature = new FeatureManager(mock(IFilesystemTracker.class)).newFeature("bug");
+        IFeature feature = new FeatureManager().newFeature("bug", mock(IFilesystemTracker.class));
 
         assertNotNull(feature);
         assertTrue(feature instanceof Feature);

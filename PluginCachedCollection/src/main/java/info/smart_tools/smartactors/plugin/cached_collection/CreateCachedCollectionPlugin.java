@@ -12,8 +12,6 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -27,7 +25,7 @@ import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lamb
  * Plugin for registration strategy of create cached collection with IOC.
  * IOC resolve method waits collectionName as a first parameter and keyName as a second parameter.
  */
-public class CachedCollectionPlugin implements IPlugin {
+public class CreateCachedCollectionPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -35,7 +33,7 @@ public class CachedCollectionPlugin implements IPlugin {
      * Constructor
      * @param bootstrap bootstrap
      */
-    public CachedCollectionPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public CreateCachedCollectionPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
@@ -43,7 +41,7 @@ public class CachedCollectionPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CachedCollectionPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("CreateCachedCollectionPlugin");
 
             item
                 .after("IOC")
@@ -77,12 +75,12 @@ public class CachedCollectionPlugin implements IPlugin {
                                 }
                             }));
                 } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                    throw new ActionExecuteException("Error during registration strategy for cached collection.", e);
+                    throw new ActionExecuteException("CreateCachedCollection plugin can't load", e);
                 }
             });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load CachedCollectionPlugin plugin", e);
+            throw new PluginException("Can't load CreateCollectionActor plugin", e);
         }
     }
 }

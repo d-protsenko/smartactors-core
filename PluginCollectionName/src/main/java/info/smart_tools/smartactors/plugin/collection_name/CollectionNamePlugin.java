@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.collection_name;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -50,8 +51,12 @@ public class CollectionNamePlugin implements IPlugin {
                                     throw new RuntimeException("Can't resolve collection name: ", e);
                                 }
                             }));
-                    } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-                        throw new RuntimeException(e);
+                    } catch (ResolutionException e) {
+                        throw new ActionExecuteException("CollectionName plugin can't load: can't get CollectionName key", e);
+                    } catch (InvalidArgumentException e) {
+                        throw new ActionExecuteException("CollectionName plugin can't load: can't create strategy", e);
+                    } catch (RegistrationException e) {
+                        throw new ActionExecuteException("CollectionName plugin can't load: can't register new strategy", e);
                     }
                 });
             bootstrap.add(item);

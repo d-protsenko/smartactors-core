@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.DependencyResolvingFeatureManager;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
-import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
@@ -54,7 +53,7 @@ public class ServerWithConfiguration implements IServer {
             );
 
             // FeatureManager & Feature creation
-            IFeatureManager featureManager = new DependencyResolvingFeatureManager(
+            DependencyResolvingFeatureManager featureManager = new DependencyResolvingFeatureManager(
                     System.getProperty("user.home") + "/smartactors-plugins-repo",
                     new HashMap<String, String>() {{
                         put("local_repo", "file://" + System.getProperty("user.home") + "/.m2/repository/");
@@ -114,7 +113,18 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.cached_collection:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.collection_name:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.create_async_operation_plugin:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.async_ops_collection:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.get_async_operation:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.close_async_operation_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.async_ops_collection:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.validation_form_actor:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.create_session_plugin:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.authentication_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.password_encoder:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {
