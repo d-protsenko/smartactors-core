@@ -30,7 +30,7 @@ public final class MessageBus {
      * Return specific instance of {@link IKey} for container ID
      * @return instance of {@link IKey}
      */
-    public IKey getMessageBusKey() {
+    public static IKey getMessageBusKey() {
         return container.getMessageBusKey();
     }
 
