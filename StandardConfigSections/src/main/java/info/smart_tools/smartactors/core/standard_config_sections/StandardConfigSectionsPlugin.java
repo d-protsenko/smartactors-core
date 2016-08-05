@@ -114,6 +114,28 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     });
 
             bootstrap.add(endpointsSectionItem);
+
+            /* "messageBus" section */
+            IBootstrapItem<String> messageBusItem = new BootstrapItem("config_section:messageBus");
+
+            messageBusItem
+                    .after("configuration_manager")
+                    .after("config_section:maps")
+                    .after("config_section:executor")
+                    .after("IFieldNamePlugin")
+                    .before("configure")
+                    .process(() -> {
+                        try {
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+
+                            configurationManager.addSectionStrategy(new MessageBusSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(messageBusItem);
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
