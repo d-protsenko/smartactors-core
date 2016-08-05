@@ -10,10 +10,11 @@ import org.junit.Test;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CharSequenceCodecTest {
-    private ICharSequenceCodec utf8;
+    private ICharSequenceCodec charSequenceCodec;
 
     private final String SOURCE_MSG = "Hello my young friend. " +
             "You can see how it's is a nice text will converted to some shit, " +
@@ -24,19 +25,24 @@ public class CharSequenceCodecTest {
 
     @Before
     public void setUp() throws UnsupportedEncodingException, InvalidArgumentException {
-        utf8 = CharSequenceCodec.create("utf-8");
+        charSequenceCodec = CharSequenceCodec.create("utf-8");
         UTF_8_MSG = SOURCE_MSG.getBytes("UTF-8");
     }
 
     @Test
     public void encodeHexTest() throws EncodingException {
-        byte[] utf8EncodeResult = utf8.encode(SOURCE_MSG);
+        byte[] utf8EncodeResult = charSequenceCodec.encode(SOURCE_MSG);
         assertTrue(Arrays.equals(utf8EncodeResult, UTF_8_MSG));
     }
 
     @Test
     public void decodeHexTest() throws DecodingException {
-        String utf8DecodeResult = utf8.decode(UTF_8_MSG);
+        String utf8DecodeResult = charSequenceCodec.decode(UTF_8_MSG);
         assertTrue(utf8DecodeResult.equals(SOURCE_MSG));
+    }
+
+    @Test
+    public void ShouldBeEquals_When_EncodeAndDecode() throws EncodingException, DecodingException {
+        assertEquals(charSequenceCodec.decode(charSequenceCodec.encode(SOURCE_MSG)), SOURCE_MSG);
     }
 }

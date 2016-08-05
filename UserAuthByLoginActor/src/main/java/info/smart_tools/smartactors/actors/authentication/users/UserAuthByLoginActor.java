@@ -39,12 +39,9 @@ public class UserAuthByLoginActor {
     /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
-//    private final IObject FILTER;
-//    private final IObject PAGE;
-//    private final IObject SEARCH_QUERY;
-
-    private final IField LOGIN_F;
-    private final IField PASSWORD_F;
+    private static final IField LOGIN_F;
+    private static final IField PASSWORD_F;
+    private static final IField EQUALS_F;
 
     /* ToDo : Needs message source. */
     private static final String AUTH_ERROR_MSG = "User authentication has been failed because: ";
@@ -58,62 +55,15 @@ public class UserAuthByLoginActor {
     private static final String INTERNAL_ERROR_MSG = "Во время обработки запроса произошла ошибка. " +
             "Пожалуйста попробуйте повторить операцию. Приносим свои извинения за доставленные неудобства.";
 
-    {
+    static {
         try {
             LOGIN_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
             PASSWORD_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
-
-//
-//    ITask task = IOC.resolve(
-//        Keys.getOrAdd("db.collection.search"),
-//        guard.getObject(),
-//        "test",
-//        new DSObject(String.format(
-//            "{ " +
-//                "\"filter\": { \"%1$s\": { \"$eq\": \"new value\" } }," +
-//                "\"page\": { \"size\": 2, \"number\": 2 }," +
-//                "\"sort\": [ { \"%1$s\": \"asc\" } ]" +
-//                "}",
-//            testField.toString())),
-//        (IAction<IObject[]>) docs -> {
-//            try {
-//                for (IObject doc : docs) {
-//                    System.out.println("Found by " + testField);
-//                    System.out.println((String) doc.serialize());
-//                }
-//            } catch (SerializeException e) {
-//                throw new ActionExecuteException(e);
-//            }
-//        }
-//    );
-//    task.execute();
-
-//    private void prepareSearchQuery(final IObject searchQuery, final CreateSessionMessage inputMessage)
-//        throws ChangeValueException, InvalidArgumentException, ResolutionException, ReadValueException {
-//        IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-//        IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-//        IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-//
-//        EQUALS_F.out(sessionIdObject, inputMessage.getSessionId());
-//        SESSION_ID_F.out(filter, sessionIdObject);
-//
-//        //TODO:: move fields creation to constructor or static block
-//        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-//        collectionNameF.out(searchQuery, this.collectionName);
-//        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
-//        pageSizeF.out(page, 1);
-//        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
-//        pageNumberF.out(page, 1);
-//        IField pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
-//        pageF.out(searchQuery, page);
-//        IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
-//        filterF.out(searchQuery, filter);
-//
-//    }
 
     /**
      * Default constructor for actor.
@@ -151,7 +101,6 @@ public class UserAuthByLoginActor {
      *                The user's login and password must not be a NULL or empty.
      * @see IUserAuthByLoginMessage
      *
-     * @throws InvalidArgumentException when given message is invalid.
      * @throws AuthenticateUserException when:
      *                1. User with given login hasn't registered in the system.
      *                2. Given password is invalid.
@@ -160,16 +109,18 @@ public class UserAuthByLoginActor {
      *                5. A wrong work of search database task : task not prepare a query.
      */
     public void authenticateUser(@Nonnull final IUserAuthByLoginMessage message)
-            throws InvalidArgumentException, AuthenticateUserException {
-//        try (IPoolGuard connectionPoolGuard = IOC.resolve(Keys.getOrAdd("PSQLConnectionPoolGuard"));
-//                IPoolGuard taskPollGuard = IOC.resolve(Keys.getOrAdd("PSQLSearchTaskPoolGuard"))) {
+            throws AuthenticateUserException {
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
             checkMsg(message);
             IObject user = resolveLogin(message, poolGuard);
             validatePassword(message, user);
             setSuccessResponse(message);
-        } catch (PoolGuardException e) {
-            setFailResponse(message, INTERNAL_ERROR_MSG);
+        } catch (PoolGuardException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
+            try {
+                setFailResponse(message, INTERNAL_ERROR_MSG);
+            } catch (ChangeValueException e1) {
+                throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
+            }
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }
@@ -178,14 +129,12 @@ public class UserAuthByLoginActor {
         throws AuthenticateUserException {
 
         try {
-
             IObject searchQuery = prepareQueryParams(message);
-//            IDatabaseTask searchTask = (IDatabaseTask) taskPoolGuard.getObject();
             List<IObject> items = new LinkedList<>();
             ITask searchTask = IOC.resolve(
                 Keys.getOrAdd("db.collection.search"),
                 connectionPoolGuard.getObject(),
-                "test",
+                collection,
                 searchQuery,
                 (IAction<IObject[]>) foundDocs -> {
                     try {
@@ -196,31 +145,32 @@ public class UserAuthByLoginActor {
                 }
             );
 
-//            searchTask.setConnection((StorageConnection) connectionPoolGuard.getObject());
-//            searchTask.prepare(prepareQueryParams(message));
             searchTask.execute();
 
             validateSearchResult(items, message);
 
             return items.get(0);
-        } catch (ResolutionException | TaskExecutionException e) {
-            throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
-        } catch (InvalidArgumentException | ChangeValueException e) {
+        } catch (ResolutionException | TaskExecutionException | InvalidArgumentException | ChangeValueException | ReadValueException e) {
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }
 
     private void validateSearchResult(final List<IObject> searchResult, final IUserAuthByLoginMessage message)
-            throws AuthenticateUserException {
-        if (searchResult.isEmpty()) {
-            setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
-            throw new AuthenticateUserException(AUTH_ERROR_MSG +
-                    "user with login: [" + message.getLogin() + "] doesn't exist!");
-        }
-        if (searchResult.size() > 1) {
-            setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
-            throw new AuthenticateUserException(AUTH_ERROR_MSG +
-                    "too many users with login: [" + message.getLogin() + "]!");
+        throws AuthenticateUserException {
+
+        try {
+            if (searchResult.isEmpty()) {
+                setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
+                throw new AuthenticateUserException(AUTH_ERROR_MSG +
+                        "user with login: [" + message.getLogin() + "] doesn't exist!");
+            }
+            if (searchResult.size() > 1) {
+                setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
+                throw new AuthenticateUserException(AUTH_ERROR_MSG +
+                        "too many users with login: [" + message.getLogin() + "]!");
+            }
+        } catch (ReadValueException | ChangeValueException e) {
+            throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }
 
@@ -238,20 +188,18 @@ public class UserAuthByLoginActor {
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
                         "Invalid password: [" + message.getPassword() + "] for login: [" + message.getLogin() + "]!");
             }
-        } catch (EncodingException | InvalidArgumentException | ReadValueException e) {
+        } catch (EncodingException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }
 
     private IObject prepareQueryParams(final IUserAuthByLoginMessage message)
-            throws ResolutionException, ChangeValueException, InvalidArgumentException {
+        throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
 
 
-        // Init criteria and parameters objects.
         IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-
 
         IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collection);
@@ -265,14 +213,6 @@ public class UserAuthByLoginActor {
         filterF.out(searchQuery, filter);
 
 
-        // Const. parameters in this search query.
-//            SEARCH_QUERY.setCollectionName(collection);
-//            SEARCH_QUERY.setPageSize(1);
-//            SEARCH_QUERY.setPageNumber(1);
-//            SEARCH_QUERY.setCriteria(FILTER);
-
-        // Init. criteria for search query by login.
-        IField EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
         IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         EQUALS_F.out(loginObject, message.getLogin());
         LOGIN_F.out(filter, loginObject);
@@ -280,12 +220,12 @@ public class UserAuthByLoginActor {
         return searchQuery;
     }
 
-    private void setSuccessResponse(final IUserAuthByLoginMessage message) {
+    private void setSuccessResponse(final IUserAuthByLoginMessage message) throws ChangeValueException {
         message.setAuthStatus("SUCCESS");
         message.setAuthMessage("");
     }
 
-    private void setFailResponse(final IUserAuthByLoginMessage message, final String errorMessage) {
+    private void setFailResponse(final IUserAuthByLoginMessage message, final String errorMessage) throws ChangeValueException {
         message.setAuthStatus("FAIL");
         message.setAuthMessage(errorMessage);
     }
@@ -299,7 +239,7 @@ public class UserAuthByLoginActor {
         }
     }
 
-    private void checkMsg(final IUserAuthByLoginMessage msg) throws InvalidArgumentException {
+    private void checkMsg(final IUserAuthByLoginMessage msg) throws InvalidArgumentException, ReadValueException, ChangeValueException {
         if (isNullOrEmpty(msg.getLogin()) || isNullOrEmpty(msg.getPassword())) {
             setFailResponse(msg, AUTH_ERROR_RESPONSE_MSG);
             throw new InvalidArgumentException("Invalid message format!");

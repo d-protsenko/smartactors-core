@@ -16,12 +16,12 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
 /**
- *
+ * Charset codec implementation
  */
 public class CharSequenceCodec implements ICharSequenceCodec {
+
     private final CharsetEncoder encoder;
     private final CharsetDecoder decoder;
-
 
     private CharSequenceCodec(final String name) throws InvalidArgumentException {
         try {
@@ -46,12 +46,6 @@ public class CharSequenceCodec implements ICharSequenceCodec {
         return new CharSequenceCodec(name);
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     * @throws EncodingException
-     */
     @Override
     public byte[] encode(@Nonnull final CharSequence message) throws EncodingException {
         try {
@@ -65,12 +59,6 @@ public class CharSequenceCodec implements ICharSequenceCodec {
         }
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     * @throws DecodingException
-     */
     @Override
     public String decode(@Nonnull final byte[] message) throws DecodingException {
         try {

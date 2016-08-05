@@ -3,14 +3,15 @@ package info.smart_tools.smartactors.core.security.encoding.encoders;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * Interface for charset encoder
  */
 public interface ICharSequenceEncoder {
+
     /**
-     *
-     * @param message
-     * @return
-     * @throws EncodingException
+     * Encodes from a CharSequence message to bytes.
+     * @param message raw message
+     * @return encoded message
+     * @throws EncodingException if any error is occurred during encoding
      */
     byte[] encode(@Nonnull final CharSequence message) throws EncodingException;
 }

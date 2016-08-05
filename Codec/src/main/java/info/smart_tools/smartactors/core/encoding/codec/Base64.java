@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingExce
 import javax.annotation.Nonnull;
 
 /**
- *
+ * Codec implementation for base64 algorithm
  */
 public class Base64 implements ICodec {
     private final java.util.Base64.Encoder base64Encoder;
@@ -19,19 +19,13 @@ public class Base64 implements ICodec {
     }
 
     /**
-     *
-     * @return
+     * Factory method
+     * @return instance of Base64
      */
     public static Base64 create() {
         return new Base64();
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     * @throws EncodingException
-     */
     @Override
     public byte[] encode(@Nonnull final byte[] message) throws EncodingException {
         try {
@@ -41,12 +35,6 @@ public class Base64 implements ICodec {
         }
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     * @throws DecodingException
-     */
     @Override
     public byte[] decode(@Nonnull final byte[] message) throws DecodingException {
         try {

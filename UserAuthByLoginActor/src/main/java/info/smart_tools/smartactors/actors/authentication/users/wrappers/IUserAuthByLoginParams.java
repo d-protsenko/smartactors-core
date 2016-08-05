@@ -4,12 +4,13 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 
 /**
- *
+ * Wrapper for constructor of {@link info.smart_tools.smartactors.actors.authentication.users.UserAuthByLoginActor}
  */
 public interface IUserAuthByLoginParams {
+
     /**
-     *
-     * @return
+     * @return collection name string
+     * @throws ReadValueException if any error is occurred
      */
     String getCollection() throws ReadValueException;
 
@@ -20,20 +21,20 @@ public interface IUserAuthByLoginParams {
     IPool getConnectionPool() throws ReadValueException;
 
     /**
-     *
-     * @return
+     * @return algorithm name
+     * @throws ReadValueException if any error is occurred
      */
     String getAlgorithm() throws ReadValueException;
 
     /**
-     *
-     * @return
+     * @return charset name
+     * @throws ReadValueException if any error is occurred
      */
     String getCharset() throws ReadValueException;
 
     /**
-     *
-     * @return
+     * @return encoder name
+     * @throws ReadValueException if any error is occurred
      */
     String getEncoder() throws ReadValueException;
 }

@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingExce
 import javax.annotation.Nonnull;
 
 /**
- *
+ * Codec implementation for hex algorithm
  */
 public class Hex implements ICodec {
     private final org.apache.commons.codec.binary.Hex hexCodec;
@@ -17,8 +17,8 @@ public class Hex implements ICodec {
     }
 
     /**
-     *
-     * @return
+     * Factory method
+     * @return Hex instance
      */
     public static Hex create() {
         return new Hex();

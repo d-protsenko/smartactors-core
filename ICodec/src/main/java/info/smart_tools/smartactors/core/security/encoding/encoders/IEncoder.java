@@ -3,14 +3,15 @@ package info.smart_tools.smartactors.core.security.encoding.encoders;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * Message encoder interface
  */
 public interface IEncoder {
+
     /**
-     *
-     * @param message
-     * @return
-     * @throws EncodingException
+     * Encodes string to byte array
+     * @param message given text
+     * @return encoded
+     * @throws EncodingException if any errors is occurred
      */
     byte[] encode(@Nonnull final byte[] message) throws EncodingException;
 }

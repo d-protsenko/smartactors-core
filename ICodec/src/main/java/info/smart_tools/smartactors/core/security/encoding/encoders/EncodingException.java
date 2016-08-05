@@ -1,23 +1,23 @@
 package info.smart_tools.smartactors.core.security.encoding.encoders;
 
 /**
- *
+ * Exception for errors occurred during encoding message
  */
 public class EncodingException extends Exception {
     /**
-     *
-     * @param message
+     * Constructor with specific error message as argument
+     * @param message specific error message
      */
-    public EncodingException(String message) {
+    public EncodingException(final String message) {
         super(message);
     }
 
     /**
-     *
-     * @param message
-     * @param cause
+     * Constructor with specific error message and specific cause as arguments
+     * @param message specific error message
+     * @param cause specific cause
      */
-    public EncodingException(String message, Throwable cause) {
+    public EncodingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

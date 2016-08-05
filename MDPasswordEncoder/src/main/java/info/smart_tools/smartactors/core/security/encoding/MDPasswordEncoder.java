@@ -11,7 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- *
+ * Implementation of password encoder that realizes message digest
  */
 public class MDPasswordEncoder implements IPasswordEncoder {
     private final String algorithm;
@@ -31,11 +31,11 @@ public class MDPasswordEncoder implements IPasswordEncoder {
     }
 
     /**
-     *
-     * @param algorithm
-     * @param encoder
-     * @param charSequenceCodec
-     * @return
+     * Factory method
+     * @param algorithm name of algorithm
+     * @param encoder name of encoder
+     * @param charSequenceCodec name of charset
+     * @return MDPasswordEncoder implementation
      */
     public static MDPasswordEncoder create(
             @Nonnull final String algorithm,
@@ -67,10 +67,6 @@ public class MDPasswordEncoder implements IPasswordEncoder {
         return encode(saltedPass);
     }
 
-    /**
-     *
-     * @param iterations
-     */
     @Override
     public void setIterations(final int iterations) {
         if (iterations <= 0) {

@@ -3,14 +3,15 @@ package info.smart_tools.smartactors.core.security.encoding.decoders;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * Message decoder interface
  */
 public interface IDecoder {
+
     /**
-     *
-     * @param message
-     * @return
-     * @throws DecodingException
+     * Decodes bytes to string
+     * @param message encoded message
+     * @return decoded message
+     * @throws DecodingException if any errors is occurred
      */
     byte[] decode(@Nonnull final byte[] message) throws DecodingException;
 }

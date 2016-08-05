@@ -1,23 +1,24 @@
 package info.smart_tools.smartactors.core.security.encoding.decoders;
 
 /**
- *
+ * Exception for errors occurred during decoding message
  */
 public class DecodingException extends Exception {
+
     /**
-     *
-     * @param message
+     * Constructor with specific error message as argument
+     * @param message specific error message
      */
-    public DecodingException(String message) {
+    public DecodingException(final String message) {
         super(message);
     }
 
     /**
-     *
-     * @param message
-     * @param cause
+     * Constructor with specific error message and specific cause as arguments
+     * @param message specific error message
+     * @param cause specific cause
      */
-    public DecodingException(String message, Throwable cause) {
+    public DecodingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

@@ -42,6 +42,7 @@ public class UserAuthByLoginActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("UserAuthByLoginActorPlugin");
             item
                 .after("IOC")
+                .before("configure")
                 .process(() -> {
                     try {
                         IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
