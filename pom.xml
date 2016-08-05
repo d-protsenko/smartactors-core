@@ -238,6 +238,8 @@
         <module>MessageBus</module>
         <module>IMessageBusContainer</module>
         <module>MessageBusContainerWithScope</module>
+        <module>MessageBusHandler</module>
+        <module>IMessageBusHandler</module>
     </modules>
 
     <build>

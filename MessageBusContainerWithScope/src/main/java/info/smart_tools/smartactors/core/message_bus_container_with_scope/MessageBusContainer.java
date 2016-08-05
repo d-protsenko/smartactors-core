@@ -3,7 +3,9 @@ package info.smart_tools.smartactors.core.message_bus_container_with_scope;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
+import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 /**
@@ -31,7 +33,14 @@ public class MessageBusContainer implements IMessageBusContainer {
     }
 
     @Override
-    public void send(IObject message) throws SendingMessageException {
-
+    public void send(final IObject message) throws SendingMessageException {
+        try {
+            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+                    .getCurrentScope()
+                    .getValue(messageBusContainerKey);
+            handler.handle(message);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not send message.");
+        }
     }
 }

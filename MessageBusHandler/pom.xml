@@ -9,25 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.message_bus</artifactId>
+    <artifactId>core.message_bus_handler</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>core.itask</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iqueue</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.imessage_bus_handler</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Implementation -->
+        <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.string_ioc_key</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus_container_with_scope</artifactId>
+            <artifactId>core.invalid_argument_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -44,8 +49,18 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.strategy_container</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
 
 </project>

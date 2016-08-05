@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.message_bus</artifactId>
+    <artifactId>core.imessage_bus_handler</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
@@ -18,16 +18,9 @@
             <artifactId>core.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
-
-        <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.string_ioc_key</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus_container_with_scope</artifactId>
+            <artifactId>core.message_processing</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -38,14 +31,6 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
 
 </project>
