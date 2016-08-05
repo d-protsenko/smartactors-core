@@ -244,6 +244,7 @@
         <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
+        <module>PluginChangePasswordActor</module>
     </modules>
 
     <build>
