@@ -78,6 +78,25 @@
       "exceptional": []
     },
     {
+      "id": "upsertDocument",
+      "steps": [
+        {
+          "target": "sample-db-actor",
+          "handler": "upsertDocument",
+          "wrapper": {
+            "in_getCollectionName": "message/collection",
+            "in_getDocument": "message/document",
+            "out_setDocument": "response/upserted"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
       "id": "getDocument",
       "steps": [
         {
@@ -85,7 +104,7 @@
           "handler": "getDocumentById",
           "wrapper": {
             "in_getCollectionName": "message/collection",
-            "in_getDocument": "message/document",
+            "in_getDocumentId": "message/id",
             "out_setDocument": "response/found"
           }
         },
