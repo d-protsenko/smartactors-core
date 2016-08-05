@@ -74,10 +74,10 @@ public class ServerWithConfiguration implements IServer {
             });
 
             // FeatureManager & Feature creation
-            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+            IFeatureManager featureManager = new FeatureManager();
 
 
-            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            IFeature coreFeature = featureManager.newFeature("smartactors.core", jarFilesTracker);
             coreFeature.whenPresent(files -> {
                 try {
                     pluginLoader.loadPlugin(files);
