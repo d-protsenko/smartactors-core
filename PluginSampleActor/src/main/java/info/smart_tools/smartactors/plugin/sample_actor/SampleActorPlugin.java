@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.sample_actor;
 
 import info.smart_tools.smartactors.actors.SampleActor;
+import info.smart_tools.smartactors.actors.sample_other_actor.SampleOtherActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -32,9 +33,9 @@ public class SampleActorPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("SampleActorActorPlugin");
+            IBootstrapItem<String> item1 = new BootstrapItem("SampleActorPlugin");
 
-            item
+            item1
                     .after("IOC")
                     .process(() -> {
                 try {
@@ -50,7 +51,28 @@ public class SampleActorPlugin implements IPlugin {
                     throw new ActionExecuteException(e);
                 }
             });
-            bootstrap.add(item);
+            bootstrap.add(item1);
+
+            IBootstrapItem<String> item2 = new BootstrapItem("SampleOtherActorPlugin");
+
+            item2
+                    .after("IOC")
+                    .process(() -> {
+                        try {
+                            IOC.register(Keys.getOrAdd("SampleOtherActor"), new ApplyFunctionToArgumentsStrategy(
+                                    (args) -> {
+                                        try {
+                                            return new SampleOtherActor();
+                                        } catch (Exception e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }));
+                        } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+            bootstrap.add(item2);
+
         } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load AuthenticationActor plugin", e);
         }

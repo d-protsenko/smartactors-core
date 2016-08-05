@@ -245,6 +245,7 @@
         <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>SampleOtherActor</module>
     </modules>
 
     <build>
