@@ -240,6 +240,7 @@
         <module>PluginStarter</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>MailingActor</module>
     </modules>
 
     <build>
