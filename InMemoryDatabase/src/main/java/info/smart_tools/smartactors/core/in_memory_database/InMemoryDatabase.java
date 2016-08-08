@@ -46,10 +46,10 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$eq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
                         return entry.equals(reference);
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -57,10 +57,10 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$neq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
                         return !entry.equals(reference);
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -68,7 +68,7 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$gt", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
@@ -85,7 +85,7 @@ public class InMemoryDatabase implements IDataBase {
                             String doubleReference = (String) reference;
                             return doubleEntry.compareTo(doubleReference) == 1;
                         }
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -93,7 +93,7 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$lt", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
@@ -110,7 +110,7 @@ public class InMemoryDatabase implements IDataBase {
                             String doubleReference = (String) reference;
                             return doubleEntry.compareTo(doubleReference) == -1;
                         }
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -118,7 +118,7 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$gte", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
@@ -135,7 +135,7 @@ public class InMemoryDatabase implements IDataBase {
                             String doubleReference = (String) reference;
                             return doubleEntry.compareTo(doubleReference) == 1 || doubleEntry.equals(doubleReference);
                         }
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -169,7 +169,7 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$lte", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
@@ -186,7 +186,7 @@ public class InMemoryDatabase implements IDataBase {
                             String doubleReference = (String) reference;
                             return doubleEntry.compareTo(doubleReference) == -1 || doubleEntry.equals(doubleReference);
                         }
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -194,7 +194,7 @@ public class InMemoryDatabase implements IDataBase {
         verifierMap.put("$in", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = document.getValue(fieldName);
+                        Object entry = nestedFieldName(fieldName, document);
                         List<Object> references = (List<Object>)
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
                         for (Object reference : references) {
@@ -202,7 +202,7 @@ public class InMemoryDatabase implements IDataBase {
                                 return true;
                             }
                         }
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
                 }
@@ -347,5 +347,26 @@ public class InMemoryDatabase implements IDataBase {
     @Override
     public void delete(final IObject document, final String collectionName) {
 
+    }
+
+    private Object nestedFieldName(final IFieldName fieldName, final IObject iObject) throws IDataBaseException {
+        String string = fieldName.toString();
+        String[] strings = string.split("\\.");
+        Object bufObject = iObject;
+        try {
+            for (String fieldString : strings) {
+                if (!(bufObject instanceof IObject)) {
+                    return false;
+                }
+                IFieldName bufFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldString);
+                bufObject = ((IObject) bufObject).getValue(bufFieldName);
+                if (null == bufObject) {
+                    return false;
+                }
+            }
+            return bufObject;
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+            throw new IDataBaseException("Failed to resolve IFieldName", e);
+        }
     }
 }
