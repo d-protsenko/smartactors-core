@@ -60,6 +60,7 @@ public class IFieldPluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldPlugin").thenReturn(item);
 
         when(item.after("IOC")).thenReturn(item);
+        when(item.after("IFieldNamePlugin")).thenReturn(item);
 
         plugin.load();
 
