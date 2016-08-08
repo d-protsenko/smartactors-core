@@ -26,240 +26,7 @@ import java.util.Objects;
  */
 public class InMemoryDatabase implements IDataBase {
 
-    Map<String, IConditionVerifier> verifierMap = new HashMap<>();
-
     public InMemoryDatabase() {
-
-        verifierMap.put("$general", (condition, document) -> {
-                    Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
-                    String key = null;
-                    do {
-                        Map.Entry<IFieldName, Object> entry = iterator.next();
-                        key = entry.getKey().toString();
-                        if (entry.getValue() instanceof IObject) {
-                            iterator = ((IObject) entry.getValue()).iterator();
-                        }
-                    } while (iterator.hasNext() && !verifierMap.containsKey(key));
-                    return verifierMap.get(key).verify(condition, document);
-                }
-        );
-        verifierMap.put("$eq", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
-                        return reference.equals(entry);
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$neq", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
-                        return !reference.equals(entry);
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$gt", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == -1;
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == -1;
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == -1;
-                        }
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$lt", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == 1;
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == 1;
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == 1;
-                        }
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$gte", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == -1 || longReference.equals(longEntry);
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                        }
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$date-from", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        String entry = (String) document.getValue(fieldName);
-                        String reference = String.valueOf(
-                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-from"))
-                        );
-                        return reference.compareTo(entry) == -1 || reference.equals(entry);
-                    } catch (ReadValueException | InvalidArgumentException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$date-to", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        String entry = (String) document.getValue(fieldName);
-                        String reference = String.valueOf(
-                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-to"))
-                        );
-                        return reference.compareTo(entry) == 1 || reference.equals(entry);
-                    } catch (ReadValueException | InvalidArgumentException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$lte", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == 1 || longReference.equals(longEntry);
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                        }
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-        verifierMap.put("$in", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        List<Object> references = (List<Object>)
-                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
-                        for (Object reference : references) {
-                            if (reference.equals(entry)) {
-                                return true;
-                            }
-                        }
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-
-        verifierMap.put("$isNull", (condition, document) -> {
-                    IFieldName fieldName = condition.iterator().next().getKey();
-                    try {
-                        Object entry = nestedFieldName(fieldName, document);
-                        Boolean references = (Boolean)
-                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$isNull"));
-                        return (null == entry) == references;
-                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
-                    }
-                    return false;
-                }
-        );
-
-        verifierMap.put("$and", (condition, document) -> {
-                    boolean result = true;
-                    try {
-                        List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$and"));
-                        for (IObject conditionItem : conditions) {
-                            result &= verifierMap.get("$general")
-                                    .verify(conditionItem, document);
-                        }
-                    } catch (ReadValueException | InvalidArgumentException e) {
-                    }
-                    return result;
-                }
-        );
-        verifierMap.put("$or", (condition, document) -> {
-                    boolean result = false;
-                    try {
-                        List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$or"));
-                        for (IObject conditionItem : conditions) {
-                            result |= verifierMap.get("$general")
-                                    .verify(conditionItem, document);
-                        }
-                    } catch (ReadValueException | InvalidArgumentException e) {
-                    }
-                    return result;
-                }
-        );
-        verifierMap.put("$not", (condition, document) -> {
-                    boolean result = true;
-                    try {
-                        List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$not"));
-                        for (IObject conditionItem : conditions) {
-                            result &= !verifierMap.get("$general")
-                                    .verify(conditionItem, document);
-                        }
-                    } catch (ReadValueException | InvalidArgumentException e) {
-                    }
-                    return result;
-                }
-        );
     }
 
     private List<DataBaseItem> list = new LinkedList<>();
@@ -341,12 +108,31 @@ public class InMemoryDatabase implements IDataBase {
         List<IObject> outputList = new LinkedList<>();
         for (DataBaseItem item : list) {
             if (Objects.equals(item.getCollectionName(), collectionName)) {
-                if (verifierMap.get("$general").verify(condition, item.getDocument())) {
+                if (generalConditionParser(condition, item.getDocument())) {
                     outputList.add(clone(item.getDocument()));
                 }
             }
         }
         return outputList;
+    }
+
+    private boolean generalConditionParser(final IObject condition, final IObject document) throws IDataBaseException {
+        Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
+        String key = null;
+        try {
+            do {
+                Map.Entry<IFieldName, Object> entry = iterator.next();
+                key = entry.getKey().toString();
+                if (entry.getValue() instanceof IObject) {
+                    iterator = ((IObject) entry.getValue()).iterator();
+                }
+            }
+            while (iterator.hasNext() && !(Boolean) IOC.resolve(Keys.getOrAdd("ContainsResolveDataBaseCondition"), key));
+            return IOC.resolve(Keys.getOrAdd("ResolveDataBaseCondition"), key, condition, document);
+        } catch (ResolutionException e) {
+            throw new IDataBaseException("Failed to resolve \"ResolveDataBaseCondition\"", e);
+        }
+
     }
 
     private IObject clone(final IObject iObject) throws IDataBaseException {
@@ -361,26 +147,5 @@ public class InMemoryDatabase implements IDataBase {
     @Override
     public void delete(final IObject document, final String collectionName) {
 
-    }
-
-    private Object nestedFieldName(final IFieldName fieldName, final IObject iObject) throws IDataBaseException {
-        String string = fieldName.toString();
-        String[] strings = string.split("\\.");
-        Object bufObject = iObject;
-        try {
-            for (String fieldString : strings) {
-                if (!(bufObject instanceof IObject)) {
-                    return null;
-                }
-                IFieldName bufFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldString);
-                bufObject = ((IObject) bufObject).getValue(bufFieldName);
-                if (null == bufObject) {
-                    return null;
-                }
-            }
-            return bufObject;
-        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
-            throw new IDataBaseException("Failed to resolve IFieldName", e);
-        }
     }
 }
