@@ -67,7 +67,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>actor.check_user_is_new</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!--testing-->

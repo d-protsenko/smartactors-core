@@ -78,27 +78,16 @@ public class CheckUserIsNewActorPluginTest {
         verifyStatic();
         IOC.register(eq(checkUserIsNewActorKey), createNewInstanceStrategyArgumentCaptor.capture());
 
-        IObject arg = mock(IObject.class);
-
         CheckUserIsNewActor actor = mock(CheckUserIsNewActor.class);
-        ActorParams actorParams = mock(ActorParams.class);
-        IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
-        when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+        IObject actorParams = mock(IObject.class);
         whenNew(CheckUserIsNewActor.class).withArguments(actorParams).thenReturn(actor);
 
-        assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(arg) == actor);
-
-        verifyStatic();
-        Keys.getOrAdd(ActorParams.class.getCanonicalName());
-
-        verifyStatic();
-        IOC.resolve(actorParamsIKey, arg);
+        assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(actorParams) == actor);
 
         verifyNew(CheckUserIsNewActor.class).withArguments(actorParams);
     }
 
-    @Test
+   @Test
     public void MustInCorrectLoadNewIBootstrapItemThrowException() throws Exception {
 
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenThrow(new InvalidArgumentException(""));
@@ -186,22 +175,12 @@ public class CheckUserIsNewActorPluginTest {
             verifyStatic();
             IOC.register(eq(createAsyncOpKey), any(CreateNewInstanceStrategy.class));
 
-            IObject arg = mock(IObject.class);
-
             CheckUserIsNewActor actor = mock(CheckUserIsNewActor.class);
-            ActorParams actorParams = mock(ActorParams.class);
-            IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
-            when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+            IObject actorParams = mock(IObject.class);
+
             whenNew(CheckUserIsNewActor.class).withArguments(actorParams).thenReturn(actor);
 
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.getCanonicalName());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
+            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams}) == actor);
 
             verifyNew(CheckUserIsNewActor.class).withArguments(actorParams);
             return;
@@ -245,133 +224,14 @@ public class CheckUserIsNewActorPluginTest {
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
-            IObject arg = mock(IObject.class);
-
             CheckUserIsNewActor actor = mock(CheckUserIsNewActor.class);
-            ActorParams actorParams = mock(ActorParams.class);
-            IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
-            when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+            IObject actorParams = mock(IObject.class);
+
             whenNew(CheckUserIsNewActor.class).withArguments(actorParams).thenReturn(actor);
 
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.getCanonicalName());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
+            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams}) == actor);
 
             verifyNew(CheckUserIsNewActor.class).withArguments(actorParams);
-            return;
-        }
-        assertTrue("Must throw exception", false);
-    }
-
-    @Test
-    public void MustInCorrectResolveWhenKeysGetOrAddActorParamKey() throws Exception {
-
-        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
-
-        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
-
-        plugin.load();
-
-        verifyNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin");
-
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-
-        verify(bootstrapItem).after("IOC");
-        verify(bootstrapItem).process(actionArgumentCaptor.capture());
-
-        verify(bootstrap).add(bootstrapItem);
-
-        IKey checkUserIsNewActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName())).thenReturn(checkUserIsNewActorKey);
-
-        ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
-
-        CreateNewInstanceStrategy createNewInstanceStrategy = mock(CreateNewInstanceStrategy.class);
-        whenNew(CreateNewInstanceStrategy.class)
-                .withArguments(targetFuncArgumentCaptor.capture())
-                .thenReturn(createNewInstanceStrategy);
-
-        actionArgumentCaptor.getValue().execute();
-
-        verifyStatic();
-        Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName());
-
-        verifyStatic();
-        IOC.register(checkUserIsNewActorKey, createNewInstanceStrategy);
-
-        IObject arg = mock(IObject.class);
-
-        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenThrow(new ResolutionException(""));
-
-        try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
-        } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.getCanonicalName());
-            return;
-        }
-        assertTrue("Must throw exception", false);
-    }
-
-    @Test
-    public void MustInCorrectResolveWhenIOCResolveActorParamsThrowException() throws Exception {
-
-        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
-
-        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
-
-        plugin.load();
-
-        verifyNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin");
-
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-
-        verify(bootstrapItem).after("IOC");
-        verify(bootstrapItem).process(actionArgumentCaptor.capture());
-
-        verify(bootstrap).add(bootstrapItem);
-
-        IKey checkUserIsNewActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName())).thenReturn(checkUserIsNewActorKey);
-
-        ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
-
-        CreateNewInstanceStrategy createNewInstanceStrategy = mock(CreateNewInstanceStrategy.class);
-        whenNew(CreateNewInstanceStrategy.class)
-                .withArguments(targetFuncArgumentCaptor.capture())
-                .thenReturn(createNewInstanceStrategy);
-
-        actionArgumentCaptor.getValue().execute();
-
-        verifyStatic();
-        Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName());
-
-        verifyStatic();
-        IOC.register(checkUserIsNewActorKey, createNewInstanceStrategy);
-
-        IObject arg = mock(IObject.class);
-
-        IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
-        when(IOC.resolve(actorParamsIKey, arg)).thenThrow(new ResolutionException(""));
-
-        try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
-        } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.getCanonicalName());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
             return;
         }
         assertTrue("Must throw exception", false);
@@ -414,24 +274,13 @@ public class CheckUserIsNewActorPluginTest {
         verifyStatic();
         IOC.register(checkUserIsNewActorKey, createNewInstanceStrategy);
 
-        IObject arg = mock(IObject.class);
+        IObject actorParams = mock(IObject.class);
 
-        ActorParams actorParams = mock(ActorParams.class);
-        IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.getCanonicalName())).thenReturn(actorParamsIKey);
-        when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
         whenNew(CheckUserIsNewActor.class).withArguments(actorParams).thenThrow(new InvalidArgumentException(""));
 
         try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
+            targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams});
         } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.getCanonicalName());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
-
             verifyNew(CheckUserIsNewActor.class).withArguments(actorParams);
             return;
         }
