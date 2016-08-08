@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -102,6 +101,20 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
 
         this.stackIndex = level;
         this.stepStack[level] = step - 1;
+    }
+
+    @Override
+    public int getCurrentLevel() {
+        return stackIndex;
+    }
+
+    @Override
+    public int getStepAtLevel(final int level) throws InvalidArgumentException {
+        if (level < 0 || level > stackIndex) {
+            throw new InvalidArgumentException("Level index is out of range.");
+        }
+
+        return stepStack[level];
     }
 
     @Override

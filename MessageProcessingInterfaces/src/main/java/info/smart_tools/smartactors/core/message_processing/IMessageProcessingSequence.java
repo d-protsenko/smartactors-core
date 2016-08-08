@@ -39,6 +39,23 @@ public interface IMessageProcessingSequence {
     void goTo(int level, int step) throws InvalidArgumentException;
 
     /**
+     * Get current level in stack of nested chains.
+     *
+     * @return current level in stack of nested chains
+     */
+    int getCurrentLevel();
+
+    /**
+     * Get current step at specific level of stack of nested chains.
+     *
+     * @param level    the level
+     * @return current step at given level
+     * @throws InvalidArgumentException if level does not correspond to any active level of chains stack; i.e. if level is a negative number
+     *                                  or is higher than index of current level
+     */
+    int getStepAtLevel(int level) throws InvalidArgumentException;
+
+    /**
      * Get the next receiver that should receive the message.
      *
      * @return the receiver or {@code null} if message processing is finished
