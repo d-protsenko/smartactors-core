@@ -126,6 +126,18 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     public void end() {
         this.stackIndex = -1;
     }
+    public int getCurrentLevel() {
+        return stackIndex;
+    }
+
+    @Override
+    public int getStepAtLevel(final int level) throws InvalidArgumentException {
+        if (level < 0 || level > stackIndex) {
+            throw new InvalidArgumentException("Level index is out of range.");
+        }
+
+        return stepStack[level];
+    }
 
     @Override
     public IMessageReceiver getCurrentReceiver() {

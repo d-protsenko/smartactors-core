@@ -103,7 +103,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainFieldName)));
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), desc.getValue(exceptionAfterFieldName))
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
                 IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
                 chainAndEnv.setValue(exceptionalChainsFieldName, chain);

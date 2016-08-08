@@ -17,12 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -264,5 +259,45 @@ public class MessageProcessingSequenceTest {
         verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "causeStep")), eq(1));
         verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchLevel")), eq(1));
         verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchStep")), eq(0));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_goToThrow_When_positionIsOutOfRange()
+            throws Exception {
+        new MessageProcessingSequence(5, mainChainMock).goTo(-1, 0);
+    }
+
+    @Test
+    public void Should_permitAccessToCurrentStackLevelAndStepIndexesOnAllLevel()
+            throws Exception {
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock);
+
+        messageProcessingSequence.next();
+        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.next();
+        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.next();
+
+        assertEquals(2, messageProcessingSequence.getCurrentLevel());
+        assertEquals(0, messageProcessingSequence.getStepAtLevel(2));
+
+        messageProcessingSequence.goTo(1,3);
+
+        assertEquals(1, messageProcessingSequence.getCurrentLevel());
+        assertEquals(2, messageProcessingSequence.getStepAtLevel(1));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_getStepAtLevelThrow_When_LevelIndexIsNegative()
+            throws Exception {
+        new MessageProcessingSequence(5, mainChainMock).getStepAtLevel(-1);
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_getStepAtLevelThrow_When_LevelIndexIsGreaterThanIndexOfCurrentLevel()
+            throws Exception {
+        new MessageProcessingSequence(5, mainChainMock).getStepAtLevel(1);
     }
 }
