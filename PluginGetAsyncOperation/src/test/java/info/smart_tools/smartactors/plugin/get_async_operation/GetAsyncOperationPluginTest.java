@@ -54,6 +54,7 @@ public class GetAsyncOperationPluginTest {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CreateGetAsyncOperationActor").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -80,5 +81,4 @@ public class GetAsyncOperationPluginTest {
         whenNew(BootstrapItem.class).withArguments("GetFormActorPlugin").thenThrow(new InvalidArgumentException(""));
         plugin.load();
     }
-
 }
