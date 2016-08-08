@@ -1,10 +1,8 @@
 package info.smart_tools.smartactors.actors.check_user_is_new;
 
-import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -29,18 +27,16 @@ import java.util.List;
 public class CheckUserIsNewActor {
     private String USER_COLLECTION_NAME = "user";
     private IPool connectionPool;
-    private IField emailField;
 
     /**
      * Constructor
      * @param params the actor params
      * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
-    public CheckUserIsNewActor(final ActorParams params) throws InvalidArgumentException {
+    public CheckUserIsNewActor(final IObject params) throws InvalidArgumentException {
         try {
             ConnectionOptions connectionOptionsWrapper = new ConnectionOptionsTestImpl();
             connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
-            emailField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
