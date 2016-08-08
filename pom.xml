@@ -232,6 +232,7 @@
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
     </modules>
 
     <build>
