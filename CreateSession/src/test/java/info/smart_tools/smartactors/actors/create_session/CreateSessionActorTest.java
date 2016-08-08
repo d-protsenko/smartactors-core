@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.actors.create_session;
 import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
@@ -17,30 +18,39 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.LinkedList;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(IOC.class)
+@PrepareForTest({IOC.class, CreateSessionActor.class})
 public class CreateSessionActorTest {
     private IObject session;
     private CreateSessionMessage inputMessage;
     private IObject authInfo;
     private CreateSessionActor actor;
     private String collectionName = "collectionName";
+    private IPool connectionPool;
 
     private IKey key;
     private IKey iObjectKey = mock(IKey.class);
@@ -68,14 +78,14 @@ public class CreateSessionActorTest {
 
         CreateSessionConfig config = mock(CreateSessionConfig.class);
         when(config.getCollectionName()).thenReturn(collectionName);
-        IPool connectionPool = mock(IPool.class);
+        connectionPool = mock(IPool.class);
         when(config.getConnectionPool()).thenReturn(connectionPool);
 
 
         //IOC keys mock
         //TODO:: change path to Field when he's merged
         when(IOC.resolve(eq(key), eq(IField.class.getCanonicalName()))).thenReturn(fieldKey);
-        when(IOC.resolve(eq(key), eq(IDatabaseTask.class.getCanonicalName()))).thenReturn(iDatabaseTaskKey);
+        when(IOC.resolve(eq(key), eq("db.collection.search"))).thenReturn(iDatabaseTaskKey);
         when(IOC.resolve(eq(key), eq(IStorageConnection.class.getCanonicalName()))).thenReturn(storageConnectionKey);
         when(IOC.resolve(eq(key), eq(IObject.class.getCanonicalName()))).thenReturn(iObjectKey);
         when(IOC.resolve(eq(key), eq(IFieldName.class.getCanonicalName()))).thenReturn(iFieldNameKey);
@@ -115,11 +125,6 @@ public class CreateSessionActorTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(IOC.resolve(eq(storageConnectionKey), anyObject())).thenReturn(connection);
 
-        IField bufferedQueryF = mock(IField.class);
-        when(IOC.resolve(eq(fieldKey), eq("bufferedQuery"))).thenReturn(bufferedQueryF);
-        when(bufferedQueryF.in(eq(searchQuery))).thenReturn(null);
-
-        //mock for private method
         IObject query = mock(IObject.class);
         IObject sessionIdIObject = mock(IObject.class);
         Mockito.doNothing().when(EQUALS_F).out(sessionIdIObject, "123");
@@ -149,11 +154,6 @@ public class CreateSessionActorTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(IOC.resolve(eq(storageConnectionKey), anyObject())).thenReturn(connection);
 
-        IObject bufferedQuery = mock(IObject.class);
-        IField bufferedQueryF = mock(IField.class);
-        when(IOC.resolve(eq(fieldKey), eq("bufferedQuery"))).thenReturn(bufferedQueryF);
-        when(bufferedQueryF.in(eq(searchQuery))).thenReturn(bufferedQuery);
-
         //mock for private method
         IObject query = mock(IObject.class);
         IObject sessionIdIObject = mock(IObject.class);
@@ -174,14 +174,11 @@ public class CreateSessionActorTest {
 
         actor.resolveSession(inputMessage);
 
-//        verify(searchTask).setConnection(connection);
-//        verify(searchTask).prepare(searchQuery);
         verify(searchTask).execute();
 
         verify(collectionNameF).out(searchQuery, collectionName);
         verify(pageSizeF).out(searchQuery, 1);
         verify(pageNumberF).out(searchQuery, 1);
-        verify(bufferedQueryF).out(searchQuery, bufferedQuery);
     }
 
     @Test(expected = CreateSessionException.class)
@@ -196,11 +193,6 @@ public class CreateSessionActorTest {
 
         IStorageConnection connection = mock(IStorageConnection.class);
         when(IOC.resolve(eq(storageConnectionKey), anyObject())).thenReturn(connection);
-
-        IObject bufferedQuery = mock(IObject.class);
-        IField bufferedQueryF = mock(IField.class);
-        when(IOC.resolve(eq(fieldKey), eq("bufferedQuery"))).thenReturn(bufferedQueryF);
-        when(bufferedQueryF.in(eq(searchQuery))).thenReturn(bufferedQuery);
 
         //mock for private method
         IObject query = mock(IObject.class);
@@ -226,14 +218,10 @@ public class CreateSessionActorTest {
 
         actor.resolveSession(inputMessage);
 
-//        verify(searchTask).setConnection(connection);
-//        verify(searchTask).prepare(searchQuery);
         verify(searchTask).execute();
         verify(collectionNameF).out(searchQuery, collectionName);
         verify(pageSizeF).out(searchQuery, 1);
         verify(pageNumberF).out(searchQuery, 1);
-        verify(bufferedQueryF).out(searchQuery, bufferedQuery);
-
     }
 
     @Test(expected = CreateSessionException.class)
@@ -249,12 +237,6 @@ public class CreateSessionActorTest {
         IStorageConnection connection = mock(IStorageConnection.class);
         when(IOC.resolve(eq(storageConnectionKey), anyObject())).thenReturn(connection);
 
-        IObject bufferedQuery = mock(IObject.class);
-        IField bufferedQueryF = mock(IField.class);
-        when(IOC.resolve(eq(fieldKey), eq("bufferedQuery"))).thenReturn(bufferedQueryF);
-        when(bufferedQueryF.in(eq(searchQuery))).thenReturn(bufferedQuery);
-
-        //mock for private method
         IObject query = mock(IObject.class);
         IObject sessionIdIObject = mock(IObject.class);
         Mockito.doNothing().when(EQUALS_F).out(sessionIdIObject, "123");
@@ -283,47 +265,51 @@ public class CreateSessionActorTest {
 
         actor.resolveSession(inputMessage);
 
-//        verify(searchTask).setConnection(connection);
-//        verify(searchTask).prepare(searchQuery);
         verify(searchTask).execute();
         verify(collectionNameF).out(searchQuery, collectionName);
         verify(pageSizeF).out(searchQuery, 1);
         verify(pageNumberF).out(searchQuery, 1);
-        verify(bufferedQueryF).out(searchQuery, bufferedQuery);
-
     }
 
     @Test
     public void Should_searchSessionInDB_When_SessionIdIsNotNullAndNotEmptyString() throws Exception {
         when(inputMessage.getSessionId()).thenReturn("123");
 
-        IDatabaseTask searchTask = mock(IDatabaseTask.class);
-        when(IOC.resolve(eq(iDatabaseTaskKey), eq("PSQL"))).thenReturn(searchTask);
-
         IObject searchQuery = mock(IObject.class);
         when(IOC.resolve(eq(iObjectKey))).thenReturn(searchQuery);
 
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(eq(connectionPool)).thenReturn(poolGuard);
+
         IStorageConnection connection = mock(IStorageConnection.class);
         when(IOC.resolve(eq(storageConnectionKey), anyObject())).thenReturn(connection);
+        when(poolGuard.getObject()).thenReturn(connection);
 
-        IObject bufferedQuery = mock(IObject.class);
-        IField bufferedQueryF = mock(IField.class);
-        when(IOC.resolve(eq(fieldKey), eq("bufferedQuery"))).thenReturn(bufferedQueryF);
-        when(bufferedQueryF.in(eq(searchQuery))).thenReturn(bufferedQuery);
+        ITask searchTask = mock(ITask.class);
+        when(IOC.resolve(eq(iDatabaseTaskKey), eq(connection), anyString(), eq(searchQuery), any(IAction.class))).thenReturn(searchTask);
+        LinkedList<IObject> items = mock(LinkedList.class);
+        whenNew(LinkedList.class).withNoArguments().thenReturn(items);
+        IObject sessionFromDB = mock(IObject.class);
+        doAnswer((Answer<Void>) invocation -> {
+            when(items.get(0)).thenReturn(sessionFromDB);
+            when(items.isEmpty()).thenReturn(false);
+            return null;
+        }).when(searchTask).execute();
 
-        //mock for private method
         IObject query = mock(IObject.class);
         IObject sessionIdIObject = mock(IObject.class);
         Mockito.doNothing().when(EQUALS_F).out(sessionIdIObject, "123");
         Mockito.doNothing().when(SESSION_ID_F).out(query, sessionIdIObject);
         IField collectionNameF = mock(IField.class);
-        IField pageSizeF = mock(IField.class);
-        IField pageNumberF = mock(IField.class);
-        IField criteriaF = mock(IField.class);
+        IField sizeF = mock(IField.class);
+        IField numberF = mock(IField.class);
+        IField pageF = mock(IField.class);
+        IField filterF = mock(IField.class);
         when(IOC.resolve(eq(fieldKey), eq("collectionName"))).thenReturn(collectionNameF);
-        when(IOC.resolve(eq(fieldKey), eq("pageSize"))).thenReturn(pageSizeF);
-        when(IOC.resolve(eq(fieldKey), eq("pageNumber"))).thenReturn(pageNumberF);
-        when(IOC.resolve(eq(fieldKey), eq("criteria"))).thenReturn(criteriaF);
+        when(IOC.resolve(eq(fieldKey), eq("size"))).thenReturn(sizeF);
+        when(IOC.resolve(eq(fieldKey), eq("number"))).thenReturn(numberF);
+        when(IOC.resolve(eq(fieldKey), eq("page"))).thenReturn(pageF);
+        when(IOC.resolve(eq(fieldKey), eq("filter"))).thenReturn(filterF);
 
         IField countSearchResultF = mock(IField.class);
         when(IOC.resolve(eq(fieldKey), eq("countSearchResult"))).thenReturn(countSearchResultF);
@@ -336,19 +322,13 @@ public class CreateSessionActorTest {
 
         IField sessionF = mock(IField.class);
         when(IOC.resolve(eq(fieldKey), eq("session"))).thenReturn(sessionF);
-        IObject sessionFromDB = mock(IObject.class);
-        when(sessionF.in(result)).thenReturn(sessionFromDB);
 
         actor.resolveSession(inputMessage);
 
         verify(inputMessage).setSession(eq(sessionFromDB));
-//        verify(searchTask).setConnection(connection);
-//        verify(searchTask).prepare(searchQuery);
         verify(searchTask).execute();
         verify(collectionNameF).out(searchQuery, collectionName);
-        verify(pageSizeF).out(searchQuery, 1);
-        verify(pageNumberF).out(searchQuery, 1);
-        //in private method bufferedQuery is null always
-        verify(bufferedQueryF).out(searchQuery, null);
+        verify(sizeF).out(searchQuery, 1);
+        verify(numberF).out(searchQuery, 1);
     }
 }
