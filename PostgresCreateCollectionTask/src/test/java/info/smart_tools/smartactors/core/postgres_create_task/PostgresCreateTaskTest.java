@@ -116,7 +116,7 @@ public class PostgresCreateTaskTest {
 
     @Test
     public void testCreateWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
-        when(message.getOptions()).thenReturn(new DSObject("{ \"indexes\": 123 }"));
+        when(message.getOptions()).thenReturn(new DSObject("{ \"ordered\": 123 }"));
 
         task.prepare(null); // the message will be resolved by IOC
         try {
