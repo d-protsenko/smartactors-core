@@ -80,10 +80,10 @@ public class FeatureServer implements IServer {
             });
 
             // takes care on feature initialization while new jars appeared
-            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+            IFeatureManager featureManager = new FeatureManager();
 
             // a new feature for the set of jars
-            IFeature feature = featureManager.newFeature("example.feature");
+            IFeature feature = featureManager.newFeature("example.feature", jarFilesTracker);
             // what files to wait
             feature.requireFile("Plugin1.jar");
             feature.requireFile("Plugin2.jar");

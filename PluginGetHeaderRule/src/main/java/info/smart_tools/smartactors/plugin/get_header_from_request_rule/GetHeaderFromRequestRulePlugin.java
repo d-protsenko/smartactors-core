@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.get_header_from_request_rule;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -34,17 +35,22 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetHeaderFromRequestRulePlugin");
 
             item
-                    .after("IOC")
+                .after("IOC")
+                .before("configure")
                     .process(() -> {
                         try {
-                            IKey ruleKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+                            IKey ruleKey = Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName());
                             IOC.register(ruleKey,
                                     new CreateNewInstanceStrategy(
                                             (args) -> new GetHeaderFromRequestRule()
                                     )
                             );
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new RuntimeException("Failed to register new strategy");
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't get GetHeaderFromRequestRule key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

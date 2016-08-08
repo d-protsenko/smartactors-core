@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.get_cookie_rule;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -43,8 +44,12 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
                                             (args) -> new GetCookieFromRequestRule()
                                     )
                             );
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new RuntimeException("Failed to register new strategy");
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't get GetCookieFromRequestRule key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("GetCookieFromRequestRule plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

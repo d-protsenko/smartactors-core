@@ -44,8 +44,12 @@ public class PluginMapRouter implements IPlugin {
                             IOC.register(
                                     Keys.getOrAdd(IRouter.class.getCanonicalName()),
                                     new SingletonStrategy(new MapRouter(new ConcurrentHashMap<>())));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("MapRouter plugin can't load: can't get MapRouter key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("MapRouter plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("MapRouter plugin can't load: can't register new strategy", e);
                         }
                     });
 

@@ -18,6 +18,9 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.Arrays;
 
+/**
+ * Plugin for load IOC-strategy for {@link CheckUserByEmailActor}
+ */
 public class CheckUserByEmailActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -68,11 +71,11 @@ public class CheckUserByEmailActorPlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get CheckUserByEmailActor key");
+                            throw new ActionExecuteException("CheckUserByEmailActor plugin can't load: can't get CheckUserByEmailActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't get create strategy");
+                            throw new ActionExecuteException("CheckUserByEmailActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't get register new strategy");
+                            throw new ActionExecuteException("CheckUserByEmailActor plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

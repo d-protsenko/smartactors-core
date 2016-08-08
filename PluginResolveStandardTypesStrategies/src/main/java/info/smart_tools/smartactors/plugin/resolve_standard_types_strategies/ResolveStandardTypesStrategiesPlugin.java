@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.resolve_standard_types_strategies;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -137,8 +138,10 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
 
                             IOC.register(listKey, listStrategy);
 
-                        } catch (RegistrationException | ResolutionException e) {
-                            throw new RuntimeException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't get ResolveStandardTypesStrategies key", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

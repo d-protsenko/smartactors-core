@@ -28,6 +28,11 @@
             <artifactId>core.itask</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.istorage_connection</artifactId>
+            <version>${core.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

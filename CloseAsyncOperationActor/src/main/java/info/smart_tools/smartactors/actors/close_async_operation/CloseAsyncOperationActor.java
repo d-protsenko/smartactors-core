@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
@@ -33,9 +32,9 @@ public class CloseAsyncOperationActor {
     }
 
     /**
-     * Remove token from session and mark operation as comlete
+     * Remove token from session and mark operation as complete
      * @param message the message
-     * @throws TaskExecutionException
+     * @throws InvalidArgumentException Throw when can't read some value from message or have invalid parameters
      */
     void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
         try {

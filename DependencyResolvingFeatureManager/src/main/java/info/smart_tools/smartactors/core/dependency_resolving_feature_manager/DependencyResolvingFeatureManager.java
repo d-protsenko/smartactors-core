@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.dependency_resolving_feature_manager;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
+import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.path.Path;
@@ -71,7 +72,7 @@ public class DependencyResolvingFeatureManager implements IFeatureManager {
     }
 
     @Override
-    public IFeature newFeature(final String name) throws FeatureManagementException {
+    public IFeature newFeature(final String name, final IFilesystemTracker filesystemTracker) throws FeatureManagementException {
         try {
             return new Feature(this, name);
         } catch (InvalidArgumentException e) {

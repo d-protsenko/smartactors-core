@@ -61,7 +61,7 @@ public class ServerWithConfiguration implements IServer {
                     }}
             );
 
-            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            IFeature coreFeature = featureManager.newFeature("smartactors.core", null);
             coreFeature.whenPresent(files -> {
                 try {
                     pluginLoader.loadPlugin(files);
@@ -70,7 +70,6 @@ public class ServerWithConfiguration implements IServer {
                     throw new RuntimeException("Plugin loading failed.", e);
                 }
             });
-
             String[] coreArtifacts = {
                     "info.smart_tools.smartactors:core.standard_config_sections:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.actor_receiver_creator:0.2.0-SNAPSHOT",

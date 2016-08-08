@@ -36,8 +36,6 @@ public class SampleActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("ActorReceiverCreator")
-                    .before("HandlerRoutingReceiverCreator")
                     .process(() -> {
                 try {
                     IOC.register(Keys.getOrAdd("SampleActor"), new ApplyFunctionToArgumentsStrategy(
