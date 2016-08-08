@@ -124,7 +124,9 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.password_encoder:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

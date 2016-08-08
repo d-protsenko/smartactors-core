@@ -118,9 +118,7 @@ public class UserAuthByLoginActor {
         } catch (PoolGuardException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
             try {
                 setFailResponse(message, INTERNAL_ERROR_MSG);
-            } catch (ChangeValueException e1) {
-                throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
-            }
+            } catch (ChangeValueException ignored) { }
             throw new AuthenticateUserException(AUTH_ERROR_MSG + e.getMessage(), e);
         }
     }
@@ -196,7 +194,6 @@ public class UserAuthByLoginActor {
     private IObject prepareQueryParams(final IUserAuthByLoginMessage message)
         throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
 
-
         IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
@@ -211,7 +208,6 @@ public class UserAuthByLoginActor {
         pageF.out(searchQuery, page);
         IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
         filterF.out(searchQuery, filter);
-
 
         IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         EQUALS_F.out(loginObject, message.getLogin());
