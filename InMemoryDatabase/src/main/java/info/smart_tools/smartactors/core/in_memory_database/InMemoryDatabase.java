@@ -43,7 +43,6 @@ public class InMemoryDatabase implements IDataBase {
                     return verifierMap.get(key).verify(condition, document);
                 }
         );
-
         verifierMap.put("$eq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
@@ -55,7 +54,117 @@ public class InMemoryDatabase implements IDataBase {
                     return false;
                 }
         );
-
+        verifierMap.put("$neq", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
+                        return !entry.equals(reference);
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+        verifierMap.put("$gt", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
+                        if (reference instanceof Long) {
+                            Long longEntry = (Long) entry;
+                            Long longReference = (Long) reference;
+                            return longEntry.compareTo(longReference) == 1;
+                        }
+                        if (reference instanceof Double) {
+                            Double doubleReference = (Double) reference;
+                            Double doubleEntry = Double.parseDouble(entry.toString());
+                            return doubleEntry.compareTo(doubleReference) == 1;
+                        }
+                        if (reference instanceof String) {
+                            String doubleEntry = (String) entry;
+                            String doubleReference = (String) reference;
+                            return doubleEntry.compareTo(doubleReference) == 1;
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+        verifierMap.put("$lt", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
+                        if (reference instanceof Long) {
+                            Long longEntry = (Long) entry;
+                            Long longReference = (Long) reference;
+                            return longEntry.compareTo(longReference) == -1;
+                        }
+                        if (reference instanceof Double) {
+                            Double doubleReference = (Double) reference;
+                            Double doubleEntry = Double.parseDouble(entry.toString());
+                            return doubleEntry.compareTo(doubleReference) == -1;
+                        }
+                        if (reference instanceof String) {
+                            String doubleEntry = (String) entry;
+                            String doubleReference = (String) reference;
+                            return doubleEntry.compareTo(doubleReference) == -1;
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+        verifierMap.put("$gte", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
+                        if (reference instanceof Long) {
+                            Long longEntry = (Long) entry;
+                            Long longReference = (Long) reference;
+                            return longEntry.compareTo(longReference) == 1 || longEntry.equals(longReference);
+                        }
+                        if (reference instanceof Double) {
+                            Double doubleReference = (Double) reference;
+                            Double doubleEntry = Double.parseDouble(entry.toString());
+                            return doubleEntry.compareTo(doubleReference) == 1 || doubleEntry.equals(doubleReference);
+                        }
+                        if (reference instanceof String) {
+                            String doubleEntry = (String) entry;
+                            String doubleReference = (String) reference;
+                            return doubleEntry.compareTo(doubleReference) == 1 || doubleEntry.equals(doubleReference);
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+        verifierMap.put("$lte", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
+                        if (reference instanceof Long) {
+                            Long longEntry = (Long) entry;
+                            Long longReference = (Long) reference;
+                            return longEntry.compareTo(longReference) == -1 || longEntry.equals(longReference);
+                        }
+                        if (reference instanceof Double) {
+                            Double doubleReference = (Double) reference;
+                            Double doubleEntry = Double.parseDouble(entry.toString());
+                            return doubleEntry.compareTo(doubleReference) == -1 || doubleEntry.equals(doubleReference);
+                        }
+                        if (reference instanceof String) {
+                            String doubleEntry = (String) entry;
+                            String doubleReference = (String) reference;
+                            return doubleEntry.compareTo(doubleReference) == -1 || doubleEntry.equals(doubleReference);
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
         verifierMap.put("$and", (condition, document) -> {
                     boolean result = true;
                     try {
@@ -95,7 +204,6 @@ public class InMemoryDatabase implements IDataBase {
                     return result;
                 }
         );
-
     }
 
     private List<DataBaseItem> list = new LinkedList<>();

@@ -193,4 +193,84 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
     }
 
+    @Test
+    public void testSearchGtForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": 1}");
+        IObject document2 = new DSObject("{\"a\": 2}");
+        IObject document3 = new DSObject("{\"a\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$gt\": 2.3}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
+    }
+
+    @Test
+    public void testSearchLtForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": 1}");
+        IObject document2 = new DSObject("{\"a\": 2.3}");
+        IObject document3 = new DSObject("{\"a\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$lt\": 2.3}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testSearchGteForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": 1}");
+        IObject document2 = new DSObject("{\"a\": 2.3}");
+        IObject document3 = new DSObject("{\"a\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$gte\": 2.3}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 3);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(2).serialize().equals(document4.serialize()));
+    }
+
+    @Test
+    public void testSearchLteForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": 1}");
+        IObject document2 = new DSObject("{\"a\": 2.3}");
+        IObject document3 = new DSObject("{\"a\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$lte\": 2.3}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
+    }
+
 }
