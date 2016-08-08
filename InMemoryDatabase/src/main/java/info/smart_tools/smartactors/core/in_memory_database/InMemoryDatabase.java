@@ -269,13 +269,15 @@ public class InMemoryDatabase implements IDataBase {
 
     @Override
     public void insert(final IObject document, final String collectionName) throws IDataBaseException {
-        DataBaseItem item = null;
-        try {
-            item = new DataBaseItem(document, collectionName);
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
-            throw new IDataBaseException("Failed to create DataBaseItem", e);
+        synchronized (this) {
+            DataBaseItem item = null;
+            try {
+                item = new DataBaseItem(document, collectionName);
+            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                throw new IDataBaseException("Failed to create DataBaseItem", e);
+            }
+            insert(item);
         }
-        insert(item);
     }
 
     @Override
