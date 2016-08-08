@@ -40,6 +40,7 @@ public class MailigActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("configure")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(MailingActor.class.getCanonicalName());

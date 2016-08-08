@@ -330,7 +330,13 @@
           }
         },
         {
-          "target": ""
+          "target": "sendMailActor",
+          "handler": "sendMailHandler",
+          "wrapper": {
+            "in_getSendToMessage": "message/email",
+            "in_MessageAttributesMessage": "message/messageAttributes",
+            "in_getMessagePartsMessage": "message/messageParts"
+          }
         }
       ],
       "exceptional": []
