@@ -46,7 +46,7 @@ public class ScopedIOCPlugin implements IPlugin {
                                 }
                             });
                         } catch (ScopeProviderException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecuteException("ScopedIOC plugin can't load.", e);
                         }
                     });
 

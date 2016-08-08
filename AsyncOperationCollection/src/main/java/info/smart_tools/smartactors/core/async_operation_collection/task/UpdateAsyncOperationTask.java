@@ -26,7 +26,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     /**
      * Constructor
      * @param upsertTask nested task for update operation
-     * @throws ResolutionException Throw when task can't be created (for example, when can't resolve some of field)
+     * @throws UpdateAsyncOperationException Throw when task can't be created (for example, when can't resolve some of field)
      */
     public UpdateAsyncOperationTask(final IDatabaseTask upsertTask) throws UpdateAsyncOperationException {
         this.upsertTask = upsertTask;
@@ -47,11 +47,6 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         } catch (ChangeValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Can't prepare query for update into async operation collection", e);
         }
-    }
-
-    @Override
-    public void setConnection(final StorageConnection connection) throws TaskSetConnectionException {
-        upsertTask.setConnection(connection);
     }
 
     @Override

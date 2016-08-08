@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.authentication;
 
+import info.smart_tools.smartactors.actors.authentication.AuthenticationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
  * Plugin for Authentication actor
@@ -21,36 +22,48 @@ public class AuthenticationActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
+    /**
+     * Constructor
+     * @param bootstrap bootstrap element
+     */
     public AuthenticationActorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
     /**
      * Load the plugin for Authentication actor
+     *
      * @throws PluginException Throw when plugin can't be load
      */
     @Override
     public void load() throws PluginException {
         try {
-            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
             IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
-            item.after("IOC").process(() -> {
-                try {
-                    IOC.register(cachedCollectionKey, new CreateNewInstanceStrategy(
-                            (args) -> {
-                                try {
-                                    return new AuthenticationActor();
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }));
-                } catch (RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
-                }
-            });
+            item
+                    .after("IOC")
+                    .before("configure")
+                    .process(() -> {
+                        try {
+                            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
+                            IOC.register(cachedCollectionKey, new ApplyFunctionToArgumentsStrategy(
+                                    (args) -> {
+                                        try {
+                                            return new AuthenticationActor();
+                                        } catch (Exception e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }));
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't get AuthenticationActor key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("AuthenticationActor plugin can't load: can't register new strategy", e);
+                        }
+                    });
             bootstrap.add(item);
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load AuthenticationActor plugin", e);
         }
     }

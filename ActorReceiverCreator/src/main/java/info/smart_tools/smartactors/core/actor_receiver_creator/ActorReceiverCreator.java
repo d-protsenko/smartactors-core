@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,7 +62,7 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
                     description
             );
             List<Method> methods = new LinkedList<>(Arrays.asList(object.getClass().getDeclaredMethods()));
-            methods.removeIf(Method::isSynthetic);
+            methods.removeIf(m -> m.isSynthetic() || !Modifier.isPublic(m.getModifiers()));
             for (Method m : methods) {
                 Class wrapperInterface = m.getParameterTypes()[0];
                 Object wrapper = wg.generate(wrapperInterface);

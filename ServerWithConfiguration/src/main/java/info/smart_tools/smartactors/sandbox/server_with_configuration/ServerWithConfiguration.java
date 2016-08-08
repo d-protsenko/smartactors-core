@@ -74,10 +74,10 @@ public class ServerWithConfiguration implements IServer {
             });
 
             // FeatureManager & Feature creation
-            IFeatureManager featureManager = new FeatureManager(jarFilesTracker);
+            IFeatureManager featureManager = new FeatureManager();
 
 
-            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            IFeature coreFeature = featureManager.newFeature("smartactors.core", jarFilesTracker);
             coreFeature.whenPresent(files -> {
                 try {
                     pluginLoader.loadPlugin(files);
@@ -93,6 +93,10 @@ public class ServerWithConfiguration implements IServer {
 
                     "actors.sample_actor-0.2.0-SNAPSHOT.jar",
                     "plugin.sample_actor-0.2.0-SNAPSHOT.jar",
+
+                    "core.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_call_receiver-0.2.0-SNAPSHOT.jar",
+                    "plugin.chain_choice_strategy-0.2.0-SNAPSHOT.jar",
 
                     "core.actor_receiver-0.2.0-SNAPSHOT.jar",
                     "core.actor_receiver_creator-0.2.0-SNAPSHOT.jar",
@@ -119,8 +123,10 @@ public class ServerWithConfiguration implements IServer {
                     "core.handler_routing_receiver-0.2.0-SNAPSHOT.jar",
                     "core.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar",
                     "core.http_endpoint-0.2.0-SNAPSHOT.jar",
+                    "core.https_endpoint-0.2.0-SNAPSHOT.jar",
                     "core.http_request_handler-0.2.0-SNAPSHOT.jar",
                     "core.http_response_sender-0.2.0-SNAPSHOT.jar",
+                    "core.https_server-0.2.0-SNAPSHOT.jar",
                     "core.http_server-0.2.0-SNAPSHOT.jar",
                     "core.iaction-0.2.0-SNAPSHOT.jar",
                     "core.iasync_service-0.2.0-SNAPSHOT.jar",
@@ -223,7 +229,7 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.field-0.2.0-SNAPSHOT.jar",
                     "plugin.fieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.handler_routing_receiver_creator-0.2.0-SNAPSHOT.jar",
-                    "plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
+                    "plugin.https_endpoint-0.2.0-SNAPSHOT.jar",
                     "plugin.ifieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.fieldname-0.2.0-SNAPSHOT.jar",
                     "plugin.immutable_receiver_chain-0.2.0-SNAPSHOT.jar",
@@ -241,13 +247,15 @@ public class ServerWithConfiguration implements IServer {
                     "plugin.scoped_ioc-0.2.0-SNAPSHOT.jar",
                     "plugin.scope_provider-0.2.0-SNAPSHOT.jar",
                     "plugin.standard_object_creators-0.2.0-SNAPSHOT.jar",
-                    "plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
+                    //"plugin.http_endpoint-0.2.0-SNAPSHOT.jar",
                     "plugin.wds_object-0.2.0-SNAPSHOT.jar",
                     "plugin.wrapper_generator-0.2.0-SNAPSHOT.jar",
                     "strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar",
                     "strategy.cookies_setter-0.2.0-SNAPSHOT.jar",
                     "strategy.http_headers_setter-0.2.0-SNAPSHOT.jar",
-                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar"
+                    "strategy.response_status_extractor-0.2.0-SNAPSHOT.jar",
+                    "core.ssl_engine_provider-0.2.0-SNAPSHOT.jar",
+                    "core.issl_engine_provider-0.2.0-SNAPSHOT.jar"
             };
 
             for (String jarName : coreJars) {

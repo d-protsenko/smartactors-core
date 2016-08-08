@@ -36,7 +36,7 @@ public class PluginStandardObjectCreators implements IPlugin {
 
             creatorsItem
                     .after("IOC")
-                    .after("field_name")
+                    .after("FieldNamePlugin")
                     .after("IFieldNamePlugin")
                     .before("configure")
                     .process(() -> {
@@ -44,8 +44,12 @@ public class PluginStandardObjectCreators implements IPlugin {
                             IOC.register(
                                     Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
                                     new SingletonStrategy(new RawObjectCreator()));
-                        } catch (InvalidArgumentException | ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't get StandardObjectCreators key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't register new strategy", e);
                         }
                     });
 

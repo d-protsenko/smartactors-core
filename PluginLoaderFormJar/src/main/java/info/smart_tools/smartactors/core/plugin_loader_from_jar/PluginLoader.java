@@ -100,7 +100,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
                 }
             } catch (Throwable e) {
                 visitor.pluginLoadingFail(pathToJar, e);
-                throw new PluginLoaderException("Plugin loading failed.", e);
+                throw new PluginLoaderException("Plugin loading failed: " + pathToJar, e);
             } finally {
                 if (null != jarFile) {
                     try {

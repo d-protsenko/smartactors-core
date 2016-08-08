@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import java.util.stream.Stream;
 
 /**
- * Using in @GetObjectFromCachedCollectionTask
+ * Using in @GetItemFromCachedCollectionTask
  */
 public interface GetObjectFromCachedCollectionQuery {
     /**

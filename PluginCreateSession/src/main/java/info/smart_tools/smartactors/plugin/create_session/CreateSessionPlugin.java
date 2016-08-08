@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.plugin.create_session;
 import info.smart_tools.smartactors.actors.create_session.CreateSessionActor;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -57,8 +58,12 @@ public class CreateSessionPlugin implements IPlugin {
                                 }
                             }
                     ));
-                } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
-                    throw new RuntimeException(e);
+                } catch (ResolutionException e) {
+                    throw new ActionExecuteException("CreateSessionActor plugin can't load: can't get CreateSessionActor key", e);
+                } catch (InvalidArgumentException e) {
+                    throw new ActionExecuteException("CreateSessionActor plugin can't load: can't create strategy", e);
+                } catch (RegistrationException e) {
+                    throw new ActionExecuteException("CreateSessionActor plugin can't load: can't register new strategy", e);
                 }
             });
             bootstrap.add(item);

@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -222,7 +223,7 @@ public class CreateCachedCollectionPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (RuntimeException e) {
+        } catch (ActionExecuteException e) {
             verifyStatic();
             Keys.getOrAdd(ICachedCollection.class.toString());
 

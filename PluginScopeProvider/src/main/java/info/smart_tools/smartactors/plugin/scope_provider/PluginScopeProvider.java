@@ -48,7 +48,7 @@ public class PluginScopeProvider implements IPlugin {
                             IScope scope = ScopeProvider.getScope(systemScopeKey);
                             ScopeProvider.setCurrentScope(scope);
                         } catch (ScopeProviderException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecuteException("ScopeProvider plugin can't load.", e);
                         }
                     });
 
