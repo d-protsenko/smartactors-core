@@ -273,4 +273,23 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
     }
 
+    @Test
+    public void testSearchIn() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": 1}");
+        IObject document2 = new DSObject("{\"a\": 2.3}");
+        IObject document3 = new DSObject("{\"a\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$in\": [2.3, 3, 4, 5]}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
+    }
 }

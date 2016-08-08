@@ -140,6 +140,32 @@ public class InMemoryDatabase implements IDataBase {
                     return false;
                 }
         );
+        verifierMap.put("$date-from", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        String entry = (String) document.getValue(fieldName);
+                        String reference = String.valueOf(
+                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-from"))
+                        );
+                        return entry.compareTo(reference) == 1 || entry.equals(reference);
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+        verifierMap.put("$date-to", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        String entry = (String) document.getValue(fieldName);
+                        String reference = String.valueOf(
+                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-to"))
+                        );
+                        return entry.compareTo(reference) == -1 || entry.equals(reference);
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
         verifierMap.put("$lte", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
@@ -165,6 +191,24 @@ public class InMemoryDatabase implements IDataBase {
                     return false;
                 }
         );
+        verifierMap.put("$in", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = document.getValue(fieldName);
+                        List<Object> references = (List<Object>)
+                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
+                        for (Object reference : references) {
+                            if (entry.equals(reference)) {
+                                return true;
+                            }
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return false;
+                }
+        );
+
+
         verifierMap.put("$and", (condition, document) -> {
                     boolean result = true;
                     try {
