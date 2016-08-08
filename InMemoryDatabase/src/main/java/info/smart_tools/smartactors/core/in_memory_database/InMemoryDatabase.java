@@ -48,7 +48,7 @@ public class InMemoryDatabase implements IDataBase {
                     try {
                         Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
-                        return entry.equals(reference);
+                        return reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
@@ -59,7 +59,7 @@ public class InMemoryDatabase implements IDataBase {
                     try {
                         Object entry = nestedFieldName(fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
-                        return !entry.equals(reference);
+                        return !reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
                     return false;
@@ -73,17 +73,17 @@ public class InMemoryDatabase implements IDataBase {
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
                             Long longReference = (Long) reference;
-                            return longEntry.compareTo(longReference) == 1;
+                            return longReference.compareTo(longEntry) == -1;
                         }
                         if (reference instanceof Double) {
                             Double doubleReference = (Double) reference;
                             Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleEntry.compareTo(doubleReference) == 1;
+                            return doubleReference.compareTo(doubleEntry) == -1;
                         }
                         if (reference instanceof String) {
                             String doubleEntry = (String) entry;
                             String doubleReference = (String) reference;
-                            return doubleEntry.compareTo(doubleReference) == 1;
+                            return doubleReference.compareTo(doubleEntry) == -1;
                         }
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
@@ -98,17 +98,17 @@ public class InMemoryDatabase implements IDataBase {
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
                             Long longReference = (Long) reference;
-                            return longEntry.compareTo(longReference) == -1;
+                            return longReference.compareTo(longEntry) == 1;
                         }
                         if (reference instanceof Double) {
                             Double doubleReference = (Double) reference;
                             Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleEntry.compareTo(doubleReference) == -1;
+                            return doubleReference.compareTo(doubleEntry) == 1;
                         }
                         if (reference instanceof String) {
                             String doubleEntry = (String) entry;
                             String doubleReference = (String) reference;
-                            return doubleEntry.compareTo(doubleReference) == -1;
+                            return doubleReference.compareTo(doubleEntry) == 1;
                         }
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
@@ -123,17 +123,17 @@ public class InMemoryDatabase implements IDataBase {
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
                             Long longReference = (Long) reference;
-                            return longEntry.compareTo(longReference) == 1 || longEntry.equals(longReference);
+                            return longReference.compareTo(longEntry) == -1 || longReference.equals(longEntry);
                         }
                         if (reference instanceof Double) {
                             Double doubleReference = (Double) reference;
                             Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleEntry.compareTo(doubleReference) == 1 || doubleEntry.equals(doubleReference);
+                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
                         }
                         if (reference instanceof String) {
                             String doubleEntry = (String) entry;
                             String doubleReference = (String) reference;
-                            return doubleEntry.compareTo(doubleReference) == 1 || doubleEntry.equals(doubleReference);
+                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
                         }
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
@@ -147,7 +147,7 @@ public class InMemoryDatabase implements IDataBase {
                         String reference = String.valueOf(
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-from"))
                         );
-                        return entry.compareTo(reference) == 1 || entry.equals(reference);
+                        return reference.compareTo(entry) == -1 || reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException e) {
                     }
                     return false;
@@ -160,7 +160,7 @@ public class InMemoryDatabase implements IDataBase {
                         String reference = String.valueOf(
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-to"))
                         );
-                        return entry.compareTo(reference) == -1 || entry.equals(reference);
+                        return reference.compareTo(entry) == 1 || reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException e) {
                     }
                     return false;
@@ -174,17 +174,17 @@ public class InMemoryDatabase implements IDataBase {
                         if (reference instanceof Long) {
                             Long longEntry = (Long) entry;
                             Long longReference = (Long) reference;
-                            return longEntry.compareTo(longReference) == -1 || longEntry.equals(longReference);
+                            return longReference.compareTo(longEntry) == 1 || longReference.equals(longEntry);
                         }
                         if (reference instanceof Double) {
                             Double doubleReference = (Double) reference;
                             Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleEntry.compareTo(doubleReference) == -1 || doubleEntry.equals(doubleReference);
+                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
                         }
                         if (reference instanceof String) {
                             String doubleEntry = (String) entry;
                             String doubleReference = (String) reference;
-                            return doubleEntry.compareTo(doubleReference) == -1 || doubleEntry.equals(doubleReference);
+                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
                         }
                     } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
                     }
@@ -198,7 +198,7 @@ public class InMemoryDatabase implements IDataBase {
                         List<Object> references = (List<Object>)
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
                         for (Object reference : references) {
-                            if (entry.equals(reference)) {
+                            if (reference.equals(entry)) {
                                 return true;
                             }
                         }
@@ -208,6 +208,18 @@ public class InMemoryDatabase implements IDataBase {
                 }
         );
 
+        verifierMap.put("$isNull", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = nestedFieldName(fieldName, document);
+                        Boolean references = (Boolean)
+                                ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$isNull"));
+                        return (null == entry) == references;
+                    } catch (ReadValueException | InvalidArgumentException | IDataBaseException e) {
+                    }
+                    return false;
+                }
+        );
 
         verifierMap.put("$and", (condition, document) -> {
                     boolean result = true;
@@ -358,12 +370,12 @@ public class InMemoryDatabase implements IDataBase {
         try {
             for (String fieldString : strings) {
                 if (!(bufObject instanceof IObject)) {
-                    return false;
+                    return null;
                 }
                 IFieldName bufFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldString);
                 bufObject = ((IObject) bufObject).getValue(bufFieldName);
                 if (null == bufObject) {
-                    return false;
+                    return null;
                 }
             }
             return bufObject;
