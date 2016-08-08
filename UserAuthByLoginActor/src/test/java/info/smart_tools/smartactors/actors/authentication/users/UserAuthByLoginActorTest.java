@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.actors.authentication.users.exceptions.Authe
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -12,6 +13,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
@@ -22,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
@@ -35,12 +39,12 @@ public class UserAuthByLoginActorTest {
     private IPool connectionPool;
     private IPasswordEncoder passwordEncoder;
 
-    private IField loginField;
-    private IField passwordField;
-    private IField eqField;
+    private static IField loginField;
+    private static IField passwordField;
+    private static IField eqField;
 
-    private static final String COLLECTION_NAME = "testCollection";
-    private static final String LOGIN = "testLogin";
+    private static final String collectionName = "testCollection";
+    private static final String testLogin = "testLogin";
     private static final String PASSWORD = "testPassword";
 
     private static boolean firstLaunch = true;
@@ -53,24 +57,16 @@ public class UserAuthByLoginActorTest {
         IKey iFieldKey = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
 
-        loginField = mock(IField.class);
-        passwordField = mock(IField.class);
-        eqField = mock(IField.class);
-
         connectionPool = mock(IPool.class);
 
         passwordEncoder = mock(IPasswordEncoder.class);
-
-        when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
-        when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
-        when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
 
         final String algorithmName = "testAlgorithm";
         final String charsetName = "testCharset";
         final String encoderName = "testEncoder";
 
         IUserAuthByLoginParams params = mock(IUserAuthByLoginParams.class);
-        when(params.getCollection()).thenReturn(COLLECTION_NAME);
+        when(params.getCollection()).thenReturn(collectionName);
         when(params.getConnectionPool()).thenReturn(connectionPool);
         when(params.getAlgorithm()).thenReturn(algorithmName);
         when(params.getCharset()).thenReturn(charsetName);
@@ -80,6 +76,17 @@ public class UserAuthByLoginActorTest {
         when(Keys.getOrAdd("PasswordEncoder")).thenReturn(passwordEncoderKey);
 
         when(IOC.resolve(passwordEncoderKey, algorithmName, encoderName, charsetName)).thenReturn(passwordEncoder);
+
+        if (firstLaunch) {
+
+            loginField = mock(IField.class);
+            passwordField = mock(IField.class);
+            eqField = mock(IField.class);
+
+            when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
+            when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
+            when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
+        }
 
         authByLoginActor = new UserAuthByLoginActor(params);
 
@@ -336,5 +343,73 @@ public class UserAuthByLoginActorTest {
             return;
         }
         assertTrue(false);
+    }
+
+    @Test
+    public void MustCorrectPrepareQueryParams() throws Exception {
+        Method method = authByLoginActor.getClass().getDeclaredMethod("prepareQueryParams", IUserAuthByLoginMessage.class);
+        method.setAccessible(true);
+
+        IUserAuthByLoginMessage message = mock(IUserAuthByLoginMessage.class);
+
+        when(message.getLogin()).thenReturn(testLogin);
+
+        IKey iObjectKey = mock(IKey.class);
+        IObject filter = mock(IObject.class);
+        IObject page = mock(IObject.class);
+        IObject searchQuery = mock(IObject.class);
+        IObject loginObject = mock(IObject.class);
+
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iObjectKey);
+        when(IOC.resolve(iObjectKey)).thenReturn(filter).thenReturn(page).thenReturn(searchQuery).thenReturn(loginObject);
+
+        IKey iFieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
+
+        IField collectionNameField = mock(IField.class);
+        IField pageSizeField = mock(IField.class);
+        IField pageNumberField = mock(IField.class);
+        IField pageField = mock(IField.class);
+        IField filterField = mock(IField.class);
+
+        when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
+        when(IOC.resolve(iFieldKey, "number")).thenReturn(pageNumberField);
+        when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
+        when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
+
+        assertTrue(method.invoke(authByLoginActor, message) == searchQuery);
+        method.setAccessible(false);
+
+        verifyStatic(times(4));
+        Keys.getOrAdd(IObject.class.getCanonicalName());
+
+        verifyStatic(times(8));//plus static invocations
+        Keys.getOrAdd(IField.class.getCanonicalName());
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "collectionName");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "size");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "number");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "page");
+
+        verifyStatic();
+        IOC.resolve(iFieldKey, "filter");
+
+        verify(collectionNameField).out(searchQuery, collectionName);
+        verify(pageSizeField).out(page, 1);
+        verify(pageNumberField).out(page, 1);
+        verify(pageField).out(searchQuery, page);
+        verify(filterField).out(searchQuery, filter);
+
+        verify(message).getLogin();
+        verify(eqField).out(loginObject, testLogin);
+        verify(loginField).out(filter, loginObject);
     }
 }
