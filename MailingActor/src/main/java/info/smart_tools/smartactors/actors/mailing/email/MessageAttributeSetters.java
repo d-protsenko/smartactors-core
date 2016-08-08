@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.actors.mailing.email;
 
+import info.smart_tools.smartactors.actors.mailing.exception.AttributeSetterException;
 import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -15,46 +16,62 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * MessageAttributeSetters
+ */
 public class MessageAttributeSetters {
     private static Map<String, MessageAttributeSetter> settersMap = new HashMap<>();
     private static Field senderAddress_Context_F;
 
-    public static void applyAll(IObject attributes, IObject context, SMTPMessageAdaptor to) {
+    /**
+     * apply all setters to SMTPMessageAdaptor
+     * @param attributes IObject
+     * @param context IObject
+     * @param to SMTPMessageAdaptor
+     */
+    public static void applyAll(final IObject attributes, final IObject context, final SMTPMessageAdaptor to)
+            throws AttributeSetterException {
         Iterator<Map.Entry<IFieldName, Object>> iterator = attributes.iterator();
-        Map.Entry<IFieldName, Object> entry = iterator.next();
 
-        while (entry != null) {
-            iterator.next();
+        while (iterator.hasNext()) {
+            Map.Entry<IFieldName, Object> entry = iterator.next();
             try {
                 settersMap.get(entry.getKey().toString()).setOn(to, context, entry.getValue());
             } catch (NullPointerException e) {
-                // Looks like setter not found.
-                /*TODO: Handle.*/
+                throw new AttributeSetterException("Setter not found", e);
             } catch (MessagingException | ReadValueException | ChangeValueException e) {
-                // Failed to set attribute.
-                /*TODO: Handle.*/
+                throw new AttributeSetterException("Failed to set attribute", e);
             }
         }
     }
 
-    public static void add(String name, MessageAttributeSetter setter) {
+    /**
+     * Set value to setterMap
+     * @param name the name
+     * @param setter the setter
+     */
+    public static void add(final String name, final MessageAttributeSetter setter) {
         settersMap.put(name, setter);
     }
 
     static {
         try {
             senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
-        } catch (Exception ignore) {}
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize field", e);
+        }
+
         add("subject", (message, context, value) ->
                 message.getMimeMessage().setSubject(String.valueOf(value)));
-        add("sign", (message, context, value) ->
-        {
+        add("sign", (message, context, value) -> {
             try {
                 message.getMimeMessage().setFrom(
                         new InternetAddress(String.format("%s<%s>",
                                 String.valueOf(value),
                                 senderAddress_Context_F.in(context))));
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to initialize static block", e);
+            }
         });
     }
 }

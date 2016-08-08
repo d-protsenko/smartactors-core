@@ -4,11 +4,13 @@ package info.smart_tools.smartactors.actors.mailing;
 import info.smart_tools.smartactors.actors.mailing.email.MessageAttributeSetters;
 import info.smart_tools.smartactors.actors.mailing.email.MessagePartCreators;
 import info.smart_tools.smartactors.actors.mailing.email.SMTPMessageAdaptor;
+import info.smart_tools.smartactors.actors.mailing.exception.AttributeSetterException;
+import info.smart_tools.smartactors.actors.mailing.exception.MailingActorException;
 import info.smart_tools.smartactors.actors.mailing.wrapper.MailingMessage;
 import info.smart_tools.smartactors.core.field.Field;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -25,7 +27,6 @@ import me.normanmaurer.niosmtp.transport.netty.NettyLMTPClientTransportFactory;
 import me.normanmaurer.niosmtp.transport.netty.NettySMTPClientTransportFactory;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.net.ssl.SSLContext;
 import java.net.InetSocketAddress;
@@ -49,17 +50,12 @@ public class MailingActor {
     private IObject mailingContext;
 
     private static Field serverURI_ActorParams_F;
-    private static Field senderAddress_Context_F;
     private static Field senderAddress_ActorParams_F;
     private static Field userName_ActorParams_F;
     private static Field password_ActorParams_F;
     private static Field authenticationMode_ActorParams_F;
-    private static Field messageAttributes_message_F = new Field(new FieldName("attributes"));
-    private static Field messageParts_message_F = new Field(new FieldName("parts"));
-    private static Field sendTo_message_F = new Field(new FieldName("sendTo"));
-    private static Field SSLProtocol_ActorParams_F = new Field(new FieldName("sslProtocol"));
-    private static Field senderAddress_Context_F = new Field(new FieldName("senderAddress"));
-
+    private static Field SSLProtocol_ActorParams_F;
+    private static Field senderAddress_Context_F;
 
 
     // Functions creating client transport, depending on server URI scheme
@@ -83,7 +79,7 @@ public class MailingActor {
      *               <li>"senderAddress" - e-mail address used to send mail from.</li>
      *      </ul>
      */
-    public MailingActor(final IObject params) {
+    public MailingActor(final IObject params) throws MailingActorException {
         try {
             //Fields initialize
             serverURI_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "server");
@@ -92,18 +88,8 @@ public class MailingActor {
             userName_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "username");
             password_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
             authenticationMode_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authenticationMode");
-            messageAttributes_message_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "attributes");
-            messageParts_message_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "parts");
-            sendTo_message_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sendTo");
             SSLProtocol_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sslProtocol");
             senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
-
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
-
-
-
 
             mailingContext = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
@@ -119,11 +105,14 @@ public class MailingActor {
             Authentication authentication = new AuthenticationImpl(
                     userName_ActorParams_F.in(params, String.class),
                     password_ActorParams_F.in(params, String.class),
-                    /*I don't know what it means but let it be an actor's parameter*/
                     Authentication.AuthMode.valueOf(authenticationMode_ActorParams_F.in(params, String.class)));
             deliveryAgentConfig.setAuthentication(authentication);
-        } catch (ReadValueException | ChangeValueException | URISyntaxException | ResolutionException e) {
-            /*TODO: Handle*/
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
+            throw new MailingActorException("Params object is not correct", e);
+        } catch (URISyntaxException e) {
+            throw new MailingActorException("Failed to create URI", e);
+        } catch (ResolutionException e) {
+            throw new MailingActorException("Failed to resolve fields", e);
         }
     }
 
@@ -134,12 +123,12 @@ public class MailingActor {
      *                    creation of SSL context (for now only "sslProtocol").
      * @return created SSL context
      */
-    private static SSLContext createSSLContext(IObject actorParams) {
+    private static SSLContext createSSLContext(final IObject actorParams) {
         try {
-            SSLContext sslContext = SSLContext.getInstance(MailingFields.SSLProtocol_ActorParams_F.from(actorParams, String.class));
+            SSLContext sslContext = SSLContext.getInstance(SSLProtocol_ActorParams_F.in(actorParams, String.class));
             sslContext.init(null, null, null);
             return sslContext;
-        } catch (ReadValueException | ChangeValueException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (ReadValueException | NoSuchAlgorithmException | KeyManagementException | InvalidArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -150,11 +139,15 @@ public class MailingActor {
      * @param actorParams parameters of mailing actor
      * @return created delivery agent
      */
-    private SMTPDeliveryAgent createAgent(IObject actorParams) {
+    private SMTPDeliveryAgent createAgent(final IObject actorParams) {
         return new SMTPDeliveryAgent(transportCreators.get(serverUri.getScheme()).apply(actorParams));
     }
 
-    public void sendMailHandler(MailingMessage message) {
+    /**
+     * Handler for sending emails
+     * @param message the wrapper for message
+     */
+    public void sendMailHandler(final MailingMessage message) {
         try {
             List<String> recipients = message.getSendToMessage();
             SMTPMessageAdaptor smtpMessage = new SMTPMessageAdaptor(SMTPMessageAdaptor.createMimeMessage());
@@ -171,18 +164,18 @@ public class MailingActor {
             );
 
             SMTPDeliveryEnvelope deliveryEnvelope = new SMTPDeliveryEnvelopeImpl(
-                    senderAddress_Context_F.from(mailingContext, String.class), recipients, smtpMessage);
+                    senderAddress_Context_F.in(mailingContext, String.class), recipients, smtpMessage);
 
             deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void setMessageAttributes(SMTPMessageAdaptor smtpMessage, IObject attributes, List<String> recipients)
-            throws ReadValueException, ChangeValueException, MessagingException {
+    private void setMessageAttributes(final SMTPMessageAdaptor smtpMessage, final IObject attributes, final List<String> recipients)
+            throws Exception {
         smtpMessage.getMimeMessage().setFrom(
-                new InternetAddress(senderAddress_Context_F.from(mailingContext, String.class)));
+                new InternetAddress(senderAddress_Context_F.in(mailingContext, String.class)));
         for (String recipient : recipients) {
             smtpMessage.getMimeMessage().addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
         }
@@ -191,5 +184,4 @@ public class MailingActor {
                 attributes,
                 mailingContext, smtpMessage);
     }
-
 }

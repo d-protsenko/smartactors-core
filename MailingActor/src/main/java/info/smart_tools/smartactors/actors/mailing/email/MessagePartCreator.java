@@ -13,9 +13,9 @@ public interface MessagePartCreator {
      *
      * @param smtpMessage e-mail message
      * @param partDescription IObject containing parameters of a message part
-     * @throws MessagingException
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws MessagingException exception
+     * @throws ReadValueException exception
+     * @throws ChangeValueException exception
      */
     void addPartTo(SMTPMessageAdaptor smtpMessage, IObject context, IObject partDescription)
             throws MessagingException, ReadValueException, ChangeValueException;
