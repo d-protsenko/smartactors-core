@@ -14,7 +14,7 @@ public final class MessageBus {
     private static IMessageBusContainer container;
 
     /**
-     * Initialize IOC by default implementation of {@link IContainer}
+     * Initialize MessageBus by default implementation of {@link IMessageBusContainer}
      */
     static {
         container = new MessageBusContainer();
