@@ -166,7 +166,7 @@ public class PostgresUpsertTask implements IDatabaseTask {
         } catch (Exception e) {
             try {
                 connection.rollback();
-            } catch (StorageException e1) {
+            } catch (StorageException se) {
                 // ignoring rollback failure
             }
             throw new TaskExecutionException("Update failed", e);
