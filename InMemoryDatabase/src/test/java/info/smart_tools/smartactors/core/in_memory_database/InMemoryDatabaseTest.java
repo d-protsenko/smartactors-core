@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
@@ -20,7 +21,9 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.sun.javaws.JnlpxArgs.verify;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertTrue;
 
 public class InMemoryDatabaseTest {
@@ -56,6 +59,28 @@ public class InMemoryDatabaseTest {
                         }
                 )
         );
+        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                return new DSObject((Map<IFieldName, Object>) args[0]);
+                            } catch (InvalidArgumentException ignored) {
+                            }
+                            return null;
+                        }
+                )
+        );
+        IOC.register(Keys.getOrAdd(DSObject.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                return new DSObject((String) args[0]);
+                            } catch (InvalidArgumentException ignored) {
+                            }
+                            return null;
+                        }
+                )
+        );
     }
 
     @Test
@@ -83,6 +108,7 @@ public class InMemoryDatabaseTest {
         database.upsert(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
     }
+
     @Test
     public void testUpdate_shouldNotChangeId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
@@ -91,6 +117,80 @@ public class InMemoryDatabaseTest {
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
         database.update(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+    }
+
+    @Test
+    public void testSearchEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        List<IObject> outputList =
+                database.select(new DSObject("{\"hello\": {\"$eq\": \"world\"}}"), "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testSearchEqAtEmptyDB() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        List<IObject> outputList =
+                database.select(new DSObject("{\"hello\": {\"$eq\": \"world\"}}"), "collection_name");
+        assertTrue(outputList.size() == 0);
+    }
+
+    @Test
+    public void testSearchAndEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        List<IObject> outputList =
+                database.select(new DSObject("{\"$and\": [{\"hello\": {\"$eq\": \"world\"}}]}"), "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testSearchOrEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        IObject document3 = new DSObject("{\"hello\": \"world2\"}");
+        IObject document4 = new DSObject("{\"hello\": \"world3\"}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
+    }
+
+    @Test
+    public void testSearchNotOrEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        IObject document3 = new DSObject("{\"hello\": \"world2\"}");
+        IObject document4 = new DSObject("{\"hello\": \"world3\"}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"$not\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
     }
 
 }

@@ -30,6 +30,20 @@ public class InMemoryDatabase implements IDataBase {
 
     public InMemoryDatabase() {
 
+        verifierMap.put("$general", (condition, document) -> {
+                    Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
+                    String key = null;
+                    do {
+                        Map.Entry<IFieldName, Object> entry = iterator.next();
+                        key = entry.getKey().toString();
+                        if (entry.getValue() instanceof IObject) {
+                            iterator = ((IObject) entry.getValue()).iterator();
+                        }
+                    } while (iterator.hasNext() && !verifierMap.containsKey(key));
+                    return verifierMap.get(key).verify(condition, document);
+                }
+        );
+
         verifierMap.put("$eq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
@@ -47,8 +61,34 @@ public class InMemoryDatabase implements IDataBase {
                     try {
                         List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$and"));
                         for (IObject conditionItem : conditions) {
-                            result &= verifierMap.get(conditionItem.iterator().next().getKey())
-                                    .verify((IObject) conditionItem.iterator().next().getValue(), document);
+                            result &= verifierMap.get("$general")
+                                    .verify(conditionItem, document);
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return result;
+                }
+        );
+        verifierMap.put("$or", (condition, document) -> {
+                    boolean result = false;
+                    try {
+                        List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$or"));
+                        for (IObject conditionItem : conditions) {
+                            result |= verifierMap.get("$general")
+                                    .verify(conditionItem, document);
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return result;
+                }
+        );
+        verifierMap.put("$not", (condition, document) -> {
+                    boolean result = true;
+                    try {
+                        List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$not"));
+                        for (IObject conditionItem : conditions) {
+                            result &= !verifierMap.get("$general")
+                                    .verify(conditionItem, document);
                         }
                     } catch (ReadValueException | InvalidArgumentException e) {
                     }
@@ -135,12 +175,8 @@ public class InMemoryDatabase implements IDataBase {
         List<IObject> outputList = new LinkedList<>();
         for (DataBaseItem item : list) {
             if (Objects.equals(item.getCollectionName(), collectionName)) {
-                try {
-                    if (IOC.resolve(Keys.getOrAdd("compare_iobject"), condition, item.getDocument())) {
-                        outputList.add(clone(item.getDocument()));
-                    }
-                } catch (ResolutionException e) {
-                    throw new IDataBaseException("Failed to compare iobject", e);
+                if (verifierMap.get("$general").verify(condition, item.getDocument())) {
+                    outputList.add(clone(item.getDocument()));
                 }
             }
         }
@@ -149,14 +185,15 @@ public class InMemoryDatabase implements IDataBase {
 
     private IObject clone(final IObject iObject) throws IDataBaseException {
         try {
-            return IOC.resolve(Keys.getOrAdd(DSObject.class.getCanonicalName()), iObject.serialize());
+            String serializedIObject = iObject.serialize();
+            return IOC.resolve(Keys.getOrAdd(DSObject.class.getCanonicalName()), serializedIObject);
         } catch (ResolutionException | SerializeException e) {
             throw new IDataBaseException("Failed to clone IObject", e);
         }
     }
 
     @Override
-    public void delete(IObject document, String collectionName) {
+    public void delete(final IObject document, final String collectionName) {
 
     }
 }
