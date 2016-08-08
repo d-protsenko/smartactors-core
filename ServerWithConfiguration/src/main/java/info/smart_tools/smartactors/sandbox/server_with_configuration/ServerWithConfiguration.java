@@ -130,6 +130,7 @@ public class ServerWithConfiguration implements IServer {
 
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.mailing_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.check_user_is_new_actor:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT"

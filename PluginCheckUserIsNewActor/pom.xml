@@ -11,31 +11,7 @@
 
     <artifactId>plugin.check_user_is_new_actor</artifactId>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.5.5</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
-
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -89,7 +65,5 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 </project>
