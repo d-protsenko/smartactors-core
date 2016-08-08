@@ -35,7 +35,7 @@ public class CheckUserIsNewActor {
      */
     public CheckUserIsNewActor(final IObject params) throws InvalidArgumentException {
         try {
-            ConnectionOptions connectionOptionsWrapper = new ConnectionOptionsTestImpl();
+            ConnectionOptions connectionOptionsWrapper = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
             connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't get key or resolve dependency", e);
