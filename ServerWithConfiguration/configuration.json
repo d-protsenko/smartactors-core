@@ -70,6 +70,16 @@
       "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver",
       "strategyDependency": "chain choice strategy",
       "name": "chain_selector"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
+      "name": "sendMailActor",
+      "username": "alexryandr@gmail.com",
+      "password": "147852369qwerty",
+      "server": "smtp.gmail.com",
+      "sslProtocol": "TLS",
+      "senderAddress": "alexryandr@gmail.com"
     }
   ],
   "maps": [
@@ -285,6 +295,14 @@
           }
         },
         {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
           "target": "validationFormActor",
           "handler": "validate",
           "wrapper": {
@@ -311,7 +329,9 @@
             "out_setAsyncOperationToken": "response/token"
           }
         },
-
+        {
+          "target": ""
+        }
       ],
       "exceptional": []
     }
