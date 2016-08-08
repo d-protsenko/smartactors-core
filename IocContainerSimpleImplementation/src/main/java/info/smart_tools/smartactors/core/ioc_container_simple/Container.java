@@ -69,7 +69,7 @@ public class Container implements IContainer {
             IResolveDependencyStrategy strategy = storage.get(key);
             return (T) strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionException("Resolution of dependency failed.", e);
+            throw new ResolutionException("Resolution of dependency failed: " + key, e);
         }
     }
 

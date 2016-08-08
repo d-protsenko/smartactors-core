@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecu
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
@@ -28,10 +30,12 @@ public class BootstrapTest {
         doNothing().when(item).executeProcess();
         doNothing().when(item).executeRevertProcess();
         bootstrap.add(item);
-        bootstrap.start();
+        List<IBootstrapItem<String>> items = bootstrap.start();
         verify(item, times(1)).executeProcess();
         bootstrap.revert();
         verify(item, times(1)).executeRevertProcess();
+        IBootstrap<IBootstrapItem<String>> nextBootstrap = new Bootstrap(items);
+        verify(item, times(1)).executeProcess();
     }
 
     @Test (expected = ProcessExecutionException.class)

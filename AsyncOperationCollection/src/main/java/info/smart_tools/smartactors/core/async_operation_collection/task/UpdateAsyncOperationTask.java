@@ -31,7 +31,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
     /**
      * Constructor
      * @param connection connection for executing operations
-     * @throws ResolutionException Throw when task can't be created (for example, when can't resolve some of field)
+     * @throws UpdateAsyncOperationException Throw when task can't be created (for example, when can't resolve some of field)
      */
     public UpdateAsyncOperationTask(final IStorageConnection connection) throws UpdateAsyncOperationException {
         this.connection = connection;
