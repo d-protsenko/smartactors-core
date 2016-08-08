@@ -253,6 +253,7 @@
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
         <module>MailingActor</module>
+        <module>PluginMailingActor</module>
     </modules>
 
     <build>
