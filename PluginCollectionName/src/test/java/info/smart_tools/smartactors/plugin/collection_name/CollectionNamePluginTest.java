@@ -64,6 +64,7 @@ public class CollectionNamePluginTest {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         HashMap<String, CollectionName> collectionMap = mock(HashMap.class);
         whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
@@ -110,6 +111,7 @@ public class CollectionNamePluginTest {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         HashMap<String, CollectionName> collectionMap = mock(HashMap.class);
         whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
