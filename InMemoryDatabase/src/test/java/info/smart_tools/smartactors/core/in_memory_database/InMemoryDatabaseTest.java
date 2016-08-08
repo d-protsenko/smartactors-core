@@ -112,7 +112,6 @@ public class InMemoryDatabaseTest {
         Map<String, IConditionVerifier> verifierMap = new HashMap<>();
 
 
-
         verifierMap.put("$general", (condition, document) -> {
                     Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
                     String key = null;
@@ -144,7 +143,7 @@ public class InMemoryDatabaseTest {
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         ;
-                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$neq"));
                         return !reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
@@ -350,6 +349,31 @@ public class InMemoryDatabaseTest {
                     } catch (ReadValueException | InvalidArgumentException e) {
                     }
                     return result;
+                }
+        );
+        verifierMap.put("$hasTag", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
+                        if (null == entry) {
+                            return false;
+                        }
+                        Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$hasTag"));
+                        if (entry instanceof List) {
+                            List<Object> entryList = (List<Object>) entry;
+                            for (Object entryItem : entryList) {
+                                if (entryItem.equals(reference)) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        IFieldName tagFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), reference);
+                        return null != ((IObject) entry).getValue(tagFieldName);
+                    } catch (Exception e) {
+                        return false;
+                    }
                 }
         );
 
@@ -613,5 +637,43 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
         assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
+    }
+
+    @Test
+    public void testHasTagField() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": {\"b\": 1}}");
+        IObject document2 = new DSObject("{\"c\": {\"b\": 2}}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+    }
+    @Test
+    public void testHasTagAtList() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": [\"b\", 1]}");
+        IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": {\"b\": 3}}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
     }
 }

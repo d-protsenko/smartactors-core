@@ -90,7 +90,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 } while (iterator.hasNext() && !verifierMap.containsKey(key));
                                                 return verifierMap.get(key).verify(condition, document);
                                             }
-                                    )
+                                    );
 
                                     verifierMap.put("$eq", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
@@ -109,7 +109,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                                                     ;
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$neq"));
                                                     return !reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
@@ -315,6 +315,32 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 } catch (ReadValueException | InvalidArgumentException e) {
                                                 }
                                                 return result;
+                                            }
+                                    );
+
+                                    verifierMap.put("$hasTag", (condition, document) -> {
+                                                IFieldName fieldName = condition.iterator().next().getKey();
+                                                try {
+                                                    Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
+                                                    if (null == entry) {
+                                                        return false;
+                                                    }
+                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$hasTag"));
+                                                    if (entry instanceof List) {
+                                                        List<Object> entryList = (List<Object>) entry;
+                                                        for (Object entryItem : entryList) {
+                                                            if (entryItem.equals(reference)) {
+                                                                return true;
+                                                            }
+                                                        }
+                                                        return false;
+                                                    }
+
+                                                    IFieldName tagFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), reference);
+                                                    return null != ((IObject) entry).getValue(tagFieldName);
+                                                } catch (Exception e) {
+                                                    return false;
+                                                }
                                             }
                                     );
 
