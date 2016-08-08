@@ -50,43 +50,27 @@ Additional parameters:
 #### Indexes
 
 ID of the document is always the primary key, so GetById always use index. 
-You can specify additional indexes to do Search more effectively, 
-just define array of index definitions as "indexes" in the options.
+You can specify additional indexes to do Search more effectively as options.
 
 The example of options object with indexes:
 
     {
-        "indexes": [
-            {
-                "fields": [ "a", "b" ],
-                "type": "ordered"
-            },
-            {
-                "fields": [ "date" ],
-                "type": "datetime"
-            },
-            {
-                "fields": [ "tags" ],
-                "type": "tags"
-            },
-            {
-                "fields" [ "text" ],
-                "type": "fulltext",
-                "language": "english"
-            }
-
-        ]        
+        "ordered": [ "a", "b" ],
+        "datetime": "date",
+        "tags": "tags",
+        "fulltext": "text",
+        "language": "english"
     }
 
-You should define the document fields to index (as array because the order of fields in compound index is important), 
-the type of the index and possible parameters depending on the index type.
+You should define a field or array of fields for each possible index type in the options.
+Also some additional parameters may be required.
 
 Available index types:
 
 * `ordered` — typical btree ordered index, to be used to test for equality, ranges, for sorting, etc...
 * `datetime` — btree index containing conversion to datetime, use it to optimize `$date-from` and `$date-to` search operators.
 * `tags` — an index for fields containing arrays of tags, use it to optimize `$hasTag` search operator. 
-* `fulltext` — full text index, requires additional `language` parameter, use it to optimize `$fulltext` search operator.
+* `fulltext` — full text index, requires additional `language` option, use it to optimize `$fulltext` search operator.
 
 ### Upsert
 

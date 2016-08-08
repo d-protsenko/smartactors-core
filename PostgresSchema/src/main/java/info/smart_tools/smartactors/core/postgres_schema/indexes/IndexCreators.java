@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_schema.indexes;
 
+import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -44,84 +45,81 @@ public class IndexCreators {
      */
     public static void writeIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
         try {
-            IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-            IFieldName indexesField = IOC.resolve(fieldNameKey, "indexes");
-            List<IObject> indexes = (List<IObject>) options.getValue(indexesField);
-            if (indexes == null) {
+            if (options == null) {
                 // no indexes definition, ignoring
                 return;
             }
-            for (IObject indexDefinition : indexes) {
-                writeCreateIndex(body, collection, indexDefinition);
+            for (String indexType : INDEX_WRITERS.keySet()) {
+                writeCreateIndex(indexType, body, collection, options);
             }
         } catch (ReadValueException e) {
             // no indexes definition, ignoring
         }
     }
 
-    private static void writeCreateIndex(final Writer body, final CollectionName collection, IObject indexDefinition)
+    private static void writeCreateIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
             throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        IFieldName typeField = IOC.resolve(fieldNameKey, "type");
-        String indexType = ((String) indexDefinition.getValue(typeField)).toLowerCase();
-        IFieldName fieldsField = IOC.resolve(fieldNameKey, "fields");
-        List<String> fieldNames = (List<String>) indexDefinition.getValue(fieldsField);
+        Object indexFields = null;
+        try {
+            IFieldName indexDefinitionField = IOC.resolve(fieldNameKey, indexType);
+            indexFields = options.getValue(indexDefinitionField);
+        } catch (ReadValueException e) {
+            // ignoring absence of this index type definition
+            return;
+        }
 
         List<FieldPath> fieldPaths = new ArrayList<>();
-        for (String fieldName : fieldNames) {
-            fieldPaths.add(PostgresFieldPath.fromString(fieldName));
-        }
-
-        body.write("CREATE INDEX ON ");
-        body.write(collection.toString());
-        body.write(" USING ");
-        INDEX_WRITERS.get(indexType).resolve(indexDefinition).write(body, fieldPaths);
-        body.write(";\n");
-    }
-
-    private static void writeOrderedIndex(final Writer body, final List<FieldPath> fields) throws IOException {
-        body.write("BTREE (");
-        Iterator<FieldPath> i = fields.iterator();
-        while (i.hasNext()) {
-            FieldPath field = i.next();
-            body.write("(");
-            body.write(field.toSQL());
-            body.write(")");
-            if (i.hasNext()) {
-                body.write(",");
+        if (indexFields instanceof String) {
+            fieldPaths.add(PostgresFieldPath.fromString((String) indexFields));
+        } else if (indexFields instanceof List) {
+            for (Object fieldName : (List) indexFields) {
+                fieldPaths.add(PostgresFieldPath.fromString((String) fieldName));
             }
+        } else if (indexFields == null) {
+            // ignoring absence of this index type definition
+            return;
+        } else {
+            throw new QueryBuildException("Unknown index definition for " + indexType + ": " + indexFields);
         }
-        body.write(")");
+
+        INDEX_WRITERS.get(indexType).resolve(options).write(body, collection, fieldPaths);
     }
 
-    private static void writeDatetimeIndex(final Writer body, final List<FieldPath> fields) throws IOException {
-        body.write("BTREE (");
-        Iterator<FieldPath> i = fields.iterator();
-        while (i.hasNext()) {
-            FieldPath field = i.next();
+    private static void writeOrderedIndex(final Writer body, final CollectionName collection,
+                                          final List<FieldPath> fields) throws IOException {
+        for (FieldPath field : fields) {
+            body.write("CREATE INDEX ON ");
+            body.write(collection.toString());
+            body.write(" USING BTREE ((");
+            body.write(field.toSQL());
+            body.write("));\n");
+        }
+
+    }
+
+    private static void writeDatetimeIndex(final Writer body, final CollectionName collection,
+                                           final List<FieldPath> fields) throws IOException {
+        for (FieldPath field : fields) {
+            body.write("CREATE INDEX ON ");
+            body.write(collection.toString());
+            body.write(" USING BTREE (");
             body.write("(parse_timestamp_immutable(");
             body.write(field.toSQL());
             body.write("))");
-            if (i.hasNext()) {
-                body.write(",");
-            }
+            body.write(");\n");
         }
-        body.write(")");
     }
 
-    private static void writeTagsIndex(final Writer body, final List<FieldPath> fields) throws IOException {
-        body.write("GIN (");
-        Iterator<FieldPath> i = fields.iterator();
-        while (i.hasNext()) {
-            FieldPath field = i.next();
-            body.write("(");
+    private static void writeTagsIndex(final Writer body, final CollectionName collection,
+                                       final List<FieldPath> fields) throws IOException {
+        for (FieldPath field : fields) {
+            body.write("CREATE INDEX ON ");
+            body.write(collection.toString());
+            body.write(" USING GIN ((");
             body.write(field.toSQL());
-            body.write(")");
-            if (i.hasNext()) {
-                body.write(",");
-            }
+            body.write("));\n");
         }
-        body.write(")");
     }
 
 }

@@ -129,14 +129,25 @@ public class PostgresSchemaTest {
 
     @Test
     public void testCreateWithIndexes() throws QueryBuildException, InvalidArgumentException {
-        IObject options = new DSObject("{ \"indexes\": [" +
-                "{ \"fields\": [ \"a\" ], \"type\": \"ordered\" }," +
-                "{ \"fields\": [ \"b\" ], \"type\": \"fulltext\", \"language\": \"english\" } " +
-                "] }");
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"language\": \"english\"" +
+                "}");
         PostgresSchema.create(statement, collection, options);
-        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL);\n" +
+        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL, fulltext tsvector);\n" +
                 "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                "CREATE INDEX ON test_collection USING GIN ((to_tsvector('english',(document#>'{b}')::text)));\n", body.toString());
+                "CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
+                "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+                "begin\n" +
+                "new.fulltext := " +
+                "to_tsvector('english', coalesce((new.document#>'{b}')::text,''));\n" +
+                "return new;\n" +
+                "end\n" +
+                "$$ LANGUAGE plpgsql;\n" +
+                "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
+                "test_collection_fulltext_update_trigger();\n",
+                body.toString());
     }
 
 }

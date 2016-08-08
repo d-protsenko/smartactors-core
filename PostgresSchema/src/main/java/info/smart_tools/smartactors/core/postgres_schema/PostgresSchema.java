@@ -2,7 +2,14 @@ package info.smart_tools.smartactors.core.postgres_schema;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.indexes.IndexCreators;
 
@@ -19,10 +26,16 @@ public final class PostgresSchema {
      * Name of the ID column.
      */
     public static final String ID_COLUMN = "id";
+
     /**
      * Name of the DOCUMENT column.
      */
     public static final String DOCUMENT_COLUMN = "document";
+
+    /**
+     * Name of the column for fulltext search.
+     */
+    public static final String FULLTEXT_COLUMN = "fulltext";
 
     /**
      * Dictionary for Full Text Search
@@ -53,13 +66,37 @@ public final class PostgresSchema {
             body.write(ID_COLUMN);
             body.write(" bigserial PRIMARY KEY, ");
             body.write(DOCUMENT_COLUMN);
-            body.write(" jsonb NOT NULL);\n");
+            body.write(" jsonb NOT NULL");
+            writeFullTextColumn(body, options);
+            body.write(");\n");
             if (options != null) {
                 IndexCreators.writeIndexes(body, collection, options);
             }
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }
+    }
+
+    private static void writeFullTextColumn(final Writer body, final IObject options)
+            throws ResolutionException, InvalidArgumentException, IOException {
+        if (options == null) {
+            // ignoring absence of fulltext option
+            return;
+        }
+        try {
+            IKey fieldKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+            IFieldName fullTextField = IOC.resolve(fieldKey, "fulltext");
+            Object fullTextDefinition = options.getValue(fullTextField);
+            if (fullTextDefinition == null) {
+                // ignoring absence of fulltext option
+                return;
+            }
+        } catch (ReadValueException e) {
+            // ignoring absence of fulltext option
+        }
+        body.write(", ");
+        body.write(FULLTEXT_COLUMN);
+        body.write(" tsvector");
     }
 
     /**
