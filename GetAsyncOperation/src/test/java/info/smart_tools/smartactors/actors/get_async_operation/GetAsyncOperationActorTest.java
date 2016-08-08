@@ -19,6 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -41,8 +42,8 @@ public class GetAsyncOperationActorTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.toString())).thenReturn(collectionKey);
-        when(IOC.resolve(collectionKey)).thenReturn(collection);
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(IOC.resolve(eq(collectionKey), anyString())).thenReturn(collection);
 
         message = mock(GetAsyncOperationMessage.class);
         actor = new GetAsyncOperationActor(mock(IObject.class));
