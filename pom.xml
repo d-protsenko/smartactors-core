@@ -254,6 +254,7 @@
         <module>PluginSampleDBActor</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
+        <module>PluginConnectionOptions</module>
     </modules>
 
     <build>

@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -20,16 +19,16 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class, CreateAsyncOperationTask.class})
-public class CreateAsyncOperationTaskTest {
+public class DeleteAsyncOperationTaskTest {
 
-    private CreateAsyncOperationTask testTask;
+    private DeleteAsyncOperationTask testTask;
     private IDatabaseTask targetTask;
     private IStorageConnection connection;
 
@@ -53,7 +52,7 @@ public class CreateAsyncOperationTaskTest {
         when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
         when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
 
-        testTask = new CreateAsyncOperationTask(connection);
+        testTask = new DeleteAsyncOperationTask(connection);
 
         verifyStatic(times(2));
         Keys.getOrAdd(IField.class.getCanonicalName());
@@ -76,14 +75,14 @@ public class CreateAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenReturn(targetTask);
 
         testTask.prepare(query);
 
         verifyStatic();
-        Keys.getOrAdd("db.collection.upsert");
+        Keys.getOrAdd("db.collection.delete");
 
         verify(collectionNameField).in(query);
         verify(documentField).in(query);
@@ -96,13 +95,13 @@ public class CreateAsyncOperationTaskTest {
     public void MustInCorrectPrepareWhenKeysGetOrAddThrowException() throws ResolutionException {
         IObject query = mock(IObject.class);
 
-        when(Keys.getOrAdd("db.collection.upsert")).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd("db.collection.delete")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getOrAdd("db.collection.delete");
             return;
         }
         assertTrue(false);
@@ -115,14 +114,14 @@ public class CreateAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new ReadValueException());
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getOrAdd("db.collection.delete");
 
             verify(collectionNameField).in(query);
             return;
@@ -137,14 +136,14 @@ public class CreateAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new InvalidArgumentException(""));
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getOrAdd("db.collection.delete");
 
             verify(collectionNameField).in(query);
             return;
@@ -163,7 +162,7 @@ public class CreateAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenThrow(new ResolutionException(""));
 
@@ -171,7 +170,7 @@ public class CreateAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getOrAdd("db.collection.delete");
 
             verify(collectionNameField).in(query);
             verify(documentField).in(query);
