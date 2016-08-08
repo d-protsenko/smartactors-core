@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.actors.close_async_operation;
 
-import info.smart_tools.smartactors.actors.close_async_operation.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.close_async_operation.wrapper.CloseAsyncOpMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -35,12 +35,18 @@ public class CloseAsyncOperationActorTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        ActorParams actorParams = mock(ActorParams.class);
+        IObject actorParams = mock(IObject.class);
         String collectionName = "asdasd";
-        when(actorParams.getCollectionName()).thenReturn(collectionName);
+
+        IField collectionNameField = mock(IField.class);
+        IKey collectionNameFieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
+        when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
+
+        when(collectionNameField.in(actorParams)).thenReturn(collectionName);
 
         IKey collectionKey = mock(IKey.class);
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.toString())).thenReturn(collectionKey);
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
 
         targetCollection = mock(IAsyncOperationCollection.class);
         when(IOC.resolve(collectionKey, collectionName)).thenReturn(targetCollection);
@@ -48,9 +54,15 @@ public class CloseAsyncOperationActorTest {
         testActor = new CloseAsyncOperationActor(actorParams);
 
         verifyStatic();
-        Keys.getOrAdd(IAsyncOperationCollection.class.toString());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
-        verify(actorParams).getCollectionName();
+        verifyStatic();
+        IOC.resolve(collectionNameFieldKey, "collectionName");
+
+        verify(collectionNameField).in(actorParams);
+
+        verifyStatic();
+        Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(collectionKey, collectionName);

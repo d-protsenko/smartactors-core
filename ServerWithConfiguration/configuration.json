@@ -19,7 +19,7 @@
     {
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.close_async_operation.CloseAsyncOperationActor",
-      "name": "closeAsyncOpActor",
+      "name": "closeAsyncOpsActor",
       "collectionName": "operation"
     },
     {
@@ -43,6 +43,24 @@
       "name": "authenticationActor"
     },
     {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.authentication.users.UserAuthByLoginActor",
+      "name": "userAuthByLoginActor",
+      "collectionName": "user_account",
+      "charset": "utf-8",
+      "algorithm": "MD5",
+      "encoder": "Base64Encoder"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actor.change_password.ChangePasswordActor",
+      "name": "changePasswordActor",
+      "collectionName": "user_account",
+      "charset": "utf-8",
+      "algorithm": "MD5",
+      "encoder": "Base64Encoder"
+    },
+    {
       "kind": "raw",
       "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver",
       "strategyDependency": "chain choice strategy",
@@ -55,6 +73,38 @@
       "steps": [
         {
           "target": "chain_selector"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "changePasswordMapTest",
+      "steps": [
+        {
+          "target": "changePasswordActor",
+          "handler": "changePassword",
+          "wrapper": {
+            "in_getUserId": "message/userId",
+            "in_getPassword": "message/password",
+            "out_setAuthStatus": "response/auth_status",
+            "out_setAuthMessage": "response/auth_message"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "finishAuthMapTest",
+      "steps": [
+        {
+          "target": "userAuthByLoginActor",
+          "handler": "authenticateUser",
+          "wrapper": {
+            "in_getLogin": "message/login",
+            "in_getPassword": "message/password",
+            "out_setAuthStatus": "response/auth_status",
+            "out_setAuthMessage": "response/auth_message"
+          }
         }
       ],
       "exceptional": []
@@ -101,6 +151,8 @@
           "wrapper": {
             "in_getOperationData": "response/form",
             "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "out_setSessionIdInData": "response/form/sessionId",
             "out_setAsyncOperationToken": "response/token"
           }
         },
@@ -154,6 +206,46 @@
             "in_getFormFromRequest": "message/form",
             "in_getForm": "message/asyncOperation/body/form",
             "out_setFormData": "message/form"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id" : "createAsyncOp",
+      "steps" : [
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getOperationData": "message/form",
+            "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "out_setSessionIdInData": "message/form/sessionId",
+            "out_setAsyncOperationToken": "response/token"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id" : "closeAsyncOp",
+      "steps" : [
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/asyncOperation",
+            "in_getOperationTokens": "message/form/tokens",
+            "in_getToken": "message/token"
           }
         }
       ],

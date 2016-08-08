@@ -164,6 +164,12 @@
         <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
+        <module>UserAuthByLoginActor</module>
+        <module>ICodec</module>
+        <module>Codec</module>
+        <module>MDPasswordEncoder</module>
+        <module>PluginUserAuthByLoginActor</module>
+        <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
@@ -237,7 +243,8 @@
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
-        <module>MailingActor</module>
+        <module>ChangePasswordActor</module>
+        <module>PluginChangePasswordActor</module>
     </modules>
 
     <build>
@@ -387,6 +394,21 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <failOnWarning>false</failOnWarning>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

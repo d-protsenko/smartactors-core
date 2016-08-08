@@ -65,6 +65,7 @@ public class CreateAsyncOpPluginTest {
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -78,12 +79,12 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+        Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -121,6 +122,7 @@ public class CreateAsyncOpPluginTest {
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -133,13 +135,13 @@ public class CreateAsyncOpPluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -152,6 +154,7 @@ public class CreateAsyncOpPluginTest {
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -165,7 +168,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -180,7 +183,7 @@ public class CreateAsyncOpPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -206,6 +209,7 @@ public class CreateAsyncOpPluginTest {
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -219,7 +223,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -231,7 +235,7 @@ public class CreateAsyncOpPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -254,6 +258,7 @@ public class CreateAsyncOpPluginTest {
         whenNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -267,7 +272,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.toString())).thenReturn(createAsyncOpKey);
+        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -277,7 +282,7 @@ public class CreateAsyncOpPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CreateAsyncOperationActor.class.toString());
+        Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
 
         verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 

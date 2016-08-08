@@ -53,6 +53,7 @@ public class PostgresConnectionPoolPluginTest {
         whenNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
         verifyNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin");
