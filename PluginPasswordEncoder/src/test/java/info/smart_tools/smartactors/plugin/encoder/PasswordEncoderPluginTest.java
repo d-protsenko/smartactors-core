@@ -32,7 +32,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@PrepareForTest({IOC.class, Keys.class, PasswordEncoderPlugin.class, ApplyFunctionToArgumentsStrategy.class, Hex.class})
+@PrepareForTest({IOC.class, Keys.class, PasswordEncoderPlugin.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
 public class PasswordEncoderPluginTest {
 
@@ -44,7 +44,6 @@ public class PasswordEncoderPluginTest {
     public void setUp() throws Exception {
 
         mockStatic(IOC.class);
-        mockStatic(Hex.class);
         mockStatic(Keys.class);
 
         bootstrap = mock(IBootstrap.class);
