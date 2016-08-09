@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
@@ -49,20 +50,37 @@ public class DBCollectionServer implements IServer {
     @Override
     public void start() throws ServerExecutionException {
         try {
+            CollectionName collection = CollectionName.fromString(
+                    "test_" + Long.toHexString(Double.doubleToLongBits(Math.random())));
+
             IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName idField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "testID");
-            IFieldName testField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "test");
-            document.setValue(testField, "value");
+                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), collection + "ID");
+            IFieldName textField = IOC.resolve(
+                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
+            document.setValue(textField, "initial value");
 
-            ConnectionOptions options = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
+            ConnectionOptions connectionOptions = new TestConnectionOptions();
+            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+
+            IObject createOptions = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    "{ \"fulltext\": \"text\", \"language\": \"english\" }");
+            try (PoolGuard guard = new PoolGuard(pool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.create"),
+                        guard.getObject(),
+                        collection,
+                        createOptions
+                );
+                task.execute();
+            }
+            System.out.println("Created " + collection);
+
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.upsert"),
                         guard.getObject(),
-                        "test",
+                        collection,
                         document
                 );
                 task.execute();
@@ -70,12 +88,12 @@ public class DBCollectionServer implements IServer {
             System.out.println("Inserted");
             System.out.println((String) document.serialize());
 
-            document.setValue(testField, "new value");
+            document.setValue(textField, "new updated value");
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.upsert"),
                         guard.getObject(),
-                        "test",
+                        collection,
                         document
                 );
                 task.execute();
@@ -87,7 +105,7 @@ public class DBCollectionServer implements IServer {
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.getbyid"),
                         guard.getObject(),
-                        "test",
+                        collection,
                         document.getValue(idField),
                         (IAction<IObject>) doc -> {
                             try {
@@ -105,18 +123,18 @@ public class DBCollectionServer implements IServer {
                 ITask task = IOC.resolve(
                         Keys.getOrAdd("db.collection.search"),
                         guard.getObject(),
-                        "test",
+                        collection,
                         new DSObject(String.format(
                                 "{ " +
-                                        "\"filter\": { \"%1$s\": { \"$eq\": \"new value\" } }," +
-                                        "\"page\": { \"size\": 2, \"number\": 2 }," +
+                                        "\"filter\": { \"%1$s\": { \"$fulltext\": \"value\" } }," +
+                                        "\"page\": { \"size\": 2, \"number\": 1 }," +
                                         "\"sort\": [ { \"%1$s\": \"asc\" } ]" +
                                 "}",
-                                testField.toString())),
+                                textField.toString())),
                         (IAction<IObject[]>) docs -> {
                             try {
                                 for (IObject doc : docs) {
-                                    System.out.println("Found by " + testField);
+                                    System.out.println("Found by " + textField);
                                     System.out.println((String) doc.serialize());
                                 }
                             } catch (SerializeException e) {
