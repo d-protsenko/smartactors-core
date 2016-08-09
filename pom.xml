@@ -239,6 +239,7 @@
         <module>InMemoryDatabase</module>
         <module>PluginInMemoryDatabase</module>
         <module>InMemoryDBCreateCollectionTask</module>
+        <module>InMemoryDBGetByIdTask</module>
     </modules>
 
     <build>

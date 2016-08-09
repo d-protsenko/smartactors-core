@@ -100,6 +100,9 @@ public class InMemoryDatabase implements IDataBase {
 
     @Override
     public IObject getById(final Object id, final String collectionName) throws IDataBaseException {
+        if (!dataBase.containsKey(collectionName)) {
+            throw new IDataBaseException("Collection with name " + collectionName + " does not exist");
+        }
         List<DataBaseItem> list = dataBase.get(collectionName);
         for (DataBaseItem item : list) {
             if (item.getId().equals(id)) {

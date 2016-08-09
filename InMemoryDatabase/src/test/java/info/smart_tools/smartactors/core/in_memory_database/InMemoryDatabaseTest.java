@@ -19,7 +19,6 @@ import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByN
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
