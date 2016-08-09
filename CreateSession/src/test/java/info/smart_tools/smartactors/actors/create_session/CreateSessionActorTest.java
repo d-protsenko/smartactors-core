@@ -21,6 +21,7 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -45,14 +46,12 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, CreateSessionActor.class})
 public class CreateSessionActorTest {
-    private IObject session;
     private CreateSessionMessage inputMessage;
     private IObject authInfo;
     private CreateSessionActor actor;
     private String collectionName = "collectionName";
     private IPool connectionPool;
 
-    private IKey key;
     private IKey iObjectKey = mock(IKey.class);
     private IKey iFieldNameKey = mock(IKey.class);
     private IKey storageConnectionKey = mock(IKey.class);
@@ -63,27 +62,22 @@ public class CreateSessionActorTest {
     private IField EQUALS_F;
     private IField AUTH_INFO_F;
 
-    @org.junit.Before
+    @Before
     public void setUp() throws Exception {
         inputMessage = mock(CreateSessionMessage.class);
-        session = mock(IObject.class);
         authInfo = mock(IObject.class);
         when(inputMessage.getAuthInfo()).thenReturn(authInfo);
 
         mockStatic(IOC.class);
-        key = mock(IKey.class);
-        IKey sessionKey = mock(IKey.class);
+        IKey key = mock(IKey.class);
         when(IOC.getKeyForKeyStorage()).thenReturn(key);
-        when(IOC.resolve(eq(sessionKey))).thenReturn(session);
 
         CreateSessionConfig config = mock(CreateSessionConfig.class);
         when(config.getCollectionName()).thenReturn(collectionName);
         connectionPool = mock(IPool.class);
         when(config.getConnectionPool()).thenReturn(connectionPool);
 
-
         //IOC keys mock
-        //TODO:: change path to Field when he's merged
         when(IOC.resolve(eq(key), eq(IField.class.getCanonicalName()))).thenReturn(fieldKey);
         when(IOC.resolve(eq(key), eq("db.collection.search"))).thenReturn(iDatabaseTaskKey);
         when(IOC.resolve(eq(key), eq(IStorageConnection.class.getCanonicalName()))).thenReturn(storageConnectionKey);
@@ -104,12 +98,10 @@ public class CreateSessionActorTest {
     @Test
     public void Should_insertNewSessionInMessage_When_SessionIdIsNull() throws Exception {
         when(inputMessage.getSessionId()).thenReturn(null);
-        IObject authInfo = mock(IObject.class);
-        when(inputMessage.getAuthInfo()).thenReturn(authInfo);
-        when(IOC.resolve(eq(iObjectKey))).thenReturn(session);
+        IObject sessionObj = mock(IObject.class);
+        when(IOC.resolve(eq(iObjectKey))).thenReturn(sessionObj);
         actor.resolveSession(inputMessage);
-        verify(AUTH_INFO_F).out(eq(session), eq(authInfo));
-        verify(inputMessage).setSession(eq(session));
+        verify(inputMessage).setSession(any(IObject.class));
     }
 
     @Test(expected = CreateSessionException.class)
