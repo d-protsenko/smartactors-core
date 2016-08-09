@@ -240,6 +240,7 @@
         <module>PluginInMemoryDatabase</module>
         <module>InMemoryDBCreateCollectionTask</module>
         <module>InMemoryDBGetByIdTask</module>
+        <module>InMemoryDBUpsertTask</module>
     </modules>
 
     <build>
