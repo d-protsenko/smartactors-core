@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.core.in_memory_database;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.idatabase.IDataBase;
 import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -15,7 +13,7 @@ import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,10 +127,18 @@ public class InMemoryDatabase implements IDataBase {
         } catch (ResolutionException e) {
             throw new IDataBaseException("Failed to resolve \"PagingForDatabaseCollection\"", e);
         }
+        try {
+            outputList = IOC.resolve(Keys.getOrAdd("SortIObjects"), condition, outputList);
+        } catch (ResolutionException e) {
+            throw new IDataBaseException("Failed to resolve \"SortIObjects\"", e);
+        }
         return outputList;
     }
 
     private boolean generalConditionParser(final IObject condition, final IObject document) throws IDataBaseException {
+        if (null == condition) {
+            return true;
+        }
         Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
         String key = null;
         if (!iterator.hasNext()) {
@@ -151,7 +157,6 @@ public class InMemoryDatabase implements IDataBase {
         } catch (ResolutionException e) {
             throw new IDataBaseException("Failed to resolve \"ResolveDataBaseCondition\"", e);
         }
-
     }
 
     private IObject clone(final IObject iObject) throws IDataBaseException {

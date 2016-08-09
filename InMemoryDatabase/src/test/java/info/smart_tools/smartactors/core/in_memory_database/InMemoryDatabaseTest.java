@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFu
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -47,7 +48,7 @@ public class InMemoryDatabaseTest {
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
-
+        Map<String, IConditionVerifier> verifierMap = new HashMap<>();
         IOC.register(
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
@@ -85,6 +86,36 @@ public class InMemoryDatabaseTest {
                         }
                 )
         );
+        IOC.register(Keys.getOrAdd("CompareSimpleObjects"), new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            Object entry = args[0];
+                            Object reference = args[1];
+                            if (null == entry) {
+                                return -1;
+                            }
+                            if (null == reference) {
+                                return 1;
+                            }
+                            if (reference instanceof Long || reference instanceof Integer) {
+                                Long longEntry = Long.parseLong(String.valueOf(entry));
+                                Long longReference = Long.parseLong(String.valueOf(reference));
+                                return -longReference.compareTo(longEntry);
+                            }
+                            if (reference instanceof Double) {
+                                Double doubleReference = (Double) reference;
+                                Double doubleEntry = Double.parseDouble(entry.toString());
+                                return -doubleReference.compareTo(doubleEntry);
+                            }
+                            if (reference instanceof String) {
+                                String doubleEntry = (String) entry;
+                                String doubleReference = (String) reference;
+                                return -doubleReference.compareTo(doubleEntry);
+                            }
+                            return 0;
+                        }
+                )
+        );
+
         IOC.register(Keys.getOrAdd("NestedFieldName"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IFieldName fieldName = (IFieldName) args[0];
@@ -110,7 +141,6 @@ public class InMemoryDatabaseTest {
                         }
                 )
         );
-        Map<String, IConditionVerifier> verifierMap = new HashMap<>();
 
 
         verifierMap.put("$general", (condition, document) -> {
@@ -131,7 +161,6 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
                         return reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
@@ -143,7 +172,6 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$neq"));
                         return !reference.equals(entry);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
@@ -155,23 +183,10 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == -1;
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == -1;
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == -1;
-                        }
+                        return ((Integer) IOC.resolve(
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference)
+                        ) > 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return false;
@@ -181,23 +196,10 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == 1;
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == 1;
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == 1;
-                        }
+                        return (Integer) IOC.resolve(
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                        ) < 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return false;
@@ -207,23 +209,10 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == -1 || longReference.equals(longEntry);
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                        }
+                        return (Integer) IOC.resolve(
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                        ) >= 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return false;
@@ -259,23 +248,10 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
-                        if (reference instanceof Long) {
-                            Long longEntry = (Long) entry;
-                            Long longReference = (Long) reference;
-                            return longReference.compareTo(longEntry) == 1 || longReference.equals(longEntry);
-                        }
-                        if (reference instanceof Double) {
-                            Double doubleReference = (Double) reference;
-                            Double doubleEntry = Double.parseDouble(entry.toString());
-                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                        }
-                        if (reference instanceof String) {
-                            String doubleEntry = (String) entry;
-                            String doubleReference = (String) reference;
-                            return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                        }
+                        return (Integer) IOC.resolve(
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                        ) <= 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return false;
@@ -285,7 +261,6 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         List<Object> references = (List<Object>)
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
                         for (Object reference : references) {
@@ -303,7 +278,6 @@ public class InMemoryDatabaseTest {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                        ;
                         Boolean references = (Boolean)
                                 ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$isNull"));
                         return (null == entry) == references;
@@ -352,6 +326,7 @@ public class InMemoryDatabaseTest {
                     return result;
                 }
         );
+
         verifierMap.put("$hasTag", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
@@ -383,17 +358,16 @@ public class InMemoryDatabaseTest {
                                 verifierMap.get(args[0]).verify((IObject) args[1], (IObject) args[2])
                 )
         );
+
         IOC.register(Keys.getOrAdd("ContainsResolveDataBaseCondition"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 verifierMap.containsKey(args[0])
                 )
         );
-
         IOC.register(Keys.getOrAdd("PagingForDatabaseCollection"),
                 new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                        {
+                        (args) -> {
                             IObject page = null;
                             Integer pageNumber = 0;
                             Integer pageSize = 0;
@@ -422,6 +396,55 @@ public class InMemoryDatabaseTest {
                         }
                 )
         );
+
+        IOC.register(Keys.getOrAdd("SortIObjects"), new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject condition = (IObject) args[0];
+                            List<IObject> documents = (List<IObject>) args[1];
+
+                            IFieldName sortFieldName = null;
+                            try {
+                                sortFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sort");
+                            } catch (ResolutionException e) {
+                                e.printStackTrace();
+                            }
+                            List<IObject> sortRules = null;
+                            try {
+                                sortRules = (List<IObject>) condition.getValue(sortFieldName);
+                            } catch (ReadValueException | InvalidArgumentException e) {
+                                e.printStackTrace();
+                            }
+                            if (null == sortRules) {
+                                return documents;
+                            }
+                            List<IFieldName> sortingFields = new LinkedList<>();
+                            List<Integer> sortingType = new LinkedList<>();
+                            for (IObject sortRule : sortRules) {
+                                sortingFields.add(sortRule.iterator().next().getKey());
+                                sortingType.add(sortRule.iterator().next().getValue().equals("asc") ? 1 : -1);
+                            }
+                            Comparator comparator = (o1, o2) -> {
+                                try {
+                                    Integer compare = 0;
+                                    for (int i = 0; i < sortingFields.size(); i++) {
+                                        Object object1 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o1);
+                                        Object object2 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o2);
+                                        compare = IOC.resolve(Keys.getOrAdd("CompareSimpleObjects"), object1, object2);
+                                        if (compare != 0) {
+                                            return compare * sortingType.get(i);
+                                        }
+                                    }
+                                } catch (ResolutionException e) {
+                                }
+                                return 0;
+                            };
+                            documents.sort(comparator);
+                            return documents;
+
+                        }
+                )
+        );
+
     }
 
     @Test
@@ -767,5 +790,107 @@ public class InMemoryDatabaseTest {
                         new DSObject("{\"filter\":{}, \"page\": {\"size\": 1, \"number\":5}}"),
                         "collection_name");
         assertTrue(outputList.size() == 0);
+    }
+
+    @Test
+    public void testSortingAscOneField() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"c\": 0}");
+        IObject document2 = new DSObject("{\"c\": 5}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 1}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"sort\": [{\"c\": \"asc\"}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 5);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document5.serialize()));
+        assertTrue(outputList.get(2).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(3).serialize().equals(document4.serialize()));
+        assertTrue(outputList.get(4).serialize().equals(document2.serialize()));
+    }
+
+    @Test
+    public void testSortingDescOneField() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"c\": 0}");
+        IObject document2 = new DSObject("{\"c\": 5}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 1}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"sort\": [{\"c\": \"desc\"}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 5);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
+        assertTrue(outputList.get(2).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(3).serialize().equals(document5.serialize()));
+        assertTrue(outputList.get(4).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testSortingByNotExistingField() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{}");
+        IObject document2 = new DSObject("{\"c\": 5}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 1}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"sort\": [{\"c\": \"desc\"}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 5);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
+        assertTrue(outputList.get(2).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(3).serialize().equals(document5.serialize()));
+        assertTrue(outputList.get(4).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testSortingByManyFields() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{}");
+        IObject document2 = new DSObject("{\"c\": 5, \"a\": 3}");
+        IObject document3 = new DSObject("{\"c\": 5, \"a\": 2}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 3, \"a\": 4}");
+        IObject document6 = new DSObject("{\"c\": 3, \"a\": 2}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        database.insert(document6, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"sort\": [{\"c\": \"desc\"}, {\"a\": \"asc\"}]}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 6);
+        assertTrue(outputList.get(0).serialize().equals(document3.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(2).serialize().equals(document4.serialize()));
+        assertTrue(outputList.get(3).serialize().equals(document6.serialize()));
+        assertTrue(outputList.get(4).serialize().equals(document5.serialize()));
     }
 }

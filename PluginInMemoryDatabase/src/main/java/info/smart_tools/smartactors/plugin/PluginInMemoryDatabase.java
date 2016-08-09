@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import sun.plugin.navig.motif.Plugin;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,6 +53,31 @@ public class PluginInMemoryDatabase implements IPlugin {
                     .after("FieldNamePlugin")
                     .process(() -> {
                                 try {
+
+                                    IOC.register(Keys.getOrAdd("CompareSimpleObjects"), new ApplyFunctionToArgumentsStrategy(
+                                                    (args) -> {
+                                                        Object entry = args[0];
+                                                        Object reference = args[1];
+                                                        if (reference instanceof Long) {
+                                                            Long longEntry = (Long) entry;
+                                                            Long longReference = (Long) reference;
+                                                            return -longReference.compareTo(longEntry);
+                                                        }
+                                                        if (reference instanceof Double) {
+                                                            Double doubleReference = (Double) reference;
+                                                            Double doubleEntry = Double.parseDouble(entry.toString());
+                                                            return -doubleReference.compareTo(doubleEntry);
+                                                        }
+                                                        if (reference instanceof String) {
+                                                            String doubleEntry = (String) entry;
+                                                            String doubleReference = (String) reference;
+                                                            return -doubleReference.compareTo(doubleEntry);
+                                                        }
+                                                        return 0;
+                                                    }
+                                            )
+                                    );
+
                                     IOC.register(Keys.getOrAdd("NestedFieldName"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IFieldName fieldName = (IFieldName) args[0];
@@ -97,7 +123,6 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
                                                     return reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
@@ -109,7 +134,6 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$neq"));
                                                     return !reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
@@ -121,23 +145,10 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
-                                                    if (reference instanceof Long) {
-                                                        Long longEntry = (Long) entry;
-                                                        Long longReference = (Long) reference;
-                                                        return longReference.compareTo(longEntry) == -1;
-                                                    }
-                                                    if (reference instanceof Double) {
-                                                        Double doubleReference = (Double) reference;
-                                                        Double doubleEntry = Double.parseDouble(entry.toString());
-                                                        return doubleReference.compareTo(doubleEntry) == -1;
-                                                    }
-                                                    if (reference instanceof String) {
-                                                        String doubleEntry = (String) entry;
-                                                        String doubleReference = (String) reference;
-                                                        return doubleReference.compareTo(doubleEntry) == -1;
-                                                    }
+                                                    return ((Integer) IOC.resolve(
+                                                            Keys.getOrAdd("CompareSimpleObjects"), entry, reference)
+                                                    ) > 0;
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
                                                 return false;
@@ -147,23 +158,10 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
-                                                    if (reference instanceof Long) {
-                                                        Long longEntry = (Long) entry;
-                                                        Long longReference = (Long) reference;
-                                                        return longReference.compareTo(longEntry) == 1;
-                                                    }
-                                                    if (reference instanceof Double) {
-                                                        Double doubleReference = (Double) reference;
-                                                        Double doubleEntry = Double.parseDouble(entry.toString());
-                                                        return doubleReference.compareTo(doubleEntry) == 1;
-                                                    }
-                                                    if (reference instanceof String) {
-                                                        String doubleEntry = (String) entry;
-                                                        String doubleReference = (String) reference;
-                                                        return doubleReference.compareTo(doubleEntry) == 1;
-                                                    }
+                                                    return (Integer) IOC.resolve(
+                                                            Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                                                    ) < 0;
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
                                                 return false;
@@ -173,23 +171,10 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
-                                                    if (reference instanceof Long) {
-                                                        Long longEntry = (Long) entry;
-                                                        Long longReference = (Long) reference;
-                                                        return longReference.compareTo(longEntry) == -1 || longReference.equals(longEntry);
-                                                    }
-                                                    if (reference instanceof Double) {
-                                                        Double doubleReference = (Double) reference;
-                                                        Double doubleEntry = Double.parseDouble(entry.toString());
-                                                        return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                                                    }
-                                                    if (reference instanceof String) {
-                                                        String doubleEntry = (String) entry;
-                                                        String doubleReference = (String) reference;
-                                                        return doubleReference.compareTo(doubleEntry) == -1 || doubleReference.equals(doubleEntry);
-                                                    }
+                                                    return (Integer) IOC.resolve(
+                                                            Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                                                    ) >= 0;
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
                                                 return false;
@@ -225,23 +210,10 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
-                                                    if (reference instanceof Long) {
-                                                        Long longEntry = (Long) entry;
-                                                        Long longReference = (Long) reference;
-                                                        return longReference.compareTo(longEntry) == 1 || longReference.equals(longEntry);
-                                                    }
-                                                    if (reference instanceof Double) {
-                                                        Double doubleReference = (Double) reference;
-                                                        Double doubleEntry = Double.parseDouble(entry.toString());
-                                                        return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                                                    }
-                                                    if (reference instanceof String) {
-                                                        String doubleEntry = (String) entry;
-                                                        String doubleReference = (String) reference;
-                                                        return doubleReference.compareTo(doubleEntry) == 1 || doubleReference.equals(doubleEntry);
-                                                    }
+                                                    return (Integer) IOC.resolve(
+                                                            Keys.getOrAdd("CompareSimpleObjects"), entry, reference
+                                                    ) <= 0;
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
                                                 return false;
@@ -251,7 +223,6 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     List<Object> references = (List<Object>)
                                                             ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
                                                     for (Object reference : references) {
@@ -269,7 +240,6 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    ;
                                                     Boolean references = (Boolean)
                                                             ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$isNull"));
                                                     return (null == entry) == references;
@@ -359,8 +329,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     );
                                     IOC.register(Keys.getOrAdd("PagingForDatabaseCollection"),
                                             new ApplyFunctionToArgumentsStrategy(
-                                                    (args) ->
-                                                    {
+                                                    (args) -> {
                                                         IObject page = null;
                                                         Integer pageNumber = 0;
                                                         Integer pageSize = 0;
@@ -389,7 +358,53 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                     }
                                             )
                                     );
+                                    IOC.register(Keys.getOrAdd("SortIObjects"), new ApplyFunctionToArgumentsStrategy(
+                                                    (args) -> {
+                                                        IObject condition = (IObject) args[0];
+                                                        List<IObject> documents = (List<IObject>) args[1];
 
+                                                        IFieldName sortFieldName = null;
+                                                        try {
+                                                            sortFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sort");
+                                                        } catch (ResolutionException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        List<IObject> sortRules = null;
+                                                        try {
+                                                            sortRules = (List<IObject>) condition.getValue(sortFieldName);
+                                                        } catch (ReadValueException | InvalidArgumentException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        if (null == sortRules) {
+                                                            return documents;
+                                                        }
+                                                        List<IFieldName> sortingFields = new LinkedList<>();
+                                                        List<Integer> sortingType = new LinkedList<>();
+                                                        for (IObject sortRule : sortRules) {
+                                                            sortingFields.add(sortRule.iterator().next().getKey());
+                                                            sortingType.add(sortRule.iterator().next().getValue().equals("asc") ? 1 : -1);
+                                                        }
+                                                        Comparator comparator = (o1, o2) -> {
+                                                            try {
+                                                                Integer compare = 0;
+                                                                for (int i = 0; i < sortingFields.size(); i++) {
+                                                                    Object object1 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o1);
+                                                                    Object object2 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o2);
+                                                                    compare = IOC.resolve(Keys.getOrAdd("CompareSimpleObjects"), object1, object2);
+                                                                    if (compare != 0) {
+                                                                        return compare * sortingType.get(i);
+                                                                    }
+                                                                }
+                                                            } catch (ResolutionException e) {
+                                                            }
+                                                            return 0;
+                                                        };
+                                                        documents.sort(comparator);
+                                                        return documents;
+
+                                                    }
+                                            )
+                                    );
                                 } catch (Exception e) {
                                     throw new ActionExecuteException("Failed to load plugin \"NestedFieldName\"", e);
                                 }
