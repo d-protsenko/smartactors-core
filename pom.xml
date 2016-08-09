@@ -238,6 +238,7 @@
         <module>core.in_memory_database</module>
         <module>InMemoryDatabase</module>
         <module>PluginInMemoryDatabase</module>
+        <module>InMemoryDBCreateCollectionTask</module>
     </modules>
 
     <build>
