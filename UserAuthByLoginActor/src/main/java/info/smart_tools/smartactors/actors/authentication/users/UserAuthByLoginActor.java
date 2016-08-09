@@ -39,9 +39,9 @@ public class UserAuthByLoginActor {
     /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
-    private static final IField LOGIN_F;
-    private static final IField PASSWORD_F;
-    private static final IField EQUALS_F;
+    private IField loginF;
+    private IField passwordF;
+    private IField equalsF;
 
     /* ToDo : Needs message source. */
     private static final String AUTH_ERROR_MSG = "User authentication has been failed because: ";
@@ -54,16 +54,6 @@ public class UserAuthByLoginActor {
 
     private static final String INTERNAL_ERROR_MSG = "Во время обработки запроса произошла ошибка. " +
             "Пожалуйста попробуйте повторить операцию. Приносим свои извинения за доставленные неудобства.";
-
-    static {
-        try {
-            LOGIN_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
-            PASSWORD_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
 
     /**
      * Default constructor for actor.
@@ -80,6 +70,10 @@ public class UserAuthByLoginActor {
             checkParams(params);
             this.collection = params.getCollection();
             this.connectionPool = params.getConnectionPool();
+
+            loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
             this.passwordEncoder = IOC.resolve(
                     Keys.getOrAdd("PasswordEncoder"),
@@ -175,7 +169,7 @@ public class UserAuthByLoginActor {
     private void validatePassword(final IUserAuthByLoginMessage message, final IObject user)
             throws AuthenticateUserException {
         try {
-            String password = PASSWORD_F.in(user);
+            String password = passwordF.in(user);
             if (password == null || password.isEmpty()) {
                 setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
@@ -210,8 +204,8 @@ public class UserAuthByLoginActor {
         filterF.out(searchQuery, filter);
 
         IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        EQUALS_F.out(loginObject, message.getLogin());
-        LOGIN_F.out(filter, loginObject);
+        equalsF.out(loginObject, message.getLogin());
+        loginF.out(filter, loginObject);
 
         return searchQuery;
     }
