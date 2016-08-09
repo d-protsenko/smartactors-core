@@ -48,32 +48,25 @@ public class PostgresSchemaTest {
     }
 
     @Test
-    public void testNextId() throws QueryBuildException {
-        PostgresSchema.nextId(statement, collection);
-        assertEquals("SELECT nextval('test_collection_id_seq') AS id", body.toString());
-    }
-
-    @Test
     public void testInsert() throws QueryBuildException {
         PostgresSchema.insert(statement, collection);
-        assertEquals("INSERT INTO test_collection (id, document) " +
-                "VALUES (?, ?::jsonb)", body.toString());
+        assertEquals("INSERT INTO test_collection (document) " +
+                "VALUES (?::jsonb)", body.toString());
     }
 
     @Test
     public void testUpdate() throws QueryBuildException {
         PostgresSchema.update(statement, collection);
-        assertEquals("UPDATE test_collection AS tab " +
-                "SET document = docs.document " +
-                "FROM (VALUES (?, ?::jsonb)) AS docs (id, document) " +
-                "WHERE tab.id = docs.id", body.toString());
+        assertEquals("UPDATE test_collection " +
+                "SET document = ?::jsonb " +
+                "WHERE (document#>'{test_collectionID}') = ?", body.toString());
     }
 
     @Test
     public void testGetById() throws QueryBuildException {
         PostgresSchema.getById(statement, collection);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE id = ?", body.toString());
+                "WHERE (document#>'{test_collectionID}') = ?", body.toString());
     }
 
     @Test
@@ -124,7 +117,8 @@ public class PostgresSchemaTest {
     @Test
     public void testCreate() throws QueryBuildException {
         PostgresSchema.create(statement, collection, null);
-        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL);\n", body.toString());
+        assertEquals("CREATE TABLE test_collection (document jsonb NOT NULL);\n" +
+                "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n", body.toString());
     }
 
     @Test
@@ -134,7 +128,8 @@ public class PostgresSchemaTest {
                 "\"language\": \"english\"" +
                 "}");
         PostgresSchema.create(statement, collection, options);
-        assertEquals("CREATE TABLE test_collection (id bigserial PRIMARY KEY, document jsonb NOT NULL, fulltext tsvector);\n" +
+        assertEquals("CREATE TABLE test_collection (document jsonb NOT NULL, fulltext tsvector);\n" +
+                "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
                 "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
                 "CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
                 "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +

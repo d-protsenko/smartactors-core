@@ -12,6 +12,8 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.indexes.IndexCreators;
+import info.smart_tools.smartactors.core.postgres_schema.search.FieldPath;
+import info.smart_tools.smartactors.core.postgres_schema.search.PostgresFieldPath;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -23,11 +25,6 @@ import java.io.Writer;
 public final class PostgresSchema {
 
     /**
-     * Name of the ID column.
-     */
-    public static final String ID_COLUMN = "id";
-
-    /**
      * Name of the DOCUMENT column.
      */
     public static final String DOCUMENT_COLUMN = "document";
@@ -36,6 +33,11 @@ public final class PostgresSchema {
      * Name of the column for fulltext search.
      */
     public static final String FULLTEXT_COLUMN = "fulltext";
+
+    /**
+     * Pattern for the document field with the document ID.
+     */
+    public static final String ID_FIELD_PATTERN = "%sID";
 
     /**
      * Dictionary for Full Text Search
@@ -63,18 +65,33 @@ public final class PostgresSchema {
             body.write("CREATE TABLE ");
             body.write(collection.toString ());
             body.write(" (");
-            body.write(ID_COLUMN);
-            body.write(" bigserial PRIMARY KEY, ");
             body.write(DOCUMENT_COLUMN);
             body.write(" jsonb NOT NULL");
             writeFullTextColumn(body, options);
             body.write(");\n");
+            writePrimaryKey(body, collection);
             if (options != null) {
                 IndexCreators.writeIndexes(body, collection, options);
             }
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }
+    }
+
+    private static FieldPath getIdFieldPath(CollectionName collection) throws QueryBuildException {
+        return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
+    }
+
+    private static void writePrimaryKey(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
+        String collectionName = collection.toString();
+        FieldPath idPath = getIdFieldPath(collection);
+        body.write("CREATE UNIQUE INDEX ");
+        body.write(collectionName);
+        body.write("_pkey ON ");
+        body.write(collectionName);
+        body.write(" USING BTREE ((");
+        body.write(idPath.toSQL());
+        body.write("));\n");
     }
 
     private static void writeFullTextColumn(final Writer body, final IObject options)
@@ -100,26 +117,6 @@ public final class PostgresSchema {
     }
 
     /**
-     * Fills the statement body with the sequence name for the collection for 'nextval' query
-     * to select the next document ID from the database.
-     * @param statement statement to fill the body
-     * @param collection collection name to use to construct the sequence name
-     * @throws QueryBuildException if the statement body cannot be built
-     */
-    public static void nextId(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
-        try {
-            Writer body = statement.getBodyWriter();
-            body.write("SELECT nextval('");
-            body.write(collection.toString());
-            body.write("_");
-            body.write(ID_COLUMN);
-            body.write("_seq') AS id");
-        } catch (IOException e) {
-            throw new QueryBuildException("Failed to build nextId body", e);
-        }
-    }
-
-    /**
      * Fills the statement body with the collection name for the INSERT statement.
      * @param statement statement to fill the body
      * @param collection collection name to use as the table name
@@ -131,10 +128,8 @@ public final class PostgresSchema {
             body.write("INSERT INTO ");
             body.write(collection.toString());
             body.write(" (");
-            body.write(ID_COLUMN);
-            body.write(", ");
             body.write(DOCUMENT_COLUMN);
-            body.write(") VALUES (?, ?::jsonb)");
+            body.write(") VALUES (?::jsonb)");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build insert body", e);
         }
@@ -151,12 +146,11 @@ public final class PostgresSchema {
             Writer body = statement.getBodyWriter();
             body.write("UPDATE ");
             body.write(collection.toString());
-            body.write(" AS tab ");
-            body.write("SET ");
+            body.write(" SET ");
             body.write(DOCUMENT_COLUMN);
-            body.write(" = docs.document FROM (VALUES (?, ?::jsonb)) AS docs (id, document) WHERE tab.");
-            body.write(ID_COLUMN);
-            body.write(" = docs.id");
+            body.write(" = ?::jsonb WHERE (");
+            body.write(getIdFieldPath(collection).toSQL());
+            body.write(") = ?");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build update body", e);
         }
@@ -175,9 +169,9 @@ public final class PostgresSchema {
             body.write(DOCUMENT_COLUMN);
             body.write(" FROM ");
             body.write(collection.toString());
-            body.write(" WHERE ");
-            body.write(ID_COLUMN);
-            body.write(" = ?");
+            body.write(" WHERE (");
+            body.write(getIdFieldPath(collection).toSQL());
+            body.write(") = ?");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build getById body", e);
         }

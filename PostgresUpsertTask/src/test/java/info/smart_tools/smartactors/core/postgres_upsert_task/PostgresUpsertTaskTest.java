@@ -33,8 +33,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.Assert.fail;
@@ -52,34 +52,48 @@ public class PostgresUpsertTaskTest {
     private IObject document;
     private IFieldName idFieldName;
     private IStorageConnection connection;
+    private QueryStatement preparedQuery;
     private JDBCCompiledQuery compiledQuery;
-    private PreparedStatement statement;
-    private ResultSet resultSet;
+    private Connection sqlConnection;
+    private PreparedStatement sqlStatement;
 
     @BeforeClass
-    public static void prepareIOC() throws PluginException, ProcessExecutionException {
+    public static void prepareIOC() throws PluginException, ProcessExecutionException, ResolutionException, RegistrationException {
         Bootstrap bootstrap = new Bootstrap();
         new PluginIOCSimpleContainer(bootstrap).load();
         new PluginIOCKeys(bootstrap).load();
         new IFieldNamePlugin(bootstrap).load();
         new PluginDSObject(bootstrap).load();
         bootstrap.start();
+
+        IOC.register(
+                Keys.getOrAdd("db.collection.nextid"),
+                new UuidNextIdStrategy()
+        );
     }
 
     @Before
     public void setUp() throws QueryBuildException, InvalidArgumentException, ResolutionException, RegistrationException, ReadValueException, StorageException, SQLException {
-        resultSet = mock(ResultSet.class);
-        statement = mock(PreparedStatement.class);
-        when(statement.getResultSet()).thenReturn(resultSet);
+        sqlStatement = mock(PreparedStatement.class);
         compiledQuery = mock(JDBCCompiledQuery.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(statement);
+        when(compiledQuery.getPreparedStatement()).thenReturn(sqlStatement);
+
+        sqlConnection = mock(Connection.class);
+        when(sqlConnection.prepareStatement(any())).thenReturn(sqlStatement);
+
         connection = mock(IStorageConnection.class);
-        when(connection.compileQuery(any())).thenReturn(compiledQuery);
+        doAnswer(invocation -> {
+            preparedQuery = (QueryStatement) invocation.getArguments()[0];
+            preparedQuery.compile(sqlConnection);
+            return compiledQuery;
+        }).when(connection).compileQuery(any());
         task = new PostgresUpsertTask(connection);
+
         document = mock(IObject.class);
         message = mock(UpsertMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
         when(message.getDocument()).thenReturn(document);
+
         idFieldName = new FieldName("testID");
 
         IOC.register(
@@ -92,27 +106,22 @@ public class PostgresUpsertTaskTest {
     public void testInsert() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
         FieldName testFieldName = new FieldName("testField");
         when(document.getValue(testFieldName)).thenReturn("testValue");
-        when(resultSet.getLong(1)).thenReturn(123L);
 
         task.prepare(null); // the message will be resolved by IOC
         task.execute();
 
-        verify(connection, times(2)).compileQuery(any(QueryStatement.class));   // two queries: select ID and insert
-        // implementation details of PostgresConnection
-        // verify(statement).setLong(eq(1), eq(123L));
-        // verify(statement).setString(eq(2), any(String.class));
-        verify(statement, times(2)).execute();      // select ID and insert
-        verify(resultSet).next();
+        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(sqlStatement).setString(eq(1), any(String.class));
+        verify(sqlStatement).execute();
         verify(connection).commit();
-        verify(document).setValue(eq(idFieldName), eq(123L));
+        verify(document).setValue(eq(idFieldName), anyString());
     }
 
     @Test
     public void testInsertFailure() throws InvalidArgumentException, ReadValueException, SQLException, TaskPrepareException, TaskExecutionException, StorageException, ChangeValueException, DeleteValueException {
         FieldName testFieldName = new FieldName("testField");
         when(document.getValue(testFieldName)).thenReturn("testValue");
-        when(resultSet.getLong(1)).thenReturn(123L);
-        when(statement.execute()).thenReturn(true).thenThrow(SQLException.class);
+        when(sqlStatement.execute()).thenThrow(SQLException.class);
 
         task.prepare(null); // the message will be resolved by IOC
         try {
@@ -122,13 +131,10 @@ public class PostgresUpsertTaskTest {
             // pass
         }
 
-        verify(connection, times(2)).compileQuery(any(QueryStatement.class));   // two queries: select ID and insert
-        // implementation details of PostgresConnection
-        // verify(statement).setLong(eq(1), eq(123L));
-        // verify(statement).setString(eq(2), any(String.class));
-        verify(statement, times(2)).execute();      // select ID and insert
-        verify(resultSet).next();
-        verify(document).setValue(eq(idFieldName), eq(123L));
+        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(sqlStatement).setString(eq(1), any(String.class));
+        verify(sqlStatement).execute();
+        verify(document).setValue(eq(idFieldName), anyString());
         verify(connection).rollback();
         verify(document).deleteField(eq(idFieldName));
     }
@@ -143,10 +149,9 @@ public class PostgresUpsertTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        // implementation details of PostgresConnection
-        // verify(statement).setString(eq(1), eq(123L));
-        // verify(statement).setString(eq(2), any(String.class));
-        verify(statement).execute();
+        verify(sqlStatement).setString(eq(1), anyString());
+        verify(sqlStatement).setObject(eq(2), anyString());
+        verify(sqlStatement).execute();
         verify(connection).commit();
         verify(document, never()).setValue(any(), any());
     }
