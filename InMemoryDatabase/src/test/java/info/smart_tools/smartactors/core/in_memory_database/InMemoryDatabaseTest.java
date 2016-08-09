@@ -460,6 +460,23 @@ public class InMemoryDatabaseTest {
     }
 
     @Test
+    public void testGetByIdExistingElem() throws IDataBaseException, InvalidArgumentException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{\"hello\": \"world\"}");
+        database.insert(document, "collection_name");
+        IObject outputDocument = database.getById(1, "collection_name");
+        assertTrue(document.serialize().equals(outputDocument.serialize()));
+    }
+
+    @Test(expected = IDataBaseException.class)
+    public void testGetByIdNotExistingElem() throws IDataBaseException, InvalidArgumentException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject outputDocument = database.getById(1, "collection_name");
+    }
+
+    @Test
     public void testInsert_shouldAddId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
         database.createCollection("collection_name");
