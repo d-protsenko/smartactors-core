@@ -44,16 +44,6 @@ public class CreateSessionActor {
     private IField equalsF;
     private IField authInfoF;
 
-//    static {
-//        try {
-//
-//
-//
-//        } catch (ResolutionException e) {
-//           throw new RuntimeException(e);
-//        }
-//    }
-
     /**
      * Constructor for CreateSessionActor
      * @param config is any configurations
