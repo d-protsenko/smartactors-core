@@ -1,13 +1,10 @@
 package info.smart_tools.smartactors.plugin.get_header_from_request_rule;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -37,39 +34,20 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
 
             item
                 .after("IOC")
+                .after("wds_object")
                 .before("configure")
                     .process(() -> {
                         try {
-                            IKey ruleKey = Keys.getOrAdd("getHeaderFromRequestRule");
-                            IOC.register(ruleKey,
-                                    new CreateNewInstanceStrategy(
-                                            (args) -> new GetHeaderFromRequestRule()
-                                    )
-                            );
-
-                            //TODO:: remove
-                            IOC.register(
+                            //call IOC.resolve for put GetHeaderFromRequestRule into cache of ResolveByNameDependency strategy
+                            IOC.resolve(
                                 Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
-                                new CreateNewInstanceStrategy(
-                                    (args) -> {
-                                        String strategyName = String.valueOf(args[0]);
-
-                                        try {
-                                            return IOC.resolve(Keys.getOrAdd(strategyName));
-                                        } catch (ResolutionException e) {
-                                            e.printStackTrace();
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-                                )
+                                "getHeaderFromRequestRule",
+                                new GetHeaderFromRequestRule()
                             );
-
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't get GetHeaderFromRequestRule key", e);
-                        } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't create strategy", e);
-                        } catch (RegistrationException e) {
-                            throw new ActionExecuteException("GetHeaderFromRequestRule plugin can't load: can't register new strategy", e);
+                            throw new ActionExecuteException(
+                                "GetHeaderFromRequestRule plugin can't load: can't get GetHeaderFromRequestRule key", e
+                            );
                         }
                     });
             bootstrap.add(item);
