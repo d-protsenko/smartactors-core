@@ -242,6 +242,7 @@
         <module>InMemoryDBGetByIdTask</module>
         <module>InMemoryDBUpsertTask</module>
         <module>InMemoryDBDeleteTask</module>
+        <module>InMemoryDBSelectTask</module>
     </modules>
 
     <build>
