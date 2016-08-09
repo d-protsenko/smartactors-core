@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.transformation_rules.get_query_parameter;
 
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaders;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
