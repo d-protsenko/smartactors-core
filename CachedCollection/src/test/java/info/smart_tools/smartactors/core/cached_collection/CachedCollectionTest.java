@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
-import info.smart_tools.smartactors.core.cached_collection.task.GetItemFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -25,12 +25,9 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -200,20 +197,13 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
-        IObject searchResult = mock(IObject.class);
-
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
-        when(IOC.resolve(keyTask)).thenReturn(readTask);
+        when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
+        when(IOC.resolve(eq(keyTask), any(), eq(collectionName), anyString(), anyString(), any(IAction.class))).thenReturn(readTask);
 
-        when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
-
-        List<IObject> items = collection.getItems("key");
-
-        verify(readTask).prepare(eq(readQuery));
+        collection.getItems("key");
         verify(readTask).execute();
-        assertEquals(items.get(0), searchResult);
     }
 
     @Test(expected = GetCacheItemException.class)
