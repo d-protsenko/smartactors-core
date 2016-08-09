@@ -63,13 +63,13 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap</artifactId>
@@ -126,13 +126,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>plugin.ifieldname</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field</artifactId>
+            <artifactId>plugin.dsobject</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -143,6 +143,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

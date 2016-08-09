@@ -256,6 +256,8 @@
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
         <module>PluginConnectionOptions</module>
+        <module>ExceptionHandlerActor</module>
+        <module>PluginExceptionHandlerActor</module>
     </modules>
 
     <build>
