@@ -14,17 +14,17 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.tcp_server</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ssl_context_provider</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>core.ssl_engine_provider</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.issl_engine_provider</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 
