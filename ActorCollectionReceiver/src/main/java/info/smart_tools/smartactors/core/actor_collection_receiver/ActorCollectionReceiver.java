@@ -25,17 +25,25 @@ import java.util.Map;
 public class ActorCollectionReceiver implements IMessageReceiver {
 
     private IFieldName keyFieldName;
-    private IFieldName wrapperFieldName;
+    private IFieldName newFieldName;
+    private IFieldName kindFieldName;
+    private IFieldName nameFieldName;
     private IRouter router = new ActorCollectionRouter();
 
     public ActorCollectionReceiver(final IObject configSection)
             throws InvalidArgumentException {
         try {
-            this.wrapperFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper"
-            );
             this.keyFieldName  = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "key"
+            );
+            this.newFieldName  = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "new"
+            );
+            this.kindFieldName  = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "kind"
+            );
+            this.nameFieldName  = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name"
             );
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Could not create instance of ActorCollectionReceiver", e);
@@ -46,26 +54,24 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     public void receive(final IMessageProcessor processor)
             throws MessageReceiveException, AsynchronousOperationException {
         try {
-            IObject mapSection = processor.getSequence().getCurrentReceiverArguments();
-            String keyName = (String) mapSection.getValue(this.keyFieldName);
+            IObject section = (IObject) processor.getSequence().getCurrentReceiverArguments();
+            String keyName = (String) section.getValue(this.keyFieldName);
+            IObject subSectionNew = (IObject) processor.getSequence().getCurrentReceiverArguments().getValue(newFieldName);
             IFieldName fieldNameForKeyName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), keyName
             );
-            Object key = ((IObject) processor.getEnvironment().getValue(this.wrapperFieldName))
-                    .getValue(fieldNameForKeyName);
+            Object key =  processor.getEnvironment().getValue(fieldNameForKeyName);
             IMessageReceiver receiver = router.route(key);
             if (null == receiver) {
-
-                IFieldName kindField = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "kind"
-                );
+                String kindValue = (String) subSectionNew.getValue(this.kindFieldName);
                 IRoutedObjectCreator objectCreator = IOC.resolve(
                         IOC.resolve(
                                 IOC.getKeyForKeyStorage(),
-                                IRoutedObjectCreator.class.getCanonicalName() + "#" + String.valueOf(kindField)
+                                IRoutedObjectCreator.class.getCanonicalName() + "#" + kindValue
                         )
                 );
-                objectCreator.createObject(this.router, mapSection);
+                subSectionNew.setValue(this.nameFieldName, key);
+                objectCreator.createObject(this.router, subSectionNew);
                 // TODO: bad solution, need refactoring. Change interface of IRoutedObjectCreator
                 receiver = this.router.route(key);
             }
