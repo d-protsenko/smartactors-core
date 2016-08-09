@@ -28,7 +28,7 @@
     },
     {
       "kind": "raw",
-      "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ActorCollectionReceiver",
+      "dependency": "info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionReceiver",
       "name": "my-actor-collection"
     }
   ],
@@ -60,12 +60,11 @@
           "handler": "actorMethod",
           "new": {
             "kind": "actor",
-            "dependency": "CollectionItem",
-            "name": "my-collection-item"
+            "dependency": "SampleActor"
           },
-          "key": "userId",
+          "key": "actorId",
           "wrapper": {
-            "in_userId": "message/KeyId",
+            "in_actorId": "message/ActorId",
             "in_getIntValue": "message/IntValue",
             "in_getIObject": "message/InnerObject",
             "out_setIObject": "response/OutObject"

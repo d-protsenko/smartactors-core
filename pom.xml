@@ -241,6 +241,7 @@
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
         <module>ActorCollectionReceiver</module>
+        <module>PluginActorCollectionReceiver</module>
     </modules>
 
     <build>
