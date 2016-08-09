@@ -49,7 +49,7 @@ public class DBGetByIdTask implements IDatabaseTask {
                     CollectionName collectionName = CollectionName.fromString(message.getCollectionName());
                     writer.write(String.format("SELECT * FROM %s WHERE ", collectionName.toString()));
                     writer.write(String.format("token = \'%s\'", message.getId()));
-                } catch (IOException | ResolutionException | ChangeValueException | ReadValueException e) {
+                } catch (IOException | ResolutionException | ReadValueException e) {
                     throw new QueryStatementFactoryException("Error while initialize update query.", e);
                 } catch (QueryBuildException e) {
                     e.printStackTrace();
@@ -77,7 +77,7 @@ public class DBGetByIdTask implements IDatabaseTask {
             } else {
                 throw new TaskExecutionException("Not found document with this id.");
             }
-        } catch (ReadValueException | StorageException | SQLException e) {
+        } catch (StorageException | SQLException e) {
             throw new TaskExecutionException("Insertion query execution failed because of SQL exception.", e);
         }
     }
