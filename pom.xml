@@ -241,6 +241,7 @@
         <module>InMemoryDBCreateCollectionTask</module>
         <module>InMemoryDBGetByIdTask</module>
         <module>InMemoryDBUpsertTask</module>
+        <module>InMemoryDBDeleteTask</module>
     </modules>
 
     <build>

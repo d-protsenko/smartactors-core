@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.in_memory_db_upsert_task;
+package info.smart_tools.smartactors.core.in_memory_db_delete_task;
 
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
@@ -28,10 +28,11 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class InMemoryDBUpsertTaskTest {
+public class InMemoryDBDeleteTaskTest {
 
     InMemoryDatabase inMemoryDatabase;
 
@@ -76,23 +77,23 @@ public class InMemoryDBUpsertTaskTest {
 
     @Test
     public void testPrepare() throws InvalidArgumentException, TaskPrepareException, TaskExecutionException, ChangeValueException, IDataBaseException {
-        InMemoryDBUpsertTask upsertTask = new InMemoryDBUpsertTask();
+        InMemoryDBDeleteTask deleteTask = new InMemoryDBDeleteTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IFieldName documentFieldName = new FieldName("document");
         query.setValue(documentFieldName, document);
-        upsertTask.prepare(query);
+        deleteTask.prepare(query);
     }
 
     @Test
     public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDataBaseException {
-        InMemoryDBUpsertTask upsertTask = new InMemoryDBUpsertTask();
+        InMemoryDBDeleteTask deleteTask = new InMemoryDBDeleteTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IFieldName documentFieldName = new FieldName("document");
         query.setValue(documentFieldName, document);
-        upsertTask.prepare(query);
-        upsertTask.execute();
-        verify(inMemoryDatabase).upsert(document, "collection_name");
+        deleteTask.prepare(query);
+        deleteTask.execute();
+        verify(inMemoryDatabase).delete(document, "collection_name");
     }
 }
