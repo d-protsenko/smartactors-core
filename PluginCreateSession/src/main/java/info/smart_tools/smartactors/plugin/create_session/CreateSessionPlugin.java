@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -46,7 +47,8 @@ public class CreateSessionPlugin implements IPlugin {
                     IOC.register(createSessionActorKey, new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), new TestConnectionOptions());
+                                    ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
 //                                    CreateSessionConfig param = IOC.resolve(
 //                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
 //                                            args[0],

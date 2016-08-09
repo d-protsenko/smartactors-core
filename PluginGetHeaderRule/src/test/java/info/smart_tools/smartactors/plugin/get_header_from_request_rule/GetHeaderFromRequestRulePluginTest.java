@@ -53,6 +53,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -66,12 +67,12 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd("getHeaderFromRequestRule")).thenReturn(ruleKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+        Keys.getOrAdd("getHeaderFromRequestRule");
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -110,6 +111,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -122,13 +124,13 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd("getHeaderFromRequestRule")).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+            Keys.getOrAdd("getHeaderFromRequestRule");
             return;
         }
         assertTrue("Must throw exception", false);
@@ -141,6 +143,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -154,7 +157,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd("getHeaderFromRequestRule")).thenReturn(ruleKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -169,7 +172,7 @@ public class GetHeaderFromRequestRulePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+            Keys.getOrAdd("getHeaderFromRequestRule");
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -197,6 +200,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -210,7 +214,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
+        when(Keys.getOrAdd("getHeaderFromRequestRule")).thenReturn(ruleKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -222,7 +226,7 @@ public class GetHeaderFromRequestRulePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+            Keys.getOrAdd("getHeaderFromRequestRule");
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 

@@ -128,6 +128,9 @@ public class ServerWithConfiguration implements IServer {
 
                     //for checkValAsOp
                     "info.smart_tools.smartactors:plugin.check_validity_async_operation_plugin:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

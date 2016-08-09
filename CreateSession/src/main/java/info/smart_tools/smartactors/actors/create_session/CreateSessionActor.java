@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionC
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -18,6 +17,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
@@ -84,7 +84,7 @@ public class CreateSessionActor {
                     prepareSearchQuery(searchQuery, inputMessage);
 
                     List<IObject> items = new LinkedList<>();
-                    IDatabaseTask searchTask = IOC.resolve(
+                    ITask searchTask = IOC.resolve(
                         Keys.getOrAdd("db.collection.search"),
                         connection,
                         collectionName,
