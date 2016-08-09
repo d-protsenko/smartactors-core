@@ -325,7 +325,7 @@
           "wrapper": {
             "in_getOperationData": "message/form",
             "in_getExpiredTime": "const/4",
-            "in_getSessionId": "message/sessionId",
+            "in_getSessionId": "message/session/sessionId",
             "out_setSessionIdInData": "message/form/sessionId",
             "out_setAsyncOperationToken": "response/token"
           }
@@ -335,7 +335,7 @@
           "handler": "sendMailHandler",
           "wrapper": {
             "in_getSendToMessage": "message/email",
-            "in_MessageAttributesMessage": "message/messageAttributes",
+            "in_getMessageAttributesMessage": "message/messageAttributes",
             "in_getMessagePartsMessage": "message/messageParts"
           }
         }
@@ -344,16 +344,6 @@
     }
   ],
   "endpoints": [
-    {
-      "name": "mainHttpsEp",
-      "type": "https",
-      "port": 8443,
-      "startChain": "httpChain",
-      "maxContentLength": 4098,
-      "stackDepth": 5,
-      "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.crt",
-      "certPass": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.key"
-    },
     {
       "name": "mainHttpEp",
       "type": "http",

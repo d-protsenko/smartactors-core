@@ -25,7 +25,7 @@ import java.util.List;
  * Actor check that this email was not registered before
  */
 public class CheckUserIsNewActor {
-    private String USER_COLLECTION_NAME = "user";
+    private String USER_COLLECTION_NAME = "user_account";
     private IPool connectionPool;
 
     /**
