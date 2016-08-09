@@ -78,7 +78,7 @@
       "username": "alexryandr@gmail.com",
       "password": "147852369qwerty",
       "authenticationMode": "Login",
-      "server": "smtp://user:port@gmail.com:25",
+      "server": "smtp://smtp.gmail.com:587",
       "sslProtocol": "TLS",
       "senderAddress": "alexryandr@gmail.com"
     }
