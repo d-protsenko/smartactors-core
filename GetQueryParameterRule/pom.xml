@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>transformation_rule.get_cookie_from_request</artifactId>
+    <artifactId>transformation_rule.get_query_parameter</artifactId>
 
     <dependencies>
         <dependency>
@@ -25,6 +25,7 @@
             <version>4.1.2.Final</version>
         </dependency>
         <!-- /server -->
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
