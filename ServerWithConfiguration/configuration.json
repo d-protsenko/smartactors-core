@@ -77,7 +77,8 @@
       "name": "sendMailActor",
       "username": "alexryandr@gmail.com",
       "password": "147852369qwerty",
-      "server": "smtp.gmail.com",
+      "authenticationMode": "Login",
+      "server": "smtp://user:port@gmail.com:25",
       "sslProtocol": "TLS",
       "senderAddress": "alexryandr@gmail.com"
     }
