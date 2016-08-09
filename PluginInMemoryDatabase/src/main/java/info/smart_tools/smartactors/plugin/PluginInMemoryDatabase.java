@@ -22,6 +22,7 @@ import sun.plugin.navig.motif.Plugin;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -354,6 +355,38 @@ public class PluginInMemoryDatabase implements IPlugin {
                                             new ApplyFunctionToArgumentsStrategy(
                                                     (args) ->
                                                             verifierMap.containsKey(args[0])
+                                            )
+                                    );
+                                    IOC.register(Keys.getOrAdd("PagingForDatabaseCollection"),
+                                            new ApplyFunctionToArgumentsStrategy(
+                                                    (args) ->
+                                                    {
+                                                        IObject page = null;
+                                                        Integer pageNumber = 0;
+                                                        Integer pageSize = 0;
+                                                        try {
+                                                            IFieldName pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
+                                                            IFieldName pageNumberFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "number");
+                                                            IFieldName pageSizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
+                                                            page = (IObject) ((IObject) args[0]).getValue(pageFieldName);
+                                                            if (null == page) {
+                                                                pageNumber = 1;
+                                                                pageSize = 100;
+                                                            } else {
+                                                                pageNumber = (Integer) page.getValue(pageNumberFieldName);
+                                                                pageSize = (Integer) page.getValue(pageSizeFieldName);
+                                                            }
+                                                        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                                                        }
+                                                        Integer startNumber = (pageNumber - 1) * pageSize;
+                                                        Integer finNumber = pageNumber * pageSize;
+                                                        List<IObject> outputDocuments = new LinkedList<>();
+                                                        List<IObject> documents = (List<IObject>) args[1];
+                                                        for (int i = startNumber; i < finNumber && i < documents.size(); i++) {
+                                                            outputDocuments.add(documents.get(i));
+                                                        }
+                                                        return outputDocuments;
+                                                    }
                                             )
                                     );
 

@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -388,6 +389,39 @@ public class InMemoryDatabaseTest {
                                 verifierMap.containsKey(args[0])
                 )
         );
+
+        IOC.register(Keys.getOrAdd("PagingForDatabaseCollection"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                        {
+                            IObject page = null;
+                            Integer pageNumber = 0;
+                            Integer pageSize = 0;
+                            try {
+                                IFieldName pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
+                                IFieldName pageNumberFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "number");
+                                IFieldName pageSizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
+                                page = (IObject) ((IObject) args[0]).getValue(pageFieldName);
+                                if (null == page) {
+                                    pageNumber = 1;
+                                    pageSize = 100;
+                                } else {
+                                    pageNumber = (Integer) page.getValue(pageNumberFieldName);
+                                    pageSize = (Integer) page.getValue(pageSizeFieldName);
+                                }
+                            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                            }
+                            Integer startNumber = (pageNumber - 1) * pageSize;
+                            Integer finNumber = pageNumber * pageSize;
+                            List<IObject> outputDocuments = new LinkedList<>();
+                            List<IObject> documents = (List<IObject>) args[1];
+                            for (int i = startNumber; i < finNumber && i < documents.size(); i++) {
+                                outputDocuments.add(documents.get(i));
+                            }
+                            return outputDocuments;
+                        }
+                )
+        );
     }
 
     @Test
@@ -434,7 +468,7 @@ public class InMemoryDatabaseTest {
         database.insert(document, "collection_name");
         database.insert(document2, "collection_name");
         List<IObject> outputList =
-                database.select(new DSObject("{\"hello\": {\"$eq\": \"world\"}}"), "collection_name");
+                database.select(new DSObject("{\"filter\":{\"hello\": {\"$eq\": \"world\"}}}"), "collection_name");
         assertTrue(outputList.size() == 1);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
     }
@@ -443,7 +477,7 @@ public class InMemoryDatabaseTest {
     public void testSearchEqAtEmptyDB() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
         List<IObject> outputList =
-                database.select(new DSObject("{\"hello\": {\"$eq\": \"world\"}}"), "collection_name");
+                database.select(new DSObject("{\"filter\":{\"hello\": {\"$eq\": \"world\"}}}"), "collection_name");
         assertTrue(outputList.size() == 0);
     }
 
@@ -455,7 +489,7 @@ public class InMemoryDatabaseTest {
         database.insert(document, "collection_name");
         database.insert(document2, "collection_name");
         List<IObject> outputList =
-                database.select(new DSObject("{\"$and\": [{\"hello\": {\"$eq\": \"world\"}}]}"), "collection_name");
+                database.select(new DSObject("{\"filter\":{\"$and\": [{\"hello\": {\"$eq\": \"world\"}}]}}"), "collection_name");
         assertTrue(outputList.size() == 1);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
     }
@@ -473,7 +507,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
@@ -493,7 +527,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"$not\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"$not\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
@@ -513,7 +547,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$gt\": 2.3}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$gt\": 2.3}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document3.serialize()));
@@ -533,7 +567,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$lt\": 2.3}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$lt\": 2.3}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 1);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
@@ -552,7 +586,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$gte\": 2.3}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$gte\": 2.3}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 3);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
@@ -573,7 +607,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$lte\": 2.3}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$lte\": 2.3}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
@@ -593,7 +627,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$in\": [2.3, 3, 4, 5]}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$in\": [2.3, 3, 4, 5]}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
@@ -613,7 +647,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a.b\": {\"$eq\": 1}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a.b\": {\"$eq\": 1}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 1);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
@@ -632,7 +666,7 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$isNull\": true}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$isNull\": true}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
@@ -652,11 +686,12 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 1);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
     }
+
     @Test
     public void testHasTagAtList() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
@@ -670,10 +705,67 @@ public class InMemoryDatabaseTest {
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}"),
+                        new DSObject("{\"filter\":{\"$and\": [{\"a\": {\"$hasTag\": \"b\"}}]}}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document.serialize()));
         assertTrue(outputList.get(1).serialize().equals(document4.serialize()));
+    }
+
+    @Test
+    public void testPagingOneElem() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": [\"b\", 1]}");
+        IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": {\"b\": 3}}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{}, \"page\": {\"size\": 1, \"number\":1}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+    }
+
+    @Test
+    public void testPagingSomeElems() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": [\"b\", 1]}");
+        IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": {\"b\": 3}}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{}, \"page\": {\"size\": 2, \"number\":1}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
+    }
+
+    @Test
+    public void testPagingWithEmptyResult() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{\"a\": [\"b\", 1]}");
+        IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": {\"b\": 3}}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{}, \"page\": {\"size\": 1, \"number\":5}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 0);
     }
 }

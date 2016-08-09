@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.in_memory_database;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.idatabase.IDataBase;
@@ -105,13 +106,28 @@ public class InMemoryDatabase implements IDataBase {
 
     @Override
     public List<IObject> select(final IObject condition, final String collectionName) throws IDataBaseException {
+        IFieldName filterFieldName = null;
+        IObject filter = null;
+        try {
+            filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
+            filter = (IObject) condition.getValue(filterFieldName);
+        } catch (ResolutionException e) {
+            throw new IDataBaseException("Failed to resolve IFieldName", e);
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new IDataBaseException("Failed to get filter from select condition", e);
+        }
         List<IObject> outputList = new LinkedList<>();
         for (DataBaseItem item : list) {
             if (Objects.equals(item.getCollectionName(), collectionName)) {
-                if (generalConditionParser(condition, item.getDocument())) {
+                if (generalConditionParser(filter, item.getDocument())) {
                     outputList.add(clone(item.getDocument()));
                 }
             }
+        }
+        try {
+            outputList = IOC.resolve(Keys.getOrAdd("PagingForDatabaseCollection"), condition, outputList);
+        } catch (ResolutionException e) {
+            throw new IDataBaseException("Failed to resolve \"PagingForDatabaseCollection\"", e);
         }
         return outputList;
     }
@@ -119,6 +135,9 @@ public class InMemoryDatabase implements IDataBase {
     private boolean generalConditionParser(final IObject condition, final IObject document) throws IDataBaseException {
         Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
         String key = null;
+        if (!iterator.hasNext()) {
+            return true;
+        }
         try {
             do {
                 Map.Entry<IFieldName, Object> entry = iterator.next();
