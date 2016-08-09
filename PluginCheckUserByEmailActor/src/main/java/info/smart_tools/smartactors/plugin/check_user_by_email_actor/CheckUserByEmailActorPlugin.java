@@ -18,6 +18,9 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.Arrays;
 
+/**
+ * Plugin for load IOC-strategy for {@link CheckUserByEmailActor}
+ */
 public class CheckUserByEmailActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
