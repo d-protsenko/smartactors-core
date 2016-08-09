@@ -1,14 +1,20 @@
 package info.smart_tools.smartactors.actor.change_password;
 
+import info.smart_tools.smartactors.actor.change_password.exception.ChangePasswordException;
 import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePasswordConfig;
 import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePasswordMessage;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
@@ -214,5 +220,415 @@ public class ChangePasswordActorTest {
         );
 
         verify(upsertTask).execute();
+        verify(poolGuard).close();
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenCantCreateNewPoolGuard() throws Exception {
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenThrow(new InvalidArgumentException(""));
+
+        try {
+            testActor.changePassword(null);
+        } catch (ChangePasswordException e) {
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenGetUserIdThrowException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenThrow(new ReadValueException());
+
+        try {
+            testActor.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenGetUserIdIsNull() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(null);
+
+        try {
+            testActor.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenGetPasswordIsNull() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(null);
+
+        try {
+            testActor.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenPrepareQueryParamsThrowReadValueException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doThrow(new ReadValueException()).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenPrepareQueryParamsThrowInvalidArgumentException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doThrow(new InvalidArgumentException("")).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenPrepareQueryParamsThrowChangeValueException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doThrow(new ChangeValueException()).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenPrepareQueryParamsThrowResolutionException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doThrow(new ResolutionException("")).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verify(poolGuard).close();
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenIOCResolveThrowException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        IObject searchQuery = mock(IObject.class);
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doReturn(searchQuery).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        LinkedList<IObject> items = mock(LinkedList.class);
+        whenNew(LinkedList.class).withNoArguments().thenReturn(items);
+
+        IKey searchTaskKey = mock(IKey.class);
+        when(Keys.getOrAdd("db.collection.search")).thenReturn(searchTaskKey);
+
+        when(IOC.resolve
+                (eq(searchTaskKey),
+                        eq(poolGuardObject),
+                        eq(collectionName),
+                        eq(searchQuery),
+                        any(IAction.class))
+        ).thenThrow(new ResolutionException(""));
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verifyNew(LinkedList.class).withNoArguments();
+
+            verifyStatic();
+            Keys.getOrAdd("db.collection.search");
+
+            verifyStatic();
+            IOC.resolve
+                    (eq(searchTaskKey),
+                            eq(poolGuardObject),
+                            eq(collectionName),
+                            eq(searchQuery),
+                            any(IAction.class));
+
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenFieldOutThrowChangeValueException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        IObject searchQuery = mock(IObject.class);
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doReturn(searchQuery).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        LinkedList<IObject> items = mock(LinkedList.class);
+        whenNew(LinkedList.class).withNoArguments().thenReturn(items);
+
+        ITask searchTask = mock(ITask.class);
+
+        IKey searchTaskKey = mock(IKey.class);
+        when(Keys.getOrAdd("db.collection.search")).thenReturn(searchTaskKey);
+
+        ArgumentCaptor<IAction> searchActionArgumentCaptor = ArgumentCaptor.forClass(IAction.class);
+
+        when(IOC.resolve
+                (eq(searchTaskKey),
+                        eq(poolGuardObject),
+                        eq(collectionName),
+                        eq(searchQuery),
+                        any(IAction.class))
+        ).thenReturn(searchTask);
+
+        doNothing().when(changePasswordActorSpy, "validateSearchResult", items, message);
+
+        IObject user = mock(IObject.class);
+        when(items.get(0)).thenReturn(user);
+
+        String encodedPassword = "encP";
+        when(passwordEncoder.encode(testPassword)).thenReturn(encodedPassword);
+
+        doThrow(new ChangeValueException()).when(passwordField).out(user, encodedPassword);
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message, times(2)).getPassword();
+
+            verifyNew(LinkedList.class).withNoArguments();
+
+            verifyStatic();
+            Keys.getOrAdd("db.collection.search");
+
+            verifyStatic();
+            IOC.resolve
+                    (eq(searchTaskKey),
+                            eq(poolGuardObject),
+                            eq(collectionName),
+                            eq(searchQuery),
+                            searchActionArgumentCaptor.capture());
+
+            verify(searchTask).execute();
+
+            verify(items).get(0);
+
+            verify(passwordField).out(user, encodedPassword);
+            return;
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void MustInCorrectChangePasswordWhenTaskExecuteThrowException() throws Exception {
+        PoolGuard poolGuard = mock(PoolGuard.class);
+        whenNew(PoolGuard.class).withArguments(connectionPool).thenReturn(poolGuard);
+
+        Object poolGuardObject = mock(Object.class);
+        when(poolGuard.getObject()).thenReturn(poolGuardObject);
+
+        ChangePasswordMessage message = mock(ChangePasswordMessage.class);
+        when(message.getUserId()).thenReturn(testUserId);
+        when(message.getPassword()).thenReturn(testPassword);
+
+        IObject searchQuery = mock(IObject.class);
+        ChangePasswordActor changePasswordActorSpy = spy(testActor);
+
+        doReturn(searchQuery).when(changePasswordActorSpy, "prepareQueryParams", message);
+
+        LinkedList<IObject> items = mock(LinkedList.class);
+        whenNew(LinkedList.class).withNoArguments().thenReturn(items);
+
+        ITask searchTask = mock(ITask.class);
+
+        IKey searchTaskKey = mock(IKey.class);
+        when(Keys.getOrAdd("db.collection.search")).thenReturn(searchTaskKey);
+
+        when(IOC.resolve
+                (eq(searchTaskKey),
+                        eq(poolGuardObject),
+                        eq(collectionName),
+                        eq(searchQuery),
+                        any(IAction.class))
+        ).thenReturn(searchTask);
+
+        doThrow(new TaskExecutionException("")).when(searchTask).execute();
+
+        try {
+            changePasswordActorSpy.changePassword(message);
+        } catch (ChangePasswordException e) {
+
+            verifyNew(PoolGuard.class).withArguments(connectionPool);
+
+            verify(message).getUserId();
+            verify(message).getPassword();
+
+            verifyNew(LinkedList.class).withNoArguments();
+
+            verifyStatic();
+            Keys.getOrAdd("db.collection.search");
+
+            verifyStatic();
+            IOC.resolve
+                    (eq(searchTaskKey),
+                            eq(poolGuardObject),
+                            eq(collectionName),
+                            eq(searchQuery),
+                            any(IAction.class));
+
+            verify(searchTask).execute();
+            return;
+        }
+        assertTrue(false);
     }
 }
