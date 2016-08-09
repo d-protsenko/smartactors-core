@@ -462,6 +462,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testInsert_shouldAddId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.insert(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
@@ -470,6 +471,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testUpsertAsInsert_shouldAddId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.upsert(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
@@ -478,6 +480,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testUpsertAsUpdate_shouldNotChangeId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.upsert(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
@@ -488,6 +491,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testUpdate_shouldNotChangeId() throws InvalidArgumentException, IDataBaseException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.insert(document, "collection_name");
         assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
@@ -498,6 +502,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IObject document2 = new DSObject("{\"hello\": \"world1\"}");
         database.insert(document, "collection_name");
@@ -511,6 +516,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchEqAtEmptyDB() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         List<IObject> outputList =
                 database.select(new DSObject("{\"filter\":{\"hello\": {\"$eq\": \"world\"}}}"), "collection_name");
         assertTrue(outputList.size() == 0);
@@ -519,6 +525,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchAndEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IObject document2 = new DSObject("{\"hello\": \"world1\"}");
         database.insert(document, "collection_name");
@@ -532,6 +539,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchOrEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IObject document2 = new DSObject("{\"hello\": \"world1\"}");
         IObject document3 = new DSObject("{\"hello\": \"world2\"}");
@@ -552,6 +560,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchNotOrEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         IObject document2 = new DSObject("{\"hello\": \"world1\"}");
         IObject document3 = new DSObject("{\"hello\": \"world2\"}");
@@ -572,6 +581,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchGtForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": 1}");
         IObject document2 = new DSObject("{\"a\": 2}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -592,6 +602,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchLtForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": 1}");
         IObject document2 = new DSObject("{\"a\": 2.3}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -611,6 +622,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchGteForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": 1}");
         IObject document2 = new DSObject("{\"a\": 2.3}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -632,6 +644,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchLteForNumbers() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": 1}");
         IObject document2 = new DSObject("{\"a\": 2.3}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -652,6 +665,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSearchIn() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": 1}");
         IObject document2 = new DSObject("{\"a\": 2.3}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -672,6 +686,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testNestedEq() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": {\"b\": 1}}");
         IObject document2 = new DSObject("{\"a\": {\"b\": 2}}");
         IObject document3 = new DSObject("{\"a\": 3}");
@@ -691,6 +706,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testIsNull() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": {\"b\": 1}}");
         IObject document2 = new DSObject("{\"c\": {\"b\": 2}}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -711,6 +727,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testHasTagField() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": {\"b\": 1}}");
         IObject document2 = new DSObject("{\"c\": {\"b\": 2}}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -730,6 +747,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testHasTagAtList() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": [\"b\", 1]}");
         IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -750,6 +768,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testPagingOneElem() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": [\"b\", 1]}");
         IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -769,6 +788,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testPagingSomeElems() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": [\"b\", 1]}");
         IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -789,6 +809,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testPagingWithEmptyResult() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"a\": [\"b\", 1]}");
         IObject document2 = new DSObject("{\"c\": [\"b\", 2]}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -807,6 +828,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSortingAscOneField() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"c\": 0}");
         IObject document2 = new DSObject("{\"c\": 5}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -832,6 +854,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSortingDescOneField() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{\"c\": 0}");
         IObject document2 = new DSObject("{\"c\": 5}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -857,6 +880,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSortingByNotExistingField() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{}");
         IObject document2 = new DSObject("{\"c\": 5}");
         IObject document3 = new DSObject("{\"c\": 3}");
@@ -882,6 +906,7 @@ public class InMemoryDatabaseTest {
     @Test
     public void testSortingByManyFields() throws InvalidArgumentException, IDataBaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
         IObject document = new DSObject("{}");
         IObject document2 = new DSObject("{\"c\": 5, \"a\": 3}");
         IObject document3 = new DSObject("{\"c\": 5, \"a\": 2}");
@@ -904,5 +929,63 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.get(2).serialize().equals(document4.serialize()));
         assertTrue(outputList.get(3).serialize().equals(document6.serialize()));
         assertTrue(outputList.get(4).serialize().equals(document5.serialize()));
+    }
+
+    @Test
+    public void testDeleteElem() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{}");
+        IObject document2 = new DSObject("{\"c\": 5, \"a\": 3}");
+        IObject document3 = new DSObject("{\"c\": 5, \"a\": 2}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 3, \"a\": 4}");
+        IObject document6 = new DSObject("{\"c\": 3, \"a\": 2}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        database.insert(document6, "collection_name");
+        database.delete(document, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject(),
+                        "collection_name");
+        assertTrue(outputList.size() == 5);
+    }
+
+    @Test
+    public void testDeleteIdFieldAfterDeleteDocument() throws InvalidArgumentException, IDataBaseException, SerializeException, ReadValueException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{}");
+        IObject document2 = new DSObject("{\"c\": 5, \"a\": 3}");
+        IObject document3 = new DSObject("{\"c\": 5, \"a\": 2}");
+        IObject document4 = new DSObject("{\"c\": 4}");
+        IObject document5 = new DSObject("{\"c\": 3, \"a\": 4}");
+        IObject document6 = new DSObject("{\"c\": 3, \"a\": 2}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        database.insert(document6, "collection_name");
+        database.delete(document, "collection_name");
+        assertTrue(null == document.getValue(new FieldName("collection_nameID")));
+    }
+
+    @Test(expected = IDataBaseException.class)
+    public void testInsertToNotExistingCollection() throws InvalidArgumentException, IDataBaseException, SerializeException, ReadValueException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{}");
+        database.insert(document, "collection_name");
+    }
+
+    @Test(expected = IDataBaseException.class)
+    public void testUpsertToNotExistingCollection() throws InvalidArgumentException, IDataBaseException, SerializeException, ReadValueException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        IObject document = new DSObject("{}");
+        database.upsert(document, "collection_name");
     }
 }

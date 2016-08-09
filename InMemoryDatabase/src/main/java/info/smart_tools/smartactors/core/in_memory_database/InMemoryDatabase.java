@@ -8,22 +8,24 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Implementation of data base on list
  */
 public class InMemoryDatabase implements IDataBase {
-    private List<DataBaseItem> list = new LinkedList<>();
+    private Map<String, List<DataBaseItem>> dataBase = new HashMap<>();
+
 
     @Override
     public void upsert(final IObject document, final String collectionName) throws IDataBaseException {
@@ -38,6 +40,11 @@ public class InMemoryDatabase implements IDataBase {
         } else {
             update(item);
         }
+    }
+
+    @Override
+    public void createCollection(final String collectionName) {
+        dataBase.put(collectionName, new LinkedList<>());
     }
 
     @Override
@@ -64,10 +71,14 @@ public class InMemoryDatabase implements IDataBase {
         update(item);
     }
 
-    private void update(final DataBaseItem item) {
+    private void update(final DataBaseItem item) throws IDataBaseException {
+        if (!dataBase.containsKey(item.getCollectionName())) {
+            throw new IDataBaseException("Collection with name " + item.getCollectionName() + " does not exist");
+        }
+        List<DataBaseItem> list = dataBase.get(item.getCollectionName());
         for (int i = 0; i < list.size(); i++) {
             DataBaseItem inBaseElem = list.get(i);
-            if (inBaseElem.getId().equals(item.getId()) && inBaseElem.getCollectionName().equals(item.getCollectionName())) {
+            if (inBaseElem.getId().equals(item.getId())) {
                 list.remove(i);
                 list.add(i, item);
             }
@@ -75,8 +86,12 @@ public class InMemoryDatabase implements IDataBase {
     }
 
     private void insert(final DataBaseItem item) throws IDataBaseException {
+        if (!dataBase.containsKey(item.getCollectionName())) {
+            throw new IDataBaseException("Collection with name " + item.getCollectionName() + " does not exist");
+        }
+        List<DataBaseItem> list = dataBase.get(item.getCollectionName());
         try {
-            item.setId(nextId());
+            item.setId(nextId(item.getCollectionName()));
         } catch (ChangeValueException | InvalidArgumentException e) {
             throw new IDataBaseException("Failed to set id to DataBaseItem", e);
         }
@@ -84,21 +99,23 @@ public class InMemoryDatabase implements IDataBase {
     }
 
     @Override
-    public IObject getById(final Object id, final String collectionName) {
+    public IObject getById(final Object id, final String collectionName) throws IDataBaseException {
+        List<DataBaseItem> list = dataBase.get(collectionName);
         for (DataBaseItem item : list) {
-            if (item.getId().equals(id) && item.getCollectionName().equals(collectionName)) {
+            if (item.getId().equals(id)) {
                 return item.getDocument();
             }
         }
-        return null;
+        throw new IDataBaseException("There is no element with this id");
     }
 
-    private Object nextId() {
-        return list.size() + 1;
+    private Object nextId(final String collectionName) {
+        return dataBase.get(collectionName).size() + 1;
     }
 
     @Override
     public List<IObject> select(final IObject condition, final String collectionName) throws IDataBaseException {
+        List<DataBaseItem> list = dataBase.get(collectionName);
         IFieldName filterFieldName = null;
         IObject filter = null;
         try {
@@ -111,10 +128,8 @@ public class InMemoryDatabase implements IDataBase {
         }
         List<IObject> outputList = new LinkedList<>();
         for (DataBaseItem item : list) {
-            if (Objects.equals(item.getCollectionName(), collectionName)) {
-                if (generalConditionParser(filter, item.getDocument())) {
-                    outputList.add(clone(item.getDocument()));
-                }
+            if (generalConditionParser(filter, item.getDocument())) {
+                outputList.add(clone(item.getDocument()));
             }
         }
         try {
@@ -164,7 +179,27 @@ public class InMemoryDatabase implements IDataBase {
     }
 
     @Override
-    public void delete(final IObject document, final String collectionName) {
-
+    public void delete(IObject document, final String collectionName) throws IDataBaseException {
+        List<DataBaseItem> list = dataBase.get(collectionName);
+        DataBaseItem item = null;
+        try {
+            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+        } catch (ResolutionException e) {
+            throw new IDataBaseException("Failed to create DataBaseItem", e);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            DataBaseItem inDbItem = list.get(i);
+            if (inDbItem.getId().equals(item.getId())) {
+                list.remove(inDbItem);
+                try {
+                    document.deleteField(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID"));
+                } catch (DeleteValueException | InvalidArgumentException e) {
+                    throw new IDataBaseException("Failed to resolve IFieldName", e);
+                } catch (ResolutionException e) {
+                    throw new IDataBaseException("Failed to delete field from IObject", e);
+                }
+                return;
+            }
+        }
     }
 }

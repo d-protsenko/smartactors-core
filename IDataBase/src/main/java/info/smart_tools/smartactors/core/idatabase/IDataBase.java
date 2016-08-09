@@ -7,16 +7,18 @@ import java.util.List;
 
 public interface IDataBase {
 
+    void createCollection(String collectionName);
+
     void insert(final IObject document, final String collectionName) throws IDataBaseException;
 
     void update(final IObject document, final String collectionName) throws IDataBaseException;
 
     void upsert(final IObject document, final String collectionName) throws IDataBaseException;
 
-    IObject getById(final Object id, final String collectionName);
+    IObject getById(final Object id, final String collectionName) throws IDataBaseException;
 
-    void delete(final IObject document, String collectionName);
+    void delete(IObject document, final String collectionName) throws IDataBaseException;
 
-    List<IObject> select(final IObject condition, String collectionName) throws IDataBaseException;
+    List<IObject> select(final IObject condition, final String collectionName) throws IDataBaseException;
 
 }
