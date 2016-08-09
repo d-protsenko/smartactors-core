@@ -1,14 +1,14 @@
-package info.smart_tools.smartactors.plugin;
+package info.smart_tools.smartactors.plugin.in_memory_database;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.in_memory_database.DataBaseItem;
 import info.smart_tools.smartactors.core.in_memory_database.IConditionVerifier;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -18,7 +18,6 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import sun.plugin.navig.motif.Plugin;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -90,7 +89,11 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                                 if (!(bufObject instanceof IObject)) {
                                                                     return null;
                                                                 }
-                                                                IFieldName bufFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldString);
+                                                                IFieldName bufFieldName =
+                                                                        IOC.resolve(
+                                                                                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                                                fieldString
+                                                                        );
                                                                 bufObject = ((IObject) bufObject).getValue(bufFieldName);
                                                                 if (null == bufObject) {
                                                                     return null;
@@ -123,7 +126,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$eq"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$eq"));
                                                     return reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
@@ -134,7 +138,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$neq"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$neq"));
                                                     return !reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
@@ -145,7 +150,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gt"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$gt"));
                                                     return ((Integer) IOC.resolve(
                                                             Keys.getOrAdd("CompareSimpleObjects"), entry, reference)
                                                     ) > 0;
@@ -158,7 +164,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lt"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$lt"));
                                                     return (Integer) IOC.resolve(
                                                             Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                                                     ) < 0;
@@ -171,7 +178,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
                                                     Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$gte"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$gte"));
                                                     return (Integer) IOC.resolve(
                                                             Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                                                     ) >= 0;
@@ -185,7 +193,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 try {
                                                     String entry = (String) document.getValue(fieldName);
                                                     String reference = String.valueOf(
-                                                            ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-from"))
+                                                            ((IObject) condition.getValue(fieldName))
+                                                                    .getValue(new FieldName("$date-from"))
                                                     );
                                                     return reference.compareTo(entry) == -1 || reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -198,7 +207,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 try {
                                                     String entry = (String) document.getValue(fieldName);
                                                     String reference = String.valueOf(
-                                                            ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$date-to"))
+                                                            ((IObject) condition.getValue(fieldName))
+                                                                    .getValue(new FieldName("$date-to"))
                                                     );
                                                     return reference.compareTo(entry) == 1 || reference.equals(entry);
                                                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -209,8 +219,13 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$lte", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
-                                                    Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$lte"));
+                                                    Object entry = IOC.resolve(
+                                                            Keys.getOrAdd("NestedFieldName"),
+                                                            fieldName,
+                                                            document
+                                                    );
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$lte"));
                                                     return (Integer) IOC.resolve(
                                                             Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                                                     ) <= 0;
@@ -222,9 +237,14 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$in", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
-                                                    Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
+                                                    Object entry = IOC.resolve(
+                                                            Keys.getOrAdd("NestedFieldName"),
+                                                            fieldName,
+                                                            document
+                                                    );
                                                     List<Object> references = (List<Object>)
-                                                            ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$in"));
+                                                            ((IObject) condition.getValue(fieldName))
+                                                                    .getValue(new FieldName("$in"));
                                                     for (Object reference : references) {
                                                         if (reference.equals(entry)) {
                                                             return true;
@@ -239,9 +259,14 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$isNull", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
-                                                    Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
+                                                    Object entry = IOC.resolve(
+                                                            Keys.getOrAdd("NestedFieldName"),
+                                                            fieldName,
+                                                            document
+                                                    );
                                                     Boolean references = (Boolean)
-                                                            ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$isNull"));
+                                                            ((IObject) condition.getValue(fieldName))
+                                                                    .getValue(new FieldName("$isNull"));
                                                     return (null == entry) == references;
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                 }
@@ -252,7 +277,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$and", (condition, document) -> {
                                                 boolean result = true;
                                                 try {
-                                                    List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$and"));
+                                                    List<IObject> conditions = (List<IObject>) condition
+                                                            .getValue(new FieldName("$and"));
                                                     for (IObject conditionItem : conditions) {
                                                         result &= verifierMap.get("$general")
                                                                 .verify(conditionItem, document);
@@ -265,7 +291,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$or", (condition, document) -> {
                                                 boolean result = false;
                                                 try {
-                                                    List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$or"));
+                                                    List<IObject> conditions = (List<IObject>) condition
+                                                            .getValue(new FieldName("$or"));
                                                     for (IObject conditionItem : conditions) {
                                                         result |= verifierMap.get("$general")
                                                                 .verify(conditionItem, document);
@@ -278,7 +305,8 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$not", (condition, document) -> {
                                                 boolean result = true;
                                                 try {
-                                                    List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$not"));
+                                                    List<IObject> conditions = (List<IObject>) condition
+                                                            .getValue(new FieldName("$not"));
                                                     for (IObject conditionItem : conditions) {
                                                         result &= !verifierMap.get("$general")
                                                                 .verify(conditionItem, document);
@@ -292,11 +320,16 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     verifierMap.put("$hasTag", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
-                                                    Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
+                                                    Object entry = IOC.resolve(
+                                                            Keys.getOrAdd("NestedFieldName"),
+                                                            fieldName,
+                                                            document
+                                                    );
                                                     if (null == entry) {
                                                         return false;
                                                     }
-                                                    Object reference = ((IObject) condition.getValue(fieldName)).getValue(new FieldName("$hasTag"));
+                                                    Object reference = ((IObject) condition.getValue(fieldName))
+                                                            .getValue(new FieldName("$hasTag"));
                                                     if (entry instanceof List) {
                                                         List<Object> entryList = (List<Object>) entry;
                                                         for (Object entryItem : entryList) {
@@ -307,7 +340,10 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                         return false;
                                                     }
 
-                                                    IFieldName tagFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), reference);
+                                                    IFieldName tagFieldName = IOC.resolve(
+                                                            Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                            reference
+                                                    );
                                                     return null != ((IObject) entry).getValue(tagFieldName);
                                                 } catch (Exception e) {
                                                     return false;
@@ -315,9 +351,12 @@ public class PluginInMemoryDatabase implements IPlugin {
                                             }
                                     );
 
-                                    IOC.register(Keys.getOrAdd("ResolveDataBaseCondition"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(
+                                            Keys.getOrAdd("ResolveDataBaseCondition"),
+                                            new ApplyFunctionToArgumentsStrategy(
                                                     (args) ->
-                                                            verifierMap.get(args[0]).verify((IObject) args[1], (IObject) args[2])
+                                                            verifierMap.get(args[0])
+                                                                    .verify((IObject) args[1], (IObject) args[2])
                                             )
                                     );
 
@@ -334,9 +373,18 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                         Integer pageNumber = 0;
                                                         Integer pageSize = 0;
                                                         try {
-                                                            IFieldName pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
-                                                            IFieldName pageNumberFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "number");
-                                                            IFieldName pageSizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
+                                                            IFieldName pageFieldName = IOC.resolve(
+                                                                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                                    "page"
+                                                            );
+                                                            IFieldName pageNumberFieldName = IOC.resolve(
+                                                                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                                    "number"
+                                                            );
+                                                            IFieldName pageSizeFieldName = IOC.resolve(
+                                                                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                                    "size"
+                                                            );
                                                             page = (IObject) ((IObject) args[0]).getValue(pageFieldName);
                                                             if (null == page) {
                                                                 pageNumber = 1;
@@ -365,7 +413,10 @@ public class PluginInMemoryDatabase implements IPlugin {
 
                                                         IFieldName sortFieldName = null;
                                                         try {
-                                                            sortFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sort");
+                                                            sortFieldName = IOC.resolve(
+                                                                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                                    "sort"
+                                                            );
                                                         } catch (ResolutionException e) {
                                                             e.printStackTrace();
                                                         }
@@ -382,15 +433,28 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                         List<Integer> sortingType = new LinkedList<>();
                                                         for (IObject sortRule : sortRules) {
                                                             sortingFields.add(sortRule.iterator().next().getKey());
-                                                            sortingType.add(sortRule.iterator().next().getValue().equals("asc") ? 1 : -1);
+                                                            sortingType.add(sortRule.iterator().next()
+                                                                    .getValue().equals("asc") ? 1 : -1);
                                                         }
                                                         Comparator comparator = (o1, o2) -> {
                                                             try {
                                                                 Integer compare = 0;
                                                                 for (int i = 0; i < sortingFields.size(); i++) {
-                                                                    Object object1 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o1);
-                                                                    Object object2 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o2);
-                                                                    compare = IOC.resolve(Keys.getOrAdd("CompareSimpleObjects"), object1, object2);
+                                                                    Object object1 = IOC.resolve(
+                                                                            Keys.getOrAdd("NestedFieldName"),
+                                                                            sortingFields.get(i),
+                                                                            o1
+                                                                    );
+                                                                    Object object2 = IOC.resolve(
+                                                                            Keys.getOrAdd("NestedFieldName"),
+                                                                            sortingFields.get(i),
+                                                                            o2
+                                                                    );
+                                                                    compare = IOC.resolve(
+                                                                            Keys.getOrAdd("CompareSimpleObjects"),
+                                                                            object1,
+                                                                            object2
+                                                                    );
                                                                     if (compare != 0) {
                                                                         return compare * sortingType.get(i);
                                                                     }
@@ -402,6 +466,16 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                         documents.sort(comparator);
                                                         return documents;
 
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                                    (args) -> {
+                                                        try {
+                                                            return new DataBaseItem((IObject) args[0], (String) args[1]);
+                                                        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                                                        }
+                                                        return null;
                                                     }
                                             )
                                     );

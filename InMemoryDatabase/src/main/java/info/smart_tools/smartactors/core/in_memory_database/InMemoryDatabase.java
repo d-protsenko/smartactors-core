@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,18 +23,14 @@ import java.util.Objects;
  * Implementation of data base on list
  */
 public class InMemoryDatabase implements IDataBase {
-
-    public InMemoryDatabase() {
-    }
-
     private List<DataBaseItem> list = new LinkedList<>();
 
     @Override
     public void upsert(final IObject document, final String collectionName) throws IDataBaseException {
         DataBaseItem item = null;
         try {
-            item = new DataBaseItem(document, collectionName);
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+        } catch (ResolutionException e) {
             throw new IDataBaseException("Failed to create DataBaseItem", e);
         }
         if (null == item.getId()) {
@@ -50,8 +45,8 @@ public class InMemoryDatabase implements IDataBase {
         synchronized (this) {
             DataBaseItem item = null;
             try {
-                item = new DataBaseItem(document, collectionName);
-            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            } catch (ResolutionException e) {
                 throw new IDataBaseException("Failed to create DataBaseItem", e);
             }
             insert(item);
@@ -62,8 +57,8 @@ public class InMemoryDatabase implements IDataBase {
     public void update(final IObject document, final String collectionName) throws IDataBaseException {
         DataBaseItem item = null;
         try {
-            item = new DataBaseItem(document, collectionName);
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+        } catch (ResolutionException e) {
             throw new IDataBaseException("Failed to create DataBaseItem", e);
         }
         update(item);

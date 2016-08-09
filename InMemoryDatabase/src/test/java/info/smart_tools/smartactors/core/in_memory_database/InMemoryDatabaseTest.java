@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Comparator;
@@ -33,8 +34,8 @@ import static org.junit.Assert.assertTrue;
 
 public class InMemoryDatabaseTest {
 
-    @Before
-    public void setUp() throws ResolutionException, InvalidArgumentException, RegistrationException, ScopeProviderException {
+    @BeforeClass
+    public static void setUp() throws ResolutionException, InvalidArgumentException, RegistrationException, ScopeProviderException {
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -441,6 +442,17 @@ public class InMemoryDatabaseTest {
                             documents.sort(comparator);
                             return documents;
 
+                        }
+                )
+        );
+
+        IOC.register(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                return new DataBaseItem((IObject) args[0], (String) args[1]);
+                            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                            }
+                            return null;
                         }
                 )
         );
