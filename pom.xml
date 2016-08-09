@@ -258,6 +258,7 @@
         <module>PluginConnectionOptions</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
+        <module>GetQueryParameterRule</module>
     </modules>
 
     <build>
