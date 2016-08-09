@@ -61,10 +61,25 @@
       "encoder": "Base64Encoder"
     },
     {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.check_user_is_new.CheckUserIsNewActor",
+      "name": "checkUserIsNewActor"
+    },
+    {
       "kind": "raw",
       "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver",
       "strategyDependency": "chain choice strategy",
       "name": "chain_selector"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
+      "name": "sendMailActor",
+      "username": "alexryandr@gmail.com",
+      "password": "147852369qwerty",
+      "server": "smtp.gmail.com",
+      "sslProtocol": "TLS",
+      "senderAddress": "alexryandr@gmail.com"
     }
   ],
   "maps": [
@@ -250,9 +265,94 @@
         }
       ],
       "exceptional": []
+    },
+    {
+      "id": "sendMailConfirmRegistration",
+      "steps": [
+        {
+          "target": "createSessionActor",
+          "handler": "resolveSession",
+          "wrapper": {
+            "in_getSessionId": "message/sessionId",
+            "in_getAuthInfo": "message/authInfo",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "authenticationActor",
+          "handler": "authenticateSession",
+          "wrapper": {
+            "in_getRequestUserAgent": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+          }
+        },
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "validationFormActor",
+          "handler": "validate",
+          "wrapper": {
+            "in_getFormFromRequest": "message/form",
+            "in_getForm": "message/asyncOperation/body/form",
+            "out_setFormData": "message/form"
+          }
+        },
+        {
+          "target": "checkUserIsNewActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getEmail": "message/form/email"
+          }
+        },
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getOperationData": "message/form",
+            "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "out_setSessionIdInData": "message/form/sessionId",
+            "out_setAsyncOperationToken": "response/token"
+          }
+        },
+        {
+          "target": "sendMailActor",
+          "handler": "sendMailHandler",
+          "wrapper": {
+            "in_getSendToMessage": "message/email",
+            "in_MessageAttributesMessage": "message/messageAttributes",
+            "in_getMessagePartsMessage": "message/messageParts"
+          }
+        }
+      ],
+      "exceptional": []
     }
   ],
   "endpoints": [
+    {
+      "name": "mainHttpsEp",
+      "type": "https",
+      "port": 8443,
+      "startChain": "httpChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5,
+      "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.crt",
+      "certPass": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.key"
+    },
     {
       "name": "mainHttpEp",
       "type": "http",

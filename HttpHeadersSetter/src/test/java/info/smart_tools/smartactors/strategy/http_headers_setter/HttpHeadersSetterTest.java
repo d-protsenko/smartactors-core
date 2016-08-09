@@ -84,7 +84,7 @@ public class HttpHeadersSetterTest {
     @Test
     public void testSettingHeaders() throws InvalidArgumentException, ReadValueException, HeadersSetterException {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        HttpHeadersSetter headersSetter = new HttpHeadersSetter();
+        HttpHeadersExtractor headersSetter = new HttpHeadersExtractor();
         IObject environment = new DSObject("{\n" +
                 "  \"context\": {\n" +
                 "    \"headers\": [\n" +
@@ -137,7 +137,7 @@ public class HttpHeadersSetterTest {
     @Test
     public void testSettingEmptyHeaders() throws InvalidArgumentException, ReadValueException, HeadersSetterException {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        HttpHeadersSetter headersSetter = new HttpHeadersSetter();
+        HttpHeadersExtractor headersSetter = new HttpHeadersExtractor();
         IObject environment = new DSObject("{\n" +
                 "  \"context\": {\n" +
                 "    \"headers\": [" +

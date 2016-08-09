@@ -11,24 +11,21 @@ public interface SearchByIdQuery {
     /**
      * Return the collectionName
      * @return String the name of collection where object is stored
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ReadValueException Calling when try read value of variable
      */
-    String getCollectionName() throws ReadValueException, ChangeValueException;
+    String getCollectionName() throws ReadValueException;
 
     /**
      * Return the id of document
      * @return String the id of document should to be found
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ReadValueException Calling when try read value of variable
      */
-    String getId() throws ReadValueException, ChangeValueException;
+    String getId() throws ReadValueException;
 
     /**
      * Set the found object to message
      * @param object the found document
-     * @throws ReadValueException
-     * @throws ChangeValueException
+     * @throws ChangeValueException Calling when try change value of variable
      */
-    void setSearchResult(IObject object) throws ReadValueException, ChangeValueException;
+    void setSearchResult(IObject object) throws ChangeValueException;
 }

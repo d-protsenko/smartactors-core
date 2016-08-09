@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.DependencyResolvingFeatureManager;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
+import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
@@ -53,14 +54,14 @@ public class ServerWithConfiguration implements IServer {
             );
 
             // FeatureManager & Feature creation
-            DependencyResolvingFeatureManager featureManager = new DependencyResolvingFeatureManager(
+            IFeatureManager featureManager = new DependencyResolvingFeatureManager(
                     System.getProperty("user.home") + "/smartactors-plugins-repo",
                     new HashMap<String, String>() {{
                         put("local_repo", "file://" + System.getProperty("user.home") + "/.m2/repository/");
                     }}
             );
 
-            IFeature coreFeature = featureManager.newFeature("smartactors.core");
+            IFeature coreFeature = featureManager.newFeature("smartactors.core", null);
             coreFeature.whenPresent(files -> {
                 try {
                     pluginLoader.loadPlugin(files);
@@ -101,6 +102,7 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.http_endpoint:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.wds_object:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.wrapper_generator:0.2.0-SNAPSHOT",
+
                     "info.smart_tools.smartactors:plugin.chain_call_receiver:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.chain_choice_strategy:0.2.0-SNAPSHOT",
 
@@ -125,6 +127,10 @@ public class ServerWithConfiguration implements IServer {
 
                     "info.smart_tools.smartactors:plugin.password_encoder:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.mailing_actor:0.2.0-SNAPSHOT",
+
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT"
             };

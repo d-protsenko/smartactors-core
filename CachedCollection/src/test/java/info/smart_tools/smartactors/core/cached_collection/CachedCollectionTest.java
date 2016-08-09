@@ -219,7 +219,7 @@ public class CachedCollectionTest {
     @Test(expected = GetCacheItemException.class)
     public void ShouldThrowGetItemException_When_NestedTaskIsNull() throws Exception {
 
-        when(IOC.resolve(any(), any(), any(), any())).thenThrow(new ResolutionException(""));
+        when(IOC.resolve(any(), any(), any(), any(), any(), any())).thenThrow(new ResolutionException(""));
         collection.getItems("key");
     }
 }

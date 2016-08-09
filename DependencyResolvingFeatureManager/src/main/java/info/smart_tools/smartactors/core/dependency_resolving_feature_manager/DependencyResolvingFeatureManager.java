@@ -44,11 +44,6 @@ public class DependencyResolvingFeatureManager implements IFeatureManager {
     private final Object lock;
     private List<RemoteRepository> remoteRepositories;
 
-    @Override
-    public IFeature newFeature(String name, IFilesystemTracker tracker) throws FeatureManagementException, InvalidArgumentException {
-        return null;
-    }
-
     /**
      * The constructor.
      *
@@ -76,7 +71,8 @@ public class DependencyResolvingFeatureManager implements IFeatureManager {
         newSession();
     }
 
-    public IFeature newFeature(final String name) throws FeatureManagementException {
+    @Override
+    public IFeature newFeature(final String name, final IFilesystemTracker filesystemTracker) throws FeatureManagementException {
         try {
             return new Feature(this, name);
         } catch (InvalidArgumentException e) {

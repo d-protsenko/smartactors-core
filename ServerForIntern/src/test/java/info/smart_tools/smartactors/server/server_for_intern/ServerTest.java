@@ -7,7 +7,6 @@ import org.junit.Test;
  * Tests for
  */
 public class ServerTest {
-
     @Ignore
     @Test
     public void checkServer()
