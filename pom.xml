@@ -245,6 +245,7 @@
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
         <module>PluginChangePasswordActor</module>
+        <module>PluginConnectionOptions</module>
     </modules>
 
     <build>

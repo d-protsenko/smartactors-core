@@ -60,10 +60,8 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                         throw new RuntimeException("Can't resolve cached collection: collectionName is null");
                                     }
                                     String keyName = String.valueOf(args[1]);
-                                    //TODO:: clarify about generators
-                                    //TODO:: wrapperGenerator should be resolved by IOC
-                                    ConnectionOptions connectionOptionsWrapper = new ConnectionOptionsTestImpl();
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
+                                    ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
                                     IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);

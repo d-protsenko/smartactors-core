@@ -17,6 +17,7 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -68,7 +69,10 @@ public class ChangePasswordActorPlugin implements IPlugin {
                                         @Override
                                         public IPool getConnectionPool() throws ReadValueException {
                                             try {
-                                                return IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), new TestConnectionOptions());
+                                                ConnectionOptions connectionOptions = IOC.resolve(
+                                                    Keys.getOrAdd("PostgresConnectionOptions")
+                                                );
+                                                return IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
                                             } catch (Exception e) {
                                                 throw new ReadValueException(e);
                                             }
