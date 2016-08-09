@@ -4,23 +4,55 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by sevenbits on 8/8/16.
+ * Implementation of {@link IMessageReceiver}.
+ * Specific kind of receiver that provides creation of actors collection and its usage by keys.
+ * * Expected format of config section (example):
+ * <pre>
+ * {
+ *     objects: {
+ *     . . .
+ *        {
+ *            "kind": "raw",
+ *            "dependency": "ActorCollection",
+ *            "name": "my-actor-collection"
+ *        },
+ *     . . .
+ *     },
+ *     . . .
+ *     {
+ *         {
+ *             "target": "my-actor-collection",
+ *             "handler": "transformAndPutForResponse",
+ *             "new": {
+ *                 "kind": "actor",
+ *                 "dependency": "SampleActor"
+ *             },
+ *             "key": "in_actorId",
+ *             "wrapper": {
+ *                 "in_actorId": "message/ActorId",
+ *                 "in_getSomeField": "message/Field",
+ *                 "out_setSomeValueForRequest": "response/TransformedField",
+ *                 "out_setCurrentActorState": "response/CurrentState",
+ *                 "in_resetState": "message/Reset"
+ *             }
+ *         }
+ *     }
+ *     . . .
+ * }
+ * </pre>
  */
 public class ActorCollectionReceiver implements IMessageReceiver {
 
@@ -30,7 +62,11 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     private IFieldName nameFieldName;
     private IRouter router = new ActorCollectionRouter();
 
-    public ActorCollectionReceiver(final IObject configSection)
+    /**
+     * Default constructor
+     * @throws InvalidArgumentException if any errors occurred
+     */
+    public ActorCollectionReceiver()
             throws InvalidArgumentException {
         try {
             this.keyFieldName  = IOC.resolve(
@@ -54,7 +90,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     public void receive(final IMessageProcessor processor)
             throws MessageReceiveException, AsynchronousOperationException {
         try {
-            IObject section = (IObject) processor.getSequence().getCurrentReceiverArguments();
+            IObject section = processor.getSequence().getCurrentReceiverArguments();
             String keyName = (String) section.getValue(this.keyFieldName);
             IObject subSectionNew = (IObject) processor.getSequence().getCurrentReceiverArguments().getValue(newFieldName);
             IFieldName fieldNameForKeyName = IOC.resolve(
@@ -82,6 +118,9 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     }
 }
 
+/**
+ * Internal implementation of {@link IRouter}.
+ */
 class ActorCollectionRouter implements IRouter {
 
     private Map<Object, IMessageReceiver> storage = new HashMap<>();

@@ -28,7 +28,7 @@
     },
     {
       "kind": "raw",
-      "dependency": "info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionReceiver",
+      "dependency": "ActorCollection",
       "name": "my-actor-collection"
     }
   ],

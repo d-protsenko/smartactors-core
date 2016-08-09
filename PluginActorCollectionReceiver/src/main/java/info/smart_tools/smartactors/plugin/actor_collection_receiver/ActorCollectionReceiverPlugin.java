@@ -51,12 +51,12 @@ public class ActorCollectionReceiverPlugin implements IPlugin {
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(),
-                                                    ActorCollectionReceiver.class.getCanonicalName()
+                                                    "ActorCollection"
                                             ),
                                             new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
-                                                            return new ActorCollectionReceiver((IObject) args[0]);
+                                                            return new ActorCollectionReceiver();
                                                         } catch (Exception e) {
                                                             throw new RuntimeException(
                                                                     "Could not create new instance of ActorCollectionReceiver."
