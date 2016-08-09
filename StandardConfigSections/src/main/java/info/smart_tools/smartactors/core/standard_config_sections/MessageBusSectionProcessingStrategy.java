@@ -36,16 +36,11 @@ import java.util.List;
  * <p>
  * <pre>
  *     {
- *         "messageBus": [
- *             {
+ *         "messageBus": {
  *                 "routingChain": "mainChain",
  *                 "stackDepth": 5 (temporarily)
  *                 // . . .
- *             },
- *             {
- *                 // . . .
  *             }
- *         ]
  *     }
  * </pre>
  */
