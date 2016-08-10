@@ -113,7 +113,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
                 receiver = this.router.route(key);
             }
             receiver.receive(processor);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new MessageReceiveException("Could not execute ActorCollectionReceiver.receive.", e);
         }
     }

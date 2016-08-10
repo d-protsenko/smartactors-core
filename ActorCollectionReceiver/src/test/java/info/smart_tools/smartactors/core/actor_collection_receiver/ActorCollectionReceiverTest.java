@@ -42,7 +42,6 @@ public class ActorCollectionReceiverTest {
     @Before
     public void init()
             throws Exception {
-
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
