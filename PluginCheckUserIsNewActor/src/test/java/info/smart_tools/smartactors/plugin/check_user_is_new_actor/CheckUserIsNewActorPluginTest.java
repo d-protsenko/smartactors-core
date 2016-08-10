@@ -53,6 +53,7 @@ public class CheckUserIsNewActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -60,7 +61,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -109,6 +110,7 @@ public class CheckUserIsNewActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -116,7 +118,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -140,6 +142,7 @@ public class CheckUserIsNewActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -147,7 +150,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -195,6 +198,7 @@ public class CheckUserIsNewActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -202,7 +206,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -244,6 +248,7 @@ public class CheckUserIsNewActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CheckUserIsNewActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -252,6 +257,7 @@ public class CheckUserIsNewActorPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
         verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
