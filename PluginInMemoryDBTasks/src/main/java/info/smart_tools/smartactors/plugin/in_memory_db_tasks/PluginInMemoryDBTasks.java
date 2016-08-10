@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
+import info.smart_tools.smartactors.core.in_memory_db_create_collection_task.InMemoryDBCreateCollectionTask;
 import info.smart_tools.smartactors.core.in_memory_db_get_by_id_task.InMemoryGetByIdTask;
 import info.smart_tools.smartactors.core.in_memory_db_select_task.InMemoryDBSelectTask;
 import info.smart_tools.smartactors.core.in_memory_db_upsert_task.InMemoryDBUpsertTask;
@@ -53,6 +54,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                             registerUpsertTask();
                             registerGetByIdTask();
                             registerSearchTask();
+                            registerCreateCollectionTask();
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("Can't resolve fields for db task.", e);
                         } catch (InvalidArgumentException e) {
@@ -86,6 +88,32 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve upsert db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    public void registerCreateCollectionTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IOC.register(
+                Keys.getOrAdd("db.collection.create"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                String collectionName = String.valueOf(args[1]);
+                                IDatabaseTask task = new InMemoryDBCreateCollectionTask();
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName);
 
                                 task.prepare(query);
                                 return task;
