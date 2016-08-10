@@ -20,7 +20,7 @@ You should do the following to perform a database query.
 1. Resolve [IoC](IOCExample.html) dependency to take command object which interacts with DB.
 
         ITask task = IOC.resolve(
-            Keys.getOrAdd("command_name"),               // each command has it's own unique name
+            Keys.getOrAdd("command_name"),          // each command has it's own unique name
             connection,                             // object - connection to the DB
             "collection_name",                      // each document belongs to the collection
             other comma-separated parameters        // the set of parameters depends on the command
@@ -35,6 +35,45 @@ You should do the following to perform a database query.
     If the command cannot be executed, `task.execute()` throws `TaskExecutionException`.
 
 ## Database commands
+
+### Create collection
+
+Creates the collection in the database to be used in the following database queries.
+Use this task on an initialization step, to create all necessary collections on the first server start.
+
+Command name: `db.collection.create`
+
+Additional parameters:
+
+- options — `IObject` — object specifying the set of additional options for the collection creation.
+
+#### Indexes
+
+ID of the document is always the primary key, so GetById always use index. 
+You can specify additional indexes to do Search more effectively as options.
+
+The example of options object with indexes:
+
+    {
+        "ordered": [ "a", "b" ],
+        "datetime": "date",
+        "tags": "tags",
+        "fulltext": "text",
+        "language": "english"
+    }
+
+You should define a field or array of fields for each possible index type in the options.
+Also some additional parameters may be required.
+
+Available index types:
+
+* `ordered` — typical btree ordered index, to be used to test for equality, ranges, for sorting, etc...
+* `datetime` — btree index containing conversion to datetime, use it to optimize `$date-from` and `$date-to` search operators.
+* `tags` — an index for fields containing arrays of tags, use it to optimize `$hasTag` search operator. 
+* `fulltext` — full text index, requires additional `language` option, use it to optimize `$fulltext` search operator.
+
+Ordered, datetime and tags indexes are created for each field independently, so queries for all specified fields can be done in any combination.
+However, fulltext index is only one for the collection, the texts from all specified fields are concatenated for the indexing.
 
 ### Upsert
 
@@ -178,7 +217,29 @@ Available operators:
 * `$date-from` — greater or equal for datetime fields
 * `$date-to` — less or equal for datetime fields
 * `$in` — checks for equality to any of the specified values in the array
-* `$hasTag` — check the document field is JSON document contains the specified value as field name or value
+* `$hasTag` — check the document field which is an array of tags contains the specified tag value
+* `$fulltext` — full text search over a text field, the fulltext index on the collection is required (see above)
+
+It's possible to check nested fields using dot-separated syntax.
+ 
+    {
+        "filter":
+            { "a.b.c": { "$eq": 123 } }
+    }
+    
+Multiple conditions for the same field can be defined. It implies AND relations between then, all conditions must be satisfied.
+ 
+    {
+        "filter":
+            { "finished": { "$gt": 15, "$lt": 20 } }
+    }
+     
+Also multiple conditions for different fields can be ANDed implicitly too.
+
+    {
+        "filter":
+            { "status": { "$eq": "A" }, "age": { "$lt": 30 } }
+    }            
 
 ##### Page
 

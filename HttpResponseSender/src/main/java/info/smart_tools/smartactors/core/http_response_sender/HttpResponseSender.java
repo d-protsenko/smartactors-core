@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.http_response_sender;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -28,7 +28,7 @@ public class HttpResponseSender implements IResponseSender {
      * Constructor for http response sender
      */
     private final ICookiesSetter cookiesSetter;
-    private final IHeadersSetter headersSetter;
+    private final IHeadersExtractor headersSetter;
     private final IResponseStatusExtractor responseStatusSetter;
     private final String name;
 
@@ -41,7 +41,7 @@ public class HttpResponseSender implements IResponseSender {
     public HttpResponseSender(final String name) throws ResolutionException {
         this.name = name;
         cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()), name);
-        headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersSetter.class.getCanonicalName()), name);
+        headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName()), name);
         responseStatusSetter = IOC.resolve(Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName()), name);
     }
 

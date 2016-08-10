@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.sample_actor;
 
 import info.smart_tools.smartactors.actors.SampleDBActor;
+import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -41,7 +42,7 @@ public class SampleDBActorPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("SampleDBActorActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("SampleDBActorPlugin");
 
             item
                 .process(() -> {
@@ -90,7 +91,11 @@ public class SampleDBActorPlugin implements IPlugin {
                     IOC.register(Keys.getOrAdd("SampleDBActor"), new IResolveDependencyStrategy() {
                         @Override
                         public SampleDBActor resolve(Object... args) throws ResolveDependencyStrategyException {
-                            return new SampleDBActor();
+                            try {
+                                return new SampleDBActor();
+                            } catch (SampleDBException e) {
+                                throw new ResolveDependencyStrategyException(e);
+                            }
                         }
                     });
                 } catch (ResolutionException | RegistrationException e) {
@@ -99,7 +104,7 @@ public class SampleDBActorPlugin implements IPlugin {
             });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load AuthenticationActor plugin", e);
+            throw new PluginException("Can't load SampleDBActorPlugin plugin", e);
         }
     }
 }

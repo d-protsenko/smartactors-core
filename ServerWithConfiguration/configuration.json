@@ -75,6 +75,16 @@
   ],
   "endpoints": [
     {
+      "name": "mainHttpsEp",
+      "type": "https",
+      "port": 8443,
+      "startChain": "httpChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5,
+      "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.crt",
+      "certPass": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.key"
+    },
+    {
       "name": "mainHttpEp",
       "type": "http",
       "port": 9909,
