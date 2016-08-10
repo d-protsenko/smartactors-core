@@ -14,7 +14,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
@@ -61,7 +64,12 @@ public class ValidateFormDataActorTest {
 
         IObject fieldIObject = mock(IObject.class);
         when(serverForm.getValue(fieldFieldName)).thenReturn(fieldIObject);
-        when(rulesF.in(fieldIObject)).thenReturn("обязательное");
+
+        List<IObject> rules = new ArrayList<>();
+        IObject rule = mock(IObject.class);
+        rules.add(rule);
+        when(rulesF.in(fieldIObject)).thenReturn(rules);
+        when(rulesF.in(rule)).thenReturn("обязательное");
 
         when(clientForm.getValue(fieldFieldName)).thenReturn("valueFromClient");
 
