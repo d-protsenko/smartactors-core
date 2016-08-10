@@ -243,6 +243,7 @@
         <module>InMemoryDBUpsertTask</module>
         <module>InMemoryDBDeleteTask</module>
         <module>InMemoryDBSelectTask</module>
+        <module>PluginInMemoryDBTasks</module>
     </modules>
 
     <build>
