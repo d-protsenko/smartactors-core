@@ -28,7 +28,7 @@ public class CheckUserByEmailActor {
      * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
     public CheckUserByEmailActor(final ActorParams params) throws InvalidArgumentException {
-/*        try {
+        try {
             collection = IOC.resolve(
                     Keys.getOrAdd(ICachedCollection.class.getCanonicalName()),
                     params.getCollectionName(),
@@ -37,7 +37,7 @@ public class CheckUserByEmailActor {
             throw new InvalidArgumentException("Can't read some of message values", e);
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't get key or resolve dependency", e);
-        }*/
+        }
     }
 
 
