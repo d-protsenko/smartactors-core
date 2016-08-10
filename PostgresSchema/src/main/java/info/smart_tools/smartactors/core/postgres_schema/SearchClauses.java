@@ -32,6 +32,9 @@ class SearchClauses {
         try {
             IFieldName filterField = IOC.resolve(fieldNameKey, "filter");
             IObject filter = (IObject) criteria.getValue(filterField);
+            if (filter == null) {
+                return; // no filter in the criteria, ignoring
+            }
             body.write(" WHERE ");
             PostgresQueryWriterResolver resolver = new PostgresQueryWriterResolver();
             resolver.resolve(null).write(statement, resolver, null, filter);

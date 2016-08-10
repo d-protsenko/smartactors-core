@@ -59,14 +59,14 @@ public class PostgresSchemaTest {
         PostgresSchema.update(statement, collection);
         assertEquals("UPDATE test_collection " +
                 "SET document = ?::jsonb " +
-                "WHERE (document#>'{test_collectionID}') = ?", body.toString());
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
     }
 
     @Test
     public void testGetById() throws QueryBuildException {
         PostgresSchema.getById(statement, collection);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE (document#>'{test_collectionID}') = ?", body.toString());
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
     }
 
     @Test
@@ -112,6 +112,29 @@ public class PostgresSchemaTest {
                 "LIMIT(?)OFFSET(?)",
                 body.toString());
         verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithEmptyFilter() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection WHERE (TRUE)", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithEmptyCriteria() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithNullCriteria() throws InvalidArgumentException, QueryBuildException {
+        PostgresSchema.search(statement, collection, null);
+        assertEquals("SELECT document FROM test_collection", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
     }
 
     @Test

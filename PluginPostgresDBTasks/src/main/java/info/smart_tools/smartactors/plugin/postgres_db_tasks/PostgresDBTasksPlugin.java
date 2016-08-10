@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
+import info.smart_tools.smartactors.core.postgres_upsert_task.UuidNextIdStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -139,6 +140,10 @@ public class PostgresDBTasksPlugin implements IPlugin {
         IField documentField = IOC.resolve(
                 Keys.getOrAdd(IField.class.getCanonicalName()), "document");
 
+        IOC.register(
+                Keys.getOrAdd("db.collection.nextid"),
+                new UuidNextIdStrategy()
+        );
         IOC.register(
                 Keys.getOrAdd(UpsertMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(

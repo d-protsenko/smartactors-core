@@ -44,7 +44,7 @@ public class PostgresCreateTaskTest {
     private IStorageConnection connection;
     private CreateCollectionMessage message;
     private JDBCCompiledQuery compiledQuery;
-    private PreparedStatement statement;
+    private PreparedStatement sqlStatement;
 
     @BeforeClass
     public static void prepareIOC() throws PluginException, ProcessExecutionException {
@@ -58,12 +58,16 @@ public class PostgresCreateTaskTest {
 
     @Before
     public void setUp() throws QueryBuildException, InvalidArgumentException, ResolutionException, RegistrationException, ReadValueException, StorageException, SQLException {
-        statement = mock(PreparedStatement.class);
+        sqlStatement = mock(PreparedStatement.class);
+
         compiledQuery = mock(JDBCCompiledQuery.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(statement);
+        when(compiledQuery.getPreparedStatement()).thenReturn(sqlStatement);
+
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
+
         task = new PostgresCreateTask(connection);
+
         message = mock(CreateCollectionMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
@@ -81,13 +85,13 @@ public class PostgresCreateTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verify(connection).commit();
     }
 
     @Test
     public void testCreateFailure() throws SQLException, TaskPrepareException, StorageException {
-        when(statement.execute()).thenThrow(SQLException.class);
+        when(sqlStatement.execute()).thenThrow(SQLException.class);
 
         task.prepare(null); // the message will be resolved by IOC
         try {
@@ -98,7 +102,7 @@ public class PostgresCreateTaskTest {
         }
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verify(connection).rollback();
     }
 
@@ -110,7 +114,7 @@ public class PostgresCreateTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verify(connection).commit();
     }
 
@@ -118,17 +122,15 @@ public class PostgresCreateTaskTest {
     public void testCreateWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
         when(message.getOptions()).thenReturn(new DSObject("{ \"ordered\": 123 }"));
 
-        task.prepare(null); // the message will be resolved by IOC
         try {
-            task.execute();
+            task.prepare(null); // the message will be resolved by IOC
             fail();
-        } catch (TaskExecutionException e) {
+        } catch (TaskPrepareException e) {
             // pass
         }
 
-        verify(connection, times(0)).compileQuery(any(QueryStatement.class));
-        verify(statement, times(0)).execute();
-        verify(connection).rollback();
+        verifyZeroInteractions(connection);
+        verifyZeroInteractions(sqlStatement);
     }
 
 }

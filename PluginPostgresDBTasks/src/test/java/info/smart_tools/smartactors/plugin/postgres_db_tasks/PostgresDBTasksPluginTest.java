@@ -27,6 +27,7 @@ import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleC
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -74,6 +75,8 @@ public class PostgresDBTasksPluginTest {
     public void testUpsertTaskInitialized() throws ResolutionException {
         assertTrue(IOC.resolve(Keys.getOrAdd(UpsertMessage.class.getCanonicalName()), message)
                 instanceof UpsertMessage);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.nextid")) instanceof String);
+        assertNotEquals(IOC.resolve(Keys.getOrAdd("db.collection.nextid")), IOC.resolve(Keys.getOrAdd("db.collection.nextid")));
         IObject document = mock(IObject.class);
         assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.upsert"), connection, collection, document)
                 instanceof PostgresUpsertTask);

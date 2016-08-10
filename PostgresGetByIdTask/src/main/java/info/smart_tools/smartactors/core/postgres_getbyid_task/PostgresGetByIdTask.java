@@ -22,24 +22,25 @@ import java.sql.ResultSet;
 public class PostgresGetByIdTask implements IDatabaseTask {
 
     /**
-     * Collection where the document should be upserted.
-     */
-    private CollectionName collection;
-
-    /**
      * Connection to the database.
      */
     private IStorageConnection connection;
-
     /**
-     * ID to search the document.
+     * Name of the collection.
+     */
+    private CollectionName collection;
+    /**
+     * Id of the document to search.
      */
     private Object id;
-
     /**
      * Callback function to call when the object is found.
      */
     private IAction<IObject> callback;
+    /**
+     * Query, prepared during prepare(), to be compiled during execute().
+     */
+    private QueryStatement preparedQuery;
 
     /**
      * Creates the task
@@ -56,6 +57,13 @@ public class PostgresGetByIdTask implements IDatabaseTask {
             collection = message.getCollectionName();
             id = message.getId();
             callback = message.getCallback();
+
+            preparedQuery = new QueryStatement();
+            PostgresSchema.getById(preparedQuery, collection);
+            preparedQuery.pushParameterSetter((statement, index) -> {
+                statement.setObject(index++, id);
+                return index;
+            });
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
@@ -64,17 +72,10 @@ public class PostgresGetByIdTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            QueryStatement preparedQuery = new QueryStatement();
-            PostgresSchema.getById(preparedQuery, collection);
-            long sqlId = Long.parseLong(String.valueOf(id));    // TODO: use IoC to convert
-            preparedQuery.pushParameterSetter((statement, index) -> {
-                statement.setLong(index++, sqlId);
-                return index;
-            });
-
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
+
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 String sqlDoc = resultSet.getString(1);
@@ -83,17 +84,17 @@ public class PostgresGetByIdTask implements IDatabaseTask {
                 connection.commit();
             } else {
                 connection.commit();
-                throw new TaskExecutionException("Not found: id = " + id);
+                throw new TaskExecutionException("Not found in " + collection + ": id = " + id);
             }
         } catch (TaskExecutionException te) {
             throw te;
         } catch (Exception e) {
             try {
                 connection.rollback();
-            } catch (Exception e1) {
+            } catch (Exception re) {
                 // ignoring rollback failure
             }
-            throw new TaskExecutionException("Select failed: id = " + id, e);
+            throw new TaskExecutionException("Select in " + collection + " failed: id = " + id, e);
         }
     }
 

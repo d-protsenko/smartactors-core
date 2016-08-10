@@ -59,6 +59,9 @@ public class DBCollectionServer implements IServer {
             IFieldName textField = IOC.resolve(
                     Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
             document.setValue(textField, "initial value");
+            IFieldName intField = IOC.resolve(
+                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
+            document.setValue(intField, 1);
 
             ConnectionOptions connectionOptions = new TestConnectionOptions();
             IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
@@ -111,6 +114,28 @@ public class DBCollectionServer implements IServer {
                             try {
                                 System.out.println("Found by id");
                                 System.out.println((String) doc.serialize());
+                            } catch (SerializeException e) {
+                                throw new ActionExecuteException(e);
+                            }
+                        }
+                );
+                task.execute();
+            }
+
+            try (PoolGuard guard = new PoolGuard(pool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.search"),
+                        guard.getObject(),
+                        collection,
+                        new DSObject(String.format(
+                                "{ \"filter\": { \"%1$s\": { \"$eq\": 1 } } }",
+                                intField.toString())),
+                        (IAction<IObject[]>) docs -> {
+                            try {
+                                for (IObject doc : docs) {
+                                    System.out.println("Found by " + intField);
+                                    System.out.println((String) doc.serialize());
+                                }
                             } catch (SerializeException e) {
                                 throw new ActionExecuteException(e);
                             }

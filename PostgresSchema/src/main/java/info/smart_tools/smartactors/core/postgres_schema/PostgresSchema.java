@@ -150,7 +150,7 @@ public final class PostgresSchema {
             body.write(DOCUMENT_COLUMN);
             body.write(" = ?::jsonb WHERE (");
             body.write(getIdFieldPath(collection).toSQL());
-            body.write(") = ?");
+            body.write(") = to_json(?)::jsonb");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build update body", e);
         }
@@ -171,7 +171,7 @@ public final class PostgresSchema {
             body.write(collection.toString());
             body.write(" WHERE (");
             body.write(getIdFieldPath(collection).toSQL());
-            body.write(") = ?");
+            body.write(") = to_json(?)::jsonb");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build getById body", e);
         }
@@ -216,6 +216,9 @@ public final class PostgresSchema {
             body.write(" FROM ");
             body.write(collection.toString());
 
+            if (criteria == null) {
+                return;
+            }
             SearchClauses.writeSearchWhere(statement, criteria);
             SearchClauses.writeSearchOrder(statement, criteria);
             SearchClauses.writeSearchPaging(statement, criteria);

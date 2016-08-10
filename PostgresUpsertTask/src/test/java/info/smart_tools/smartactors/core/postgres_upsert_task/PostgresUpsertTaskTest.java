@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
@@ -32,6 +33,7 @@ import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleC
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -87,6 +89,7 @@ public class PostgresUpsertTaskTest {
             preparedQuery.compile(sqlConnection);
             return compiledQuery;
         }).when(connection).compileQuery(any());
+
         task = new PostgresUpsertTask(connection);
 
         document = mock(IObject.class);
@@ -103,7 +106,7 @@ public class PostgresUpsertTaskTest {
     }
 
     @Test
-    public void testInsert() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
+    public void testInsert() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, SerializeException {
         FieldName testFieldName = new FieldName("testField");
         when(document.getValue(testFieldName)).thenReturn("testValue");
 
@@ -111,10 +114,15 @@ public class PostgresUpsertTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(sqlStatement).setString(eq(1), any(String.class));
+        verify(sqlStatement).setString(eq(1), anyString());
         verify(sqlStatement).execute();
         verify(connection).commit();
         verify(document).setValue(eq(idFieldName), anyString());
+
+        InOrder inOrder = inOrder(document, sqlStatement);
+        inOrder.verify(document).setValue(eq(idFieldName), anyString());
+        inOrder.verify(document).serialize();
+        inOrder.verify(sqlStatement).setString(eq(1), anyString());
     }
 
     @Test
