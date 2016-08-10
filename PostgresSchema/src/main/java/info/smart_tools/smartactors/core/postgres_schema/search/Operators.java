@@ -49,8 +49,7 @@ final class Operators {
 
         // Fulltext search
         resolver.addQueryWriter("$fulltext", formattedCheckWriter(
-                String.format("(to_tsvector('%s',(%%s)::text))@@(to_tsquery(%s,?))",
-                        PostgresSchema.FTS_DICTIONARY, PostgresSchema.FTS_DICTIONARY)));
+                String.format("%s@@(to_tsquery('%s',?))", PostgresSchema.FULLTEXT_COLUMN, PostgresSchema.FTS_DICTIONARY)));
     }
 
     /**

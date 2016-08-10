@@ -1,20 +1,15 @@
-package info.smart_tools.smartactors.core.postgres_getbyid_task;
+package info.smart_tools.smartactors.core.postgres_create_task;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -33,30 +28,23 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for PostgresGetByIdTask.
+ * Tests for PostgresCreateTask.
  */
-public class PostgresGetByIdTaskTest {
+public class PostgresCreateTaskTest {
 
     private IDatabaseTask task;
-    private GetByIdMessage message;
-    private IFieldName idFieldName;
     private IStorageConnection connection;
-    private QueryStatement preparedQuery;
+    private CreateCollectionMessage message;
     private JDBCCompiledQuery compiledQuery;
-    private Connection sqlConnection;
     private PreparedStatement sqlStatement;
-    private ResultSet resultSet;
 
     @BeforeClass
     public static void prepareIOC() throws PluginException, ProcessExecutionException {
@@ -70,61 +58,39 @@ public class PostgresGetByIdTaskTest {
 
     @Before
     public void setUp() throws QueryBuildException, InvalidArgumentException, ResolutionException, RegistrationException, ReadValueException, StorageException, SQLException {
-        resultSet = mock(ResultSet.class);
         sqlStatement = mock(PreparedStatement.class);
-        when(sqlStatement.getResultSet()).thenReturn(resultSet);
 
         compiledQuery = mock(JDBCCompiledQuery.class);
         when(compiledQuery.getPreparedStatement()).thenReturn(sqlStatement);
 
-        sqlConnection = mock(Connection.class);
-        when(sqlConnection.prepareStatement(any())).thenReturn(sqlStatement);
-
         connection = mock(IStorageConnection.class);
-        doAnswer(invocation -> {
-            preparedQuery = (QueryStatement) invocation.getArguments()[0];
-            preparedQuery.compile(sqlConnection);
-            return compiledQuery;
-        }).when(connection).compileQuery(any());
+        when(connection.compileQuery(any())).thenReturn(compiledQuery);
 
-        task = new PostgresGetByIdTask(connection);
+        task = new PostgresCreateTask(connection);
 
-        message = mock(GetByIdMessage.class);
+        message = mock(CreateCollectionMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
-        idFieldName = new FieldName("testID");
-
         IOC.register(
-                Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()),
+                Keys.getOrAdd(CreateCollectionMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }
 
     @Test
-    public void testGetById() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        when(message.getId()).thenReturn("123");
-        final IObject[] result = new IObject[1];
-        when(message.getCallback()).thenReturn(doc -> result[0] = doc);
-        when(resultSet.next()).thenReturn(true);
-        when(resultSet.getString(1)).thenReturn("{ \"testID\": \"123\", \"test\": \"value\" }");
+    public void testCreate() throws TaskPrepareException, TaskExecutionException, StorageException, SQLException, InvalidArgumentException, ReadValueException {
+        when(message.getOptions()).thenReturn(new DSObject("{}"));
 
         task.prepare(null); // the message will be resolved by IOC
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-         verify(sqlStatement).setObject(eq(1), eq("123"));
         verify(sqlStatement).execute();
-        verify(resultSet).next();
         verify(connection).commit();
-        assertEquals("123", result[0].getValue(idFieldName));
-        assertEquals("value", result[0].getValue(new FieldName("test")));
     }
 
     @Test
-    public void testGetByIdFailure() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        when(message.getId()).thenReturn("123");
-        IAction<IObject> callback = mock(IAction.class);
-        when(message.getCallback()).thenReturn(callback);
+    public void testCreateFailure() throws SQLException, TaskPrepareException, StorageException {
         when(sqlStatement.execute()).thenThrow(SQLException.class);
 
         task.prepare(null); // the message will be resolved by IOC
@@ -136,35 +102,35 @@ public class PostgresGetByIdTaskTest {
         }
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(sqlStatement).setObject(eq(1), eq("123"));
         verify(sqlStatement).execute();
-        verifyZeroInteractions(resultSet);
-        verifyZeroInteractions(callback);
         verify(connection).rollback();
     }
 
     @Test
-    public void testGetByIdNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        when(message.getId()).thenReturn("123");
-        IAction<IObject> callback = mock(IAction.class);
-        when(message.getCallback()).thenReturn(callback);
-        when(resultSet.next()).thenReturn(false);
-        when(resultSet.getString(anyInt())).thenThrow(SQLException.class);
+    public void testCreateWithNullOptions() throws TaskPrepareException, StorageException, ReadValueException, TaskExecutionException, SQLException {
+        when(message.getOptions()).thenReturn(null);
 
         task.prepare(null); // the message will be resolved by IOC
+        task.execute();
+
+        verify(connection).compileQuery(any(QueryStatement.class));
+        verify(sqlStatement).execute();
+        verify(connection).commit();
+    }
+
+    @Test
+    public void testCreateWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
+        when(message.getOptions()).thenReturn(new DSObject("{ \"ordered\": 123 }"));
+
         try {
-            task.execute();
+            task.prepare(null); // the message will be resolved by IOC
             fail();
-        } catch (TaskExecutionException e) {
+        } catch (TaskPrepareException e) {
             // pass
         }
 
-        verify(connection).compileQuery(any(QueryStatement.class));
-        verify(sqlStatement).setObject(eq(1), eq("123"));
-        verify(sqlStatement).execute();
-        verify(resultSet).next();
-        verify(connection).commit();
-        verifyZeroInteractions(callback);
+        verifyZeroInteractions(connection);
+        verifyZeroInteractions(sqlStatement);
     }
 
 }

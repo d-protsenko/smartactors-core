@@ -1,12 +1,13 @@
-package info.smart_tools.smartactors.core.postgres_getbyid_task;
+package info.smart_tools.smartactors.core.postgres_create_task;
 
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
@@ -14,12 +15,11 @@ import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
- * The database task which is able to select documents from Postgres database by the document ID.
+ * The database task which is create documents collection in Postgres database.
  */
-public class PostgresGetByIdTask implements IDatabaseTask {
+public class PostgresCreateTask implements IDatabaseTask {
 
     /**
      * Connection to the database.
@@ -30,13 +30,9 @@ public class PostgresGetByIdTask implements IDatabaseTask {
      */
     private CollectionName collection;
     /**
-     * Id of the document to search.
+     * Collection creation options.
      */
-    private Object id;
-    /**
-     * Callback function to call when the object is found.
-     */
-    private IAction<IObject> callback;
+    private IObject options;
     /**
      * Query, prepared during prepare(), to be compiled during execute().
      */
@@ -44,26 +40,20 @@ public class PostgresGetByIdTask implements IDatabaseTask {
 
     /**
      * Creates the task
-     * @param connection the database connection where to perform upserts
+     * @param connection the database connection
      */
-    public PostgresGetByIdTask(final IStorageConnection connection) {
+    public PostgresCreateTask(final IStorageConnection connection) {
         this.connection = connection;
     }
 
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            GetByIdMessage message = IOC.resolve(Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()), query);
+            CreateCollectionMessage message = IOC.resolve(Keys.getOrAdd(CreateCollectionMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
-            id = message.getId();
-            callback = message.getCallback();
-
+            options = message.getOptions();
             preparedQuery = new QueryStatement();
-            PostgresSchema.getById(preparedQuery, collection);
-            preparedQuery.pushParameterSetter((statement, index) -> {
-                statement.setObject(index++, id);
-                return index;
-            });
+            PostgresSchema.create(preparedQuery, collection, options);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
@@ -75,26 +65,19 @@ public class PostgresGetByIdTask implements IDatabaseTask {
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
-
-            ResultSet resultSet = statement.getResultSet();
-            if (resultSet.next()) {
-                String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), sqlDoc);
-                callback.execute(document);
-                connection.commit();
-            } else {
-                connection.commit();
-                throw new TaskExecutionException("Not found in " + collection + ": id = " + id);
-            }
-        } catch (TaskExecutionException te) {
-            throw te;
+            connection.commit();
         } catch (Exception e) {
             try {
                 connection.rollback();
-            } catch (Exception re) {
+            } catch (StorageException se) {
                 // ignoring rollback failure
             }
-            throw new TaskExecutionException("Select in " + collection + " failed: id = " + id, e);
+            try {
+                throw new TaskExecutionException("Create " + collection + " collection failed, options: " +
+                        (options != null ? options.serialize() : "null"), e);
+            } catch (SerializeException se) {
+                throw new TaskExecutionException("Create " + collection + " collection failed", e);
+            }
         }
     }
 

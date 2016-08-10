@@ -18,12 +18,15 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
+import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
 import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
+import info.smart_tools.smartactors.core.postgres_upsert_task.UuidNextIdStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -49,8 +52,10 @@ public class PostgresDBTasksPlugin implements IPlugin {
             item
                 .after("IOC")
                 .after("IFieldPlugin")
+                .after("iobject")
                 .process(() -> {
                     try {
+                        registerCreateTask();
                         registerUpsertTask();
                         registerGetByIdTask();
                         registerSearchTask();
@@ -68,12 +73,77 @@ public class PostgresDBTasksPlugin implements IPlugin {
         }
     }
 
+    private void registerCreateTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IField optionsField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "options");
+
+        IOC.register(
+                Keys.getOrAdd(CreateCollectionMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new CreateCollectionMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getOptions() throws ReadValueException {
+                                    try {
+                                        return (IObject) optionsField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getOrAdd("db.collection.create"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject options = null;
+                                if (args.length > 2) {
+                                     options = (IObject) args[2];
+                                }
+                                IDatabaseTask task = new PostgresCreateTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName);
+                                optionsField.out(query, options);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve create db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
     private void registerUpsertTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
                 Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
                 Keys.getOrAdd(IField.class.getCanonicalName()), "document");
 
+        IOC.register(
+                Keys.getOrAdd("db.collection.nextid"),
+                new UuidNextIdStrategy()
+        );
         IOC.register(
                 Keys.getOrAdd(UpsertMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
