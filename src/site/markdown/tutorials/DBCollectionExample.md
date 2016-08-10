@@ -72,6 +72,9 @@ Available index types:
 * `tags` — an index for fields containing arrays of tags, use it to optimize `$hasTag` search operator. 
 * `fulltext` — full text index, requires additional `language` option, use it to optimize `$fulltext` search operator.
 
+Ordered, datetime and tags indexes are created for each field independently, so queries for all specified fields can be done in any combination.
+However, fulltext index is only one for the collection, the texts from all specified fields are concatenated for the indexing.
+
 ### Upsert
 
 Adds the new object to the collection or updates the existed object.
@@ -215,7 +218,28 @@ Available operators:
 * `$date-to` — less or equal for datetime fields
 * `$in` — checks for equality to any of the specified values in the array
 * `$hasTag` — check the document field which is an array of tags contains the specified tag value
-* `$fulltext` — full text search over a text field
+* `$fulltext` — full text search over a text field, the fulltext index on the collection is required (see above)
+
+It's possible to check nested fields using dot-separated syntax.
+ 
+    {
+        "filter":
+            { "a.b.c": { "$eq": 123 } }
+    }
+    
+Multiple conditions for the same field can be defined. It implies AND relations between then, all conditions must be satisfied.
+ 
+    {
+        "filter":
+            { "finished": { "$gt": 15, "$lt": 20 } }
+    }
+     
+Also multiple conditions for different fields can be ANDed implicitly too.
+
+    {
+        "filter":
+            { "status": { "$eq": "A" }, "age": { "$lt": 30 } }
+    }            
 
 ##### Page
 
