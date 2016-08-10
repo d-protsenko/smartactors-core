@@ -7,14 +7,10 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Implementation of {@link IMessageReceiver}.
@@ -60,15 +56,20 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     private IFieldName newFieldName;
     private IFieldName kindFieldName;
     private IFieldName nameFieldName;
-    private IRouter router = new ActorCollectionRouter();
+    private IRouter router;
 
     /**
      * Default constructor
+     * @param router the instance of {@link ActorCollectionRouter}.
      * @throws InvalidArgumentException if any errors occurred
      */
-    public ActorCollectionReceiver()
+    public ActorCollectionReceiver(final IRouter router)
             throws InvalidArgumentException {
+        if (null == router) {
+            throw new InvalidArgumentException("Router should not be null.");
+        }
         try {
+            this.router = router;
             this.keyFieldName  = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "key"
             );
@@ -92,7 +93,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
         try {
             IObject section = processor.getSequence().getCurrentReceiverArguments();
             String keyName = (String) section.getValue(this.keyFieldName);
-            IObject subSectionNew = (IObject) processor.getSequence().getCurrentReceiverArguments().getValue(newFieldName);
+            IObject subSectionNew = (IObject) section.getValue(this.newFieldName);
             IFieldName fieldNameForKeyName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), keyName
             );
@@ -115,24 +116,5 @@ public class ActorCollectionReceiver implements IMessageReceiver {
         } catch (Exception e) {
             throw new MessageReceiveException("Could not execute ActorCollectionReceiver.receive.", e);
         }
-    }
-}
-
-/**
- * Internal implementation of {@link IRouter}.
- */
-class ActorCollectionRouter implements IRouter {
-
-    private Map<Object, IMessageReceiver> storage = new HashMap<>();
-
-    @Override
-    public IMessageReceiver route(final Object targetId)
-            throws RouteNotFoundException {
-        return this.storage.get(targetId);
-    }
-
-    @Override
-    public void register(final Object targetId, final IMessageReceiver receiver) {
-        this.storage.put(targetId, receiver);
     }
 }

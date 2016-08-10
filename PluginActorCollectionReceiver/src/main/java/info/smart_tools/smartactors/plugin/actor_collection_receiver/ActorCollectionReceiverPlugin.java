@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.actor_collection_receiver;
 
 import info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionReceiver;
+import info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionRouter;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -12,6 +13,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -56,7 +58,8 @@ public class ActorCollectionReceiverPlugin implements IPlugin {
                                             new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
-                                                            return new ActorCollectionReceiver();
+                                                            IRouter router = new ActorCollectionRouter();
+                                                            return new ActorCollectionReceiver(router);
                                                         } catch (Exception e) {
                                                             throw new RuntimeException(
                                                                     "Could not create new instance of ActorCollectionReceiver."
