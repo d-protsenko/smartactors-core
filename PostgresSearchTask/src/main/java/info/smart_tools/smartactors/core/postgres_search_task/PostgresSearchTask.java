@@ -78,24 +78,25 @@ import java.util.List;
 public class PostgresSearchTask implements IDatabaseTask {
 
     /**
-     * Collection where the document should be upserted.
-     */
-    private CollectionName collection;
-
-    /**
      * Connection to the database.
      */
     private IStorageConnection connection;
-
+    /**
+     * Name of the collection.
+     */
+    private CollectionName collection;
     /**
      * Criteria to search the document.
      */
     private IObject criteria;
-
     /**
      * Callback function to call when the object is found.
      */
     private IAction<IObject[]> callback;
+    /**
+     * Query, prepared during prepare(), to be compiled during execute().
+     */
+    private QueryStatement preparedQuery;
 
     /**
      * Creates the task
@@ -112,6 +113,9 @@ public class PostgresSearchTask implements IDatabaseTask {
             collection = message.getCollectionName();
             criteria = message.getCriteria();
             callback = message.getCallback();
+
+            preparedQuery = new QueryStatement();
+            PostgresSchema.search(preparedQuery, collection, criteria);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
@@ -120,12 +124,10 @@ public class PostgresSearchTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            QueryStatement preparedQuery = new QueryStatement();
-            PostgresSchema.search(preparedQuery, collection, criteria);
-
             JDBCCompiledQuery compiledQuery = (JDBCCompiledQuery) connection.compileQuery(preparedQuery);
             PreparedStatement statement = compiledQuery.getPreparedStatement();
             statement.execute();
+
             ResultSet resultSet = statement.getResultSet();
             List<IObject> results = new ArrayList<>();
             while (resultSet.next()) {
@@ -133,18 +135,20 @@ public class PostgresSearchTask implements IDatabaseTask {
                 IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), sqlDoc);
                 results.add(document);
             }
+
             connection.commit();
             callback.execute(results.toArray(new IObject[results.size()]));
         } catch (Exception e) {
             try {
                 connection.rollback();
-            } catch (Exception rollbackException) {
+            } catch (Exception re) {
                 // ignoring rollback failure
             }
             try {
-                throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
-            } catch (SerializeException serializeException) {
-                throw new TaskExecutionException("Select failed", e);
+                throw new TaskExecutionException("Select in " + collection + " failed: criteria = " +
+                        (criteria != null ? criteria.serialize() : "null"), e);
+            } catch (SerializeException se) {
+                throw new TaskExecutionException("Select in " + collection + " failed", e);
             }
         }
     }
