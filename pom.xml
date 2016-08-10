@@ -54,6 +54,8 @@
         <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
+        <module>IMatcher</module>
+        <module>PatternMatching</module>
         <!-- database tasks modules -->
         <module>IDatabaseTask</module>
         <module>DBCreateCollectionTask</module>
@@ -107,8 +109,6 @@
         <module>IStorageConnection</module>
         <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
-        <module>IMatcher</module>
-        <module>PatternMatching</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
