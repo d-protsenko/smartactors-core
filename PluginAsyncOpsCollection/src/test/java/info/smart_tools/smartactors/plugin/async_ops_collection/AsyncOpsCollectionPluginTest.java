@@ -4,10 +4,14 @@ import info.smart_tools.smartactors.core.async_operation_collection.AsyncOperati
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -111,4 +115,55 @@ public class AsyncOpsCollectionPluginTest {
 
         verifyNew(AsyncOperationCollection.class).withArguments(connectionPool, collectionName);
     }
+
+
+
+    @Test
+    public void MustInCorrectLoadWhenNewBootstrapItemThrowException() throws Exception {
+        whenNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin").thenThrow(new InvalidArgumentException(""));
+        try {
+            testPlugin.load();
+        } catch (PluginException e) {
+            verifyNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin");
+            return;
+        }
+        fail("Must catch exception");
+    }
+
+
+
+    @Test
+    public void MustInCorrectExecuteActionWhenKeysGetOrAddThrowException() throws Exception {
+        BootstrapItem item = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin").thenReturn(item);
+
+        when(item.after(any(String.class))).thenReturn(item);
+        when(item.before(any(String.class))).thenReturn(item);
+        when(item.process(any(IPoorAction.class))).thenReturn(item);
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+
+        testPlugin.load();
+
+        verifyNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin");
+
+        verify(item).after("IOC");
+        verify(item).before("configure");
+        verify(item).process(actionArgumentCaptor.capture());
+
+        verify(bootstrap).add(item);
+
+        //------testing IPoorAction
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+
+        try {
+            actionArgumentCaptor.getValue().execute();
+        } catch (ActionExecuteException e) {
+            verifyStatic();
+            Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
+            return;
+        }
+        fail("Must catch exception");
+    }
+
 }
