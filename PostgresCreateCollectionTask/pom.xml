@@ -10,7 +10,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core.postgres_upsert_task</artifactId>
+    <artifactId>core.postgres_create_task</artifactId>
 
     <dependencies>
         <dependency>
@@ -63,12 +63,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
@@ -94,6 +88,12 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.dsobject</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.singleton_strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
