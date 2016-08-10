@@ -20,9 +20,9 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -95,8 +95,8 @@ public class CachedCollection implements ICachedCollection {
     public List<IObject> getItems(final String key) throws GetCacheItemException {
 
         try {
-            final List<IObject> items = map.computeIfAbsent(key, (k) -> new LinkedList<>());
-            if (items == null || items.isEmpty()) {
+            final List<IObject> items = map.getOrDefault(key, new ArrayList<>());
+            if (items.isEmpty()) {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                     IDatabaseTask getItemTask = IOC.resolve(
                             Keys.getOrAdd("db.cached_collection.get_item"),

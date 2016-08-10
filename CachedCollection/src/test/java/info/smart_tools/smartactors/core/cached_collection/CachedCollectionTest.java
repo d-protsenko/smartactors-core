@@ -25,13 +25,16 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -78,7 +81,7 @@ public class CachedCollectionTest {
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(mockKeyField, "searchResult")).thenReturn(searchResultField);
-        when(IOC.resolve(mockKeyField, "keyValue")).thenReturn(keyValueField);
+        when(IOC.resolve(mockKeyField, "key")).thenReturn(keyValueField);
         when(IOC.resolve(mockKeyField, "document")).thenReturn(documentField);
         when(IOC.resolve(mockKeyField, "id")).thenReturn(idField);
         when(IOC.resolve(mockKeyField, "isActive")).thenReturn(isActiveField);
@@ -197,12 +200,26 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
+        final IObject searchResult = mock(IObject.class);
+
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
         when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
-        when(IOC.resolve(eq(keyTask), any(), eq(collectionName), anyString(), anyString(), any(IAction.class))).thenReturn(readTask);
+        final IAction[] callback = {mock(IAction.class)};
+        doAnswer(invocation -> {
+            callback[0] = (IAction) invocation.getArguments()[5];
+            return readTask;
+        }).when(IOC.class);
+        IOC.resolve(eq(keyTask), any(), eq(collectionName), any(), any(), any(IAction.class));
+        doAnswer(invocation -> {
+            callback[0].execute(new IObject[] {searchResult});
+            return null;
+        }).when(readTask).execute();
 
-        collection.getItems("key");
+        when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
+
+        List<IObject> items = collection.getItems("key");
+
         verify(readTask).execute();
     }
 
