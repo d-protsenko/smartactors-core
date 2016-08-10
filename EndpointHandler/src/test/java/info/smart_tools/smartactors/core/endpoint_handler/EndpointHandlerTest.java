@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.endpoint_handler;
 
 import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
+import info.smart_tools.smartactors.core.ienvironment_extractor.IEnvironmentExtractor;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -29,13 +30,18 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class EndpointHandlerTest {
     IQueue<ITask> taskIQueue;
+    IEnvironmentExtractor environmentExtractor;
+    EndpointHandlerTask endpointHandlerTask;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
+        environmentExtractor = mock(IEnvironmentExtractor.class);
         taskIQueue = new BlockingQueue<ITask>(new ArrayBlockingQueue<ITask>(10));
+        endpointHandlerTask = mock(EndpointHandlerTask.class);
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -55,6 +61,9 @@ public class EndpointHandlerTest {
         );
         IOC.register(Keys.getOrAdd("task_queue"),
                 new SingletonStrategy(taskIQueue));
+        IOC.register(Keys.getOrAdd(IEnvironmentExtractor.class.getCanonicalName()),
+                new SingletonStrategy(environmentExtractor));
+        IOC.register(Keys.getOrAdd(EndpointHandlerTask.class.getCanonicalName()), new SingletonStrategy(endpointHandlerTask));
     }
 
     @Test

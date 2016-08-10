@@ -110,6 +110,16 @@
             <artifactId>core.http_environment_extractor</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.message_processing</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.environment_handler</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

@@ -61,7 +61,7 @@ public class OperatorsTest {
                         "(parse_timestamp_immutable(document#>'{date-from}')>=(?)::timestamp)",
                         "(parse_timestamp_immutable(document#>'{date-to}')<=(?)::timestamp)",
                         "((document#>'{hasTag}')??(?))",
-                        "(to_tsvector('russian',(document#>'{fulltext}')::text))@@(to_tsquery(russian,?))"));
+                        "fulltext@@(to_tsquery('russian',?))"));
 
         for (int i = 0; i < OPERATORS_NUMBER; ++i) {
             StringWriter body = new StringWriter();
@@ -70,7 +70,7 @@ public class OperatorsTest {
             resolver
                     .resolve(operatorsNames.get(i))
                     .write(queryStatement, resolver, fieldsPaths.get(i), queryParam);
-            assertEquals(body.toString().trim(), result.get(i));
+            assertEquals(result.get(i), body.toString().trim());
             verify(queryStatement).pushParameterSetter(any());
         }
     }

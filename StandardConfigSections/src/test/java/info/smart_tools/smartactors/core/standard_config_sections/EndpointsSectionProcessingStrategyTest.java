@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
+import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
@@ -14,6 +15,8 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iscope.IScope;
@@ -61,25 +64,6 @@ public class EndpointsSectionProcessingStrategyTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-
-        IKey httpEndpointKey = Keys.getOrAdd(HttpEndpoint.class.getCanonicalName());
-
-        IOC.register(httpEndpointKey,
-                new CreateNewInstanceStrategy(
-                        (args) -> {
-                            try {
-                                return new HttpEndpoint((Integer) args[0],
-                                        (Integer) args[1], (IScope) args[2],
-                                        (IEnvironmentHandler) args[3],
-                                        (IReceiverChain) args[4]
-                                );
-                            } catch (EndpointException e) {
-                            }
-                            return null;
-                        }
-                )
-        );
-
         IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
 
         IOC.register(iFieldNameKey,
@@ -108,6 +92,44 @@ public class EndpointsSectionProcessingStrategyTest {
                 new SingletonStrategy(chainStorage));
 
 
+        IOC.register(
+            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+            new CreateNewInstanceStrategy(
+                (args) -> {
+                    IObject configuration = (IObject) args[0];
+                    IQueue queue = null;
+                    Integer stackDepth = null;
+                    try {
+                        queue = (IQueue) configuration.getValue(new FieldName("queue"));
+                        stackDepth =
+                            (Integer) configuration.getValue(new FieldName("stackDepth"));
+                        return new EnvironmentHandler(queue, stackDepth);
+                    } catch (ReadValueException | InvalidArgumentException e) {
+                    }
+                    return null;
+                }
+            )
+        );
+
+        IOC.register(Keys.getOrAdd("http_endpoint"),
+            new CreateNewInstanceStrategy(
+                (args) -> {
+                    IObject configuration = (IObject) args[0];
+                    try {
+                        IEnvironmentHandler environmentHandler = IOC.resolve(
+                            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                            configuration);
+                        return new HttpEndpoint((Integer) configuration.getValue(new FieldName("port")),
+                            (Integer) configuration.getValue(new FieldName("maxContentLength")),
+                            ScopeProvider.getCurrentScope(), environmentHandler,
+                            (IReceiverChain) configuration.getValue(new FieldName("startChain")));
+                    } catch (ReadValueException | InvalidArgumentException | ScopeProviderException |
+                            ResolutionException | EndpointException e) {
+                    }
+                    return null;
+                }
+            )
+        );
     }
 
     @Test
@@ -117,7 +139,7 @@ public class EndpointsSectionProcessingStrategyTest {
                 "     {\n" +
                 "         \"endpoints\": [\n" +
                 "             {\n" +
-                "                 \"endpointName\": \"enpointName\"," +
+                "                 \"name\": \"enpointName\"," +
                 "                 \"type\": \"http\",\n" +
                 "                 \"port\": 8080,\n" +
                 "                 \"startChain\": \"mainChain\",\n" +

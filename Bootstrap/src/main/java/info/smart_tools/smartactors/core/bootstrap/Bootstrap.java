@@ -17,13 +17,30 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
 
     private List<IBootstrapItem<String>> itemStorage = new ArrayList<>();
 
+    /**
+     * Default constructor.
+     */
+    public Bootstrap() {
+    }
+
+    /**
+     * Constructor.
+     * Creates instance of {@link IBootstrap} and initialize field {@code loadedItems} by given agrument
+     * @param loadedItems the list of already loaded items
+     */
+    public Bootstrap(final List<IBootstrapItem<String>> loadedItems) {
+        for (IBootstrapItem<String> item : loadedItems) {
+            this.itemStorage.add(item.process(() -> {}));
+        }
+    }
+
     @Override
     public void add(final IBootstrapItem<String> bootstrapItem) {
         itemStorage.add(bootstrapItem);
     }
 
     @Override
-    public void start()
+    public List<IBootstrapItem<String>> start()
             throws ProcessExecutionException {
         try {
             TopologicalSort ts = new TopologicalSort(itemStorage);
@@ -43,6 +60,7 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                             e);
                 }
             }
+            return doneItems;
         } catch (ProcessExecutionException e) {
             throw e;
         } catch (Throwable e) {

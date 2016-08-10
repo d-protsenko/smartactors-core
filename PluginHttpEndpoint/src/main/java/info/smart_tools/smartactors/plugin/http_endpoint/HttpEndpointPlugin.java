@@ -2,8 +2,6 @@ package info.smart_tools.smartactors.plugin.http_endpoint;
 
 
 import info.smart_tools.smartactors.core.HttpEndpoint;
-import info.smart_tools.smartactors.core.http_environment_extractor.HttpEnvironmentExtractor;
-import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
@@ -11,32 +9,40 @@ import info.smart_tools.smartactors.core.deserialize_strategy_post_json.Deserial
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandlerTask;
 import info.smart_tools.smartactors.core.endpoint_handler.exceptions.EndpointException;
+import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
+import info.smart_tools.smartactors.core.http_environment_extractor.HttpEnvironmentExtractor;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
+import info.smart_tools.smartactors.core.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.ienvironment_extractor.IEnvironmentExtractor;
 import info.smart_tools.smartactors.core.ienvironment_extractor.exceptions.EnvironmentExtractionException;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
-import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
-import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersSetter;
+import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -66,19 +72,57 @@ public class HttpEndpointPlugin implements IPlugin {
                     .after("message_processing_sequence")
                     .after("response")
                     .after("response_content_strategy")
+                    .after("field_name")
                     .before("configure")
                     .process(
                             () -> {
                                 try {
+                                    IFieldName typeFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "type"
+                                            );
+                                    IFieldName portFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "port"
+                                            );
+                                    IFieldName startChainNameFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "startChain"
+                                            );
+                                    IFieldName stackDepthFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "stackDepth"
+                                            );
+                                    IFieldName maxContentLengthFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "maxContentLength"
+                                            );
+                                    IFieldName endpointNameFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "endpointName"
+                                            );
+
+                                    IFieldName queueFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "queue"
+                                            );
+
                                     ICookiesSetter cookiesSetter = new CookiesSetter();
-                                    IKey httpEndpointKey = Keys.getOrAdd(HttpEndpoint.class.getCanonicalName());
+                                    IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
                                     IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
                                     IOC.register(cookiesSetterKey,
                                             new SingletonStrategy(cookiesSetter));
 
-                                    IHeadersSetter headersSetter = new HttpHeadersSetter();
+                                    IHeadersExtractor headersSetter = new HttpHeadersExtractor();
 
-                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersSetter.class.getCanonicalName());
+                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
                                     IOC.register(headersSetterKey,
                                             new SingletonStrategy(headersSetter));
 
@@ -88,18 +132,42 @@ public class HttpEndpointPlugin implements IPlugin {
                                     IOC.register(responseStatusExtractorKey,
                                             new SingletonStrategy(responseStatusExtractor));
 
+                                    IOC.register(
+                                            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                            new CreateNewInstanceStrategy(
+                                                    (args) -> {
+                                                        IObject configuration = (IObject) args[0];
+                                                        IQueue queue = null;
+                                                        Integer stackDepth = null;
+                                                        try {
+                                                            queue = (IQueue) configuration.getValue(queueFieldName);
+                                                            stackDepth =
+                                                                    (Integer) configuration.getValue(stackDepthFieldName);
+                                                            return new EnvironmentHandler(queue, stackDepth);
+                                                        } catch (ReadValueException | InvalidArgumentException e) {
+                                                        }
+                                                        return null;
+                                                    }
+                                            )
+                                    );
+
                                     IOC.register(httpEndpointKey,
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
+                                                        IObject configuration = (IObject) args[0];
                                                         try {
-                                                            return new HttpEndpoint((Integer) args[0],
-                                                                    (Integer) args[1], (IScope) args[2],
-                                                                    (IEnvironmentHandler) args[3],
-                                                                    (IReceiverChain) args[4]
-                                                            );
-                                                        } catch (EndpointException e) {
+                                                            IEnvironmentHandler environmentHandler = IOC.resolve(
+                                                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                                                    configuration);
+                                                            return new HttpEndpoint((Integer) configuration.getValue(portFieldName),
+                                                                    (Integer) configuration.getValue(maxContentLengthFieldName),
+                                                                    ScopeProvider.getCurrentScope(), environmentHandler,
+                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName));
+                                                        } catch (ReadValueException | InvalidArgumentException |
+                                                                ScopeProviderException | ResolutionException |
+                                                                EndpointException e) {
+                                                            throw new RuntimeException(e);
                                                         }
-                                                        return null;
                                                     }
                                             )
                                     );
@@ -166,7 +234,7 @@ public class HttpEndpointPlugin implements IPlugin {
                     );
             bootstrap.add(item);
         } catch (Exception e) {
-            throw new PluginException("Can't load EndpointCollection plugin", e);
+            throw new PluginException("Can't load \"CreateHttpEndpoint\" plugin", e);
         }
     }
 }
