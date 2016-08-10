@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.in_memory_db_get_by_id_task;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.idatabase.IDataBase;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.IDatabase;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -48,11 +48,11 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDataBase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
             callback.execute(dataBase.getById(id, collectionName));
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
-        } catch (IDataBaseException e) {
+        } catch (IDatabaseException e) {
             throw new TaskExecutionException("Not found: id = " + id);
         } catch (ActionExecuteException | InvalidArgumentException e) {
             throw new TaskExecutionException("Failed to execute callback", e);

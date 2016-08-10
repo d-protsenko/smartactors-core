@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.in_memory_db_upsert_task;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -75,7 +75,7 @@ public class InMemoryDBUpsertTaskTest {
     }
 
     @Test
-    public void testPrepare() throws InvalidArgumentException, TaskPrepareException, TaskExecutionException, ChangeValueException, IDataBaseException {
+    public void testPrepare() throws InvalidArgumentException, TaskPrepareException, TaskExecutionException, ChangeValueException {
         InMemoryDBUpsertTask upsertTask = new InMemoryDBUpsertTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject document = new DSObject("{\"hello\": \"world\"}");
@@ -85,7 +85,7 @@ public class InMemoryDBUpsertTaskTest {
     }
 
     @Test
-    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDataBaseException {
+    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException {
         InMemoryDBUpsertTask upsertTask = new InMemoryDBUpsertTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject document = new DSObject("{\"hello\": \"world\"}");

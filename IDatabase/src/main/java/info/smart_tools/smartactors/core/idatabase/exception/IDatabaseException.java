@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.idatabase.exception;
 
 /**
- * Exception class for {@link info.smart_tools.smartactors.core.idatabase.IDataBase}
+ * Exception class for {@link info.smart_tools.smartactors.core.idatabase.IDatabase}
  */
-public class IDataBaseException extends Exception {
+public class IDatabaseException extends Exception {
 
     /**
      * Constructor with specific error message
      * @param message specific error message
      */
-    public IDataBaseException(final String message) {
+    public IDatabaseException(final String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class IDataBaseException extends Exception {
      * @param message specific error message
      * @param cause specific cause
      */
-    public IDataBaseException(final String message, final Throwable cause) {
+    public IDatabaseException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -27,7 +27,7 @@ public class IDataBaseException extends Exception {
      * Constructor with specific cause as arguments
      * @param cause specific cause
      */
-    public IDataBaseException(final Throwable cause) {
+    public IDatabaseException(final Throwable cause) {
         super(cause);
     }
 }

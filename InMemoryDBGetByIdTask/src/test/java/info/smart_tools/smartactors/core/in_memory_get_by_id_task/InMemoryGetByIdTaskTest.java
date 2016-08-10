@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
@@ -89,7 +89,7 @@ public class InMemoryGetByIdTaskTest {
     }
 
     @Test
-    public void testExecution() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, IDataBaseException, ActionExecuteException, TaskExecutionException {
+    public void testExecution() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, IDatabaseException, ActionExecuteException, TaskExecutionException {
         InMemoryGetByIdTask getByIdTask = new InMemoryGetByIdTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\", \"id\": 3}");
         IAction<IObject> iObjectIAction = mock(IAction.class);

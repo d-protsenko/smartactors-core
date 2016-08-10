@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.in_memory_db_create_collection_task;
 
-import info.smart_tools.smartactors.core.idatabase.IDataBase;
+import info.smart_tools.smartactors.core.idatabase.IDatabase;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -34,7 +34,7 @@ public class InMemoryDBCreateCollectionTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDataBase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
             dataBase.createCollection(collectionName);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);

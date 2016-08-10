@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.in_memory_db_select_task;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.idatabase.IDataBase;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.IDatabase;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -112,7 +112,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
 
     @Override
     public void execute() throws TaskExecutionException {
-        IDataBase dataBase = null;
+        IDatabase dataBase = null;
         try {
             dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
         } catch (ResolutionException e) {
@@ -120,7 +120,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
         }
         try {
             dataBase.select(criteria, collection);
-        } catch (IDataBaseException e) {
+        } catch (IDatabaseException e) {
             try {
                 throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
             } catch (SerializeException e1) {

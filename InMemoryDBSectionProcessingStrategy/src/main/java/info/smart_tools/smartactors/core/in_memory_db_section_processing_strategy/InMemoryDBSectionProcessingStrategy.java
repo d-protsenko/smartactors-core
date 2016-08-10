@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.in_memory_db_section_processing_strate
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.idatabase.IDataBase;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.IDatabase;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> databaseObject = (List<IObject>) config.getValue(name);
-            IDataBase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
             for (IObject collection : databaseObject) {
                 String collectionName = (String) collection.getValue(nameFieldName);
                 dataBase.createCollection(collectionName);
@@ -76,7 +75,7 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
             throw new ConfigurationProcessingException("Error occurred loading \"inMemoryDb\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"InMemoryDatabase\".", e);
-        } catch (IDataBaseException e) {
+        } catch (IDatabaseException e) {
             throw new ConfigurationProcessingException(e);
         }
     }

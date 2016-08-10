@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.idatabase.exception.IDataBaseException;
+import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -26,12 +26,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.FileHandler;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 public class InMemoryDBSectionProcessingStrategyTest {
@@ -76,7 +74,7 @@ public class InMemoryDBSectionProcessingStrategyTest {
     }
 
     @Test
-    public void testLoadingConfig() throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException, ChangeValueException, IDataBaseException {
+    public void testLoadingConfig() throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException, ChangeValueException, IDatabaseException {
         List<String> iObjects = new LinkedList<>();
         iObjects.add("{\"foo\": \"bar\"}");
         iObjects.add("{\"foo1\": \"bar1\"}");
