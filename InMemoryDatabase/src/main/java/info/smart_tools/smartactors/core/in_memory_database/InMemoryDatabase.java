@@ -149,24 +149,11 @@ public class InMemoryDatabase implements IDataBase {
     }
 
     private boolean generalConditionParser(final IObject condition, final IObject document) throws IDataBaseException {
-        if (null == condition) {
-            return true;
-        }
-        Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
-        String key = null;
-        if (!iterator.hasNext()) {
-            return true;
-        }
         try {
-            do {
-                Map.Entry<IFieldName, Object> entry = iterator.next();
-                key = entry.getKey().toString();
-                if (entry.getValue() instanceof IObject) {
-                    iterator = ((IObject) entry.getValue()).iterator();
-                }
+            if (condition == null) {
+                return true;
             }
-            while (iterator.hasNext() && !(Boolean) IOC.resolve(Keys.getOrAdd("ContainsResolveDataBaseCondition"), key));
-            return IOC.resolve(Keys.getOrAdd("ResolveDataBaseCondition"), key, condition, document);
+            return IOC.resolve(Keys.getOrAdd("ResolveDataBaseCondition"), "$general_resolver", condition, document);
         } catch (ResolutionException e) {
             throw new IDataBaseException("Failed to resolve \"ResolveDataBaseCondition\"", e);
         }

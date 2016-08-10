@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -34,7 +35,8 @@ import static org.junit.Assert.assertTrue;
 public class InMemoryDatabaseTest {
 
     @BeforeClass
-    public static void setUp() throws ResolutionException, InvalidArgumentException, RegistrationException, ScopeProviderException {
+    public static void setUp()
+            throws ResolutionException, InvalidArgumentException, RegistrationException, ScopeProviderException {
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -84,6 +86,11 @@ public class InMemoryDatabaseTest {
                             }
                             return null;
                         }
+                )
+        );
+        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                new CreateNewInstanceStrategy(
+                        (args) -> new DSObject()
                 )
         );
         IOC.register(Keys.getOrAdd("CompareSimpleObjects"), new ApplyFunctionToArgumentsStrategy(
@@ -143,8 +150,35 @@ public class InMemoryDatabaseTest {
         );
 
 
-        verifierMap.put("$general", (condition, document) -> {
+        verifierMap.put("$general_resolver", (condition, document) -> {
+                    Iterator<Map.Entry<IFieldName, Object>> mainIterator = condition.iterator();
+                    List<IObject> and = new LinkedList<IObject>();
+                    while (mainIterator.hasNext()) {
+                        Map.Entry<IFieldName, Object> entry = mainIterator.next();
+                        try {
+                            IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            iObject.setValue(entry.getKey(), entry.getValue());
+                            and.add(iObject);
+                        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+                        }
+                    }
+                    IObject newCondition = condition;
+                    if (and.size() > 1) {
+                        IFieldName andFieldName;
+                        try {
+                            newCondition = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            andFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$and");
+                            newCondition.setValue(andFieldName, and);
+                        } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
+                        }
+                    }
+                    condition = newCondition;
                     Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
+
+                    if (!iterator.hasNext()) {
+                        return true;
+                    }
+
                     String key = null;
                     do {
                         Map.Entry<IFieldName, Object> entry = iterator.next();
@@ -292,7 +326,7 @@ public class InMemoryDatabaseTest {
                     try {
                         List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$and"));
                         for (IObject conditionItem : conditions) {
-                            result &= verifierMap.get("$general")
+                            result &= verifierMap.get("$general_resolver")
                                     .verify(conditionItem, document);
                         }
                     } catch (ReadValueException | InvalidArgumentException e) {
@@ -305,7 +339,7 @@ public class InMemoryDatabaseTest {
                     try {
                         List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$or"));
                         for (IObject conditionItem : conditions) {
-                            result |= verifierMap.get("$general")
+                            result |= verifierMap.get("$general_resolver")
                                     .verify(conditionItem, document);
                         }
                     } catch (ReadValueException | InvalidArgumentException e) {
@@ -318,7 +352,7 @@ public class InMemoryDatabaseTest {
                     try {
                         List<IObject> conditions = (List<IObject>) condition.getValue(new FieldName("$not"));
                         for (IObject conditionItem : conditions) {
-                            result &= !verifierMap.get("$general")
+                            result &= !verifierMap.get("$general_resolver")
                                     .verify(conditionItem, document);
                         }
                     } catch (ReadValueException | InvalidArgumentException e) {
@@ -1004,4 +1038,93 @@ public class InMemoryDatabaseTest {
         IObject document = new DSObject("{}");
         database.upsert(document, "collection_name");
     }
+
+    @Test
+    public void testShortRecordOneCondition() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{\"a\": {\"b\": 1}}");
+        IObject document2 = new DSObject("{\"c\": {\"b\": 2}}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{\"a\": {\"$isNull\": true}}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
+    }
+
+    @Test
+    public void testShortRecordManyConditions() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{\"a\": {\"b\": 1}}");
+        IObject document2 = new DSObject("{\"c\": {\"b\": 2}}");
+        IObject document3 = new DSObject("{\"c\": 3}");
+        IObject document4 = new DSObject("{\"a\": 3.4}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{\"a\": {\"$isNull\": true}, \"c\": {\"$eq\": 3}}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 1);
+        assertTrue(outputList.get(0).serialize().equals(document3.serialize()));
+    }
+
+    @Test
+    public void testLongSelect() throws InvalidArgumentException, IDataBaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{\"a\": {\"b\": 1}, \"daily\": 3}");
+        IObject document2 = new DSObject("{\"c\": {\"b\": 2}, \"daily\": -1}");
+        IObject document3 = new DSObject("{\"c\": 3, \"daily\": 3}");
+        IObject document4 = new DSObject("{\"a\": 7, \"daily\": 3}");
+        IObject document5 = new DSObject("{\"a\": 3, \"monthly\": -1}");
+        IObject document6 = new DSObject("{\"a\": 7, \"weekly\": 1}");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        database.insert(document4, "collection_name");
+        database.insert(document5, "collection_name");
+        database.insert(document6, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{\"filter\":{" +
+                                "              \"a\": {\n" +
+                                "                \"$eq\": 7\n" +
+                                "              },\n" +
+                                "              \"$or\": [\n" +
+                                "                {\n" +
+                                "                  \"daily\": {\n" +
+                                "                    \"$gt\": 0\n" +
+                                "                  }\n" +
+                                "                },\n" +
+                                "                {\n" +
+                                "                  \"weekly\": {\n" +
+                                "                    \"$gt\": 0\n" +
+                                "                  }\n" +
+                                "                },\n" +
+                                "                {\n" +
+                                "                  \"monthly\": {\n" +
+                                "                    \"$gt\": 0\n" +
+                                "                  }\n" +
+                                "                }\n" +
+                                "              ]" +
+                                "}}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document4.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document6.serialize()));
+    }
+
+
 }

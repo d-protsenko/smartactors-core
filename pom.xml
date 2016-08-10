@@ -244,6 +244,7 @@
         <module>InMemoryDBDeleteTask</module>
         <module>InMemoryDBSelectTask</module>
         <module>PluginInMemoryDBTasks</module>
+        <module>InMemoryDBSectionProcessingStrategy</module>
     </modules>
 
     <build>

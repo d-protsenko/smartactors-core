@@ -10,13 +10,16 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.DataBaseItem;
 import info.smart_tools.smartactors.core.in_memory_database.IConditionVerifier;
+import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.util.Comparator;
@@ -46,7 +49,7 @@ public class PluginInMemoryDatabase implements IPlugin {
         IBootstrapItem<String> item = null;
         Map<String, IConditionVerifier> verifierMap = new HashMap<>();
         try {
-            item = new BootstrapItem("IObjectSimpleImplPlugin");
+            item = new BootstrapItem("InMemoryDatabase");
             item
                     .after("IOC")
                     .after("FieldNamePlugin")
@@ -108,8 +111,35 @@ public class PluginInMemoryDatabase implements IPlugin {
                                     );
 
 
-                                    verifierMap.put("$general", (condition, document) -> {
+                                    verifierMap.put("$general_resolver", (condition, document) -> {
+                                                Iterator<Map.Entry<IFieldName, Object>> mainIterator = condition.iterator();
+                                                List<IObject> and = new LinkedList<IObject>();
+                                                while (mainIterator.hasNext()) {
+                                                    Map.Entry<IFieldName, Object> entry = mainIterator.next();
+                                                    try {
+                                                        IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                        iObject.setValue(entry.getKey(), entry.getValue());
+                                                        and.add(iObject);
+                                                    } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+                                                    }
+                                                }
+                                                IObject newCondition = condition;
+                                                if (and.size() > 1) {
+                                                    IFieldName andFieldName;
+                                                    try {
+                                                        newCondition = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                        andFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$and");
+                                                        newCondition.setValue(andFieldName, and);
+                                                    } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
+                                                    }
+                                                }
+                                                condition = newCondition;
                                                 Iterator<Map.Entry<IFieldName, Object>> iterator = condition.iterator();
+
+                                                if (!iterator.hasNext()) {
+                                                    return true;
+                                                }
+
                                                 String key = null;
                                                 do {
                                                     Map.Entry<IFieldName, Object> entry = iterator.next();
@@ -121,7 +151,6 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                 return verifierMap.get(key).verify(condition, document);
                                             }
                                     );
-
                                     verifierMap.put("$eq", (condition, document) -> {
                                                 IFieldName fieldName = condition.iterator().next().getKey();
                                                 try {
@@ -280,7 +309,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                     List<IObject> conditions = (List<IObject>) condition
                                                             .getValue(new FieldName("$and"));
                                                     for (IObject conditionItem : conditions) {
-                                                        result &= verifierMap.get("$general")
+                                                        result &= verifierMap.get("$general_resolver")
                                                                 .verify(conditionItem, document);
                                                     }
                                                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -294,7 +323,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                     List<IObject> conditions = (List<IObject>) condition
                                                             .getValue(new FieldName("$or"));
                                                     for (IObject conditionItem : conditions) {
-                                                        result |= verifierMap.get("$general")
+                                                        result |= verifierMap.get("$general_resolver")
                                                                 .verify(conditionItem, document);
                                                     }
                                                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -308,7 +337,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                     List<IObject> conditions = (List<IObject>) condition
                                                             .getValue(new FieldName("$not"));
                                                     for (IObject conditionItem : conditions) {
-                                                        result &= !verifierMap.get("$general")
+                                                        result &= !verifierMap.get("$general_resolver")
                                                                 .verify(conditionItem, document);
                                                     }
                                                 } catch (ReadValueException | InvalidArgumentException e) {
@@ -478,6 +507,11 @@ public class PluginInMemoryDatabase implements IPlugin {
                                                         return null;
                                                     }
                                             )
+                                    );
+                                    InMemoryDatabase database = new InMemoryDatabase();
+                                    IOC.register(
+                                            Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()),
+                                            new SingletonStrategy(database)
                                     );
                                 } catch (Exception e) {
                                     throw new ActionExecuteException("Failed to load plugin \"NestedFieldName\"", e);
