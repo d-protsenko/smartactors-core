@@ -87,16 +87,16 @@ public class ConnectionOptionsPlugin implements IPlugin {
                             }
                         ));
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("CreateSessionActor plugin can't load: can't get CreateSessionActor key", e);
+                        throw new ActionExecuteException("ConnectionOptions plugin can't load: can't get CreateSessionActor key", e);
                     } catch (InvalidArgumentException e) {
-                        throw new ActionExecuteException("CreateSessionActor plugin can't load: can't create strategy", e);
+                        throw new ActionExecuteException("ConnectionOptions plugin can't load: can't create strategy", e);
                     } catch (RegistrationException e) {
-                        throw new ActionExecuteException("CreateSessionActor plugin can't load: can't register new strategy", e);
+                        throw new ActionExecuteException("ConnectionOptions plugin can't load: can't register new strategy", e);
                     }
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new RuntimeException(e);
+            throw new PluginException("Can't load ConnectionOptionsPlugin", e);
         }
     }
 }
