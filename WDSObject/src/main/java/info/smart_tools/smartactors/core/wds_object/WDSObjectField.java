@@ -140,7 +140,7 @@ public class WDSObjectField implements IField {
                     IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
-            throw new ReadValueException("Could not read value from IObject", e);
+            throw new ReadValueException("Could not read " + location + " from IObject", e);
         }
     }
 
