@@ -124,6 +124,7 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.create_session_plugin:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.authentication_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.get_query_parameter_rule:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.password_encoder:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
@@ -133,7 +134,9 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.check_user_is_new_actor:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.create_user:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

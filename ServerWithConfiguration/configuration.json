@@ -77,12 +77,16 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
       "name": "sendMailActor",
-      "username": "alexryandr@gmail.com",
-      "password": "147852369qwerty",
+      "username": "mixaildre@gmail.com",
+      "password": "369852147qwerty",
       "authenticationMode": "Login",
-      "server": "smtp://smtp.gmail.com:587",
-      "sslProtocol": "TLS",
-      "senderAddress": "alexryandr@gmail.com"
+      "server": "smtp://aspmx.l.google.com:25",
+      "senderAddress": "mixaildre@gmail.com"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
+      "name": "createNewUserActor"
     }
   ],
   "maps": [
@@ -326,6 +330,71 @@
         }
       ],
       "exceptional": []
+    },
+    {
+      "id": "testMailSend",
+      "steps": [
+        {
+          "target": "sendMailActor",
+          "handler": "sendMailHandler",
+          "wrapper": {
+            "in_getSendToMessage": "message/email",
+            "in_getMessageAttributesMessage": "message/attributes",
+            "in_getMessagePartsMessage": "message/parts"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "createNewUserMap",
+      "steps": [
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken":[
+              {
+                "name": "getQueryParameterFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/token"
+                ]
+              }
+            ],
+            "out_setAsyncOperation": "message/userForm"
+          }
+        },
+        {
+          "target": "createNewUserActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getUser": "message/userForm"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/userForm",
+            "in_getOperationTokens": "message/session/tokens",
+            "in_getToken": [
+              {
+                "name": "getQueryParameterFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/token"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "exceptional": []
     }
   ],
   "endpoints": [
@@ -334,6 +403,14 @@
       "type": "http",
       "port": 9909,
       "startChain": "SelectChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5
+    },
+    {
+      "name": "registerUserHttpEp",
+      "type": "http",
+      "port": 9910,
+      "startChain": "createNewUserMap",
       "maxContentLength": 4098,
       "stackDepth": 5
     }
