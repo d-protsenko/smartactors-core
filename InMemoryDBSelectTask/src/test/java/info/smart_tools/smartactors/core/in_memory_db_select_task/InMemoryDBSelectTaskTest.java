@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.core.in_memory_db_select_task;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -28,6 +30,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -75,14 +78,21 @@ public class InMemoryDBSelectTaskTest {
     }
 
     @Test
-    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException {
-        InMemoryDBSelectTask deleteTask = new InMemoryDBSelectTask();
+    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException, ActionExecuteException {
+        InMemoryDBSelectTask selectTask = new InMemoryDBSelectTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject criteria = new DSObject("{\"hello\": \"world\"}");
-        IFieldName documentFieldName = new FieldName("criteria");
-        query.setValue(documentFieldName, criteria);
-        deleteTask.prepare(query);
-        deleteTask.execute();
+        IAction<IObject[]> callback = mock(IAction.class);
+
+        IFieldName criteriaFieldName = new FieldName("criteria");
+        IFieldName callbackFieldName = new FieldName("callback");
+        query.setValue(criteriaFieldName, criteria);
+        query.setValue(callbackFieldName, callback);
+
+        selectTask.prepare(query);
+        selectTask.execute();
+
         verify(inMemoryDatabase).select(criteria, "collection_name");
+        verify(callback).execute(any(IObject[].class));
     }
 }

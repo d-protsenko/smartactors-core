@@ -14,20 +14,31 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
+/**
+ * The task to upsert the document in the in-memory database.
+ */
 public class InMemoryDBUpsertTask implements IDatabaseTask {
+    private IFieldName collectionNameFieldName;
+    private IFieldName documentFieldName;
+
     private String collectionName;
     private IObject document;
 
-    @Override
-    public void prepare(final IObject query) throws TaskPrepareException {
-        IFieldName collectionNameFieldName;
-        IFieldName documentFieldName;
+    /**
+     * Creates the task.
+     * @throws TaskPrepareException if not possible to resolve IFieldName
+     */
+    public InMemoryDBUpsertTask() throws TaskPrepareException {
         try {
             collectionNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
             documentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }
+    }
+
+    @Override
+    public void prepare(final IObject query) throws TaskPrepareException {
         try {
             collectionName = (String) query.getValue(collectionNameFieldName);
             document = (IObject) query.getValue(documentFieldName);

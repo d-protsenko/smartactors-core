@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.in_memory_database.IConditionVerifier;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -25,15 +24,12 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class InMemoryDBDeleteTaskTest {
 
-    InMemoryDatabase inMemoryDatabase;
+    private InMemoryDatabase inMemoryDatabase;
 
     @Before
     public void setUp() throws ScopeProviderException, ResolutionException, RegistrationException, InvalidArgumentException {
@@ -51,7 +47,6 @@ public class InMemoryDBDeleteTaskTest {
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
-        Map<String, IConditionVerifier> verifierMap = new HashMap<>();
         IOC.register(
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()

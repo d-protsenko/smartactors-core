@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.in_memory_db_select_task;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase.IDatabase;
-import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -15,6 +14,8 @@ import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+
+import java.util.List;
 
 /**
  * The database task which is able to select documents from {@link InMemoryDatabase} by multiple search criteria.
@@ -75,6 +76,10 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 public class InMemoryDBSelectTask implements IDatabaseTask {
 
+    private IFieldName collectionFieldName;
+    private IFieldName criteriaFieldName;
+    private IFieldName callbackFieldName;
+
     /**
      * Collection where the document should be upserted.
      */
@@ -83,17 +88,16 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
      * Criteria to search the document.
      */
     private IObject criteria;
-
     /**
      * Callback function to call when the object is found.
      */
     private IAction<IObject[]> callback;
 
-    @Override
-    public void prepare(final IObject query) throws TaskPrepareException {
-        IFieldName collectionFieldName;
-        IFieldName criteriaFieldName;
-        IFieldName callbackFieldName;
+    /**
+     * Creates the task.
+     * @throws TaskPrepareException if cannot resolve IFieldName
+     */
+    public InMemoryDBSelectTask() throws TaskPrepareException {
         try {
             collectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
             criteriaFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "criteria");
@@ -101,6 +105,10 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }
+    }
+
+    @Override
+    public void prepare(final IObject query) throws TaskPrepareException {
         try {
             collection = (String) query.getValue(collectionFieldName);
             criteria = (IObject) query.getValue(criteriaFieldName);
@@ -119,8 +127,9 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
         }
         try {
-            dataBase.select(criteria, collection);
-        } catch (IDatabaseException e) {
+            List<IObject> result = dataBase.select(criteria, collection);
+            callback.execute(result.toArray(new IObject[result.size()]));
+        } catch (Exception e) {
             try {
                 throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
             } catch (SerializeException e1) {
@@ -128,4 +137,5 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
             }
         }
     }
+
 }

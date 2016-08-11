@@ -21,6 +21,10 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  */
 public class InMemoryGetByIdTask implements IDatabaseTask {
 
+    private IFieldName collectionNameFieldName;
+    private IFieldName idFieldName;
+    private IFieldName callbackFieldName;
+
     private String collectionName;
     private Integer id;
 
@@ -29,17 +33,26 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
      */
     private IAction<IObject> callback;
 
+    /**
+     * Creates the task.
+     * @throws TaskPrepareException if cannot resolve IFieldName
+     */
+    public InMemoryGetByIdTask() throws TaskPrepareException {
+        try {
+            collectionNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
+            idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
+            callbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
+        } catch (ResolutionException e) {
+            throw new TaskPrepareException("Failed to resolve IFieldName", e);
+        }
+    }
+
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IFieldName collectionName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
-            this.collectionName = (String) query.getValue(collectionName);
-            IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
-            this.id = (Integer) query.getValue(idFieldName);
-            IFieldName callbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
-            this.callback = (IAction<IObject>) query.getValue(callbackFieldName);
-        } catch (ResolutionException e) {
-            throw new TaskPrepareException("Failed to resolve IFieldName", e);
+            collectionName = (String) query.getValue(collectionNameFieldName);
+            id = (Integer) query.getValue(idFieldName);
+            callback = (IAction<IObject>) query.getValue(callbackFieldName);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Failed to resolve get \"collectionName\" from query", e);
         }
@@ -58,4 +71,5 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
             throw new TaskExecutionException("Failed to execute callback", e);
         }
     }
+
 }

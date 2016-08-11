@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,20 +24,31 @@ import java.util.Map;
  */
 public class InMemoryDatabase implements IDatabase {
     private Map<String, List<DataBaseItem>> dataBase = new HashMap<>();
+    private IFieldName filterFieldName;
 
+    /**
+     * Creates the database.
+     * @throws IDatabaseException if not possible to resolve IFieldName
+     */
+    public InMemoryDatabase() throws IDatabaseException {
+        try {
+            filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
+        } catch (ResolutionException e) {
+            throw new IDatabaseException("Failed to resolve IFieldName", e);
+        }
+    }
 
     @Override
     public void upsert(final IObject document, final String collectionName) throws IDatabaseException {
-        DataBaseItem item = null;
         try {
-            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            if (null == item.getId()) {
+                insert(item);
+            } else {
+                update(item);
+            }
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to create DataBaseItem", e);
-        }
-        if (null == item.getId()) {
-            insert(item);
-        } else {
-            update(item);
         }
     }
 
@@ -50,25 +60,23 @@ public class InMemoryDatabase implements IDatabase {
     @Override
     public void insert(final IObject document, final String collectionName) throws IDatabaseException {
         synchronized (this) {
-            DataBaseItem item = null;
             try {
-                item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+                DataBaseItem item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+                insert(item);
             } catch (ResolutionException e) {
                 throw new IDatabaseException("Failed to create DataBaseItem", e);
             }
-            insert(item);
         }
     }
 
     @Override
     public void update(final IObject document, final String collectionName) throws IDatabaseException {
-        DataBaseItem item = null;
         try {
-            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            update(item);
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to create DataBaseItem", e);
         }
-        update(item);
     }
 
     private void update(final DataBaseItem item) throws IDatabaseException {
@@ -118,34 +126,23 @@ public class InMemoryDatabase implements IDatabase {
 
     @Override
     public List<IObject> select(final IObject condition, final String collectionName) throws IDatabaseException {
-        List<DataBaseItem> list = dataBase.get(collectionName);
-        IFieldName filterFieldName = null;
-        IObject filter = null;
         try {
-            filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
-            filter = (IObject) condition.getValue(filterFieldName);
+            List<DataBaseItem> list = dataBase.get(collectionName);
+            IObject filter = (IObject) condition.getValue(filterFieldName);
+            List<IObject> outputList = new LinkedList<>();
+            for (DataBaseItem item : list) {
+                if (generalConditionParser(filter, item.getDocument())) {
+                    outputList.add(clone(item.getDocument()));
+                }
+            }
+            outputList = IOC.resolve(Keys.getOrAdd("PagingForDatabaseCollection"), condition, outputList);
+            outputList = IOC.resolve(Keys.getOrAdd("SortIObjects"), condition, outputList);
+            return outputList;
         } catch (ResolutionException e) {
-            throw new IDatabaseException("Failed to resolve IFieldName", e);
+            throw new IDatabaseException("Failed to resolve IFieldName or PagingForDatabaseCollection or SortIObjects", e);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new IDatabaseException("Failed to get filter from select condition", e);
         }
-        List<IObject> outputList = new LinkedList<>();
-        for (DataBaseItem item : list) {
-            if (generalConditionParser(filter, item.getDocument())) {
-                outputList.add(clone(item.getDocument()));
-            }
-        }
-        try {
-            outputList = IOC.resolve(Keys.getOrAdd("PagingForDatabaseCollection"), condition, outputList);
-        } catch (ResolutionException e) {
-            throw new IDatabaseException("Failed to resolve \"PagingForDatabaseCollection\"", e);
-        }
-        try {
-            outputList = IOC.resolve(Keys.getOrAdd("SortIObjects"), condition, outputList);
-        } catch (ResolutionException e) {
-            throw new IDatabaseException("Failed to resolve \"SortIObjects\"", e);
-        }
-        return outputList;
     }
 
     private boolean generalConditionParser(final IObject condition, final IObject document) throws IDatabaseException {
@@ -169,7 +166,7 @@ public class InMemoryDatabase implements IDatabase {
     }
 
     @Override
-    public void delete(IObject document, final String collectionName) throws IDatabaseException {
+    public void delete(final IObject document, final String collectionName) throws IDatabaseException {
         List<DataBaseItem> list = dataBase.get(collectionName);
         DataBaseItem item = null;
         try {

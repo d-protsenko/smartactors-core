@@ -14,18 +14,29 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 /**
- * Created by sevenbits on 09.08.16.
+ * Task to create a collection in the in-memory database.
  */
 public class InMemoryDBCreateCollectionTask implements IDatabaseTask {
+
+    private IFieldName collectionNameField;
     private String collectionName;
+
+    /**
+     * Creates the task.
+     * @throws TaskPrepareException if cannot resolve IFieldName
+     */
+    public InMemoryDBCreateCollectionTask() throws TaskPrepareException {
+        try {
+            collectionNameField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
+        } catch (ResolutionException e) {
+            throw new TaskPrepareException("Failed to resolve IFieldName", e);
+        }
+    }
 
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IFieldName collectionName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
-            this.collectionName = (String) query.getValue(collectionName);
-        } catch (ResolutionException e) {
-            throw new TaskPrepareException("Failed to resolve IFieldName", e);
+            this.collectionName = (String) query.getValue(collectionNameField);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Failed to resolve get \"collectionName\" from query", e);
         }
