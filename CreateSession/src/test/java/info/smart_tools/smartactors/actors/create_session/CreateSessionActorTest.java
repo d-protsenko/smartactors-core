@@ -327,8 +327,5 @@ public class CreateSessionActorTest {
 
         verify(inputMessage).setSession(eq(sessionFromDB));
         verify(searchTask).execute();
-//        verify(collectionNameF).out(searchQuery, collectionName);
-//        verify(sizeF).out(searchQuery, 1);
-//        verify(numberF).out(searchQuery, 1);
     }
 }

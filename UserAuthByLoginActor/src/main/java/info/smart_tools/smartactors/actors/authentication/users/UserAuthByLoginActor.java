@@ -72,7 +72,7 @@ public class UserAuthByLoginActor {
             this.connectionPool = params.getConnectionPool();
 
             loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
-            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
             this.passwordEncoder = IOC.resolve(
@@ -175,7 +175,7 @@ public class UserAuthByLoginActor {
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
                         "user with login: [" + message.getLogin() + "] hasn't password!");
             }
-            if (message.getPassword().equals(passwordEncoder.encode(password))) {
+            if (!password.equals(passwordEncoder.encode(message.getPassword()))) {
                 setFailResponse(message, AUTH_ERROR_RESPONSE_MSG);
                 throw new AuthenticateUserException(AUTH_ERROR_MSG +
                         "Invalid password: [" + message.getPassword() + "] for login: [" + message.getLogin() + "]!");
