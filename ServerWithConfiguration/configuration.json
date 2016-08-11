@@ -9,12 +9,14 @@
     {
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor",
-      "name": "createAsyncOpsActor"
+      "name": "createAsyncOpsActor",
+      "collectionName": "operation"
     },
     {
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor",
-      "name": "getAsyncOpsActor"
+      "name": "getAsyncOpsActor",
+      "collectionName": "operation"
     },
     {
       "kind": "actor",

@@ -4,7 +4,9 @@ import info.smart_tools.smartactors.actors.get_async_operation.exception.GetAsyn
 import info.smart_tools.smartactors.actors.get_async_operation.wrapper.GetAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -16,11 +18,24 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  */
 public class GetAsyncOperationActor {
 
+    private IAsyncOperationCollection collection;
+
     /**
      * Constructor needed for registry actor
      * @param params iobject
+     * @throws GetAsyncOperationActor if any error is occurred
      */
-    public GetAsyncOperationActor(final IObject params) {
+    public GetAsyncOperationActor(final IObject params) throws GetAsyncOperationActorException {
+        try {
+            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            collection = IOC.resolve(
+                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), collectionNameField.in(params)
+            );
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new GetAsyncOperationActorException("Can't read collection name from message", e);
+        } catch (ResolutionException e) {
+            throw new GetAsyncOperationActorException("Can't get key or resolve dependency", e);
+        }
     }
 
     /**
@@ -34,14 +49,13 @@ public class GetAsyncOperationActor {
     public void getOperation(final GetAsyncOperationMessage message) throws GetAsyncOperationActorException {
 
         try {
-            IAsyncOperationCollection collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), "operation");
             String token = message.getToken();
             IObject asyncOperation = collection.getAsyncOperation(token);
             if (asyncOperation == null) {
                 throw new GetAsyncOperationActorException("Asynchronous operation by token " + token + " is null");
             }
             message.setAsyncOperation(asyncOperation);
-        } catch (ResolutionException | ChangeValueException | GetAsyncOperationException | ReadValueException e) {
+        } catch (ChangeValueException | GetAsyncOperationException | ReadValueException e) {
             throw new GetAsyncOperationActorException("Can't get async operation by token.", e);
         }
     }
