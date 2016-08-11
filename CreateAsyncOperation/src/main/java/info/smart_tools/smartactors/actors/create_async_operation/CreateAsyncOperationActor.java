@@ -15,6 +15,8 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -67,6 +69,14 @@ public class CreateAsyncOperationActor {
 
             //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);
+
+            List<String> availableTokens = message.getOperationTokens();
+            if (availableTokens == null) {
+                message.setOperationTokens(Collections.singletonList(token));
+            } else {
+                availableTokens.add(token);
+                message.setOperationTokens(availableTokens);
+            }
         } catch (ReadValueException | ChangeValueException | CreateAsyncOperationException e) {
             throw new CreateAsyncOperationActorException("Can't create async operation.", e);
         }
