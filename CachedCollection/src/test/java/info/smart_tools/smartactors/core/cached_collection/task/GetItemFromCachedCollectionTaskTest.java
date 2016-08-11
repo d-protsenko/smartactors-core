@@ -1,113 +1,100 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
+import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
+import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
+import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
+import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.time.LocalDateTime;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({IOC.class, Keys.class, LocalDateTime.class})
 public class GetItemFromCachedCollectionTaskTest {
 
     private GetItemFromCachedCollectionTask testTask;
     private IDatabaseTask targetTask;
+    private IObject queryForNestedTask;
 
-    private IField pageSizeField;
-    private IField pageNumberField;
-    private IField keyNameField;
-    private IField keyValueField;
-    private IField criteriaEqualsIsActiveField;
-    private IField criteriaDateToStartDateTimeField;
-    private IKey mockKeyField = mock(IKey.class);
+    @BeforeClass
+    public static void initIOC() throws PluginException, ProcessExecutionException {
+        Bootstrap bootstrap = new Bootstrap();
+        new PluginIOCSimpleContainer(bootstrap).load();
+        new PluginIOCKeys(bootstrap).load();
+        new IFieldNamePlugin(bootstrap).load();
+        new IFieldPlugin(bootstrap).load();
+        new PluginDSObject(bootstrap).load();
+        bootstrap.start();
+    }
 
     @Before
-    public void prepare () throws Exception {
-        mockStatic(IOC.class);
-        mockStatic(Keys.class);
-        mockStatic(LocalDateTime.class);
-
-        IField collectionNameField = mock(IField.class);
-        keyNameField = mock(IField.class);
-        keyValueField = mock(IField.class);
-        pageSizeField = mock(IField.class);
-        pageNumberField = mock(IField.class);
-        criteriaEqualsIsActiveField = mock(IField.class);
-        criteriaDateToStartDateTimeField = mock(IField.class);
-
-
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(mockKeyField);
-        when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
-        when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
-        when(IOC.resolve(mockKeyField, "keyValue")).thenReturn(keyValueField);
-        when(IOC.resolve(mockKeyField, "pageSize")).thenReturn(pageSizeField);
-        when(IOC.resolve(mockKeyField, "pageNumber")).thenReturn(pageNumberField);
-        when(IOC.resolve(mockKeyField, "criteria/isActive/$eq")).thenReturn(criteriaEqualsIsActiveField);
-        when(IOC.resolve(mockKeyField, "criteria/startDateTime/$date-to")).thenReturn(criteriaDateToStartDateTimeField);
-
+    public void prepare() throws Exception {
         targetTask = mock(IDatabaseTask.class);
+        IOC.register(Keys.getOrAdd("db.collection.search"), new IResolveDependencyStrategy() {
+            @Override
+            public IDatabaseTask resolve(Object... args) throws ResolveDependencyStrategyException {
+                queryForNestedTask = (IObject) args[2];
+                return targetTask;
+            }
+        });
+
         IStorageConnection connection = mock(IStorageConnection.class);
         testTask = new GetItemFromCachedCollectionTask(connection);
     }
 
     @Test
     public void MustCorrectPrepareQueryForSelecting() throws Exception {
-
-        IObject query = mock(IObject.class);
-        when(keyNameField.in(query)).thenReturn("keyName");
-        when(keyValueField.in(query)).thenReturn("keyValue");
-
-        IObject queryForNestedTask = mock(IObject.class);
-        IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
-        when(IOC.resolve(keyIObject)).thenReturn(queryForNestedTask);
-
-        IField criteriaEqualsKeyField = mock(IField.class);
-        when(IOC.resolve(mockKeyField, "keyName/$eq/keyValue")).thenReturn(criteriaEqualsKeyField);
+        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"keyName\": \"keyName\", \"key\": \"keyValue\" }");
 
         testTask.prepare(query);
 
-        verify(targetTask).prepare(queryForNestedTask);
-        verify(criteriaEqualsKeyField).in(queryForNestedTask);
-        verify(pageSizeField).out(queryForNestedTask, 100);
-        verify(pageNumberField).out(queryForNestedTask, 1);
-        verify(criteriaEqualsIsActiveField).out(queryForNestedTask, true);
-        verify(criteriaDateToStartDateTimeField).out(eq(queryForNestedTask), anyString());
+        IField criteriaEqualsIsActiveField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria/isActive/$eq");
+        IField criteriaDateToStartDateTimeField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria/startDateTime/$date-to");
+        assertEquals(true, criteriaEqualsIsActiveField.in(queryForNestedTask));
+        assertTrue(criteriaDateToStartDateTimeField.in(queryForNestedTask) instanceof String);
     }
 
     @Test(expected = TaskPrepareException.class)
-    public void MustInCorrectPrepareQueryForSelectingWhenIOCThrowException() throws ResolutionException, TaskPrepareException, ReadValueException, ChangeValueException {
-
-        when(IOC.resolve(any())).thenThrow(new ResolutionException(""));
+    public void MustInCorrectPrepareQueryForSelectingWhenIOCThrowException() throws ResolutionException, TaskPrepareException, RegistrationException {
+        IOC.register(Keys.getOrAdd("db.collection.search"), new IResolveDependencyStrategy() {
+            @Override
+            public IDatabaseTask resolve(Object... args) throws ResolveDependencyStrategyException {
+                throw new ResolveDependencyStrategyException("No database task");
+            }
+        });
 
         testTask.prepare(mock(IObject.class));
     }
 
     @Test
-    public void MustCorrectExecuteQuery() throws TaskExecutionException {
+    public void MustCorrectExecuteQuery() throws TaskExecutionException, TaskPrepareException, ResolutionException {
+        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"keyName\": \"keyName\", \"key\": \"keyValue\" }");
+        testTask.prepare(query);
+
         testTask.execute();
 
         verify(targetTask).execute();

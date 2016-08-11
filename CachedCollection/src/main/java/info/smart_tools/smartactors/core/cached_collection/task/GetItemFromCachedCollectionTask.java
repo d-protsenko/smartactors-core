@@ -82,7 +82,6 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-
             IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
             collectionNameField.out(queryForNestedTask, collectionNameField.in(query));

@@ -243,6 +243,8 @@
         <module>PluginSampleDBActor</module>
         <module>ActorCollectionReceiver</module>
         <module>PluginActorCollectionReceiver</module>
+        <module>ExceptionHandlerActor</module>
+        <module>PluginExceptionHandlerActor</module>
     </modules>
 
     <build>

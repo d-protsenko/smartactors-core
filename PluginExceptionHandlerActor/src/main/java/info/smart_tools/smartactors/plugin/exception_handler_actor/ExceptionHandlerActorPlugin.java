@@ -1,6 +1,6 @@
-package info.smart_tools.smartactors.plugin.sample_actor;
+package info.smart_tools.smartactors.plugin.exception_handler_actor;
 
-import info.smart_tools.smartactors.actors.SampleActor;
+import info.smart_tools.smartactors.actor.exception_handler_actor.ExceptionHandlerActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -15,33 +15,33 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
- * Plugin for register {@link SampleActor} creation strategy
+ * Plugin for register {@link ExceptionHandlerActor} creation strategy
  */
-public class SampleActorPlugin implements IPlugin {
+public class ExceptionHandlerActorPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public SampleActorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public ExceptionHandlerActorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
     /**
-     * Load the plugin for {@link SampleActor}
+     * Load the plugin for {@link ExceptionHandlerActor}
      * @throws PluginException Throw when plugin can't be load
      */
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("SampleActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("ExceptionHandlerActorPlugin");
 
             item
                     .after("IOC")
                     .process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("SampleActor"), new ApplyFunctionToArgumentsStrategy(
+                    IOC.register(Keys.getOrAdd("ExceptionHandlerActor"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
-                                    return new SampleActor();
+                                    return new ExceptionHandlerActor();
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }
@@ -52,7 +52,7 @@ public class SampleActorPlugin implements IPlugin {
             });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load SampleActor plugin", e);
+            throw new PluginException("Can't load ExceptionHandlerActor plugin", e);
         }
     }
 }
