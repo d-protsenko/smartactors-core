@@ -42,14 +42,16 @@ public class CreateUserPluginTest {
     public void Should_CorrectLoadPlugin() throws Exception {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(bootstrapItem);
+
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         CreateUserActor actor = mock(CreateUserActor.class);
         PowerMockito.whenNew(CreateUserActor.class).withAnyArguments().thenReturn(actor);
 
         plugin.load();
 
-        PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateCreateUserActorPlugin");
+        PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateUserActorPlugin");
 
         ArgumentCaptor<IPoorAction>actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());

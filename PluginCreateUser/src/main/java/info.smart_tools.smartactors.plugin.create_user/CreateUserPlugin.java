@@ -39,7 +39,7 @@ public class CreateUserPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CreateCreateUserActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("CreateUserActorPlugin");
 
             item
                 .after("IOC")
