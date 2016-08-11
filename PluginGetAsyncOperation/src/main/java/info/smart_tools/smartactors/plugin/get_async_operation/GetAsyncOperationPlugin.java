@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.get_async_operation;
 
 import info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor;
+import info.smart_tools.smartactors.actors.get_async_operation.exception.GetAsyncOperationActorException;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -15,6 +16,8 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+
+import java.util.Arrays;
 
 /**
  * Plugin for {@link GetAsyncOperationActor}
@@ -43,7 +46,13 @@ public class GetAsyncOperationPlugin implements IPlugin {
                         try {
                             IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());
                             IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
-                                    (args) -> new GetAsyncOperationActor((IObject) args[0])
+                                    (args) -> {
+                                        try {
+                                            return new GetAsyncOperationActor((IObject) args[0]);
+                                        } catch (GetAsyncOperationActorException e) {
+                                            throw new RuntimeException("Can't create GetAsyncOperationActor with params: " + Arrays.toString(args), e);
+                                        }
+                                    }
                             ));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't get GetAsyncOperationActor key", e);
