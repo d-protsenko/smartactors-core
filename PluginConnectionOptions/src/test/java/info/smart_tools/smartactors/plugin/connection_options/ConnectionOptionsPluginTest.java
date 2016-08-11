@@ -18,16 +18,15 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, ConnectionOptionsPlugin.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
@@ -81,6 +80,11 @@ public class ConnectionOptionsPluginTest {
         IOC.register(eq(connectionOptionsKey), argumentCaptor.capture());
 
         IObject configObj = mock(IObject.class);
+
+        Properties connectionOptions = mock(Properties.class);
+        whenNew(Properties.class).withNoArguments().thenReturn(connectionOptions);
+
+        doNothing().when(connectionOptions).load(any(InputStream.class));
 
         ConnectionOptions options = argumentCaptor.getValue().resolve(configObj);
         assertNotNull(options);

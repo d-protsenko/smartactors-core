@@ -256,6 +256,10 @@
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
         <module>PluginConnectionOptions</module>
+        <module>ExceptionHandlerActor</module>
+        <module>PluginExceptionHandlerActor</module>
+        <module>GetQueryParameterRule</module>
+        <module>PluginGetQueryParameterRule</module>
     </modules>
 
     <build>
