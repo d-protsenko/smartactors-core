@@ -45,7 +45,7 @@ public class AuthenticationActorPlugin implements IPlugin {
                     .before("configure")
                     .process(() -> {
                         try {
-                            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.toString());
+                            IKey cachedCollectionKey = Keys.getOrAdd(AuthenticationActor.class.getCanonicalName());
                             IOC.register(cachedCollectionKey, new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {

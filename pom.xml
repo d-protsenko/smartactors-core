@@ -239,8 +239,16 @@
         <module>PluginChainChoiceStrategy</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>MessageBus</module>
+        <module>IMessageBusContainer</module>
+        <module>MessageBusContainerWithScope</module>
+        <module>MessageBusHandler</module>
+        <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>SampleOtherActor</module>
+        <module>ExceptionHandlerActor</module>
+        <module>PluginExceptionHandlerActor</module>
         <module>InMemoryDatabase</module>
         <module>PluginInMemoryDatabase</module>
         <module>InMemoryDBCreateCollectionTask</module>
