@@ -53,7 +53,7 @@ public class PostgresSearchTaskTest {
     private SearchMessage message;
     private IStorageConnection connection;
     private JDBCCompiledQuery compiledQuery;
-    private PreparedStatement statement;
+    private PreparedStatement sqlStatement;
     private ResultSet resultSet;
 
     @BeforeClass
@@ -69,13 +69,18 @@ public class PostgresSearchTaskTest {
     @Before
     public void setUp() throws QueryBuildException, InvalidArgumentException, ResolutionException, RegistrationException, ReadValueException, StorageException, SQLException {
         resultSet = mock(ResultSet.class);
-        statement = mock(PreparedStatement.class);
-        when(statement.getResultSet()).thenReturn(resultSet);
+
+        sqlStatement = mock(PreparedStatement.class);
+        when(sqlStatement.getResultSet()).thenReturn(resultSet);
+
         compiledQuery = mock(JDBCCompiledQuery.class);
-        when(compiledQuery.getPreparedStatement()).thenReturn(statement);
+        when(compiledQuery.getPreparedStatement()).thenReturn(sqlStatement);
+
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
+
         task = new PostgresSearchTask(connection);
+
         message = mock(SearchMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
         when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
@@ -97,7 +102,7 @@ public class PostgresSearchTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verify(resultSet, times(3)).next();
         verify(resultSet, times(2)).getString(anyInt());
         verify(connection).commit();
@@ -108,7 +113,7 @@ public class PostgresSearchTaskTest {
     public void testSearchFailure() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
         IAction<IObject[]> callback = mock(IAction.class);
         when(message.getCallback()).thenReturn(callback);
-        when(statement.execute()).thenThrow(SQLException.class);
+        when(sqlStatement.execute()).thenThrow(SQLException.class);
 
         task.prepare(null); // the message will be resolved by IOC
         try {
@@ -119,7 +124,7 @@ public class PostgresSearchTaskTest {
         }
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verifyZeroInteractions(resultSet);
         verifyZeroInteractions(callback);
         verify(connection).rollback();
@@ -136,11 +141,28 @@ public class PostgresSearchTaskTest {
         task.execute();
 
         verify(connection).compileQuery(any(QueryStatement.class));
-        verify(statement).execute();
+        verify(sqlStatement).execute();
         verify(resultSet, times(1)).next();
         verify(resultSet, times(0)).getString(anyInt());
         verify(connection).commit();
         assertEquals(0, results.size());
+    }
+
+    @Test
+    public void testSearchInvalidCriteria() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
+        IAction<IObject[]> callback = mock(IAction.class);
+        when(message.getCallback()).thenReturn(callback);
+        when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": 123 }"));
+
+        try {
+            task.prepare(null); // the message will be resolved by IOC
+            fail();
+        } catch (TaskPrepareException e) {
+            // pass
+        }
+
+        verifyZeroInteractions(connection);
+        verifyZeroInteractions(sqlStatement);
     }
 
 }

@@ -1,8 +1,12 @@
 actors.sample_actor-0.2.0-SNAPSHOT.jar
 actors.sample_other_actor-0.2.0-SNAPSHOT.jar
 plugin.sample_actor-0.2.0-SNAPSHOT.jar
+
 actors.sample_db_actor-0.2.0-SNAPSHOT.jar
 plugin.sample_db_actor-0.2.0-SNAPSHOT.jar
+
+actor.exception_handler-0.2.0-SNAPSHOT.jar
+plugin.exception_handler_actor-0.2.0-SNAPSHOT.jar
 
 plugin.postgres_connection_pool-0.2.0-SNAPSHOT.jar
 postgresql-9.4-1206-jdbc42.jar

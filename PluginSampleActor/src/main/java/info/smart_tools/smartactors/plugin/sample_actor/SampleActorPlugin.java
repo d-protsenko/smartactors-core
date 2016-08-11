@@ -74,7 +74,7 @@ public class SampleActorPlugin implements IPlugin {
             bootstrap.add(item2);
 
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load AuthenticationActor plugin", e);
+            throw new PluginException("Can't load SampleActor plugin", e);
         }
     }
 }

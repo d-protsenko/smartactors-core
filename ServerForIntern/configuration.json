@@ -2,6 +2,10 @@
   "objects": [
     {
       "kind": "stateless_actor",
+      "dependency": "ExceptionHandlerActor",
+      "name": "exception-handler-actor"
+    },{
+      "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
     },
@@ -29,13 +33,34 @@
   ],
   "maps": [
     {
+      "id": "exceptionHandler",
+      "steps": [
+        {
+          "target": "exception-handler-actor",
+          "handler": "handle",
+          "wrapper": {
+            "in_getMessage": "message",
+            "in_getContext": "context",
+            "in_getResponse": "response",
+            "in_getConfig": "config"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
       "id": "SelectChain",
       "steps": [
         {
           "target": "chain_selector"
         }
       ],
-      "exceptional": []
+      "exceptional": [
+        {
+          "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+          "chain": "exceptionHandler"
+        }
+      ]
     },
     {
       "id": "myChain",
@@ -55,7 +80,12 @@
           "handler": "sendResponse"
         }
       ],
-      "exceptional": []
+      "exceptional": [
+        {
+          "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+          "chain": "exceptionHandler"
+        }
+      ]
     },
     {
       "id": "myChainOther",
@@ -68,7 +98,12 @@
           }
         }
       ],
-      "exceptional": []
+      "exceptional": [
+        {
+          "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+          "chain": "exceptionHandler"
+        }
+      ]
     },
     {
       "id": "upsertDocument",

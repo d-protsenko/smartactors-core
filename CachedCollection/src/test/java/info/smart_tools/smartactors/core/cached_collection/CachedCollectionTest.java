@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
-import info.smart_tools.smartactors.core.cached_collection.task.GetItemFromCachedCollectionTask;
 import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -31,12 +31,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -80,7 +78,7 @@ public class CachedCollectionTest {
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(mockKeyField, "searchResult")).thenReturn(searchResultField);
-        when(IOC.resolve(mockKeyField, "keyValue")).thenReturn(keyValueField);
+        when(IOC.resolve(mockKeyField, "key")).thenReturn(keyValueField);
         when(IOC.resolve(mockKeyField, "document")).thenReturn(documentField);
         when(IOC.resolve(mockKeyField, "id")).thenReturn(idField);
         when(IOC.resolve(mockKeyField, "isActive")).thenReturn(isActiveField);
@@ -199,18 +197,26 @@ public class CachedCollectionTest {
         when(Keys.getOrAdd(IObject.class.toString())).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
-        IObject searchResult = mock(IObject.class);
+        final IObject searchResult = mock(IObject.class);
 
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd(GetItemFromCachedCollectionTask.class.toString())).thenReturn(keyTask);
-        when(IOC.resolve(keyTask)).thenReturn(readTask);
+        when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
+        final IAction[] callback = {mock(IAction.class)};
+        doAnswer(invocation -> {
+            callback[0] = (IAction) invocation.getArguments()[5];
+            return readTask;
+        }).when(IOC.class);
+        IOC.resolve(eq(keyTask), any(), eq(collectionName), any(), any(), any(IAction.class));
+        doAnswer(invocation -> {
+            callback[0].execute(new IObject[] {searchResult});
+            return null;
+        }).when(readTask).execute();
 
         when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
 
         List<IObject> items = collection.getItems("key");
 
-        verify(readTask).prepare(eq(readQuery));
         verify(readTask).execute();
         assertEquals(items.get(0), searchResult);
     }
