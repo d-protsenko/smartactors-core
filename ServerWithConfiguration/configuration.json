@@ -174,8 +174,19 @@
             "in_getOperationData": "response/form",
             "in_getExpiredTime": "const/4",
             "in_getSessionId": "message/sessionId",
+            "in_getOperationTokens": "message/session/tokens",
+            "out_setOperationTokens": "message/session/tokens",
             "out_setSessionIdInData": "response/form/sessionId",
-            "out_setAsyncOperationToken": "response/token"
+            "out_setAsyncOperationToken":[
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "response/token"]
+              }],
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "message/session/token"]
+              }]
+            ]
           }
         },
         {
@@ -316,7 +327,16 @@
             "in_getExpiredTime": "const/4",
             "in_getSessionId": "message/session/sessionId",
             "out_setSessionIdInData": "message/form/sessionId",
-            "out_setAsyncOperationToken": "response/token"
+            "out_setAsyncOperationToken":[
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "response/token"]
+              }],
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "message/session/token"]
+              }]
+            ]
           }
         },
         {

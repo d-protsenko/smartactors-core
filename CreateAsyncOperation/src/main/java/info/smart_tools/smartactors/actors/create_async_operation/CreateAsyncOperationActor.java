@@ -32,13 +32,13 @@ public class CreateAsyncOperationActor {
     /**
      * Constructor needed for registry actor
      * @param params iobject
-     * @throws CreateAsyncOperationActor if any error is occurred
+     * @throws CreateAsyncOperationActorException if any error is occurred
      */
     public CreateAsyncOperationActor(final IObject params) throws CreateAsyncOperationActorException {
         try {
             IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             collection = IOC.resolve(
-                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), collectionNameField.in(params)
+                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new CreateAsyncOperationActorException("Can't read collection name from message", e);
