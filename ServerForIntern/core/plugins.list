@@ -157,3 +157,8 @@ strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar
 strategy.cookies_setter-0.2.0-SNAPSHOT.jar
 strategy.http_headers_setter-0.2.0-SNAPSHOT.jar
 strategy.response_status_extractor-0.2.0-SNAPSHOT.jar
+core.message_bus-0.2.0-SNAPSHOT.jar
+core.imessage_bus_container-0.2.0-SNAPSHOT.jar
+core.imessage_bus_handler-0.2.0-SNAPSHOT.jar
+core.message_bus_handler-0.2.0-SNAPSHOT.jar
+core.message_bus_container_with_scope-0.2.0-SNAPSHOT.jar
