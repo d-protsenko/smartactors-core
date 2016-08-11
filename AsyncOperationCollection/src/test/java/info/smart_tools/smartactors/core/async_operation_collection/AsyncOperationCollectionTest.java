@@ -125,30 +125,6 @@ public class AsyncOperationCollectionTest {
         when(IOC.resolve(any(), any(), any(), any())).thenThrow(new ResolutionException(""));
         collection.complete(query);
     }
-/*
-    @Test
-    public void ShouldReadObject() throws Exception {
-
-        IObject readQuery = mock(IObject.class);
-        IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(keyIObject);
-        when(IOC.resolve(keyIObject)).thenReturn(readQuery);
-
-        IObject searchResult = mock(IObject.class);
-
-        IDatabaseTask readTask = mock(IDatabaseTask.class);
-        IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd(GetAsyncOperationTask.class.toString())).thenReturn(keyTask);
-        when(IOC.resolve(keyTask)).thenReturn(readTask);
-
-        when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
-
-        IObject item = collection.getAsyncOperation("key");
-
-        verify(readTask).prepare(eq(readQuery));
-        verify(readTask).execute();
-        assertEquals(item, searchResult);
-    }*/
 
     @Test(expected = GetAsyncOperationException.class)
     public void ShouldThrowGetItemException_When_NestedTaskIsNull() throws Exception {
