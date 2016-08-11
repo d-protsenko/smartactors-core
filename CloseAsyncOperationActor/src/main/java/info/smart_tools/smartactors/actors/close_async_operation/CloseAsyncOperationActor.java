@@ -40,7 +40,7 @@ public class CloseAsyncOperationActor {
      * @param message the message
      *                <pre>
      *                {
-     *
+     *                    "token" : "some token value"
      *                }
      *                </pre>
      * @throws InvalidArgumentException Throw when can't read some value from message or have invalid parameters
