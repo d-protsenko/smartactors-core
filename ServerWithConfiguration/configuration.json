@@ -223,6 +223,25 @@
             "in_getForm": "message/asyncOperation/body/form",
             "out_setFormData": "message/form"
           }
+        },
+        {
+          "target": "userAuthByLoginActor",
+          "handler": "authenticateUser",
+          "wrapper": {
+            "in_getLogin": "message/form/login",
+            "in_getPassword": "message/form/password",
+            "out_setAuthStatus": "response/auth_status",
+            "out_setAuthMessage": "response/auth_message"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/asyncOperation",
+            "in_getOperationTokens": "message/form/tokens",
+            "in_getToken": "message/token"
+          }
         }
       ],
       "exceptional": []
