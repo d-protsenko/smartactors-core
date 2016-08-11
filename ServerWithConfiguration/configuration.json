@@ -80,6 +80,11 @@
       "authenticationMode": "Login",
       "server": "smtp://aspmx.l.google.com:25",
       "senderAddress": "mixaildre@gmail.com"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
+      "name": "createNewUserActor"
     }
   ],
   "maps": [
@@ -388,14 +393,38 @@
           "wrapper": {
             "in_getToken":[
               {
-                "name": "getHeaderFromRequestRule",
+                "name": "getQueryParameterFromRequestRule",
                 "args": [
                   "context/request",
-                  "const/User-Agent"
+                  "const/token"
                 ]
               }
             ],
             "out_setAsyncOperation": "message/userForm"
+          }
+        },
+        {
+          "target": "createNewUserActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getUser": "message/userForm"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/userForm",
+            "in_getOperationTokens": "message/session/tokens",
+            "in_getToken": [
+              {
+                "name": "getQueryParameterFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/token"
+                ]
+              }
+            ]
           }
         }
       ],

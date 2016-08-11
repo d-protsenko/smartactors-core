@@ -259,6 +259,7 @@
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
+        <module>PluginGetQueryParameterRule</module>
     </modules>
 
     <build>

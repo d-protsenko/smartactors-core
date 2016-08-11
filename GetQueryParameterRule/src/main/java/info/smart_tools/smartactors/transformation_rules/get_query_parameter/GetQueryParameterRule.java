@@ -16,7 +16,7 @@ public class GetQueryParameterRule implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            URL url = new URL(((FullHttpRequest) args[0]).getUri());
+            URL url = new URL("http:" + ((FullHttpRequest) args[0]).getUri());
             String query = url.getQuery();
 
             String param = Stream.of(query.split("&"))
