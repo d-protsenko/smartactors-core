@@ -88,6 +88,11 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
       "name": "createNewUserActor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor",
+      "name": "checkValAsOpActor"
     }
   ],
   "maps": [
@@ -96,38 +101,6 @@
       "steps": [
         {
           "target": "chain_selector"
-        }
-      ],
-      "exceptional": []
-    },
-    {
-      "id": "changePasswordMapTest",
-      "steps": [
-        {
-          "target": "changePasswordActor",
-          "handler": "changePassword",
-          "wrapper": {
-            "in_getUserId": "message/userId",
-            "in_getPassword": "message/password",
-            "out_setAuthStatus": "response/auth_status",
-            "out_setAuthMessage": "response/auth_message"
-          }
-        }
-      ],
-      "exceptional": []
-    },
-    {
-      "id": "finishAuthMapTest",
-      "steps": [
-        {
-          "target": "userAuthByLoginActor",
-          "handler": "authenticateUser",
-          "wrapper": {
-            "in_getLogin": "message/login",
-            "in_getPassword": "message/password",
-            "out_setAuthStatus": "response/auth_status",
-            "out_setAuthMessage": "response/auth_message"
-          }
         }
       ],
       "exceptional": []
@@ -228,6 +201,14 @@
           }
         },
         {
+          "target": "checkValAsOpActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getAsyncOperationId": "message/token",
+            "in_getIdentifiers": "message/session/tokens"
+          }
+        },
+        {
           "target": "getAsyncOpsActor",
           "handler": "getOperation",
           "wrapper": {
@@ -240,7 +221,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/body/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
             "out_setFormData": "message/form"
           }
         },
@@ -311,7 +292,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/body/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
             "out_setFormData": "message/form"
           }
         },
@@ -350,6 +331,11 @@
             "in_getMessageAttributesMessage": "message/messageAttributes",
             "in_getMessagePartsMessage": "message/messageParts"
           }
+        },
+
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []
