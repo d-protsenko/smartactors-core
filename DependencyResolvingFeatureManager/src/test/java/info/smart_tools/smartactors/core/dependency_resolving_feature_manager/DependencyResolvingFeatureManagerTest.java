@@ -50,14 +50,14 @@ public class DependencyResolvingFeatureManagerTest {
     public void Should_throw_When_InvalidArgumentsPassedForFeatureCreation()
             throws Exception {
         assertNotNull(new DependencyResolvingFeatureManager("/", remoteRepos)
-                .newFeature(null));
+                .newFeature(null, null));
     }
 
     @Test
     public void Should_createFeatures()
             throws Exception {
         IFeature feature = new DependencyResolvingFeatureManager("/", remoteRepos)
-                .newFeature("feature");
+                .newFeature("feature", null);
 
         assertNotNull(feature);
         assertTrue(feature instanceof Feature);

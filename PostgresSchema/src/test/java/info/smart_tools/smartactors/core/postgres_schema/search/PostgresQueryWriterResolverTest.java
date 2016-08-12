@@ -87,7 +87,7 @@ public class PostgresQueryWriterResolverTest {
     }
 
     @Test
-    @Ignore("Equality test without explicit $eq operator is not supported yet")
+    @Ignore("Equality test without explicit $eq operator is not supported")
     public void testOneFieldEqualityQuery() throws InvalidArgumentException, QueryBuildException, SQLException {
         testAndVerify(
                 "{ \"a\": \"b\" }",

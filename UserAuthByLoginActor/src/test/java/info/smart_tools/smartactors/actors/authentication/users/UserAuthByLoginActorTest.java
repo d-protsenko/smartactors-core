@@ -4,7 +4,6 @@ package info.smart_tools.smartactors.actors.authentication.users;
 import info.smart_tools.smartactors.actors.authentication.users.exceptions.AuthenticateUserException;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -13,29 +12,32 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Method;
-import java.util.LinkedList;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
+import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @PrepareForTest({ IOC.class, Keys.class, UserAuthByLoginActor.class})
 @RunWith(PowerMockRunner.class)
@@ -44,15 +46,12 @@ public class UserAuthByLoginActorTest {
     private IPool connectionPool;
     private IPasswordEncoder passwordEncoder;
 
-    private static IField loginField;
-    private static IField passwordField;
-    private static IField eqField;
+    private IField loginField;
+    private IField passwordField;
+    private IField eqField;
 
-    private static final String collectionName = "testCollection";
-    private static final String testLogin = "testLogin";
-    private static final String PASSWORD = "testPassword";
-
-    private static boolean firstLaunch = true;
+    private String collectionName = "testCollection";
+    private String testLogin = "testLogin";
 
     @Before
     public void setUp() throws Exception {
@@ -82,31 +81,16 @@ public class UserAuthByLoginActorTest {
 
         when(IOC.resolve(passwordEncoderKey, algorithmName, encoderName, charsetName)).thenReturn(passwordEncoder);
 
-        if (firstLaunch) {
 
-            loginField = mock(IField.class);
-            passwordField = mock(IField.class);
-            eqField = mock(IField.class);
+        loginField = mock(IField.class);
+        passwordField = mock(IField.class);
+        eqField = mock(IField.class);
 
-            when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
-            when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
-            when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
-        }
+        when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
+        when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
+        when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
 
         authByLoginActor = new UserAuthByLoginActor(params);
-
-        if (firstLaunch) {
-            firstLaunch = false;
-            verifyStatic(Mockito.times(3));
-            Keys.getOrAdd(IField.class.getCanonicalName());
-
-            verifyStatic();
-            IOC.resolve(iFieldKey, "email");
-            verifyStatic();
-            IOC.resolve(iFieldKey, "password");
-            verifyStatic();
-            IOC.resolve(iFieldKey, "$eq");
-        }
 
         //checkParams
         verify(params, times(2)).getCollection();
@@ -417,50 +401,4 @@ public class UserAuthByLoginActorTest {
         verify(eqField).out(loginObject, testLogin);
         verify(loginField).out(filter, loginObject);
     }
-
-
-
-    //TODO: write this test
-//    @Test
-//    public void MustCorrectResolveLogin() throws Exception {
-//
-//        UserAuthByLoginActor authByLoginActorSpy;
-//        authByLoginActorSpy = spy(authByLoginActor);
-//
-//        Method method = authByLoginActorSpy.getClass().getDeclaredMethod("resolveLogin", IUserAuthByLoginMessage.class, IPoolGuard.class);
-//        method.setAccessible(true);
-//
-//        IUserAuthByLoginMessage message = mock(IUserAuthByLoginMessage.class);
-//        IPoolGuard iPoolGuard = mock(IPoolGuard.class);
-//
-//        Object poolGuardObject = mock(Object.class);
-//        when(iPoolGuard.getObject()).thenReturn(poolGuardObject);
-//
-//        IObject searchQuery = mock(IObject.class);
-//        doReturn(searchQuery).when(authByLoginActorSpy, "prepareQueryParams", message);
-//
-//        LinkedList<IObject> items = mock(LinkedList.class);
-//        whenNew(LinkedList.class).withNoArguments().thenReturn(items);
-//
-//        IObject result = mock(IObject.class);
-//        when(items.get(0)).thenReturn(result);
-//
-//        ArgumentCaptor<IAction> iActionArgumentCaptor = ArgumentCaptor.forClass(IAction.class);
-//        IKey searchTaskKey = mock(IKey.class);
-//        when(Keys.getOrAdd("db.collection.search")).thenReturn(searchTaskKey);
-//        ITask searchTask = mock(ITask.class);
-//
-//        when(IOC.resolve(
-//                eq(searchTaskKey),
-//                eq(poolGuardObject),
-//                eq(collectionName),
-//                eq(searchQuery),
-//                iActionArgumentCaptor.capture())
-//        ).thenReturn(searchTask);
-//
-//        doNothing().when(authByLoginActorSpy, "validateSearchResult", items, message);
-//
-//        assertTrue(method.invoke(authByLoginActor, message, iPoolGuard) == result);
-//        method.setAccessible(false);
-//    }
 }

@@ -34,19 +34,15 @@ public class CreateSessionActor {
     private String collectionName;
     private IPool connectionPool;
 
-    private static IField SESSION_ID_F;
-    private static IField EQUALS_F;
-    private static IField AUTH_INFO_F;
+    private IField collectionNameF;
+    private IField pageSizeF;
+    private IField pageNumberF;
+    private IField pageF;
+    private IField filterF;
 
-    static {
-        try {
-            SESSION_ID_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-            AUTH_INFO_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
-        } catch (ResolutionException e) {
-           throw new RuntimeException(e);
-        }
-    }
+    private IField sessionIdF;
+    private IField equalsF;
+    private IField authInfoF;
 
     /**
      * Constructor for CreateSessionActor
@@ -55,9 +51,19 @@ public class CreateSessionActor {
      */
     public CreateSessionActor(final CreateSessionConfig config) throws CreateSessionException {
         try {
+            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
+            pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
+            pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
+            filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+
+            sessionIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
+            equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+            authInfoF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
+
             this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
-        } catch (ReadValueException e) {
+        } catch (Exception e) {
             throw new CreateSessionException("Can't create Actor");
         }
     }
@@ -73,7 +79,7 @@ public class CreateSessionActor {
             if (sessionId == null || sessionId.equals("")) {
                 IObject authInfo = inputMessage.getAuthInfo();
                 IObject newSession = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                AUTH_INFO_F.out(newSession, authInfo);
+                authInfoF.out(newSession, authInfo);
                 inputMessage.setSession(newSession);
             } else {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
@@ -128,19 +134,14 @@ public class CreateSessionActor {
         IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        EQUALS_F.out(sessionIdObject, inputMessage.getSessionId());
-        SESSION_ID_F.out(filter, sessionIdObject);
+        equalsF.out(sessionIdObject, inputMessage.getSessionId());
+        sessionIdF.out(filter, sessionIdObject);
 
-        //TODO:: move fields creation to constructor or static block
-        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collectionName);
-        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
         pageSizeF.out(page, 1);
-        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
         pageNumberF.out(page, 1);
-        IField pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
         pageF.out(searchQuery, page);
-        IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+
         filterF.out(searchQuery, filter);
 
     }

@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.core.ibootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
 
+import java.util.List;
+
 /**
  * IBootstrap
  * Interface for storage, sort and execute atomic steps of plugin loading chain
@@ -20,9 +22,10 @@ public interface IBootstrap <T> {
      * Resolve bootstrap items dependencies,
      * order bootstrap items and
      * execute all processes for each bootstrap item
+     * @return the list of loaded items
      * @throws ProcessExecutionException if any errors occurred
      */
-    void start()
+    List<T> start()
             throws ProcessExecutionException;
 
     /**

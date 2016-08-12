@@ -67,8 +67,8 @@ public class ChangePasswordActorPluginTest {
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
         verify(bootstrap).add(bootstrapItem);
 
-        IKey hexEncoderKey = mock(IKey.class);
-        when(Keys.getOrAdd(ChangePasswordActor.class.getCanonicalName())).thenReturn(hexEncoderKey);
+        IKey changePasswordActorKey = mock(IKey.class);
+        when(Keys.getOrAdd(ChangePasswordActor.class.getCanonicalName())).thenReturn(changePasswordActorKey);
 
         actionArgumentCaptor.getValue().execute();
 
@@ -81,7 +81,7 @@ public class ChangePasswordActorPluginTest {
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
         verifyStatic();
-        IOC.register(eq(hexEncoderKey), argumentCaptor.capture());
+        IOC.register(eq(changePasswordActorKey), argumentCaptor.capture());
 
         IObject configObj = mock(IObject.class);
         IKey configKey = mock(IKey.class);

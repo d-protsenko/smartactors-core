@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.core.iheaders_extractor.exceptions;
 
+import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
+
 /**
- * Exception for {@link info.smart_tools.smartactors.core.iheaders_extractor.IHeadersSetter}
+ * Exception for {@link IHeadersExtractor}
  */
 public class HeadersSetterException extends Exception {
     /**
