@@ -87,9 +87,32 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
       "name": "createNewUserActor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor",
+      "name": "checkValAsOpActor"
     }
   ],
   "maps": [
+    {
+      "id": "CheckValOpMap",
+      "steps": [
+        {
+          "target": "checkValAsOpActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getAsyncOperationId": "message/token",
+            "in_getIdentifiers": "message/session/async_operation_tokens"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
     {
       "id": "SelectChain",
       "steps": [
@@ -225,6 +248,14 @@
           }
         },
         {
+          "target": "checkValAsOpActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getAsyncOperationId": "message/token",
+            "in_getIdentifiers": "message/session/tokens"
+          }
+        },
+        {
           "target": "getAsyncOpsActor",
           "handler": "getOperation",
           "wrapper": {
@@ -347,6 +378,11 @@
             "in_getMessageAttributesMessage": "message/messageAttributes",
             "in_getMessagePartsMessage": "message/messageParts"
           }
+        },
+
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []
