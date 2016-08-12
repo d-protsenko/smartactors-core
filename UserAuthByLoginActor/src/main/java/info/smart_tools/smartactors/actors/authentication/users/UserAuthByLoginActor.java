@@ -39,6 +39,12 @@ public class UserAuthByLoginActor {
     /** Encoder for obtaining a some hash of given user's password. */
     private IPasswordEncoder passwordEncoder;
 
+    private IField collectionNameF;
+    private IField pageSizeF;
+    private IField pageNumberF;
+    private IField pageF;
+    private IField filterF;
+
     private IField loginF;
     private IField passwordF;
     private IField equalsF;
@@ -70,6 +76,12 @@ public class UserAuthByLoginActor {
             checkParams(params);
             this.collection = params.getCollection();
             this.connectionPool = params.getConnectionPool();
+
+            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
+            pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
+            pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
+            filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
 
             loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
             passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
@@ -192,15 +204,10 @@ public class UserAuthByLoginActor {
         IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collection);
-        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
         pageSizeF.out(page, 1);
-        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
         pageNumberF.out(page, 1);
-        IField pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
         pageF.out(searchQuery, page);
-        IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
         filterF.out(searchQuery, filter);
 
         IObject loginObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));

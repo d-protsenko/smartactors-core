@@ -50,6 +50,14 @@ public class UserAuthByLoginActorTest {
     private IField passwordField;
     private IField eqField;
 
+    private IField collectionNameField;
+    private IField pageSizeField;
+    private IField pageNumberField;
+    private IField pageField;
+    private IField filterField;
+
+    private IKey iFieldKey;
+
     private String collectionName = "testCollection";
     private String testLogin = "testLogin";
 
@@ -58,7 +66,7 @@ public class UserAuthByLoginActorTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        IKey iFieldKey = mock(IKey.class);
+        iFieldKey = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
 
         connectionPool = mock(IPool.class);
@@ -85,6 +93,18 @@ public class UserAuthByLoginActorTest {
         loginField = mock(IField.class);
         passwordField = mock(IField.class);
         eqField = mock(IField.class);
+
+        collectionNameField= mock(IField.class);
+        pageSizeField = mock(IField.class);
+        pageNumberField = mock(IField.class);
+        pageField = mock(IField.class);
+        filterField = mock(IField.class);
+
+        when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
+        when(IOC.resolve(iFieldKey, "number")).thenReturn(pageNumberField);
+        when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
+        when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
 
         when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
         when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
@@ -352,20 +372,7 @@ public class UserAuthByLoginActorTest {
         when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iObjectKey);
         when(IOC.resolve(iObjectKey)).thenReturn(filter).thenReturn(page).thenReturn(searchQuery).thenReturn(loginObject);
 
-        IKey iFieldKey = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
-
-        IField collectionNameField = mock(IField.class);
-        IField pageSizeField = mock(IField.class);
-        IField pageNumberField = mock(IField.class);
-        IField pageField = mock(IField.class);
-        IField filterField = mock(IField.class);
-
-        when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
-        when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
-        when(IOC.resolve(iFieldKey, "number")).thenReturn(pageNumberField);
-        when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
-        when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
 
         assertTrue(method.invoke(authByLoginActor, message) == searchQuery);
         method.setAccessible(false);

@@ -37,19 +37,15 @@ public class ChangePasswordActor {
     private IPool connectionPool;
     private IPasswordEncoder passwordEncoder;
 
-    private static final IField USER_ID_F;
-    private static final IField PASSWORD_F;
-    private static final IField EQUALS_F;
+    private IField userIdF;
+    private IField passwordF;
+    private IField equalsF;
 
-    static {
-        try {
-            USER_ID_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
-            PASSWORD_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-        } catch (ResolutionException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
+    private IField collectionNameF;
+    private IField pageSizeF;
+    private IField pageNumberF;
+    private IField pageF;
+    private IField filterF;
 
     /**
      * Constructor
@@ -58,6 +54,16 @@ public class ChangePasswordActor {
      */
     public ChangePasswordActor(final ChangePasswordConfig params) throws ChangePasswordException {
         try {
+            userIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+
+            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
+            pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
+            pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
+            filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+
             this.collectionName = params.getCollectionName();
             this.connectionPool = params.getConnectionPool();
             this.passwordEncoder = IOC.resolve(
@@ -106,7 +112,7 @@ public class ChangePasswordActor {
 
             validateSearchResult(items, message);
             IObject user = items.get(0);
-            PASSWORD_F.out(user, passwordEncoder.encode(message.getPassword()));
+            passwordF.out(user, passwordEncoder.encode(message.getPassword()));
 
             ITask upsertTask = IOC.resolve(
                 Keys.getOrAdd("db.collection.upsert"),
@@ -144,26 +150,19 @@ public class ChangePasswordActor {
     private IObject prepareQueryParams(final ChangePasswordMessage message)
         throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
 
-
         IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collectionName);
-        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
         pageSizeF.out(page, 1);
-        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
         pageNumberF.out(page, 1);
-        IField pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
         pageF.out(searchQuery, page);
-        IField filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
         filterF.out(searchQuery, filter);
 
-
         IObject userIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        EQUALS_F.out(userIdObject, message.getUserId());
-        USER_ID_F.out(filter, userIdObject);
+        equalsF.out(userIdObject, message.getUserId());
+        userIdF.out(filter, userIdObject);
 
         return searchQuery;
     }

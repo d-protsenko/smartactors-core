@@ -16,7 +16,6 @@ import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
 import org.junit.Before;
@@ -27,16 +26,23 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyNew;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @PrepareForTest({ IOC.class, Keys.class, ChangePasswordActor.class})
 @RunWith(PowerMockRunner.class)
@@ -46,9 +52,9 @@ public class ChangePasswordActorTest {
 
     private IPasswordEncoder passwordEncoder;
 
-    private static IField userIdField;
-    private static IField passwordField;
-    private static IField eqField;
+    private IField userIdField;
+    private IField passwordField;
+    private IField eqField;
 
     private static final String collectionName = "testCollection";
     private static final String testUserId = "testUserId";
@@ -63,6 +69,18 @@ public class ChangePasswordActorTest {
 
         IKey iFieldKey = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
+
+        IField collectionNameField = mock(IField.class);
+        IField pageSizeField = mock(IField.class);
+        IField pageNumberField = mock(IField.class);
+        IField pageField = mock(IField.class);
+        IField filterField = mock(IField.class);
+
+        when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
+        when(IOC.resolve(iFieldKey, "number")).thenReturn(pageNumberField);
+        when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
+        when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
 
         connectionPool = mock(IPool.class);
 
@@ -84,22 +102,19 @@ public class ChangePasswordActorTest {
 
         when(IOC.resolve(passwordEncoderKey, algorithmName, encoderName, charsetName)).thenReturn(passwordEncoder);
 
-        if (firstLaunch) {
+        userIdField = mock(IField.class);
+        passwordField = mock(IField.class);
+        eqField = mock(IField.class);
 
-            userIdField = mock(IField.class);
-            passwordField = mock(IField.class);
-            eqField = mock(IField.class);
-
-            when(IOC.resolve(iFieldKey, "userId")).thenReturn(userIdField);
-            when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
-            when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
-        }
+        when(IOC.resolve(iFieldKey, "userId")).thenReturn(userIdField);
+        when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
+        when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
 
         testActor = new ChangePasswordActor(params);
 
         if (firstLaunch) {
             firstLaunch = false;
-            verifyStatic(Mockito.times(3));
+            verifyStatic(Mockito.times(8));
             Keys.getOrAdd(IField.class.getCanonicalName());
 
             verifyStatic();
