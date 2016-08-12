@@ -267,6 +267,7 @@
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
         <module>ISource</module>
+        <module>TestDataSourceStringArray</module>
     </modules>
 
     <build>

@@ -4,13 +4,15 @@ import info.smart_tools.smartactors.test.isource.exception.SourceExtractionExcep
 
 /**
  * Interface {@link ISource}.
+ *
+ * @param <T> the type of source data
  */
-public interface ISource extends Iterable {
+public interface ISource<T, I> extends Iterable<I> {
 
     /**
      * Set source of test data
      * @param t the source of test data
-     * @param <T> the type of source data
+     * @throws SourceExtractionException if any error occurs when the source is extracting
      */
-    <T> void setSource(T t) throws SourceExtractionException;
+    void setSource(T t) throws SourceExtractionException;
 }
