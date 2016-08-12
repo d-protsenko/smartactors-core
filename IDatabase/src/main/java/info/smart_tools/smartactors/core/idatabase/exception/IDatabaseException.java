@@ -30,4 +30,5 @@ public class IDatabaseException extends Exception {
     public IDatabaseException(final Throwable cause) {
         super(cause);
     }
+
 }

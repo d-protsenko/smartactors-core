@@ -27,12 +27,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 
 /**
- * Created by sevenbits on 10.08.16.
+ * Tests the plugin which registers database tasks for in-memory database.
  */
 public class PluginInMemoryDBTasksTest {
     private IBootstrap bootstrap;
@@ -107,7 +106,6 @@ public class PluginInMemoryDBTasksTest {
         plugin.load();
         fail();
     }
-
 
 }
 

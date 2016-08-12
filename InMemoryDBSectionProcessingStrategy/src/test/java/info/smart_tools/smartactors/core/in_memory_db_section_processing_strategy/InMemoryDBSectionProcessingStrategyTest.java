@@ -33,8 +33,8 @@ import static org.mockito.Mockito.verify;
 
 
 public class InMemoryDBSectionProcessingStrategyTest {
-    InMemoryDatabase inMemoryDatabase;
-    IObject mockObject;
+    private InMemoryDatabase inMemoryDatabase;
+    private IObject mockObject;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {

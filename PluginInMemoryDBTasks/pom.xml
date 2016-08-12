@@ -14,57 +14,67 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ifield</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>strategy.apply_function_to_arguments</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.in_memory_db_upsert_task</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.in_memory_db_get_by_id_task</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.in_memory_db_select_task</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.in_memory_db_create_collection_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.in_memory_db_delete_task</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -75,13 +85,13 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.strategy_container</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.resolve_by_name_ioc_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -93,19 +103,14 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.create_new_instance_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.field</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_create_collection_task</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
