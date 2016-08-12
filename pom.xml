@@ -106,7 +106,6 @@
         <module>MessageProcessingSequence</module>
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
-        <module>PluginCompileQuery</module>
         <module>PluginCollectionName</module>
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>

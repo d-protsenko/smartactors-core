@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -99,7 +98,6 @@ public class CachedCollectionTest {
         collection = new CachedCollection(config);
 
         IKey keyConnection = mock(IKey.class);
-        when(Keys.getOrAdd(StorageConnection.class.toString())).thenReturn(keyConnection);
         when(IOC.resolve(keyConnection, connection)).thenReturn(connection);
     }
 

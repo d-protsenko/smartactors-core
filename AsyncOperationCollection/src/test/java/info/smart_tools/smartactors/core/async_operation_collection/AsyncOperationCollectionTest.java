@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.async_operation_collection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -87,7 +86,6 @@ public class AsyncOperationCollectionTest {
         collection = new AsyncOperationCollection(connectionPool, "async_operation");
 
         IKey keyConnection = mock(IKey.class);
-        when(Keys.getOrAdd(StorageConnection.class.toString())).thenReturn(keyConnection);
         when(IOC.resolve(keyConnection, connection)).thenReturn(connection);
     }
 
