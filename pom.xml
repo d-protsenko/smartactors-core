@@ -266,6 +266,7 @@
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
+        <module>ISource</module>
     </modules>
 
     <build>
