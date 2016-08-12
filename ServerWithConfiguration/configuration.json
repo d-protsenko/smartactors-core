@@ -252,7 +252,7 @@
           "handler": "check",
           "wrapper": {
             "in_getAsyncOperationId": "message/token",
-            "in_getIdentifiers": "message/session/async_operation_tokens"
+            "in_getIdentifiers": "message/session/tokens"
           }
         },
         {
@@ -378,6 +378,11 @@
             "in_getMessageAttributesMessage": "message/messageAttributes",
             "in_getMessagePartsMessage": "message/messageParts"
           }
+        },
+
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []
