@@ -59,6 +59,8 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                     Keys.getOrAdd(IField.class.getCanonicalName()), "expiredTime");
                             IField callbackField = IOC.resolve(
                                     Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+                            IField asyncDataField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "asyncData");
 
                             IOC.register(
                                     Keys.getOrAdd("db.async_ops_collection.get"),
@@ -94,7 +96,9 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                 try {
                                                     IStorageConnection connection = (IStorageConnection) args[0];
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                                    IObject document = (IObject) args[2];
+                                                    IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                                    asyncDataField.out(document, args[2]);
                                                     tokenField.out(document, args[3]);
                                                     expiredTimeField.out(document, args[4]);
 
