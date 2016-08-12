@@ -14,11 +14,9 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.core.resolve_by_composite_name_ioc_with_lambda_strategy.ResolveByCompositeNameIOCStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 
 /**
  * Plugin for registration strategy of create async ops collection with IOC.
@@ -44,18 +42,16 @@ public class AsyncOpsCollectionPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("configure")
                     .process(() -> {
                         try {
-                            IKey cachedCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.toString());
-                            IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
+                            IKey asyncCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
+                            IOC.register(asyncCollectionKey, new ResolveByCompositeNameIOCStrategy(
                                     (args) -> {
                                         try {
                                             String collectionName = String.valueOf(args[0]);
-                                            //TODO:: clarify about generators
-                                            //TODO:: wrapperGenerator should be resolved by IOC
-                                            IWrapperGenerator wrapperGenerator = new WrapperGenerator(this.getClass().getClassLoader());
-                                            ConnectionOptions connectionOptionsWrapper = wrapperGenerator.generate(ConnectionOptions.class);
-                                            IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
+                                            ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+                                            IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
 
                                             return new AsyncOperationCollection(connectionPool, collectionName);
                                         } catch (Exception e) {

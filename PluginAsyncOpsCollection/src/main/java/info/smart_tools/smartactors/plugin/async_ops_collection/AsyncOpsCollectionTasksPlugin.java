@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.plugin.async_ops_collection;
 import info.smart_tools.smartactors.core.async_operation_collection.task.CreateAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.task.UpdateAsyncOperationTask;
+import info.smart_tools.smartactors.core.async_operation_collection.wrapper.update.UpdateAsyncOperationQuery;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -49,10 +51,12 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                         try {
                             IField collectionNameField = IOC.resolve(
                                     Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-                            IField idField = IOC.resolve(
-                                    Keys.getOrAdd(IField.class.getCanonicalName()), "id");
+                            IField tokenField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "token");
                             IField documentField = IOC.resolve(
                                     Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+                            IField expiredTimeField = IOC.resolve(
+                                    Keys.getOrAdd(IField.class.getCanonicalName()), "expiredTime");
                             IField callbackField = IOC.resolve(
                                     Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
 
@@ -70,7 +74,8 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
                                                     collectionNameField.out(query, collectionName);
-                                                    idField.out(query, id);
+                                                    tokenField.out(query, id);
+                                                    callbackField.out(query, args[3]);
 
                                                     task.prepare(query);
                                                     return task;
@@ -90,6 +95,9 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     IStorageConnection connection = (IStorageConnection) args[0];
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                                     IObject document = (IObject) args[2];
+                                                    tokenField.out(document, args[3]);
+                                                    expiredTimeField.out(document, args[4]);
+
                                                     IDatabaseTask task = new CreateAsyncOperationTask(connection);
 
                                                     IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
@@ -120,12 +128,37 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                                     IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                                                    idField.out(document, args[2]);
+                                                    tokenField.out(document, args[2]);
                                                     documentField.out(query, document);
                                                     collectionNameField.out(query, collectionName);
 
                                                     task.prepare(query);
                                                     return task;
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException("Can't resolve upsert db task.", e);
+                                                }
+                                            }
+                                    )
+                            );
+
+                            IOC.register(
+                                    Keys.getOrAdd("db.async_ops_collection.complete"),
+                                    //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    //TODO:: write strategy
+                                                    IStorageConnection connection = (IStorageConnection) args[0];
+                                                    CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                                    IObject document = (IObject) args[2];
+
+                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    collectionNameField.out(query, collectionName);
+                                                    documentField.out(query, document);
+
+                                                    IDatabaseTask updateTask = new UpdateAsyncOperationTask(connection);
+                                                    updateTask.prepare(query);
+                                                    return updateTask;
                                                 } catch (Exception e) {
                                                     throw new RuntimeException("Can't resolve upsert db task.", e);
                                                 }

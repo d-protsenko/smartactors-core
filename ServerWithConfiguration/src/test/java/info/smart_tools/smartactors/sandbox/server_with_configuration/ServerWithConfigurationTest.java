@@ -12,7 +12,7 @@ public class ServerWithConfigurationTest {
     public void checkServer()
             throws Exception {
         ServerWithConfiguration server = new ServerWithConfiguration();
-        server.initialize();
+         server.initialize();
         server.start();
     }
 }

@@ -29,8 +29,13 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     private IField callbackField;
     private IField keyNameField;
     private IField keyValueField;
-    private IField criteriaEqualsIsActiveField;
-    private IField criteriaDateToStartDateTimeField;
+    private IField keyField;
+    private IField isActiveField;
+    private IField equalsField;
+    private IField filterField;
+    private IField dateToField;
+    private IField startDateTimeField;
+
     //TODO:: this format should be setted for whole project?
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
@@ -45,8 +50,11 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
             this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
             this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "key");
             this.callbackField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
-            this.criteriaEqualsIsActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "criteria/isActive/$eq");
-            this.criteriaDateToStartDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "criteria/startDateTime/$date-to");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "isActive");
+            this.equalsField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+            this.filterField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+            this.dateToField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$date-to");
+            this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "startDateTime");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }
@@ -70,7 +78,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
      *                  "pageNumber": 1,
      *                  "collectionName" : "COLLECTION _NAME",
      *                  "criteria":
-     *                      "criteria" :    [
+     *                      "filter" :    [
      *                          {"isActive": {"$eq": true}},
      *                          {"startDateTime": {"date-to": "now"}},
      *                          {"<keyName>": {"$eq": "<keyValue>"}}
@@ -83,14 +91,24 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject filterObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-            collectionNameField.out(queryForNestedTask, collectionNameField.in(query));
-            criteriaEqualsIsActiveField.out(queryForNestedTask, true);
-            criteriaDateToStartDateTimeField.out(queryForNestedTask, LocalDateTime.now().format(FORMATTER));
-            String keyName = keyNameField.in(query);
+            keyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), (String) keyNameField.in(query));
             String keyValue = keyValueField.in(query);
-            IField criteriaEqualsKeyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "criteria/" +keyName + "/$eq/" + keyValue);
-            criteriaEqualsKeyField.in(queryForNestedTask);
+
+            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            equalsField.out(eqKeyObject, keyValue);
+            keyField.out(filterObject, eqKeyObject);
+
+            IObject isActiveObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            equalsField.out(isActiveObject, true);
+            isActiveField.out(filterObject, isActiveObject);
+
+            IObject dateObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            dateToField.out(dateObject, LocalDateTime.now().format(FORMATTER));
+            startDateTimeField.out(filterObject, dateObject);
+
+            filterField.out(queryForNestedTask, filterObject);
 
             getItemTask = IOC.resolve(
                 Keys.getOrAdd("db.collection.search"),
