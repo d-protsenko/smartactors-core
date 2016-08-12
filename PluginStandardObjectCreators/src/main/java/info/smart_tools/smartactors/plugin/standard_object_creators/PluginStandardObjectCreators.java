@@ -36,7 +36,6 @@ public class PluginStandardObjectCreators implements IPlugin {
 
             creatorsItem
                     .after("IOC")
-                    .after("FieldNamePlugin")
                     .after("IFieldNamePlugin")
                     .before("configure")
                     .process(() -> {

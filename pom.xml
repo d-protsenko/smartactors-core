@@ -158,11 +158,19 @@
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
+        <module>CreateSession</module>
+        <module>PluginCreateSession</module>
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
+        <module>UserAuthByLoginActor</module>
+        <module>ICodec</module>
+        <module>Codec</module>
+        <module>MDPasswordEncoder</module>
+        <module>PluginUserAuthByLoginActor</module>
+        <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
@@ -237,8 +245,12 @@
         <module>PluginSampleActor</module>
         <module>PluginChainCallReceiver</module>
         <module>PluginChainChoiceStrategy</module>
+        <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
         <module>PluginStarter</module>
+        <module>PluginValidationFormActor</module>
+        <module>ChangePasswordActor</module>
+        <module>PluginChangePasswordActor</module>
         <module>MessageBus</module>
         <module>IMessageBusContainer</module>
         <module>MessageBusContainerWithScope</module>
@@ -246,9 +258,14 @@
         <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>MailingActor</module>
+        <module>PluginMailingActor</module>
+        <module>PluginConnectionOptions</module>
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
+        <module>GetQueryParameterRule</module>
+        <module>PluginGetQueryParameterRule</module>
         <module>InMemoryDatabase</module>
         <module>PluginInMemoryDatabase</module>
         <module>InMemoryDBCreateCollectionTask</module>

@@ -77,5 +77,4 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
             throw new ObjectCreationException("Could not create receiver chain.", e);
         }
     }
-
 }

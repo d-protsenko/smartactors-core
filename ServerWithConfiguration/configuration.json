@@ -1,25 +1,97 @@
 {
   "objects": [
     {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.get_form.GetFormActor",
+      "name": "getFormActor",
+      "collectionName": "form"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor",
+      "name": "createAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.get_async_operation.GetAsyncOperationActor",
+      "name": "getAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.close_async_operation.CloseAsyncOperationActor",
+      "name": "closeAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.validate_form_data.ValidateFormDataActor",
+      "name": "validationFormActor"
+    },
+    {
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
     },
     {
-      "kind": "actor",
-      "dependency": "SampleActor",
-      "name": "sample-actor"
+      "kind": "stateless_actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_session.CreateSessionActor",
+      "name": "createSessionActor"
+    },
+    {
+      "kind": "stateless_actor",
+      "dependency": "info.smart_tools.smartactors.actors.authentication.AuthenticationActor",
+      "name": "authenticationActor"
     },
     {
       "kind": "actor",
-      "dependency": "SampleActor",
-      "name": "sample-actor-other"
+      "dependency": "info.smart_tools.smartactors.actors.authentication.users.UserAuthByLoginActor",
+      "name": "userAuthByLoginActor",
+      "collectionName": "user_account",
+      "charset": "utf-8",
+      "algorithm": "MD5",
+      "encoder": "Base64Encoder"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actor.change_password.ChangePasswordActor",
+      "name": "changePasswordActor",
+      "collectionName": "user_account",
+      "charset": "utf-8",
+      "algorithm": "MD5",
+      "encoder": "Base64Encoder"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.check_user_is_new.CheckUserIsNewActor",
+      "name": "checkUserIsNewActor"
     },
     {
       "kind": "raw",
       "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver",
       "strategyDependency": "chain choice strategy",
       "name": "chain_selector"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
+      "name": "sendMailActor",
+      "username": "mixaildre@gmail.com",
+      "password": "369852147qwerty",
+      "authenticationMode": "Login",
+      "server": "smtp://aspmx.l.google.com:25",
+      "senderAddress": "mixaildre@gmail.com"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
+      "name": "createNewUserActor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor",
+      "name": "checkValAsOpActor"
     }
   ],
   "maps": [
@@ -33,16 +105,61 @@
       "exceptional": []
     },
     {
-      "id": "myChain",
+      "id": "authorisation_map",
       "steps": [
         {
-          "target": "sample-actor",
-          "handler": "transformAndPutForResponse",
+          "target": "createSessionActor",
+          "handler": "resolveSession",
           "wrapper": {
-            "in_getSomeField": "message/Field",
-            "out_setSomeValueForRequest": "response/TransformedField",
-            "out_setCurrentActorState": "response/CurrentState",
-            "in_resetState": "message/Reset"
+            "in_getSessionId": "message/sessionId",
+            "in_getAuthInfo": "message/authInfo",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "authenticationActor",
+          "handler": "authenticateSession",
+          "wrapper": {
+            "in_getRequestUserAgent": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+          }
+        },
+        {
+          "target": "getFormActor",
+          "handler": "getForm",
+          "wrapper": {
+            "in_getFormKey": "message/formKey",
+            "out_setForm": "response/form"
+          }
+        },
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getOperationData": "response/form",
+            "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/sessionId",
+            "in_getOperationTokens": "message/session/tokens",
+            "out_setOperationTokens": "message/session/tokens",
+            "out_setSessionIdInData": "response/form/sessionId",
+            "out_setAsyncOperationToken":[
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "response/token"]
+              }],
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "message/session/token"]
+              }]
+            ]
           }
         },
         {
@@ -53,21 +170,234 @@
       "exceptional": []
     },
     {
-      "id": "myChainOther",
+      "id": "finishAuthMap",
       "steps": [
         {
-          "target": "sample-actor-other",
-          "handler": "transformAndPutForResponse",
+          "target": "createSessionActor",
+          "handler": "resolveSession",
           "wrapper": {
-            "in_getSomeField": "message/Field",
-            "out_setSomeValueForRequest": "response/TransformedField",
-            "out_setCurrentActorState": "response/CurrentState",
-            "in_resetState": "message/Reset"
+            "in_getSessionId": "message/sessionId",
+            "in_getAuthInfo": "message/authInfo",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "authenticationActor",
+          "handler": "authenticateSession",
+          "wrapper": {
+            "in_getRequestUserAgent": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+          }
+        },
+        {
+          "target": "checkValAsOpActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getAsyncOperationId": "message/token",
+            "in_getIdentifiers": "message/session/tokens"
+          }
+        },
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "validationFormActor",
+          "handler": "validate",
+          "wrapper": {
+            "in_getFormFromRequest": "message/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
+            "out_setFormData": "message/form"
+          }
+        },
+        {
+          "target": "userAuthByLoginActor",
+          "handler": "authenticateUser",
+          "wrapper": {
+            "in_getLogin": "message/form/email",
+            "in_getPassword": "message/form/пароль",
+            "out_setAuthStatus": "response/auth_status",
+            "out_setAuthMessage": "response/auth_message"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/asyncOperation",
+            "in_getOperationTokens": "message/session/tokens",
+            "in_getToken": "message/token"
           }
         },
         {
           "target": "respond",
           "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "sendMailConfirmRegistration",
+      "steps": [
+        {
+          "target": "createSessionActor",
+          "handler": "resolveSession",
+          "wrapper": {
+            "in_getSessionId": "message/sessionId",
+            "in_getAuthInfo": "message/authInfo",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "authenticationActor",
+          "handler": "authenticateSession",
+          "wrapper": {
+            "in_getRequestUserAgent": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "in_getSessionUserAgent": "message/session/authInfo/userAgent"
+          }
+        },
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken": "message/token",
+            "out_setAsyncOperation": "message/asyncOperation"
+          }
+        },
+        {
+          "target": "validationFormActor",
+          "handler": "validate",
+          "wrapper": {
+            "in_getFormFromRequest": "message/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
+            "out_setFormData": "message/form"
+          }
+        },
+        {
+          "target": "checkUserIsNewActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getEmail": "message/form/email"
+          }
+        },
+        {
+          "target": "createAsyncOpsActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getOperationData": "message/form",
+            "in_getExpiredTime": "const/4",
+            "in_getSessionId": "message/session/sessionId",
+            "out_setSessionIdInData": "message/form/sessionId",
+            "out_setAsyncOperationToken":[
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "response/token"]
+              }],
+              [{
+                "name": "wds_target_strategy",
+                "args": ["local/value", "message/session/token"]
+              }]
+            ]
+          }
+        },
+        {
+          "target": "sendMailActor",
+          "handler": "sendMailHandler",
+          "wrapper": {
+            "in_getSendToMessage": "message/email",
+            "in_getMessageAttributesMessage": "message/messageAttributes",
+            "in_getMessagePartsMessage": "message/messageParts"
+          }
+        },
+
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "testMailSend",
+      "steps": [
+        {
+          "target": "sendMailActor",
+          "handler": "sendMailHandler",
+          "wrapper": {
+            "in_getSendToMessage": "message/email",
+            "in_getMessageAttributesMessage": "message/attributes",
+            "in_getMessagePartsMessage": "message/parts"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "createNewUserMap",
+      "steps": [
+        {
+          "target": "getAsyncOpsActor",
+          "handler": "getOperation",
+          "wrapper": {
+            "in_getToken":[
+              {
+                "name": "getQueryParameterFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/token"
+                ]
+              }
+            ],
+            "out_setAsyncOperation": "message/userForm"
+          }
+        },
+        {
+          "target": "createNewUserActor",
+          "handler": "create",
+          "wrapper": {
+            "in_getUser": "message/userForm"
+          }
+        },
+        {
+          "target": "closeAsyncOpsActor",
+          "handler": "completeAsyncOp",
+          "wrapper": {
+            "in_getOperation": "message/userForm",
+            "in_getOperationTokens": "message/session/tokens",
+            "in_getToken": [
+              {
+                "name": "getQueryParameterFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/token"
+                ]
+              }
+            ]
+          }
         }
       ],
       "exceptional": []
@@ -75,20 +405,18 @@
   ],
   "endpoints": [
     {
-      "name": "mainHttpsEp",
-      "type": "https",
-      "port": 8443,
-      "startChain": "httpChain",
-      "maxContentLength": 4098,
-      "stackDepth": 5,
-      "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.crt",
-      "certPass": "/home/sevenbits/workspace/smartactors-core_v2/ssl/localhost.key"
-    },
-    {
       "name": "mainHttpEp",
       "type": "http",
       "port": 9909,
       "startChain": "SelectChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5
+    },
+    {
+      "name": "registerUserHttpEp",
+      "type": "http",
+      "port": 9910,
+      "startChain": "createNewUserMap",
       "maxContentLength": 4098,
       "stackDepth": 5
     }
@@ -98,5 +426,9 @@
     "maxRunningThreads": 2,
     "maxExecutionDelay": 100000,
     "queueSize": 10000000
+  },
+  "messageBus": {
+    "routingChain": "SelectChain",
+    "stackDepth": 5
   }
 }

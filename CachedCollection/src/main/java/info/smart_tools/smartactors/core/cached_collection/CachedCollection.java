@@ -61,18 +61,18 @@ public class CachedCollection implements ICachedCollection {
     public CachedCollection(final IObject config) throws InvalidArgumentException {
         try {
             this.map = new ConcurrentHashMap<>();
-            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "collectionName");
-            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "connectionPool");
-            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyName");
-            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "keyValue");
-            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "document");
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "id");
-            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "isActive");
-            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), "searchResult");
+            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
+            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
+            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyValue");
+            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "isActive");
+            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "searchResult");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
-            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.toString()), keyName);
+            this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), keyName);
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }

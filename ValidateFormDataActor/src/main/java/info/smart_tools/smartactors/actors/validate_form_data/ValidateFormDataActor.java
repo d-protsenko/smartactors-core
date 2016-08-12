@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.field.Field;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 public class ValidateFormDataActor {
     private Field validationRulesF;
+    private Field ruleF;
 
     /**
      * Constructor
@@ -28,6 +30,8 @@ public class ValidateFormDataActor {
     public ValidateFormDataActor(final IObject params) throws InvalidArgumentException {
         try {
             validationRulesF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "validationRules");
+            ruleF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "rule");
+
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
         }
@@ -51,10 +55,12 @@ public class ValidateFormDataActor {
             while (entry != null) {
                 IFieldName key = entry.getKey();
 
-                String rules = validationRulesF.in((IObject) formFields.getValue(key));
+                List<IObject> rules = validationRulesF.in((IObject) formFields.getValue(key));
                 if (rules != null) {
-                    if (!new Parser(rules, (String) clientData.getValue(key)).validate()) {
-                        throw new ValidateFormException("Fields is not correct");
+                    for (IObject ruleObject : rules) {
+                        if (!new Parser((String) ruleF.in(ruleObject), (String) clientData.getValue(key)).validate()) {
+                            throw new ValidateFormException("Fields is not correct");
+                        }
                     }
                 }
                 resultObject.setValue(key, clientData.getValue(key));

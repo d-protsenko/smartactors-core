@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 /**
@@ -46,12 +47,14 @@ public class CreateSessionPlugin implements IPlugin {
                     IOC.register(createSessionActorKey, new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
-                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
-                                    CreateSessionConfig param = IOC.resolve(
-                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
-                                            args[0],
-                                            connectionPool
-                                    );
+                                    ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+                                    IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+//                                    CreateSessionConfig param = IOC.resolve(
+//                                            Keys.getOrAdd(CreateSessionConfig.class.getCanonicalName()),
+//                                            args[0],
+//                                            connectionPool
+//                                    );
+                                    CreateSessionConfig param = new CreateSessionConfigImpl(connectionPool);
                                     return new CreateSessionActor(param);
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);

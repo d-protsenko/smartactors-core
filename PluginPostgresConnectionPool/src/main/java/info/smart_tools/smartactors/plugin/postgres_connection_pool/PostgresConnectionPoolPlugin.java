@@ -49,6 +49,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
             item
                 .after("IOC")
+                .before("CreateCachedCollectionPlugin")
                 .process(() -> {
                     try {
                         IResolveDependencyStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(

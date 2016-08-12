@@ -65,7 +65,44 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iplugin</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.field</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.ifieldname</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.ioc_keys</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.dsobject</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ds_object</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -77,7 +114,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>core.strategy_container</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -95,7 +138,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.field</artifactId>
+            <artifactId>plugin.postgres_db_tasks</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
