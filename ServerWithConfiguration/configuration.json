@@ -37,7 +37,9 @@
     {
       "kind": "stateless_actor",
       "dependency": "info.smart_tools.smartactors.actors.create_session.CreateSessionActor",
-      "name": "createSessionActor"
+      "name": "createSessionActor",
+      "collectionName": "session",
+      "maxAge": "3600"
     },
     {
       "kind": "stateless_actor",
@@ -111,8 +113,10 @@
           "target": "createSessionActor",
           "handler": "resolveSession",
           "wrapper": {
+            "in_getCookies": "context/cookies",
             "in_getSessionId": "message/sessionId",
             "in_getAuthInfo": "message/authInfo",
+            "out_setCookies": "context/cookies",
             "out_setSession": "message/session"
           }
         },
@@ -398,6 +402,35 @@
               }
             ]
           }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "testCookiesSessionMap",
+      "steps": [
+        {
+          "target": "createSessionActor",
+          "handler": "resolveSession",
+          "wrapper": {
+            "in_getCookies": "context/cookies",
+            "in_getSessionId": [
+              {
+                "name": "getCookieFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/sessionId"
+                ]
+              }
+            ],
+            "in_getAuthInfo": "message/authInfo",
+            "out_setCookies": "context/cookies",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []

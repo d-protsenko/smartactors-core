@@ -23,7 +23,7 @@ public class GetCookieFromRequestRule implements IResolveDependencyStrategy {
 
         String cookie = Stream.of(cookieString.split(";"))
                 .map(x -> x.split("="))
-                .filter(x -> x[0].equals((String) args[1]))
+                .filter(x -> x[0].trim().equals(((String) args[1])))
                 .findFirst().get()[1];
 
         return (T) cookie;
