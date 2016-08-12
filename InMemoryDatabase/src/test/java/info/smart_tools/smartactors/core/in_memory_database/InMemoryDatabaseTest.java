@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InMemoryDatabaseTest {
@@ -34,12 +35,15 @@ public class InMemoryDatabaseTest {
     }
 
     @Test
-    public void testGetByIdExistingElem() throws IDatabaseException, InvalidArgumentException, SerializeException {
+    public void testGetByIdExistingElem() throws IDatabaseException, InvalidArgumentException, SerializeException, ReadValueException {
         InMemoryDatabase database = new InMemoryDatabase();
         database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.insert(document, "collection_name");
-        IObject outputDocument = database.getById(1, "collection_name");
+
+        Object id = document.getValue(new FieldName("collection_nameID"));
+        IObject outputDocument = database.getById(id, "collection_name");
+
         assertTrue(document.serialize().equals(outputDocument.serialize()));
     }
 
@@ -56,7 +60,8 @@ public class InMemoryDatabaseTest {
         database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.insert(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        Object id = document.getValue(new FieldName("collection_nameID"));
+        assertTrue(id instanceof String);
     }
 
     @Test
@@ -65,7 +70,8 @@ public class InMemoryDatabaseTest {
         database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.upsert(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        Object id = document.getValue(new FieldName("collection_nameID"));
+        assertTrue(id instanceof String);
     }
 
     @Test
@@ -74,9 +80,10 @@ public class InMemoryDatabaseTest {
         database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.upsert(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        Object id = document.getValue(new FieldName("collection_nameID"));
+        assertTrue(id instanceof String);
         database.upsert(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        assertEquals(id, document.getValue(new FieldName("collection_nameID")));
     }
 
     @Test
@@ -85,9 +92,10 @@ public class InMemoryDatabaseTest {
         database.createCollection("collection_name");
         IObject document = new DSObject("{\"hello\": \"world\"}");
         database.insert(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        Object id = document.getValue(new FieldName("collection_nameID"));
+        assertTrue(id instanceof String);
         database.update(document, "collection_name");
-        assertTrue(document.getValue(new FieldName("collection_nameID")).equals(1));
+        assertEquals(id, document.getValue(new FieldName("collection_nameID")));
     }
 
     @Test

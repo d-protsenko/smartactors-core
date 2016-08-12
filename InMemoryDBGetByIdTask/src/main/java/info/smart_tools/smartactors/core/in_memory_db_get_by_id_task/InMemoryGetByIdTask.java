@@ -26,7 +26,7 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
     private IFieldName callbackFieldName;
 
     private String collectionName;
-    private Integer id;
+    private Object id;
 
     /**
      * Callback function to call when the object is found.
@@ -51,7 +51,7 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             collectionName = (String) query.getValue(collectionNameFieldName);
-            id = (Integer) query.getValue(idFieldName);
+            id = query.getValue(idFieldName);
             callback = (IAction<IObject>) query.getValue(callbackFieldName);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Failed to resolve get \"collectionName\" from query", e);

@@ -260,6 +260,7 @@
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
+        <module>UuidNextIdStrategy</module>
     </modules>
 
     <build>

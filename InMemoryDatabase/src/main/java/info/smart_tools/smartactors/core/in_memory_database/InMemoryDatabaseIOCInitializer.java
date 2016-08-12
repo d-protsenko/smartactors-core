@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.strategy.uuid_nextid_strategy.UuidNextIdStrategy;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public final class InMemoryDatabaseIOCInitializer {
      */
     public static void init() throws Exception {
         Map<String, IConditionVerifier> verifierMap = new HashMap<>();
+        registerNextIdStrategy();
         registerCompareSimpleObjects();
         registerNestedFieldName();
         initVerifierMap(verifierMap);
@@ -49,6 +51,10 @@ public final class InMemoryDatabaseIOCInitializer {
         registerSortIObjects();
         registerDataBaseItem();
         registerInMemoryDatabase();
+    }
+
+    private static void registerNextIdStrategy() throws ResolutionException, RegistrationException {
+        IOC.register(Keys.getOrAdd("db.collection.nextid"), new UuidNextIdStrategy());
     }
 
     private static void registerCompareSimpleObjects() throws RegistrationException, ResolutionException, InvalidArgumentException {

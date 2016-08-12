@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
@@ -96,13 +95,13 @@ public class InMemoryDatabase implements IDatabase {
         if (!dataBase.containsKey(item.getCollectionName())) {
             throw new IDatabaseException("Collection with name " + item.getCollectionName() + " does not exist");
         }
-        List<DataBaseItem> list = dataBase.get(item.getCollectionName());
         try {
+            List<DataBaseItem> list = dataBase.get(item.getCollectionName());
             item.setId(nextId(item.getCollectionName()));
-        } catch (ChangeValueException | InvalidArgumentException e) {
-            throw new IDatabaseException("Failed to set id to DataBaseItem", e);
+            list.add(item);
+        } catch (Exception e) {
+            throw new IDatabaseException("Failed to insert to DataBaseItem", e);
         }
-        list.add(item);
     }
 
     @Override
@@ -119,8 +118,8 @@ public class InMemoryDatabase implements IDatabase {
         throw new IDatabaseException("There is no element with this id");
     }
 
-    private Object nextId(final String collectionName) {
-        return dataBase.get(collectionName).size() + 1;
+    private Object nextId(final String collectionName) throws ResolutionException {
+        return IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
     }
 
     @Override
