@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sandbox.server_with_configuration</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
@@ -70,6 +69,11 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.5.5</version>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>info.smart_tools.smartactors.sandbox.server_with_configuration.ServerWithConfiguration</mainClass>
+                        </manifest>
+                    </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>

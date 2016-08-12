@@ -440,5 +440,9 @@
     "maxRunningThreads": 2,
     "maxExecutionDelay": 100000,
     "queueSize": 10000000
+  },
+  "messageBus": {
+    "routingChain": "SelectChain",
+    "stackDepth": 5
   }
 }
