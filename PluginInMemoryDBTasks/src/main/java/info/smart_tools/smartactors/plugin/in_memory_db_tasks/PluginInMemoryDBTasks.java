@@ -43,7 +43,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            BootstrapItem item = new BootstrapItem("PostgresDBTasksPlugin");
+            BootstrapItem item = new BootstrapItem("InMemoryDBTasksPlugin");
             item
                     .after("IOC")
                     .after("IFieldPlugin")
@@ -145,7 +145,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
                                 IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                                collectionNameField.out(query, collectionName);
+                                collectionNameField.out(query, collectionName.toString());
                                 idField.out(query, id);
                                 callbackField.out(query, callback);
 
@@ -179,7 +179,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
                                 IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                                collectionNameField.out(query, collectionName);
+                                collectionNameField.out(query, collectionName.toString());
                                 criteriaField.out(query, criteria);
                                 callbackField.out(query, callback);
 

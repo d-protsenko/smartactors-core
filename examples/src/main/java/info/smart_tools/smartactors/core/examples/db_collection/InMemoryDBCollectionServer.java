@@ -16,19 +16,19 @@ import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeExcep
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.plugin.in_memory_database.PluginInMemoryDatabase;
+import info.smart_tools.smartactors.plugin.in_memory_db_tasks.PluginInMemoryDBTasks;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
-import info.smart_tools.smartactors.plugin.postges_connection_pool.PostgresConnectionPoolPlugin;
-import info.smart_tools.smartactors.plugin.postgres_db_tasks.PostgresDBTasksPlugin;
+import info.smart_tools.smartactors.plugin.null_connection_pool.NullConnectionPoolPlugin;
 
 /**
  * Sample server which works with DB collection.
  */
-public class DBCollectionServer implements IServer {
+public class InMemoryDBCollectionServer implements IServer {
 
     @Override
     public void initialize() throws ServerInitializeException {
@@ -38,9 +38,10 @@ public class DBCollectionServer implements IServer {
             new PluginIOCKeys(bootstrap).load();
             new IFieldNamePlugin(bootstrap).load();
             new IFieldPlugin(bootstrap).load();
-            new PostgresDBTasksPlugin(bootstrap).load();
             new PluginDSObject(bootstrap).load();
-            new PostgresConnectionPoolPlugin(bootstrap).load();
+            new NullConnectionPoolPlugin(bootstrap).load();
+            new PluginInMemoryDatabase(bootstrap).load();
+            new PluginInMemoryDBTasks(bootstrap).load();
             bootstrap.start();
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed", e);
@@ -63,8 +64,7 @@ public class DBCollectionServer implements IServer {
                     Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
             document.setValue(intField, 1);
 
-            ConnectionOptions connectionOptions = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
 
             IObject createOptions = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                     "{ \"fulltext\": \"text\", \"language\": \"english\" }");
@@ -181,7 +181,7 @@ public class DBCollectionServer implements IServer {
      * @throws ServerExecutionException when the server execution failed
      */
     public static void main(final String[] args) throws ServerInitializeException, ServerExecutionException {
-        IServer server = new DBCollectionServer();
+        IServer server = new InMemoryDBCollectionServer();
         server.initialize();
         server.start();
     }

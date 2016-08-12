@@ -259,6 +259,7 @@
         <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>IDatabase</module>
+        <module>PluginNullConnectionPool</module>
     </modules>
 
     <build>

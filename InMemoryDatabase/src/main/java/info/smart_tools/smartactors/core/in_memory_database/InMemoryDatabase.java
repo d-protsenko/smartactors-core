@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.in_memory_database;
 
-import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.idatabase.IDatabase;
 import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -159,7 +158,7 @@ public class InMemoryDatabase implements IDatabase {
     private IObject clone(final IObject iObject) throws IDatabaseException {
         try {
             String serializedIObject = iObject.serialize();
-            return IOC.resolve(Keys.getOrAdd(DSObject.class.getCanonicalName()), serializedIObject);
+            return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serializedIObject);
         } catch (ResolutionException | SerializeException e) {
             throw new IDatabaseException("Failed to clone IObject", e);
         }
@@ -167,26 +166,25 @@ public class InMemoryDatabase implements IDatabase {
 
     @Override
     public void delete(final IObject document, final String collectionName) throws IDatabaseException {
-        List<DataBaseItem> list = dataBase.get(collectionName);
-        DataBaseItem item = null;
         try {
-            item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            List<DataBaseItem> list = dataBase.get(collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            for (int i = 0; i < list.size(); i++) {
+                DataBaseItem inDbItem = list.get(i);
+                if (inDbItem.getId().equals(item.getId())) {
+                    list.remove(inDbItem);
+                    try {
+                        document.deleteField(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID"));
+                    } catch (DeleteValueException | InvalidArgumentException e) {
+                        throw new IDatabaseException("Failed to resolve IFieldName", e);
+                    } catch (ResolutionException e) {
+                        throw new IDatabaseException("Failed to delete field from IObject", e);
+                    }
+                    return;
+                }
+            }
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to create DataBaseItem", e);
-        }
-        for (int i = 0; i < list.size(); i++) {
-            DataBaseItem inDbItem = list.get(i);
-            if (inDbItem.getId().equals(item.getId())) {
-                list.remove(inDbItem);
-                try {
-                    document.deleteField(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID"));
-                } catch (DeleteValueException | InvalidArgumentException e) {
-                    throw new IDatabaseException("Failed to resolve IFieldName", e);
-                } catch (ResolutionException e) {
-                    throw new IDatabaseException("Failed to delete field from IObject", e);
-                }
-                return;
-            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.postges_connection_pool;
+package info.smart_tools.smartactors.plugin.postgres_connection_pool;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool.Pool;
@@ -50,33 +51,39 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
+                        IResolveDependencyStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(
+                                (args) -> {
+                                    ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
+                                    if (connectionOptions == null) {
+                                        throw new RuntimeException("Can't resolve connection pool: connectionOptions is null");
+                                    }
+
+                                    try {
+                                        return new Pool(connectionOptions.getMaxConnections(), () -> {
+                                            try {
+                                                return new PostgresConnection(connectionOptions);
+                                            } catch (StorageException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        });
+                                    } catch (ReadValueException e) {
+                                        throw new RuntimeException("Can't create PostgresConnectionPool", e);
+                                    }
+
+                                });
                         IKey postgresConnectionPoolKey = Keys.getOrAdd("PostgresConnectionPool");
-                        IOC.register(postgresConnectionPoolKey, new ApplyFunctionToArgumentsStrategy(
-                            (args) -> {
-                                ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
-                                if (connectionOptions == null) {
-                                    throw new RuntimeException("Can't resolve connection pool: connectionOptions is null");
-                                }
-
-                                try {
-                                    return new Pool(connectionOptions.getMaxConnections(), () -> {
-                                        try {
-                                            return new PostgresConnection(connectionOptions);
-                                        } catch (StorageException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    });
-                                } catch (ReadValueException e) {
-                                    throw new RuntimeException("Can't create PostgresConnectionPool", e);
-                                }
-
-                            }));
+                        IKey databaseConnectionPoolKey = Keys.getOrAdd("DatabaseConnectionPool");
+                        IOC.register(postgresConnectionPoolKey, poolStrategy);
+                        IOC.register(databaseConnectionPoolKey, poolStrategy);
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't get PostgresConnectionPool key", e);
+                        throw new ActionExecuteException(
+                                "PostgresConnectionPool plugin can't load: can't get PostgresConnectionPool key", e);
                     } catch (InvalidArgumentException e) {
-                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't create strategy", e);
+                        throw new ActionExecuteException(
+                                "PostgresConnectionPool plugin can't load: can't create strategy", e);
                     } catch (RegistrationException e) {
-                        throw new ActionExecuteException("PostgresConnectionPool plugin can't load: can't register new strategy", e);
+                        throw new ActionExecuteException(
+                                "PostgresConnectionPool plugin can't load: can't register new strategy", e);
                     }
             });
             bootstrap.add(item);

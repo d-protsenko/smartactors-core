@@ -120,15 +120,12 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
 
     @Override
     public void execute() throws TaskExecutionException {
-        IDatabase dataBase = null;
         try {
-            dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
-        } catch (ResolutionException e) {
-            throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
-        }
-        try {
+            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
             List<IObject> result = dataBase.select(criteria, collection);
             callback.execute(result.toArray(new IObject[result.size()]));
+        } catch (ResolutionException e) {
+            throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
         } catch (Exception e) {
             try {
                 throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
