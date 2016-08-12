@@ -123,6 +123,7 @@ public final class InMemoryDatabaseIOCInitializer {
         initInOperation(verifierMap);
         initIsNullOperation(verifierMap);
         initHasTagOperation(verifierMap);
+        initFullTextOperation(verifierMap);
         initConditions(verifierMap);
     }
 
@@ -363,6 +364,31 @@ public final class InMemoryDatabaseIOCInitializer {
                                 reference
                         );
                         return null != ((IObject) entry).getValue(tagFieldName);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+        );
+    }
+
+    private static void initFullTextOperation(final Map<String, IConditionVerifier> verifierMap) {
+        verifierMap.put("$fulltext", (condition, document) -> {
+                    IFieldName fieldName = condition.iterator().next().getKey();
+                    try {
+                        Object entry = IOC.resolve(
+                                Keys.getOrAdd("NestedFieldName"),
+                                fieldName,
+                                document
+                        );
+                        if (null == entry) {
+                            return false;
+                        }
+                        String reference = String.valueOf(
+                                ((IObject) condition.getValue(fieldName))
+                                        .getValue(new FieldName("$fulltext"))
+                        );
+                        SimpleFullTextMatcher matcher = new SimpleFullTextMatcher(reference);
+                        return matcher.matches(String.valueOf(entry));
                     } catch (Exception e) {
                         return false;
                     }

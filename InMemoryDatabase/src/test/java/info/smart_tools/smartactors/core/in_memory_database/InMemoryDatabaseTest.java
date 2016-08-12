@@ -667,5 +667,23 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.get(1).serialize().equals(document6.serialize()));
     }
 
+    @Test
+    public void testFullTextSelect() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document = new DSObject("{\"text\": \"sample text\" }");
+        IObject document2 = new DSObject("{\"text\": \"another text\" }");
+        IObject document3 = new DSObject("{\"text\": \"txt shouldn't be found\" }");
+        database.insert(document, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{ \"filter\": { \"text\": { \"$fulltext\": \"text\" } } }"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
+    }
 
 }
