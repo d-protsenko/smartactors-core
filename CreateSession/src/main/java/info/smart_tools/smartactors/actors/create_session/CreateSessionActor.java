@@ -29,7 +29,7 @@ import java.util.*;
  * Actor check current session, if she's null create new session
  */
 public class CreateSessionActor {
-    private Integer TTL_COOKIES = 36000;
+    private Integer cookiesTTL;
     private String collectionName;
     private IPool connectionPool;
 
@@ -70,6 +70,7 @@ public class CreateSessionActor {
 
             ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
             this.connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+            this.cookiesTTL = maxAgeF.in(config);
             this.collectionName = collectionNameF.in(config);
         } catch (Exception e) {
             throw new CreateSessionException("Failed to create Actor");
@@ -138,8 +139,7 @@ public class CreateSessionActor {
             IObject sessionCookie = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             cookieNameF.out(sessionCookie, "sessionId");
             cookieValueF.out(sessionCookie, sessionId);
-            //TODO:: move to params
-            maxAgeF.out(sessionCookie, 360000);
+            maxAgeF.out(sessionCookie, cookiesTTL);
 
             cookies.add(sessionCookie);
             inputMessage.setCookies(cookies);
