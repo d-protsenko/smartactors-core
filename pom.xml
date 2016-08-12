@@ -251,11 +251,17 @@
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
         <module>PluginChangePasswordActor</module>
+        <module>MessageBus</module>
+        <module>IMessageBusContainer</module>
+        <module>MessageBusContainerWithScope</module>
+        <module>MessageBusHandler</module>
+        <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
         <module>PluginConnectionOptions</module>
+        <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
