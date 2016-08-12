@@ -12,7 +12,7 @@ public class GetQueryParameterRuleTest {
     public void shouldExtractRightCookie() throws Exception {
         GetQueryParameterRule rule = new GetQueryParameterRule();
         FullHttpRequest request = mock(FullHttpRequest.class);
-        String uri = "http:/?key1=val1&key2=val2";
+        String uri = "/?key1=val1&key2=val2";
         when(request.getUri()).thenReturn(uri);
         assertEquals("val2", rule.resolve(request, "key2"));
     }
