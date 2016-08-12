@@ -28,7 +28,7 @@ public class AuthenticationActor {
             String requestAuthInfo = message.getRequestUserAgent();
             String sessionAuthInfo = message.getSessionUserAgent();
             if (requestAuthInfo == null || !Objects.equals(requestAuthInfo, sessionAuthInfo)) {
-                throw new AuthFailException("Failed to validate session");
+                throw new AuthFailException("Failed to validate session: authentication info is incorrect");
             }
         } catch (ReadValueException e) {
             throw new TaskExecutionException("Failed to validate session", e);

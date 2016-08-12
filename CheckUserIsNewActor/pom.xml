@@ -14,7 +14,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.cached_collection</artifactId>
+            <artifactId>core.postgres_search_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ifield</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

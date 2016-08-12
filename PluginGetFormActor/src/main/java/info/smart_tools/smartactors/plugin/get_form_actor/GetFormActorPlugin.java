@@ -37,6 +37,8 @@ public class GetFormActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetFormActorPlugin");
             item
                 .after("IOC")
+                .after("CreateCachedCollectionPlugin")
+                .before("configure")
                 .process(() -> {
                     try {
                         IKey actorKey = Keys.getOrAdd(GetFormActor.class.getCanonicalName());

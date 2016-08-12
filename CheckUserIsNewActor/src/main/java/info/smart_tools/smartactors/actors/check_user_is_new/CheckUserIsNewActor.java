@@ -1,37 +1,42 @@
 package info.smart_tools.smartactors.actors.check_user_is_new;
 
-import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.MessageWrapper;
-import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Actor check that this email was not registered before
  */
 public class CheckUserIsNewActor {
-    private ICachedCollection collection;
+    private String USER_COLLECTION_NAME = "user_account";
+    private IPool connectionPool;
 
     /**
      * Constructor
      * @param params the actor params
      * @throws InvalidArgumentException Throw when can't read some value from message or resolving key or dependency is throw exception
      */
-    public CheckUserIsNewActor(final ActorParams params) throws InvalidArgumentException {
+    public CheckUserIsNewActor(final IObject params) throws InvalidArgumentException {
         try {
-            collection = IOC.resolve(
-                    Keys.getOrAdd(ICachedCollection.class.toString()),
-                    params.getCollectionName(),
-                    params.getCollectionKey());
-        } catch (ReadValueException e) {
-            throw new InvalidArgumentException("Can't read some of message values", e);
+            ConnectionOptions connectionOptionsWrapper = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+            connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptionsWrapper);
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
@@ -44,11 +49,33 @@ public class CheckUserIsNewActor {
      */
     public void check(final MessageWrapper message) throws Exception {
         try {
-            List<IObject> users = collection.getItems(message.getEmail());
-            if (!users.isEmpty()) {
+            final List<IObject> items = new LinkedList<>();
+            try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.search"),
+                        poolGuard.getObject(),
+                        USER_COLLECTION_NAME,
+                        IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                                String.format(
+                                        "{ " +
+                                                "\"filter\": { \"email\": { \"$eq\": \"%s\" } }" +
+                                                "}",
+                                        message.getEmail())
+                        ),
+                        (IAction<IObject[]>) docs ->
+                                items.addAll(Arrays.asList(docs))
+
+                );
+
+                task.execute();
+            } catch (PoolGuardException e) {
+                throw new TaskSetConnectionException("Can't get connection from pool.", e);
+            }
+
+            if (!items.isEmpty()) {
                 throw new TaskExecutionException("User with this email already exists");
             }
-        } catch (ReadValueException | GetCacheItemException e) {
+        } catch (ReadValueException e) {
             throw new TaskExecutionException("Failed to get email from message", e);
         }
     }

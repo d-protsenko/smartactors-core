@@ -116,7 +116,7 @@ public class PSQLSearchTaskTest {
 
         IKey iObjectKey = mock(IKey.class);
         IKey fieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(iObjectKey);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iObjectKey);
         when(Keys.getOrAdd(IFieldName.class.toString())).thenReturn(fieldNameKey);
 
         IObject searchResultObj = mock(IObject.class);

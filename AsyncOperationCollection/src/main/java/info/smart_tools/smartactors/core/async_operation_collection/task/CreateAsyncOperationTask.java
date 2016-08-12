@@ -24,10 +24,6 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     private IDatabaseTask task;
     private IStorageConnection connection;
 
-    private IField asyncDataField;
-    private IField doneFlagField;
-    private IField tokenField;
-    private IField expiredTimeField;
     private IField documentField;
     private IField collectionNameField;
     /**
@@ -39,10 +35,6 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            asyncDataField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "asyncData");
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "done");
-            tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
-            expiredTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "expiredTime");
             documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
             collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
@@ -64,7 +56,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.insert"),
+                    Keys.getOrAdd("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

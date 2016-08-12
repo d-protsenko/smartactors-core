@@ -6,8 +6,8 @@ package info.smart_tools.smartactors.actors.create_session;
 import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -16,11 +16,15 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,22 +33,16 @@ import java.util.List;
 public class CreateSessionActor {
     private String collectionName;
     private IPool connectionPool;
-    //TODO:: in future will change dependency from core.db_search_task to core.db_task
-    private IObject bufferedQuery;
 
-    private static IField SESSION_ID_F;
-    private static IField EQUALS_F;
-    private static IField AUTH_INFO_F;
+    private IField collectionNameF;
+    private IField pageSizeF;
+    private IField pageNumberF;
+    private IField pageF;
+    private IField filterF;
 
-    static {
-        try {
-            SESSION_ID_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
-            EQUALS_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-            AUTH_INFO_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
-        } catch (ResolutionException e) {
-           throw new RuntimeException(e);
-        }
-    }
+    private IField sessionIdF;
+    private IField equalsF;
+    private IField authInfoF;
 
     /**
      * Constructor for CreateSessionActor
@@ -53,9 +51,19 @@ public class CreateSessionActor {
      */
     public CreateSessionActor(final CreateSessionConfig config) throws CreateSessionException {
         try {
+            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
+            pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "number");
+            pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
+            filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
+
+            sessionIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
+            equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
+            authInfoF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
+
             this.collectionName = config.getCollectionName();
             this.connectionPool = config.getConnectionPool();
-        } catch (ReadValueException e) {
+        } catch (Exception e) {
             throw new CreateSessionException("Can't create Actor");
         }
     }
@@ -71,50 +79,41 @@ public class CreateSessionActor {
             if (sessionId == null || sessionId.equals("")) {
                 IObject authInfo = inputMessage.getAuthInfo();
                 IObject newSession = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                AUTH_INFO_F.out(newSession, authInfo);
+                authInfoF.out(newSession, authInfo);
                 inputMessage.setSession(newSession);
             } else {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
-                    //TODO:: change for new tasks
-                    IDatabaseTask searchTask = IOC.resolve(Keys.getOrAdd(IDatabaseTask.class.getCanonicalName()), "PSQL");
                     IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                    StorageConnection connection = IOC.resolve(
-                        Keys.getOrAdd(StorageConnection.class.getCanonicalName()), poolGuard.getObject()
-                    );
+                    //TODO:: resolve with IOC
+                    IStorageConnection connection = (IStorageConnection) poolGuard.getObject();
                     prepareSearchQuery(searchQuery, inputMessage);
 
-                    searchTask.setConnection(connection);
-                    searchTask.prepare(searchQuery);
+                    List<IObject> items = new LinkedList<>();
+                    ITask searchTask = IOC.resolve(
+                        Keys.getOrAdd("db.collection.search"),
+                        connection,
+                        collectionName,
+                        searchQuery,
+                        (IAction<IObject[]>) foundDocs -> {
+                            try {
+                                items.addAll(Arrays.asList(foundDocs));
+                            } catch (Exception e) {
+                                throw new ActionExecuteException(e);
+                            }
+                        }
+                    );
                     searchTask.execute();
 
-                    IField bufferedQueryF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "bufferedQuery");
-                    try {
-                        this.bufferedQuery = bufferedQueryF.in(searchQuery);
-                        if (bufferedQuery == null) {
-                            throw new CreateSessionException("Search Query is null.Search task didn't returned a buffered query!");
-                        }
-                    } catch (InvalidArgumentException e) {
-                        throw new CreateSessionException("Search task didn't returned a buffered query!", e);
+                    if (items.isEmpty()) {
+                        //TODO:: Should we create new session here?
+                        return;
                     }
-
-                    IField countSearchResultF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "countSearchResult");
-                    if (countSearchResultF.<Integer>in(searchQuery) == 0) {
-                        throw new CreateSessionException("Cannot find session by sessionId: "
-                                + inputMessage.getSessionId()
-                        );
-                    }
-
-                    IField searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "searchResult");
-
-                    IObject result = (searchResultField.<List<IObject>>in(searchQuery)).get(0);
-
-                    IField sessionF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "session");
-                    IObject fromDBSession = sessionF.in(result);
-                    if (fromDBSession == null) {
+                    IObject result = items.get(0);
+                    if (result == null) {
                         throw new CreateSessionException("Find session is null");
                     }
-                    inputMessage.setSession(fromDBSession);
+                    inputMessage.setSession(result);
 
                 } catch (PoolGuardException e) {
                     throw new CreateSessionException("Cannot get connection from pool.", e);
@@ -131,22 +130,19 @@ public class CreateSessionActor {
 
     private void prepareSearchQuery(final IObject searchQuery, final CreateSessionMessage inputMessage)
             throws ChangeValueException, InvalidArgumentException, ResolutionException, ReadValueException {
-        IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject sessionIdObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject page = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        EQUALS_F.out(sessionIdObject, inputMessage.getSessionId());
-        SESSION_ID_F.out(query, sessionIdObject);
+        equalsF.out(sessionIdObject, inputMessage.getSessionId());
+        sessionIdF.out(filter, sessionIdObject);
 
-        IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         collectionNameF.out(searchQuery, this.collectionName);
-        IField pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "pageSize");
-        pageSizeF.out(searchQuery, 1);
-        IField pageNumberF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "pageNumber");
-        pageNumberF.out(searchQuery, 1);
-        IField bufferedQueryF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "bufferedQuery");
-        bufferedQueryF.out(searchQuery, this.bufferedQuery);
-        IField criteriaF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
-        criteriaF.out(searchQuery, query);
+        pageSizeF.out(page, 1);
+        pageNumberF.out(page, 1);
+        pageF.out(searchQuery, page);
+
+        filterF.out(searchQuery, filter);
 
     }
 }
