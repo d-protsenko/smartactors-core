@@ -2,12 +2,12 @@ package info.smart_tools.smartactors.plugin.check_validity_async_operation_actor
 
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +48,7 @@ public class CheckValidityAsyncOperationPluginTest {
         BootstrapItem bootstrapItem = Mockito.mock(BootstrapItem.class);
         PowerMockito.whenNew(BootstrapItem.class).withAnyArguments().thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         CheckValidityAsyncOperationActor actor = Mockito.mock(CheckValidityAsyncOperationActor.class);
         PowerMockito.whenNew(CheckValidityAsyncOperationActor.class).withAnyArguments().thenReturn(actor);
@@ -59,8 +60,8 @@ public class CheckValidityAsyncOperationPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =
+                ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
         actionArgumentCaptor.getValue().execute();
 
         PowerMockito.verifyStatic();
