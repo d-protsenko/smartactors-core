@@ -227,4 +227,23 @@ public final class PostgresSchema {
         }
     }
 
+    /**
+     * Fills the statement body with the collection name for the DELETE statement to delete the document by ID.
+     * @param statement statement to fill the body
+     * @param collection collection name to use as the table name
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void delete(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("DELETE FROM ");
+            body.write(collection.toString());
+            body.write(" WHERE (");
+            body.write(getIdFieldPath(collection).toSQL());
+            body.write(") = to_json(?)::jsonb");
+        } catch (IOException e) {
+            throw new QueryBuildException("Failed to build delete body", e);
+        }
+    }
+
 }

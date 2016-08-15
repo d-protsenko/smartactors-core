@@ -122,7 +122,17 @@ The object must have the field "collection_nameID" which contains the unique ide
 
 When this field is present in the document, it's be tried to delete the object from the collection, the field "collection_nameID" is deleted from the document.
 
-If the document is absent in the collection, no error appears because the absence of the document with the specified id is the target postcondition, the field "collection_nameID" is deleted from the in-memory document. 
+If the document is absent in the collection, no error appears because the absence of the document with the specified id is the target postcondition, the field "collection_nameID" is deleted from the in-memory document.
+ 
+#### Example
+ 
+    ITask task = IOC.resolve(
+            Keys.getOrAdd("db.collection.delete"),
+            connection,
+            collectionName,
+            document
+    );
+    task.execute();
 
 ### GetById
 
@@ -314,3 +324,8 @@ Get the document by id.
     }
 
 Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details.
+
+Implementation details:
+
+* [PostgreSQL implementation](db_collection/PostgresDBCollections.html)
+* [In-memory implementaion](db_collection/InMemoryDBCollections.html)
