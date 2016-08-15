@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -43,6 +44,7 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .before("configure")
                     .process(() -> {
                         try {
                             IKey checkUserByEmailActorKey = Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
@@ -50,11 +52,7 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
                                     new CreateNewInstanceStrategy(
                                             (args) -> {
                                                 try {
-                                                    ActorParams actorParams =
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd(ActorParams.class.toString()),
-                                                                    args[0]);
-                                                    return new CloseAsyncOperationActor(actorParams);
+                                                    return new CloseAsyncOperationActor((IObject) args[0]);
                                                 } catch (ArrayIndexOutOfBoundsException e) {
                                                     throw new RuntimeException(
                                                             "Can't get args: args must contain one or more elements " +
@@ -64,10 +62,6 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
                                                     throw new RuntimeException(
                                                             "Can't create actor with this args: "
                                                                     + Arrays.toString(args),
-                                                            e);
-                                                } catch (ResolutionException e) {
-                                                    throw new RuntimeException(
-                                                            "Can't get ActorParams wrapper or Key for ActorParams",
                                                             e);
                                                 }
                                             }

@@ -128,6 +128,14 @@ public class Parser implements ParserConstants {
       throw new ParseException();
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case MOREEQUALS:
+      tComparator = jj_consume_token(MOREEQUALS);
+                                    sComparator = tComparator.image;
+      break;
+    case LESSEQUALS:
+      tComparator = jj_consume_token(LESSEQUALS);
+                                    sComparator = tComparator.image;
+      break;
     case LESSTHEN:
       tComparator = jj_consume_token(LESSTHEN);
                                   sComparator = tComparator.image;
@@ -140,14 +148,6 @@ public class Parser implements ParserConstants {
       tComparator = jj_consume_token(EQUALS);
                                 sComparator = tComparator.image;
       break;
-    case MOREEQUALS:
-      tComparator = jj_consume_token(MOREEQUALS);
-                                    sComparator = tComparator.image;
-      break;
-    case LESSEQUALS:
-      tComparator = jj_consume_token(LESSEQUALS);
-                                    sComparator = tComparator.image;
-      break;
     default:
       jj_la1[3] = jj_gen;
       jj_consume_token(-1);
@@ -157,6 +157,10 @@ public class Parser implements ParserConstants {
     case VALUE:
       tComparand2 = jj_consume_token(VALUE);
                                 sComparand2 = Double.parseDouble(field);
+      break;
+    case SUM:
+      tComparand2 = jj_consume_token(SUM);
+                              sComparand2 = Double.parseDouble(field);
       break;
     case NUM_VALUE:
       tComparand2 = jj_consume_token(NUM_VALUE);
@@ -170,8 +174,8 @@ public class Parser implements ParserConstants {
             if (sComparator.equals(">")) {{if (true) return (sComparand1 > sComparand2);}}
             if (sComparator.equals("<")) {{if (true) return (sComparand1 < sComparand2);}}
             if (sComparator.equals("<=")) {{if (true) return (sComparand1 <= sComparand2);}}
-            if (sComparator.equals(">=")) {{if (true) return (sComparand1 >= sComparand2);}}
-            if (sComparator.equals("=")) {{if (true) return (sComparand1 == sComparand2);}}
+            if (sComparator.equals("=>")) {{if (true) return (sComparand1 >= sComparand2);}}
+            if (sComparator.equals("==")) {{if (true) return (sComparand1 == sComparand2);}}
     throw new Error("Missing return statement in function");
   }
 
@@ -190,7 +194,7 @@ public class Parser implements ParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x1ffc0,0x1e0000,0x7c00000,0x140000,};
+      jj_la1_0 = new int[] {0x20,0x1ffc0,0x1e0000,0x7c00000,0x1c0000,};
    }
 
   /** Constructor with InputStream. */

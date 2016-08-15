@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.transformation_rules.get_header_from_request.GetHeaderFromRequestRule;
 import org.junit.Before;
@@ -53,6 +54,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -61,17 +63,35 @@ public class GetHeaderFromRequestRulePluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
         verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("wds_object");
+        verify(bootstrapItem).before("configure");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
 
-        IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
+        IKey strategyKey = mock(IKey.class);
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+
+        GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
+        whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
+
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+
+        verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
+
+        verifyStatic();
+        IOC.resolve(strategyKey, "getHeaderFromRequestRule", targetObject);
+        /*IKey ruleKey = mock(IKey.class);
+        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
+
+        actionArgumentCaptor.getValue().execute();
+
+        verifyStatic();
+        Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -85,7 +105,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(arg) == rule);
 
-        verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
+        verifyNew(GetHeaderFromRequestRule.class).withNoArguments();*/
     }
 
     @Test
@@ -110,6 +130,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -122,13 +143,16 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+
+        GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
+        whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
+            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -141,6 +165,7 @@ public class GetHeaderFromRequestRulePluginTest {
         whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -153,87 +178,24 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
+        IKey strategyKey = mock(IKey.class);
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
-        ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
+        GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
+        whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
 
-        doThrow(new RegistrationException("")).when(IOC.class);
-        IOC.register(eq(ruleKey), any());
-
-        whenNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.capture())
-                .thenReturn(mock(CreateNewInstanceStrategy.class));//the method which was used for constructor is importantly
+        when(IOC.resolve(strategyKey, "getHeaderFromRequestRule", targetObject)).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
-
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
-
-            verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
-
-            verifyStatic();
-            IOC.register(eq(ruleKey), any(CreateNewInstanceStrategy.class));
-
-            IObject arg = mock(IObject.class);
-
-            GetHeaderFromRequestRule rule = mock(GetHeaderFromRequestRule.class);
-
-            whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(rule);
-
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == rule);
+            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
 
             verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
-            return;
-        }
-        assertTrue("Must throw exception", false);
-    }
-
-    @Test
-    public void MustInCorrectExecuteActionWhenNewCreateInstanceThrowException() throws Exception {
-
-        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
-        whenNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin").thenReturn(bootstrapItem);
-
-        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
-
-        plugin.load();
-
-        verifyNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin");
-
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-
-        verify(bootstrapItem).after("IOC");
-        verify(bootstrapItem).process(actionArgumentCaptor.capture());
-
-        verify(bootstrap).add(bootstrapItem);
-
-        IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.toString())).thenReturn(ruleKey);
-
-        ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
-
-        whenNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.capture())
-                .thenThrow(new RegistrationException(""));//the method which was used for constructor is importantly
-
-        try {
-            actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(GetHeaderFromRequestRule.class.toString());
-
-            verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
-
-            IObject arg = mock(IObject.class);
-
-            GetHeaderFromRequestRule actor = mock(GetHeaderFromRequestRule.class);
-            whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(actor);
-
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
-
-            verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
+            IOC.resolve(strategyKey, "getHeaderFromRequestRule", targetObject);
             return;
         }
         assertTrue("Must throw exception", false);

@@ -15,92 +15,102 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iconfiguration_manager</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.message_bus</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.message_bus_handler</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <!-- Bootstrap & plugins -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- IOC -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- Message exchanging system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_processing</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ichain_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.irouter</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- Object creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.irouted_object_creator</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- Executor creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iqueue</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.blocking_queue</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.task_dispatcher</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.thread_pool</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.http_endpoint</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.environment_handler</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <!-- Tests -->
         <dependency>
@@ -112,19 +122,19 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.resolve_by_name_ioc_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.strategy_container</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.create_new_instance_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
