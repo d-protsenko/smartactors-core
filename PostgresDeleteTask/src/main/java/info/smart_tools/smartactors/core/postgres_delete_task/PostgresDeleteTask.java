@@ -45,6 +45,9 @@ public class PostgresDeleteTask implements IDatabaseTask {
      */
     private QueryStatement preparedQuery;
 
+    /**
+     * What to run during execute() stage.
+     */
     private interface Executor {
         void execute() throws TaskExecutionException;
     }

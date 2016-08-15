@@ -13,6 +13,8 @@ import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
+import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
+import info.smart_tools.smartactors.core.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
 import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
@@ -100,6 +102,15 @@ public class PostgresDBTasksPluginTest {
         IAction callback = mock(IAction.class);
         assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.search"), connection, collection, criteria, callback)
                 instanceof PostgresSearchTask);
+    }
+
+    @Test
+    public void testDeleteTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(DeleteMessage.class.getCanonicalName()), message)
+                instanceof DeleteMessage);
+        IObject document = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.delete"), connection, collection, document)
+                instanceof PostgresDeleteTask);
     }
 
 }
