@@ -306,7 +306,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
+                <version>0.7.7.201606060606</version>
                 <executions>
                     <execution>
                         <goals>
@@ -350,7 +350,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
+                <version>0.7.7.201606060606</version>
                 <reportSets>
                     <reportSet>
                         <id>non-aggregate</id>
@@ -358,14 +358,13 @@
                             <report>report</report>
                         </reports>
                     </reportSet>
-                    <!-- will be available JaCoCo 0.7.7 -->
-                    <!--<reportSet>-->
-                        <!--<id>aggregate</id>-->
-                        <!--<inherited>false</inherited>-->
-                        <!--<reports>-->
-                            <!--<report>report-aggregate</report>-->
-                        <!--</reports>-->
-                    <!--</reportSet>-->
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>report-aggregate</report>
+                        </reports>
+                    </reportSet>
                 </reportSets>
             </plugin>
             <plugin>
