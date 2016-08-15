@@ -65,9 +65,9 @@ public class AssertionChecker implements TestResultChecker {
     public AssertionChecker(final List<IObject> description)
             throws TestStartupException {
         try {
-            prepareAssertions(description);
-
             preparedSuccessReceiverArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+            prepareAssertions(description);
         } catch (ResolutionException e) {
             throw new TestStartupException(e);
         }
