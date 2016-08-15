@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +27,7 @@ public class StringArrayDataSourceTest {
     }
 
     @Test
-    public void checkSetMethodAndIteration()
+    public void checkSetMethodAndCheckQueue()
             throws Exception {
         String[] data = new String[] {
                 "{\"a\": \"a\"}",
@@ -36,24 +37,23 @@ public class StringArrayDataSourceTest {
 
         ISource<String[], IObject> source = new StringArrayDataSource();
         source.setSource(data);
-        List<String> result = new ArrayList<>();
-        for (IObject item : source) {
-            result.add((String) item.getValue(new FieldName("a")));
-        }
-        assertEquals(result.get(0), "a");
-        assertEquals(result.get(1), "b");
-        assertEquals(result.get(2), "c");
+        BlockingDeque<IObject> queue = source.getQueue();
+        assertNotNull(queue);
+        assertEquals(queue.take().getValue(new FieldName("a")), "a");
+        assertEquals(queue.take().getValue(new FieldName("a")), "b");
+        assertEquals(queue.take().getValue(new FieldName("a")), "c");
     }
 
-    @Test (expected = SourceExtractionException.class)
-    public void checkSourceExtractionExceptionOnInvalidData()
+    @Test
+    public void checkSourceExtractionOnDataWithBrokenElement()
             throws Exception {
         String[] data = new String[] {
-                "{a}"
+                "{a}",
+                "{\"a\": \"a\"}"
         };
-
         ISource<String[], IObject> source = new StringArrayDataSource();
         source.setSource(data);
-        fail();
+        BlockingDeque<IObject> queue = source.getQueue();
+        assertEquals(queue.take().getValue(new FieldName("a")), "a");
     }
 }

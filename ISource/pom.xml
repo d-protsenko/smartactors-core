@@ -12,6 +12,8 @@
     <artifactId>test.isource</artifactId>
 
     <dependencies>
+        <!-- Core interfaces -->
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
