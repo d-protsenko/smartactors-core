@@ -169,6 +169,19 @@ public class InMemoryDBCollectionServer implements IServer {
                 );
                 task.execute();
             }
+
+            try (PoolGuard guard = new PoolGuard(pool)) {
+                ITask task = IOC.resolve(
+                        Keys.getOrAdd("db.collection.delete"),
+                        guard.getObject(),
+                        collection,
+                        document
+                );
+                task.execute();
+            }
+            System.out.println("Deleted");
+            System.out.println((String) document.serialize());
+
         } catch (Exception e) {
             throw new ServerExecutionException(e);
         }
