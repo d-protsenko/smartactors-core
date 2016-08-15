@@ -266,6 +266,8 @@
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
+        <module>SaveSessionActor</module>
+        <module>PluginSaveSession</module>
     </modules>
 
     <build>
