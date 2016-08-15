@@ -241,6 +241,7 @@
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
         <module>ChainTesting</module>
+        <module>TestLoadingPlugins</module>
     </modules>
 
     <build>
