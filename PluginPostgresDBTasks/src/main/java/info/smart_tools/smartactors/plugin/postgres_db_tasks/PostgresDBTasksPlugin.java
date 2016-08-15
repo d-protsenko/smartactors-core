@@ -26,8 +26,8 @@ import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
-import info.smart_tools.smartactors.core.postgres_upsert_task.UuidNextIdStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.strategy.uuid_nextid_strategy.UuidNextIdStrategy;
 
 /**
  * Plugin with IOC-strategies for database tasks

@@ -174,6 +174,21 @@
             <version>${core.version}</version>
         </dependency>
         <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.in_memory_db_tasks</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.in_memory_database</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.null_connection_pool</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>

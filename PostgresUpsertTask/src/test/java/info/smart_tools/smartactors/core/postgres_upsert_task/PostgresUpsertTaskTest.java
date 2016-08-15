@@ -30,6 +30,7 @@ import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.strategy.uuid_nextid_strategy.UuidNextIdStrategy;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +43,13 @@ import java.sql.SQLException;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for PostgresUpsertTask.
