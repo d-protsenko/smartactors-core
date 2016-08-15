@@ -21,12 +21,4 @@ public class InvalidTestDescriptionException extends Exception {
     public InvalidTestDescriptionException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
-    /**
-     * Constructor with specific cause as argument
-     * @param cause specific cause
-     */
-    public InvalidTestDescriptionException(final Throwable cause) {
-        super(cause);
-    }
 }

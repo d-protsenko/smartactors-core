@@ -21,12 +21,4 @@ public class AssertionFailureException extends Exception {
     public AssertionFailureException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
-    /**
-     * Constructor with specific cause as argument
-     * @param cause specific cause
-     */
-    public AssertionFailureException(final Throwable cause) {
-        super(cause);
-    }
 }

@@ -82,8 +82,6 @@ public class TestRunner {
     private final IFieldName messageFieldName;
     private final IFieldName contextFieldName;
     private final IFieldName chainNameFieldName;
-    private final IFieldName assertFieldName;
-    private final IFieldName interceptFieldName;
 
     /**
      * The constructor.
@@ -92,33 +90,10 @@ public class TestRunner {
      */
     public TestRunner()
             throws ResolutionException {
-
         environmentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
         contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         chainNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainName");
-        assertFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "assert");
-        interceptFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "intercept");
-    }
-
-    private TestResultChecker prepareChecker(final IObject description)
-            throws ReadValueException, InvalidArgumentException, TestStartupException, InvalidTestDescriptionException {
-        List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);
-        IObject intercept = (IObject) description.getValue(interceptFieldName);
-
-        if ((null == assertions) && (null == intercept)) {
-            throw new InvalidTestDescriptionException("None of \"assert\" and \"intercept\" sections are present in test description.");
-        }
-
-        if ((null != assertions) && (null != intercept)) {
-            throw new InvalidTestDescriptionException("Both \"assert\" and \"intercept\" sections are present in test description.");
-        }
-
-        if (null != assertions) {
-            return new AssertionChecker(assertions);
-        } else {
-            return new ExceptionInterceptor(intercept);
-        }
     }
 
     /**
@@ -143,7 +118,7 @@ public class TestRunner {
         }
 
         try {
-            TestResultChecker checker = prepareChecker(description);
+            TestResultChecker checker = TestResultChecker.createChecker(description);
 
             IMessageProcessor[] fmp = new IMessageProcessor[1];
 

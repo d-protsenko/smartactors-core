@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * {@link TestResultChecker} that verifies assertions when test execution is completed.
  */
-public class AssertionChecker implements TestResultChecker {
+public class AssertionChecker extends TestResultChecker {
     /**
      * Object representing assertion that is already resolved and will be checked when chain execution completes.
      */

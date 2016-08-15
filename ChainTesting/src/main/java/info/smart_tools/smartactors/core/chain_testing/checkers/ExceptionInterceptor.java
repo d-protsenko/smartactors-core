@@ -19,7 +19,7 @@ import java.text.MessageFormat;
 /**
  * {@link TestResultChecker} that expects some exception to be thrown by a chain.
  */
-public class ExceptionInterceptor implements TestResultChecker {
+public class ExceptionInterceptor extends TestResultChecker {
     private Class<?> expectedExceptionClass;
     private IMessageReceiver expectedReceiver;
 
