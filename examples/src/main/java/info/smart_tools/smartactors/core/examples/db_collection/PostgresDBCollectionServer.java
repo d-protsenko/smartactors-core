@@ -81,7 +81,7 @@ public class PostgresDBCollectionServer implements IServer {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.upsert"),
+                        Keys.getOrAdd("db.collection.insert"),
                         guard.getObject(),
                         collection,
                         document

@@ -17,6 +17,8 @@ import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.core.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_insert_task.InsertMessage;
+import info.smart_tools.smartactors.core.postgres_insert_task.PostgresInsertTask;
 import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
@@ -111,6 +113,16 @@ public class PostgresDBTasksPluginTest {
         IObject document = mock(IObject.class);
         assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.delete"), connection, collection, document)
                 instanceof PostgresDeleteTask);
+    }
+
+    @Test
+    public void testInsertTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(InsertMessage.class.getCanonicalName()), message)
+                instanceof InsertMessage);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.nextid")) instanceof String);
+        IObject document = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.insert"), connection, collection, document)
+                instanceof PostgresInsertTask);
     }
 
 }
