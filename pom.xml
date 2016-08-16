@@ -242,6 +242,7 @@
         <module>PluginSampleDBActor</module>
         <module>ChainTesting</module>
         <module>TestLoadingPlugins</module>
+        <module>ChainTestsConfigSectionStrategy</module>
     </modules>
 
     <build>
