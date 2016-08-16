@@ -46,6 +46,11 @@ public final class PostgresSchema {
     public static final String FTS_DICTIONARY = "russian";
 
     /**
+     * Default page size. How many documents to return when the paging is not defined.
+     */
+    public static final int DEFAULT_PAGE_SIZE = 100;
+
+    /**
      * Private constructor to avoid instantiation.
      */
     private PostgresSchema() {
@@ -59,11 +64,11 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void create(final QueryStatement statement, final CollectionName collection, IObject options) throws QueryBuildException {
+    public static void create(final QueryStatement statement, final CollectionName collection, final IObject options) throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
             body.write("CREATE TABLE ");
-            body.write(collection.toString ());
+            body.write(collection.toString());
             body.write(" (");
             body.write(DOCUMENT_COLUMN);
             body.write(" jsonb NOT NULL");
@@ -78,7 +83,7 @@ public final class PostgresSchema {
         }
     }
 
-    private static FieldPath getIdFieldPath(CollectionName collection) throws QueryBuildException {
+    private static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
         return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
     }
 
@@ -217,6 +222,7 @@ public final class PostgresSchema {
             body.write(collection.toString());
 
             if (criteria == null) {
+                SearchClauses.writeDefaultPaging(statement);
                 return;
             }
             SearchClauses.writeSearchWhere(statement, criteria);

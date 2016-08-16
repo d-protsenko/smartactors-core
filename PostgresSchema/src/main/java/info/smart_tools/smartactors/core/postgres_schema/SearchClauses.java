@@ -12,13 +12,14 @@ import info.smart_tools.smartactors.core.postgres_schema.search.OrderWriter;
 import info.smart_tools.smartactors.core.postgres_schema.search.PagingWriter;
 import info.smart_tools.smartactors.core.postgres_schema.search.PostgresQueryWriterResolver;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
 /**
  * A set of methods to write parts of search SQL query.
  */
-class SearchClauses {
+final class SearchClauses {
 
     /**
      * Private constructor to avoid instantiation.
@@ -26,7 +27,13 @@ class SearchClauses {
     private SearchClauses() {
     }
 
-    static void writeSearchWhere(QueryStatement statement, IObject criteria) throws Exception {
+    /**
+     * Writes WHERE clause of the select statement.
+     * @param statement statement which body to write and which parameters to set
+     * @param criteria search criteria
+     * @throws Exception if the clause cannot be written
+     */
+    static void writeSearchWhere(final QueryStatement statement, final IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         Writer body = statement.getBodyWriter();
         try {
@@ -43,7 +50,13 @@ class SearchClauses {
         }
     }
 
-    static void writeSearchOrder(QueryStatement statement, IObject criteria) throws Exception {
+    /**
+     * Writes ORDER BY clause of the select statement.
+     * @param statement statement which body to write and which parameters to set
+     * @param criteria search criteria
+     * @throws Exception if the clause cannot be written
+     */
+    static void writeSearchOrder(final QueryStatement statement, final IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         Writer body = statement.getBodyWriter();
         try {
@@ -60,31 +73,51 @@ class SearchClauses {
         }
     }
 
-    static void writeSearchPaging(QueryStatement statement, IObject criteria) throws Exception {
+    /**
+     * Writes OFFSET and LIMIT clauses of the select statement.
+     * @param statement statement which body to write and which parameters to set
+     * @param criteria search criteria
+     * @throws Exception if the clause cannot be written
+     */
+    static void writeSearchPaging(final QueryStatement statement, final IObject criteria) throws Exception {
         IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         Writer body = statement.getBodyWriter();
         try {
             IFieldName pageField = IOC.resolve(fieldNameKey, "page");
             IObject page = (IObject) criteria.getValue(pageField);
             if (page == null) {
+                writeDefaultPaging(statement);
                 return; // no page in the criteria, ignoring
             }
-            body.write(" ");
-            Integer size;
-            Integer number;
+
             try {
+                body.write(" ");
+                PagingWriter paging = new PagingWriter();
                 IFieldName sizeField = IOC.resolve(fieldNameKey, "size");
-                size = (Integer) page.getValue(sizeField);
+                Integer size = (Integer) page.getValue(sizeField);
                 IFieldName numberField = IOC.resolve(fieldNameKey, "number");
-                number = (Integer) page.getValue(numberField);
+                Integer number = (Integer) page.getValue(numberField);
+                paging.write(statement, number, size);
             } catch (Exception e) {
                 throw new QueryBuildException("wrong page format: " + page.serialize(), e);
             }
-            PagingWriter paging = new PagingWriter();
-            paging.write(statement, number, size);
         } catch (ReadValueException e) {
+            writeDefaultPaging(statement);
             // no page in the criteria, ignoring
         }
+    }
+
+    /**
+     * Writes default paging (LIMIT) of default size of 100.
+     * @param statement statement which body to write and which parameters to set
+     * @throws IOException if write to body failed
+     * @throws QueryBuildException if query cannot be formatted
+     */
+    static void writeDefaultPaging(final QueryStatement statement) throws IOException, QueryBuildException {
+        Writer body = statement.getBodyWriter();
+        body.write(" ");
+        PagingWriter paging = new PagingWriter();
+        paging.write(statement, 1, PostgresSchema.DEFAULT_PAGE_SIZE);
     }
 
 }

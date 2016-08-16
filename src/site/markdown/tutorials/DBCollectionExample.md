@@ -104,7 +104,7 @@ Adds new object to the collection.
 
 Command name: `db.collection.insert`
 
-If the document contains the field "collection_nameID" the command throws a successor of `TaskExecutionException`. In other cases it's behavior is the same as of Upsert command.
+If the document contains the field "collection_nameID" the command throws a successor of `TaskPrepareException`. In other cases it's behavior is the same as of Upsert command.
 
 It's recommended to use Upsert if there is no strong necessity to use Insert.
 
@@ -258,6 +258,9 @@ You may define the page size and page number.
 
 This is equivalent of SQL LIMIT and OFFSET clauses.
 However, here you must work in terms of pages, while SQL works in terms of rows to skip.
+
+If the pagination is not defined, only first 100 documents from the collection are returned, i.e. page number 1 of size 100.
+Also if the page size is more than 1000, it's limited to 1000.
 
 ##### Sort
 
