@@ -42,6 +42,7 @@ public class CreateSessionActor {
     private IField sessionIdF;
     private IField equalsF;
     private IField authInfoF;
+    private IField userAgentF;
 
     private IField cookieNameF;
     private IField cookieValueF;
@@ -63,6 +64,7 @@ public class CreateSessionActor {
             sessionIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
             authInfoF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
+            userAgentF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userAgent");
 
             cookieNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "name");
             cookieValueF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "value");
@@ -88,7 +90,8 @@ public class CreateSessionActor {
             String sessionId = inputMessage.getSessionId();
             if (sessionId == null || sessionId.equals("")) {
                 sessionId = String.valueOf(UUID.randomUUID());
-                IObject authInfo = inputMessage.getAuthInfo();
+                IObject authInfo = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                userAgentF.out(authInfo, inputMessage.getAuthInfo());
                 session = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                 authInfoF.out(session, authInfo);
                 sessionIdF.out(session, sessionId);
@@ -96,14 +99,12 @@ public class CreateSessionActor {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                     IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                    //TODO:: resolve with IOC
-                    IStorageConnection connection = (IStorageConnection) poolGuard.getObject();
                     prepareSearchQuery(searchQuery, inputMessage);
 
                     List<IObject> items = new LinkedList<>();
                     ITask searchTask = IOC.resolve(
                         Keys.getOrAdd("db.collection.search"),
-                        connection,
+                        poolGuard.getObject(),
                         collectionName,
                         searchQuery,
                         (IAction<IObject[]>) foundDocs -> {

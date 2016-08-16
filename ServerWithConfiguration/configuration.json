@@ -120,8 +120,24 @@
           "handler": "resolveSession",
           "wrapper": {
             "in_getCookies": "context/cookies",
-            "in_getSessionId": "message/sessionId",
-            "in_getAuthInfo": "message/authInfo",
+            "in_getSessionId": [
+              {
+                "name": "getCookieFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/sessionId"
+                ]
+              }
+            ],
+            "in_getAuthInfo": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
             "out_setCookies": "context/cookies",
             "out_setSession": "message/session"
           }
@@ -159,17 +175,7 @@
             "in_getSessionId": "message/sessionId",
             "in_getOperationTokens": "message/session/tokens",
             "out_setOperationTokens": "message/session/tokens",
-            "out_setSessionIdInData": "response/form/sessionId",
-            "out_setAsyncOperationToken":[
-              [{
-                "name": "wds_target_strategy",
-                "args": ["local/value", "response/token"]
-              }],
-              [{
-                "name": "wds_target_strategy",
-                "args": ["local/value", "message/session/token"]
-              }]
-            ]
+            "out_setAsyncOperationToken": "response/token"
           }
         },
         {
