@@ -168,4 +168,11 @@ public class PostgresSchemaTest {
                 body.toString());
     }
 
+    @Test
+    public void testDelete() throws QueryBuildException {
+        PostgresSchema.delete(statement, collection);
+        assertEquals("DELETE FROM test_collection " +
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
+    }
+
 }

@@ -5,6 +5,9 @@ plugin.postgres_db_tasks-0.2.0-SNAPSHOT.jar
 core.postgres_connection-0.2.0-SNAPSHOT.jar
 core.istorage_connection-0.2.0-SNAPSHOT.jar
 core.postgres_schema-0.2.0-SNAPSHOT.jar
+core.postgres_create_task-0.2.0-SNAPSHOT.jar
 core.postgres_getbyid_task-0.2.0-SNAPSHOT.jar
 core.postgres_search_task-0.2.0-SNAPSHOT.jar
 core.postgres_upsert_task-0.2.0-SNAPSHOT.jar
+core.postgres_delete_task-0.2.0-SNAPSHOT.jar
+strategy.uuid_nextid_strategy-0.2.0-SNAPSHOT.jar

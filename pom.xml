@@ -67,6 +67,7 @@
         <module>PostgresUpsertTask</module>
         <module>PostgresGetByIdTask</module>
         <module>PostgresSearchTask</module>
+        <module>PostgresDeleteTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -268,6 +269,18 @@
         <module>PluginGetQueryParameterRule</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
+        <module>InMemoryDatabase</module>
+        <module>PluginInMemoryDatabase</module>
+        <module>InMemoryDBCreateCollectionTask</module>
+        <module>InMemoryDBGetByIdTask</module>
+        <module>InMemoryDBUpsertTask</module>
+        <module>InMemoryDBDeleteTask</module>
+        <module>InMemoryDBSelectTask</module>
+        <module>PluginInMemoryDBTasks</module>
+        <module>InMemoryDBSectionProcessingStrategy</module>
+        <module>IDatabase</module>
+        <module>PluginNullConnectionPool</module>
+        <module>UuidNextIdStrategy</module>
     </modules>
 
     <build>
