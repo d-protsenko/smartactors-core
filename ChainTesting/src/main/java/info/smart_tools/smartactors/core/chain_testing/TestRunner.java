@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.core.chain_testing;
 
-import info.smart_tools.smartactors.core.chain_testing.checkers.AssertionChecker;
-import info.smart_tools.smartactors.core.chain_testing.checkers.ExceptionInterceptor;
 import info.smart_tools.smartactors.core.chain_testing.checkers.TestResultChecker;
 import info.smart_tools.smartactors.core.chain_testing.exceptions.InvalidTestDescriptionException;
 import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
@@ -22,8 +20,6 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-
-import java.util.List;
 
 /**
  * Runs tests on receiver chains.
@@ -127,7 +123,7 @@ public class TestRunner {
             IObject message = (IObject) environmentDesc.getValue(messageFieldName);
             IObject context = (IObject) environmentDesc.getValue(contextFieldName);
 
-            String chainName = (String) environmentDesc.getValue(chainNameFieldName);
+            String chainName = (String) description.getValue(chainNameFieldName);
 
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
 
