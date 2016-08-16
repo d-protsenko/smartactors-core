@@ -60,6 +60,7 @@ public class PluginChainTesting implements IPlugin {
                     .after("message_processor")
                     .after("message_processing_sequence")
                     .after("main_test_chain")
+                    .after("chain_tests_runner")
                     .before("configure")
                     .process(() -> {
                         try {
@@ -92,6 +93,8 @@ public class PluginChainTesting implements IPlugin {
                             throw new ActionExecuteException(e);
                         }
                     });
+
+            bootstrap.add(mainChainItem);
 
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);

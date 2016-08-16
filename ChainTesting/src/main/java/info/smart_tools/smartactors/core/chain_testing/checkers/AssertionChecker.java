@@ -45,7 +45,7 @@ public class AssertionChecker extends TestResultChecker {
                 assertion.check(description, value);
             } catch (ReadValueException | InvalidArgumentException e) {
                 throw new AssertionFailureException(
-                        MessageFormat.format("Could not check assertion '{0}' because of error reading a value.", name), e);
+                        MessageFormat.format("Could not check assertion ''{0}'' because of error reading a value.", name), e);
             } catch (AssertionFailureException e) {
                 throw new AssertionFailureException(
                         MessageFormat.format("Assertion '{0}' failed.", name), e);
@@ -55,6 +55,7 @@ public class AssertionChecker extends TestResultChecker {
 
     private List<PreparedAssertion> preparedAssertions = new LinkedList<>();
     private IObject preparedSuccessReceiverArguments;
+    private IObject preparedSuccessReceiverWrapperConfig;
 
     /**
      * The constructor.
@@ -66,9 +67,13 @@ public class AssertionChecker extends TestResultChecker {
             throws TestStartupException {
         try {
             preparedSuccessReceiverArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            preparedSuccessReceiverWrapperConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+            IFieldName wrapperFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
+            preparedSuccessReceiverArguments.setValue(wrapperFieldName, preparedSuccessReceiverWrapperConfig);
 
             prepareAssertions(description);
-        } catch (ResolutionException e) {
+        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
             throw new TestStartupException(e);
         }
     }
@@ -101,15 +106,14 @@ public class AssertionChecker extends TestResultChecker {
             for (IObject assertion : descriptions) {
                 String name = (String) assertion.getValue(assertNameFieldName);
                 String type = (String) assertion.getValue(assertTypeFieldName);
-                IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), name);
                 IFieldName getterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "in_" + name);
 
                 try {
                     Assertion assertion1 = IOC.resolve(Keys.getOrAdd("assertion of type " + type));
 
-                    preparedSuccessReceiverArguments.setValue(getterFieldName, assertion.getValue(assertValueFieldName));
+                    preparedSuccessReceiverWrapperConfig.setValue(getterFieldName, assertion.getValue(assertValueFieldName));
 
-                    preparedAssertions.add(new PreparedAssertion(name, assertion1, fieldName, assertion));
+                    preparedAssertions.add(new PreparedAssertion(name, assertion1, getterFieldName, assertion));
                 } catch (ResolutionException e) {
                     throw new TestStartupException(
                             MessageFormat.format("Could not resolve assertion \"{0}\" of type \"{1}\".", name, type), e);

@@ -149,6 +149,6 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 
-        assertEquals("{'in_Ass1':'message/x'}".replace('\'', '"'), checker.getSuccessfulReceiverArguments().serialize());
+        assertEquals("{'wrapper':{'in_Ass1':'message/x'}}".replace('\'', '"'), checker.getSuccessfulReceiverArguments().serialize());
     }
 }
