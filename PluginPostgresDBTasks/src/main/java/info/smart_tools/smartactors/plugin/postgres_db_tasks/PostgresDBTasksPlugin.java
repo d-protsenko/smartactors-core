@@ -24,6 +24,8 @@ import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.core.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_insert_task.InsertMessage;
+import info.smart_tools.smartactors.core.postgres_insert_task.PostgresInsertTask;
 import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
@@ -58,7 +60,9 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 .process(() -> {
                     try {
                         registerCreateTask();
+                        registerNextIdStrategy();
                         registerUpsertTask();
+                        registerInsertTask();
                         registerGetByIdTask();
                         registerSearchTask();
                         registerDeleteTask();
@@ -137,16 +141,20 @@ public class PostgresDBTasksPlugin implements IPlugin {
         );
     }
 
+    private void registerNextIdStrategy() throws RegistrationException, ResolutionException {
+        IOC.register(
+                Keys.getOrAdd("db.collection.nextid"),
+                new UuidNextIdStrategy()
+        );
+    }
+
     private void registerUpsertTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
                 Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
                 Keys.getOrAdd(IField.class.getCanonicalName()), "document");
 
-        IOC.register(
-                Keys.getOrAdd("db.collection.nextid"),
-                new UuidNextIdStrategy()
-        );
+        registerNextIdStrategy();
         IOC.register(
                 Keys.getOrAdd(UpsertMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
@@ -391,6 +399,64 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 return task;
                             } catch (Exception e) {
                                 throw new RuntimeException("Can't resolve delete db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerInsertTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IField documentField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+
+        IOC.register(
+                Keys.getOrAdd(InsertMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new InsertMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getDocument() throws ReadValueException {
+                                    try {
+                                        return (IObject) documentField.in(message);
+                                    } catch (InvalidArgumentException e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getOrAdd("db.collection.insert"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject document = (IObject) args[2];
+                                IDatabaseTask task = new PostgresInsertTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName);
+                                documentField.out(query, document);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve insert db task.", e);
                             }
                         }
                 )
