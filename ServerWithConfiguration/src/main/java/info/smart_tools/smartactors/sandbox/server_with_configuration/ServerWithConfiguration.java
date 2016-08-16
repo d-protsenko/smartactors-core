@@ -122,6 +122,7 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.validation_form_actor:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.create_session_plugin:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.save_session_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.authentication_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.get_query_parameter_rule:0.2.0-SNAPSHOT",
