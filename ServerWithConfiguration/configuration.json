@@ -39,7 +39,7 @@
       "dependency": "info.smart_tools.smartactors.actors.create_session.CreateSessionActor",
       "name": "createSessionActor",
       "collectionName": "session",
-      "maxAge": "3600"
+      "maxAge": 3600
     },
     {
       "kind": "stateless_actor",
