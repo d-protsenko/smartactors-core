@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Implementation of {@link IReceiverChain} used as a root chain for test messages. Calls a callback when chain execution completed.
  */
-class MainTestChain implements IReceiverChain {
+public class MainTestChain implements IReceiverChain {
     private IAction<Throwable> completionCallback;
     private IObject successReceiverArgs;
     private AtomicBoolean isCompleted;
@@ -37,7 +37,7 @@ class MainTestChain implements IReceiverChain {
      *                              completion of a chain
      * @throws InvalidArgumentException if {@code completionCallback} is {@code null}
      */
-    MainTestChain(final IAction<Throwable> completionCallback, final IObject successReceiverArgs)
+    public MainTestChain(final IAction<Throwable> completionCallback, final IObject successReceiverArgs)
             throws InvalidArgumentException {
         if (null == completionCallback) {
             throw new InvalidArgumentException("Callback should not be null.");

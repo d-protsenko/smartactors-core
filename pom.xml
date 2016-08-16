@@ -243,6 +243,7 @@
         <module>ChainTesting</module>
         <module>TestLoadingPlugins</module>
         <module>ChainTestsConfigSectionStrategy</module>
+        <module>PluginChainTesting</module>
     </modules>
 
     <build>
