@@ -43,6 +43,12 @@
     },
     {
       "kind": "stateless_actor",
+      "dependency": "info.smart_tools.smartactors.actors.save_session.SaveSessionActor",
+      "name": "saveSessionActor",
+      "collectionName": "session"
+    },
+    {
+      "kind": "stateless_actor",
       "dependency": "info.smart_tools.smartactors.actors.authentication.AuthenticationActor",
       "name": "authenticationActor"
     },
@@ -167,6 +173,13 @@
           }
         },
         {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
+        },
+        {
           "target": "respond",
           "handler": "sendResponse"
         }
@@ -243,6 +256,13 @@
             "in_getOperation": "message/asyncOperation",
             "in_getOperationTokens": "message/session/tokens",
             "in_getToken": "message/token"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
@@ -333,7 +353,13 @@
             "in_getMessagePartsMessage": "message/messageParts"
           }
         },
-
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
+        },
         {
           "target": "respond",
           "handler": "sendResponse"
@@ -351,6 +377,13 @@
             "in_getSendToMessage": "message/email",
             "in_getMessageAttributesMessage": "message/attributes",
             "in_getMessagePartsMessage": "message/parts"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
@@ -402,6 +435,13 @@
               }
             ]
           }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
         }
       ],
       "exceptional": []
@@ -426,6 +466,13 @@
             "in_getAuthInfo": "message/authInfo",
             "out_setCookies": "context/cookies",
             "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
