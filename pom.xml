@@ -65,6 +65,7 @@
         <module>PostgresSchema</module>
         <module>PostgresCreateCollectionTask</module>
         <module>PostgresUpsertTask</module>
+        <module>PostgresInsertTask</module>
         <module>PostgresGetByIdTask</module>
         <module>PostgresSearchTask</module>
         <module>PostgresDeleteTask</module>
