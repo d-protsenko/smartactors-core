@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test.stub_http_endpoint</artifactId>
+    <artifactId>test.test_http_endpoint</artifactId>
 
     <dependencies>
         <!-- Interfaces -->
@@ -44,6 +44,12 @@
             <version>${core.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.scope_guard</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
         <!-- Third party libraries -->
         <dependency>
             <groupId>io.netty</groupId>
@@ -73,6 +79,30 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.field_name</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ds_object</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.singleton_strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

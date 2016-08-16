@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.test.stub_http_endpoint;
+package info.smart_tools.smartactors.test.test_http_endpoint;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;

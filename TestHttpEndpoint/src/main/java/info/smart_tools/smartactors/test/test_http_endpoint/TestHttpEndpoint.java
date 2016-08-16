@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.test.stub_http_endpoint;
+package info.smart_tools.smartactors.test.test_http_endpoint;
 
 import info.smart_tools.smartactors.core.iaction.IFunction;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -16,7 +17,6 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +24,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Created by sevenbits on 8/12/16.
+ * Implementation of {@link IAsyncService}.
+ * Imitates work of Http Endpoint and uses incoming instance of {@link java.util.concurrent.BlockingDeque}
+ * as data source.
  */
-public class StubHttpEndpoint implements IAsyncService {
+public class TestHttpEndpoint implements IAsyncService {
 
     private BlockingDeque<IObject> queue;
     private IScope scope;
@@ -36,16 +38,38 @@ public class StubHttpEndpoint implements IAsyncService {
     private Future future;
     private IFunction<IObject, IObject> rule;
     private ExecutorService executorService;
-    private Boolean isError;
 
-    public StubHttpEndpoint(
+    /**
+     * Creates instance of {@link TestHttpEndpoint}.
+     * @param sourceQueue the queue as data source
+     * @param testScope the test scope
+     * @param testHandler the handler for processing test message
+     * @param timeBetweenTests the interval between starting processing next message
+     * @param routerChain the chain for processing message
+     * @param transformationRule the rule for transform incoming message to FullHttpRequest.
+     *          If {@code null} the default strategy will be used.
+     * @throws InvalidArgumentException if one of the arguments is incorrect
+     */
+    public TestHttpEndpoint(
             final BlockingDeque<IObject> sourceQueue,
             final IScope testScope,
             final IEnvironmentHandler testHandler,
             final Long timeBetweenTests,
             final IReceiverChain routerChain,
             final IFunction<IObject, IObject> transformationRule
-    ) {
+    ) throws InvalidArgumentException {
+        if (null == sourceQueue) {
+            throw new InvalidArgumentException("The queue should not be null.");
+        }
+        if (null == testScope) {
+            throw new InvalidArgumentException("The scope should not be null.");
+        }
+        if (null == testHandler) {
+            throw new InvalidArgumentException("The handler should not be null.");
+        }
+        if (null == routerChain) {
+            throw new InvalidArgumentException("The message processing chain should not be null.");
+        }
         this.rule = transformationRule;
         if (null == transformationRule) {
             this.rule = defaultTransformationRule();
@@ -58,37 +82,37 @@ public class StubHttpEndpoint implements IAsyncService {
         this.executorService = Executors.newSingleThreadExecutor();
         this.future = executorService.submit(() -> {
             try {
-                ScopeProvider.setCurrentScope(this.scope);
                 while (true) {
+                    ScopeProvider.setCurrentScope(this.scope);
                     try {
                         IObject obj = this.rule.execute(queue.take());
                         handler.handle(obj, chain);
                         Thread.sleep(timeInterval);
                     } catch (Throwable e) {
-                        e.getCause().printStackTrace();
+                        System.out.println(e);
                     }
                 }
             } catch (Throwable e) {
-                throw new RuntimeException("ScopeProvider not initialized.");
+                throw new RuntimeException("ScopeProvider is not initialized.");
             }
         });
     }
 
     @Override
-    public CompletableFuture<StubHttpEndpoint> start() {
+    public CompletableFuture<TestHttpEndpoint> start() {
+
         return CompletableFuture.runAsync(() -> {
             try {
                 this.future.get();
             } catch (InterruptedException | ExecutionException e) {
-                //Thread.currentThread().interrupt();
-                e.getCause().printStackTrace();
+                Thread.currentThread().interrupt();
             }
-        }).thenApply(a -> StubHttpEndpoint.this);
+        }).thenApply(a -> TestHttpEndpoint.this);
     }
 
     @Override
     public CompletableFuture stop() {
-        return CompletableFuture.runAsync(() -> this.future.cancel(false)).thenApply(a -> StubHttpEndpoint.this);
+        return CompletableFuture.runAsync(() -> this.future.cancel(false)).thenApply(a -> TestHttpEndpoint.this);
     }
 
     private IFunction<IObject, IObject> defaultTransformationRule() {
@@ -129,7 +153,7 @@ public class StubHttpEndpoint implements IAsyncService {
                 context.setValue(headersFieldName, new ArrayList<IObject>());
                 TestFullHttpRequest request = new TestFullHttpRequest((IObject) iObject.getValue(requestFieldName));
                 context.setValue(requestFieldName, request);
-                //create environment
+
                 environment.setValue(messageFieldName, message);
                 environment.setValue(contextFieldName, context);
 

@@ -268,7 +268,7 @@
         <module>PluginGetQueryParameterRule</module>
         <module>ISource</module>
         <module>TestDataSourceStringArray</module>
-        <module>StubHttpEndpoint</module>
+        <module>TestHttpEndpoint</module>
     </modules>
 
     <build>
