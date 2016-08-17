@@ -6,9 +6,11 @@ import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -37,7 +39,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,8 +51,6 @@ public class TestHttpEndpointTest {
 
     private IStrategyContainer container = new StrategyContainer();
     private IReceiverChain chain = mock(IReceiverChain.class);
-//    private BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
-//    private IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
 
     @Rule
     public Timeout globalTimeout = Timeout.seconds(20);
@@ -233,23 +232,25 @@ public class TestHttpEndpointTest {
         BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
-        List<IObject> result = new ArrayList<>();
-        doThrow(Exception.class).when(handler).handle(any(IObject.class), same(this.chain));
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
-        endpoint.start();
         IObject testAnotherObject = mock(IObject.class);
+        List<IObject> result = new ArrayList<>();
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 IObject obj = (IObject) invocationOnMock.getArguments()[0];
-                if (null != obj) {
+                if (obj == testObject) {
+                    throw new Exception();
+                }
+                if (obj == testAnotherObject) {
                     result.add(obj);
                 }
                 notification.setExecuted(true);
                 return null;
             }
         }).when(handler).handle(any(IObject.class), same(this.chain));
+        queue.put(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
+        endpoint.start();
         queue.put(testAnotherObject);
         while (true) {
             if (notification.getExecuted()) {
@@ -257,7 +258,7 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        //assertSame(result.get(0), testAnotherObject);
+        assertSame(result.get(0), testAnotherObject);
     }
 
     @Test
@@ -267,27 +268,32 @@ public class TestHttpEndpointTest {
         BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
+        IObject testAnotherObject = mock(IObject.class);
+        IObject messageOfAnotherTestObject = mock(IObject.class);
+        when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
+        initFiledNameStrategy();
+        initIObjectStrategy();
+        IChannelHandler channelHandler = mock(IChannelHandler.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), TestChannelHandler.class.getCanonicalName()),
+                strategy
+        );
+        when(strategy.resolve()).thenThrow(ResolutionException.class).thenReturn(channelHandler);
         List<IObject> result = new ArrayList<>();
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 IObject obj = (IObject) invocationOnMock.getArguments()[0];
-                if (null != obj) {
-                    result.add(obj);
-                }
+                result.add(obj);
                 notification.setExecuted(true);
+
                 return null;
             }
         }).when(handler).handle(any(IObject.class), same(this.chain));
         queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 1000L, this.chain, null);
         endpoint.start();
-        initFiledNameStrategy();
-        initIObjectStrategy();
-        initIChannelHandlerStrategy();
-        IObject testAnotherObject = mock(IObject.class);
-        IObject messageOfAnotherTestObject = mock(IObject.class);
-        when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
         notification.setExecuted(false);
         queue.put(testAnotherObject);
         while (true) {
@@ -296,7 +302,7 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-//        assertSame(result.get(0).getValue(new FieldName("message")), messageOfAnotherTestObject);
+        assertSame(result.get(0).getValue(new FieldName("message")), messageOfAnotherTestObject);
     }
 
     private void initFiledNameStrategy()

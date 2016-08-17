@@ -18,7 +18,6 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -35,7 +34,6 @@ public class TestHttpEndpoint implements IAsyncService {
     private IEnvironmentHandler handler;
     private Long timeInterval;
     private IReceiverChain chain;
-    private Future future;
     private IFunction<IObject, IObject> rule;
     private ExecutorService executorService;
 
@@ -80,39 +78,35 @@ public class TestHttpEndpoint implements IAsyncService {
         this.timeInterval = timeBetweenTests;
         this.chain = routerChain;
         this.executorService = Executors.newSingleThreadExecutor();
-        this.future = executorService.submit(() -> {
-            try {
-                while (true) {
-                    ScopeProvider.setCurrentScope(this.scope);
-                    try {
-                        IObject obj = this.rule.execute(queue.take());
-                        handler.handle(obj, chain);
-                        Thread.sleep(timeInterval);
-                    } catch (Throwable e) {
-                        System.out.println(e);
-                    }
-                }
-            } catch (Throwable e) {
-                throw new RuntimeException("ScopeProvider is not initialized.");
-            }
-        });
     }
 
     @Override
-    public CompletableFuture<TestHttpEndpoint> start() {
-
-        return CompletableFuture.runAsync(() -> {
-            try {
-                this.future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                Thread.currentThread().interrupt();
-            }
-        }).thenApply(a -> TestHttpEndpoint.this);
+    public CompletableFuture start() {
+        return CompletableFuture.supplyAsync(this::execute, this.executorService);
     }
 
     @Override
     public CompletableFuture stop() {
-        return CompletableFuture.runAsync(() -> this.future.cancel(false)).thenApply(a -> TestHttpEndpoint.this);
+        return CompletableFuture.runAsync(() -> this.executorService.shutdown()).thenApply(a -> TestHttpEndpoint.this);
+    }
+
+    private Future<TestHttpEndpoint> execute() {
+        try {
+            while (true) {
+                ScopeProvider.setCurrentScope(this.scope);
+                try {
+                    IObject obj = this.rule.execute(queue.take());
+                    if (obj != null) {
+                        handler.handle(obj, chain);
+                    }
+                    Thread.sleep(timeInterval);
+                } catch (Throwable e) {
+                    System.out.println(e.toString());
+                }
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException("ScopeProvider is not initialized.");
+        }
     }
 
     private IFunction<IObject, IObject> defaultTransformationRule() {
@@ -120,6 +114,12 @@ public class TestHttpEndpoint implements IAsyncService {
             try {
                 IFieldName messageFieldName = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message"
+                );
+                IFieldName idFieldName = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "id"
+                );
+                IFieldName testResultFieldName = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testResult"
                 );
                 IFieldName contextFieldName = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context"
@@ -138,7 +138,11 @@ public class TestHttpEndpoint implements IAsyncService {
                 );
 
                 IObject message = (IObject) iObject.getValue(messageFieldName);
+                Object id =  iObject.getValue(idFieldName);
                 IObject environment = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+                );
+                IObject testResult = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
                 );
                 IObject context = IOC.resolve(
@@ -156,6 +160,8 @@ public class TestHttpEndpoint implements IAsyncService {
 
                 environment.setValue(messageFieldName, message);
                 environment.setValue(contextFieldName, context);
+                environment.setValue(idFieldName, id);
+                environment.setValue(testResultFieldName, testResult);
 
                 return environment;
             } catch (ChangeValueException | ResolutionException | ReadValueException e) {

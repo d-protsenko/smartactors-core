@@ -12,6 +12,8 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,16 +24,34 @@ public class TestFullHttpRequest implements FullHttpRequest {
     private IFieldName protocolVersionTextFieldName;
     private IFieldName keepAliveFieldName;
     private IFieldName headersFieldName;
+    private IFieldName headerNameFieldName;
+    private IFieldName headerValueFieldName;
+    private IFieldName methodFieldName;
+    private IFieldName uriFieldName;
 
     private IObject request;
+
+    private HttpHeaders parsedHeaders;
+    private HttpMethod httpMethod;
+    private HttpVersion httpProtocolVersion;
+    private String parsedUri;
 
     public TestFullHttpRequest(final IObject testRequest) throws InvalidArgumentException {
         try {
             this.protocolVersionTextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "protocolVersion");
             this.keepAliveFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "keepAlive");
             this.headersFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "headers");
+            this.headerNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name");
+            this.headerValueFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "value");
+            this.methodFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "method");
+            this.uriFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "uri");
 
             this.request = testRequest;
+
+            parseHeaders();
+            parseMethod();
+            parseProtocol();
+            parseUri();
         } catch (Exception e) {
             throw new InvalidArgumentException("Could not initialize new instance of TestFullHttpRequest");
         }
@@ -39,144 +59,198 @@ public class TestFullHttpRequest implements FullHttpRequest {
 
     @Override
     public FullHttpRequest copy() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest duplicate() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest retainedDuplicate() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest replace(final ByteBuf content) {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest retain(final int increment) {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest retain() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest touch() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest touch(final Object hint) {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public FullHttpRequest setProtocolVersion(final HttpVersion version) {
-        return null;
+        this.httpProtocolVersion = version;
+        return this;
     }
 
     @Override
     public FullHttpRequest setMethod(final HttpMethod method) {
-        return null;
+        this.httpMethod = method;
+        return this;
     }
 
     @Override
     public FullHttpRequest setUri(final String uri) {
-        return null;
+        this.parsedUri = uri;
+        return this;
     }
 
     @Override
     public ByteBuf content() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public HttpMethod getMethod() {
-        return null;
+        return this.httpMethod;
     }
 
     @Override
     public HttpMethod method() {
-        return null;
+        return this.httpMethod;
     }
 
     @Override
     public String getUri() {
-        return null;
+        return this.parsedUri;
     }
 
     @Override
     public String uri() {
-        return null;
+        return this.parsedUri;
     }
 
     @Override
     public HttpVersion getProtocolVersion() {
-        return this.protocolVersion();
+        return this.httpProtocolVersion;
     }
 
     @Override
     public HttpVersion protocolVersion() {
-        try {
-            return new HttpVersion((String) this.request.getValue(this.protocolVersionTextFieldName), (boolean) this.request.getValue(this.keepAliveFieldName));
-        } catch (Exception e) {
-            return null;
-        }
+            return this.httpProtocolVersion;
     }
 
     @Override
     public HttpHeaders headers() {
-        try {
-            HttpHeaders parsedHeaders = new DefaultHttpHeaders();
-            Map<IFieldName, String> testHeaders = (Map<IFieldName, String>) this.request.getValue(this.headersFieldName);
-            for (Map.Entry<IFieldName, String> header : testHeaders.entrySet()) {
-                parsedHeaders.add(header.getKey().toString(), header.getValue());
-            }
-            return parsedHeaders;
-        } catch (Exception e) {
-            return null;
-        }
+        return this.parsedHeaders;
     }
 
     @Override
     public HttpHeaders trailingHeaders() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public DecoderResult getDecoderResult() {
-        return this.decoderResult();
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public DecoderResult decoderResult() {
-        return null;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public void setDecoderResult(final DecoderResult result) {
-
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public int refCnt() {
-        return 0;
+        //return 0;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public boolean release() {
-        return false;
+        throw new RuntimeException("Method not implemented");
     }
 
     @Override
     public boolean release(final int decrement) {
-        return false;
+        throw new RuntimeException("Method not implemented");
+    }
+
+    private void parseProtocol()
+            throws Exception {
+        try {
+            String protocolText = (String) this.request.getValue(this.protocolVersionTextFieldName);
+            Object keepAlive = this.request.getValue(this.keepAliveFieldName);
+            if (null == protocolText) {
+                protocolText = "HTTP/1.1";         // Default value
+            }
+            if (null == keepAlive) {
+                keepAlive = true;                   // Default value
+            }
+            this.httpProtocolVersion = new HttpVersion(
+                    protocolText,
+                    (boolean) keepAlive
+            );
+        } catch (Exception e) {
+            throw new Exception("Could not parse protocol version.", e);
+        }
+    }
+
+    private void parseHeaders()
+            throws Exception {
+        try {
+            this.parsedHeaders = new DefaultHttpHeaders();
+            Object testHeaders = this.request.getValue(this.headersFieldName);
+            if (null == testHeaders) {
+                testHeaders = new ArrayList<IObject>();
+            }
+
+            for (IObject header : (List<IObject>) testHeaders) {
+                this.parsedHeaders.add((String) header.getValue(this.headerNameFieldName), header.getValue(this.headerValueFieldName));
+            }
+        } catch (Exception e) {
+            throw new Exception("Could not parse headers.", e);
+        }
+    }
+
+    private void parseMethod()
+            throws Exception {
+        try {
+            String method = (String) this.request.getValue(this.methodFieldName);
+            if (null == method) {
+                method = "POST";                // Default value
+            }
+            this.httpMethod = new HttpMethod(method);
+        } catch (Exception e) {
+            throw new Exception("Could not parse method.", e);
+        }
+    }
+
+    private void parseUri()
+            throws Exception {
+        try {
+            String uri = (String) this.request.getValue(this.uriFieldName);
+            if (null == uri) {
+                uri = "/";                // Default value
+            }
+            this.parsedUri = uri;
+        } catch (Exception e) {
+            throw new Exception("Could not parse uri.", e);
+        }
     }
 }
