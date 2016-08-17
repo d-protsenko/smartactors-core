@@ -47,8 +47,6 @@ public class ValidateFormDataActor {
             IObject formFields = message.getForm();
             IObject clientData = message.getFormFromRequest();
 
-            IObject resultObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-
             Iterator<Map.Entry<IFieldName, Object>> fieldsIterator = formFields.iterator();
             Map.Entry<IFieldName, Object> entry = fieldsIterator.next();
 
@@ -63,14 +61,12 @@ public class ValidateFormDataActor {
                         }
                     }
                 }
-                resultObject.setValue(key, clientData.getValue(key));
 
                 if (!fieldsIterator.hasNext()) {
                     break;
                 }
                 entry = fieldsIterator.next();
             }
-            message.setFormData(resultObject);
         } catch (Exception e) {
             throw new ValidateFormException(e);
         }

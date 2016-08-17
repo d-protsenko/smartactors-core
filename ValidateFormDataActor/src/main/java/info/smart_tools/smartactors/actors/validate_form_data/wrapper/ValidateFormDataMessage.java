@@ -21,12 +21,4 @@ public interface ValidateFormDataMessage {
      * @throws ReadValueException Calling when read change value of variable
      */
     IObject getForm() throws ReadValueException;
-
-    /**
-     * Setter
-     * @param form valid form
-     * @throws ReadValueException Calling when try read value of variable
-     * @throws ChangeValueException Calling when try change value of variable
-     */
-    void setFormData(IObject form) throws ReadValueException, ChangeValueException;
 }

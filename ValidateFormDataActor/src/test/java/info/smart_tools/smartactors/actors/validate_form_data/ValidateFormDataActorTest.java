@@ -73,14 +73,7 @@ public class ValidateFormDataActorTest {
 
         when(clientForm.getValue(fieldFieldName)).thenReturn("valueFromClient");
 
-        IObject resultObject = mock(IObject.class);
-        IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iobjectKey);
-        when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
-
         actor.validate(message);
-        verify(resultObject).setValue(eq(fieldFieldName), eq("valueFromClient"));
-        verify(message).setFormData(resultObject);
     }
 
     @Test(expected = ValidateFormException.class)
@@ -105,11 +98,6 @@ public class ValidateFormDataActorTest {
         when(rulesF.in(fieldIObject)).thenReturn("обязательное");
 
         when(clientForm.getValue(fieldFieldName)).thenReturn("");
-
-        IObject resultObject = mock(IObject.class);
-        IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iobjectKey);
-        when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
 
         actor.validate(message);
     }
