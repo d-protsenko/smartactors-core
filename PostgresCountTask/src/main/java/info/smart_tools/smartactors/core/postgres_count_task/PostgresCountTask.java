@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.postgres_search_task;
+package info.smart_tools.smartactors.core.postgres_count_task;
 
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.iaction.IAction;
@@ -16,11 +16,9 @@ import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * The database task which is able to select documents from Postgres database by multiple search criteria.
+ * The database task which is able to count documents in Postgres database by multiple search criteria.
  * The search criteria are passed in the complex IObject to the {@link #prepare(IObject)} method.
  * <p>
  *     The example of prepare object:
@@ -33,17 +31,9 @@ import java.util.List;
  *                  { "a": { "$eq": "b" } },
  *                  { "b": { "$gt": 42 } }
  *              ]
- *          },
- *          "page": {
- *              "size": 50,
- *              "number": 2
- *          },
- *          "sort": [
- *              { "a": "asc" },
- *              { "b": "desc" }
- *          ]
+ *          }
  *      },
- *      "callback": IAction callback to receive found documents
+ *      "callback": IAction callback to receive the number of found documents
  *  }
  *     </pre>
  * </p>
@@ -75,7 +65,7 @@ import java.util.List;
  *     </ul>
  * </p>
  */
-public class PostgresSearchTask implements IDatabaseTask {
+public class PostgresCountTask implements IDatabaseTask {
 
     /**
      * Connection to the database.
@@ -86,13 +76,13 @@ public class PostgresSearchTask implements IDatabaseTask {
      */
     private CollectionName collection;
     /**
-     * Criteria to search the document.
+     * Criteria to count documents.
      */
     private IObject criteria;
     /**
-     * Callback function to call when the object is found.
+     * Callback function to call when the documents are counted.
      */
-    private IAction<IObject[]> callback;
+    private IAction<Long> callback;
     /**
      * Query, prepared during prepare(), to be compiled during execute().
      */
@@ -100,22 +90,22 @@ public class PostgresSearchTask implements IDatabaseTask {
 
     /**
      * Creates the task
-     * @param connection the database connection where to perform search
+     * @param connection the database connection where to perform counts
      */
-    public PostgresSearchTask(final IStorageConnection connection) {
+    public PostgresCountTask(final IStorageConnection connection) {
         this.connection = connection;
     }
 
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            SearchMessage message = IOC.resolve(Keys.getOrAdd(SearchMessage.class.getCanonicalName()), query);
+            CountMessage message = IOC.resolve(Keys.getOrAdd(CountMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             criteria = message.getCriteria();
             callback = message.getCallback();
 
             preparedQuery = new QueryStatement();
-            PostgresSchema.search(preparedQuery, collection, criteria);
+            PostgresSchema.count(preparedQuery, collection, criteria);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
@@ -129,15 +119,16 @@ public class PostgresSearchTask implements IDatabaseTask {
             statement.execute();
 
             ResultSet resultSet = statement.getResultSet();
-            List<IObject> results = new ArrayList<>();
-            while (resultSet.next()) {
-                String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), sqlDoc);
-                results.add(document);
+            if (resultSet.next()) {
+                long result = resultSet.getLong(1);
+                connection.commit();
+                callback.execute(result);
+            } else {
+                connection.commit();
+                throw new TaskExecutionException("Failed to get result of counting");
             }
-
-            connection.commit();
-            callback.execute(results.toArray(new IObject[results.size()]));
+        } catch (TaskExecutionException tee) {
+            throw tee;
         } catch (Exception e) {
             try {
                 connection.rollback();
@@ -145,10 +136,10 @@ public class PostgresSearchTask implements IDatabaseTask {
                 // ignoring rollback failure
             }
             try {
-                throw new TaskExecutionException("Select in " + collection + " failed: criteria = " +
+                throw new TaskExecutionException("Count in " + collection + " failed: criteria = " +
                         (criteria != null ? criteria.serialize() : "null"), e);
             } catch (SerializeException se) {
-                throw new TaskExecutionException("Select in " + collection + " failed", e);
+                throw new TaskExecutionException("Count in " + collection + " failed", e);
             }
         }
     }

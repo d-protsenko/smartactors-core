@@ -69,6 +69,7 @@
         <module>PostgresGetByIdTask</module>
         <module>PostgresSearchTask</module>
         <module>PostgresDeleteTask</module>
+        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
