@@ -89,6 +89,8 @@ and looks only to data of indexed fields.
 
 ## Search
 
+Search queries start from `SELECT document FROM collection`.
+
 In most cases the access to the field is done using path in the document.
  
     WHERE (document#>'{field,nested}') = to_json(?)::jsonb    
@@ -107,7 +109,11 @@ For tags search the operator `?` is used.
     
 ### Full text search
 
-The full text search is done agains `fulltext` column using operator `@@`.
+The full text search is done against `fulltext` column using operator `@@`.
 
     WHERE fulltext@@(to_tsquery('russian',?))
     
+## Count
+
+Count queries start from `SELECT COUNT(*) FROM collection`.
+Then the same WHERE clause is used as for Search queries.

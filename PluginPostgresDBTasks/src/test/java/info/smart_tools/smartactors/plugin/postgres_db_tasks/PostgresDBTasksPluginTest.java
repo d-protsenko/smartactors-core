@@ -11,6 +11,8 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_count_task.CountMessage;
+import info.smart_tools.smartactors.core.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
 import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
@@ -123,6 +125,16 @@ public class PostgresDBTasksPluginTest {
         IObject document = mock(IObject.class);
         assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.insert"), connection, collection, document)
                 instanceof PostgresInsertTask);
+    }
+
+    @Test
+    public void testCountTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(CountMessage.class.getCanonicalName()), message)
+                instanceof CountMessage);
+        IObject criteria = mock(IObject.class);
+        IAction callback = mock(IAction.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.count"), connection, collection, criteria, callback)
+                instanceof PostgresCountTask);
     }
 
 }
