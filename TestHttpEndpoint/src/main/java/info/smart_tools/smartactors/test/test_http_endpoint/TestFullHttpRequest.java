@@ -14,10 +14,10 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by sevenbits on 8/15/16.
+ * Implementation of {@link FullHttpRequest}.
+ * This implementation is needed for chain tests.
  */
 public class TestFullHttpRequest implements FullHttpRequest {
 
@@ -36,9 +36,17 @@ public class TestFullHttpRequest implements FullHttpRequest {
     private HttpVersion httpProtocolVersion;
     private String parsedUri;
 
+    /**
+     * Constructor.
+     * Creates instance of {@link TestFullHttpRequest}.
+     * @param testRequest the instance of {@link IObject} with test data.
+     * @throws InvalidArgumentException if any errors occurred.
+     */
     public TestFullHttpRequest(final IObject testRequest) throws InvalidArgumentException {
         try {
-            this.protocolVersionTextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "protocolVersion");
+            this.protocolVersionTextFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "protocolVersion"
+            );
             this.keepAliveFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "keepAlive");
             this.headersFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "headers");
             this.headerNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name");

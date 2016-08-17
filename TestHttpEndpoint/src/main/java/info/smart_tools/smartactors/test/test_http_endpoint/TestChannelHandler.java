@@ -5,12 +5,18 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import java.util.List;
 
 /**
- * Created by sevenbits on 8/15/16.
+ * Implementation of {@link IChannelHandler}.
+ * This implementation is needed for chain tests.
  */
 public class TestChannelHandler implements IChannelHandler {
 
     private List<Object> responses;
 
+    /**
+     * Constructor.
+     * Creates instance if {@link }
+     * @param testResponses the aggregator of chain responses.
+     */
     public TestChannelHandler(final List<Object> testResponses) {
         this.responses = testResponses;
     }
