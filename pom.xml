@@ -69,6 +69,7 @@
         <module>PostgresGetByIdTask</module>
         <module>PostgresSearchTask</module>
         <module>PostgresDeleteTask</module>
+        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -282,6 +283,8 @@
         <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
         <module>UuidNextIdStrategy</module>
+        <module>InMemoryDBCountTask</module>
+        <module>InMemoryDBInsertTask</module>
     </modules>
 
     <build>

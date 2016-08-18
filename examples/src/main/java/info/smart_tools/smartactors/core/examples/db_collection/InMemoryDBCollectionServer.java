@@ -2,20 +2,15 @@ package info.smart_tools.smartactors.core.examples.db_collection;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
 import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
@@ -54,133 +49,36 @@ public class InMemoryDBCollectionServer implements IServer {
             CollectionName collection = CollectionName.fromString(
                     "test_" + Long.toHexString(Double.doubleToLongBits(Math.random())));
 
-            IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName idField = IOC.resolve(
                     Keys.getOrAdd(IFieldName.class.getCanonicalName()), collection + "ID");
-            IFieldName textField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
+
+            IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IFieldName textField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
+            IFieldName intField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
             document.setValue(textField, "initial value");
-            IFieldName intField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
             document.setValue(intField, 1);
 
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+            ConnectionOptions connectionOptions = new TestConnectionOptions();
+            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
 
-            IObject createOptions = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                    "{ \"fulltext\": \"text\", \"language\": \"english\" }");
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.create"),
-                        guard.getObject(),
-                        collection,
-                        createOptions
-                );
-                task.execute();
-            }
-            System.out.println("Created " + collection);
+            CollectionOperations.createCollection(pool, collection);
 
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.upsert"),
-                        guard.getObject(),
-                        collection,
-                        document
-                );
-                task.execute();
-            }
-            System.out.println("Inserted");
-            System.out.println((String) document.serialize());
+            CollectionOperations.insertDocument(pool, collection, document);
 
             document.setValue(textField, "new updated value");
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.upsert"),
-                        guard.getObject(),
-                        collection,
-                        document
-                );
-                task.execute();
-            }
-            System.out.println("Updated");
-            System.out.println((String) document.serialize());
+            CollectionOperations.upsertDocument(pool, collection, document);
 
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.getbyid"),
-                        guard.getObject(),
-                        collection,
-                        document.getValue(idField),
-                        (IAction<IObject>) doc -> {
-                            try {
-                                System.out.println("Found by id");
-                                System.out.println((String) doc.serialize());
-                            } catch (SerializeException e) {
-                                throw new ActionExecuteException(e);
-                            }
-                        }
-                );
-                task.execute();
-            }
+            CollectionOperations.getDocumentById(pool, collection, document.getValue(idField));
 
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.search"),
-                        guard.getObject(),
-                        collection,
-                        new DSObject(String.format(
-                                "{ \"filter\": { \"%1$s\": { \"$eq\": 1 } } }",
-                                intField.toString())),
-                        (IAction<IObject[]>) docs -> {
-                            try {
-                                for (IObject doc : docs) {
-                                    System.out.println("Found by " + intField);
-                                    System.out.println((String) doc.serialize());
-                                }
-                            } catch (SerializeException e) {
-                                throw new ActionExecuteException(e);
-                            }
-                        }
-                );
-                task.execute();
-            }
+            CollectionOperations.searchDocumentByIntField(pool, collection);
 
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.search"),
-                        guard.getObject(),
-                        collection,
-                        new DSObject(String.format(
-                                "{ " +
-                                        "\"filter\": { \"%1$s\": { \"$fulltext\": \"value\" } }," +
-                                        "\"page\": { \"size\": 2, \"number\": 1 }," +
-                                        "\"sort\": [ { \"%1$s\": \"asc\" } ]" +
-                                "}",
-                                textField.toString())),
-                        (IAction<IObject[]>) docs -> {
-                            try {
-                                for (IObject doc : docs) {
-                                    System.out.println("Found by " + textField);
-                                    System.out.println((String) doc.serialize());
-                                }
-                            } catch (SerializeException e) {
-                                throw new ActionExecuteException(e);
-                            }
-                        }
-                );
-                task.execute();
-            }
+            CollectionOperations.countByInt(pool, collection);
 
-            try (PoolGuard guard = new PoolGuard(pool)) {
-                ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.delete"),
-                        guard.getObject(),
-                        collection,
-                        document
-                );
-                task.execute();
-            }
-            System.out.println("Deleted");
-            System.out.println((String) document.serialize());
+            CollectionOperations.searchDocumentByTextField(pool, collection);
+
+            CollectionOperations.deleteDocument(pool, collection, document);
+
+            CollectionOperations.countByInt(pool, collection);
 
         } catch (Exception e) {
             throw new ServerExecutionException(e);

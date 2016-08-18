@@ -31,10 +31,12 @@ This is the list of modules (jars) used by in-memory collections:
 * core.istorage_connection
 * core.in_memory_database
 * core.in_memory_db_create_collection_task
+* core.in_memory_db_insert_task
+* core.in_memory_db_upsert_task
 * core.in_memory_db_delete_task
 * core.in_memory_db_get_by_id_task
 * core.in_memory_db_select_task
-* core.in_memory_db_upsert_task
+* core.in_memory_db_count_task
 * strategy.uuid_nextid_strategy
 
 ## Connection Pool

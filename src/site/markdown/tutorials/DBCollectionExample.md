@@ -296,6 +296,24 @@ You define the pair: the document field name and the sort direction: "asc" or "d
     );
     task.execute();    
 
+### Count
+
+Counts the number of documents in the collection matching specified criteria.
+
+Command name: `db.collection.count`
+
+Additional parameters:
+
+- criteria — search criteria for documents which should be counted in the collection, the `IObject` document
+- callback — lambda of type `IAction<Long>` which receives the count of found documents
+
+Search criteria are the same as for Search command described above. However, only `filter` part of it is taken.
+
+If no documents for the specified criteria were found, the callback function receives zero.
+
+It's recommended to avoid to use this task because the counting can be as slow as selecting the same documents using Search task. 
+Try to store and update the desired counter separately and explicitly.
+
 ## More complete example
 
 Get the document by id.
@@ -310,7 +328,7 @@ Get the document by id.
 
         void Handle(final IGetDocumentMessage mes) {
     
-            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
+            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
             try (PoolGuard guard = new PoolGuard(pool)) {
                  
                 ITask task = IOC.resolve(

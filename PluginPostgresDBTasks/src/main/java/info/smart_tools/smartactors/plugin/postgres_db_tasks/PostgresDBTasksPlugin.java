@@ -18,6 +18,8 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_count_task.CountMessage;
+import info.smart_tools.smartactors.core.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
 import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
@@ -66,6 +68,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                         registerGetByIdTask();
                         registerSearchTask();
                         registerDeleteTask();
+                        registerCountTask();
                     } catch (ResolutionException e) {
                         throw new ActionExecuteException("Can't resolve fields for db task.", e);
                     } catch (InvalidArgumentException e) {
@@ -457,6 +460,76 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 return task;
                             } catch (Exception e) {
                                 throw new RuntimeException("Can't resolve insert db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerCountTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IField criteriaField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
+        IField callbackField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+
+        IOC.register(
+                Keys.getOrAdd(CountMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new CountMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getCriteria() throws ReadValueException {
+                                    try {
+                                        return criteriaField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IAction<Long> getCallback() throws ReadValueException {
+                                    try {
+                                        return (IAction<Long>) callbackField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getOrAdd("db.collection.count"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject criteria = (IObject) args[2];
+                                IAction<Long> callback = (IAction<Long>) args[3];
+                                IDatabaseTask task = new PostgresCountTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName);
+                                criteriaField.out(query, criteria);
+                                callbackField.out(query, callback);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve count db task.", e);
                             }
                         }
                 )

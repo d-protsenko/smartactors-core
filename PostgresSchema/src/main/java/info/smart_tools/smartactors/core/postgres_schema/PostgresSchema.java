@@ -64,7 +64,8 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void create(final QueryStatement statement, final CollectionName collection, final IObject options) throws QueryBuildException {
+    public static void create(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
             body.write("CREATE TABLE ");
@@ -249,6 +250,44 @@ public final class PostgresSchema {
             body.write(") = to_json(?)::jsonb");
         } catch (IOException e) {
             throw new QueryBuildException("Failed to build delete body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body and it's list of parameter setters with the collection name and WHERE clause
+     * for the SELECT COUNT(*) statement to count the documents in the collection.
+     * <p>
+     *     The example of search criteria.
+     *     <pre>
+     *  {
+     *      "filter": {
+     *          "$or": [
+     *              "a": { "$eq": "b" },
+     *              "b": { "$gt": 42 }
+     *          ]
+     *      }
+     *  }
+     *     </pre>
+     * </p>
+     * @param statement statement to fill the body and add parameter setters
+     * @param collection collection name to use as the table name
+     * @param criteria complex JSON describing the search criteria
+     * @throws QueryBuildException when something goes wrong
+     */
+    public static void count(final QueryStatement statement, final CollectionName collection, final IObject criteria)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+
+            body.write("SELECT COUNT(*) FROM ");
+            body.write(collection.toString());
+
+            if (criteria == null) {
+                return;
+            }
+            SearchClauses.writeSearchWhere(statement, criteria);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build count query", e);
         }
     }
 

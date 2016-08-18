@@ -100,7 +100,7 @@ public class PostgresSearchTask implements IDatabaseTask {
 
     /**
      * Creates the task
-     * @param connection the database connection where to perform upserts
+     * @param connection the database connection where to perform search
      */
     public PostgresSearchTask(final IStorageConnection connection) {
         this.connection = connection;
