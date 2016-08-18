@@ -90,12 +90,14 @@ public class TestHttpEndpointTest {
 
         IObject testObject = mock(IObject.class);
         IObject messageOfTestObject = mock(IObject.class);
+        IObject requestOfTestObject = mock(IObject.class);
         doAnswer(invocationOnMock -> {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
             return null;
         }).when(handler).handle(any(IObject.class), same(this.chain));
         when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
+        when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
 
         queue.put(testObject);
         IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
@@ -156,6 +158,8 @@ public class TestHttpEndpointTest {
         IObject testAnotherObject = mock(IObject.class);
         IObject messageOfTestObject = mock(IObject.class);
         IObject messageOfAnotherTestObject = mock(IObject.class);
+        IObject requestOfTestObject = mock(IObject.class);
+        IObject requestOfAnotherTestObject = mock(IObject.class);
         doAnswer(invocationOnMock -> {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
@@ -163,6 +167,8 @@ public class TestHttpEndpointTest {
         }).when(handler).handle(any(IObject.class), same(this.chain));
         when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
         when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
+        when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
+        when(testAnotherObject.getValue(new FieldName("request"))).thenReturn(requestOfAnotherTestObject);
         queue.put(testObject);
         IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
         endpoint.start();
@@ -270,7 +276,9 @@ public class TestHttpEndpointTest {
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
         IObject messageOfAnotherTestObject = mock(IObject.class);
+        IObject requestOfAnotherTestObject = mock(IObject.class);
         when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
+        when(testAnotherObject.getValue(new FieldName("request"))).thenReturn(requestOfAnotherTestObject);
         initFiledNameStrategy();
         initIObjectStrategy();
         IChannelHandler channelHandler = mock(IChannelHandler.class);

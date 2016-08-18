@@ -24,6 +24,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -321,6 +322,45 @@ public class TestFullHttpRequestTest {
         fail();
     }
 
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnInvalidProtocolInArgument()
+            throws Exception {
+        initFieldNameStrategy();
+        IObject message = mock(IObject.class);
+        when(message.getValue(new FieldName("protocolVersion"))).thenThrow(Exception.class);
+        FullHttpRequest request = new TestFullHttpRequest(message);
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnInvalidMethodInArgument()
+            throws Exception {
+        initFieldNameStrategy();
+        IObject message = mock(IObject.class);
+        when(message.getValue(new FieldName("method"))).thenThrow(Exception.class);
+        FullHttpRequest request = new TestFullHttpRequest(message);
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnInvalidUriInArgument()
+            throws Exception {
+        initFieldNameStrategy();
+        IObject message = mock(IObject.class);
+        when(message.getValue(new FieldName("uri"))).thenThrow(Exception.class);
+        FullHttpRequest request = new TestFullHttpRequest(message);
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnInvalidHeadersInArgument()
+            throws Exception {
+        initFieldNameStrategy();
+        IObject message = mock(IObject.class);
+        when(message.getValue(new FieldName("headers"))).thenThrow(Exception.class);
+        FullHttpRequest request = new TestFullHttpRequest(message);
+        fail();
+    }
 
     private void initFieldNameStrategy()
             throws Exception {
