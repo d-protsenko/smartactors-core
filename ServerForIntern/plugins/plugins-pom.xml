@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Run `mvn -f dbtasks-pom.xml dependency:copy-dependencies` to retrieve all dependent jars
+Run `mvn -f plugins-pom.xml dependency:copy-dependencies` to retrieve all dependent jars
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,7 +8,7 @@ Run `mvn -f dbtasks-pom.xml dependency:copy-dependencies` to retrieve all depend
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>server.server_for_intern.dbtask_plugins</artifactId>
+    <artifactId>server.server_for_intern.plugins_plugins</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <properties>
@@ -24,6 +24,21 @@ Run `mvn -f dbtasks-pom.xml dependency:copy-dependencies` to retrieve all depend
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.postgres_db_tasks</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.exception_handler_actor</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.sample_actor</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.sample_db_actor</artifactId>
             <version>${core.version}</version>
         </dependency>
     </dependencies>

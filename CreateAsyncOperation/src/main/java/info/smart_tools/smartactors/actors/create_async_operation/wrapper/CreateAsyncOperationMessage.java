@@ -34,28 +34,21 @@ public interface CreateAsyncOperationMessage {
     String getSessionId() throws ReadValueException;
 
     /**
-     * Must set sessionId in target asyncData
-     * @param sessionId Target sessionId
-     * @throws ChangeValueException
-     */
-    void setSessionIdInData(String sessionId) throws ChangeValueException;
-
-    /**
-     * Setter
+     * Setter to response
      * @param token operation unique identifier
      * @throws ChangeValueException if error during set is occurred
      */
     void setAsyncOperationToken(String token) throws ChangeValueException;
 
     /**
-     * Getter
+     * Getter from list of tokens in session
      * @return list of tokens of async op's
      * @throws ReadValueException Throw when can't correct read value
      */
     List<String> getOperationTokens() throws ReadValueException;
 
     /**
-     * Setter
+     * Setter to list of tokens in session
      * @param operationTokens list of tokens of async op's
      * @throws ChangeValueException if error during set is occurred
      */

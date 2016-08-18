@@ -23,7 +23,7 @@ public interface CreateSessionMessage {
      * @return IObject which contains auth info
      * @throws ReadValueException Calling when try change value of variable
      */
-    IObject getAuthInfo() throws ReadValueException;
+    String getAuthInfo() throws ReadValueException;
 
     /**
      * Set session in message
