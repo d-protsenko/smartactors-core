@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
+import info.smart_tools.smartactors.core.in_memory_db_count_task.InMemoryDBCountTask;
 import info.smart_tools.smartactors.core.in_memory_db_create_collection_task.InMemoryDBCreateCollectionTask;
 import info.smart_tools.smartactors.core.in_memory_db_delete_task.InMemoryDBDeleteTask;
 import info.smart_tools.smartactors.core.in_memory_db_get_by_id_task.InMemoryGetByIdTask;
@@ -55,6 +56,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                             registerGetByIdTask();
                             registerSearchTask();
                             registerDeleteTask();
+                            registerCountTask();
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("Can't resolve fields for db task.", e);
                         } catch (InvalidArgumentException e) {
@@ -217,6 +219,40 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 return task;
                             } catch (Exception e) {
                                 throw new RuntimeException("Can't resolve delete db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerCountTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IField criteriaField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
+        IField callbackField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
+        IOC.register(
+                Keys.getOrAdd("db.collection.count"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject criteria = (IObject) args[2];
+                                IAction<Long> callback = (IAction<Long>) args[3];
+                                IDatabaseTask task = new InMemoryDBCountTask();
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName.toString());
+                                criteriaField.out(query, criteria);
+                                callbackField.out(query, callback);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve count db task.", e);
                             }
                         }
                 )

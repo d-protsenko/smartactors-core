@@ -35,7 +35,6 @@ import static org.mockito.Mockito.*;
  */
 public class PluginInMemoryDBTasksTest {
     private IBootstrap bootstrap;
-    private PluginInMemoryDBTasks plugin;
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +58,6 @@ public class PluginInMemoryDBTasksTest {
                 )
         );
         bootstrap = mock(IBootstrap.class);
-        plugin = new PluginInMemoryDBTasks(bootstrap);
     }
 
 
