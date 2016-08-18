@@ -149,7 +149,6 @@ plugin.response_sender_actor-0.2.0-SNAPSHOT.jar
 plugin.scoped_ioc-0.2.0-SNAPSHOT.jar
 plugin.scope_provider-0.2.0-SNAPSHOT.jar
 plugin.standard_object_creators-0.2.0-SNAPSHOT.jar
-plugin.http_endpoint-0.2.0-SNAPSHOT.jar
 plugin.wds_object-0.2.0-SNAPSHOT.jar
 plugin.wrapper_generator-0.2.0-SNAPSHOT.jar
 plugin.actor_collection_receiver-0.2.0-SNAPSHOT.jar
@@ -162,3 +161,4 @@ core.imessage_bus_container-0.2.0-SNAPSHOT.jar
 core.imessage_bus_handler-0.2.0-SNAPSHOT.jar
 core.message_bus_handler-0.2.0-SNAPSHOT.jar
 core.message_bus_container_with_scope-0.2.0-SNAPSHOT.jar
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Run `mvn -f starter-pom.xml dependency:copy-dependencies` to retrieve all dependent jars -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>info.smart_tools.smartactors</groupId>
+    <artifactId>server.server_for_intern.plugins_plugins</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+
+    <properties>
+        <core.version>${project.version}</core.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.starter</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <outputDirectory>${basedir}</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-core</id>
+            <name>Smart Actors Core Repository</name>
+            <url>http://archiva.smart-tools.info/repository/smartactors-core/</url>
+        </repository>
+    </repositories>
+
+</project>

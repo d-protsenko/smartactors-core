@@ -54,6 +54,7 @@ public class CloseAsyncOperationActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -79,22 +80,11 @@ public class CloseAsyncOperationActorPluginTest {
         verifyStatic();
         IOC.register(eq(checkUserByEmailActorKey), createNewInstanceStrategyArgumentCaptor.capture());
 
-        IObject arg = mock(IObject.class);
-
         CloseAsyncOperationActor actor = mock(CloseAsyncOperationActor.class);
-        ActorParams actorParams = mock(ActorParams.class);
-        IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
-        when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+        IObject actorParams = mock(IObject.class);
         whenNew(CloseAsyncOperationActor.class).withArguments(actorParams).thenReturn(actor);
 
-        assertTrue("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(arg) == actor);
-
-        verifyStatic();
-        Keys.getOrAdd(ActorParams.class.toString());
-
-        verifyStatic();
-        IOC.resolve(actorParamsIKey, arg);
+        assertEquals("Objects must return correct object", createNewInstanceStrategyArgumentCaptor.getValue().resolve(actorParams), actor);
 
         verifyNew(CloseAsyncOperationActor.class).withArguments(actorParams);
     }
@@ -121,6 +111,7 @@ public class CloseAsyncOperationActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -152,6 +143,7 @@ public class CloseAsyncOperationActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -187,22 +179,11 @@ public class CloseAsyncOperationActorPluginTest {
             verifyStatic();
             IOC.register(eq(createAsyncOpKey), any(CreateNewInstanceStrategy.class));
 
-            IObject arg = mock(IObject.class);
-
             CloseAsyncOperationActor actor = mock(CloseAsyncOperationActor.class);
-            ActorParams actorParams = mock(ActorParams.class);
-            IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
-            when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+            IObject actorParams = mock(IObject.class);
             whenNew(CloseAsyncOperationActor.class).withArguments(actorParams).thenReturn(actor);
 
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
+            assertEquals("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams}), actor);
 
             verifyNew(CloseAsyncOperationActor.class).withArguments(actorParams);
             return;
@@ -217,6 +198,7 @@ public class CloseAsyncOperationActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -246,22 +228,11 @@ public class CloseAsyncOperationActorPluginTest {
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
-            IObject arg = mock(IObject.class);
-
             CloseAsyncOperationActor actor = mock(CloseAsyncOperationActor.class);
-            ActorParams actorParams = mock(ActorParams.class);
-            IKey actorParamsIKey = mock(IKey.class);
-            when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
-            when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+            IObject actorParams = mock(IObject.class);
             whenNew(CloseAsyncOperationActor.class).withArguments(actorParams).thenReturn(actor);
 
-            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{arg}) == actor);
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
+            assertTrue("Objects must return correct object", targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams}) == actor);
 
             verifyNew(CloseAsyncOperationActor.class).withArguments(actorParams);
             return;
@@ -269,13 +240,14 @@ public class CloseAsyncOperationActorPluginTest {
         assertTrue("Must throw exception", false);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void MustInCorrectResolveWhenKeysGetOrAddActorParamKey() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -310,24 +282,17 @@ public class CloseAsyncOperationActorPluginTest {
 
         when(Keys.getOrAdd(ActorParams.class.toString())).thenThrow(new ResolutionException(""));
 
-        try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
-        } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
-            return;
-        }
-        assertTrue("Must throw exception", false);
+        targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void MustInCorrectResolveWhenIOCResolveActorParamsThrowException() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -364,18 +329,7 @@ public class CloseAsyncOperationActorPluginTest {
         when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
         when(IOC.resolve(actorParamsIKey, arg)).thenThrow(new ResolutionException(""));
 
-        try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
-        } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
-            return;
-        }
-        assertTrue("Must throw exception", false);
+        targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
     }
 
     @Test
@@ -385,6 +339,7 @@ public class CloseAsyncOperationActorPluginTest {
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -415,23 +370,12 @@ public class CloseAsyncOperationActorPluginTest {
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
 
-        IObject arg = mock(IObject.class);
-
-        ActorParams actorParams = mock(ActorParams.class);
-        IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
-        when(IOC.resolve(actorParamsIKey, arg)).thenReturn(actorParams);
+        IObject actorParams = mock(IObject.class);
         whenNew(CloseAsyncOperationActor.class).withArguments(actorParams).thenThrow(new InvalidArgumentException(""));
 
         try {
-            targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
+            targetFuncArgumentCaptor.getValue().apply(new Object[]{actorParams});
         } catch (RuntimeException e) {
-
-            verifyStatic();
-            Keys.getOrAdd(ActorParams.class.toString());
-
-            verifyStatic();
-            IOC.resolve(actorParamsIKey, arg);
 
             verifyNew(CloseAsyncOperationActor.class).withArguments(actorParams);
             return;

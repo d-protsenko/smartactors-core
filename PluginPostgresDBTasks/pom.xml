@@ -90,6 +90,26 @@
             <version>${core.version}</version>
         </dependency>
         <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>strategy.uuid_nextid_strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.postgres_delete_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.postgres_insert_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.postgres_count_task</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>

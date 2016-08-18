@@ -46,6 +46,11 @@ public final class PostgresSchema {
     public static final String FTS_DICTIONARY = "russian";
 
     /**
+     * Default page size. How many documents to return when the paging is not defined.
+     */
+    public static final int DEFAULT_PAGE_SIZE = 100;
+
+    /**
      * Private constructor to avoid instantiation.
      */
     private PostgresSchema() {
@@ -59,11 +64,12 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void create(final QueryStatement statement, final CollectionName collection, IObject options) throws QueryBuildException {
+    public static void create(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
             body.write("CREATE TABLE ");
-            body.write(collection.toString ());
+            body.write(collection.toString());
             body.write(" (");
             body.write(DOCUMENT_COLUMN);
             body.write(" jsonb NOT NULL");
@@ -78,7 +84,7 @@ public final class PostgresSchema {
         }
     }
 
-    private static FieldPath getIdFieldPath(CollectionName collection) throws QueryBuildException {
+    private static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
         return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
     }
 
@@ -217,6 +223,7 @@ public final class PostgresSchema {
             body.write(collection.toString());
 
             if (criteria == null) {
+                SearchClauses.writeDefaultPaging(statement);
                 return;
             }
             SearchClauses.writeSearchWhere(statement, criteria);
@@ -224,6 +231,63 @@ public final class PostgresSchema {
             SearchClauses.writeSearchPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the collection name for the DELETE statement to delete the document by ID.
+     * @param statement statement to fill the body
+     * @param collection collection name to use as the table name
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void delete(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("DELETE FROM ");
+            body.write(collection.toString());
+            body.write(" WHERE (");
+            body.write(getIdFieldPath(collection).toSQL());
+            body.write(") = to_json(?)::jsonb");
+        } catch (IOException e) {
+            throw new QueryBuildException("Failed to build delete body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body and it's list of parameter setters with the collection name and WHERE clause
+     * for the SELECT COUNT(*) statement to count the documents in the collection.
+     * <p>
+     *     The example of search criteria.
+     *     <pre>
+     *  {
+     *      "filter": {
+     *          "$or": [
+     *              "a": { "$eq": "b" },
+     *              "b": { "$gt": 42 }
+     *          ]
+     *      }
+     *  }
+     *     </pre>
+     * </p>
+     * @param statement statement to fill the body and add parameter setters
+     * @param collection collection name to use as the table name
+     * @param criteria complex JSON describing the search criteria
+     * @throws QueryBuildException when something goes wrong
+     */
+    public static void count(final QueryStatement statement, final CollectionName collection, final IObject criteria)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+
+            body.write("SELECT COUNT(*) FROM ");
+            body.write(collection.toString());
+
+            if (criteria == null) {
+                return;
+            }
+            SearchClauses.writeSearchWhere(statement, criteria);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build count query", e);
         }
     }
 

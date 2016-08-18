@@ -154,9 +154,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 context.setValue(catchStepFieldName, caughtStep);
                 context.setValue(exceptionFieldName, exception);
 
-                // By-default start from the next receiver after the failed one
-                ++stepStack[causedLevel];
-
                 callChain(exceptionalChain);
                 return;
             }

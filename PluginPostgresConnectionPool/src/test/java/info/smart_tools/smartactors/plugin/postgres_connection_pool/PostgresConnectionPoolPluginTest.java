@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool.Pool;
 import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.plugin.postges_connection_pool.PostgresConnectionPoolPlugin;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +52,7 @@ public class PostgresConnectionPoolPluginTest {
         whenNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin").thenReturn(bootstrapItem);
 
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         plugin.load();
         verifyNew(BootstrapItem.class).withArguments("PostgresConnectionPoolPlugin");

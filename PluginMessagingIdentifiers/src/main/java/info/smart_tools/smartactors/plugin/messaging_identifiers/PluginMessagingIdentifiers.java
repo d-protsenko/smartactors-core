@@ -39,7 +39,6 @@ public class PluginMessagingIdentifiers implements IPlugin {
 
             strategiesItem
                     .after("IOC")
-                    .after("FieldNamePlugin")
                     .after("IFieldNamePlugin")
                     .before("configure")
                     .process(() -> {
