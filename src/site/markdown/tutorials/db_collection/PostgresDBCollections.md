@@ -25,10 +25,12 @@ This is the list of modules (jars) used by Postgres DB collections:
 * core.istorage_connection
 * core.postgres_schema
 * core.postgres_create_task
-* core.postgres_getbyid_task
-* core.postgres_search_task
+* core.postgres_insert_task
 * core.postgres_upsert_task
 * core.postgres_delete_task
+* core.postgres_getbyid_task
+* core.postgres_search_task
+* core.postgres_count_task
 * strategy.uuid_nextid_strategy
 
 Plus Postgres JDBC driver:
