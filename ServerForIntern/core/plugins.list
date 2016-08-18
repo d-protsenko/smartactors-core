@@ -148,7 +148,6 @@ plugin.response_sender_actor-0.2.0-SNAPSHOT.jar
 plugin.scoped_ioc-0.2.0-SNAPSHOT.jar
 plugin.scope_provider-0.2.0-SNAPSHOT.jar
 plugin.standard_object_creators-0.2.0-SNAPSHOT.jar
-plugin.http_endpoint-0.2.0-SNAPSHOT.jar
 plugin.wds_object-0.2.0-SNAPSHOT.jar
 plugin.wrapper_generator-0.2.0-SNAPSHOT.jar
 strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar
