@@ -4,7 +4,6 @@
 package info.smart_tools.smartactors.actors.create_session;
 
 import info.smart_tools.smartactors.actors.create_session.exception.CreateSessionException;
-import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionConfig;
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
@@ -22,15 +21,15 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Actor check current session, if she's null create new session
  */
 public class CreateSessionActor {
+    private Integer cookiesTTL;
     private String collectionName;
     private IPool connectionPool;
 
@@ -43,13 +42,18 @@ public class CreateSessionActor {
     private IField sessionIdF;
     private IField equalsF;
     private IField authInfoF;
+    private IField userAgentF;
+
+    private IField cookieNameF;
+    private IField cookieValueF;
+    private IField maxAgeF;
 
     /**
      * Constructor for CreateSessionActor
      * @param config is any configurations
      * @throws CreateSessionException for any occurred error
      */
-    public CreateSessionActor(final CreateSessionConfig config) throws CreateSessionException {
+    public CreateSessionActor(final IObject config) throws CreateSessionException {
         try {
             collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             pageSizeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "size");
@@ -60,11 +64,18 @@ public class CreateSessionActor {
             sessionIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sessionId");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
             authInfoF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authInfo");
+            userAgentF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userAgent");
 
-            this.collectionName = config.getCollectionName();
-            this.connectionPool = config.getConnectionPool();
+            cookieNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "name");
+            cookieValueF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "value");
+            maxAgeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "maxAge");
+
+            ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+            this.connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+            this.cookiesTTL = maxAgeF.in(config);
+            this.collectionName = collectionNameF.in(config);
         } catch (Exception e) {
-            throw new CreateSessionException("Can't create Actor");
+            throw new CreateSessionException("Failed to create Actor");
         }
     }
 
@@ -75,24 +86,25 @@ public class CreateSessionActor {
      */
     public void resolveSession(final CreateSessionMessage inputMessage) throws CreateSessionException {
         try {
+            IObject session;
             String sessionId = inputMessage.getSessionId();
             if (sessionId == null || sessionId.equals("")) {
-                IObject authInfo = inputMessage.getAuthInfo();
-                IObject newSession = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                authInfoF.out(newSession, authInfo);
-                inputMessage.setSession(newSession);
+                sessionId = String.valueOf(UUID.randomUUID());
+                IObject authInfo = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                userAgentF.out(authInfo, inputMessage.getAuthInfo());
+                session = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                authInfoF.out(session, authInfo);
+                sessionIdF.out(session, sessionId);
             } else {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                     IObject searchQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                    //TODO:: resolve with IOC
-                    IStorageConnection connection = (IStorageConnection) poolGuard.getObject();
                     prepareSearchQuery(searchQuery, inputMessage);
 
                     List<IObject> items = new LinkedList<>();
                     ITask searchTask = IOC.resolve(
                         Keys.getOrAdd("db.collection.search"),
-                        connection,
+                        poolGuard.getObject(),
                         collectionName,
                         searchQuery,
                         (IAction<IObject[]>) foundDocs -> {
@@ -109,18 +121,29 @@ public class CreateSessionActor {
                         //TODO:: Should we create new session here?
                         return;
                     }
-                    IObject result = items.get(0);
-                    if (result == null) {
+                    session = items.get(0);
+                    if (session == null) {
                         throw new CreateSessionException("Find session is null");
                     }
-                    inputMessage.setSession(result);
-
                 } catch (PoolGuardException e) {
                     throw new CreateSessionException("Cannot get connection from pool.", e);
                 } catch (Exception e) {
                     throw new CreateSessionException("Error during find session by sessionId: " + inputMessage.getSessionId(), e);
                 }
             }
+            inputMessage.setSession(session);
+
+            List<IObject> cookies = inputMessage.getCookies();
+            if (cookies == null) {
+                cookies = new ArrayList<>();
+            }
+            IObject sessionCookie = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            cookieNameF.out(sessionCookie, "sessionId");
+            cookieValueF.out(sessionCookie, sessionId);
+            maxAgeF.out(sessionCookie, cookiesTTL);
+
+            cookies.add(sessionCookie);
+            inputMessage.setCookies(cookies);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new CreateSessionException("Cannot create or find session by sessionId", e);
         } catch (ResolutionException e) {

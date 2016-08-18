@@ -65,8 +65,11 @@
         <module>PostgresSchema</module>
         <module>PostgresCreateCollectionTask</module>
         <module>PostgresUpsertTask</module>
+        <module>PostgresInsertTask</module>
         <module>PostgresGetByIdTask</module>
         <module>PostgresSearchTask</module>
+        <module>PostgresDeleteTask</module>
+        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>BootstrapItem</module>
@@ -270,6 +273,22 @@
         <module>TestDataSourceStringArray</module>
         <module>TestHttpEndpoint</module>
         <module>PluginTestHttpEndpointAndEnvironment</module>
+        <module>SaveSessionActor</module>
+        <module>PluginSaveSession</module>
+        <module>InMemoryDatabase</module>
+        <module>PluginInMemoryDatabase</module>
+        <module>InMemoryDBCreateCollectionTask</module>
+        <module>InMemoryDBGetByIdTask</module>
+        <module>InMemoryDBUpsertTask</module>
+        <module>InMemoryDBDeleteTask</module>
+        <module>InMemoryDBSelectTask</module>
+        <module>PluginInMemoryDBTasks</module>
+        <module>InMemoryDBSectionProcessingStrategy</module>
+        <module>IDatabase</module>
+        <module>PluginNullConnectionPool</module>
+        <module>UuidNextIdStrategy</module>
+        <module>InMemoryDBCountTask</module>
+        <module>InMemoryDBInsertTask</module>
     </modules>
 
     <build>

@@ -104,7 +104,7 @@ Adds new object to the collection.
 
 Command name: `db.collection.insert`
 
-If the document contains the field "collection_nameID" the command throws a successor of `TaskExecutionException`. In other cases it's behavior is the same as of Upsert command.
+If the document contains the field "collection_nameID" the command throws a successor of `TaskPrepareException`. In other cases it's behavior is the same as of Upsert command.
 
 It's recommended to use Upsert if there is no strong necessity to use Insert.
 
@@ -122,7 +122,17 @@ The object must have the field "collection_nameID" which contains the unique ide
 
 When this field is present in the document, it's be tried to delete the object from the collection, the field "collection_nameID" is deleted from the document.
 
-If the document is absent in the collection, no error appears because the absence of the document with the specified id is the target postcondition, the field "collection_nameID" is deleted from the in-memory document. 
+If the document is absent in the collection, no error appears because the absence of the document with the specified id is the target postcondition, the field "collection_nameID" is deleted from the in-memory document.
+ 
+#### Example
+ 
+    ITask task = IOC.resolve(
+            Keys.getOrAdd("db.collection.delete"),
+            connection,
+            collectionName,
+            document
+    );
+    task.execute();
 
 ### GetById
 
@@ -249,6 +259,9 @@ You may define the page size and page number.
 This is equivalent of SQL LIMIT and OFFSET clauses.
 However, here you must work in terms of pages, while SQL works in terms of rows to skip.
 
+If the pagination is not defined, only first 100 documents from the collection are returned, i.e. page number 1 of size 100.
+Also if the page size is more than 1000, it's limited to 1000.
+
 ##### Sort
 
 Sort criterion is used to determine the order of documents in the result.
@@ -283,6 +296,24 @@ You define the pair: the document field name and the sort direction: "asc" or "d
     );
     task.execute();    
 
+### Count
+
+Counts the number of documents in the collection matching specified criteria.
+
+Command name: `db.collection.count`
+
+Additional parameters:
+
+- criteria — search criteria for documents which should be counted in the collection, the `IObject` document
+- callback — lambda of type `IAction<Long>` which receives the count of found documents
+
+Search criteria are the same as for Search command described above. However, only `filter` part of it is taken.
+
+If no documents for the specified criteria were found, the callback function receives zero.
+
+It's recommended to avoid to use this task because the counting can be as slow as selecting the same documents using Search task. 
+Try to store and update the desired counter separately and explicitly.
+
 ## More complete example
 
 Get the document by id.
@@ -297,7 +328,7 @@ Get the document by id.
 
         void Handle(final IGetDocumentMessage mes) {
     
-            IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"));
+            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
             try (PoolGuard guard = new PoolGuard(pool)) {
                  
                 ITask task = IOC.resolve(
@@ -314,3 +345,8 @@ Get the document by id.
     }
 
 Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details.
+
+Implementation details:
+
+* [PostgreSQL implementation](db_collection/PostgresDBCollections.html)
+* [In-memory implementaion](db_collection/InMemoryDBCollections.html)

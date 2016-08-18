@@ -75,8 +75,6 @@ public class CreateAsyncOperationActorTest {
 
         actor.create(message);
 
-        verify(message).getSessionId();
-        verify(message).setSessionIdInData(sessionId);
         verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), anyString());
         verify(message).setAsyncOperationToken(anyString());
     }

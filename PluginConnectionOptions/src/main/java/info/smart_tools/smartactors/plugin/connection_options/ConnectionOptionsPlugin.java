@@ -52,6 +52,7 @@ public class ConnectionOptionsPlugin implements IPlugin {
                                 try (InputStream resourceStream = loader.getResourceAsStream("db_connection.properties")) {
                                     connectionProperties.load(resourceStream);
                                     return new ConnectionOptions() {
+
                                         @Override
                                         public String getUrl() throws ReadValueException {
                                             return connectionProperties.getProperty("url");

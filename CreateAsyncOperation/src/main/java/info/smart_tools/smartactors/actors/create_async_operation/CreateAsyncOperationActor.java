@@ -63,11 +63,9 @@ public class CreateAsyncOperationActor {
             String token = String.valueOf(UUID.randomUUID());
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
             String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
-            message.setSessionIdInData(message.getSessionId());
             IObject authOperationData = message.getOperationData();
             collection.createAsyncOperation(authOperationData, token, expiredTime);
 
-            //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);
 
             List<String> availableTokens = message.getOperationTokens();

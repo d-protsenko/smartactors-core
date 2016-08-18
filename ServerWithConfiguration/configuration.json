@@ -37,7 +37,15 @@
     {
       "kind": "stateless_actor",
       "dependency": "info.smart_tools.smartactors.actors.create_session.CreateSessionActor",
-      "name": "createSessionActor"
+      "name": "createSessionActor",
+      "collectionName": "session",
+      "maxAge": 3600
+    },
+    {
+      "kind": "stateless_actor",
+      "dependency": "info.smart_tools.smartactors.actors.save_session.SaveSessionActor",
+      "name": "saveSessionActor",
+      "collectionName": "session"
     },
     {
       "kind": "stateless_actor",
@@ -87,6 +95,11 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.create_user.CreateUserActor",
       "name": "createNewUserActor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor",
+      "name": "checkValAsOpActor"
     }
   ],
   "maps": [
@@ -100,46 +113,32 @@
       "exceptional": []
     },
     {
-      "id": "changePasswordMapTest",
-      "steps": [
-        {
-          "target": "changePasswordActor",
-          "handler": "changePassword",
-          "wrapper": {
-            "in_getUserId": "message/userId",
-            "in_getPassword": "message/password",
-            "out_setAuthStatus": "response/auth_status",
-            "out_setAuthMessage": "response/auth_message"
-          }
-        }
-      ],
-      "exceptional": []
-    },
-    {
-      "id": "finishAuthMapTest",
-      "steps": [
-        {
-          "target": "userAuthByLoginActor",
-          "handler": "authenticateUser",
-          "wrapper": {
-            "in_getLogin": "message/login",
-            "in_getPassword": "message/password",
-            "out_setAuthStatus": "response/auth_status",
-            "out_setAuthMessage": "response/auth_message"
-          }
-        }
-      ],
-      "exceptional": []
-    },
-    {
       "id": "authorisation_map",
       "steps": [
         {
           "target": "createSessionActor",
           "handler": "resolveSession",
           "wrapper": {
-            "in_getSessionId": "message/sessionId",
-            "in_getAuthInfo": "message/authInfo",
+            "in_getCookies": "context/cookies",
+            "in_getSessionId": [
+              {
+                "name": "getCookieFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/sessionId"
+                ]
+              }
+            ],
+            "in_getAuthInfo": [
+              {
+                "name": "getHeaderFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/User-Agent"
+                ]
+              }
+            ],
+            "out_setCookies": "context/cookies",
             "out_setSession": "message/session"
           }
         },
@@ -176,17 +175,14 @@
             "in_getSessionId": "message/sessionId",
             "in_getOperationTokens": "message/session/tokens",
             "out_setOperationTokens": "message/session/tokens",
-            "out_setSessionIdInData": "response/form/sessionId",
-            "out_setAsyncOperationToken":[
-              [{
-                "name": "wds_target_strategy",
-                "args": ["local/value", "response/token"]
-              }],
-              [{
-                "name": "wds_target_strategy",
-                "args": ["local/value", "message/session/token"]
-              }]
-            ]
+            "out_setAsyncOperationToken": "response/token"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
@@ -225,6 +221,14 @@
           }
         },
         {
+          "target": "checkValAsOpActor",
+          "handler": "check",
+          "wrapper": {
+            "in_getAsyncOperationId": "message/token",
+            "in_getIdentifiers": "message/session/tokens"
+          }
+        },
+        {
           "target": "getAsyncOpsActor",
           "handler": "getOperation",
           "wrapper": {
@@ -237,7 +241,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/body/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
             "out_setFormData": "message/form"
           }
         },
@@ -258,6 +262,13 @@
             "in_getOperation": "message/asyncOperation",
             "in_getOperationTokens": "message/session/tokens",
             "in_getToken": "message/token"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
@@ -308,7 +319,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/body/form",
+            "in_getForm": "message/asyncOperation/asyncData/form",
             "out_setFormData": "message/form"
           }
         },
@@ -347,6 +358,17 @@
             "in_getMessageAttributesMessage": "message/messageAttributes",
             "in_getMessagePartsMessage": "message/messageParts"
           }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []
@@ -361,6 +383,13 @@
             "in_getSendToMessage": "message/email",
             "in_getMessageAttributesMessage": "message/attributes",
             "in_getMessagePartsMessage": "message/parts"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
           }
         },
         {
@@ -412,6 +441,49 @@
               }
             ]
           }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
+        }
+      ],
+      "exceptional": []
+    },
+    {
+      "id": "testCookiesSessionMap",
+      "steps": [
+        {
+          "target": "createSessionActor",
+          "handler": "resolveSession",
+          "wrapper": {
+            "in_getCookies": "context/cookies",
+            "in_getSessionId": [
+              {
+                "name": "getCookieFromRequestRule",
+                "args": [
+                  "context/request",
+                  "const/sessionId"
+                ]
+              }
+            ],
+            "in_getAuthInfo": "message/authInfo",
+            "out_setCookies": "context/cookies",
+            "out_setSession": "message/session"
+          }
+        },
+        {
+          "target": "saveSessionActor",
+          "handler": "saveSession",
+          "wrapper": {
+            "in_getSession": "message/session"
+          }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []
