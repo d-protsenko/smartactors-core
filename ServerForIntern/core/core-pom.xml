@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent jars -->
+<!--
+Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent jars
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -162,6 +164,11 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_bus_handler</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.standard_config_sections</artifactId>
             <version>${core.version}</version>
         </dependency>
     </dependencies>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Run `mvn -f dbtasks-pom.xml dependency:copy-dependencies` to retrieve all dependent jars
--->
+<!-- Run `mvn -f starter-pom.xml dependency:copy-dependencies` to retrieve all dependent jars -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>server.server_for_intern.dbtask_plugins</artifactId>
+    <artifactId>server.server_for_intern.plugins_plugins</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <properties>
@@ -18,12 +16,7 @@ Run `mvn -f dbtasks-pom.xml dependency:copy-dependencies` to retrieve all depend
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
+            <artifactId>plugin.starter</artifactId>
             <version>${core.version}</version>
         </dependency>
     </dependencies>

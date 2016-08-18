@@ -4,7 +4,8 @@
       "kind": "stateless_actor",
       "dependency": "ExceptionHandlerActor",
       "name": "exception-handler-actor"
-    },{
+    },
+    {
       "kind": "stateless_actor",
       "dependency": "ResponseSenderActor",
       "name": "respond"
