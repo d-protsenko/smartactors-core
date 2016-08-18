@@ -269,6 +269,7 @@
         <module>ISource</module>
         <module>TestDataSourceStringArray</module>
         <module>TestHttpEndpoint</module>
+        <module>PluginTestHttpEndpointAndEnvironment</module>
     </modules>
 
     <build>
