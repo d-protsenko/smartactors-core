@@ -23,6 +23,9 @@ public class GetCookieFromRequestRule implements IResolveDependencyStrategy {
     public <T> T resolve(final Object... args) {
         String cookieString = ((FullHttpRequest) args[0]).headers().get(HttpHeaders.Names.COOKIE);
 
+        if (cookieString == null)
+            return null;
+
         String[] cookie = Stream.of(cookieString.split(";"))
                 .map(x -> x.split("="))
                 .filter(x -> x[0].trim().equals(((String) args[1])))
