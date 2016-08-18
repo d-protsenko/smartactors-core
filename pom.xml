@@ -284,6 +284,7 @@
         <module>PluginNullConnectionPool</module>
         <module>UuidNextIdStrategy</module>
         <module>InMemoryDBCountTask</module>
+        <module>InMemoryDBInsertTask</module>
     </modules>
 
     <build>

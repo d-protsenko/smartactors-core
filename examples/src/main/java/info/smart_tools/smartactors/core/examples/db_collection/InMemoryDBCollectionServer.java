@@ -63,8 +63,7 @@ public class InMemoryDBCollectionServer implements IServer {
 
             CollectionOperations.createCollection(pool, collection);
 
-//            CollectionOperations.insertDocument(pool, collection, document);
-            CollectionOperations.upsertDocument(pool, collection, document);
+            CollectionOperations.insertDocument(pool, collection, document);
 
             document.setValue(textField, "new updated value");
             CollectionOperations.upsertDocument(pool, collection, document);

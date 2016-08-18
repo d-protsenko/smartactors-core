@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.in_memory_db_count_task.InMemoryDBCount
 import info.smart_tools.smartactors.core.in_memory_db_create_collection_task.InMemoryDBCreateCollectionTask;
 import info.smart_tools.smartactors.core.in_memory_db_delete_task.InMemoryDBDeleteTask;
 import info.smart_tools.smartactors.core.in_memory_db_get_by_id_task.InMemoryGetByIdTask;
+import info.smart_tools.smartactors.core.in_memory_db_insert_task.InMemoryDBInsertTask;
 import info.smart_tools.smartactors.core.in_memory_db_select_task.InMemoryDBSelectTask;
 import info.smart_tools.smartactors.core.in_memory_db_upsert_task.InMemoryDBUpsertTask;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -53,6 +54,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                         try {
                             registerCreateCollectionTask();
                             registerUpsertTask();
+                            registerInsertTask();
                             registerGetByIdTask();
                             registerSearchTask();
                             registerDeleteTask();
@@ -253,6 +255,36 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 return task;
                             } catch (Exception e) {
                                 throw new RuntimeException("Can't resolve count db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerInsertTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+        IField documentField = IOC.resolve(
+                Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+        IOC.register(
+                Keys.getOrAdd("db.collection.insert"),
+                //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                String collectionName = String.valueOf(args[1]);
+                                IObject document = (IObject) args[2];
+                                IDatabaseTask task = new InMemoryDBInsertTask();
+
+                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                                collectionNameField.out(query, collectionName);
+                                documentField.out(query, document);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve insert db task.", e);
                             }
                         }
                 )
