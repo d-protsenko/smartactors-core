@@ -23,18 +23,17 @@ public class SaveSessionActor {
     private IPool connectionPool;
     private String collectionName;
 
-    private IField collectionNameF;
-
     /**
      * default constructor
      * @param params IObject with configuration
      */
     public SaveSessionActor(final IObject params) throws SaveSessionException {
         try {
-            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            collectionName = collectionNameF.in(params);
+
             ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
             this.connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
-            this.collectionName = collectionNameF.in(params);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
             throw new SaveSessionException("Failed to create SaveSessionActor", e);
         }
