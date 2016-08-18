@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.in_memory_db_select_task;
+package info.smart_tools.smartactors.core.in_memory_db_count_task;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase.IDatabase;
@@ -15,10 +15,8 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
-import java.util.List;
-
 /**
- * The database task which is able to select documents from {@link InMemoryDatabase} by multiple search criteria.
+ * The database task which is to count documents in {@link InMemoryDatabase} by multiple search criteria.
  * The search criteria are passed in the complex IObject to the {@link #prepare(IObject)} method.
  * <p>
  * The example of prepare object:
@@ -31,17 +29,9 @@ import java.util.List;
  *                  { "a": { "$eq": "b" } },
  *                  { "b": { "$gt": 42 } }
  *              ]
- *          },
- *          "page": {
- *              "size": 50,
- *              "number": 2
- *          },
- *          "sort": [
- *              { "a": "asc" },
- *              { "b": "desc" }
- *          ]
+ *          }
  *      },
- *      "callback": IAction callback to receive found documents
+ *      "callback": IAction callback to receive count
  *  }
  *     </pre>
  * </p>
@@ -74,30 +64,30 @@ import java.util.List;
  * </p>
  */
 
-public class InMemoryDBSelectTask implements IDatabaseTask {
+public class InMemoryDBCountTask implements IDatabaseTask {
 
     private IFieldName collectionFieldName;
     private IFieldName criteriaFieldName;
     private IFieldName callbackFieldName;
 
     /**
-     * Collection where to search the documents.
+     * Collection where the document should be counted.
      */
     private String collection;
     /**
-     * Criteria to search the document.
+     * Criteria to count the documents.
      */
     private IObject criteria;
     /**
-     * Callback function to call when the documents are found.
+     * Callback function to call when the documents are counted.
      */
-    private IAction<IObject[]> callback;
+    private IAction<Long> callback;
 
     /**
      * Creates the task.
      * @throws TaskPrepareException if cannot resolve IFieldName
      */
-    public InMemoryDBSelectTask() throws TaskPrepareException {
+    public InMemoryDBCountTask() throws TaskPrepareException {
         try {
             collectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
             criteriaFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "criteria");
@@ -112,7 +102,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
         try {
             collection = (String) query.getValue(collectionFieldName);
             criteria = (IObject) query.getValue(criteriaFieldName);
-            callback = (IAction<IObject[]>) query.getValue(callbackFieldName);
+            callback = (IAction<Long>) query.getValue(callbackFieldName);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new TaskPrepareException("Failed to getting values from query", e);
         }
@@ -122,15 +112,15 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
     public void execute() throws TaskExecutionException {
         try {
             IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
-            List<IObject> result = dataBase.select(criteria, collection);
-            callback.execute(result.toArray(new IObject[result.size()]));
+            Long result = dataBase.count(criteria, collection);
+            callback.execute(result);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
         } catch (Exception e) {
             try {
-                throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
+                throw new TaskExecutionException("Count failed: criteria = " + criteria.serialize(), e);
             } catch (SerializeException | NullPointerException e1) {
-                throw new TaskExecutionException("Select failed", e);
+                throw new TaskExecutionException("Count failed", e);
             }
         }
     }

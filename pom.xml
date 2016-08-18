@@ -283,6 +283,7 @@
         <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
         <module>UuidNextIdStrategy</module>
+        <module>InMemoryDBCountTask</module>
     </modules>
 
     <build>

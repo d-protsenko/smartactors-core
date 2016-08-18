@@ -66,4 +66,13 @@ public interface IDatabase {
      */
     List<IObject> select(final IObject condition, final String collectionName) throws IDatabaseException;
 
+    /**
+     * Counts the documents in the collection using the specified conditions
+     * @param condition criteria of search
+     * @param collectionName name of the collection
+     * @return number of found documents
+     * @throws IDatabaseException if selection failed
+     */
+    Long count(final IObject condition, final String collectionName) throws IDatabaseException;
+
 }
