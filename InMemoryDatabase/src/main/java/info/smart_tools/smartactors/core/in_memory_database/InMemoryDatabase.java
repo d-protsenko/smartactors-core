@@ -186,4 +186,26 @@ public class InMemoryDatabase implements IDatabase {
             throw new IDatabaseException("Failed to create DataBaseItem", e);
         }
     }
+
+    @Override
+    public Long count(final IObject condition, final String collectionName) throws IDatabaseException {
+        try {
+            List<DataBaseItem> list = dataBase.get(collectionName);
+            if (condition == null) {
+                return Long.valueOf(list.size());
+            }
+
+            IObject filter = (IObject) condition.getValue(filterFieldName);
+            long count = 0;
+            for (DataBaseItem item : list) {
+                if (generalConditionParser(filter, item.getDocument())) {
+                    count++;
+                }
+            }
+            return count;
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new IDatabaseException("Failed to get filter from select condition", e);
+        }
+    }
+
 }

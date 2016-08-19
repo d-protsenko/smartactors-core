@@ -694,4 +694,53 @@ public class InMemoryDatabaseTest {
         assertTrue(outputList.get(1).serialize().equals(document2.serialize()));
     }
 
+    @Test
+    public void testCountEq() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document1 = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document1, "collection_name");
+        database.insert(document2, "collection_name");
+        long count =
+                database.count(new DSObject("{\"filter\":{\"hello\": {\"$eq\": \"world\"}}}"), "collection_name");
+        assertEquals(1L, count);
+    }
+
+    @Test
+    public void testCountWithNullCondition() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document1 = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document1, "collection_name");
+        database.insert(document2, "collection_name");
+        long count = database.count(null, "collection_name");
+        assertEquals(2L, count);
+    }
+
+    @Test
+    public void testCountWithEmptyFilter() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document1 = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document1, "collection_name");
+        database.insert(document2, "collection_name");
+        long count = database.count(new DSObject("{\"filter\":{} }"), "collection_name");
+        assertEquals(2L, count);
+    }
+
+    @Test
+    public void testCountWithEmptyCondition() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document1 = new DSObject("{\"hello\": \"world\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
+        database.insert(document1, "collection_name");
+        database.insert(document2, "collection_name");
+        long count = database.count(new DSObject("{ }"), "collection_name");
+        assertEquals(2L, count);
+    }
+
 }

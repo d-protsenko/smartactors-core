@@ -81,7 +81,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
     private IFieldName callbackFieldName;
 
     /**
-     * Collection where the document should be upserted.
+     * Collection where to search the documents.
      */
     private String collection;
     /**
@@ -89,7 +89,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
      */
     private IObject criteria;
     /**
-     * Callback function to call when the object is found.
+     * Callback function to call when the documents are found.
      */
     private IAction<IObject[]> callback;
 
@@ -129,7 +129,7 @@ public class InMemoryDBSelectTask implements IDatabaseTask {
         } catch (Exception e) {
             try {
                 throw new TaskExecutionException("Select failed: criteria = " + criteria.serialize(), e);
-            } catch (SerializeException e1) {
+            } catch (SerializeException | NullPointerException e1) {
                 throw new TaskExecutionException("Select failed", e);
             }
         }
