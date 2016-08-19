@@ -74,6 +74,8 @@ public class PostgresDBCollectionServer implements IServer {
 
             CollectionOperations.searchDocumentByTextField(pool, collection);
 
+            CollectionOperations.searchDocumentByNoneField(pool, collection);
+
             CollectionOperations.deleteDocument(pool, collection, document);
 
             CollectionOperations.countByInt(pool, collection);
