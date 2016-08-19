@@ -12,6 +12,9 @@ import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Implementation of {@link IMessageReceiver}.
  * Specific kind of receiver that provides creation of actors collection and its usage by keys.
@@ -58,6 +61,8 @@ public class ActorCollectionReceiver implements IMessageReceiver {
     private IFieldName nameFieldName;
     private IRouter router;
 
+    private Lock lock = new ReentrantLock();
+
     /**
      * Default constructor
      * @param router the instance of {@link ActorCollectionRouter}.
@@ -100,17 +105,22 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             Object key =  processor.getEnvironment().getValue(fieldNameForKeyName);
             IMessageReceiver receiver = router.route(key);
             if (null == receiver) {
-                String kindValue = (String) subSectionNew.getValue(this.kindFieldName);
-                IRoutedObjectCreator objectCreator = IOC.resolve(
-                        IOC.resolve(
-                                IOC.getKeyForKeyStorage(),
-                                IRoutedObjectCreator.class.getCanonicalName() + "#" + kindValue
-                        )
-                );
-                subSectionNew.setValue(this.nameFieldName, key);
-                objectCreator.createObject(this.router, subSectionNew);
-                // TODO: bad solution, need refactoring. Change interface of IRoutedObjectCreator
-                receiver = this.router.route(key);
+                lock.lock();
+                receiver = router.route(key);
+                if (null == receiver) {
+                    String kindValue = (String) subSectionNew.getValue(this.kindFieldName);
+                    IRoutedObjectCreator objectCreator = IOC.resolve(
+                            IOC.resolve(
+                                    IOC.getKeyForKeyStorage(),
+                                    IRoutedObjectCreator.class.getCanonicalName() + "#" + kindValue
+                            )
+                    );
+                    subSectionNew.setValue(this.nameFieldName, key);
+                    objectCreator.createObject(this.router, subSectionNew);
+                    // TODO: bad solution, need refactoring. Change interface of IRoutedObjectCreator
+                    receiver = this.router.route(key);
+                }
+                lock.unlock();
             }
             receiver.receive(processor);
         } catch (Throwable e) {
