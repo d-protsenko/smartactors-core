@@ -206,6 +206,12 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.resolve_standard_types_strategies</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

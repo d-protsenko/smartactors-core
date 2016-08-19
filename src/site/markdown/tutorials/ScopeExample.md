@@ -224,5 +224,5 @@ So, the IoC as a service locator just takes the storage from the current scope a
 
 The sources of this tutorial:
 
-* [SimpleIOC implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/scope/package-frame.html)
-* [Tests](http://smarttools.github.io/smartactors-core/core.examples/xref-test/info/smart_tools/smartactors/core/examples/ScopeExample.html)
+* [SimpleIOC implementation](../xref/info/smart_tools/smartactors/core/examples/scope/package-frame.html)
+* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/ScopeExample.html)

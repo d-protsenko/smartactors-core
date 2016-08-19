@@ -1,12 +1,12 @@
 # How to use IObject
 
-[`IObject`](http://smarttools.github.io/smartactors-core/develop/apidocs/info/smart_tools/smartactors/core/iobject/IObject.html) is the base interface for semi-structured data.
+[`IObject`](../apidocs/info/smart_tools/smartactors/core/iobject/IObject.html) is the base interface for semi-structured data.
 It's widely used in SmartActors to represent complex configuration options, method parameters, messages, etc...
 Think of IObject as of [JSON](https://en.wikipedia.org/wiki/JSON) object with named fields and some values for each field.
 
 ## IFieldName
 
-The name of the field of IObject is presented as [`IFieldName`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ifield_name/IFieldName.html) instance.
+The name of the field of IObject is presented as [`IFieldName`](../apidocs/info/smart_tools/smartactors/core/ifield_name/IFieldName.html) instance.
 
 In tests you can construct IFieldName using trivial implementation and `new` operator.
 
@@ -15,11 +15,11 @@ In tests you can construct IFieldName using trivial implementation and `new` ope
 However, the recommended way to get IFieldName is to resolve it from [IOC](IOCExample.html).
 
     IFieldName fieldName = IOC.resolve(
-        Keys.getOrAdd(IFieldName.class.getCanonicalName()), 
-        "name");
+            Keys.getOrAdd(IFieldName.class.getCanonicalName()), 
+            "name");
         
 You need the initialized IOC and a plugin which registers the appropriate strategy to resolve IFieldName.
-For example, [IFieldNamePlugin](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/plugin/ifieldname/IFieldNamePlugin.html).
+For example, [IFieldNamePlugin](../apidocs/info/smart_tools/smartactors/plugin/ifieldname/IFieldNamePlugin.html).
 
 Note, using of canonical name of the class or interface, which is returned by `getCanonicalName()` is the convenience key for strategies resolving the specified class or interface.
 
@@ -27,7 +27,7 @@ IFieldName can be converted to String as expected.
 
     assertEquals("name", fieldName.toString());
     
-## Accessing fields of IObject
+### Accessing fields of IObject
 
 When you have IFieldName, you can put values to IObject.
 
@@ -52,8 +52,115 @@ After the deletion reading of the same field will return `null`.
 
 ### Iteration
 
+It's possible to iterate over IObject to inspect all it's fields.
 
+    for (Map.Entry<IFieldName, Object> entry : object) {
+        IFieldName fieldName = entry.getKey();
+        Object value = entry.getValue();
+        // do something with fieldName and value
+    }
+    
+However, it's not recommended to use iteration, try to access the specified, known and fixed set of fields. Don't try to work with a field you don't know about.
  
 ## IField
 
-Another way to access fields of IObject
+Another way to access fields of IObject is [`IField`](../apidocs/info/smart_tools/smartactors/core/ifield/IField.html).
+
+In tests you can create the trivial implementation of IField from IFieldName.
+
+    IField field = new Field(fieldName);
+    
+However, it's recommended to resolve the IField from IOC.
+
+    IField field = IOC.resolve(
+            Keys.getOrAdd(IField.class.getCanonicalName()), 
+            "name");
+    
+You need the initialized IOC and a plugin which registers the appropriate strategy to resolve IFieldName.
+For example, [IFieldPlugin](../apidocs/info/smart_tools/smartactors/plugin/ifield/IFieldPlugin.html).
+
+### Accessing fields of IObject
+
+The idea of IField is that IObject is some data handler external to this code.
+So you can take data IN and put data OUT.
+Depending on IField implementation some transformation rules may be applied to the data,
+in case of [Wrapper](WrapperExample.html) such rules can be configured externally.
+Also the value can be casted to necessary data type.
+
+To set the IObject field put the data out.
+
+    field.out(object, value);
+    
+To get the IObject field take the data in.
+
+    field.in(object);
+
+IField may cast the value to necessary type using [type conversion](TypeConversionExample.html) rules.
+
+    String stringValue = "123";
+    field.out(object, stringValue);
+    Integer intValue = field.in(object, Integer.class);
+        
+You need the initialized IOC and a plugin which registers the appropriate strategies to convert data types.
+For example, [ResolveStandardTypesStrategiesPlugin](../apidocs/info/smart_tools/smartactors/plugin/resolve_standard_types_strategies/ResolveStandardTypesStrategiesPlugin.html).
+
+## Creation of IObject
+      
+Usually you don't need to create IObject instances, because typically they already come to you code outside.
+However, when you need to construct some data to pass, for example, to [database tasks](DBCollectionExample.html), you need to create a new IObject.
+
+In tests you can use trivial IObject implementation: [`DSObject`](../apidocs/info/smart_tools/smartactors/core/ds_object/DSObject.html).
+
+You can create empty IObject, to add fields later.
+    
+    IObject object = new DSObject();
+    
+You can create IObject from JSON text.
+Note it must be JSON object, in curly braces, not array or a single value, because IObject is the object.
+Don't forget quotation marks around the field name, JSON standard requires them.
+
+    IObject object = new DSObject("{ \"name\": \"value\" }");
+    
+Also you can create IObject from a [Map](http://docs.oracle.com/javase/8/docs/api/java/util/Map.html) of IFieldName and Object value.
+
+    Map<IFieldName, Object> map = new HashMap<>();
+    map.put(fieldName, "value");
+    IObject object = new DSObject(map);
+
+Note, the recommended way to create a new IObject is to resolve it from IOC.
+
+You can resolve empty IObject.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()));
+            
+You can resolve IObject from JSON string.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"name\": \"value\" }");
+
+## Serialization
+            
+TBD            
+            
+## Data types
+
+For IObject it's values are always just Java Objects.
+It doesn't care about the actual data type.
+It even allow to store any Java object, which doesn't have a good serializable JSON representation.
+
+But it case of conversion from JSON you need to know the Java types of the objects.
+
+JSON objects in curly braces are always presented as IObject.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"name\": { \"nested\": \"object\" } }");
+    IObject value = field.in(object);
+    
+TBD    
+      
+## Code
+      
+* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/IOCExample.html) showing examples to work with IObject.
