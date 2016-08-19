@@ -122,7 +122,7 @@
       "exceptional": []
     },
     {
-      "id": "authorisation_map",
+      "id": "getFormMap",
       "steps": [
         {
           "target": "createSessionActor",
@@ -269,7 +269,7 @@
           "handler": "validate",
           "wrapper": {
             "in_getFormFromRequest": "message/form",
-            "in_getForm": "message/asyncOperation/asyncData/form",
+            "in_getForm": "message/asyncOperation/asyncData/body/form",
             "out_setFormData": "message/form"
           }
         },
