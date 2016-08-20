@@ -41,7 +41,7 @@ public class CheckUserIsNewActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey checkUserIsNewActorKey = Keys.getOrAdd(CheckUserIsNewActor.class.getCanonicalName());

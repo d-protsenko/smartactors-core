@@ -63,7 +63,7 @@ public class AsyncOpsCollectionPluginTest {
         verifyNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin");
 
         verify(item).after("IOC");
-        verify(item).before("configure");
+        verify(item).before("starter");
         verify(item).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -148,7 +148,7 @@ public class AsyncOpsCollectionPluginTest {
         verifyNew(BootstrapItem.class).withArguments("AsyncOpsCollectionPlugin");
 
         verify(item).after("IOC");
-        verify(item).before("configure");
+        verify(item).before("starter");
         verify(item).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);

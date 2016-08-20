@@ -40,7 +40,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
             strategiesItem
                     .after("IOC")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "target");
