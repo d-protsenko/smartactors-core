@@ -51,7 +51,7 @@ public class GetAsyncOperationActor {
         try {
             String token = message.getToken();
             if (token == null || token.equals("")) {
-                throw new GetAsyncOperationException("Token of asynchronous operation is null");
+                throw new GetAsyncOperationException("Token of asynchronous operation is null or empty");
             }
             IObject asyncOperation = collection.getAsyncOperation(token);
             if (asyncOperation == null) {
