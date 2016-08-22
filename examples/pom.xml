@@ -212,6 +212,12 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.wds_object</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
