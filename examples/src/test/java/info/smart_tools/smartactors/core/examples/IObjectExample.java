@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
@@ -23,14 +24,19 @@ import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.resolve_standard_types_strategies.ResolveStandardTypesStrategiesPlugin;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -179,6 +185,14 @@ public class IObjectExample {
     }
 
     @Test
+    public void testSerialization() throws ResolutionException, SerializeException {
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"name\": \"value\" }");
+        assertEquals("{\"name\":\"value\"}", object.serialize());
+    }
+
+    @Test
     public void testJSONObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
         IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "name");
         IObject object = IOC.resolve(
@@ -188,6 +202,90 @@ public class IObjectExample {
         assertThat(value, is(instanceOf(IObject.class)));
         IField nestedField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "nested");
         assertEquals("object", nestedField.in(value));
+    }
+
+    @Test
+    public void testStringObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "name");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"name\": \"value\" }");
+        String value = field.in(object);
+        assertEquals("value", value);
+    }
+
+    @Test
+    public void testNumberObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField intField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "int");
+        IField floatField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "float");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"int\": 42, \"float\": 42.42 }");
+        Number intValue = intField.in(object);
+        assertEquals(42, intValue.intValue());
+        Number floatValue = floatField.in(object);
+        assertEquals(42.42, floatValue.doubleValue(), 0.01);
+    }
+
+    @Test
+    public void testNumberWithConversion() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "value");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"value\": 42.42 }");
+        Integer intValue = field.in(object, Integer.class);
+        assertEquals(42, intValue.longValue());
+        Double doubleValue = field.in(object, Double.class);
+        assertEquals(42.42, doubleValue, 0.01);
+        BigDecimal decimalValue = field.in(object, BigDecimal.class);
+        assertEquals(42.42, decimalValue.doubleValue(), 0.01);
+    }
+
+    @Test
+    public void testLocalDateTimeField() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "date");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"date\": \"2016-08-22T13:38:42\" }");
+        LocalDateTime dateTime = field.in(object, LocalDateTime.class);
+
+        assertEquals(2016, dateTime.getYear());
+        assertEquals(Month.AUGUST, dateTime.getMonth());
+        assertEquals(22, dateTime.getDayOfMonth());
+        assertEquals(13, dateTime.getHour());
+        assertEquals(38, dateTime.getMinute());
+        assertEquals(42, dateTime.getSecond());
+    }
+
+    @Test
+    @Ignore("Need support for OffsetDateTime")
+    public void testOffsetDateTimeField() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "date");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"date\": \"2016-08-22T13:38:42+06\" }");
+        OffsetDateTime dateTime = field.in(object, OffsetDateTime.class);
+
+        assertEquals(ZoneOffset.of("UTC+6"), dateTime.getOffset());
+        assertEquals(2016, dateTime.getYear());
+        assertEquals(Month.AUGUST, dateTime.getMonth());
+        assertEquals(22, dateTime.getDayOfMonth());
+        assertEquals(13, dateTime.getHour());
+        assertEquals(38, dateTime.getMinute());
+        assertEquals(42, dateTime.getSecond());
+    }
+
+    @Test
+    public void testArrayField() throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "array");
+        IObject object = IOC.resolve(
+                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{ \"array\": [ \"a\", \"b\", \"c\" ] }");
+        List<String> array = field.in(object);
+        assertEquals(3, array.size());
+        assertEquals("a", array.get(0));
+        assertEquals("b", array.get(1));
+        assertEquals("c", array.get(2));
     }
 
 }

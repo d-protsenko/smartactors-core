@@ -48,6 +48,7 @@ You can delete the previously set field.
     object.deleteField(fieldName);
     
 This can throw `DeleteValueException`.
+
 After the deletion reading of the same field will return `null`.
 
 ### Iteration
@@ -81,7 +82,7 @@ For example, [IFieldPlugin](../apidocs/info/smart_tools/smartactors/plugin/ifiel
 
 ### Accessing fields of IObject
 
-The idea of IField is that IObject is some data handler external to this code.
+The idea of IField is that IObject is a handler of some data external to this code.
 So you can take data IN and put data OUT.
 Depending on IField implementation some transformation rules may be applied to the data,
 in case of [Wrapper](WrapperExample.html) such rules can be configured externally.
@@ -106,7 +107,7 @@ For example, [ResolveStandardTypesStrategiesPlugin](../apidocs/info/smart_tools/
 
 ## Creation of IObject
       
-Usually you don't need to create IObject instances, because typically they already come to you code outside.
+Usually you don't need to create IObject instances, because typically they already came to you code outside.
 However, when you need to construct some data to pass, for example, to [database tasks](DBCollectionExample.html), you need to create a new IObject.
 
 In tests you can use trivial IObject implementation: [`DSObject`](../apidocs/info/smart_tools/smartactors/core/ds_object/DSObject.html).
@@ -139,10 +140,23 @@ You can resolve IObject from JSON string.
     IObject object = IOC.resolve(
             Keys.getOrAdd(IObject.class.getCanonicalName()),
             "{ \"name\": \"value\" }");
+            
+You need the initialized IOC and a plugin which registers the appropriate strategies to create IObject from IOC.
+For example, [PluginDSObject](../apidocs/info/smart_tools/smartactors/plugin/dsobject/PluginDSObject.html)            
 
 ## Serialization
             
-TBD            
+DSObject implementation of IObject can be serialized to JSON String.
+            
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"name\": \"value\" }");
+    assertEquals("{\"name\":\"value\"}", object.serialize());
+    
+The `serialize()` call may throw `SerializeException`.
+
+The `<T> T serialize()` is the generic method, 
+so other implementations may serialize to another kind of data.
             
 ## Data types
 
@@ -152,14 +166,72 @@ It even allow to store any Java object, which doesn't have a good serializable J
 
 But it case of conversion from JSON you need to know the Java types of the objects.
 
+### Objects
+
 JSON objects in curly braces are always presented as IObject.
 
     IObject object = IOC.resolve(
             Keys.getOrAdd(IObject.class.getCanonicalName()),
             "{ \"name\": { \"nested\": \"object\" } }");
     IObject value = field.in(object);
+
+### Strings    
     
-TBD    
+Strings are represented as String.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"name\": \"value\" }");
+    String value = field.in(object);
+
+### Numbers    
+    
+JSON doesn't distinguish different kind of numbers,
+so numeric values in JSON can be presented as Integer, Long, Double or even BigDecimal.
+It's always safe to retrieve them as Number.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"int\": 42, \"float\": 42.42 }");
+    Number intValue = intField.in(object);
+    assertEquals(42, intValue.intValue());
+    Number floatValue = floatField.in(object);
+    assertEquals(42.42, floatValue.doubleValue(), 0.01);
+    
+Or you can use conversion abilities of Field to convert to necessary type.
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"value\": 42.42 }");
+    Integer intValue = field.in(object, Integer.class);
+    Double doubleValue = field.in(object, Double.class);
+    BigDecimal decimalValue = field.in(object, BigDecimal.class);
+    
+### Dates
+
+JSON doesn't have any special type for dates.
+You should use [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) String representation of dates,
+and retrieve them as [LocalDateTime](http://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html).
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"date\": \"2016-08-22T13:38:42\" }");
+    LocalDateTime dateTime = field.in(object, LocalDateTime.class);
+    
+### Arrays
+    
+JSON arrays are presented as Lists of the specified type.
+If it's array of objects, it'll be `List<IObject>`,
+if it's array of strings, it'll be `List<String>`, etc...
+
+    IObject object = IOC.resolve(
+            Keys.getOrAdd(IObject.class.getCanonicalName()),
+            "{ \"array\": [ \"a\", \"b\", \"c\" ] }");
+    List<String> array = field.in(object);
+    assertEquals("a", array.get(0));
+    
+Note, JSON allows to mix different data types in the same array.
+In this case you have to work with `List<Object>` in Java and cast each element to necessary type individually.
       
 ## Code
       
