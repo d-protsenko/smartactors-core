@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.chain_testing.assertions;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.chain_testing.assertions.EqualAssertion;
+import info.smart_tools.smartactors.core.chain_testing.assertions.NotEqualAssertion;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -39,6 +40,7 @@ public class PluginChainTestingAssertions implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));
+                            IOC.register(Keys.getOrAdd("assertion of type not equal"), new SingletonStrategy(new NotEqualAssertion()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
