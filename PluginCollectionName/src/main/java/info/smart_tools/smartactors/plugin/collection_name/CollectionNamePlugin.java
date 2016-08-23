@@ -38,7 +38,7 @@ public class CollectionNamePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CollectionNamePlugin");
             item
                 .after("IOC")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                     try {
                         IKey collectionNameKey = Keys.getOrAdd(CollectionName.class.getCanonicalName());

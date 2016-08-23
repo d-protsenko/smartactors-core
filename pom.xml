@@ -285,6 +285,7 @@
         <module>UuidNextIdStrategy</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>NestedField</module>
     </modules>
 
     <build>

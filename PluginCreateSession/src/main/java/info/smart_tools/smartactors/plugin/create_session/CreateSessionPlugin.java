@@ -38,7 +38,7 @@ public class CreateSessionPlugin implements IPlugin {
 
             item
                 .after("IOC")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                 try {
                     IKey createSessionActorKey = Keys.getOrAdd(CreateSessionActor.class.getCanonicalName());
