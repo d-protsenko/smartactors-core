@@ -9,43 +9,41 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>actor.create_user</artifactId>
+    <artifactId>plugin.prepare_mail_confirm_registration_actor</artifactId>
 
     <dependencies>
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.cached_collection</artifactId>
+            <artifactId>core.iplugin</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Test -->
+        <!-- Other implementation -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>1.6.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>1.6.4</version>
-            <scope>test</scope>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.bootstrap_item</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_connection</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>core.named_keys_storage</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.security.encoding</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>actor.prepare_registration_mail</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 </project>
