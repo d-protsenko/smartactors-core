@@ -88,9 +88,8 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
                     Class clazz;
                     try {
                         clazz = classLoader.loadClass(className);
-                    } catch (ClassNotFoundException | NoClassDefFoundError e) {
-                        System.err.println("\n\n\nError loading class " + className + ":");
-                        e.printStackTrace();
+                    } catch (Throwable e) {
+                        // ignoring, because the plugin which class cannot be loaded cannot be loaded
                         continue;
                     }
 

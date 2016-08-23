@@ -52,7 +52,7 @@ public class CreateCachedCollectionTaskTest {
         keyNameField = PowerMockito.mock(IField.class);
         indexesField = PowerMockito.mock(IField.class);
         IKey keyField = PowerMockito.mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.toString())).thenReturn(keyField);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(keyField, "indexes")).thenReturn(indexesField);
 

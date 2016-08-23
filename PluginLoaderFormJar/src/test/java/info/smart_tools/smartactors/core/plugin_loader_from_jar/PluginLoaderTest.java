@@ -102,31 +102,32 @@ public class PluginLoaderTest {
         fail();
     }
 
-    @Test (expected = PluginLoaderException.class)
-    public void checkPluginLoaderOnLoadJarWithBrokenClassFile()
-            throws Exception {
-        Checker checker = new Checker();
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
-        IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
-        IPluginLoader<Collection<IPath>> pl = new PluginLoader(
-                cl,
-                (t) -> {
-                    try {
-                        checker.wasCalled = true;
-                    } catch (Exception e) {
-                        throw new RuntimeException("Could not create instance of IPlugin");
-                    }
-                },
-                visitor);
-        URL url = this.getClass().getClassLoader().getResource("test_jar_package_with_broken_class.jar");
-        if (null == url) {
-            fail();
-        }
-        Collection<IPath> files = new ArrayList<IPath>(){{add(new info.smart_tools.smartactors.core.path.Path(url.getPath()));}};
-        pl.loadPlugin(files);
-        assertTrue(checker.wasCalled);
-        fail();
-    }
+    //TODO:: uncomment if PluginLoader will should throw exception for broken class
+//    @Test (expected = PluginLoaderException.class)
+//    public void checkPluginLoaderOnLoadJarWithBrokenClassFile()
+//            throws Exception {
+//        Checker checker = new Checker();
+//        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+//        IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
+//        IPluginLoader<Collection<IPath>> pl = new PluginLoader(
+//                cl,
+//                (t) -> {
+//                    try {
+//                        checker.wasCalled = true;
+//                    } catch (Exception e) {
+//                        throw new RuntimeException("Could not create instance of IPlugin");
+//                    }
+//                },
+//                visitor);
+//        URL url = this.getClass().getClassLoader().getResource("test_jar_package_with_broken_class.jar");
+//        if (null == url) {
+//            fail();
+//        }
+//        Collection<IPath> files = new ArrayList<IPath>(){{add(new info.smart_tools.smartactors.core.path.Path(url.getPath()));}};
+//        pl.loadPlugin(files);
+//        assertTrue(checker.wasCalled);
+//        fail();
+//    }
 }
 
 class Checker {

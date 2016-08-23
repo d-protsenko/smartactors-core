@@ -68,7 +68,7 @@ public class EnvironmentHandlerTest {
                 new ResolveByNameIocStrategy()
         );
         IKey keyIObjectByString = Keys.getOrAdd("IObjectByString");
-        IKey keyIObject = Keys.getOrAdd(IObject.class.toString());
+        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
         IKey keyIMessageProcessingSequence = Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName());
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
         IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
@@ -132,7 +132,7 @@ public class EnvironmentHandlerTest {
                 new SingletonStrategy(messageProcessor)
         );
         IObject iObject = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{}");
-        IKey keyIObject = Keys.getOrAdd(IObject.class.toString());
+        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
         IOC.register(
                 keyIObject,
                 new SingletonStrategy(iObject)

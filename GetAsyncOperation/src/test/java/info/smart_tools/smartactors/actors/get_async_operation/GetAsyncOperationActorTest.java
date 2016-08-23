@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.actors.get_async_operation.exception.GetAsyn
 import info.smart_tools.smartactors.actors.get_async_operation.wrapper.GetAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -14,11 +15,14 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -33,16 +37,22 @@ public class GetAsyncOperationActorTest {
     private IAsyncOperationCollection collection;
 
     @Before
-    public void setUp() throws ResolutionException {
-
-        collection = mock(IAsyncOperationCollection.class);
-        IKey collectionKey = mock(IKey.class);
+    public void setUp() throws ResolutionException, GetAsyncOperationActorException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.toString())).thenReturn(collectionKey);
-        when(IOC.resolve(collectionKey)).thenReturn(collection);
+        collection = Mockito.mock(IAsyncOperationCollection.class);
+        IKey collectionKey = Mockito.mock(IKey.class);
+
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(IOC.resolve(eq(collectionKey), any())).thenReturn(collection);
+
+        IField collectionNameField = Mockito.mock(IField.class);
+        IKey collectionNameFieldKey = Mockito.mock(IKey.class);
+
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
+        when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
 
         message = mock(GetAsyncOperationMessage.class);
         actor = new GetAsyncOperationActor(mock(IObject.class));

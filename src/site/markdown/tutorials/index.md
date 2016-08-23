@@ -6,7 +6,7 @@
 
 [How to use Scopes](ScopeExample.html)
 
-How to use IObject (TBD)
+[How to use IObject](IObjectExample.html)
 
 How to use Wrappers (TBD)
 

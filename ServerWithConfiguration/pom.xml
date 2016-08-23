@@ -10,10 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sandbox.server_with_configuration</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>plugins</module>
-    </modules>
 
     <dependencies>
         <dependency>
@@ -48,13 +44,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.filesystem_tracker</artifactId>
+            <artifactId>core.dependency_resolving_feature_manager</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.feature_manager</artifactId>
-            <version>${core.version}</version>
+            <artifactId>core.filesystem_tracker</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Test -->
@@ -73,6 +69,11 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.5.5</version>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>info.smart_tools.smartactors.sandbox.server_with_configuration.ServerWithConfiguration</mainClass>
+                        </manifest>
+                    </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
