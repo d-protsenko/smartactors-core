@@ -61,7 +61,7 @@ public class PluginChainTesting implements IPlugin {
                     .after("message_processing_sequence")
                     .after("main_test_chain")
                     .after("chain_tests_runner")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
