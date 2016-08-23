@@ -59,15 +59,6 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    // Creates and registers test scope
-                                    // TODO: May be needs to replace registration of test scope to another plugin.
-                                    Object scopeKey = ScopeProvider.createScope(ScopeProvider.getCurrentScope());
-                                    IScope testScope = ScopeProvider.getScope(scopeKey);
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "test_scope"),
-                                            new SingletonStrategy(testScope)
-                                    );
-
                                     // Creates and registers test data source
                                     ISource<IObject, IObject> source = new IObjectDataSource();
                                     IOC.register(
@@ -98,7 +89,7 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     );
                                     IAsyncService endpoint = new TestHttpEndpoint(
                                             source,
-                                            testScope,
+                                            ScopeProvider.getCurrentScope(),
                                             handler,
                                             1000L,
                                             chain,
