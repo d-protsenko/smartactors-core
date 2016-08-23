@@ -37,7 +37,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("configuration_manager")
                     .after("router")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -59,7 +59,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("receiver_chains_storage")
                     .after("receiver_chain")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -79,7 +79,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             executorSectionItem
                     .after("configuration_manager")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -101,7 +101,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("config_section:maps")
                     .after("config_section:executor")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -123,7 +123,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("config_section:maps")
                     .after("config_section:executor")
                     .after("IFieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

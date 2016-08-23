@@ -43,7 +43,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("HandlerRoutingReceiverCreator");
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .after("InitializeReceiverGenerator")
                     .after("InitializeWrapperGenerator")
                     .after("IFieldPlugin")

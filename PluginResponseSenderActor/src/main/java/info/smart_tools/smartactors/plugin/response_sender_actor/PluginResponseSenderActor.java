@@ -36,7 +36,7 @@ public class PluginResponseSenderActor implements IPlugin {
 
             responseSenderItem
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IOC.register(

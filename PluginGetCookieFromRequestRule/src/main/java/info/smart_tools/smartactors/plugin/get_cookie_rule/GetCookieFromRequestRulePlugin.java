@@ -35,7 +35,7 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
             item
                     .after("IOC")
                     .after("wds_object")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IOC.resolve(

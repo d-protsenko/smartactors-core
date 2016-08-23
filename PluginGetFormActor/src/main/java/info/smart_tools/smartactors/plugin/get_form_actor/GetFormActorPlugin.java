@@ -38,7 +38,7 @@ public class GetFormActorPlugin implements IPlugin {
             item
                 .after("IOC")
                 .after("CreateCachedCollectionPlugin")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                     try {
                         IKey actorKey = Keys.getOrAdd(GetFormActor.class.getCanonicalName());

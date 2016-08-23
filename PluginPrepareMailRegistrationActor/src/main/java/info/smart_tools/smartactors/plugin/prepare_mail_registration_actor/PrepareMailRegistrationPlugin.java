@@ -36,7 +36,7 @@ public class PrepareMailRegistrationPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("PrepareMailRegistrationPlugin");
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(PrepareRegistrationMailActor.class.getCanonicalName());
