@@ -45,4 +45,11 @@ public class ParserTest {
         assertTrue(new Parser(rules, "ываыавыа").validate());
     }
 
+    @Test
+    public void shouldRightValidateEmail() throws Exception {
+        String rules = "email";
+        assertTrue(new Parser(rules, "test2@mail.ru").validate());
+        assertFalse(new Parser(rules, "ы").validate());
+    }
+
 }

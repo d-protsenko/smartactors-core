@@ -72,7 +72,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                     .after("response")
                     .after("response_content_strategy")
                     .after("FieldNamePlugin")
-                    .before("configure")
+                    .before("starter")
                     .process(
                             () -> {
                                 try {
