@@ -90,12 +90,12 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
       "name": "sendMailActor",
-      "username": "Rogelllek@yandex.ru",
-      "password": "sraegonex",
+      "username": "<>",
+      "password": "<>",
       "authenticationMode": "Login",
       "sslProtocol": "SSL",
       "server": "smtps://smtp.yandex.com:465",
-      "senderAddress": "Rogelllek@yandex.ru"
+      "senderAddress": "<>"
     },
     {
       "kind": "actor",
