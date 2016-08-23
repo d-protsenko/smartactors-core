@@ -9,11 +9,11 @@ The Server loads and initializes such JARs.
 
 Loading and initializing are two separate steps of the process.
 
-At the first step a part of the server, the [`PluginLoader`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/plugin_loader_from_jar/PluginLoader.html) scans the JAR files for implementations of [`IPlugin`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iplugin/IPlugin.html).
-It uses [`PluginCreator`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/plugin_creator/PluginCreator.html) to instantiate the Plugin by passing the instance of `IBootstrap` to it's constructor.
+At the first step a part of the server, the [`PluginLoader`](../apidocs/info/smart_tools/smartactors/core/plugin_loader_from_jar/PluginLoader.html) scans the JAR files for implementations of [`IPlugin`](../apidocs/info/smart_tools/smartactors/core/iplugin/IPlugin.html).
+It uses [`PluginCreator`](../apidocs/info/smart_tools/smartactors/core/plugin_creator/PluginCreator.html) to instantiate the Plugin by passing the instance of `IBootstrap` to it's constructor.
 The `load()` method of each Plugin is called here.
 
-In it's `load()` method the Plugin adds it's own [`IBootstrapItem`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ibootstrap_item/IBootstrapItem.html) into the [`IBootstrap`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ibootstrap/IBootstrap.html) known to him.
+In it's `load()` method the Plugin adds it's own [`IBootstrapItem`](../apidocs/info/smart_tools/smartactors/core/ibootstrap_item/IBootstrapItem.html) into the [`IBootstrap`](../apidocs/info/smart_tools/smartactors/core/ibootstrap/IBootstrap.html) known to him.
 The `IBootstrapItem` gives the name of the part of the functionality provided by the plugin and allows to declare dependencies from the other bootstrap items using the `after()` and `before()` methods.
 Finally the sequence of the bootstrap items according to the dependencies is constructed and their `executeProcess()` is called.
 This is the second step of the initialization.
@@ -155,4 +155,4 @@ Note the order of first two steps is not defined, while the order of execution o
 
 ## Code of the example
 
-You can check the full source codes of this example [here](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/plugin/package-summary.html).
+You can check the full source codes of this example [here](../xref/info/smart_tools/smartactors/core/examples/plugin/package-summary.html).

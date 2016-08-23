@@ -5,10 +5,10 @@
 [IoC](https://en.wikipedia.org/wiki/Inversion_of_control) means Inversion of Control.
 It's a common design principle, and SmartActors, as many other popular frameworks, has it's own IoC container.
 
-The access to IoC is done through static [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) called [`IOC`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ioc/IOC.html)
+The access to IoC is done through static [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) called [`IOC`](../apidocs/info/smart_tools/smartactors/core/ioc/IOC.html)
 The main methods are `void IOC.register(IKey key, IResolveDependencyStrategy strategy)` and `T IOC.resolve(IKey<T> key, Object... args)`.
-The container resolves objects by the [`IKey`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ikey/IKey.html).
-The object resolving is delegated to a [`IResolveDependencyStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iresolve_dependency_strategy/IResolveDependencyStrategy.html).
+The container resolves objects by the [`IKey`](../apidocs/info/smart_tools/smartactors/core/ikey/IKey.html).
+The object resolving is delegated to a [`IResolveDependencyStrategy`](../apidocs/info/smart_tools/smartactors/core/iresolve_dependency_strategy/IResolveDependencyStrategy.html).
 There are a couple of predefined strategies.
 
 ## Key
@@ -31,7 +31,7 @@ This magic is hidden in `Keys` class, so it's necessary just to call `Keys.getOr
 ## Initialization
 
 To resolve the key, the corresponding strategy should be registered before.
-Also, the default IoC implementation requires the [`Scope`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iscope/IScope.html) to be initialized.
+Also, the default IoC implementation requires the [`Scope`](../apidocs/info/smart_tools/smartactors/core/iscope/IScope.html) to be initialized.
 So this initialization code is required (usually it's already called by the server implementation):
 
     Object scopeKey = ScopeProvider.createScope(null);
@@ -48,12 +48,12 @@ So this initialization code is required (usually it's already called by the serv
             })
     );
 
-The [`ResolveByNameIocStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/resolve_by_name_ioc_with_lambda_strategy/ResolveByNameIocStrategy.html) it responsive to create Keys by the name as it was demonstrated above.
+The [`ResolveByNameIocStrategy`](../apidocs/info/smart_tools/smartactors/core/resolve_by_name_ioc_with_lambda_strategy/ResolveByNameIocStrategy.html) it responsive to create Keys by the name as it was demonstrated above.
 
 ## Singleton strategy
 
 When you have a key, you can register the resolving strategy.
-For example, [`SingletonStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/singleton_strategy/SingletonStrategy.html):
+For example, [`SingletonStrategy`](../apidocs/info/smart_tools/smartactors/core/singleton_strategy/SingletonStrategy.html):
 
     IKey key = Keys.getOrAdd("singleton");
     SampleClass sampleObject = new SampleClass("singleton");
@@ -68,7 +68,7 @@ Both these variables point to the same object.
 
 ## New instance strategy
 
-The [`CreateNewInstanceStrategy`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/create_new_instance_strategy/CreateNewInstanceStrategy.html) creates a new object for each call to `resolve()`.
+The [`CreateNewInstanceStrategy`](../apidocs/info/smart_tools/smartactors/core/create_new_instance_strategy/CreateNewInstanceStrategy.html) creates a new object for each call to `resolve()`.
 You should define a [lambda expression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) to create your objects and pass it to the strategy constructor.
  
     IKey key = Keys.getOrAdd("new");

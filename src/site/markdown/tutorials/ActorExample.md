@@ -49,9 +49,9 @@ Note you can have multiple handlers in the same actor. It may be required when y
 
 The parameter for the handler is the interface. It should have getters and setters.
 
-Getter is to retrieve a value from the processing message. Like usual getter it returns some value and takes no parameters. Additionally it must throw [`ReadValueException`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iobject/exception/ReadValueException.html).
+Getter is to retrieve a value from the processing message. Like usual getter it returns some value and takes no parameters. Additionally it must throw [`ReadValueException`](../apidocs/info/smart_tools/smartactors/core/iobject/exception/ReadValueException.html).
 
-Setter is to put the value to the processing message. Like usual setter it returns `void` and takes one parameter — the value. Additionally it must throw [`ChangeValueException`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/iobject/exception/ChangeValueException.html).
+Setter is to put the value to the processing message. Like usual setter it returns `void` and takes one parameter — the value. Additionally it must throw [`ChangeValueException`](../apidocs/info/smart_tools/smartactors/core/iobject/exception/ChangeValueException.html).
 
 So, the interface for the 'hello world' handler should be this:
 
@@ -95,5 +95,5 @@ When all your actors will be in separate modules it'll be easy to join them toge
 
 The sources of this tutorial:
 
-* [HelloActor implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/actor/package-frame.html)
-* [Tests](http://smarttools.github.io/smartactors-core/core.examples/xref-test/info/smart_tools/smartactors/core/examples/ActorExample.html)
+* [HelloActor implementation](../xref/info/smart_tools/smartactors/core/examples/actor/package-frame.html)
+* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/ActorExample.html)
