@@ -12,7 +12,9 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
 
 /**
@@ -51,6 +53,12 @@ public class PluginWDSObject implements IPlugin {
                                             throw new RuntimeException(e);
                                         }
                                     }));
+                            IOC.register(
+                                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                                    new ResolveByNameIocStrategy(
+                                            (a) -> a[1]
+                                    )
+                            );
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("WDSObject plugin can't load: can't get WDSObject key", e);
                         } catch (InvalidArgumentException e) {

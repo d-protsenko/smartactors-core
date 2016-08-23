@@ -50,7 +50,7 @@ public abstract class DBSearchTask implements IDatabaseTask {
                 String jsonValue = resultSet.getString("document");
                 IObject object;
                 try {
-                    object = IOC.resolve(Keys.getOrAdd(IObject.class.toString()), jsonValue);
+                    object = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), jsonValue);
                     IFieldName idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), "id");
                     object.setValue(idFN, resultSet.getLong("id"));
                 } catch (ChangeValueException e) {

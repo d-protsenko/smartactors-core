@@ -6,11 +6,9 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.invalid_state_exception.InvalidStateException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -55,15 +53,8 @@ public class PluginConfigurationManager implements IPlugin {
 
             bootstrap.add(configurationManagerItem);
 
-            // "configure" - call #configure() method of ConfigurationManager instance created by "configuration_manager" item
-            IBootstrapItem<String> configureItem = new BootstrapItem("configure");
+            // the configure() is called from PluginStarter
 
-            configureItem
-                    .after("configuration_manager")
-                    .process(() -> {
-                    });
-
-            bootstrap.add(configureItem);
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }

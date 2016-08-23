@@ -25,3 +25,5 @@ targer/
 #Logs
 
 **/*.log
+
+**/db_connection.properties

@@ -30,19 +30,19 @@ public class TestConnectionOptions implements ConnectionOptions {
     }
 
     @Override
-    public void setUrl(String url) throws ChangeValueException {
+    public void setUrl(final String url) throws ChangeValueException {
     }
 
     @Override
-    public void setUsername(String username) throws ChangeValueException {
+    public void setUsername(final String username) throws ChangeValueException {
     }
 
     @Override
-    public void setPassword(String password) throws ChangeValueException {
+    public void setPassword(final String password) throws ChangeValueException {
     }
 
     @Override
-    public void setMaxConnections(Integer maxConnections) throws ChangeValueException {
+    public void setMaxConnections(final Integer maxConnections) throws ChangeValueException {
     }
 
 }

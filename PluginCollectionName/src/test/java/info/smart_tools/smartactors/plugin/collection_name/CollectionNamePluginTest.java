@@ -59,11 +59,12 @@ public class CollectionNamePluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey collectionNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(CollectionName.class.toString())).thenReturn(collectionNameKey);
+        when(Keys.getOrAdd(CollectionName.class.getCanonicalName())).thenReturn(collectionNameKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         HashMap<String, CollectionName> collectionMap = mock(HashMap.class);
         whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);
@@ -105,11 +106,12 @@ public class CollectionNamePluginTest {
     @Test(expected = ActionExecuteException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(CollectionName.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(CollectionName.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
         HashMap<String, CollectionName> collectionMap = mock(HashMap.class);
         whenNew(HashMap.class).withNoArguments().thenReturn(collectionMap);

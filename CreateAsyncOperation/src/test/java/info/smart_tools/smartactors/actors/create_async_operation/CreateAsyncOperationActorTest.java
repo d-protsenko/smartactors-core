@@ -1,12 +1,13 @@
 package info.smart_tools.smartactors.actors.create_async_operation;
 
 import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.actors.create_async_operation.wrapper.AuthOperationData;
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -35,25 +36,24 @@ public class CreateAsyncOperationActorTest {
     private CreateAsyncOperationActor actor;
     private CreateAsyncOperationMessage message;
     private IAsyncOperationCollection collection;
-    private AuthOperationData data;
 
     @Before
-    public void setUp() throws ResolutionException {
-
-        collection = mock(IAsyncOperationCollection.class);
-        IKey collectionKey = mock(IKey.class);
-
-        data = mock(AuthOperationData.class);
-        IKey dataKey = mock(IKey.class);
+    public void setUp() throws ResolutionException, CreateAsyncOperationActorException, ReadValueException, InvalidArgumentException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.toString())).thenReturn(collectionKey);
-        when(IOC.resolve(collectionKey)).thenReturn(collection);
+        collection = mock(IAsyncOperationCollection.class);
+        IKey collectionKey = mock(IKey.class);
 
-        when(Keys.getOrAdd(AuthOperationData.class.toString())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey)).thenReturn(data);
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(IOC.resolve(eq(collectionKey), any())).thenReturn(collection);
+
+        IField collectionNameField = mock(IField.class);
+        IKey collectionNameFieldKey = mock(IKey.class);
+
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
+        when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
 
         actor = new CreateAsyncOperationActor(mock(IObject.class));
         message = mock(CreateAsyncOperationMessage.class);
@@ -66,16 +66,15 @@ public class CreateAsyncOperationActorTest {
 
         String sessionId = "sessionId";
         when(message.getSessionId()).thenReturn(sessionId);
-        when(message.getExpiredTime()).thenReturn(4L);
+        when(message.getExpiredTime()).thenReturn(4);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
+        when(message.getOperationData()).thenReturn(asyncDataObj);
 
         actor.create(message);
 
-        verify(data).setSessionId(sessionId);
         verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), anyString());
         verify(message).setAsyncOperationToken(anyString());
     }
@@ -85,10 +84,15 @@ public class CreateAsyncOperationActorTest {
         throws ReadValueException, CreateAsyncOperationActorException, ChangeValueException, ResolutionException,
         CreateAsyncOperationException {
 
+        String sessionId = "sessionId";
+        when(message.getSessionId()).thenReturn(sessionId);
+        when(message.getExpiredTime()).thenReturn(4);
+
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.toString())).thenReturn(dataKey);
-        when(IOC.resolve(dataKey, data)).thenReturn(asyncDataObj);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
+        when(message.getOperationData()).thenReturn(asyncDataObj);
+
         doThrow(new CreateAsyncOperationException("exception")).when(collection).createAsyncOperation(any(), any(), any());
 
         actor.create(message);

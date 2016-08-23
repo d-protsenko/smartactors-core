@@ -24,7 +24,7 @@ public class WDSObjectField implements IField {
     private static final String FIELD_ARGS = "args";
     private static final String FIELD_NAME = "name";
     private static final String LOCAL_KEYWORD = "local";
-    private static final String CONST_KEYWORD = "consts";
+    private static final String CONST_KEYWORD = "const";
     private static final String DEFAULT_KEYWORD = "default";
     private static final String SPLITTER = "\\/";
     private static final String INNER_SETTER_STRATEGY_NAME = "wds_target_strategy";
@@ -140,7 +140,7 @@ public class WDSObjectField implements IField {
                     IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
-            throw new ReadValueException("Could not read value from IObject", e);
+            throw new ReadValueException("Could not read " + location + " from IObject", e);
         }
     }
 

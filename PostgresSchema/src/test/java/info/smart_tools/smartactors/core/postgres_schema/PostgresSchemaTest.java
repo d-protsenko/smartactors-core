@@ -48,32 +48,25 @@ public class PostgresSchemaTest {
     }
 
     @Test
-    public void testNextId() throws QueryBuildException {
-        PostgresSchema.nextId(statement, collection);
-        assertEquals("SELECT nextval('test_collection_id_seq') AS id", body.toString());
-    }
-
-    @Test
     public void testInsert() throws QueryBuildException {
         PostgresSchema.insert(statement, collection);
-        assertEquals("INSERT INTO test_collection (id, document) " +
-                "VALUES (?, ?::jsonb)", body.toString());
+        assertEquals("INSERT INTO test_collection (document) " +
+                "VALUES (?::jsonb)", body.toString());
     }
 
     @Test
     public void testUpdate() throws QueryBuildException {
         PostgresSchema.update(statement, collection);
-        assertEquals("UPDATE test_collection AS tab " +
-                "SET document = docs.document " +
-                "FROM (VALUES (?, ?::jsonb)) AS docs (id, document) " +
-                "WHERE tab.id = docs.id", body.toString());
+        assertEquals("UPDATE test_collection " +
+                "SET document = ?::jsonb " +
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
     }
 
     @Test
     public void testGetById() throws QueryBuildException {
         PostgresSchema.getById(statement, collection);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE id = ?", body.toString());
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
     }
 
     @Test
@@ -81,8 +74,9 @@ public class PostgresSchemaTest {
         IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } } }");
         PostgresSchema.search(statement, collection, criteria);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
-        verify(statement, times(1)).pushParameterSetter(any());
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
     }
 
     @Test
@@ -103,8 +97,9 @@ public class PostgresSchemaTest {
         PostgresSchema.search(statement, collection, criteria);
         assertEquals("SELECT document FROM test_collection " +
                 "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
-                "ORDER BY(document#>'{a}')DESC", body.toString());
-        verify(statement, times(1)).pushParameterSetter(any());
+                "ORDER BY(document#>'{a}')DESC " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
     }
 
     @Test
@@ -119,6 +114,145 @@ public class PostgresSchemaTest {
                 "LIMIT(?)OFFSET(?)",
                 body.toString());
         verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithEmptyFilter() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection WHERE (TRUE) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithEmptyCriteria() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithNullCriteria() throws InvalidArgumentException, QueryBuildException {
+        PostgresSchema.search(statement, collection, null);
+        assertEquals("SELECT document FROM test_collection LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCreate() throws QueryBuildException {
+        PostgresSchema.create(statement, collection, null);
+        assertEquals(
+                "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
+                        "BEGIN RETURN source::text::timestamptz; END; " +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
+                    "BEGIN RETURN to_json(source)::jsonb; END; " +
+                    "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                "CREATE TABLE test_collection (document jsonb NOT NULL);\n" +
+                "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n",
+                body.toString());
+    }
+
+    @Test
+    public void testCreateWithIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"language\": \"english\"" +
+                "}");
+        PostgresSchema.create(statement, collection, options);
+        assertEquals(
+                "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
+                        "BEGIN RETURN source::text::timestamptz; END; " +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
+                        "BEGIN RETURN to_json(source)::jsonb; END; " +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext tsvector);\n" +
+                "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
+                "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                "CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
+                "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+                "begin\n" +
+                "new.fulltext := " +
+                "to_tsvector('english', coalesce((new.document#>'{b}')::text,''));\n" +
+                "return new;\n" +
+                "end\n" +
+                "$$ LANGUAGE plpgsql;\n" +
+                "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
+                "test_collection_fulltext_update_trigger();\n",
+                body.toString());
+    }
+
+    @Test
+    public void testDelete() throws QueryBuildException {
+        PostgresSchema.delete(statement, collection);
+        assertEquals("DELETE FROM test_collection " +
+                "WHERE (document#>'{test_collectionID}') = to_json(?)::jsonb", body.toString());
+    }
+
+    @Test
+    public void testCount() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } } }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithPaging() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"page\": { \"size\": 10, \"number\": 3 } }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithSorting() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"sort\": [ { \"a\": \"desc\" } ] }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithPagingAndSorting() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"page\": { \"size\": 10, \"number\": 3 }, " +
+                " \"sort\": [ { \"a\": \"desc\" } ] }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection " +
+                        "WHERE ((((document#>'{a}')=to_json(?)::jsonb)))", body.toString());
+        verify(statement, times(1)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithEmptyFilter() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { } }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection WHERE (TRUE)", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithEmptyCriteria() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ }");
+        PostgresSchema.count(statement, collection, criteria);
+        assertEquals("SELECT COUNT(*) FROM test_collection", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testCountWithNullCriteria() throws InvalidArgumentException, QueryBuildException {
+        PostgresSchema.count(statement, collection, null);
+        assertEquals("SELECT COUNT(*) FROM test_collection", body.toString());
+        verify(statement, times(0)).pushParameterSetter(any());
     }
 
 }
