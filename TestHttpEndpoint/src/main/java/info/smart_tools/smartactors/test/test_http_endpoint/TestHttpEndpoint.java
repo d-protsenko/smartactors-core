@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.test.isource.ISource;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
@@ -24,12 +25,12 @@ import java.util.concurrent.Future;
 
 /**
  * Implementation of {@link IAsyncService}.
- * Imitates work of Http Endpoint and uses incoming instance of {@link java.util.concurrent.BlockingDeque}
+ * Imitates work of Http Endpoint and uses {@link ISource} as data source
  * as data source.
  */
 public class TestHttpEndpoint implements IAsyncService {
 
-    private BlockingDeque<IObject> queue;
+    private ISource dataSource;
     private IScope scope;
     private IEnvironmentHandler handler;
     private Long timeInterval;
@@ -39,7 +40,7 @@ public class TestHttpEndpoint implements IAsyncService {
 
     /**
      * Creates instance of {@link TestHttpEndpoint}.
-     * @param sourceQueue the queue as data source
+     * @param source the instance of {@link ISource}
      * @param testScope the test scope
      * @param testHandler the handler for processing test message
      * @param timeBetweenTests the interval between starting processing next message
@@ -49,15 +50,15 @@ public class TestHttpEndpoint implements IAsyncService {
      * @throws InvalidArgumentException if one of the arguments is incorrect
      */
     public TestHttpEndpoint(
-            final BlockingDeque<IObject> sourceQueue,
+            final ISource source,
             final IScope testScope,
             final IEnvironmentHandler testHandler,
             final Long timeBetweenTests,
             final IReceiverChain routerChain,
             final IFunction<IObject, IObject> transformationRule
     ) throws InvalidArgumentException {
-        if (null == sourceQueue) {
-            throw new InvalidArgumentException("The queue should not be null.");
+        if (null == source) {
+            throw new InvalidArgumentException("The source should not be null.");
         }
         if (null == testScope) {
             throw new InvalidArgumentException("The scope should not be null.");
@@ -72,7 +73,7 @@ public class TestHttpEndpoint implements IAsyncService {
         if (null == transformationRule) {
             this.rule = defaultTransformationRule();
         }
-        this.queue = sourceQueue;
+        this.dataSource = source;
         this.scope = testScope;
         this.handler = testHandler;
         this.timeInterval = timeBetweenTests;
@@ -95,7 +96,7 @@ public class TestHttpEndpoint implements IAsyncService {
             while (true) {
                 ScopeProvider.setCurrentScope(this.scope);
                 try {
-                    IObject obj = this.rule.execute(queue.take());
+                    IObject obj = this.rule.execute((IObject) dataSource.next());
                     if (obj != null) {
                         handler.handle(obj, chain);
                     }

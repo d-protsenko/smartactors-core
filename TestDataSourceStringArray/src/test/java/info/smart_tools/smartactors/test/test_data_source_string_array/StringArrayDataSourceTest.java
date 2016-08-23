@@ -37,11 +37,13 @@ public class StringArrayDataSourceTest {
 
         ISource<String[], IObject> source = new StringArrayDataSource();
         source.setSource(data);
-        BlockingDeque<IObject> queue = source.getQueue();
-        assertNotNull(queue);
-        assertEquals(queue.take().getValue(new FieldName("a")), "a");
-        assertEquals(queue.take().getValue(new FieldName("a")), "b");
-        assertEquals(queue.take().getValue(new FieldName("a")), "c");
+        IObject first = source.next();
+        IObject second = source.next();
+        IObject third = source.next();
+        assertNotNull(first);
+        assertEquals(first.getValue(new FieldName("a")), "a");
+        assertEquals(second.getValue(new FieldName("a")), "b");
+        assertEquals(third.getValue(new FieldName("a")), "c");
     }
 
     @Test
@@ -52,8 +54,10 @@ public class StringArrayDataSourceTest {
                 "{\"a\": \"a\"}"
         };
         ISource<String[], IObject> source = new StringArrayDataSource();
-        source.setSource(data);
-        BlockingDeque<IObject> queue = source.getQueue();
-        assertEquals(queue.take().getValue(new FieldName("a")), "a");
+        String[] brokenItems = source.setSource(data);
+        IObject first = source.next();
+        assertEquals(first.getValue(new FieldName("a")), "a");
+        assertEquals(brokenItems.length, 1);
+        assertEquals(brokenItems[0], "{a}");
     }
 }

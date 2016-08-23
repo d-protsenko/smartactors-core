@@ -295,6 +295,7 @@
         <module>PluginChainTesting</module>
         <module>ChainTestingAssertions</module>
         <module>PluginChainTestingAssertions</module>
+        <module>TestDataSourceIObject</module>
     </modules>
 
     <build>

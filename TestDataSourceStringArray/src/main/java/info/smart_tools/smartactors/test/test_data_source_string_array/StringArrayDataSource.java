@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.test.isource.ISource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -24,20 +26,34 @@ public class StringArrayDataSource implements ISource<String[], IObject> {
     }
 
     @Override
-    public void setSource(final String ... strings) {
+    public String[] setSource(final String ... strings) {
+        List<String> brokenItems = new ArrayList<>();
+        IObject testObject;
         for (String item : strings) {
             try {
-                this.queue.put(new DSObject(item));
+                testObject = new DSObject(item);
+            } catch (InvalidArgumentException e) {
+                brokenItems.add(item);
+                continue;
+            }
+            try {
+                this.queue.put(testObject);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-            } catch (InvalidArgumentException e) {
-                // skip action on broken element
             }
         }
+        String[] broken = new String[brokenItems.size()];
+
+        return brokenItems.toArray(broken);
     }
 
     @Override
-    public BlockingDeque<IObject> getQueue() {
-        return this.queue;
+    public IObject next() {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        }
     }
 }

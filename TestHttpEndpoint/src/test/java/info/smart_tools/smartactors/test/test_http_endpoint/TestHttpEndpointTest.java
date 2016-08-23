@@ -20,6 +20,8 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.test.isource.ISource;
+import info.smart_tools.smartactors.test.test_data_source_iobject.IObjectDataSource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,7 +82,7 @@ public class TestHttpEndpointTest {
     public void checkCreationAndExecution()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
+        ISource<IObject, IObject> source = new IObjectDataSource();
         initFiledNameStrategy();
         initIObjectStrategy();
         initIChannelHandlerStrategy();
@@ -99,8 +101,8 @@ public class TestHttpEndpointTest {
         when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
         when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
 
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
+        source.setSource(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
         endpoint.start();
         while(true) {
             if(notification.getExecuted()) {
@@ -120,15 +122,15 @@ public class TestHttpEndpointTest {
     public void checkCorrectStopService()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
+        ISource<IObject, IObject> source = new IObjectDataSource();
         initFiledNameStrategy();
         initIObjectStrategy();
         initIChannelHandlerStrategy();
 
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, chain, (a) -> {
+        source.setSource(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, (a) -> {
             notification.setExecuted(true);
             while(true) {
             }
@@ -146,7 +148,7 @@ public class TestHttpEndpointTest {
     public void checkAdditionNewDataToQueueAfterStart()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
+        ISource<IObject, IObject> source = new IObjectDataSource();
         initFiledNameStrategy();
         initIObjectStrategy();
         initIChannelHandlerStrategy();
@@ -169,8 +171,8 @@ public class TestHttpEndpointTest {
         when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
         when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
         when(testAnotherObject.getValue(new FieldName("request"))).thenReturn(requestOfAnotherTestObject);
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
+        source.setSource(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
         endpoint.start();
         while(true) {
             if(notification.getExecuted()) {
@@ -178,7 +180,7 @@ public class TestHttpEndpointTest {
             }
         }
         notification.setExecuted(false);
-        queue.put(testAnotherObject);
+        source.setSource(testAnotherObject);
         while(true) {
             if(notification.getExecuted()) {
                 break;
@@ -209,16 +211,16 @@ public class TestHttpEndpointTest {
     public void checkInvalidArgumentExceptionOnNullScope()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = mock(BlockingDeque.class);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, null, handler, 0L, chain, null);
+        ISource<IObject, IObject> source = mock(ISource.class);
+        IAsyncService endpoint = new TestHttpEndpoint(source, null, handler, 0L, chain, null);
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnNullHandler()
             throws Exception {
-        BlockingDeque<IObject> queue = mock(BlockingDeque.class);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), null, 0L, chain, null);
+        ISource<IObject, IObject> source = mock(ISource.class);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), null, 0L, chain, null);
         fail();
     }
 
@@ -226,8 +228,8 @@ public class TestHttpEndpointTest {
     public void checkInvalidArgumentExceptionOnNullChain()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = mock(BlockingDeque.class);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, null, null);
+        ISource<IObject, IObject> source = mock(ISource.class);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null, null);
         fail();
     }
 
@@ -235,7 +237,7 @@ public class TestHttpEndpointTest {
     public void checkSkipMessageOnExceptionInFutureBlock()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
+        ISource<IObject, IObject> source = new IObjectDataSource();
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
@@ -254,10 +256,10 @@ public class TestHttpEndpointTest {
                 return null;
             }
         }).when(handler).handle(any(IObject.class), same(this.chain));
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
+        source.setSource(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
         endpoint.start();
-        queue.put(testAnotherObject);
+        source.setSource(testAnotherObject);
         while (true) {
             if (notification.getExecuted()) {
                 break;
@@ -271,7 +273,7 @@ public class TestHttpEndpointTest {
     public void checkSkipMessageOnExceptionInDefaultStrategyBlock()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        BlockingDeque<IObject> queue = new LinkedBlockingDeque<>();
+        ISource<IObject, IObject> source = new IObjectDataSource();
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
@@ -299,11 +301,11 @@ public class TestHttpEndpointTest {
                 return null;
             }
         }).when(handler).handle(any(IObject.class), same(this.chain));
-        queue.put(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(queue, ScopeProvider.getCurrentScope(), handler, 1000L, this.chain, null);
+        source.setSource(testObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 1000L, this.chain, null);
         endpoint.start();
         notification.setExecuted(false);
-        queue.put(testAnotherObject);
+        source.setSource(testAnotherObject);
         while (true) {
             if (notification.getExecuted()) {
                 break;
