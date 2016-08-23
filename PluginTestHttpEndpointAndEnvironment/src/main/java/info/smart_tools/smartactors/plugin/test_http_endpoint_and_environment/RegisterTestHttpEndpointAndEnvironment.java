@@ -20,7 +20,7 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.test.isource.ISource;
-import info.smart_tools.smartactors.test.test_data_source_string_array.StringArrayDataSource;
+import info.smart_tools.smartactors.test.test_data_source_iobject.IObjectDataSource;
 import info.smart_tools.smartactors.test.test_http_endpoint.TestChannelHandler;
 import info.smart_tools.smartactors.test.test_http_endpoint.TestHttpEndpoint;
 
@@ -69,7 +69,7 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     );
 
                                     // Creates and registers test data source
-                                    ISource<String[], IObject> source = new StringArrayDataSource();
+                                    ISource<IObject, IObject> source = new IObjectDataSource();
                                     IOC.register(
                                             IOC.resolve(IOC.getKeyForKeyStorage(), "test_data_source"),
                                             new SingletonStrategy(source)
@@ -97,7 +97,7 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                             IOC.resolve(IOC.getKeyForKeyStorage(), "test_routing_chain")
                                     );
                                     IAsyncService endpoint = new TestHttpEndpoint(
-                                            source.getQueue(),
+                                            source,
                                             testScope,
                                             handler,
                                             1000L,

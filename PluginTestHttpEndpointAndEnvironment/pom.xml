@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_data_source_string_array</artifactId>
+            <artifactId>test.test_data_source_iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
