@@ -288,6 +288,7 @@
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
         <module>NestedField</module>
+        <module>PluginNestedField</module>
     </modules>
 
     <build>
