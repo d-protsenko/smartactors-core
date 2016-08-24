@@ -287,6 +287,8 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>GetFirstNotNullRule</module>
+        <module>PluginGetFirstNotNullRule</module>
     </modules>
 
     <build>
