@@ -61,7 +61,9 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                                 IConfigurationManager configurationManager =
                                                         IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                                                config = configurationManager.getConfig();
+//                                                config = configurationManager.getConfig();
+                                                // TODO: Get object with global variables
+                                                config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }

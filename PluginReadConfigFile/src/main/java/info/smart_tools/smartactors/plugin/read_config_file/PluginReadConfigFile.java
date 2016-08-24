@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -58,17 +59,17 @@ public class PluginReadConfigFile implements IPlugin {
 //                            IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), configString);
                             IObject cObject = IOC.resolve(Keys.getOrAdd("configuration object"), configString);
 
-                            configurationManager.setInitialConfig(cObject);
+                            configurationManager.applyConfig(cObject);
                         } catch (FileNotFoundException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration file not found.", e);
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: can't get ReadConfigFile key", e);
                         } catch (InvalidArgumentException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: can't create strategy", e);
-                        } catch (InvalidStateException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration is already parsed", e);
                         } catch (IOException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't load: can't read configuration file", e);
+                        } catch (ConfigurationProcessingException e) {
+                            throw new ActionExecuteException("Error occurred processing configuration.", e);
                         }
                     });
 
