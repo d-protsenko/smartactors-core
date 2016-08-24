@@ -10,15 +10,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.sql.*;
-import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({PostgresConnection.class, DriverManager.class, Class.class})
 @RunWith(PowerMockRunner.class)
@@ -50,11 +48,6 @@ public class PostgresConnectionTest {
         Statement statement = mock(Statement.class);
         when(connection.createStatement()).thenReturn(statement);
 
-        InputStream src = PostgresConnection.class.getResourceAsStream("db-init.properties");
-
-        Properties properties = new Properties();
-        properties.load(src);
-
         validateStatement = mock(PreparedStatement.class);
         when(connection.prepareStatement("SELECT(1);")).thenReturn(validateStatement);
 
@@ -65,11 +58,6 @@ public class PostgresConnectionTest {
 
         verifyStatic();
         DriverManager.getConnection(url, name, password);
-
-        verify(connection, times(2)).createStatement();
-        for (Object key : properties.keySet()) {
-            verify(statement).execute(properties.getProperty((String) key));
-        }
 
         verify(connection).setAutoCommit(false);
 

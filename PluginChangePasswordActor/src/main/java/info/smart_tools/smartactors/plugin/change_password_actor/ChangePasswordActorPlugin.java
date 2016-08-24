@@ -43,7 +43,7 @@ public class ChangePasswordActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ChangePasswordActorPlugin");
             item
                 .after("IOC")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                     try {
                         IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");

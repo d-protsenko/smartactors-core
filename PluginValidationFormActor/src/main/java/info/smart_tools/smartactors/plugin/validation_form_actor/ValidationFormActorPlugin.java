@@ -36,7 +36,7 @@ public class ValidationFormActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ValidateFormActorPlugin");
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(ValidateFormDataActor.class.getCanonicalName());
