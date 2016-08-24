@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.core.chain_testing.checkers;
 
 import info.smart_tools.smartactors.core.chain_testing.Assertion;
 import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -15,10 +14,10 @@ import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.Assert.*;

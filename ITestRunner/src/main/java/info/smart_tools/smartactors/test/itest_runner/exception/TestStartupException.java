@@ -1,9 +1,10 @@
-package info.smart_tools.smartactors.core.chain_testing.exceptions;
+package info.smart_tools.smartactors.test.itest_runner.exception;
 
 /**
- * Exception thrown by {@link info.smart_tools.smartactors.core.chain_testing.TestRunner} when it fails to start a test.
+ * Exception for error in {@link info.smart_tools.smartactors.test.itest_runner.ITestRunner} method
  */
 public class TestStartupException extends Exception {
+
     /**
      * Constructor with specific error message as argument
      * @param message specific error message

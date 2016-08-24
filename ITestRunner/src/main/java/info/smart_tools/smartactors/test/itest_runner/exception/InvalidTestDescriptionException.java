@@ -1,9 +1,10 @@
-package info.smart_tools.smartactors.core.chain_testing.exceptions;
+package info.smart_tools.smartactors.test.itest_runner.exception;
 
 /**
- * Exception thrown by {@link info.smart_tools.smartactors.core.chain_testing.TestRunner} when given test description has invalid format.
+ * Exception for error in {@link info.smart_tools.smartactors.test.itest_runner.ITestRunner} method
  */
 public class InvalidTestDescriptionException extends Exception {
+
     /**
      * Constructor with specific error message as argument
      * @param message specific error message
@@ -20,5 +21,13 @@ public class InvalidTestDescriptionException extends Exception {
 
     public InvalidTestDescriptionException(final String message, final Throwable cause) {
         super(message, cause);
+    }
+
+    /**
+     * Constructor with specific cause as argument
+     * @param cause specific cause
+     */
+    public InvalidTestDescriptionException(final Throwable cause) {
+        super(cause);
     }
 }

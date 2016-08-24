@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.core.chain_testing.section_strategy;
 
-import info.smart_tools.smartactors.core.chain_testing.TestRunner;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -14,6 +12,8 @@ import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
  * Test for {@link TestsSectionStrategy}.
  */
 public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
-    private TestRunner testRunnerMock;
+    private ITestRunner testRunnerMock;
     private ArgumentCaptor cbCaptor;
 
     @Override
@@ -45,9 +45,9 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        testRunnerMock = mock(TestRunner.class);
+        testRunnerMock = mock(ITestRunner.class);
 
-        IOC.register(Keys.getOrAdd(TestRunner.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd(ITestRunner.class.getCanonicalName()),
                 new SingletonStrategy(testRunnerMock));
 
         cbCaptor = ArgumentCaptor.forClass(IAction.class);

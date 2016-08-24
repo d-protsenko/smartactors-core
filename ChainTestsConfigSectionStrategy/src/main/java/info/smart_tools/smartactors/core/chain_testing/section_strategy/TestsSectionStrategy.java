@@ -1,8 +1,5 @@
 package info.smart_tools.smartactors.core.chain_testing.section_strategy;
 
-import info.smart_tools.smartactors.core.chain_testing.TestRunner;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
@@ -12,7 +9,9 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
+import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
 
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
@@ -26,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class TestsSectionStrategy implements ISectionStrategy {
     private IFieldName name;
-    private TestRunner runner;
+    private ITestRunner runner;
 
     /**
      * The constructor.
@@ -35,8 +34,12 @@ public class TestsSectionStrategy implements ISectionStrategy {
      */
     public TestsSectionStrategy()
             throws ResolutionException {
-        name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests");
-        runner = IOC.resolve(Keys.getOrAdd(TestRunner.class.getCanonicalName()));
+        name = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests"
+        );
+        runner = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), ITestRunner.class.getCanonicalName())
+        );
     }
 
     @Override

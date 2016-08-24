@@ -9,22 +9,28 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.https_server</artifactId>
+    <artifactId>test.itest_runner</artifactId>
+
     <dependencies>
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.tcp_server</artifactId>
+            <artifactId>core.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ssl_engine_provider</artifactId>
+            <artifactId>core.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
+
+        <!-- Tests -->
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.issl_engine_provider</artifactId>
-            <version>${core.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

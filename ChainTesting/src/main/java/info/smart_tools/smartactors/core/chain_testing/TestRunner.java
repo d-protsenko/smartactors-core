@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.core.chain_testing;
 
 import info.smart_tools.smartactors.core.chain_testing.checkers.TestResultChecker;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
@@ -20,6 +18,9 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
+import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
 
 /**
  * Runs tests on receiver chains.
@@ -71,7 +72,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  *     }
  * </pre>
  */
-public class TestRunner {
+public class TestRunner implements ITestRunner {
     private static final int STACK_DEPTH = 5;
 
     private final IFieldName environmentFieldName;

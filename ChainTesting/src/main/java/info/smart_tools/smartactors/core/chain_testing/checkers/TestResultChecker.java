@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.core.chain_testing.checkers;
 
 import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.TestStartupException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -11,6 +9,8 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
 
 import java.util.List;
 

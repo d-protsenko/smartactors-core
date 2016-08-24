@@ -12,10 +12,11 @@
     <artifactId>core.chain_testing.section_strategy</artifactId>
 
     <dependencies>
+        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_testing</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>test.itest_runner</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
