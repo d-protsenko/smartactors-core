@@ -34,7 +34,14 @@ public interface CreateAsyncOperationMessage {
     String getSessionId() throws ReadValueException;
 
     /**
-     * Setter to response
+     * Must set sessionId in target asyncData
+     * @param sessionId Target sessionId
+     * @throws ChangeValueException
+     */
+    void setSessionIdInData(String sessionId) throws ChangeValueException;
+
+    /**
+     * Setter
      * @param token operation unique identifier
      * @throws ChangeValueException if error during set is occurred
      */

@@ -43,7 +43,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ChainCallReceiver");
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
                     .after("receiver_chains_storage")

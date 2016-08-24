@@ -42,7 +42,7 @@ public class ConnectionOptionsPlugin implements IPlugin {
 
             item
                 .after("IOC")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                     try {
                         IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(
