@@ -43,7 +43,7 @@ public class CreateUserPlugin implements IPlugin {
 
             item
                 .after("IOC")
-                .before("configure")
+                .before("starter")
                 .process(() -> {
                     try {
                         IKey createCreateUserKey = Keys.getOrAdd(CreateUserActor.class.getCanonicalName());

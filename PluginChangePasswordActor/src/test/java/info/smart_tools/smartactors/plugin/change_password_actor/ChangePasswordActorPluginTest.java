@@ -63,7 +63,7 @@ public class ChangePasswordActorPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
         verify(bootstrapItem).after("IOC");
-        verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
         verify(bootstrap).add(bootstrapItem);
 

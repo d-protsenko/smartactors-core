@@ -3,7 +3,7 @@
 ## Overview
 
 Sometimes you have to load some set of JAR files to initialize some [Plugin](PluginExample.html) or a set of Plugins. And these JARs may be uploaded to the server folder where you watch for them one by one.
-The [`Feature`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ifeature_manager/IFeature.html) and the [`FeatureManager`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ifeature_manager/IFeatureManager.html) is the mechanism to declare a set of JAR files required for some "feature" and start the initialization process when all necessary files appeared.
+The [`Feature`](../apidocs/info/smart_tools/smartactors/core/ifeature_manager/IFeature.html) and the [`FeatureManager`](../apidocs/info/smart_tools/smartactors/core/ifeature_manager/IFeatureManager.html) is the mechanism to declare a set of JAR files required for some "feature" and start the initialization process when all necessary files appeared.
 
 ## Feature of Plugins
 
@@ -15,7 +15,7 @@ The code to initialize Plugins stays the same as in [plugins example]((PluginExa
 
 ### Filesystem tracker
 
-At the first you need to create the instance of [`IFilesystemTracker`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ifilesystem_tracker/IFilesystemTracker.html). It takes care on monitoring of the filesystem for already existing and new appearing files.
+At the first you need to create the instance of [`IFilesystemTracker`](../apidocs/info/smart_tools/smartactors/core/ifilesystem_tracker/IFilesystemTracker.html). It takes care on monitoring of the filesystem for already existing and new appearing files.
 
     IFilesystemTracker jarFilesTracker = new FilesystemTracker(
             (path) -> path.getPath().endsWith(".jar"),
@@ -23,7 +23,7 @@ At the first you need to create the instance of [`IFilesystemTracker`](http://sm
             
 The first parameter to constructor is a filter of file paths. Here it waits only for JAR files ignoring other files. However, the Feature may wait for other resources, not only JARs.
 
-The second parameter is the [`ListeningTaskFactory`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/filesystem_tracker/ListeningTaskFactory.html) which creates [`Runnable`](http://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html) to monitor the folder for new files in a background thread. The `ListenerTask` is the predefined `Runnable` of such kind, so it's constructor is used as a factory and is passed as the second parameter.
+The second parameter is the [`ListeningTaskFactory`](../apidocs/info/smart_tools/smartactors/core/filesystem_tracker/ListeningTaskFactory.html) which creates [`Runnable`](http://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html) to monitor the folder for new files in a background thread. The `ListenerTask` is the predefined `Runnable` of such kind, so it's constructor is used as a factory and is passed as the second parameter.
  
 ### Handling of new files
 
@@ -85,7 +85,7 @@ Now start a thread to monitor the folder and notify `Feature` when new files app
     IPath jarsDir = new Path("libs");
     jarFilesTracker.start(jarsDir);
     
-Note `FilesystemTracker` and `PluginLoader` works with instances of [`IPath`](http://smarttools.github.io/smartactors-core/apidocs/info/smart_tools/smartactors/core/ipath/IPath.html) for file paths.
+Note `FilesystemTracker` and `PluginLoader` works with instances of [`IPath`](../apidocs/info/smart_tools/smartactors/core/ipath/IPath.html) for file paths.
     
 ### Sequence of operations
 
@@ -101,5 +101,5 @@ Note the background filesystem tracking thread continues running. And the Featur
 
 The sources of this tutorial:
 
-* [FeatureServer implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/feature/package-frame.html)
-* [Tests](http://smarttools.github.io/smartactors-core/core.examples/xref-test/info/smart_tools/smartactors/core/examples/FeatureExample.html)
+* [FeatureServer implementation](../xref/info/smart_tools/smartactors/core/examples/feature/package-frame.html)
+* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/FeatureExample.html)

@@ -287,6 +287,8 @@
         <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
         <module>UuidNextIdStrategy</module>
+        <module>PrepareRegistrationMailActor</module>
+        <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
         <module>ChainTesting</module>

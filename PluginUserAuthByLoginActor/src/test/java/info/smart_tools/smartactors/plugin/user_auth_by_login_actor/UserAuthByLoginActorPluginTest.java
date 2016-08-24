@@ -61,7 +61,7 @@ public class UserAuthByLoginActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("UserAuthByLoginActorPlugin");
         verify(item).after("IOC");
-        verify(item).before("configure");
+        verify(item).before("starter");
 
         verify(item).process(actionArgumentCaptor.getValue());
 

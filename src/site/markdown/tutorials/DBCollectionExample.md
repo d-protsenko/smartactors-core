@@ -344,7 +344,7 @@ Get the document by id.
         }
     }
 
-Also see the sample [server implementation](http://smarttools.github.io/smartactors-core/xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details.
+Also see the sample [server implementation](../xref/info/smart_tools/smartactors/core/examples/db_collection/package-frame.html) for details.
 
 Implementation details:
 

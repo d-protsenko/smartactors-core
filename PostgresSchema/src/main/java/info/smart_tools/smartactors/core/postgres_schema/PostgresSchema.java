@@ -2,14 +2,7 @@ package info.smart_tools.smartactors.core.postgres_schema;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.indexes.IndexCreators;
 import info.smart_tools.smartactors.core.postgres_schema.search.FieldPath;
@@ -68,14 +61,15 @@ public final class PostgresSchema {
             throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
+            CreateClauses.writeFunctions(body);
             body.write("CREATE TABLE ");
             body.write(collection.toString());
             body.write(" (");
             body.write(DOCUMENT_COLUMN);
             body.write(" jsonb NOT NULL");
-            writeFullTextColumn(body, options);
+            CreateClauses.writeFullTextColumn(body, options);
             body.write(");\n");
-            writePrimaryKey(body, collection);
+            CreateClauses.writePrimaryKey(body, collection);
             if (options != null) {
                 IndexCreators.writeIndexes(body, collection, options);
             }
@@ -84,42 +78,14 @@ public final class PostgresSchema {
         }
     }
 
-    private static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
+    /**
+     * Returns the path to ID property of the document in the specified collection.
+     * @param collection name of the collection
+     * @return path to field like "collectionID"
+     * @throws QueryBuildException if the path is invalid
+     */
+    static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
         return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
-    }
-
-    private static void writePrimaryKey(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
-        String collectionName = collection.toString();
-        FieldPath idPath = getIdFieldPath(collection);
-        body.write("CREATE UNIQUE INDEX ");
-        body.write(collectionName);
-        body.write("_pkey ON ");
-        body.write(collectionName);
-        body.write(" USING BTREE ((");
-        body.write(idPath.toSQL());
-        body.write("));\n");
-    }
-
-    private static void writeFullTextColumn(final Writer body, final IObject options)
-            throws ResolutionException, InvalidArgumentException, IOException {
-        if (options == null) {
-            // ignoring absence of fulltext option
-            return;
-        }
-        try {
-            IKey fieldKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-            IFieldName fullTextField = IOC.resolve(fieldKey, "fulltext");
-            Object fullTextDefinition = options.getValue(fullTextField);
-            if (fullTextDefinition == null) {
-                // ignoring absence of fulltext option
-                return;
-            }
-        } catch (ReadValueException e) {
-            // ignoring absence of fulltext option
-        }
-        body.write(", ");
-        body.write(FULLTEXT_COLUMN);
-        body.write(" tsvector");
     }
 
     /**
