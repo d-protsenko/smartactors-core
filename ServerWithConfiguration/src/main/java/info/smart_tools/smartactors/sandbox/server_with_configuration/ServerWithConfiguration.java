@@ -144,6 +144,8 @@ public class ServerWithConfiguration implements IServer {
 
                     "info.smart_tools.smartactors:plugin.create_user:0.2.0-SNAPSHOT",
 
+                    "info.smart_tools.smartactors:plugin.get_first_not_null_rule:0.2.0-SNAPSHOT",
+
                     "info.smart_tools.smartactors:plugin.starter:0.2.0-SNAPSHOT"
             };
 
