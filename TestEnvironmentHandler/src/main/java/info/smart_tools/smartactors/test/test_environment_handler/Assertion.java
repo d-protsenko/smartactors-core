@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.core.chain_testing;
+package info.smart_tools.smartactors.test.test_environment_handler;
 
-import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
 
 /**
  * Interface for the object checking

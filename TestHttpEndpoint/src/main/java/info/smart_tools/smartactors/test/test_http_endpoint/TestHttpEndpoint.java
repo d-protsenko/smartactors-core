@@ -98,7 +98,7 @@ public class TestHttpEndpoint implements IAsyncService {
                 try {
                     IObject obj = this.rule.execute((IObject) dataSource.next());
                     if (obj != null) {
-                        handler.handle(obj, chain);
+                        handler.handle(obj, chain, null);
                     }
                     Thread.sleep(timeInterval);
                 } catch (Throwable e) {

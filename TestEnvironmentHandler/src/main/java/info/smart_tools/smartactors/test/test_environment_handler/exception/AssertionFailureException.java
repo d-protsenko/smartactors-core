@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.chain_testing.exceptions;
+package info.smart_tools.smartactors.test.test_environment_handler.exception;
 
 /**
  * Exception created by {@link info.smart_tools.smartactors.core.chain_testing.TestRunner} when assertion failed.

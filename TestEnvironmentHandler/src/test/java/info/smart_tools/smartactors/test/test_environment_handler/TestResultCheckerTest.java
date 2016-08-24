@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.chain_testing.checkers;
+package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -11,8 +11,11 @@ import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
-import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.test_environment_handler.checkers.AssertionChecker;
+import info.smart_tools.smartactors.test.test_environment_handler.checkers.ExceptionInterceptor;
+import info.smart_tools.smartactors.test.test_environment_handler.checkers.TestResultChecker;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 

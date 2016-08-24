@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewI
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -124,7 +125,8 @@ public class EnvironmentHandlerTest {
     }
 
     @Test
-    public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor() throws ResolutionException, InvalidArgumentException, RegistrationException {
+    public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
+            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException {
         messageProcessor = mock(IMessageProcessor.class);
         IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
         IOC.register(
@@ -148,7 +150,7 @@ public class EnvironmentHandlerTest {
         IQueue<ITask> queue = new BlockingQueue(null);
 
         IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
-        handler.handle(environment, chain);
+        handler.handle(environment, chain, null);
         try {
             verify(messageProcessor, times(1)).process(
                     (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")),

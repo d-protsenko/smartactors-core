@@ -299,6 +299,7 @@
         <module>PluginChainTestingAssertions</module>
         <module>TestDataSourceIObject</module>
         <module>ITestRunner</module>
+        <module>TestEnvironmentHandler</module>
     </modules>
 
     <build>

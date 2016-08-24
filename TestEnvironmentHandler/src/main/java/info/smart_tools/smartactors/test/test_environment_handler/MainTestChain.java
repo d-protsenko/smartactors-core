@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.chain_testing;
+package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;

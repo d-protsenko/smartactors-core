@@ -1,7 +1,5 @@
-package info.smart_tools.smartactors.core.chain_testing.checkers;
+package info.smart_tools.smartactors.test.test_environment_handler;
 
-import info.smart_tools.smartactors.core.chain_testing.Assertion;
-import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -14,13 +12,15 @@ import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.test_environment_handler.checkers.AssertionChecker;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;

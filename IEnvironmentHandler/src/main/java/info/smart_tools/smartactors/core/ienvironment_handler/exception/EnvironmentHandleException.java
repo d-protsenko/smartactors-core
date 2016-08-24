@@ -1,15 +1,15 @@
-package info.smart_tools.smartactors.test.itest_runner.exception;
+package info.smart_tools.smartactors.core.ienvironment_handler.exception;
 
 /**
- * Exception for error in {@link info.smart_tools.smartactors.test.itest_runner.ITestRunner} method
+ * Exception for error in {@link info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler} method
  */
-public class TestStartupException extends Exception {
+public class EnvironmentHandleException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public TestStartupException(final String message) {
+    public EnvironmentHandleException(final String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class TestStartupException extends Exception {
      * @param cause specific cause
      */
 
-    public TestStartupException(final String message, final Throwable cause) {
+    public EnvironmentHandleException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -27,7 +27,7 @@ public class TestStartupException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public TestStartupException(final Throwable cause) {
+    public EnvironmentHandleException(final Throwable cause) {
         super(cause);
     }
 }

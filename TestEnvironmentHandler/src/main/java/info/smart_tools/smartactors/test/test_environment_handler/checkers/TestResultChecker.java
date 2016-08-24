@@ -1,6 +1,5 @@
-package info.smart_tools.smartactors.core.chain_testing.checkers;
+package info.smart_tools.smartactors.test.test_environment_handler.checkers;
 
-import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -9,8 +8,9 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 
 import java.util.List;
 
@@ -28,7 +28,8 @@ public abstract class TestResultChecker {
     public abstract void check(final IMessageProcessor mp, final Throwable exc) throws AssertionFailureException;
 
     /**
-     * Get arguments object that should be associated with the step of {@link info.smart_tools.smartactors.core.chain_testing.MainTestChain}
+     * Get arguments object that should be associated with the step of
+     * {@link info.smart_tools.smartactors.test.test_environment_handler.MainTestChain}
      * that will be reached in case of successful completion of chain.
      *
      * @return the arguments object

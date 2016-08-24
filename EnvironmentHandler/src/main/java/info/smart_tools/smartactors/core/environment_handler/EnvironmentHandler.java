@@ -2,7 +2,9 @@ package info.smart_tools.smartactors.core.environment_handler;
 
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -42,7 +44,8 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     }
 
     @Override
-    public void handle(final IObject environment, final IReceiverChain receiverChain) {
+    public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+            throws InvalidArgumentException, EnvironmentHandleException {
         try {
             IMessageProcessingSequence processingSequence =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);

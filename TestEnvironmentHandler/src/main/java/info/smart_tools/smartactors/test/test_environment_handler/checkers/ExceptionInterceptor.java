@@ -1,6 +1,5 @@
-package info.smart_tools.smartactors.core.chain_testing.checkers;
+package info.smart_tools.smartactors.test.test_environment_handler.checkers;
 
-import info.smart_tools.smartactors.core.chain_testing.exceptions.AssertionFailureException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -12,7 +11,8 @@ import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundExcepti
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
+import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 
 import java.text.MessageFormat;
 

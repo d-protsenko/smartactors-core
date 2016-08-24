@@ -97,7 +97,7 @@ public class TestHttpEndpointTest {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
             return null;
-        }).when(handler).handle(any(IObject.class), same(this.chain));
+        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
         when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
         when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
 
@@ -110,7 +110,7 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        verify(handler, times(1)).handle(any(IObject.class), same(this.chain));
+        verify(handler, times(1)).handle(any(IObject.class), same(this.chain), any(null));
         assertEquals(result.size(), 1);
         IObject message = (IObject) result.get(0).getValue(new FieldName("message"));
         IObject context = (IObject) result.get(0).getValue(new FieldName("context"));
@@ -166,7 +166,7 @@ public class TestHttpEndpointTest {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
             return null;
-        }).when(handler).handle(any(IObject.class), same(this.chain));
+        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
         when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
         when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
         when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
@@ -187,7 +187,7 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        verify(handler, times(2)).handle(any(IObject.class), same(this.chain));
+        verify(handler, times(2)).handle(any(IObject.class), same(this.chain), any(null));
         assertEquals(result.size(), 2);
         IObject message1 = (IObject) result.get(0).getValue(new FieldName("message"));
         IObject context1 = (IObject) result.get(0).getValue(new FieldName("context"));
@@ -255,7 +255,7 @@ public class TestHttpEndpointTest {
                 notification.setExecuted(true);
                 return null;
             }
-        }).when(handler).handle(any(IObject.class), same(this.chain));
+        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
         source.setSource(testObject);
         IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
         endpoint.start();
@@ -300,7 +300,7 @@ public class TestHttpEndpointTest {
 
                 return null;
             }
-        }).when(handler).handle(any(IObject.class), same(this.chain));
+        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
         source.setSource(testObject);
         IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 1000L, this.chain, null);
         endpoint.start();

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.chain_testing;
+package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
@@ -10,9 +10,14 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.MessageRe
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test for {@link MainTestChain}.

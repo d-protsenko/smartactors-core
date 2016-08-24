@@ -3,8 +3,7 @@ package info.smart_tools.smartactors.test.itest_runner;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionException;
 
 /**
  * Interface for realize different test runners.
@@ -19,9 +18,8 @@ public interface ITestRunner {
      *                       exception describing failure reasons in case of failure)
      * @throws InvalidArgumentException if {@code description} is {@code null}
      * @throws InvalidArgumentException if {@code callback} is {@code null}
-     * @throws InvalidTestDescriptionException if test description has invalid format
-     * @throws TestStartupException if failed to start the test
+     * @throws TestExecutionException if test execution failed
      */
     void runTest(final IObject description, final IAction<Throwable> callback)
-            throws InvalidArgumentException, InvalidTestDescriptionException, TestStartupException;
+            throws InvalidArgumentException, TestExecutionException;
 }
