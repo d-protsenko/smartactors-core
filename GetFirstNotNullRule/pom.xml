@@ -6,7 +6,6 @@
         <artifactId>core.actor_receiver</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
-        <relativePath>../ActorReceiver/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
