@@ -304,6 +304,7 @@
         <module>IResultChecker</module>
         <module>TestCheckers</module>
         <module>InitializationException</module>
+        <module>PluginTestCheckers</module>
     </modules>
 
     <build>
