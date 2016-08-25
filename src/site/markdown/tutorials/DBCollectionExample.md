@@ -251,6 +251,43 @@ Also multiple conditions for different fields can be ANDed implicitly too.
             { "status": { "$eq": "A" }, "age": { "$lt": 30 } }
     }            
 
+###### Fulltext search
+
+Fulltext search has a special, more complex syntax.
+
+It doesn't require the document field because the search is done over pre-indexed fields defined during the collection creation.
+So, in the simplest form the fulltext filter may look like this.
+
+    {
+        "filter": { 
+            "$fulltext": "term1 term2" 
+        }
+    }
+     
+However, it's better to define the language for the fulltext query explicitly.
+
+    {
+        "filter": { 
+            "$fulltext": {
+                "query": "term1 term2",
+                "language": "english"
+            } 
+        }
+    }
+        
+The query can be more complex to join search terms with different conditions.
+
+    {
+        "filter": { 
+            "$fulltext": {
+                "query": {
+                    "$or": [ "term1",  "term2" ]
+                },
+                "language": "english"
+            } 
+        }
+    }
+
 ##### Page
 
 Page criterion is used for pagination.
