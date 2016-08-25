@@ -144,22 +144,36 @@ TBD
 
 ### Config normalization
 
-TBD
+A special implementation of IObject, [ConfigurationObject](../apidocs/info/smart_tools/smartactors/core/configuration_object/ConfigurationObject.html), is used to parse config file and wrapper definitions in it.
+This implementation expands short definitions in the wrapper into long definitions with lists of strategies.
 
-### WDSObject
-
-[WDSObject](../apidocs/info/smart_tools/smartactors/core/wds_object/WDSObject.html) is built over "wrapper" configuration object.
-
-    IObject config = IOC.resolve(iObjectKey,
+    IKey configObjectKey = Keys.getOrAdd("configuration object");
+    ConfigurationObject config = IOC.resolve(configObjectKey,
             "{" +
             "\"in_getName\": \"message/personName\"," +
             "\"out_setGreeting\": \"response/greeting\"" +
             "}");
-    WDSObject wrapper = IOC.resolve(Keys.getOrAdd(WDSObject.class.getCanonicalName()), config);
     
-TODO: canonical version of config
+This code produces the IObject equivalent to the expanded version of the config mentioned above.
+ 
+The strategies to use ConfigurationObject are registered in IOC by [InitializeConfigurationObjectStrategies](../apidocs/info/smart_tools/smartactors/plugin/configuration_object/InitializeConfigurationObjectStrategies.html) plugin.
 
+### WDSObject
+
+[WDSObject](../apidocs/info/smart_tools/smartactors/core/wds_object/WDSObject.html) is built over the configuration object, it's "wrapper" nested object.
+
+    IObject config = IOC.resolve(configObjectKey,
+            "{" +
+            "\"in_getName\": \"message/personName\"," +
+            "\"out_setGreeting\": \"response/greeting\"" +
+            "}");
+    IKey wdsObjectKey = Keys.getOrAdd(WDSObject.class.getCanonicalName());        
+    WDSObject wdsObject = IOC.resolve(wdsObjectKey, config);
+    
 It's created for each "wrapper" section in the config.
+
+For each "in_" or "out_" definition WDSObject creates the fields inside itself with the same names.
+Each such field incapsulates the transformation strategies defined in the config. 
 
 WDSObject is initialized by the environment object when it's necessary to process the message.
 
@@ -168,19 +182,37 @@ WDSObject is initialized by the environment object when it's necessary to proces
             "\"message\": { \"personName\": \"Ivan\" }," +
             "\"response\": {}" +
             "}");
-    wrapper.init(environment);
+    wdsObject.init(environment);
     
-The environment contains the message, context, response, etc. fields to process.
+The environment contains the message, context, response, etc... fields to process.
+
+Interactions with "in_"/"out_" fields of WDSObject are transformed to interactions with the environment passed to init() method earlier.
+
+The strategies to use WDSObject are registered by [PluginWDSObject](../apidocs/info/smart_tools/smartactors/plugin/wds_object/PluginWDSObject.html) plugin.
     
 ### WrapperGenerator
 
 [WrapperGenerator](../apidocs/info/smart_tools/smartactors/core/wrapper_generator/WrapperGenerator.html) generates a class in runtime which implements IObject, IObjectWrapper and the interface of the parameter of the actor's handler.
 
+    IKey iWrapperGeneratorKey = Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName());
+    IWrapperGenerator generator = IOC.resolve(iWrapperGeneratorKey);
+    GreetingMessage message = generator.generate(GreetingMessage.class);
+
 Instance of this class is initialized by WDSObject created on the previous step.
+
+    IObjectWrapper wrapper = (IObjectWrapper) message;
+    wrapper.init(wdsObject);
 
 Then the instance is passed to the actor's handler.
 Each calls to it's methods are just translated into access to WDSObject fields causing the strategies to be applied to data and the result to affect the environment.
 
-TODO: examples
+    assertEquals("Ivan", message.getName());
     
+    message.setGreeting("Hello");
     
+    IField responseField = IOC.resolve(iFieldKey, "response");
+    IObject response = responseField.in(environment);
+    IField greetingField = IOC.resolve(iFieldKey, "greeting");
+    assertEquals("Hello", greetingField.in(response));
+
+The strategy to use WrapperGenerator are registered by [RegisterWrapperGenerator](../apidocs/info/smart_tools/smartactors/plugin/wrapper_generator/RegisterWrapperGenerator.html) plugin.
