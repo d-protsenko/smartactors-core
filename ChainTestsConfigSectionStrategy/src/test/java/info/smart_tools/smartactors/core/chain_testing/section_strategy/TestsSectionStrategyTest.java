@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
 import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -143,7 +143,7 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
                 Arrays.asList(td1, td2));
 
-        doThrow(TestStartupException.class).when(testRunnerMock).runTest(same(td1), any());
+        doThrow(TestExecutionException.class).when(testRunnerMock).runTest(same(td1), any());
 
         new TestsSectionStrategy().onLoadConfig(config);
     }

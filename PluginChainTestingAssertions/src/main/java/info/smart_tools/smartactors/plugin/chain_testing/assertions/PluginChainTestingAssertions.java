@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.plugin.chain_testing.assertions;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.test.test_assertion.EqualAssertion;
-import info.smart_tools.smartactors.test.test_assertion.NotEqualAssertion;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -14,6 +12,8 @@ import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.test.test_assertions.EqualAssertion;
+import info.smart_tools.smartactors.test.test_assertions.NotEqualAssertion;
 
 /**
  * Plugin registering some assertions for chain tests.

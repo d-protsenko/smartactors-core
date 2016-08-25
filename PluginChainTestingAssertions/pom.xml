@@ -14,39 +14,39 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_testing.assertions</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>test.test_assertions</artifactId>
+            <version>${core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.singleton_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 </project>

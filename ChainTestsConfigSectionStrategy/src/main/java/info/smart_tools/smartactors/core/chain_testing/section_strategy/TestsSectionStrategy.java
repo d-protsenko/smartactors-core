@@ -10,8 +10,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
-import info.smart_tools.smartactors.test.itest_runner.exception.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.test.itest_runner.exception.TestStartupException;
+import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionException;
 
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
@@ -75,7 +74,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
             }
         } catch (ReadValueException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
-        } catch (TestStartupException | InvalidTestDescriptionException e) {
+        } catch (TestExecutionException e) {
             throw new ConfigurationProcessingException("Could not start test.", e);
         }
     }

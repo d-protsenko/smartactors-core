@@ -14,27 +14,27 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.imessage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_processing</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_processor</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_processing_sequence</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -55,22 +55,17 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ds_object</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.immutable_receiver_chain</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ienvironment_handler</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 

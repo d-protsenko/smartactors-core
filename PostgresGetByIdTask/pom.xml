@@ -91,13 +91,7 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
+         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.dsobject</artifactId>
             <version>${core.version}</version>

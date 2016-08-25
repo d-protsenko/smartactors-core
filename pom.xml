@@ -295,7 +295,7 @@
         <module>TestLoadingPlugins</module>
         <module>ChainTestsConfigSectionStrategy</module>
         <module>PluginChainTesting</module>
-        <module>TestAssertion</module>
+        <module>TestAssertions</module>
         <module>PluginChainTestingAssertions</module>
         <module>TestDataSourceIObject</module>
         <module>ITestRunner</module>

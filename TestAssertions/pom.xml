@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.chain_testing.assertion</artifactId>
+    <artifactId>test.test_assertions</artifactId>
 
     <dependencies>
         <dependency>

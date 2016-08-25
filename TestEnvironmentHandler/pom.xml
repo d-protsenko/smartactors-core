@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test.test_assertions</artifactId>
+    <artifactId>test.test_environment_handler</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->

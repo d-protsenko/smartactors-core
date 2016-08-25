@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.test.test_assertion;
+package info.smart_tools.smartactors.test.test_assertions;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -9,20 +9,21 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
 /**
- * Test for {@link NotEqualAssertion}.
+ * Test for {@link EqualAssertion}.
  */
-public class NotEqualAssertionTest extends AssertionTestBase {
+public class EqualAssertionTest extends AssertionTestBase {
     @Test
-    public void Should_passWhenValueIsNotEqualToReference()
+    public void Should_passWhenValueIsEqualToReference()
             throws Exception {
-        apply(NotEqualAssertion.class, "{'to':'reference string'}".replace('\'', '"'), "not reference string");
+        apply(EqualAssertion.class, "{'to':'reference string'}".replace('\'', '"'), "reference string");
     }
 
     @Test(expected = AssertionFailureException.class)
-    public void Should_failWhenValueIsEqualToReferenceValue()
+    public void Should_failWhenValueIsNotEqualToReferenceValue()
             throws Exception {
-        apply(NotEqualAssertion.class, "{'to':'reference string'}".replace('\'', '"'), "reference string");
+        apply(EqualAssertion.class, "{'to':'reference string'}".replace('\'', '"'), "wrong string");
     }
 
     @Test(expected = AssertionFailureException.class)
@@ -32,6 +33,6 @@ public class NotEqualAssertionTest extends AssertionTestBase {
 
         when(desc.getValue(any())).thenThrow(ReadValueException.class);
 
-        apply(NotEqualAssertion.class, desc, "value");
+        apply(EqualAssertion.class, desc, "value");
     }
 }

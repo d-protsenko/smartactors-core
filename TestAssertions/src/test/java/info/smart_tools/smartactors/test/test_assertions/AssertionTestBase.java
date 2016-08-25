@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.test.test_assertion;
+package info.smart_tools.smartactors.test.test_assertions;
 
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.test.test_assertion;
+package info.smart_tools.smartactors.test.test_assertions;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -13,9 +13,9 @@ import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureEx
 import java.text.MessageFormat;
 
 /**
- * Assertion verifying that value is equal to a reference value.
+ * Assertion verifying that value is not equal to a reference value.
  */
-public class EqualAssertion implements IAssertion {
+public class NotEqualAssertion implements IAssertion {
     private IFieldName referenceFieldName;
 
     /**
@@ -23,7 +23,7 @@ public class EqualAssertion implements IAssertion {
      *
      * @throws ResolutionException if resolution of any dependencies fails
      */
-    public EqualAssertion()
+    public NotEqualAssertion()
             throws ResolutionException {
         referenceFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "to");
     }
@@ -34,7 +34,7 @@ public class EqualAssertion implements IAssertion {
         try {
             Object reference = description.getValue(referenceFieldName);
 
-            if (reference == value || reference != null && reference.equals(value)) {
+            if (reference != null && value != null && !reference.equals(value) || (reference == null && value == null)) {
                 return;
             }
 
