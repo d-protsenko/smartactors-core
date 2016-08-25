@@ -38,7 +38,7 @@ public class SaveSessionActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey saveSessionActorKey = Keys.getOrAdd(SaveSessionActor.class.getCanonicalName());

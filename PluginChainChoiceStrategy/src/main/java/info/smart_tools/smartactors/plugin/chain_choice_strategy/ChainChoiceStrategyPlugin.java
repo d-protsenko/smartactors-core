@@ -39,7 +39,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ChainChoiceStrategy");
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
                     .process(

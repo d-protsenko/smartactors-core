@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.actors.create_user;
 
 import info.smart_tools.smartactors.actors.create_user.wrapper.MessageWrapper;
+import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
@@ -14,13 +16,23 @@ import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
+import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
 
 /**
  * Actor for creating user
  */
 public class CreateUserActor {
+    private IPasswordEncoder passwordEncoder;
     private IPool connectionPool;
-    private String COLLECTION_NAME = "user_account";
+    private String collectionName;
+
+    private IField collectionNameF;
+    private IField userIdF;
+    private IField passwordF;
+    private IField algorithmF;
+    private IField encoderF;
+    private IField charsetF;
 
     /**
      * Constructor
@@ -29,9 +41,24 @@ public class CreateUserActor {
      */
     public CreateUserActor(final IObject params) throws InvalidArgumentException {
         try {
+            userIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
+            collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+
+            algorithmF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "algorithm");
+            encoderF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "encoder");
+            charsetF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "charset");
+
             ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
             this.connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
-        } catch (ResolutionException e) {
+            this.collectionName = collectionNameF.in(params);
+            this.passwordEncoder = IOC.resolve(
+                    Keys.getOrAdd("PasswordEncoder"),
+                    algorithmF.in(params),
+                    encoderF.in(params),
+                    charsetF.in(params)
+            );
+        } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't get key or resolve dependency", e);
         }
     }
@@ -44,12 +71,14 @@ public class CreateUserActor {
     public void create(final MessageWrapper message) throws TaskExecutionException {
         try {
             IObject user = message.getUser();
+            userIdF.out(user, IOC.resolve(Keys.getOrAdd("db.collection.nextid")));
+            passwordF.out(user, passwordEncoder.encode(passwordF.in(user)));
 
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 ITask searchTask = IOC.resolve(
                         Keys.getOrAdd("db.collection.upsert"),
                         poolGuard.getObject(),
-                        COLLECTION_NAME,
+                        collectionName,
                         user
                 );
                 searchTask.execute();
@@ -58,8 +87,11 @@ public class CreateUserActor {
             throw new TaskExecutionException("Failed to get connection", e);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve upsert task", e);
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new TaskExecutionException("Failed to get user object from message", e);
+        } catch (EncodingException e) {
+            throw new TaskExecutionException("Failed to encode password", e);
         }
+
     }
 }

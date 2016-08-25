@@ -89,6 +89,10 @@ public class CreateSessionActorTest {
         IOC.register(keyDBTask, new ApplyFunctionToArgumentsStrategy(
                 (args) -> task
         ));
+        IKey keyNextId = Keys.getOrAdd("db.collection.nextid");
+        IOC.register(keyNextId, new ApplyFunctionToArgumentsStrategy(
+                (args) -> "123"
+        ));
 
         IObject params = new DSObject("{ \"collectionName\": \"session\" }");
         actor = new CreateSessionActor(params);
