@@ -12,8 +12,9 @@ import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.test.iassertion.IAssertion;
+import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.test_environment_handler.checkers.AssertionChecker;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
@@ -29,8 +30,8 @@ import static org.mockito.Mockito.*;
  * Test for {@link AssertionChecker}.
  */
 public class AssertionCheckerTest extends PluginsLoadingTestBase {
-    private Assertion assertion1Mock;
-    private Assertion assertion2Mock;
+    private IAssertion assertion1Mock;
+    private IAssertion assertion2Mock;
     private IMessageProcessor messageProcessorMock;
     private IObject environmentMock;
 
@@ -46,8 +47,8 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        assertion1Mock = mock(Assertion.class);
-        assertion2Mock = mock(Assertion.class);
+        assertion1Mock = mock(IAssertion.class);
+        assertion2Mock = mock(IAssertion.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         environmentMock = mock(IObject.class);
 

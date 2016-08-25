@@ -9,9 +9,9 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.test.iassertion.IAssertion;
+import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
-import info.smart_tools.smartactors.test.test_environment_handler.Assertion;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -26,11 +26,11 @@ public class AssertionChecker extends TestResultChecker {
      */
     private class PreparedAssertion {
         private String name;
-        private Assertion assertion;
+        private IAssertion assertion;
         private IFieldName fieldName;
         private IObject description;
 
-        PreparedAssertion(final String name, final Assertion assertion, final IFieldName fieldName, final IObject description) {
+        PreparedAssertion(final String name, final IAssertion assertion, final IFieldName fieldName, final IObject description) {
             this.name = name;
             this.assertion = assertion;
             this.fieldName = fieldName;
@@ -79,7 +79,8 @@ public class AssertionChecker extends TestResultChecker {
     }
 
     @Override
-    public void check(final IMessageProcessor mp, final Throwable exc) throws AssertionFailureException {
+    public void check(final IMessageProcessor mp, final Throwable exc)
+            throws AssertionFailureException {
         if (exc != null) {
             throw new AssertionFailureException("Unexpected exception thrown by tested chain:", exc);
         }
@@ -109,7 +110,7 @@ public class AssertionChecker extends TestResultChecker {
                 IFieldName getterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "in_" + name);
 
                 try {
-                    Assertion assertion1 = IOC.resolve(Keys.getOrAdd("assertion of type " + type));
+                    IAssertion assertion1 = IOC.resolve(Keys.getOrAdd("assertion of type " + type));
 
                     preparedSuccessReceiverWrapperConfig.setValue(getterFieldName, assertion.getValue(assertValueFieldName));
 

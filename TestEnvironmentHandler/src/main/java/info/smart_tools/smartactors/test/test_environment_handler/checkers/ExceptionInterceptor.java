@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundExcepti
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
+import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 
 import java.text.MessageFormat;

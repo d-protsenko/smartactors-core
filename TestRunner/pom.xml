@@ -9,13 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test.test_assertions</artifactId>
+    <artifactId>test.test_runner</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ienvironment_handler</artifactId>
+            <artifactId>test.itest_runner</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichain_storage</artifactId>
+            <artifactId>core.chain_storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -40,21 +40,9 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouter</artifactId>
+            <artifactId>core.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.itest_runner</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.iassertion</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-
-        <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
@@ -63,66 +51,52 @@
 
         <!-- Tests -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>testing.helpers.plugins_loading_test_base</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.scoped_ioc</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.ioc_keys</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.scope_provider</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.fieldname</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.dsobject</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>plugin.ifieldname</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.singleton_strategy</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 </project>

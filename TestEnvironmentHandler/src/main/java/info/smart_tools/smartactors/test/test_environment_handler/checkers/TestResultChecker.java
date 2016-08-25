@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.AssertionFailureException;
+import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.plugin.chain_testing.assertions;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.chain_testing.assertions.EqualAssertion;
-import info.smart_tools.smartactors.core.chain_testing.assertions.NotEqualAssertion;
+import info.smart_tools.smartactors.test.test_assertion.EqualAssertion;
+import info.smart_tools.smartactors.test.test_assertion.NotEqualAssertion;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
