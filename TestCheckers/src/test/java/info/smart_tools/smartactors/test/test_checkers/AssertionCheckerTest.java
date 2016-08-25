@@ -1,6 +1,7 @@
-package info.smart_tools.smartactors.test.test_environment_handler;
+package info.smart_tools.smartactors.test.test_checkers;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -14,17 +15,14 @@ import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
-import info.smart_tools.smartactors.test.test_environment_handler.checkers.AssertionChecker;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link AssertionChecker}.
@@ -47,18 +45,18 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        assertion1Mock = mock(IAssertion.class);
-        assertion2Mock = mock(IAssertion.class);
-        messageProcessorMock = mock(IMessageProcessor.class);
-        environmentMock = mock(IObject.class);
+        assertion1Mock = Mockito.mock(IAssertion.class);
+        assertion2Mock = Mockito.mock(IAssertion.class);
+        messageProcessorMock = Mockito.mock(IMessageProcessor.class);
+        environmentMock = Mockito.mock(IObject.class);
 
-        when(messageProcessorMock.getEnvironment()).thenReturn(environmentMock);
+        Mockito.when(messageProcessorMock.getEnvironment()).thenReturn(environmentMock);
 
         IOC.register(Keys.getOrAdd("assertion of type atype1"), new SingletonStrategy(assertion1Mock));
         IOC.register(Keys.getOrAdd("assertion of type atype2"), new SingletonStrategy(assertion2Mock));
     }
 
-    @Test(expected = TestStartupException.class)
+    @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveAssertionDependency()
             throws Exception {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
@@ -67,7 +65,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         new AssertionChecker(Collections.singletonList(a1desc));
     }
 
-    @Test(expected = TestStartupException.class)
+    @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveFieldNameDependency()
             throws Exception {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
@@ -78,7 +76,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         new AssertionChecker(Collections.singletonList(a1desc));
     }
 
-    @Test(expected = TestStartupException.class)
+    @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveIObjectDependency()
             throws Exception {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
@@ -106,7 +104,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
-        when(environmentMock.getValue(any())).thenThrow(ReadValueException.class);
+        Mockito.when(environmentMock.getValue(Matchers.any())).thenThrow(ReadValueException.class);
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 
@@ -119,7 +117,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
-        doThrow(AssertionFailureException.class).when(assertion1Mock).check(same(a1desc), any());
+        Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 
@@ -132,7 +130,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
-        doThrow(AssertionFailureException.class).when(assertion1Mock).check(same(a1desc), any());
+        Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 
@@ -145,7 +143,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'type': 'atype1', 'name': 'Ass1', 'value': 'message/x'}".replace('\'', '"'));
 
-        doThrow(AssertionFailureException.class).when(assertion1Mock).check(same(a1desc), any());
+        Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 

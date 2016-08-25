@@ -301,6 +301,9 @@
         <module>ITestRunner</module>
         <module>TestEnvironmentHandler</module>
         <module>IAssertion</module>
+        <module>IResultChecker</module>
+        <module>TestCheckers</module>
+        <module>InitializationException</module>
     </modules>
 
     <build>

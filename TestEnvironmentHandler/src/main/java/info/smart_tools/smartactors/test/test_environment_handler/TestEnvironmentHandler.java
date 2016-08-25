@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandle
 import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -17,9 +18,10 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
-import info.smart_tools.smartactors.test.test_environment_handler.checkers.TestResultChecker;
+
+import java.util.List;
 
 /**
  * Implementation of {@link IEnvironmentHandler}.
@@ -63,7 +65,8 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
         }
 
         try {
-            TestResultChecker checker = TestResultChecker.createChecker(environment);
+
+            IResultChecker checker = createChecker(environment);
 
             IMessageProcessor[] fmp = new IMessageProcessor[1];
 
@@ -105,12 +108,45 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
 
             mp.process(message, context);
         } catch (ReadValueException | ResolutionException | NestedChainStackOverflowException
-                | ChangeValueException | TestStartupException | InvalidTestDescriptionException e) {
+                | ChangeValueException | InitializationException e) {
             //throw new TestStartupException(e);
             throw new EnvironmentHandleException(e);
         } catch (ClassCastException e) {
             //throw new InvalidTestDescriptionException("Could not cast value to required type.", e);
             throw new EnvironmentHandleException("Could not cast value to required type.", e);
+        }
+    }
+
+    private IResultChecker createChecker(final IObject description)
+            throws InitializationException {
+        try {
+            IFieldName interceptFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "intercept"
+            );
+            IFieldName assertFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "assert");
+
+            List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);
+            IObject intercept = (IObject) description.getValue(interceptFieldName);
+
+            if ((null == assertions) && (null == intercept)) {
+                throw new InvalidTestDescriptionException("None of \"assert\" and \"intercept\" sections are present in test description.");
+            }
+
+            if ((null != assertions) && (null != intercept)) {
+                throw new InvalidTestDescriptionException("Both \"assert\" and \"intercept\" sections are present in test description.");
+            }
+
+            if (null != assertions) {
+                return (IResultChecker) IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#assert"), assertions
+                );
+            } else {
+                return (IResultChecker) IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#intercept"), intercept
+                );
+            }
+        } catch (ResolutionException | InvalidTestDescriptionException | InvalidArgumentException | ReadValueException e) {
+            throw new InitializationException(e);
         }
     }
 }

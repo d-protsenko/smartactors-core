@@ -1,26 +1,26 @@
-package info.smart_tools.smartactors.test.test_environment_handler.checkers;
+package info.smart_tools.smartactors.test.test_checkers;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
-import info.smart_tools.smartactors.test.test_environment_handler.exception.TestStartupException;
+import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * {@link TestResultChecker} that verifies assertions when test execution is completed.
+ * Implementation of {@link IResultChecker} that verifies assertions when test execution is completed.
  */
-public class AssertionChecker extends TestResultChecker {
+public class AssertionChecker implements IResultChecker {
     /**
      * Object representing assertion that is already resolved and will be checked when chain execution completes.
      */
@@ -61,27 +61,33 @@ public class AssertionChecker extends TestResultChecker {
      * The constructor.
      *
      * @param description    "assert" section of test description
-     * @throws TestStartupException if any error occurs initializing checker
+     * @throws InitializationException if any error occurs initializing checker
      */
     public AssertionChecker(final List<IObject> description)
-            throws TestStartupException {
+            throws InitializationException {
         try {
-            preparedSuccessReceiverArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            preparedSuccessReceiverWrapperConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            preparedSuccessReceiverArguments = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+            );
+            preparedSuccessReceiverWrapperConfig = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+            );
 
-            IFieldName wrapperFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
+            IFieldName wrapperFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper"
+            );
             preparedSuccessReceiverArguments.setValue(wrapperFieldName, preparedSuccessReceiverWrapperConfig);
 
             prepareAssertions(description);
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
-            throw new TestStartupException(e);
+            throw new InitializationException(e);
         }
     }
 
     @Override
     public void check(final IMessageProcessor mp, final Throwable exc)
             throws AssertionFailureException {
-        if (exc != null) {
+        if (null != exc) {
             throw new AssertionFailureException("Unexpected exception thrown by tested chain:", exc);
         }
 
@@ -98,30 +104,40 @@ public class AssertionChecker extends TestResultChecker {
     }
 
     private void prepareAssertions(final List<IObject> descriptions)
-            throws TestStartupException {
+            throws InitializationException {
         try {
-            IFieldName assertNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            IFieldName assertTypeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "type");
-            IFieldName assertValueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
+            IFieldName assertNameFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name"
+            );
+            IFieldName assertTypeFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "type"
+            );
+            IFieldName assertValueFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "value"
+            );
 
             for (IObject assertion : descriptions) {
                 String name = (String) assertion.getValue(assertNameFieldName);
                 String type = (String) assertion.getValue(assertTypeFieldName);
-                IFieldName getterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "in_" + name);
+                IFieldName getterFieldName = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "in_" + name
+                );
 
                 try {
-                    IAssertion assertion1 = IOC.resolve(Keys.getOrAdd("assertion of type " + type));
+                    IAssertion assertion1 = IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), "assertion of type " + type)
+                    );
 
                     preparedSuccessReceiverWrapperConfig.setValue(getterFieldName, assertion.getValue(assertValueFieldName));
 
                     preparedAssertions.add(new PreparedAssertion(name, assertion1, getterFieldName, assertion));
                 } catch (ResolutionException e) {
-                    throw new TestStartupException(
+                    throw new InitializationException(
                             MessageFormat.format("Could not resolve assertion \"{0}\" of type \"{1}\".", name, type), e);
                 }
             }
         } catch (ResolutionException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
-            throw new TestStartupException(e);
+            throw new InitializationException(e);
         }
     }
 }

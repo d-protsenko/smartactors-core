@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
  * <pre>
  *     {
  *         "name": "Unique test name",                      // Unique name of the test
+ *         "entryPoint": "httpEndpoint",                    // The entry point (chain, httpEndpoint, etc)
  *         "environment": {
  *             "message": {                                 // The message to send
  *                 "a": 10,
@@ -39,6 +40,7 @@ import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
  * <pre>
  *     {
  *         "name": "Another test name",
+ *         "entryPoint": "chain",
  *         "environment": {
  *             "message": {
  *                 "a": 10,
