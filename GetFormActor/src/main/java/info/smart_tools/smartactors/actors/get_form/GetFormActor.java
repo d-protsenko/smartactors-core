@@ -15,7 +15,7 @@ import java.util.List;
  * Actor that put form to message from cached collection
  */
 public class GetFormActor {
-    private static final String KEY_NAME = "formId";
+
     private ICachedCollection collection;
 
     /**
@@ -25,8 +25,10 @@ public class GetFormActor {
      */
     public GetFormActor(final IObject params) throws GetFormActorException {
         try {
-            IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            collection = IOC.resolve(Keys.getOrAdd(ICachedCollection.class.getCanonicalName()), field.in(params), KEY_NAME);
+            IField cacheKeyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cacheKey");
+            String keyName = cacheKeyField.in(params);
+            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            collection = IOC.resolve(Keys.getOrAdd(ICachedCollection.class.getCanonicalName()), collectionNameField.in(params), keyName);
         } catch (Exception e) {
             throw new GetFormActorException("Can't create GetFormActor", e);
         }
