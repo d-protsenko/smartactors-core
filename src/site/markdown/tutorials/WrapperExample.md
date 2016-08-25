@@ -28,6 +28,8 @@ Setter is used to put data from the actor OUTto the system.
 So we called it OUT-method.
 It throws `ChangeValueException` because sometimes the writing of the data may fail.
 
+Declaring such exceptions for getters and setters is the only requirement for the wrapper interface.
+
 ## Wrapper configuration
 
 Which data to return by getters or receive in setters is defined by the wrapper configuration.
@@ -40,13 +42,87 @@ For example:
         "out_setGreeting": "response/greeting",
     }
     
-TBD
+This was a short form of wrapper definition. Actually it's expanded to this.
+
+    "wrapper": {
+        "in_getName": [
+            { 
+                "name": "wds_getter_strategy",
+                "args": [ "message/personName" ]
+            }
+        ],
+        "out_setGreeting": [[
+            {
+                "name": "wds_target_strategy",
+                args: [ "local/value", "response/greeting" ]
+            }
+        ]]
+    }
+    
+In methods have a list of transformation strategies which are to extract data.
+Out methods have a list of a list of transformation strategies which are to set data.
+The two nesting level for the setter is necessary because the same single value passed to the setter can be put to different set of system objects, to multiple destinations.
 
 ## Environment
     
-TBD
+Note the "message", "local" and "response" strings in the wrapper configuration above. 
+They are environment objects.
 
-## List of transformations
+Each of them is represented as [IObject](IObjectExample.html): a set of named fields and values.
+The values can be scalars, like strings and numbers, lists, nested IObjects or even plain Java objects.
+
+To access the values for each environment object use a slash-separated path: `object_name/field_name`.
+The path can go deeper to nested objects: `object_name/nested_object/nested_field`.
+
+### Message
+
+`message` is the current processing message represented as IObject.
+It's the message received by the endpoint and processed by the previous actors in the message map.
+
+Actors are able to modify fields of the message, add new fields, delete fields, etc...
+
+Note one actor can use a setter of it's wrapper to set a value to the message, another actor can read this value using it's wrapper getter.
+It's not necessary for both actors to negotiate the name of the message field they use, because all mapping, in both directions from actor to the message and from the message to the actor, are handled by the wrapper.
+
+### Response
+
+`response` is the object (as IObject) which will be returned via endpoint as the response to the request.
+
+Initially response is empty. 
+It is passed through all actors in the message map, each actor can add or modify fields in it.
+Then the "respond" actor returns the response back to the client who sent the message to the endpoint.
+ 
+### Local
+ 
+There is only one value called `local/value`. 
+It's used to pass a value between transformation strategies.
+ 
+For getters the initial `local/value` is `null`.
+For setters the initial `local/value` is set to the object passed to the setter from the actor.
+Then, for next strategies in the transformation chain (see below), the `local/value` is set to the result of execution of the previous strategy in the chain.
+
+### Const
+
+`const` is a special way to pass a constant string through the getter to your actor.
+
+For example, `const/value` will pass the String "value" to the actor.
+
+Think of such constants as a way to tune you actor in-place.
+You define some getter in the wrapper to get some configuration parameter.
+And you define the actual parameter value in the message map wrapper configuration.
+
+### Context
+
+`context` is used to keep some unserializable Java objects which are not part of request or response and are actual during the current request processing.
+
+The typical example of such object is HTTP request of the HTTP endpoint, it's available as `context/request`.
+Also the context can be used to set HTTP headers and cookies to the HTTP response.
+
+Note the context mostly contain data specified to the used endpoint and protocol. 
+Typical business logic actors should avoid to use `context`. 
+They should use `message` and `response` to interact with each other and the client.
+
+## List of transformation strategies
     
 ### In/getter
     
@@ -60,7 +136,7 @@ TBD
 
 TBD
     
-## Transformation strategy
+## How to write own transformation strategy
     
 TBD    
     
