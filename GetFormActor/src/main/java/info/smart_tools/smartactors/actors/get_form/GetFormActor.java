@@ -3,9 +3,7 @@ package info.smart_tools.smartactors.actors.get_form;
 import info.smart_tools.smartactors.actors.get_form.exception.GetFormActorException;
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
-import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -17,7 +15,7 @@ import java.util.List;
  * Actor that put form to message from cached collection
  */
 public class GetFormActor {
-    private static final String KEY_NAME = "form";
+    private static final String KEY_NAME = "formId";
     private ICachedCollection collection;
 
     /**

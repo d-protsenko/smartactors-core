@@ -123,7 +123,7 @@
       "exceptional": []
     },
     {
-      "id": "getFormMap",
+      "id": "getForm",
       "steps": [
         {
           "target": "createSessionActor",
@@ -172,7 +172,7 @@
           "target": "getFormActor",
           "handler": "getForm",
           "wrapper": {
-            "in_getFormKey": "message/formKey",
+            "in_getFormKey": "message/formId",
             "out_setForm": "response/form"
           }
         },
