@@ -216,3 +216,9 @@ Each calls to it's methods are just translated into access to WDSObject fields c
     assertEquals("Hello", greetingField.in(response));
 
 The strategy to use WrapperGenerator are registered by [RegisterWrapperGenerator](../apidocs/info/smart_tools/smartactors/plugin/wrapper_generator/RegisterWrapperGenerator.html) plugin.
+
+![Relations between objects in Wrapper](http://www.plantuml.com/plantuml/img/RL0n3i8m3Dpz2d-WVG52Gh0m80O6HcGYjmfgxIf9WO77KweG6f4bbvplpdQew_HnwUtJIWjW9R1ho33kZzSRc_3Fd1qD0xj5uS3UKyi0fYFlyIk8hzqf9kaCo7AtJgLd2L6oLMbiEpeALYMAWKnGXvlF2J03LkkK7H6rMZH8juckYga_nPIr70JY3hXwrNNgaczShELasP46p3s9plYw_1sPDPly3G00)
+
+## Code
+
+See [some tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/WrapperExample.html) demonstrating how config normalization, WDS object and WrapperGenerator works.
