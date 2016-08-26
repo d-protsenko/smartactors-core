@@ -15,38 +15,49 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.chain_testing</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.chain_testing.section_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>test.test_runner</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>test.test_environment_handler</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.named_keys_storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.create_new_instance_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -32,7 +32,7 @@ public class PluginChainTestingAssertions implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> assertionsItem = new BootstrapItem("testing_assertions");
+            IBootstrapItem<String> assertionsItem = new BootstrapItem("test assertions");
 
             assertionsItem
                     .after("IOC")

@@ -28,13 +28,6 @@
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Third-party libraries -->
-        <dependency>
-            <groupId>org.mdkt.compiler</groupId>
-            <artifactId>InMemoryJavaCompiler</artifactId>
-            <version>1.2</version>
-        </dependency>
-
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

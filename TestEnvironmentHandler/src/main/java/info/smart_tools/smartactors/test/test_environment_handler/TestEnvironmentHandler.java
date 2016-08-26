@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSe
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
 
@@ -34,19 +33,28 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
     private final IFieldName environmentFieldName;
     private final IFieldName messageFieldName;
     private final IFieldName contextFieldName;
-//    private final IFieldName chainNameFieldName;
+
 
     /**
      * The constructor.
      *
-     * @throws ResolutionException if resolution of any dependencies fails
+     * @throws InitializationException if creation of {@link TestEnvironmentHandler} has been failed.
      */
     public TestEnvironmentHandler()
-            throws ResolutionException {
-        environmentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-        contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-//        chainNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainName");
+            throws InitializationException {
+        try {
+            environmentFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "environment"
+            );
+            messageFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message"
+            );
+            contextFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context"
+            );
+        } catch (ResolutionException e) {
+            throw new InitializationException("Could not create new instance of TestEnvironmentHandler.", e);
+        }
     }
 
     @Override
@@ -75,14 +83,6 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             IObject message = (IObject) environmentDesc.getValue(messageFieldName);
             IObject context = (IObject) environmentDesc.getValue(contextFieldName);
 
-//            String chainName = (String) environment.getValue(chainNameFieldName);
-
-//            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-
-//            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-//
-//            IReceiverChain testedChain = chainStorage.resolve(chainId);
-
             IAction<Throwable> completionCallback = exc -> {
                 try {
                     checker.check(fmp[0], exc);
@@ -93,17 +93,26 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                 }
             };
 
-            MainTestChain mainTestChain = IOC.resolve(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),
-                    completionCallback, checker.getSuccessfulReceiverArguments());
+            MainTestChain mainTestChain = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), MainTestChain.class.getCanonicalName()),
+                    completionCallback,
+                    checker.getSuccessfulReceiverArguments()
+            );
 
-            IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()),
-                    STACK_DEPTH, mainTestChain);
+            IMessageProcessingSequence sequence = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                    STACK_DEPTH, mainTestChain
+            );
 
             sequence.callChain(receiverChain);
 
-            IQueue<ITask> taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            IQueue<ITask> taskQueue = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "task_queue")
+            );
 
-            IMessageProcessor mp = IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, sequence);
+            IMessageProcessor mp = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()), taskQueue, sequence
+            );
             fmp[0] = mp;
 
             mp.process(message, context);
@@ -123,7 +132,9 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             IFieldName interceptFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "intercept"
             );
-            IFieldName assertFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "assert");
+            IFieldName assertFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "assert"
+            );
 
             List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);
             IObject intercept = (IObject) description.getValue(interceptFieldName);

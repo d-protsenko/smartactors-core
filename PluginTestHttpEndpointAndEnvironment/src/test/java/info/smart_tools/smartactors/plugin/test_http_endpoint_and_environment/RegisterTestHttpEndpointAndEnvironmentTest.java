@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.plugin.test_http_endpoint_and_environment;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -56,26 +58,16 @@ public class RegisterTestHttpEndpointAndEnvironmentTest {
                             }
                         })
         );
-//        IOC.register(
-//                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-//                new ResolveByNameIocStrategy((a)-> {
-//                    try {
-//                        return new FieldName((String) a[0]);
-//                    } catch (Exception e) {
-//                        throw new RuntimeException("Could not create new instance of FieldName.");
-//                    }
-//                })
-//        );
-//        IOC.register(
-//                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
-//                new ApplyFunctionToArgumentsStrategy((a)-> {
-//                    try {
-//                        return new DSObject();
-//                    } catch (Exception e) {
-//                        throw new RuntimeException("Could not create new instance of FieldName.");
-//                    }
-//                })
-//        );
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                new ResolveByNameIocStrategy((a)-> {
+                    try {
+                        return new FieldName((String) a[0]);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Could not create new instance of FieldName.");
+                    }
+                })
+        );
         IEnvironmentHandler environmentHandler = mock(IEnvironmentHandler.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyStorage(), "test_environment_handler"),

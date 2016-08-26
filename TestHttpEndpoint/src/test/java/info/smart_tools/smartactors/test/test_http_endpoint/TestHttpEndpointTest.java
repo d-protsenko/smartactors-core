@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.test.test_http_endpoint;
 
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
@@ -53,6 +54,7 @@ public class TestHttpEndpointTest {
 
     private IStrategyContainer container = new StrategyContainer();
     private IReceiverChain chain = mock(IReceiverChain.class);
+    private IAction<Throwable> callback = mock(IAction.class);
 
     @Rule
     public Timeout globalTimeout = Timeout.seconds(20);
@@ -91,18 +93,24 @@ public class TestHttpEndpointTest {
         List<IObject> result = new ArrayList<>();
 
         IObject testObject = mock(IObject.class);
-        IObject messageOfTestObject = mock(IObject.class);
-        IObject requestOfTestObject = mock(IObject.class);
+
+        IObject environment = new DSObject();
+        IObject message = mock(IObject.class);
+        IObject request = mock(IObject.class);
+        environment.setValue(new FieldName("message"), message);
+        environment.setValue(new FieldName("request"), request);
+
+        when(testObject.getValue(new FieldName("chain"))).thenReturn(this.chain);
+        when(testObject.getValue(new FieldName("callback"))).thenReturn(this.callback);
+        when(testObject.getValue(new FieldName("environment"))).thenReturn(environment);
+
         doAnswer(invocationOnMock -> {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
             return null;
-        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
-        when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
-        when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
-
+        }).when(handler).handle(environment, this.chain, this.callback);
         source.setSource(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null);
         endpoint.start();
         while(true) {
             if(notification.getExecuted()) {
@@ -110,12 +118,16 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        verify(handler, times(1)).handle(any(IObject.class), same(this.chain), any(null));
+        verify(handler, times(1)).handle(environment, this.chain, this.callback);
         assertEquals(result.size(), 1);
-        IObject message = (IObject) result.get(0).getValue(new FieldName("message"));
-        IObject context = (IObject) result.get(0).getValue(new FieldName("context"));
-        assertSame(message, messageOfTestObject);
-        assertNotNull(context);
+        IObject resultMessage = (IObject) result.get(0).getValue(new FieldName("message"));
+        IObject resultContext = (IObject) result.get(0).getValue(new FieldName("context"));
+        assertSame(resultMessage, message);
+        assertNotNull(resultContext);
+        assertNotNull(resultContext.getValue(new FieldName("headers")));
+        assertNotNull(resultContext.getValue(new FieldName("cookies")));
+        assertNotNull(resultContext.getValue(new FieldName("request")));
+        assertNotNull(resultContext.getValue(new FieldName("channel")));
     }
 
     @Test
@@ -130,7 +142,7 @@ public class TestHttpEndpointTest {
         Notification notification = new Notification();
         IObject testObject = mock(IObject.class);
         source.setSource(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, (a) -> {
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, (a) -> {
             notification.setExecuted(true);
             while(true) {
             }
@@ -158,21 +170,28 @@ public class TestHttpEndpointTest {
 
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
+        IObject testEnvironment = new DSObject();
+        IObject testAnotherEnvironment = new DSObject();
+
         IObject messageOfTestObject = mock(IObject.class);
         IObject messageOfAnotherTestObject = mock(IObject.class);
         IObject requestOfTestObject = mock(IObject.class);
         IObject requestOfAnotherTestObject = mock(IObject.class);
+
+        testEnvironment.setValue(new FieldName("message"), messageOfTestObject);
+        testEnvironment.setValue(new FieldName("request"), requestOfTestObject);
+        testAnotherEnvironment.setValue(new FieldName("message"), messageOfAnotherTestObject);
+        testAnotherEnvironment.setValue(new FieldName("request"), requestOfAnotherTestObject);
+
         doAnswer(invocationOnMock -> {
             result.add((IObject) invocationOnMock.getArguments()[0]);
             notification.setExecuted(true);
             return null;
-        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
-        when(testObject.getValue(new FieldName("message"))).thenReturn(messageOfTestObject);
-        when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
-        when(testObject.getValue(new FieldName("request"))).thenReturn(requestOfTestObject);
-        when(testAnotherObject.getValue(new FieldName("request"))).thenReturn(requestOfAnotherTestObject);
+        }).when(handler).handle(any(IObject.class), any(IReceiverChain.class), any(null));
+        when(testObject.getValue(new FieldName("environment"))).thenReturn(testEnvironment);
+        when(testAnotherObject.getValue(new FieldName("environment"))).thenReturn(testAnotherEnvironment);
         source.setSource(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null);
         endpoint.start();
         while(true) {
             if(notification.getExecuted()) {
@@ -187,7 +206,7 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        verify(handler, times(2)).handle(any(IObject.class), same(this.chain), any(null));
+        verify(handler, times(2)).handle(any(IObject.class), any(IReceiverChain.class), any(null));
         assertEquals(result.size(), 2);
         IObject message1 = (IObject) result.get(0).getValue(new FieldName("message"));
         IObject context1 = (IObject) result.get(0).getValue(new FieldName("context"));
@@ -203,7 +222,7 @@ public class TestHttpEndpointTest {
     public void checkInvalidArgumentExceptionOnNullQueue()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        IAsyncService endpoint = new TestHttpEndpoint(null, ScopeProvider.getCurrentScope(), handler, 0L, chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(null, ScopeProvider.getCurrentScope(), handler, 0L, null);
         fail();
     }
 
@@ -212,7 +231,7 @@ public class TestHttpEndpointTest {
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
         ISource<IObject, IObject> source = mock(ISource.class);
-        IAsyncService endpoint = new TestHttpEndpoint(source, null, handler, 0L, chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(source, null, handler, 0L, null);
         fail();
     }
 
@@ -220,44 +239,58 @@ public class TestHttpEndpointTest {
     public void checkInvalidArgumentExceptionOnNullHandler()
             throws Exception {
         ISource<IObject, IObject> source = mock(ISource.class);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), null, 0L, chain, null);
-        fail();
-    }
-
-    @Test (expected = InvalidArgumentException.class)
-    public void checkInvalidArgumentExceptionOnNullChain()
-            throws Exception {
-        IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        ISource<IObject, IObject> source = mock(ISource.class);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null, null);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), null, 0L, null);
         fail();
     }
 
     @Test
     public void checkSkipMessageOnExceptionInFutureBlock()
             throws Exception {
+        initFiledNameStrategy();
+        initIObjectStrategy();
+        initIChannelHandlerStrategy();
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
         ISource<IObject, IObject> source = new IObjectDataSource();
         Notification notification = new Notification();
+
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
+        IObject testEnvironment = new DSObject();
+        IObject testAnotherEnvironment = new DSObject();
+
+        IObject messageOfTestObject = mock(IObject.class);
+        IObject messageOfAnotherTestObject = mock(IObject.class);
+        IObject requestOfTestObject = mock(IObject.class);
+        IObject requestOfAnotherTestObject = mock(IObject.class);
+
+        testEnvironment.setValue(new FieldName("message"), messageOfTestObject);
+        testEnvironment.setValue(new FieldName("request"), requestOfTestObject);
+        testAnotherEnvironment.setValue(new FieldName("message"), messageOfAnotherTestObject);
+        testAnotherEnvironment.setValue(new FieldName("request"), requestOfAnotherTestObject);
+
         List<IObject> result = new ArrayList<>();
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 IObject obj = (IObject) invocationOnMock.getArguments()[0];
-                if (obj == testObject) {
+                if (obj == testEnvironment) {
                     throw new Exception();
                 }
-                if (obj == testAnotherObject) {
+                if (obj == testAnotherEnvironment) {
                     result.add(obj);
                 }
                 notification.setExecuted(true);
                 return null;
             }
-        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
+        }).when(handler).handle(any(IObject.class), any(IReceiverChain.class), any(null));
+        when(testObject.getValue(new FieldName("environment"))).thenReturn(testEnvironment);
+        when(testObject.getValue(new FieldName("chain"))).thenReturn(this.chain);
+        when(testObject.getValue(new FieldName("callback"))).thenReturn(this.callback);
+        when(testAnotherObject.getValue(new FieldName("environment"))).thenReturn(testAnotherEnvironment);
+        when(testAnotherObject.getValue(new FieldName("chain"))).thenReturn(this.chain);
+        when(testAnotherObject.getValue(new FieldName("callback"))).thenReturn(this.callback);
         source.setSource(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, this.chain, (iObject) -> iObject);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null);
         endpoint.start();
         source.setSource(testAnotherObject);
         while (true) {
@@ -266,7 +299,8 @@ public class TestHttpEndpointTest {
             }
         }
         endpoint.stop();
-        assertSame(result.get(0), testAnotherObject);
+        assertEquals(result.size(), 1);
+        assertSame(result.get(0), testAnotherEnvironment);
     }
 
     @Test
@@ -275,12 +309,29 @@ public class TestHttpEndpointTest {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
         ISource<IObject, IObject> source = new IObjectDataSource();
         Notification notification = new Notification();
+
         IObject testObject = mock(IObject.class);
         IObject testAnotherObject = mock(IObject.class);
+        IObject testEnvironment = new DSObject();
+        IObject testAnotherEnvironment = new DSObject();
+
+        IObject messageOfTestObject = mock(IObject.class);
         IObject messageOfAnotherTestObject = mock(IObject.class);
+        IObject requestOfTestObject = mock(IObject.class);
         IObject requestOfAnotherTestObject = mock(IObject.class);
-        when(testAnotherObject.getValue(new FieldName("message"))).thenReturn(messageOfAnotherTestObject);
-        when(testAnotherObject.getValue(new FieldName("request"))).thenReturn(requestOfAnotherTestObject);
+
+        testEnvironment.setValue(new FieldName("message"), messageOfTestObject);
+        testEnvironment.setValue(new FieldName("request"), requestOfTestObject);
+        testAnotherEnvironment.setValue(new FieldName("message"), messageOfAnotherTestObject);
+        testAnotherEnvironment.setValue(new FieldName("request"), requestOfAnotherTestObject);
+
+        when(testObject.getValue(new FieldName("chain"))).thenReturn(this.chain);
+        when(testObject.getValue(new FieldName("callback"))).thenReturn(this.callback);
+        when(testObject.getValue(new FieldName("environment"))).thenReturn(testEnvironment);
+        when(testAnotherObject.getValue(new FieldName("chain"))).thenReturn(this.chain);
+        when(testAnotherObject.getValue(new FieldName("callback"))).thenReturn(this.callback);
+        when(testAnotherObject.getValue(new FieldName("environment"))).thenReturn(testAnotherEnvironment);
+
         initFiledNameStrategy();
         initIObjectStrategy();
         IChannelHandler channelHandler = mock(IChannelHandler.class);
@@ -300,9 +351,9 @@ public class TestHttpEndpointTest {
 
                 return null;
             }
-        }).when(handler).handle(any(IObject.class), same(this.chain), any(null));
+        }).when(handler).handle(any(IObject.class), any(IReceiverChain.class), any(null));
         source.setSource(testObject);
-        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 1000L, this.chain, null);
+        IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 1000L, null);
         endpoint.start();
         notification.setExecuted(false);
         source.setSource(testAnotherObject);

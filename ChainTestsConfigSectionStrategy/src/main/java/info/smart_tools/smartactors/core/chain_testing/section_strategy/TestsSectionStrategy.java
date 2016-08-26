@@ -24,7 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class TestsSectionStrategy implements ISectionStrategy {
     private IFieldName name;
-    private ITestRunner runner;
+//    private ITestRunner runner;
+    private IFieldName testRunnerName;
 
     /**
      * The constructor.
@@ -36,8 +37,8 @@ public class TestsSectionStrategy implements ISectionStrategy {
         name = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests"
         );
-        runner = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), ITestRunner.class.getCanonicalName())
+        this.testRunnerName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "entryPoint"
         );
     }
 
@@ -50,6 +51,11 @@ public class TestsSectionStrategy implements ISectionStrategy {
             AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
             for (IObject testDesc : tests) {
+                ITestRunner runner = IOC.resolve(
+                        IOC.resolve(
+                                IOC.getKeyForKeyStorage(),
+                                ITestRunner.class.getCanonicalName() + "#" + testDesc.getValue(this.testRunnerName))
+                );
                 runner.runTest(testDesc, err -> {
                     eRef.set(err);
                     try {
@@ -72,7 +78,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                     throw new ConfigurationProcessingException("Test failed.", eRef.get());
                 }
             }
-        } catch (ReadValueException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
+        } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
         } catch (TestExecutionException e) {
             throw new ConfigurationProcessingException("Could not start test.", e);

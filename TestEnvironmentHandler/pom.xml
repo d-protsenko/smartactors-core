@@ -59,13 +59,6 @@
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Implementations -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

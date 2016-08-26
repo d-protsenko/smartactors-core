@@ -20,82 +20,46 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>core.ienvironment_handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_storage</artifactId>
+            <artifactId>core.ichain_storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.itask</artifactId>
+            <artifactId>test.isource</artifactId>
             <version>${core.version}</version>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iqueue</artifactId>
-            <version>${core.version}</version>
-        </dependency>
+
+
+        <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
+
+        <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>core.initialization_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Tests -->
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>testing.helpers.plugins_loading_test_base</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scoped_ioc</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scope_provider</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.fieldname</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

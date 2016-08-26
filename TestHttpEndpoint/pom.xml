@@ -43,10 +43,9 @@
             <artifactId>core.ichannel_handler</artifactId>
             <version>${core.version}</version>
         </dependency>
-
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_guard</artifactId>
+            <artifactId>core.initialization_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

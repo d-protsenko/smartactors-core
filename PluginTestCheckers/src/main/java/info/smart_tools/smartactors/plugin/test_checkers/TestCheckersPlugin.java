@@ -43,12 +43,12 @@ public class TestCheckersPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("TestCheckers");
+            IBootstrapItem<String> item = new BootstrapItem("test checkers");
             item
                     .after("IOC")
                     .after("iobject")
                     .after("IFieldNamePlugin")
-                    .after("testing_assertions")
+                    .after("test assertions")
                     .after("router")
                     .process(
                             () -> {

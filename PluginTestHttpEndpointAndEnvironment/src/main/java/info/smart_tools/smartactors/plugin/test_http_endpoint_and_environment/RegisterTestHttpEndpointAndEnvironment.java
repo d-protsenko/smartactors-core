@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -56,6 +57,8 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                     .after("IOC")
                     .after("IFieldNamePlugin")
                     .after("iobject")
+                    .after("test environment handler")
+                    .before("chain tests runner")
                     .process(
                             () -> {
                                 try {
@@ -82,17 +85,13 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
 
                                     // Creates and registers test http endpoint
                                     IEnvironmentHandler handler = IOC.resolve(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "test_environment_handler")
-                                    );
-                                    IReceiverChain chain = IOC.resolve(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "test_routing_chain")
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "test environment handler")
                                     );
                                     IAsyncService endpoint = new TestHttpEndpoint(
                                             source,
                                             ScopeProvider.getCurrentScope(),
                                             handler,
                                             1000L,
-                                            chain,
                                             null
                                     );
                                     IOC.register(
@@ -108,6 +107,8 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
                                     throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't register new strategy", e);
+                                } catch (InitializationException e) {
+                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create instance of TestHttpEndpoint", e);
                                 }
                             }
                         );

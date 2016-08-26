@@ -1,10 +1,12 @@
 package info.smart_tools.smartactors.core.chain_testing.section_strategy;
 
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
@@ -47,8 +49,14 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         testRunnerMock = mock(ITestRunner.class);
 
-        IOC.register(Keys.getOrAdd(ITestRunner.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd(ITestRunner.class.getCanonicalName() + "#assert"),
                 new SingletonStrategy(testRunnerMock));
+//        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+//        IOC.register(
+//                IOC.resolve(IOC.getKeyForKeyStorage(), ITestRunner.class.getCanonicalName() + "#" + "assert"),
+//                strategy
+//        );
+//        when(strategy.resolve()).thenReturn(this.testRunnerMock);
 
         cbCaptor = ArgumentCaptor.forClass(IAction.class);
     }
@@ -68,6 +76,7 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
                 Collections.singletonList(td1));
+        when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
 
         doAnswer(invocation -> {
             new Thread() {
@@ -92,7 +101,9 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
     public void Should_runTestsWhenOneFails()
             throws Exception {
         IObject td1 = mock(IObject.class);
+        when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
         IObject td2 = mock(IObject.class);
+        when(td2.getValue(new FieldName("entryPoint"))).thenReturn("assert");
         IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
                 Arrays.asList(td1, td2));

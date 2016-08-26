@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.test.test_http_endpoint;
 
-import info.smart_tools.smartactors.core.iaction.IFunction;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
@@ -17,7 +18,6 @@ import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.test.isource.ISource;
 
 import java.util.ArrayList;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,9 +34,13 @@ public class TestHttpEndpoint implements IAsyncService {
     private IScope scope;
     private IEnvironmentHandler handler;
     private Long timeInterval;
-    private IReceiverChain chain;
-    private IFunction<IObject, IObject> rule;
+    private IAction<IObject> rule;
     private ExecutorService executorService;
+
+    private final IFieldName environmentFieldName;
+    private final IFieldName chainFieldName;
+    private final IFieldName callbackFieldName;
+
 
     /**
      * Creates instance of {@link TestHttpEndpoint}.
@@ -44,19 +48,18 @@ public class TestHttpEndpoint implements IAsyncService {
      * @param testScope the test scope
      * @param testHandler the handler for processing test message
      * @param timeBetweenTests the interval between starting processing next message
-     * @param routerChain the chain for processing message
      * @param transformationRule the rule for transform incoming message to FullHttpRequest.
      *          If {@code null} the default strategy will be used.
      * @throws InvalidArgumentException if one of the arguments is incorrect
+     * @throws InitializationException if any error was occurred
      */
     public TestHttpEndpoint(
             final ISource source,
             final IScope testScope,
             final IEnvironmentHandler testHandler,
             final Long timeBetweenTests,
-            final IReceiverChain routerChain,
-            final IFunction<IObject, IObject> transformationRule
-    ) throws InvalidArgumentException {
+            final IAction<IObject> transformationRule
+            ) throws InvalidArgumentException, InitializationException {
         if (null == source) {
             throw new InvalidArgumentException("The source should not be null.");
         }
@@ -66,9 +69,6 @@ public class TestHttpEndpoint implements IAsyncService {
         if (null == testHandler) {
             throw new InvalidArgumentException("The handler should not be null.");
         }
-        if (null == routerChain) {
-            throw new InvalidArgumentException("The message processing chain should not be null.");
-        }
         this.rule = transformationRule;
         if (null == transformationRule) {
             this.rule = defaultTransformationRule();
@@ -77,8 +77,20 @@ public class TestHttpEndpoint implements IAsyncService {
         this.scope = testScope;
         this.handler = testHandler;
         this.timeInterval = timeBetweenTests;
-        this.chain = routerChain;
         this.executorService = Executors.newSingleThreadExecutor();
+        try {
+            this.environmentFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "environment"
+            );
+            this.chainFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain"
+            );
+            this.callbackFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "callback"
+            );
+        } catch (ResolutionException e) {
+            throw new InitializationException("Could not create new instance of TestHttpEndpoint.", e);
+        }
     }
 
     @Override
@@ -96,9 +108,14 @@ public class TestHttpEndpoint implements IAsyncService {
             while (true) {
                 ScopeProvider.setCurrentScope(this.scope);
                 try {
-                    IObject obj = this.rule.execute((IObject) dataSource.next());
+                    IObject obj = (IObject) dataSource.next();
                     if (obj != null) {
-                        handler.handle(obj, chain, null);
+                        this.rule.execute(obj);
+                        handler.handle(
+                                (IObject) obj.getValue(this.environmentFieldName),
+                                (IReceiverChain) obj.getValue(this.chainFieldName),
+                                (IAction<Throwable>) obj.getValue(this.callbackFieldName)
+                        );
                     }
                     Thread.sleep(timeInterval);
                 } catch (Throwable e) {
@@ -110,17 +127,11 @@ public class TestHttpEndpoint implements IAsyncService {
         }
     }
 
-    private IFunction<IObject, IObject> defaultTransformationRule() {
+    private IAction<IObject> defaultTransformationRule() {
         return (iObject) -> {
             try {
-                IFieldName messageFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message"
-                );
-                IFieldName idFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "id"
-                );
-                IFieldName testResultFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testResult"
+                IFieldName environmentFieldName = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "environment"
                 );
                 IFieldName contextFieldName = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context"
@@ -137,18 +148,14 @@ public class TestHttpEndpoint implements IAsyncService {
                 IFieldName cookiesFieldName = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "cookies"
                 );
+                IObject environment = (IObject) iObject.getValue(environmentFieldName);
 
-                IObject message = (IObject) iObject.getValue(messageFieldName);
-                Object id =  iObject.getValue(idFieldName);
-                IObject environment = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
-                );
-                IObject testResult = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
-                );
-                IObject context = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
-                );
+                IObject context = (IObject) environment.getValue(contextFieldName);
+                if (null == context) {
+                    context = IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+                    );
+                }
 
                 IChannelHandler channelHandler = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), TestChannelHandler.class.getCanonicalName()));
@@ -156,18 +163,13 @@ public class TestHttpEndpoint implements IAsyncService {
 
                 context.setValue(cookiesFieldName, new ArrayList<IObject>());
                 context.setValue(headersFieldName, new ArrayList<IObject>());
-                TestFullHttpRequest request = new TestFullHttpRequest((IObject) iObject.getValue(requestFieldName));
+                TestFullHttpRequest request = new TestFullHttpRequest((IObject) environment.getValue(requestFieldName));
                 context.setValue(requestFieldName, request);
 
-                environment.setValue(messageFieldName, message);
                 environment.setValue(contextFieldName, context);
-                environment.setValue(idFieldName, id);
-                environment.setValue(testResultFieldName, testResult);
 
-                return environment;
             } catch (ChangeValueException | ResolutionException | ReadValueException e) {
-                e.getCause().printStackTrace();
-                return null;
+                throw new RuntimeException("Execution of DefaultTransformationRule has been failed.");
             }
         };
     }

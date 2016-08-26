@@ -2,8 +2,6 @@ package info.smart_tools.smartactors.test.isource;
 
 import info.smart_tools.smartactors.test.isource.exception.SourceExtractionException;
 
-import java.util.concurrent.BlockingDeque;
-
 /**
  * Interface {@link ISource}.
  *
