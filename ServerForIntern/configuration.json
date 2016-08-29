@@ -143,6 +143,27 @@
         }
       ],
       "exceptional": []
+    },
+    {
+      "id": "testing_chain",
+      "steps": [
+        {
+          "target": "sample-actor",
+          "handler": "transformAndPutForResponse",
+          "wrapper": {
+            "in_getSomeField": "message/Field",
+            "out_setSomeValueForRequest": "response/TransformedField",
+            "out_setCurrentActorState": "response/CurrentState",
+            "in_resetState": "message/Reset"
+          }
+        }
+      ],
+      "exceptional": [
+        {
+          "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+          "chain": "exceptionHandler"
+        }
+      ]
     }
   ],
   "endpoints": [
@@ -164,5 +185,32 @@
   "messageBus": {
     "routingChain": "SelectChain",
     "stackDepth": 5
-  }
+  },
+  "tests": [
+    {
+      "name": "test_1",
+      "entryPoint": "chain",
+      "environment": {
+        "message": {
+          "Field": 1,
+          "Reset": true
+          },
+        "context": {}
+      },
+      "chainName": "testing_chain",
+      "assert": [
+        {
+          "name": "result1",
+          "type": "equal",
+          "value": "response/TransformedField",
+          "to": "1__transformed"
+        },{
+          "name": "result2",
+          "type": "equal",
+          "value": "response/CurrentState",
+          "to": 0
+        }
+      ]
+    }
+  ]
 }

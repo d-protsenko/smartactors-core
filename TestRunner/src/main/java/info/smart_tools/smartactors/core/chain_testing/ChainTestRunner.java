@@ -70,7 +70,6 @@ import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionExc
  */
 public class ChainTestRunner implements ITestRunner {
 
-    private final IFieldName testEnvironmentHandlerFieldName;
     private final IFieldName chainNameFieldName;
 
     /**
@@ -80,10 +79,6 @@ public class ChainTestRunner implements ITestRunner {
     public ChainTestRunner()
             throws InitializationException {
         try {
-            this.testEnvironmentHandlerFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                    "test environment handler"
-            );
             this.chainNameFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chainName"
             );
@@ -121,7 +116,7 @@ public class ChainTestRunner implements ITestRunner {
             );
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
-            IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), this.testEnvironmentHandlerFieldName));
+            IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "test environment handler"));
             handler.handle(description, testedChain, callback);
         } catch (ResolutionException | ReadValueException | ChainNotFoundException | EnvironmentHandleException e) {
             throw new TestExecutionException(e);

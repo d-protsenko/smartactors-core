@@ -55,6 +55,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> mapsSectionItem = new BootstrapItem("config_section:maps");
 
             mapsSectionItem
+                    .after("config_section:objects")
                     .after("configuration_manager")
                     .after("receiver_chains_storage")
                     .after("receiver_chain")

@@ -67,10 +67,10 @@ public class AssertionChecker implements IResultChecker {
             throws InitializationException {
         try {
             preparedSuccessReceiverArguments = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object")
             );
             preparedSuccessReceiverWrapperConfig = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object")
             );
 
             IFieldName wrapperFieldName = IOC.resolve(

@@ -20,10 +20,10 @@ public class SampleActor {
             ++this.state;
             String s = wrapper.getSomeField();
             wrapper.setSomeValueForRequest(s + "_transformed");
-            wrapper.setCurrentActorState(this.state);
             if (wrapper.resetState()) {
                 this.state = 0;
             }
+            wrapper.setCurrentActorState(this.state);
             IObject newMessage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
             );
