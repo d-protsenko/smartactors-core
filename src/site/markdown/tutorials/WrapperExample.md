@@ -59,8 +59,8 @@ This was a short form of wrapper definition. Actually it's expanded to this.
         ]]
     }
     
-In methods have a list of transformation strategies which are to extract data.
-Out methods have a list of a list of transformation strategies which are to set data.
+In-methods have a list of transformation strategies which are to extract data.
+Out-methods have a list of a list of transformation strategies which are to set data.
 The two nesting level for the setter is necessary because the same single value passed to the setter can be put to different set of system objects, to multiple destinations.
 
 ## Environment
@@ -113,7 +113,7 @@ And you define the actual parameter value in the message map wrapper configurati
 
 ### Context
 
-`context` is used to keep some unserializable Java objects which are not part of request or response and are actual during the current request processing.
+`context` is used to keep some unserializable Java objects which are not part of request or response and are actual only during the current request processing.
 
 The typical example of such object is HTTP request of the HTTP endpoint, it's available as `context/request`.
 Also the context can be used to set HTTP headers and cookies to the HTTP response.
@@ -160,7 +160,7 @@ The strategies to use ConfigurationObject are registered in IOC by [InitializeCo
 
 ### WDSObject
 
-[WDSObject](../apidocs/info/smart_tools/smartactors/core/wds_object/WDSObject.html) is built over the configuration object, it's "wrapper" nested object.
+[WDSObject](../apidocs/info/smart_tools/smartactors/core/wds_object/WDSObject.html) is built over the configuration object.
 
     IObject config = IOC.resolve(configObjectKey,
             "{" +
@@ -192,7 +192,7 @@ The strategies to use WDSObject are registered by [PluginWDSObject](../apidocs/i
     
 ### WrapperGenerator
 
-[WrapperGenerator](../apidocs/info/smart_tools/smartactors/core/wrapper_generator/WrapperGenerator.html) generates a class in runtime which implements IObject, IObjectWrapper and the interface of the parameter of the actor's handler.
+[WrapperGenerator](../apidocs/info/smart_tools/smartactors/core/wrapper_generator/WrapperGenerator.html) generates a class in runtime which implements IObject, IObjectWrapper and the wrapper interface — interface of the parameter of the actor's handler.
 
     IKey iWrapperGeneratorKey = Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName());
     IWrapperGenerator generator = IOC.resolve(iWrapperGeneratorKey);
