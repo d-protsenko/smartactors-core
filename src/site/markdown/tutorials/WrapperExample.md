@@ -54,7 +54,7 @@ This was a short form of wrapper definition. Actually it's expanded to this.
         "out_setGreeting": [[
             {
                 "name": "wds_target_strategy",
-                args: [ "local/value", "response/greeting" ]
+                "args": [ "local/value", "response/greeting" ]
             }
         ]]
     }
@@ -122,19 +122,81 @@ Note the context mostly contain data specified to the used endpoint and protocol
 Typical business logic actors should avoid to use `context`. 
 They should use `message` and `response` to interact with each other and the client.
 
-## List of transformation strategies
+## Transformation strategies
+
+Methods of the wrapper are joined with environment objects through transformation strategies.
+Each strategy is just a strategy, registered in [IOC](IOCExample.html), it takes some arguments and returns the result of computations.
     
 ### In/getter
     
-TBD
+Strategies for in-methods are to produce the value to be returned by the getter.
+Typically they have one argument: the value from the environment to return.
+
+The strategies can be combined to the chain — the array of strategies defined in the wrapper configuration.
+In this case the next strategy in the chain can receive the result of the previous strategy as `local/value`.
+
+The result of the last strategy in the chain is passed into the actor as the getter return value.
     
 ### Out/setter
     
-TBD
+Strategies for out-methods are to take the value passed to the setter and produce some changes in the environment.
+Typically they have two arguments: the setter argument passed from the actor, available as `local/value`, and the environment field to set.
+
+These strategies can be combined to the chains.
+In this case the next strategy in the chain can receive the result of the previous strategy as `local/value`.
+
+Because it can be necessary for one setter to modify multiple environment objects and fields it's possible to define multiple transformation chains for out-method.
+This is why you need array in the array in the wrapper definition in the configuration.
+The nested arrays are independent transformation chains which receive the same `local/value` to the first transformation strategy.
+While the outer array is just a list of transformation chains.
+
+The result of the last strategy in the chain for out-method is just ignored.
 
 ### Short syntax
 
-TBD
+If you don't need a special transformation rules but want just to get a value from the environment or set a value to the environment, you can use the short syntax.
+
+    "wrapper": {
+        "in_getName": "message/personName",
+        "out_setGreeting": "response/greeting",
+    }
+    
+If you need to apply a custom transformation to environment values an receive the result from in-method, you have to define the transformation chain explicitly.
+The result of the last transformation become the result of in-method without additional efforts.
+ 
+    "wrapper": {
+        "in_getName": [
+            { 
+                "name": "concat_strategy",
+                "args": [ "message/firstName", "message/lastName ]
+            }
+        ]
+    }
+    
+If you need to apply a custom transformation to a value received as argument of out-method, you have to define the transformation chain explicitly.
+A general transformation rule should not modify the environment directly, it should receive values as arguments and return the transformation result as `local/value`.
+In this case it's necessary to target the result of the last transformation to the specific environment field.
+There is a special short syntax for it.
+
+    "wrapper": {
+        "out_setName": [[
+            {
+                "name": "split_strategy",
+                "args": [ "local/value", "const/ " ]
+            },
+            {
+                "name": "target",
+                "args": [ "response/namesArray" ]
+            }
+        ]]
+    }
+
+The short name "target" is expanded into built-in "wds_target_strategy".
+    
+    {
+        "name": "wds_target_strategy",
+        "args": [ "local/value", "response/namesArray" ]
+    }    
     
 ## How to write own transformation strategy
     

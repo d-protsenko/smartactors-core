@@ -96,6 +96,39 @@ public class WrapperExample {
     }
 
     @Test
+    public void testConfigNormalizationForTarget() throws ResolutionException, SerializeException, ReadValueException, InvalidArgumentException {
+        ConfigurationObject configObject = IOC.resolve(configObjectKey,
+                "{" +
+                "\"out_setName\": [[" +
+                "{" +
+                "\"name\": \"split_strategy\"," +
+                "\"args\": [ \"local/value\", \"const/ \" ]" +
+                "}," +
+                "{" +
+                "\"name\": \"target\"," +
+                "\"args\": [ \"response/namesArray\" ]" +
+                "}" +
+                "]]" +
+                "}");
+
+        IField setNameField = IOC.resolve(iFieldKey, "out_setName");
+        List<List<IObject>> setNameObjects = setNameField.in(configObject);
+
+        IField nameField = IOC.resolve(iFieldKey, "name");
+        IField argsField = IOC.resolve(iFieldKey, "args");
+
+        assertEquals("split_strategy", nameField.in(setNameObjects.get(0).get(0)));
+        List<String> setNameSplitArgs = argsField.in(setNameObjects.get(0).get(0));
+        assertEquals("local/value", setNameSplitArgs.get(0));
+        assertEquals("const/ ", setNameSplitArgs.get(1));
+
+        assertEquals("wds_target_strategy", nameField.in(setNameObjects.get(0).get(1)));
+        List<String> setNameTargetArgs = argsField.in(setNameObjects.get(0).get(1));
+        assertEquals("local/value", setNameTargetArgs.get(0));
+        assertEquals("response/namesArray", setNameTargetArgs.get(1));
+    }
+
+    @Test
     public void testWDSObject() throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
         IObject config = IOC.resolve(configObjectKey,
                 "{" +
