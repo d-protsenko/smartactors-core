@@ -36,8 +36,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     private IField dateToField;
     private IField startDateTimeField;
 
-    //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    private DateTimeFormatter formatter;
 
     /**
      * @param connection storage connection for executing query
@@ -46,6 +45,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     public GetItemFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
+            this.formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
             this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "key");
@@ -105,7 +105,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
             isActiveField.out(filterObject, isActiveObject);
 
             IObject dateObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            dateToField.out(dateObject, LocalDateTime.now().format(FORMATTER));
+            dateToField.out(dateObject, LocalDateTime.now().format(formatter));
             startDateTimeField.out(filterObject, dateObject);
 
             filterField.out(queryForNestedTask, filterObject);

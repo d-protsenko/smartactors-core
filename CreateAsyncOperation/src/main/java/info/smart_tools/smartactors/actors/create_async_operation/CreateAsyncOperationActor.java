@@ -25,8 +25,7 @@ public class CreateAsyncOperationActor {
 
     private IAsyncOperationCollection collection;
 
-    //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    private DateTimeFormatter formatter;
 
     /**
      * Constructor needed for registry actor
@@ -35,6 +34,7 @@ public class CreateAsyncOperationActor {
      */
     public CreateAsyncOperationActor(final IObject params) throws CreateAsyncOperationActorException {
         try {
+            formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             collection = IOC.resolve(
                 Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params)
@@ -60,7 +60,7 @@ public class CreateAsyncOperationActor {
         try {
             String token = IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
-            String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
+            String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(formatter);
             message.setSessionIdInData(message.getSessionId());
             IObject authOperationData = message.getOperationData();
             collection.createAsyncOperation(authOperationData, token, expiredTime);

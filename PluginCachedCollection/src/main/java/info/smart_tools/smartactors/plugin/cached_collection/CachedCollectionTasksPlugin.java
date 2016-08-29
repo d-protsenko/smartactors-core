@@ -45,6 +45,7 @@ public class CachedCollectionTasksPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .after("datetime_formatter_plugin")
                     .after("IFieldPlugin")
                     .process(() -> {
                         try {

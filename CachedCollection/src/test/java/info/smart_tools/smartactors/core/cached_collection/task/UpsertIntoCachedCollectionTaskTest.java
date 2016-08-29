@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -12,9 +11,13 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.time.format.DateTimeFormatter;
+
+import static org.mockito.Matchers.eq;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
@@ -25,7 +28,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class UpsertIntoCachedCollectionTaskTest {
 
     private UpsertIntoCachedCollectionTask task;
-    private IDatabaseTask upsertTask;
 
     private IField startDateTimeField;
     private IField collectionNameField;
@@ -38,6 +40,10 @@ public class UpsertIntoCachedCollectionTaskTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
+        IKey formatterKey = Mockito.mock(IKey.class);
+        when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
+        when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
+
         startDateTimeField = mock(IField.class);
         collectionNameField = mock(IField.class);
         documentField = mock(IField.class);
@@ -47,7 +53,6 @@ public class UpsertIntoCachedCollectionTaskTest {
         when(IOC.resolve(keyField, "document")).thenReturn(documentField);
         when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
 
-        upsertTask = mock(IDatabaseTask.class);
         connection = mock(IStorageConnection.class);
         task = new UpsertIntoCachedCollectionTask(connection);
     }
