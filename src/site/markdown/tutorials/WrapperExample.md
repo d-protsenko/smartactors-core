@@ -124,7 +124,7 @@ They should use `message` and `response` to interact with each other and the cli
 
 ## Transformation strategies
 
-Methods of the wrapper are joined with environment objects through transformation strategies.
+Methods of the wrapper are joined with environment objects through transformation strategies or rules.
 Each strategy is just a strategy, registered in [IOC](IOCExample.html), it takes some arguments and returns the result of computations.
     
 ### In/getter
@@ -168,7 +168,7 @@ The result of the last transformation become the result of in-method without add
         "in_getName": [
             { 
                 "name": "concat_strategy",
-                "args": [ "message/firstName", "message/lastName ]
+                "args": [ "message/firstName", "const/ ", "message/lastName ]
             }
         ]
     }
@@ -186,7 +186,7 @@ There is a special short syntax for it.
             },
             {
                 "name": "target",
-                "args": [ "response/namesArray" ]
+                "args": [ "response/namesList" ]
             }
         ]]
     }
@@ -195,12 +195,45 @@ The short name "target" is expanded into built-in "wds_target_strategy".
     
     {
         "name": "wds_target_strategy",
-        "args": [ "local/value", "response/namesArray" ]
+        "args": [ "local/value", "response/namesList" ]
     }    
     
 ## How to write own transformation strategy
     
-TBD    
+The transformation strategy or rule is a class implementing [IResolveDependencyStrategy](../apidocs/info/smart_tools/smartactors/core/iresolve_dependency_strategy/IResolveDependencyStrategy.html).
+It takes some Object arguments and returns some value.
+You can define it as an anonymous class.
+
+    IResolveDependencyStrategy strategy = new IResolveDependencyStrategy() {
+        @Override
+        public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+            String result = Arrays.stream(args).map(String::valueOf).collect(Collectors.joining());
+            return (T) result;
+        }
+    };
+    
+Then you need to register it in IOC.
+Because in this case IOC should resolve the strategy, the key is constructed from the interface canonical name.
+
+    IKey key = Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+    
+And you need the unique name for your strategy.
+    
+    String name = "concat_strategy";
+    
+Finally you should take strategy which is able to resolve strategy and pass it the name and the realisation of your strategy.
+The strategy for strategies is already registered in IOC by `PluginWDSObject`.
+
+    IOC.resolve(key, name, strategy);
+    
+After this you can mention you strategy name in the wrapper configuration.
+    
+    "in_getName": [
+        { 
+            "name": "concat_strategy",
+            "args": [ "message/firstName", "const/ ", "message/lastName ]
+        }
+    ] 
     
 ## Under the hood
 

@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.examples;
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.examples.actor.GreetingMessage;
+import info.smart_tools.smartactors.core.examples.wrapper.ConcatSplitRulesPlugin;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -60,6 +61,7 @@ public class WrapperExample {
         new InitializeConfigurationObjectStrategies(bootstrap).load();
         new PluginWDSObject(bootstrap).load();
         new RegisterWrapperGenerator(bootstrap).load();
+        new ConcatSplitRulesPlugin(bootstrap).load();
         bootstrap.start();
 
         iObjectKey = Keys.getOrAdd(IObject.class.getCanonicalName());
@@ -106,7 +108,7 @@ public class WrapperExample {
                 "}," +
                 "{" +
                 "\"name\": \"target\"," +
-                "\"args\": [ \"response/namesArray\" ]" +
+                "\"args\": [ \"response/namesList\" ]" +
                 "}" +
                 "]]" +
                 "}");
@@ -125,7 +127,7 @@ public class WrapperExample {
         assertEquals("wds_target_strategy", nameField.in(setNameObjects.get(0).get(1)));
         List<String> setNameTargetArgs = argsField.in(setNameObjects.get(0).get(1));
         assertEquals("local/value", setNameTargetArgs.get(0));
-        assertEquals("response/namesArray", setNameTargetArgs.get(1));
+        assertEquals("response/namesList", setNameTargetArgs.get(1));
     }
 
     @Test
@@ -185,6 +187,66 @@ public class WrapperExample {
         IObject response = responseField.in(environment);
         IField greetingField = IOC.resolve(iFieldKey, "greeting");
         assertEquals("Hello", greetingField.in(response));
+    }
+
+    @Test
+    public void testConcatRule() throws ResolutionException, WrapperGeneratorException, InvalidArgumentException, ReadValueException {
+        IWrapperGenerator generator = IOC.resolve(iWrapperGeneratorKey);
+        GreetingMessage message = generator.generate(GreetingMessage.class);
+
+        IObject config = IOC.resolve(configObjectKey,
+                "{" +
+                "\"in_getName\": [" +
+                "{" +
+                "\"name\": \"concat_strategy\", " +
+                "\"args\": [ \"message/firstName\", \"const/ \", \"message/lastName\" ]" +
+                "}" +
+                "]" +
+                "}");
+        WDSObject wdsObject = IOC.resolve(wdsObjectKey, config);
+
+        IObject environment = IOC.resolve(iObjectKey,
+                "{" +
+                "\"message\": { \"firstName\": \"Ivan\", \"lastName\": \"Petrov\" }" +
+                "}");
+        wdsObject.init(environment);
+
+        IObjectWrapper wrapper = (IObjectWrapper) message;
+        wrapper.init(wdsObject);
+
+        assertEquals("Ivan Petrov", message.getName());
+    }
+
+    @Test
+    public void testSplitRule() throws ResolutionException, WrapperGeneratorException, InvalidArgumentException, ReadValueException, ChangeValueException {
+        IObject config = IOC.resolve(configObjectKey,
+                "{\"out_setName\": [[" +
+                "{" +
+                "\"name\": \"split_strategy\"," +
+                "\"args\": [ \"local/value\", \"const/ \" ]" +
+                "}," +
+                "{" +
+                "\"name\": \"target\"," +
+                "\"args\": [ \"response/namesList\" ]" +
+                "}\n" +
+                "]]}");
+        WDSObject wdsObject = IOC.resolve(wdsObjectKey, config);
+
+        IObject environment = IOC.resolve(iObjectKey,
+                "{" +
+                "\"response\": { }" +
+                "}");
+        wdsObject.init(environment);
+
+        IField setNameField = IOC.resolve(iFieldKey, "out_setName");
+        setNameField.out(wdsObject, "Ivan Petrov");
+
+        IField responseField = IOC.resolve(iFieldKey, "response");
+        IObject response = responseField.in(environment);
+        IField namesListField = IOC.resolve(iFieldKey, "namesList");
+        List<String> namesList = namesListField.in(response);
+        assertEquals("Ivan", namesList.get(0));
+        assertEquals("Petrov", namesList.get(1));
     }
 
 
