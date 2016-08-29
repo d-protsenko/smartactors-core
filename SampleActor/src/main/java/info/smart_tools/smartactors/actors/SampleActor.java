@@ -24,20 +24,20 @@ public class SampleActor {
                 this.state = 0;
             }
             wrapper.setCurrentActorState(this.state);
-            IObject newMessage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
-            );
-            IFieldName name = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                    "value"
-            );
-            IFieldName nameMessageMapId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                    "messageMapId"
-            );
-            newMessage.setValue(name, s + "_sendingMessage");
-            newMessage.setValue(nameMessageMapId, "myChainOther");
-            MessageBus.send(newMessage);
+//            IObject newMessage = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+//            );
+//            IFieldName name = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+//                    "value"
+//            );
+//            IFieldName nameMessageMapId = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+//                    "messageMapId"
+//            );
+//            newMessage.setValue(name, s + "_sendingMessage");
+//            newMessage.setValue(nameMessageMapId, "myChainOther");
+//            MessageBus.send(newMessage);
         } catch (Exception e) {
             throw new SampleException();
         }

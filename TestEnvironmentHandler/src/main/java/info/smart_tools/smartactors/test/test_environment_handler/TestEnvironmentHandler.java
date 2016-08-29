@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
@@ -104,7 +105,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                     STACK_DEPTH, mainTestChain
             );
 
-            sequence.callChain(receiverChain);
+
 
             IQueue<ITask> taskQueue = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), "task_queue")
@@ -113,9 +114,13 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             IMessageProcessor mp = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()), taskQueue, sequence
             );
-            fmp[0] = mp;
 
+            sequence.callChain(receiverChain);
+            sequence.next();
+
+            fmp[0] = mp;
             mp.process(message, context);
+
         } catch (ReadValueException | ResolutionException | NestedChainStackOverflowException
                 | ChangeValueException | InitializationException e) {
             //throw new TestStartupException(e);

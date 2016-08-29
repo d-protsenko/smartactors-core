@@ -112,6 +112,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
         wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
+        this.messageProcessingSequence.reset();
     }
 
     @Override
@@ -128,7 +129,6 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(messageFieldName, theMessage);
         environment.setValue(contextFieldName, theContext);
 
-        messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -252,6 +252,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private void enqueueNext() {
         if (messageProcessingSequence.next()) {
             enqueue();
+        } else {
+            this.complete();
         }
     }
 
@@ -264,6 +266,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     }
 
     private void complete() {
+        this.messageProcessingSequence.reset();
         // TODO: Return message, context, response and {@code this} to the pool
     }
 }

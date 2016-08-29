@@ -192,7 +192,7 @@
       "entryPoint": "chain",
       "environment": {
         "message": {
-          "Field": 1,
+          "Field": "1",
           "Reset": true
           },
         "context": {}
