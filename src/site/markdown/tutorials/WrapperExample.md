@@ -82,7 +82,7 @@ It's the message received by the endpoint and processed by the previous actors i
 Actors are able to modify fields of the message, add new fields, delete fields, etc...
 
 Note one actor can use a setter of it's wrapper to set a value to the message, another actor can read this value using it's wrapper getter.
-It's not necessary for both actors to negotiate the name of the message field they use, because all mapping, in both directions from actor to the message and from the message to the actor, are handled by the wrapper.
+It's not necessary for both actors to negotiate the name of the message field they use, because all mapping, in both directions from actor to the message and from the message to the actor, are handled by the wrapper and are defined in the wrapper configuration.
 
 ### Response
 
@@ -168,7 +168,7 @@ The result of the last transformation become the result of in-method without add
         "in_getName": [
             { 
                 "name": "concat_strategy",
-                "args": [ "message/firstName", "const/ ", "message/lastName ]
+                "args": [ "message/firstName", "const/ ", "message/lastName" ]
             }
         ]
     }
@@ -198,7 +198,7 @@ The short name "target" is expanded into built-in "wds_target_strategy".
         "args": [ "local/value", "response/namesList" ]
     }    
     
-## How to write own transformation strategy
+## How to write your own transformation strategy
     
 The transformation strategy or rule is a class implementing [IResolveDependencyStrategy](../apidocs/info/smart_tools/smartactors/core/iresolve_dependency_strategy/IResolveDependencyStrategy.html).
 It takes some Object arguments and returns some value.
@@ -221,7 +221,7 @@ And you need the unique name for your strategy.
     
     String name = "concat_strategy";
     
-Finally you should take strategy which is able to resolve strategy and pass it the name and the realisation of your strategy.
+Finally you should take strategy which is able to resolve strategy and pass it the name and the implementation of your strategy.
 The strategy for strategies is already registered in IOC by `PluginWDSObject`.
 
     IOC.resolve(key, name, strategy);
@@ -231,7 +231,7 @@ After this you can mention you strategy name in the wrapper configuration.
     "in_getName": [
         { 
             "name": "concat_strategy",
-            "args": [ "message/firstName", "const/ ", "message/lastName ]
+            "args": [ "message/firstName", "const/ ", "message/lastName" ]
         }
     ] 
     
@@ -299,7 +299,7 @@ Instance of this class is initialized by WDSObject created on the previous step.
     wrapper.init(wdsObject);
 
 Then the instance is passed to the actor's handler.
-Each calls to it's methods are just translated into access to WDSObject fields causing the strategies to be applied to data and the result to affect the environment.
+Each call to it's methods is just translated into access to WDSObject fields causing the strategies to be applied to data and the result to affect the environment.
 
     assertEquals("Ivan", message.getName());
     
@@ -316,4 +316,5 @@ The strategy to use WrapperGenerator are registered by [RegisterWrapperGenerator
 
 ## Code
 
-See [some tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/WrapperExample.html) demonstrating how config normalization, WDS object and WrapperGenerator works.
+* [Some tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/WrapperExample.html) demonstrating how config normalization, WDS object and WrapperGenerator works.
+* [Plugin](../xref/info/smart_tools/smartactors/core/examples/wrapper/ConcatSplitRulesPlugin.html) which defines two sample transformation rules.
