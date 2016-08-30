@@ -286,6 +286,8 @@
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
         <module>ServerWithFeatures</module>
+        <module>IFeatureLoader</module>
+        <module>FeatureLoader</module>
     </modules>
 
     <build>

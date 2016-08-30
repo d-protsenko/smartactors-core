@@ -116,7 +116,7 @@ public class ServerWithFeatures implements IServer {
             try {
                 bootstrap.revert();
             } catch (RevertProcessExecutionException ee) {
-                ee.addSuppressed(e);
+                e.addSuppressed(ee);
             }
 
             throw e;
