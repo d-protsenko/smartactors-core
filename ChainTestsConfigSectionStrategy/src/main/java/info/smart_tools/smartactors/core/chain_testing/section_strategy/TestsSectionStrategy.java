@@ -55,7 +55,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
             AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
             for (IObject testDesc : tests) {
-                System.out.println("Run test " + testDesc.getValue(testNameFieldName) + ".");
+                System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
                 ITestRunner runner = IOC.resolve(
                         IOC.resolve(
                                 IOC.getKeyForKeyStorage(),
@@ -82,7 +82,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                 if (null != eRef.get()) {
                     throw new ConfigurationProcessingException("Test failed.", eRef.get());
                 } else {
-                    System.out.println("Test " + testDesc.getValue(testNameFieldName) + " is successful.");
+                    System.out.println("Test '" + testDesc.getValue(testNameFieldName) + "' is successful.");
                 }
             }
             System.out.println("--------------------------------- Testing completed ---------------------------------");

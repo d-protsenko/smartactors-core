@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
@@ -135,8 +136,8 @@ public class PluginChainTesting implements IPlugin {
                             IOC.register(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
-                                            return new MainTestChain((IAction) args[0], (IObject) args[1]);
-                                        } catch (InvalidArgumentException e) {
+                                            return new MainTestChain((IReceiverChain) args[0], (IAction) args[1], (IObject) args[2]);
+                                        } catch (InvalidArgumentException | InitializationException e) {
                                             throw new RuntimeException(e);
                                         }
                                     }));

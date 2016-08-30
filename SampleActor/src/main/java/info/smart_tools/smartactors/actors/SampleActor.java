@@ -38,7 +38,7 @@ public class SampleActor {
 //            newMessage.setValue(name, s + "_sendingMessage");
 //            newMessage.setValue(nameMessageMapId, "myChainOther");
 //            MessageBus.send(newMessage);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SampleException();
         }
     }

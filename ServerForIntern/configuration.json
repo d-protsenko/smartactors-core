@@ -158,12 +158,7 @@
           }
         }
       ],
-      "exceptional": [
-        {
-          "class": "info.smart_tools.smartactors.actors.exception.SampleException",
-          "chain": "exceptionHandler"
-        }
-      ]
+      "exceptional": []
     }
   ],
   "endpoints": [
@@ -203,7 +198,7 @@
           "name": "result1",
           "type": "equal",
           "value": "response/TransformedField",
-          "to": "1__transformed"
+          "to": "1_transformed"
         },{
           "name": "result2",
           "type": "equal",
@@ -211,6 +206,20 @@
           "to": 0
         }
       ]
+    },{
+      "name": "test_2",
+      "entryPoint": "chain",
+      "environment": {
+        "message": {
+          "Field": "1"
+        },
+        "context": {}
+      },
+      "chainName": "testing_chain",
+      "intercept": {
+        "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+        "target": "sample-actor"
+      }
     }
   ]
 }

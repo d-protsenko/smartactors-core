@@ -16,8 +16,6 @@ import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
 
@@ -96,6 +94,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
 
             MainTestChain mainTestChain = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), MainTestChain.class.getCanonicalName()),
+                    receiverChain,
                     completionCallback,
                     checker.getSuccessfulReceiverArguments()
             );
@@ -115,18 +114,12 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                     IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()), taskQueue, sequence
             );
 
-            sequence.callChain(receiverChain);
-            sequence.next();
-
             fmp[0] = mp;
             mp.process(message, context);
 
-        } catch (ReadValueException | ResolutionException | NestedChainStackOverflowException
-                | ChangeValueException | InitializationException e) {
-            //throw new TestStartupException(e);
+        } catch (ReadValueException | ResolutionException | ChangeValueException | InitializationException e) {
             throw new EnvironmentHandleException(e);
         } catch (ClassCastException e) {
-            //throw new InvalidTestDescriptionException("Could not cast value to required type.", e);
             throw new EnvironmentHandleException("Could not cast value to required type.", e);
         }
     }
