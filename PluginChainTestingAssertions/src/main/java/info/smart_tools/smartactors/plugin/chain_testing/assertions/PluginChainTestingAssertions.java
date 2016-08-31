@@ -19,13 +19,20 @@ import info.smart_tools.smartactors.test.test_assertions.NotEqualAssertion;
  * Plugin registering some assertions for chain tests.
  */
 public class PluginChainTestingAssertions implements IPlugin {
-    private final IBootstrap<IBootstrapItem<String>> bootstrap;
+
+    /** Local storage for instance of {@link IBootstrap}*/
+    private IBootstrap<IBootstrapItem<String>> bootstrap;
 
     /**
-     * Constructor
-     * @param bootstrap the bootstrap
+     * Constructor with single argument
+     * @param bootstrap instance of {@link IBootstrap}
+     * @throws InvalidArgumentException if any errors occurred
      */
-    public PluginChainTestingAssertions(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public PluginChainTestingAssertions(final IBootstrap<IBootstrapItem<String>> bootstrap)
+            throws InvalidArgumentException {
+        if (null == bootstrap) {
+            throw new InvalidArgumentException("Incoming argument should not be null.");
+        }
         this.bootstrap = bootstrap;
     }
 
@@ -36,6 +43,7 @@ public class PluginChainTestingAssertions implements IPlugin {
 
             assertionsItem
                     .after("IOC")
+                    .after("IFieldNamePlugin")
                     .before("configure")
                     .process(() -> {
                         try {
@@ -47,7 +55,7 @@ public class PluginChainTestingAssertions implements IPlugin {
                     });
 
             bootstrap.add(assertionsItem);
-        } catch (InvalidArgumentException e) {
+        } catch (Throwable e) {
             throw new PluginException(e);
         }
     }
