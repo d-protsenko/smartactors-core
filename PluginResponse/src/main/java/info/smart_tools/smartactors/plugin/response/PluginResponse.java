@@ -35,9 +35,6 @@ public class PluginResponse implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("response");
 
             item
-                    .after("IOC")
-                    .before("ActorReceiverCreator")
-                    .before("HandlerRoutingReceiverCreator")
                     .process(() -> {
                         try {
                             IOC.register(

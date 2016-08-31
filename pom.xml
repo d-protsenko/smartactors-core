@@ -288,6 +288,7 @@
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
+        <module>PluginFeatureLoader</module>
     </modules>
 
     <build>

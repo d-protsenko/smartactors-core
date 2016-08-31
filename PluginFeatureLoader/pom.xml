@@ -9,17 +9,28 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.feature_loader</artifactId>
+    <artifactId>plugin.feature_loader</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifeature_loader</artifactId>
+            <artifactId>core.feature_loader</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iplugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>core.ibootstrap</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.bootstrap_item</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -34,37 +45,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_loader</artifactId>
+            <artifactId>core.create_new_instance_strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_loader_visitor</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_from_jar</artifactId>
+            <artifactId>core.plugin_creator</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.plugin_loader_visitor_empty_implementation</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.configuration_manager</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.path</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

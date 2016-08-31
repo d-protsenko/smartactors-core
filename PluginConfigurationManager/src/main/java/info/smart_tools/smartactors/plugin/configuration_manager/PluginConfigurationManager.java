@@ -53,7 +53,11 @@ public class PluginConfigurationManager implements IPlugin {
 
             bootstrap.add(configurationManagerItem);
 
-            // the configure() is called from PluginStarter
+            // Two barrier items between which core configuration sections strategies should be registered
+            bootstrap.add(new BootstrapItem("config_sections:start")
+                    .process(() -> { }).after("configuration_manager"));
+            bootstrap.add(new BootstrapItem("config_sections:done")
+                    .process(() -> { }).after("config_sections:start"));
 
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);

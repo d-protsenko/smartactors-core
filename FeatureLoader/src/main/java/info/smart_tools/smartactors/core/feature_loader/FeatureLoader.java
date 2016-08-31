@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.feature_loader;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.IBiAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -15,7 +16,6 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -26,14 +26,13 @@ import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
-import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -86,7 +85,7 @@ public class FeatureLoader implements IFeatureLoader {
 
             //noinspection ConstantConditions
             for (File file : groupDir.listFiles(File::isDirectory)) {
-                IPath path = IOC.resolve(Keys.getOrAdd(IPath.class.getCanonicalName()), file.getCanonicalPath());
+                IPath path = new Path(file.getCanonicalPath());
                 FeatureStatusImpl status = loadFeature0(path);
 
                 statuses.add(status);
@@ -103,7 +102,7 @@ public class FeatureLoader implements IFeatureLoader {
             for (FeatureStatusImpl status : statuses) {
                 status.load();
             }
-        } catch (ResolutionException | IOException | FeatureLoadException | ActionExecuteException e) {
+        } catch (IOException | FeatureLoadException | ActionExecuteException e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading features from ''{0}''.", groupPath.getPath()), e);
         }
@@ -159,7 +158,7 @@ public class FeatureLoader implements IFeatureLoader {
             }
 
             return status;
-        } catch (ReadValueException | InvalidArgumentException | FeatureLoadException e) {
+        } catch (Exception e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading a feature from ''{0}''.", featurePath.getPath()), e);
         }
@@ -180,13 +179,13 @@ public class FeatureLoader implements IFeatureLoader {
 
             for (File file : files) {
                 if (file.isFile()) {
-                    IPath path = IOC.resolve(Keys.getOrAdd(IPath.class.getCanonicalName()), file.getCanonicalPath());
+                    IPath path = new Path(file.getCanonicalPath());
                     paths.add(path);
                 }
             }
 
             return paths;
-        } catch (IOException | ResolutionException e) {
+        } catch (IOException e) {
             throw new FeatureLoadException(MessageFormat.format("Could not list jar files in {0}", dirPath.getPath()), e);
         }
     }
@@ -198,7 +197,7 @@ public class FeatureLoader implements IFeatureLoader {
     private IObject readFeatureConfig(final IPath featurePath)
             throws FeatureLoadException {
         try {
-            Path configPath = Paths.get(featurePath.getPath(), "config.json");
+            java.nio.file.Path configPath = Paths.get(featurePath.getPath(), "config.json");
             String configString = new String(Files.readAllBytes(configPath));
             return IOC.resolve(Keys.getOrAdd("configuration object"), configString);
         } catch (IOException | ResolutionException e) {
@@ -212,24 +211,27 @@ public class FeatureLoader implements IFeatureLoader {
             loadPluginsFrom(listJarsIn(directory));
             configurationManager.applyConfig(config);
         } catch (FeatureLoadException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException |
-                 ConfigurationProcessingException e) {
+                 ConfigurationProcessingException | ResolutionException e) {
             throw new ActionExecuteException(e);
         }
     }
 
     private void loadPluginsFrom(final List<IPath> jars)
-            throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
+            throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException, ResolutionException {
         IBootstrap bootstrap = new Bootstrap();
-        IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
+        IAction<Class> classHandler = clz -> {
+            try {
+                IPlugin plugin = pluginCreator.create(clz, bootstrap);
+                plugin.load();
+            } catch (PluginCreationException | PluginException e) {
+                throw new ActionExecuteException(e);
+            }
+        };
+
+        IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
+                Keys.getOrAdd("plugin loader"),
                 classLoader,
-                clz -> {
-                    try {
-                        IPlugin plugin = pluginCreator.create(clz, bootstrap);
-                        plugin.load();
-                    } catch (PluginCreationException | PluginException e) {
-                        throw new ActionExecuteException(e);
-                    }
-                },
+                classHandler,
                 pluginLoaderVisitor);
         pluginLoader.loadPlugin(jars);
 

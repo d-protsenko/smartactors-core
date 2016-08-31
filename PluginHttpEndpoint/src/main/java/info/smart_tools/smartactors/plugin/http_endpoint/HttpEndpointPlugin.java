@@ -62,12 +62,8 @@ public class HttpEndpointPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpEndpoint");
             item
-                    .after("IOC")
-                    .after("message_processor")
-                    .after("message_processing_sequence")
                     .after("response")
                     .after("response_content_strategy")
-                    .after("FieldNamePlugin")
                     .before("configure")
                     .process(
                             () -> {

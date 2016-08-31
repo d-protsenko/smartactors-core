@@ -102,6 +102,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
             loadAction.execute(config, path);
         } catch (Throwable e) {
             error = e;
+            e.printStackTrace();
         } finally {
             runCallbacks();
         }

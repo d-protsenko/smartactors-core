@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
+import info.smart_tools.smartactors.core.ifeature_loader.GlobalFeatureLoader;
+import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
@@ -60,6 +62,7 @@ public class ServerWithFeatures implements IServer {
     @Override
     public void start() throws ServerExecutionException {
         loadStage1();
+        loadStage2();
     }
 
     private void loadStage1()
@@ -71,6 +74,16 @@ public class ServerWithFeatures implements IServer {
 
             loadPluginsFrom(jars);
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
+            throw new ServerExecutionException(e);
+        }
+    }
+
+    private void loadStage2()
+            throws ServerExecutionException {
+        try {
+            GlobalFeatureLoader.get().loadGroup(new Path("corefeatures"));
+            GlobalFeatureLoader.get().loadGroup(new Path("features"));
+        } catch (FeatureLoadException e) {
             throw new ServerExecutionException(e);
         }
     }
