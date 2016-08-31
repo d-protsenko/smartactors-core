@@ -70,7 +70,19 @@ import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionExc
  *                 "a": 10,
  *                 "b": 0
  *             },
- *             "context": {}
+ *             "context": {},
+ *             "request": {                                  // Description of simulating request
+ *                  "protocolVersion": "HTTP/1.1",
+ *                  "keepAlive": true,
+ *                  "headers": [
+ *                  {
+ *                      "name": "",
+ *                      "value": ""
+ *                  }
+ *                  ],
+ *                  "method": "POST",
+ *                  "uri": "/"
+ *             }
  *         },
  *         "chainName": "divideChain",
  *         "intercept": {
