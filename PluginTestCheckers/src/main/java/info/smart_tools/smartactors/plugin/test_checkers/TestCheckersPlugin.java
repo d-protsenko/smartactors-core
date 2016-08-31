@@ -49,6 +49,7 @@ public class TestCheckersPlugin implements IPlugin {
                     .after("iobject")
                     .after("IFieldNamePlugin")
                     .after("test assertions")
+                    .after("ConfigurationObject")
                     .after("router")
                     .process(
                             () -> {

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.test_checkers;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
@@ -83,6 +84,27 @@ public class TestCheckersPluginTest {
                                 throw new RuntimeException(e);
                             }
                         })
+        );
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyStorage(), "configuration object"
+                ),
+                new ApplyFunctionToArgumentsStrategy(
+                        (a) -> {
+
+                            if (a.length == 0) {
+                                return new ConfigurationObject();
+                            } else if (a.length == 1 && a[0] instanceof String) {
+                                try {
+                                    return new ConfigurationObject((String) a[0]);
+                                } catch (InvalidArgumentException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                throw new RuntimeException("Could not create new instance of Configuration Object.");
+                            }
+                        }
+                )
         );
         IAssertion assertionMock = mock(IAssertion.class);
         IOC.register(

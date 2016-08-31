@@ -85,6 +85,12 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.configuration_object</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
