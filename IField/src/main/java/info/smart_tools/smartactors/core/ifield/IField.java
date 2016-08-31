@@ -41,7 +41,6 @@ public interface IField {
      * @param <T> the type of incoming argument
      * @param env instance of {@link IObject} with data
      * @param in given argument
-     * @param <T> Await out param
      * @throws ChangeValueException if any errors occurred when iObject had been changing
      * @throws InvalidArgumentException if incoming arguments are incorrect
      */

@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.transformation_rules.get_first_not_null.GetFirstNotNullRule;
@@ -30,22 +31,21 @@ public class GetFirstNotNullRulePlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .after("wds_object")
                     .before("starter")
-                    .process(()-> {
+                    .process(() -> {
                         try {
-                            IKey ruleKey = Keys.getOrAdd(GetFirstNotNullRule.class.getCanonicalName());
-                            IOC.register(ruleKey, new ApplyFunctionToArgumentsStrategy(
-                                    (args) -> new GetFirstNotNullRule()
-                            ));
+                            IOC.resolve(
+                                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                                    "getFirstNotNullRule",
+                                    new GetFirstNotNullRule()
+                            );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't get key for load", e);
-                        } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't apply lambda", e);
-                        } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't register the strategy", e);
+                            throw new ActionExecuteException(
+                                    "GetFirstNotNullRule plugin can't load: can't get GetFirstNotNullRule key", e
+                            );
                         }
                     });
-
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
             throw new PluginException("Can't create BootstrapItem", e);

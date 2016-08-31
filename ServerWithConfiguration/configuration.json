@@ -4,7 +4,8 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.get_form.GetFormActor",
       "name": "getFormActor",
-      "collectionName": "form"
+      "collectionName": "form",
+      "cacheKey": "formKey"
     },
     {
       "kind": "actor",
@@ -172,7 +173,7 @@
           "target": "getFormActor",
           "handler": "getForm",
           "wrapper": {
-            "in_getFormKey": "message/formId",
+            "in_getFormKey": "message/formKey",
             "out_setForm": "response/form"
           }
         },

@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.transformation_rules.get_first_not_null.GetFirstNotNullRule;
@@ -43,9 +44,9 @@ public class GetFirstNotNullRulePluginTest {
 
     @Test
     public void MustCorrectLoadPlugin() throws Exception {
-
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("GetFirstNotNullRulePlugin").thenReturn(bootstrapItem);
+
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
         when(bootstrapItem.before(anyString())).thenReturn(bootstrapItem);
 
@@ -53,26 +54,30 @@ public class GetFirstNotNullRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetFirstNotNullRulePlugin");
 
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+
         verify(bootstrapItem).after("IOC");
+        verify(bootstrapItem).after("wds_object");
         verify(bootstrapItem).before("starter");
+        verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
-        verify(bootstrapItem).process(actionArgumentCaptor.capture());
+        IKey strategyKey = mock(IKey.class);
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
-        IKey actorKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetFirstNotNullRule.class.getCanonicalName())).thenReturn(actorKey);
+        GetFirstNotNullRule targetObject = mock(GetFirstNotNullRule.class);
+        whenNew(GetFirstNotNullRule.class).withNoArguments().thenReturn(targetObject);
 
-        ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =
-                ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        IOC.register(eq(actorKey), createNewInstanceStrategyArgumentCaptor.capture());
+        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
 
-        GetFirstNotNullRule actor = mock(GetFirstNotNullRule.class);
-        whenNew(GetFirstNotNullRule.class).withAnyArguments().thenReturn(actor);
+        verifyNew(GetFirstNotNullRule.class).withNoArguments();
+
+        verifyStatic();
+        IOC.resolve(strategyKey, "getFirstNotNullRule", targetObject);
     }
 
 

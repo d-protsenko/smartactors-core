@@ -64,5 +64,6 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * Returns new iterator over set of fields of the object.
      * @return an iterator.
      */
+    @Deprecated
     Iterator<Map.Entry<IFieldName, Object>> iterator();
 }
