@@ -87,6 +87,7 @@ public class DeserializeStrategyGetTest {
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet();
         IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
         verify(emptyIObject).setValue(fieldName, "hello");
+        verify(emptyIObject).setValue(fieldName, "hello");
     }
 
     @Test
@@ -103,6 +104,40 @@ public class DeserializeStrategyGetTest {
         IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
         assertEquals(iObject.getValue(new FieldName("hello")), "world");
         assertEquals(iObject.getValue(new FieldName("messageMapId")), "hello");
+    }
+
+    @Test
+    public void testArgsAtUrl() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException {
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                        args -> new DSObject()
+                )
+        );
+        String testUri = "www.www.ru/hello/world";
+        httpRequest = mock(FullHttpRequest.class);
+        when(httpRequest.uri()).thenReturn(testUri);
+        DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet();
+        IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
+        String[] args = (String[]) iObject.getValue(new FieldName("args"));
+        assertEquals(args.length, 1);
+        assertEquals(args[0], "world");
+    }
+
+    @Test
+    public void testMoreArgsAtUrl() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException {
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                        args -> new DSObject()
+                )
+        );
+        String testUri = "www.www.ru/hello/world/foo/bar";
+        httpRequest = mock(FullHttpRequest.class);
+        when(httpRequest.uri()).thenReturn(testUri);
+        DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet();
+        IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
+        String[] args = (String[]) iObject.getValue(new FieldName("args"));
+        assertEquals(args.length, 3);
+        assertEquals(args[0], "world");
+        assertEquals(args[1], "foo");
+        assertEquals(args[2], "bar");
     }
 
 }

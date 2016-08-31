@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.deserialize_strategy_get.DeserializeStrategyGet;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
@@ -36,10 +37,15 @@ import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesM
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Plugin, that register {@link HttpEndpoint} and {@link HttpResponseSender} at {@link IOC}
@@ -165,13 +171,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-                                    IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
-                                    IDeserializeStrategy deserializeStrategy =
-                                            new DeserializeStrategyPostJson(messageMapper);
-                                    IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
-
-                                    IOC.register(deserializeStrategyKey, new SingletonStrategy(deserializeStrategy));
-
+                                    registerDeserializationStrategies();
                                     IKey httpResponseSender = Keys.getOrAdd(IResponseSender.class.getCanonicalName());
                                     // TODO: 21.07.16 add opportunity to set custom name of the sender
                                     HttpResponseSender sender = new HttpResponseSender("default");
@@ -209,5 +209,24 @@ public class HttpEndpointPlugin implements IPlugin {
         } catch (Exception e) {
             throw new PluginException("Can't load \"CreateHttpEndpoint\" plugin", e);
         }
+    }
+
+    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
+        IDeserializeStrategy deserializeStrategyPostJson =
+                new DeserializeStrategyPostJson(messageMapper);
+        IDeserializeStrategy deserializeStrategyGet = new DeserializeStrategyGet();
+        IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
+        Map<String, IDeserializeStrategy> deserializeStrategiesMap = new HashMap<>();
+        deserializeStrategiesMap.put("GET", deserializeStrategyGet);
+        deserializeStrategiesMap.put("POST", deserializeStrategyPostJson);
+        IOC.register(deserializeStrategyKey, new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            FullHttpRequest request = (FullHttpRequest) args[0];
+                            return deserializeStrategiesMap.get(request.method().toString());
+                        }
+                )
+        );
+
     }
 }
