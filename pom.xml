@@ -261,6 +261,8 @@
         <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>ActorCollectionReceiver</module>
+        <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
         <module>PluginConnectionOptions</module>
@@ -305,6 +307,11 @@
         <module>TestCheckers</module>
         <module>InitializationException</module>
         <module>PluginTestCheckers</module>
+        <module>NestedField</module>
+        <module>PluginNestedField</module>
+        <module>GetFirstNotNullRule</module>
+        <module>PluginGetFirstNotNullRule</module>
+        <module>PluginDateTimeFormatterStrategy</module>
     </modules>
 
     <build>

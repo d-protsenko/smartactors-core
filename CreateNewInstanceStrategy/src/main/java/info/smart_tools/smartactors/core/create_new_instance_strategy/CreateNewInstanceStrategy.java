@@ -14,6 +14,7 @@ import java.util.function.Function;
  *
  * @since 1.8
  */
+@Deprecated
 public class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
 
     /**

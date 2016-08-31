@@ -37,6 +37,7 @@ public class CreateAsyncOpPlugin implements IPlugin {
 
             item
                     .after("IOC")
+                    .after("datetime_formatter_plugin")
                     .before("starter")
                     .process(() -> {
                         try {

@@ -19,8 +19,6 @@ import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionO
 import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
 
-import java.util.UUID;
-
 /**
  * Actor for creating user
  */
@@ -73,7 +71,7 @@ public class CreateUserActor {
     public void create(final MessageWrapper message) throws TaskExecutionException {
         try {
             IObject user = message.getUser();
-            userIdF.out(user, String.valueOf(UUID.randomUUID()));
+            userIdF.out(user, IOC.resolve(Keys.getOrAdd("db.collection.nextid")));
             passwordF.out(user, passwordEncoder.encode(passwordF.in(user)));
 
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
