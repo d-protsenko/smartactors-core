@@ -1,18 +1,22 @@
 package info.smart_tools.smartactors.test.test_checkers;
 
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.plugin.configuration_object.InitializeConfigurationObjectStrategies;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
 import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -21,8 +25,10 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test for {@link AssertionChecker}.
@@ -40,6 +46,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         load(PluginIOCKeys.class);
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
+        load(InitializeConfigurationObjectStrategies.class);
     }
 
     @Override
@@ -82,7 +89,23 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'type': 'atype1', 'name': 'Nope'}".replace('\'', '"'));
 
-        IOC.remove(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+                (a) -> {
+                    try {
+                        String name = (String) a[0];
+                        if (name.equals("type")) {
+                            throw new Exception();
+                        }
+                        return new FieldName(name);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                strategy
+        );
 
         new AssertionChecker(Collections.singletonList(a1desc));
     }
@@ -147,6 +170,11 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
 
-        assertEquals("{'wrapper':{'in_Ass1':'message/x'}}".replace('\'', '"'), checker.getSuccessfulReceiverArguments().serialize());
+        IObject desc = checker.getSuccessfulReceiverArguments();
+        IObject wrapper = (IObject) desc.getValue(new FieldName("wrapper"));
+        assertNotNull(wrapper);
+        List<IObject> transformationRules = (List<IObject>) wrapper.getValue(new FieldName("in_Ass1"));
+        assertNotNull(transformationRules);
+        assertEquals(transformationRules.size(), 1);
     }
 }
