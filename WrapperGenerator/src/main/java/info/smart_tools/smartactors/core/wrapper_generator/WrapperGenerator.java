@@ -230,7 +230,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                                 methodPrefix +
                                 "_" +
                                 m.getName() +
-                                ".in(this.env, "+ m.getReturnType().getSimpleName() + ".class);"
+                                ".in(this.env, " + m.getReturnType().getSimpleName() + ".class);"
                         )
                         .addStringToBody("} catch(Throwable e) {")
                         .addStringToBody("\tthrow new ReadValueException(\"Could not get value from iobject.\", e);")

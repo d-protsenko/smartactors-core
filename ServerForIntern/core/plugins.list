@@ -115,6 +115,7 @@ core.tcp_server-0.2.0-SNAPSHOT.jar
 core.thread_pool-0.2.0-SNAPSHOT.jar
 core.wds_object-0.2.0-SNAPSHOT.jar
 core.wrapper_generator-0.2.0-SNAPSHOT.jar
+core.actor_collection_receiver-0.2.0-SNAPSHOT.jar
 guava-19.0.jar
 hamcrest-core-1.3.jar
 InMemoryJavaCompiler-1.2.jar
@@ -150,6 +151,7 @@ plugin.scope_provider-0.2.0-SNAPSHOT.jar
 plugin.standard_object_creators-0.2.0-SNAPSHOT.jar
 plugin.wds_object-0.2.0-SNAPSHOT.jar
 plugin.wrapper_generator-0.2.0-SNAPSHOT.jar
+plugin.actor_collection_receiver-0.2.0-SNAPSHOT.jar
 strategy.apply_function_to_arguments-0.2.0-SNAPSHOT.jar
 strategy.cookies_setter-0.2.0-SNAPSHOT.jar
 strategy.http_headers_setter-0.2.0-SNAPSHOT.jar

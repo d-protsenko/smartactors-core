@@ -30,6 +30,11 @@
       "dependency": "info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver",
       "strategyDependency": "chain choice strategy",
       "name": "chain_selector"
+    },
+    {
+      "kind": "raw",
+      "dependency": "ActorCollection",
+      "name": "my-actor-collection"
     }
   ],
   "maps": [
@@ -70,6 +75,22 @@
           "target": "sample-actor",
           "handler": "transformAndPutForResponse",
           "wrapper": {
+            "in_getSomeField": "message/Field",
+            "out_setSomeValueForRequest": "response/TransformedField",
+            "out_setCurrentActorState": "response/CurrentState",
+            "in_resetState": "message/Reset"
+          }
+        },
+        {
+          "target": "my-actor-collection",
+          "handler": "transformAndPutForResponse",
+          "new": {
+            "kind": "actor",
+            "dependency": "SampleActor"
+          },
+          "key": "in_actorId",
+          "wrapper": {
+            "in_actorId": "message/ActorId",
             "in_getSomeField": "message/Field",
             "out_setSomeValueForRequest": "response/TransformedField",
             "out_setCurrentActorState": "response/CurrentState",

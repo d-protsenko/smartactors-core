@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.ireceiver_generator;
 
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ireceiver_generator.exception.ReceiverGeneratorException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
