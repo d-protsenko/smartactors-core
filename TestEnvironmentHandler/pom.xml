@@ -120,6 +120,12 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

@@ -37,7 +37,7 @@ public class TestHttpEndpoint implements IAsyncService {
     private IAction<IObject> rule;
     private ExecutorService executorService;
 
-    private final IFieldName environmentFieldName;
+    private final IFieldName contentFieldName;
     private final IFieldName chainFieldName;
     private final IFieldName callbackFieldName;
 
@@ -79,11 +79,11 @@ public class TestHttpEndpoint implements IAsyncService {
         this.timeInterval = timeBetweenTests;
         this.executorService = Executors.newSingleThreadExecutor();
         try {
-            this.environmentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "environment"
+            this.contentFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "content"
             );
             this.chainFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "callback"
@@ -112,14 +112,15 @@ public class TestHttpEndpoint implements IAsyncService {
                     if (obj != null) {
                         this.rule.execute(obj);
                         handler.handle(
-                                (IObject) obj.getValue(this.environmentFieldName),
+                                (IObject) obj.getValue(this.contentFieldName),
                                 (IReceiverChain) obj.getValue(this.chainFieldName),
                                 (IAction<Throwable>) obj.getValue(this.callbackFieldName)
                         );
                     }
                     Thread.sleep(timeInterval);
                 } catch (Throwable e) {
-                    System.out.println(e.toString());
+                    //System.out.println();
+                    e.printStackTrace();
                 }
             }
         } catch (Throwable e) {
@@ -148,7 +149,8 @@ public class TestHttpEndpoint implements IAsyncService {
                 IFieldName cookiesFieldName = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "cookies"
                 );
-                IObject environment = (IObject) iObject.getValue(environmentFieldName);
+                IObject content = (IObject) iObject.getValue(this.contentFieldName);
+                IObject environment = (IObject) content.getValue(environmentFieldName);
 
                 IObject context = (IObject) environment.getValue(contextFieldName);
                 if (null == context) {

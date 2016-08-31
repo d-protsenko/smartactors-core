@@ -105,7 +105,7 @@ public class MainTestChain implements IReceiverChain {
                 completionCallback.execute(exception);
             }
         } catch (ActionExecuteException | InvalidArgumentException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return new ExceptionalTestChain();

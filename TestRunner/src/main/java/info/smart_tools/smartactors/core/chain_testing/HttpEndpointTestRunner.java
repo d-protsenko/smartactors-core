@@ -83,7 +83,7 @@ import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionExc
  */
 public class HttpEndpointTestRunner implements ITestRunner {
 
-    private final IFieldName messageFieldName;
+    private final IFieldName contentFieldName;
     private final IFieldName chainFieldName;
     private final IFieldName callbackFieldName;
 
@@ -94,11 +94,11 @@ public class HttpEndpointTestRunner implements ITestRunner {
     public HttpEndpointTestRunner()
             throws InitializationException {
         try {
-            this.messageFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message"
+            this.contentFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "content"
             );
             this.chainFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "callback"
@@ -140,7 +140,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             );
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
-            sourceObject.setValue(this.messageFieldName, description);
+            sourceObject.setValue(this.contentFieldName, description);
             sourceObject.setValue(this.callbackFieldName, callback);
             sourceObject.setValue(this.chainFieldName, testedChain);
             ISource<IObject, IObject> source = IOC.resolve(

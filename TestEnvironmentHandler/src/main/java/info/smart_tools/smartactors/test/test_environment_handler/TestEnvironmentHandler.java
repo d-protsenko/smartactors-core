@@ -62,23 +62,17 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
         if (null == environment) {
             throw new InvalidArgumentException("Description should not be null.");
         }
-
         if (null == callback) {
             throw new InvalidArgumentException("Callback should not be null.");
         }
-
         if (null == receiverChain) {
             throw new InvalidArgumentException("Receiver chain should not be null.");
         }
 
         try {
-
             IResultChecker checker = createChecker(environment);
-
             IMessageProcessor[] fmp = new IMessageProcessor[1];
-
             IObject environmentDesc = (IObject) environment.getValue(environmentFieldName);
-
             IObject message = (IObject) environmentDesc.getValue(messageFieldName);
             IObject context = (IObject) environmentDesc.getValue(contextFieldName);
 
@@ -91,21 +85,16 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                     callback.execute(e);
                 }
             };
-
             MainTestChain mainTestChain = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), MainTestChain.class.getCanonicalName()),
                     receiverChain,
                     completionCallback,
                     checker.getSuccessfulReceiverArguments()
             );
-
             IMessageProcessingSequence sequence = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
                     STACK_DEPTH, mainTestChain
             );
-
-
-
             IQueue<ITask> taskQueue = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), "task_queue")
             );
@@ -113,7 +102,6 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             IMessageProcessor mp = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()), taskQueue, sequence
             );
-
             fmp[0] = mp;
             mp.process(message, context);
 

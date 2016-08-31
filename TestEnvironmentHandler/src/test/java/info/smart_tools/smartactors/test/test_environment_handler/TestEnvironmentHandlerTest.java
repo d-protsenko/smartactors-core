@@ -25,6 +25,8 @@ import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.List;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -58,7 +61,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     private IResultChecker assertChecker;
     private IResultChecker interceptChecker;
 
-    private ArgumentCaptor<IAction> cbCaptor = ArgumentCaptor.forClass(IAction.class);
+//    private ArgumentCaptor<IAction> cbCaptor = ArgumentCaptor.forClass(IAction.class);
 
     @Override
     protected void loadPlugins()
@@ -94,7 +97,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
 
         when(mpStrategyMock.resolve(same(taskQueueMock), same(sequenceMock))).thenReturn(messageProcessorMock);
         when(sequenceStrategyMock.resolve(any(), same(mainTestChainMock))).thenReturn(sequenceMock);
-        when(mainTestChainStrategyMock.resolve(cbCaptor.capture(), any())).thenReturn(mainTestChainMock);
+        when(mainTestChainStrategyMock.resolve(any(IReceiverChain.class), any(IAction.class), any(IObject.class))).thenReturn(mainTestChainMock);
         when(createAssertCheckerStrategyMock.resolve(any(ArrayList.class))).thenReturn(assertChecker);
         when(createInterceptCheckerStrategyMock.resolve(any(IObject.class))).thenReturn(interceptChecker);
 
@@ -135,10 +138,16 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': []}".replace('\'','"'));
 
         desc.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment"), env);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                callbackMock.execute(null);
+                return null;
+            }
+        }).when(this.messageProcessorMock).process(any(), any());
 
         new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
 
-        cbCaptor.getAllValues().get(0).execute(null);
         verify(callbackMock).execute(null);
     }
 
@@ -153,10 +162,16 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
                 "{'name': 'The test', 'chainName': 'chainToTest', 'intercept': {}}".replace('\'','"'));
 
         desc.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment"), env);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                callbackMock.execute(null);
+                return null;
+            }
+        }).when(this.messageProcessorMock).process(any(), any());
 
         new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
 
-        cbCaptor.getAllValues().get(0).execute(null);
         verify(callbackMock).execute(null);
     }
 
@@ -172,10 +187,16 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': []}".replace('\'','"'));
 
         desc.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment"), env);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                callbackMock.execute(new Exception());
+                return null;
+            }
+        }).when(this.messageProcessorMock).process(any(), any());
 
         new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
 
-        cbCaptor.getAllValues().get(0).execute(new Exception());
         verify(callbackMock).execute(any());
     }
 
@@ -221,21 +242,13 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         fail();
     }
 
-    @Test(expected = EnvironmentHandleException.class)
-    public void Should_throwWhenCannotResolveChain()
+    @Test (expected = InitializationException.class)
+    public void Should_throwWhenIOCNotInitialized()
             throws Exception {
-        IObject env = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        env.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context"), contextMock);
-
-        IObject desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                "{'name': 'The test', 'chainName': 'nonexist', 'assert': []}".replace('\'','"'));
-
-        desc.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "environment"), env);
-
-        doThrow(NestedChainStackOverflowException.class).when(sequenceMock).callChain(testedChainMock);
-
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), strategy);
+        doThrow(Exception.class).when(strategy).resolve(any());
+        new TestEnvironmentHandler().handle(mock(IObject.class), testedChainMock, callbackMock);
         fail();
     }
 }
