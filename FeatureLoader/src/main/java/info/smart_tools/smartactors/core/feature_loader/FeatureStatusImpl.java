@@ -1,36 +1,44 @@
 package info.smart_tools.smartactors.core.feature_loader;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.IBiAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
+import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ipath.IPath;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  */
 public class FeatureStatusImpl implements IFeatureStatus {
     private final String id;
-    private IPath path;
+    private IBiAction<IObject, IPath> loadAction;
+    private IPath path = null;
     private boolean isCompleted = false;
     private Throwable error = null;
     private final ConcurrentLinkedQueue<IAction<Throwable>> completionCallbacks = new ConcurrentLinkedQueue<>();
-    private List<FeatureStatusImpl> dependencies = new LinkedList<>();
 
-    private List<IPath> jars;
-    private IObject config;
+    private List<FeatureStatusImpl> dependencies = new LinkedList<>();
+    private IObject config = null;
+
+    private final AtomicInteger nExpect = new AtomicInteger(1);
 
     /**
      * The constructor.
      *
-     * @param id    identifier of the feature
+     * @param id            identifier of the feature
+     * @param loadAction    action loading plugins and configuration of the feature
      */
-    FeatureStatusImpl(final String id) {
+    FeatureStatusImpl(final String id, final IBiAction<IObject, IPath> loadAction) {
         this.id = id;
+        this.loadAction = loadAction;
     }
 
     @Override
@@ -84,6 +92,26 @@ public class FeatureStatusImpl implements IFeatureStatus {
         }
     }
 
+    private void decreaseCounter()
+            throws ActionExecuteException {
+        if (nExpect.decrementAndGet() != 0) {
+            return;
+        }
+
+        try {
+            loadAction.execute(config, path);
+        } catch (Throwable e) {
+            error = e;
+        } finally {
+            runCallbacks();
+        }
+    }
+
+    private void failDependency(final String depId, final Throwable err) {
+        error = new FeatureLoadException(MessageFormat.format("Error loading dependency named ''{0}''.", depId), err);
+        isCompleted = true;
+    }
+
     /**
      * Add status of feature this one depends on.
      *
@@ -91,6 +119,18 @@ public class FeatureStatusImpl implements IFeatureStatus {
      */
     void addDependency(final FeatureStatusImpl feature) {
         dependencies.add(feature);
+        nExpect.incrementAndGet();
+        try {
+            feature.whenDone(error -> {
+                if (error != null) {
+                    failDependency(feature.getId(), error);
+                } else {
+                    decreaseCounter();
+                }
+            });
+        } catch (ActionExecuteException e) {
+            failDependency(feature.getId(), e);
+        }
     }
 
     /**
@@ -103,19 +143,27 @@ public class FeatureStatusImpl implements IFeatureStatus {
     }
 
     boolean isInitialized() {
-        return jars != null && config != null;
+        return config != null && path != null;
     }
 
     /**
      * Initialize directory path, jar's list and configuration object of the feature.
      *
      * @param dirPath      path of feature's directory
-     * @param jarPaths     paths of the {@code .jar} files of the feature
      * @param theConfig    configuration object of the feature
      */
-    void init(final IPath dirPath, final List<IPath> jarPaths, final IObject theConfig) {
+    void init(final IPath dirPath, final IObject theConfig) {
         path = dirPath;
-        jars = jarPaths;
         config = theConfig;
+    }
+
+    /**
+     * Load the feature or await for dependencies to be loaded.
+     *
+     * @throws ActionExecuteException if error occurs calling callbacks
+     */
+    void load()
+            throws ActionExecuteException {
+        decreaseCounter();
     }
 }

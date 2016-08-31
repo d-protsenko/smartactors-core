@@ -1,5 +1,13 @@
 package info.smart_tools.smartactors.core.feature_loader;
 
+import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.iaction.IBiAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
+import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
@@ -10,14 +18,25 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.core.iplugin.IPlugin;
+import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
+import info.smart_tools.smartactors.core.iplugin_creator.exception.PluginCreationException;
+import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
+import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
+import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +51,12 @@ public class FeatureLoader implements IFeatureLoader {
 
     private final IFieldName featureNameFieldName;
     private final IFieldName afterFeaturesFieldName;
+    private final ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[0], getClass().getClassLoader());
+    private final IPluginCreator pluginCreator;
+    private final IPluginLoaderVisitor<String> pluginLoaderVisitor;
+    private final IConfigurationManager configurationManager;
+
+    private final IBiAction<IObject, IPath> featureLoadAction = this::loadPluginsAndConfig;
 
     /**
      * The constructor.
@@ -42,6 +67,9 @@ public class FeatureLoader implements IFeatureLoader {
             throws ResolutionException {
         featureNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
         afterFeaturesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeatures");
+        pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
+        pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
+        configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
     }
 
     @Override
@@ -73,9 +101,9 @@ public class FeatureLoader implements IFeatureLoader {
             }
 
             for (FeatureStatusImpl status : statuses) {
-                startLoadFeature(status);
+                status.load();
             }
-        } catch (ResolutionException | IOException | FeatureLoadException e) {
+        } catch (ResolutionException | IOException | FeatureLoadException | ActionExecuteException e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading features from ''{0}''.", groupPath.getPath()), e);
         }
@@ -87,14 +115,18 @@ public class FeatureLoader implements IFeatureLoader {
         FeatureStatusImpl status = loadFeature0(featurePath);
 
         for (FeatureStatusImpl dependencyStatus : status.getDependencies()) {
-            if (dependencyStatus.isLoaded()) {
+            if (!dependencyStatus.isLoaded()) {
                 throw new FeatureLoadException(
                         MessageFormat.format("Feature ''{0}'' required by ''{1}'' is not loaded.",
                                 dependencyStatus.getId(), status.getId()));
             }
         }
 
-        startLoadFeature(status);
+        try {
+            status.load();
+        } catch (ActionExecuteException e) {
+            throw new FeatureLoadException("Error occurred loading the feature.", e);
+        }
 
         return status;
     }
@@ -120,7 +152,7 @@ public class FeatureLoader implements IFeatureLoader {
                                 featureName, status.getPath().getPath()));
             }
 
-            status.init(featurePath, listJarsIn(featurePath), featureConfig);
+            status.init(featurePath, featureConfig);
 
             for (String dependencyId : featureDependencies) {
                 status.addDependency(getFeatureStatus0(dependencyId));
@@ -160,7 +192,7 @@ public class FeatureLoader implements IFeatureLoader {
     }
 
     private FeatureStatusImpl getFeatureStatus0(final String featureId) {
-        return statuses.computeIfAbsent(featureId, FeatureStatusImpl::new);
+        return statuses.computeIfAbsent(featureId, id -> new FeatureStatusImpl(id, featureLoadAction));
     }
 
     private IObject readFeatureConfig(final IPath featurePath)
@@ -174,7 +206,43 @@ public class FeatureLoader implements IFeatureLoader {
         }
     }
 
-    private void startLoadFeature(final FeatureStatusImpl status) {
-        // TODO: Load plugins & config or wait for dependencies to load
+    private void loadPluginsAndConfig(final IObject config, final IPath directory)
+            throws ActionExecuteException {
+        try {
+            loadPluginsFrom(listJarsIn(directory));
+            configurationManager.applyConfig(config);
+        } catch (FeatureLoadException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException |
+                 ConfigurationProcessingException e) {
+            throw new ActionExecuteException(e);
+        }
+    }
+
+    private void loadPluginsFrom(final List<IPath> jars)
+            throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
+        IBootstrap bootstrap = new Bootstrap();
+        IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
+                classLoader,
+                clz -> {
+                    try {
+                        IPlugin plugin = pluginCreator.create(clz, bootstrap);
+                        plugin.load();
+                    } catch (PluginCreationException | PluginException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                },
+                pluginLoaderVisitor);
+        pluginLoader.loadPlugin(jars);
+
+        try {
+            bootstrap.start();
+        } catch (ProcessExecutionException e) {
+            try {
+                bootstrap.revert();
+            } catch (RevertProcessExecutionException ee) {
+                e.addSuppressed(ee);
+            }
+
+            throw e;
+        }
     }
 }
