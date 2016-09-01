@@ -3,7 +3,9 @@ package info.smart_tools.smartactors.plugin.feature_loader;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.feature_loader.FeatureLoader;
+import info.smart_tools.smartactors.core.feature_loader.FeatureStatusImpl;
 import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.IBiAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -50,7 +52,13 @@ public class PluginFeatureLoader implements IPlugin {
                     .after("ConfigurationObject")
                     .process(() -> {
                         try {
-
+                            IOC.register(Keys.getOrAdd(FeatureStatusImpl.class.getCanonicalName()), new CreateNewInstanceStrategy(args -> {
+                                try {
+                                    return new FeatureStatusImpl((String) args[0], (IBiAction) args[1]);
+                                } catch (InvalidArgumentException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }));
                             IOC.register(Keys.getOrAdd("plugin creator"), new SingletonStrategy(new PluginCreator()));
                             IOC.register(Keys.getOrAdd("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
                             IOC.register(Keys.getOrAdd("plugin loader"), new CreateNewInstanceStrategy(args -> {

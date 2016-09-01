@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iaction.IBiAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ipath.IPath;
 
@@ -35,8 +36,19 @@ public class FeatureStatusImpl implements IFeatureStatus {
      *
      * @param id            identifier of the feature
      * @param loadAction    action loading plugins and configuration of the feature
+     * @throws InvalidArgumentException if {@code id} is {@code null}
+     * @throws InvalidArgumentException if {@code loadAction} is {@code null}
      */
-    FeatureStatusImpl(final String id, final IBiAction<IObject, IPath> loadAction) {
+    public FeatureStatusImpl(final String id, final IBiAction<IObject, IPath> loadAction)
+            throws InvalidArgumentException {
+        if (null == id) {
+            throw new InvalidArgumentException("Feature id should not be null.");
+        }
+
+        if (null == loadAction) {
+            throw new InvalidArgumentException("Load action should not be null.");
+        }
+
         this.id = id;
         this.loadAction = loadAction;
     }

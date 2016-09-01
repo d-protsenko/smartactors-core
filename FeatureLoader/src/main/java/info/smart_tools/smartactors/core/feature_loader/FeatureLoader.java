@@ -195,7 +195,13 @@ public class FeatureLoader implements IFeatureLoader {
     }
 
     private FeatureStatusImpl getFeatureStatus0(final String featureId) {
-        return statuses.computeIfAbsent(featureId, id -> new FeatureStatusImpl(id, featureLoadAction));
+        return statuses.computeIfAbsent(featureId, id -> {
+            try {
+                return IOC.resolve(Keys.getOrAdd(FeatureStatusImpl.class.getCanonicalName()), id, featureLoadAction);
+            } catch (ResolutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private IObject readFeatureConfig(final IPath featurePath)
