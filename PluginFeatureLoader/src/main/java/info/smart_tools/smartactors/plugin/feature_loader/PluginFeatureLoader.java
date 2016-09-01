@@ -1,7 +1,8 @@
-package info.smart_tools.smartactors.core.feature_loader;
+package info.smart_tools.smartactors.plugin.feature_loader;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.feature_loader.FeatureLoader;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;

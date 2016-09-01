@@ -40,13 +40,12 @@ public class PluginReadConfigFile implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> readConfigItem = new BootstrapItem("read_config");
+            IBootstrapItem<String> readConfigItem = new BootstrapItem("read_initial_config");
 
             readConfigItem
-                    .after("configuration_manager")
+                    .after("config_sections:done")
                     .after("iobject")
                     .after("ConfigurationObject")
-                    .before("configure")
                     .process(() -> {
                         try {
                             String fileName = System.getenv().getOrDefault("SM_CONFIG_FILE", "configuration.json");
@@ -56,7 +55,6 @@ public class PluginReadConfigFile implements IPlugin {
                             IConfigurationManager configurationManager = IOC.resolve(
                                     Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-//                            IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), configString);
                             IObject cObject = IOC.resolve(Keys.getOrAdd("configuration object"), configString);
 
                             configurationManager.applyConfig(cObject);

@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteExceptio
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
+import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
@@ -41,6 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -56,6 +58,8 @@ public class FeatureLoader implements IFeatureLoader {
     private final IConfigurationManager configurationManager;
 
     private final IBiAction<IObject, IPath> featureLoadAction = this::loadPluginsAndConfig;
+
+    private final List<IBootstrapItem<String>> doneItems = new CopyOnWriteArrayList<>();
 
     /**
      * The constructor.
@@ -218,7 +222,7 @@ public class FeatureLoader implements IFeatureLoader {
 
     private void loadPluginsFrom(final List<IPath> jars)
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException, ResolutionException {
-        IBootstrap bootstrap = new Bootstrap();
+        IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap(doneItems);
         IAction<Class> classHandler = clz -> {
             try {
                 IPlugin plugin = pluginCreator.create(clz, bootstrap);
@@ -236,7 +240,7 @@ public class FeatureLoader implements IFeatureLoader {
         pluginLoader.loadPlugin(jars);
 
         try {
-            bootstrap.start();
+            doneItems.addAll(bootstrap.start());
         } catch (ProcessExecutionException e) {
             try {
                 bootstrap.revert();
