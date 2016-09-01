@@ -10,9 +10,11 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,14 +25,35 @@ public class DeserializeStrategyGet implements IDeserializeStrategy {
 
     IFieldName messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
     IFieldName argsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "args");
+    List<List<String>> templates = new ArrayList<>();
 
-    public DeserializeStrategyGet() throws ResolutionException {
+    public DeserializeStrategyGet(List<String> templates) throws ResolutionException {
+        for (String template : templates) {
+            this.templates.add(Arrays.asList(template.split("/")));
+        }
     }
 
     @Override
     public IObject deserialize(FullHttpRequest request) throws DeserializationException {
         try {
-            IObject resultIObject = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
+            IObject resultIObject = null;//IOC.resolve(Keys.getOrAdd(DSObject.));
+            //add to resultIObject
+            decoder.parameters();
+            String[] uriElems = decoder.path().split("/");
+            int score[] = new int[templates.size()];
+            for (int i = 0; i < templates.size(); i++) {
+                List<String> template = templates.get(i);
+                for (String templateElem : template) {
+                    if (templateElem.startsWith(":")) {
+                        score[i] += 1;
+                        continue;
+                    }
+                    if (templateElem.equals(uriElems[i])) {
+                        score[i] += 2;
+                    }
+                }
+            }
             String uri = request.uri();
             String[] parts = uri.split("\\?");
 

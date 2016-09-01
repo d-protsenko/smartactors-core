@@ -70,7 +70,7 @@ public class DeserializeStrategyGetTest {
 
     }
 
-    @Test
+  /*  @Test
     public void testUriWithEmptyArgs() throws DeserializationException, ResolutionException, InvalidArgumentException, RegistrationException, ChangeValueException {
         IOC.register(Keys.getOrAdd("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
@@ -139,5 +139,5 @@ public class DeserializeStrategyGetTest {
         assertEquals(args[1], "foo");
         assertEquals(args[2], "bar");
     }
-
+*/
 }
