@@ -43,6 +43,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private IFieldName argumentsFieldName;
     private IFieldName wrapperFieldName;
 
+    private ITask finalTask;
+
     /**
      * True if processing was interrupted (using {@link #pauseProcess()}) during execution of last receiver.
      */
@@ -112,6 +114,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
         wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
+
+        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "final task"), this.environment);
     }
 
     @Override
@@ -264,6 +268,12 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     }
 
     private void complete() {
+        try {
+            this.taskQueue.put(this.finalTask);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         // TODO: Return message, context, response and {@code this} to the pool
     }
 }
