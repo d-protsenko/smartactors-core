@@ -70,6 +70,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         context.setValue(cookiesFieldName, new ArrayList<IObject>());
         context.setValue(headersFieldName, new ArrayList<IObject>());
         context.setValue(requestFieldName, request);
+        context.setValue(httpResponseIsSentFieldName, false);
         IAction<IObject> httpFinalAction = new IAction<IObject>() {
             @Override
             public void execute(final IObject environment) throws ActionExecuteException, InvalidArgumentException {
@@ -82,10 +83,10 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                     }
                     IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
                     IChannelHandler channelHandler = (IChannelHandler)
-                            environment.getValue(channelFieldName);
+                            context.getValue(channelFieldName);
 
                     IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
-                    response.setContent(null);
+                    response.setContent("".getBytes());
 
                     IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
                             environment);

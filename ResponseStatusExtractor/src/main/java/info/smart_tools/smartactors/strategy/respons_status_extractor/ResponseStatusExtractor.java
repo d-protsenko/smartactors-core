@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseSta
  */
 public class ResponseStatusExtractor implements IResponseStatusExtractor {
 
-    private static final int DEFAULT_STATUS_CODE = 500;
+    private static final int DEFAULT_STATUS_CODE = 200;
 
     private IFieldName httpResponseStatusCodeFieldName;
     private IFieldName contextFieldName;
