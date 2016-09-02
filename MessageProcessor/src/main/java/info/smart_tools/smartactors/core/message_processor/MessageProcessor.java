@@ -256,6 +256,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private void enqueueNext() {
         if (messageProcessingSequence.next()) {
             enqueue();
+        } else {
+            complete();
         }
     }
 

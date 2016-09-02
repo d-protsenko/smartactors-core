@@ -25,6 +25,14 @@ public class FinalTask implements ITask {
 
     private IObject env;
 
+    /**
+     * Constructor.
+     * Creates instance of {@link FinalTask} by given environment
+     *
+     * @param environment the environment
+     * @throws InvalidArgumentException if environment is null
+     * @throws ResolutionException if resolution is impossible because of any errors
+     */
     public FinalTask(final IObject environment)
             throws InvalidArgumentException, ResolutionException {
         if (null == environment) {
