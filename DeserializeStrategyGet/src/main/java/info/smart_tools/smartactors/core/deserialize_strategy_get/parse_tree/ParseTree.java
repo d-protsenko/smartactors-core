@@ -1,78 +1,116 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by sevenbits on 01.09.16.
+ * Implementation of {@link IParseTree} for parsing rest URI by template in format
+ * "/smth/:variable1/smth2/:variable2"
  */
-public class ParseTree {
+public class ParseTree implements IParseTree {
     int level;
-    ParseTree variableChildElem;
+    List<ParseTree> variableChildElems;
     List<ParseTree> constChildElems;
-    List<Template> templates;
     String templateElem;
-    boolean isVariableVertex = false;
+    private boolean isEnd;
 
-    public ParseTree(final int level) {
+    public ParseTree() {
         constChildElems = new ArrayList<>();
+        variableChildElems = new ArrayList<>();
+        this.level = 0;
+        isEnd = false;
+    }
+
+    private ParseTree(final int level, Template template) {
+        constChildElems = new ArrayList<>();
+        variableChildElems = new ArrayList<>();
         this.level = level;
+        if (template.size() - 1 == level) {
+            isEnd = true;
+        }
     }
 
-    public Map<String, String> match(List<String> uri) {
-        if (uri.size() <= level) {
-            return null;
+    public Map<String, String> match(String uri) {
+        TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
+        TreeObject resultObject = match(treeObject);
+        return resultObject.isEnded() ? resultObject.getResult() : null;
+    }
+
+    private TreeObject match(final TreeObject treeObject) {
+        if (!treeObject.hasElem(level)) {
+            return treeObject;
         }
-        if (!templateElem.startsWith(":") && !templateElem.equals(uri.get(level))) {
-            return null;
+        if (!treeObject.getUriElem(level).equals(templateElem) && !isVariable()) {
+            treeObject.setEnded(false);
+            return treeObject;
         }
-        Map<String, String> resultMap = new HashMap<>();
-        //check templates with full equality of current template elem
+        TreeObject resultObject = new TreeObject(level, treeObject.getUri());
         for (int i = 0; i < constChildElems.size(); i++) {
-            Map<String, String> bufMap;
-            bufMap = constChildElems.get(i).match(uri);
-            if (bufMap != null && bufMap.size() > resultMap.size()) {
-                resultMap = bufMap;
+            TreeObject bufObject = constChildElems.get(i).match(treeObject);
+            if (bufObject.isEnded() && bufObject.getLevel() > resultObject.getLevel()) {
+                resultObject = bufObject;
+            }
+        }
+        for (int i = 0; i < variableChildElems.size(); i++) {
+            TreeObject bufObject = variableChildElems.get(i).match(treeObject);
+            if (bufObject.isEnded() && bufObject.getLevel() > resultObject.getLevel()) {
+                resultObject = bufObject;
+            }
+        }
+        if (resultObject.getLevel() == level) {
+            if (!resultObject.isEnded() && isEnd) {
+                resultObject.setEnded(true);
             }
         }
 
-        if (variableChildElem != null) {
-            Map<String, String> bufMap;
-            bufMap = variableChildElem.match(uri);
-            if (bufMap != null && bufMap.size() > resultMap.size()) {
-                resultMap = bufMap;
-            }
+        if (isVariable()) {
+            resultObject.addResult(templateElem.substring(1), treeObject.getUriElem(level));
         }
-        if (isVariableVertex) {
-            resultMap.put(templateElem.substring(1), uri.get(level));
-        }
-        return resultMap;
+        return resultObject;
     }
 
-    String getTemplateElem() {
+    private String getTemplateElem() {
         return templateElem;
     }
 
-    public void addTemplate(Template template) {
+    private boolean isVariable() {
+        return this.getTemplateElem().startsWith(":");
+    }
+
+    public void addTemplate(String template) {
+        addTemplate(new Template(template));
+    }
+
+    private void addTemplate(Template template) {
         if (template.size() <= level) {
             return;
         }
         this.templateElem = template.get(level);
-        if (template.isVariable(level)) {
-            variableChildElem = new ParseTree(level + 1);
-            variableChildElem.addTemplate(template);
+        if (template.isVariable(level + 1)) {
+            for (ParseTree variableChildElem : variableChildElems) {
+                if (variableChildElem.getTemplateElem().equals(template.get(level + 1))) {
+                    variableChildElem.addTemplate(template);
+                    return;
+                }
+            }
+            ParseTree treeElem = new ParseTree(level + 1, template);
+            variableChildElems.add(treeElem);
+            treeElem.addTemplate(template);
             return;
         }
         for (ParseTree constTreeElem : constChildElems) {
-            if (constTreeElem.getTemplateElem().equals(template.get(level))) {
+            if (constTreeElem.getTemplateElem().equals(template.get(level + 1))) {
                 constTreeElem.addTemplate(template);
                 return;
             }
         }
-        ParseTree treeElem = new ParseTree(level + 1);
-        constChildElems.add(treeElem);
-        treeElem.addTemplate(template);
+        if (level + 1 < template.size()) {
+            ParseTree treeElem = new ParseTree(level + 1, template);
+            constChildElems.add(treeElem);
+            treeElem.addTemplate(template);
+        }
+
     }
 }

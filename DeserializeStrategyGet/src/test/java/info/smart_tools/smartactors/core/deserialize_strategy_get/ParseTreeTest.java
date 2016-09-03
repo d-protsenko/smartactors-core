@@ -1,11 +1,14 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_get;
 
+import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IParseTree;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.ParseTree;
-import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.Template;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by sevenbits on 01.09.16.
@@ -17,9 +20,91 @@ public class ParseTreeTest {
     }
 
     @Test
-    public void testTemplateAddition() {
-        ParseTree tree = new ParseTree(0);
-        tree.addTemplate(new Template("/home/:messageMapId/abrakadabra"));
-        tree.match(Arrays.asList("/home/123/abrakadabra".split("/")));
+    public void testParseTreeWithOneTemplate() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra");
+        assertEquals(resultMap.size(), 1);
+        assertEquals(resultMap.get("messageMapId"), "123");
     }
+
+
+    @Test
+    public void testParseTreeWithNotExistingTemplate() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        Map<String, String> resultMap = tree.match("/notHome/123/abrakadabra");
+        assertEquals(resultMap, null);
+    }
+
+    @Test
+    public void testParseTreeWithNotExistingTemplateAtTheLastPart() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra1");
+        assertEquals(resultMap, null);
+    }
+
+    @Test
+    public void testParseTreeWithTwoDifferentTemplatesOnTheFirstLevel() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        tree.addTemplate("/notHome/:foo/abrakadabra");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra");
+        assertEquals(resultMap.size(), 1);
+        assertNull(resultMap.get("foo"));
+        assertEquals(resultMap.get("messageMapId"), "123");
+    }
+
+    @Test
+    public void testParseTreeWithTwoDifferentTemplatesOnTheLowestLevel() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        tree.addTemplate("/home/:foo/abrakadabra1");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra");
+        assertEquals(resultMap.size(), 1);
+        assertNull(resultMap.get("foo"));
+        assertEquals(resultMap.get("messageMapId"), "123");
+    }
+
+    @Test
+    public void testPreferEquality() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra");
+        tree.addTemplate("/home/123/:messageMapId");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra");
+        assertEquals(resultMap.size(), 1);
+        assertEquals(resultMap.get("messageMapId"), "abrakadabra");
+    }
+
+    @Test
+    public void testPreferEqualityOnTheLowestLevel() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra/x");
+        tree.addTemplate("/home/123/:messageMapId/y");
+        Map<String, String> resultMap = tree.match("/home/123/abrakadabra/x");
+        assertEquals(resultMap.size(), 1);
+        assertEquals(resultMap.get("messageMapId"), "123");
+    }
+
+    @Test
+    public void testOnTheManyTemplates() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/home/:messageMapId/abrakadabra/x");
+        tree.addTemplate("/foo/:bar");
+        tree.addTemplate("/foo/:bar/userId/:id");
+        tree.addTemplate("/home/123/:messageMapId/y");
+
+        Map<String, String> resultMap = tree.match("/foo/123/userId/x");
+        Map<String, String> resultMap1 = tree.match("/foo/123");
+        Map<String, String> resultMap2 = tree.match("/home/123/y");
+        assertEquals(resultMap.size(), 2);
+        assertEquals(resultMap.get("bar"), "123");
+
+        assertEquals(resultMap1.size(), 1);
+        assertEquals(resultMap1.get("bar"), "123");
+
+        assertNull(resultMap2);
+    }
+
 }
