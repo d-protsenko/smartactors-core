@@ -185,7 +185,7 @@ public class HttpEndpointTest {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
-                environmentHandler, receiver);
+                environmentHandler, receiver, "default");
     }
 
     protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException {

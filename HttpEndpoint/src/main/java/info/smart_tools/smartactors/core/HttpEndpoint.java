@@ -3,9 +3,16 @@ package info.smart_tools.smartactors.core;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import io.netty.handler.codec.http.FullHttpRequest;
+
+import java.util.List;
 
 /**
  * Endpoint for http connection
@@ -21,10 +28,11 @@ public class HttpEndpoint extends HttpServer {
      * @param receiverChain    chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
      */
     public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
-                        final IEnvironmentHandler handler, final IReceiverChain receiverChain
-    ) {
+                        final IEnvironmentHandler handler, final IReceiverChain receiverChain,
+                        final String name
+    ) throws ResolutionException {
         super(port, maxContentLength, new EndpointChannelInboundHandler<>(
-                new HttpRequestHandler(scope, handler, receiverChain),
+                new HttpRequestHandler(scope, handler, receiverChain, name),
                 FullHttpRequest.class
         ));
     }

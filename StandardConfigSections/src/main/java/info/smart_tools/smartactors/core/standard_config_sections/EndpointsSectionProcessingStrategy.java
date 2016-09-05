@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.HttpEndpoint;
+import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
@@ -38,7 +39,11 @@ import java.util.List;
  *                 "port": 8080,
  *                 "startChain": "mainChain",
  *                 "maxContentLength": 4098,
- *                 "stackDepth": 5 (temporarily)
+ *                 "stackDepth": 5 (temporarily),
+ *                 "templates": [
+ *                     "/messageMapId/:messageMapId/bar/:barId",
+ *                     "/:messageMapId"
+ *                 ]
  *                 // . . .
  *             },
  *             {
@@ -50,7 +55,11 @@ import java.util.List;
  *                 "stackDepth": 5,
  *                 "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/cert.pem",
  *                 "keyPass": "123456",
- *                 "storePass": "123456"
+ *                 "storePass": "123456",
+ *                 "templates": [
+ *                     "/messageMapId/:messageMapId/bar/:barId",
+ *                     "/:messageMapId"
+ *                 ]
  *             }
  *         ]
  *     }
@@ -96,9 +105,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             for (IObject endpoint : endpointObjects) {
-                // TODO: 25.07.16 add endpoint type
                 // TODO: 25.07.16 remove stack depth from endpoint config
-                // TODO: 25.07.16 add endpoint name
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);

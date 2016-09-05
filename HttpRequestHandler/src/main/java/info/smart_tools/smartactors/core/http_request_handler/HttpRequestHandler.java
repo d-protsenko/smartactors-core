@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * Endpoint handler for HTTP requests.
  */
 public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, FullHttpRequest> {
+    private final String name;
 
     /**
      * Constructor for HttpRequestHandler
@@ -30,13 +31,19 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      * @param receiver           chain, that should receive message
      */
     public HttpRequestHandler(
-            final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver) {
-        super(receiver, environmentHandler, scope);
+            final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
+            final String name) {
+        super(receiver, environmentHandler, scope, name);
+        this.name = name;
     }
 
     @Override
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request) throws Exception {
-        IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()), request);
+        IDeserializeStrategy deserializeStrategy = IOC.resolve(
+                Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
+                name
+        );
         IObject message = deserializeStrategy.deserialize(request);
         IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
@@ -45,14 +52,16 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
         IFieldName headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
         IFieldName cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
+        IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
 
         IChannelHandler channelHandler = IOC.resolve(Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName()), ctx);
         //create context of the MP
-        IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         context.setValue(channelFieldName, channelHandler);
         context.setValue(cookiesFieldName, new ArrayList<IObject>());
         context.setValue(headersFieldName, new ArrayList<IObject>());
         context.setValue(requestFieldName, request);
+        context.setValue(endpointName, name);
         //create environment
         environment.setValue(messageFieldName, message);
         environment.setValue(contextFieldName, context);

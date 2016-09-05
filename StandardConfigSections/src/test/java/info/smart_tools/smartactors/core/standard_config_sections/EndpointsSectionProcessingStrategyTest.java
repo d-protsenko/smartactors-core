@@ -122,7 +122,8 @@ public class EndpointsSectionProcessingStrategyTest {
                         return new HttpEndpoint((Integer) configuration.getValue(new FieldName("port")),
                             (Integer) configuration.getValue(new FieldName("maxContentLength")),
                             ScopeProvider.getCurrentScope(), environmentHandler,
-                            (IReceiverChain) configuration.getValue(new FieldName("startChain")));
+                            (IReceiverChain) configuration.getValue(new FieldName("startChain")),
+                                "default");
                     } catch (ReadValueException | InvalidArgumentException
                         | ScopeProviderException | ResolutionException e) {
                     }

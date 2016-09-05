@@ -20,19 +20,21 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IReceiverChain receiverChain;
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
+    private final String name;
 
     /**
      * Constructor for HttpRequestHandler
      *
-     * @param scope scope for HttpRequestHandler
+     * @param scope              scope for HttpRequestHandler
      * @param environmentHandler handler for environment
-     * @param receiver chain, that should receive message
+     * @param receiver           chain, that should receive message
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope) {
+                           final IScope scope, final String name) {
         this.scope = scope;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
+        this.name = name;
     }
 
     /**
@@ -40,7 +42,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * Endpoint can receive message in different formats, so we can't make this process common for now.
      *
      * @param request request to the endpoint
-     * @param ctx context of the request
+     * @param ctx     context of the request
      * @return a deserialized message
      * @throws Exception if there is exception at environment getting
      */
