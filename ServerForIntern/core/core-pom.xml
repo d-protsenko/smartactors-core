@@ -158,6 +158,11 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.actor_collection_receiver</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.message_bus</artifactId>
             <version>${core.version}</version>
         </dependency>
