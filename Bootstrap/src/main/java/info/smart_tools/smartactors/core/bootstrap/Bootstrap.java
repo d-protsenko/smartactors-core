@@ -30,7 +30,7 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
      */
     public Bootstrap(final List<IBootstrapItem<String>> loadedItems) {
         for (IBootstrapItem<String> item : loadedItems) {
-            this.itemStorage.add(item.process(() -> {}));
+            this.itemStorage.add(item.process(() -> { }));
         }
     }
 

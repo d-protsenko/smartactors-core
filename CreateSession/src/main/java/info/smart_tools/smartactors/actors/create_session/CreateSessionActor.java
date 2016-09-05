@@ -120,8 +120,7 @@ public class CreateSessionActor {
                     searchTask.execute();
 
                     if (items.isEmpty()) {
-                        //TODO:: Should we create new session here?
-                        return;
+                        throw new CreateSessionException("No session has been found by id: " + sessionId);
                     }
                     session = items.get(0);
                     if (session == null) {
