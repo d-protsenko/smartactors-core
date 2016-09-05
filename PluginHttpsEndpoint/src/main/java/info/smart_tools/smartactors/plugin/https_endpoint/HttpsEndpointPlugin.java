@@ -119,6 +119,12 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
                                                     "queue"
                                             );
+
+                                    IFieldName templatesFieldName =
+                                            IOC.resolve(
+                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                                    "templates"
+                                            );
                                     ICookiesSetter cookiesSetter = new CookiesSetter();
                                     IKey httpsEndpointKey = Keys.getOrAdd("https_endpoint");
                                     IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
@@ -186,6 +192,16 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     (args) -> {
                                                         IObject configuration = (IObject) args[0];
                                                         try {
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_GET",
+                                                                    configuration.getValue(endpointNameFieldName),
+                                                                    configuration.getValue(templatesFieldName));
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_POST",
+                                                                    configuration.getValue(endpointNameFieldName));
+
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
                                                                     configuration);
@@ -211,6 +227,17 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     (args) -> {
                                                         IObject configuration = (IObject) args[0];
                                                         try {
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_GET",
+                                                                    configuration.getValue(endpointNameFieldName),
+                                                                    configuration.getValue(templatesFieldName));
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_POST",
+                                                                    configuration.getValue(endpointNameFieldName));
+
+
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
                                                                     configuration);

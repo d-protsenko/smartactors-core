@@ -165,6 +165,17 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     (args) -> {
                                                         IObject configuration = (IObject) args[0];
                                                         try {
+
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_GET",
+                                                                    configuration.getValue(endpointNameFieldName),
+                                                                    configuration.getValue(templatesFieldName));
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_POST",
+                                                                    configuration.getValue(endpointNameFieldName));
+
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
                                                                     configuration);
@@ -236,7 +247,7 @@ public class HttpEndpointPlugin implements IPlugin {
         deserializationStrategyChooser.register("HTTP_GET",
                 (args) -> {
                     try {
-                        return new DeserializeStrategyGet((List<String>) args[0]);
+                        return new DeserializeStrategyGet((List<String>) args[2]);
                     } catch (ResolutionException e) {
                         throw new RuntimeException(e);
                     }

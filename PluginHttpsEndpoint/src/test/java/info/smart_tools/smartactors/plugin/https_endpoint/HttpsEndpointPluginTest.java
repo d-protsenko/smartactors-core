@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.plugin.https_endpoint;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.deserialization_strategy_chooser.DeserializationStrategyChooser;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -14,6 +15,7 @@ import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +38,11 @@ public class HttpsEndpointPluginTest {
 
     private IBootstrap bootstrap;
     private HttpsEndpointPlugin plugin;
+    private DeserializationStrategyChooser deserializationStrategyChooser;
 
     @Before
     public void setUp() throws Exception {
+        deserializationStrategyChooser = mock(DeserializationStrategyChooser.class);
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
@@ -61,6 +65,10 @@ public class HttpsEndpointPluginTest {
                 )
         );
 
+        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
+                        deserializationStrategyChooser
+                )
+        );
         bootstrap = mock(IBootstrap.class);
         plugin = new HttpsEndpointPlugin(bootstrap);
     }
@@ -110,6 +118,7 @@ public class HttpsEndpointPluginTest {
     }
 
 }
+
 class Checker {
     public IBootstrapItem<String> item;
 }
