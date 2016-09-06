@@ -100,9 +100,4 @@ public class ImmutableReceiverChain implements IReceiverChain {
 
         return null;
     }
-
-    @Override
-    public int getLength() {
-        return this.receivers.length;
-    }
 }
