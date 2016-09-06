@@ -15,9 +15,10 @@ public interface IFeatureLoader {
      * </p>
      *
      * @param groupPath    path to the group directory
+     * @return status of the feature including all the features of the feature group
      * @throws FeatureLoadException if any error occurs
      */
-    void loadGroup(final IPath groupPath) throws FeatureLoadException;
+    IFeatureStatus loadGroup(final IPath groupPath) throws FeatureLoadException;
 
     /**
      * Load feature from given directory.

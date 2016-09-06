@@ -76,9 +76,15 @@ public class FeatureLoader implements IFeatureLoader {
     }
 
     @Override
-    public void loadGroup(final IPath groupPath)
+    public IFeatureStatus loadGroup(final IPath groupPath)
             throws FeatureLoadException {
         try {
+            FeatureStatusImpl metaFeatureStatus = getFeatureStatus0("group@" + groupPath.getPath());
+
+            if (metaFeatureStatus.isInitialized()) {
+                return metaFeatureStatus;
+            }
+
             File groupDir = new File(groupPath.getPath());
             Set<FeatureStatusImpl> statuses = new HashSet<>();
 
@@ -101,12 +107,20 @@ public class FeatureLoader implements IFeatureLoader {
                     throw new FeatureLoadException(
                             MessageFormat.format("Feature named {0} not found.", dependencyStatus.getId()));
                 }
+
+                metaFeatureStatus.addDependency(dependencyStatus);
             }
+
+            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
 
             for (FeatureStatusImpl status : statuses) {
                 status.load();
             }
-        } catch (IOException | FeatureLoadException | ActionExecuteException e) {
+
+            metaFeatureStatus.load();
+
+            return metaFeatureStatus;
+        } catch (IOException | FeatureLoadException | ActionExecuteException | ResolutionException e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading features from ''{0}''.", groupPath.getPath()), e);
         }

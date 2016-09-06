@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.server_with_features;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.core.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
@@ -73,6 +74,8 @@ public class ServerWithFeatures implements IServer {
             List<IPath> jars = listJarsIn(coreDir);
 
             loadPluginsFrom(jars);
+
+            System.out.println("Stage 1 (server core) completed successful.");
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }
@@ -80,11 +83,27 @@ public class ServerWithFeatures implements IServer {
 
     private void loadStage2()
             throws ServerExecutionException {
+        IPoorAction loadUserFeatures = () -> loadFeatureGroup(new Path("features"), () -> { }, "2.2 (user features)");
+        loadFeatureGroup(new Path("corefeatures"), loadUserFeatures, "2.1 (core features)");
+    }
+
+    private void loadFeatureGroup(final IPath groupPath, final IPoorAction onSuccess, final String stageTitle) {
         try {
-            GlobalFeatureLoader.get().loadGroup(new Path("corefeatures"));
-            GlobalFeatureLoader.get().loadGroup(new Path("features"));
-        } catch (FeatureLoadException e) {
-            throw new ServerExecutionException(e);
+            GlobalFeatureLoader.get().loadGroup(groupPath).whenDone(err -> {
+                if (err == null) {
+                    System.out.println(MessageFormat.format("Stage {0} completed successful.", stageTitle));
+                    onSuccess.execute();
+                    return;
+                }
+
+                System.err.println(MessageFormat.format("Stage {0} failed with exception:", stageTitle));
+                err.printStackTrace(System.err);
+                System.exit(1);
+            });
+        } catch (FeatureLoadException | ActionExecuteException e) {
+            System.err.println(MessageFormat.format("Could not start stage {0} because of exception:", stageTitle));
+            e.printStackTrace(System.err);
+            System.exit(1);
         }
     }
 

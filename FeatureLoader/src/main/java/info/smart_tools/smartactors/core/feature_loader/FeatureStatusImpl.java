@@ -7,7 +7,11 @@ import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -111,12 +115,25 @@ public class FeatureStatusImpl implements IFeatureStatus {
         }
 
         try {
-            loadAction.execute(config, path);
+            IQueue<ITask> taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
+            taskQueue.put(() -> {
+                try {
+                    loadAction.execute(config, path);
+                } catch (Exception e) {
+                    error = e;
+                } finally {
+                    isCompleted = true;
+                    try {
+                        runCallbacks();
+                    } catch (ActionExecuteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         } catch (Throwable e) {
             error = e;
             e.printStackTrace();
-        } finally {
-            runCallbacks();
         }
     }
 
