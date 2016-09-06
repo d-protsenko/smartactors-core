@@ -64,8 +64,7 @@
       "exceptional": [
         {
           "class": "info.smart_tools.smartactors.actors.exception.SampleException",
-          "chain": "exceptionHandler",
-          "after": "break(default)/continue/repeat"
+          "chain": "exceptionHandler"
         }
       ]
     },
@@ -106,7 +105,8 @@
       "exceptional": [
         {
           "class": "info.smart_tools.smartactors.actors.exception.SampleException",
-          "chain": "exceptionHandler"
+          "chain": "exceptionHandler",
+          "after": "repeat"
         }
       ]
     },

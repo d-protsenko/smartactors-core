@@ -106,7 +106,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                         IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
                 IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
-                chainAndEnv.setValue(exceptionalChainsFieldName, chain);
+                chainAndEnv.setValue(exceptionChainFieldName, chain);
                 chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
                 exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
             }

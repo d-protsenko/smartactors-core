@@ -58,7 +58,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
                                         int currentLevel = mps.getCurrentLevel();
                                         int repeatStep = mps.getStepAtLevel(currentLevel - 1);
-                                        mps.goTo(currentLevel, repeatStep);
+                                        mps.goTo(currentLevel - 1, repeatStep);
                                     };
                                     IOC.register(
                                             IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),

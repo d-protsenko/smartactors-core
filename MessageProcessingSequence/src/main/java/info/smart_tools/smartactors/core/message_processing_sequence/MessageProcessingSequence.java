@@ -102,7 +102,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 this.isException = false;
                 try {
                     this.afterExceptionAction.execute(this);
-                    i = this.stackIndex;
+                    if (this.stackIndex < 0) {
+                        return false;
+                    }
                 } catch (Throwable e) {
                     return false;
                 }
