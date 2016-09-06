@@ -110,7 +110,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
 
     private void decreaseCounter()
             throws ActionExecuteException {
-        if (nExpect.decrementAndGet() != 0) {
+        if (isCompleted || nExpect.decrementAndGet() != 0) {
             return;
         }
 
@@ -140,6 +140,11 @@ public class FeatureStatusImpl implements IFeatureStatus {
     private void failDependency(final String depId, final Throwable err) {
         error = new FeatureLoadException(MessageFormat.format("Error loading dependency named ''{0}''.", depId), err);
         isCompleted = true;
+        try {
+            runCallbacks();
+        } catch (ActionExecuteException e) {
+            error.addSuppressed(e);
+        }
     }
 
     /**
