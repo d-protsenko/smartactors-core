@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.core.ifilesystem_facade.IFilesystemFacade;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -30,15 +31,11 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,8 +53,7 @@ public class FeatureLoader implements IFeatureLoader {
     private final IPluginCreator pluginCreator;
     private final IPluginLoaderVisitor<String> pluginLoaderVisitor;
     private final IConfigurationManager configurationManager;
-
-    private final IBiAction<IObject, IPath> featureLoadAction = this::loadPluginsAndConfig;
+    private final IFilesystemFacade fs;
 
     private final List<IBootstrapItem<String>> doneItems = new CopyOnWriteArrayList<>();
 
@@ -73,6 +69,7 @@ public class FeatureLoader implements IFeatureLoader {
         pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        fs = IOC.resolve(Keys.getOrAdd("filesystem facade"));
     }
 
     @Override
@@ -85,17 +82,9 @@ public class FeatureLoader implements IFeatureLoader {
                 return metaFeatureStatus;
             }
 
-            File groupDir = new File(groupPath.getPath());
             Set<FeatureStatusImpl> statuses = new HashSet<>();
 
-            if (!groupDir.isDirectory()) {
-                throw new FeatureLoadException(
-                        MessageFormat.format("Feature group directory ({0}) is not a directory.", groupPath.getPath()));
-            }
-
-            //noinspection ConstantConditions
-            for (File file : groupDir.listFiles(File::isDirectory)) {
-                IPath path = new Path(file.getCanonicalPath());
+            for (IPath path : fs.listSubdirectories(groupPath)) {
                 FeatureStatusImpl status = loadFeature0(path);
 
                 statuses.add(status);
@@ -130,6 +119,10 @@ public class FeatureLoader implements IFeatureLoader {
     public IFeatureStatus loadFeature(final IPath featurePath)
             throws FeatureLoadException {
         FeatureStatusImpl status = loadFeature0(featurePath);
+
+        if (status.isInitialized()) {
+            return status;
+        }
 
         for (FeatureStatusImpl dependencyStatus : status.getDependencies()) {
             if (!dependencyStatus.isLoaded()) {
@@ -182,49 +175,34 @@ public class FeatureLoader implements IFeatureLoader {
         }
     }
 
-    private List<IPath> listJarsIn(final IPath dirPath)
-            throws FeatureLoadException {
-        try {
-            File directory = new File(dirPath.getPath());
-
-            if (!directory.isDirectory()) {
-                throw new IOException(MessageFormat.format("File ''{0}'' is not a directory.", directory.getAbsolutePath()));
-            }
-
-            File[] files = directory.listFiles((dir, name) -> name.endsWith(".jar"));
-
-            List<IPath> paths = new LinkedList<>();
-
-            for (File file : files) {
-                if (file.isFile()) {
-                    IPath path = new Path(file.getCanonicalPath());
-                    paths.add(path);
-                }
-            }
-
-            return paths;
-        } catch (IOException e) {
-            throw new FeatureLoadException(MessageFormat.format("Could not list jar files in {0}", dirPath.getPath()), e);
-        }
-    }
-
     private FeatureStatusImpl getFeatureStatus0(final String featureId) {
         return statuses.computeIfAbsent(featureId, id -> {
             try {
-                return IOC.resolve(Keys.getOrAdd(FeatureStatusImpl.class.getCanonicalName()), id, featureLoadAction);
+                return IOC.resolve(
+                        Keys.getOrAdd(FeatureStatusImpl.class.getCanonicalName()),
+                        id,
+                        (IBiAction<IObject, IPath>) this::loadPluginsAndConfig);
             } catch (ResolutionException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
+    private Collection<IPath> listJarsIn(final IPath dirPath)
+            throws FeatureLoadException {
+        try {
+            return fs.listFiles(dirPath, path -> path.getPath().endsWith(".jar"));
+        } catch (IOException e) {
+            throw new FeatureLoadException(MessageFormat.format("Could not list jar files in {0}", dirPath.getPath()), e);
+        }
+    }
+
     private IObject readFeatureConfig(final IPath featurePath)
             throws FeatureLoadException {
         try {
-            java.nio.file.Path configPath = Paths.get(featurePath.getPath(), "config.json");
-            String configString = new String(Files.readAllBytes(configPath));
+            String configString = fs.readToString(fs.joinPaths(featurePath, new Path("config.json")));
             return IOC.resolve(Keys.getOrAdd("configuration object"), configString);
-        } catch (IOException | ResolutionException e) {
+        } catch (IOException | ResolutionException | InvalidArgumentException e) {
             throw new FeatureLoadException("Error occurred reading feature configuration file.", e);
         }
     }
@@ -240,7 +218,7 @@ public class FeatureLoader implements IFeatureLoader {
         }
     }
 
-    private void loadPluginsFrom(final List<IPath> jars)
+    private void loadPluginsFrom(final Collection<IPath> jars)
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException, ResolutionException {
         IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap(doneItems);
         IAction<Class> classHandler = clz -> {
