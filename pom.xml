@@ -289,6 +289,9 @@
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
         <module>PluginFeatureLoader</module>
+        <module>IFilesystemFacade</module>
+        <module>FilesystemFacade</module>
+        <module>PluginFilesystemFacade</module>
     </modules>
 
     <build>

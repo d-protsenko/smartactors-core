@@ -49,6 +49,7 @@ public class PluginFeatureLoader implements IPlugin {
                     .after("configuration_manager")
                     .after("config_sections:done")
                     .after("IFieldNamePlugin")
+                    .after("filesystem_facade")
                     .after("ConfigurationObject")
                     .process(() -> {
                         try {
