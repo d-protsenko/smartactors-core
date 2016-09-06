@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.message_processing;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -37,6 +38,12 @@ public interface IMessageProcessingSequence {
      * @throws InvalidArgumentException if level is higher than current stack level
      */
     void goTo(int level, int step) throws InvalidArgumentException;
+
+    /**
+     * Go to last step of main chains.
+     *
+     */
+    void end();
 
     /**
      * Get the next receiver that should receive the message.
@@ -75,8 +82,9 @@ public interface IMessageProcessingSequence {
      * @throws NestedChainStackOverflowException when it is impossible to call that chain.
      * @throws ChangeValueException if error occurs during writing positions to context
      * @throws InvalidArgumentException if incoming argument is null
+     * @throws ReadValueException if error occurs during reading data from exception description
      * @see #callChain(IReceiverChain)
      */
     void catchException(final Throwable exception, final IObject context)
-            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException;
+            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException, ReadValueException;
 }

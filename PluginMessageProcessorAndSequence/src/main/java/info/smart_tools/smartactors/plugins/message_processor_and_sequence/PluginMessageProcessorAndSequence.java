@@ -2,12 +2,14 @@ package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -40,6 +42,23 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
+            /* "after exception actions" - register after exception action strategy */
+            IBootstrapItem<String> afterExceptionActions = new BootstrapItem("after exception actions");
+
+            afterExceptionActions
+                    .after("IOC")
+                    .process(
+                            () -> {
+                                IAction<IMessageProcessingSequence> breakAction = IMessageProcessingSequence::end;
+                                IAction<IMessageProcessingSequence> continueAction = (mps) -> { };
+                                IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
+                                    mps.
+                                    mps.goTo();
+                                };
+                            }
+                    );
+            bootstrap.add(afterExceptionActions);
+
             /* "message_processor" - register message processor creation strategy */
             IBootstrapItem<String> processorItem = new BootstrapItem("message_processor");
 
