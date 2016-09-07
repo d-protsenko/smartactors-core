@@ -106,7 +106,7 @@
         {
           "class": "info.smart_tools.smartactors.actors.exception.SampleException",
           "chain": "exceptionHandler",
-          "after": "repeat"
+          "after": "break"
         }
       ]
     },
