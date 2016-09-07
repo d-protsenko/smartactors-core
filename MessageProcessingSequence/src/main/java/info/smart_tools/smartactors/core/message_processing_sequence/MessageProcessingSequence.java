@@ -128,6 +128,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     public void end() {
         this.stackIndex = -1;
     }
+
+    @Override
     public int getCurrentLevel() {
         return stackIndex;
     }
