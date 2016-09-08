@@ -25,8 +25,27 @@ public interface IMessageBusContainer {
     /**
      * Send message to the specific chain
      * @param message the message for send
-     * @param chainName the name of specific chain
+     * @param chainName the name of specific chain to send to
      * @throws SendingMessageException if message sending has been failed
      */
     void send(IObject message, Object chainName) throws SendingMessageException;
+
+    /**
+     * Send message to the chain call receiver  and send processed message to the specific chain
+     * @param message the message for send
+     * @param replyToChainName the name of specific chain to reply to
+     * @throws SendingMessageException if message sending has been failed
+     */
+    void sendAndReply(IObject message, Object replyToChainName)
+            throws SendingMessageException;
+
+    /**
+     * Send message to the specific chain and reply processed message to other chain
+     * @param message the message for send
+     * @param chainName the name of specific chain to send to
+     * @param replyToChainName the name of specific chain to reply to
+     * @throws SendingMessageException if message sending has been failed
+     */
+    void sendAndReply(IObject message, Object chainName, Object replyToChainName)
+            throws SendingMessageException;
 }

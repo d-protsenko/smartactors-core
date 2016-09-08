@@ -54,4 +54,27 @@ public final class MessageBus {
             throws SendingMessageException {
         container.send(message, chainName);
     }
+
+    /**
+     * Send message to the chain call receiver  and send processed message to the specific chain
+     * @param message the message for send
+     * @param replyToChainName the name of specific chain to reply to
+     * @throws SendingMessageException if message sending has been failed
+     */
+    public static void sendAndReply(final IObject message, final Object replyToChainName)
+            throws SendingMessageException {
+        container.sendAndReply(message, replyToChainName);
+    }
+
+    /**
+     * Send message to the specific chain and reply processed message to other chain
+     * @param message the message for send
+     * @param chainName the name of specific chain to send to
+     * @param replyToChainName the name of specific chain to reply to
+     * @throws SendingMessageException if message sending has been failed
+     */
+    public static void sendAndReply(final IObject message, final Object chainName, final Object replyToChainName)
+            throws SendingMessageException {
+        container.sendAndReply(message, chainName, replyToChainName);
+    }
 }

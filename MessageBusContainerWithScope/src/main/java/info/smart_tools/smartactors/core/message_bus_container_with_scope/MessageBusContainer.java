@@ -56,4 +56,30 @@ public class MessageBusContainer implements IMessageBusContainer {
             throw new SendingMessageException("Could not send message.");
         }
     }
+
+    @Override
+    public void sendAndReply(final IObject message, final Object replyToChainName)
+            throws SendingMessageException {
+        try {
+            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+                    .getCurrentScope()
+                    .getValue(messageBusContainerKey);
+            handler.handleForReply(message, replyToChainName);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not send message.");
+        }
+    }
+
+    @Override
+    public void sendAndReply(final IObject message, final Object chainName, final Object replyToChainName)
+            throws SendingMessageException {
+        try {
+            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+                    .getCurrentScope()
+                    .getValue(messageBusContainerKey);
+            handler.handleForReply(message, chainName, replyToChainName);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not send message.");
+        }
+    }
 }

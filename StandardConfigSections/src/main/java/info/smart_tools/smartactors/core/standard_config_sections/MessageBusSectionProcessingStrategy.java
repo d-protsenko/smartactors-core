@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
@@ -11,6 +13,7 @@ import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandle
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_bus_container.IMessageBusContainer;
+import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -81,7 +84,30 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
             IReceiverChain chain = chainStorage.resolve(mapId);
-            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain);
+            IAction<IObject> finalAction = new IAction<IObject>() {
+                @Override
+                public void execute(final IObject environment) throws ActionExecuteException, InvalidArgumentException {
+                    try {
+                        IFieldName messageFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "message"
+                        );
+                        IFieldName contextFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "context"
+                        );
+                        IFieldName replyToFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "messageBusReplyTo"
+                        );
+                        IObject context = (IObject) environment.getValue(contextFieldName);
+                        MessageBus.send((IObject) environment.getValue(messageFieldName), context.getValue(replyToFieldName));
+                    } catch (ResolutionException | ReadValueException | SendingMessageException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                }
+            };
+            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain, finalAction);
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
