@@ -313,4 +313,20 @@ public class ConfigurationObjectTest {
         ScopeProvider.setCurrentScope(oldScope);
         fail();
     }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnOnNullFieldNameInSetValue()
+            throws Exception {
+        IObject object = new ConfigurationObject();
+        object.setValue(null, new Object());
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnCreationWithNullMap()
+            throws Exception {
+        Map entries = null;
+        IObject object = new ConfigurationObject(entries);
+        fail();
+    }
 }

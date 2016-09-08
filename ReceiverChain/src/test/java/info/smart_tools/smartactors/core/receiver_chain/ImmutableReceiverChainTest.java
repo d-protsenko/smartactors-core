@@ -80,8 +80,8 @@ public class ImmutableReceiverChainTest {
     @Test
     public void Should_getExceptionalChainUsingMappingMap()
             throws Exception {
-        Map<Class<? extends Throwable>, IReceiverChain> mappingMap = new HashMap<Class<? extends Throwable>, IReceiverChain>() {{
-            put(InvalidArgumentException.class, mock(IReceiverChain.class));
+        Map<Class<? extends Throwable>, IObject> mappingMap = new HashMap<Class<? extends Throwable>, IObject>() {{
+            put(InvalidArgumentException.class, mock(IObject.class));
         }};
         Throwable selfCaused = mock(Throwable.class);
 
@@ -89,11 +89,11 @@ public class ImmutableReceiverChainTest {
 
         IReceiverChain chain = new ImmutableReceiverChain("theChain", new IMessageReceiver[0], new IObject[0], mappingMap);
 
-        assertNull(chain.getExceptionalChain(new NullPointerException()));
-        assertNull(chain.getExceptionalChain(new IllegalStateException()));
-        assertNull(chain.getExceptionalChain(selfCaused));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChain(new InvalidArgumentException("invalid")));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChain(
+        assertNull(chain.getExceptionalChainAndEnvironments(new NullPointerException()));
+        assertNull(chain.getExceptionalChainAndEnvironments(new IllegalStateException()));
+        assertNull(chain.getExceptionalChainAndEnvironments(selfCaused));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(new InvalidArgumentException("invalid")));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(
                 new IllegalStateException(new InvalidArgumentException(new Throwable()))));
     }
 }
