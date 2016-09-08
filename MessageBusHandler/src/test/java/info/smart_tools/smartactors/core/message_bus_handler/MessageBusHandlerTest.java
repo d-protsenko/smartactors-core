@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.message_bus_handler;
 
+import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.core.imessage_bus_handler.exception.MessageBusHandlerException;
@@ -123,6 +124,68 @@ public class MessageBusHandlerTest {
             throws Exception {
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain);
         handler.handle(null);
+        fail();
+    }
+
+    @Test
+    public void checkMessageHandleWithSpecificChain()
+            throws Exception {
+        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                sequenceStrategy
+        );
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                messageProcessorStrategy
+        );
+        IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                iobjectStrategy
+        );
+        IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
+                chainIdStrategy
+        );
+        IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
+                chainStorageStrategy
+        );
+        Object chainId = mock(Object.class);
+        Object chainName = mock(Object.class);
+        IChainStorage storage = mock(IChainStorage.class);
+        IReceiverChain chain = mock(IReceiverChain.class);
+        when(chainIdStrategy.resolve(chainName)).thenReturn(chainId);
+        when(chainStorageStrategy.resolve()).thenReturn(storage);
+        when(storage.resolve(chainId)).thenReturn(chain);
+        IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
+        when(sequenceStrategy.resolve(1, chain)).thenReturn(sequence);
+        IMessageProcessor processor = mock(IMessageProcessor.class);
+        when(messageProcessorStrategy.resolve(this.queue, sequence)).thenReturn(processor);
+        IObject context = mock(IObject.class);
+        when(iobjectStrategy.resolve()).thenReturn(context);
+        IObject message = mock(IObject.class);
+
+        IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain);
+        handler.handle(message, chainName);
+        verify(sequenceStrategy, times(1)).resolve(1, chain);
+        verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
+        verify(iobjectStrategy, times(1)).resolve();
+        verify(processor, times(1)).process(message, context);
+        verify(chainIdStrategy, times(1)).resolve(chainName);
+        verify(chainStorageStrategy, times(1)).resolve();
+        verify(storage, times(1)).resolve(chainId);
+    }
+
+    @Test (expected = MessageBusHandlerException.class)
+    public void checkMessageBusHandlerExceptionOnErrorInHandleWithSpecificChain()
+            throws Exception {
+        IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain);
+        handler.handle(null, null);
         fail();
     }
 }

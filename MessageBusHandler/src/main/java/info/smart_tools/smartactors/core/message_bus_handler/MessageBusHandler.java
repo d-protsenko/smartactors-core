@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.core.message_bus_handler;
 
+import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.core.imessage_bus_handler.exception.MessageBusHandlerException;
@@ -64,9 +66,40 @@ public class MessageBusHandler implements IMessageBusHandler {
             IObject context = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
             );
-            // TODO: in future need to put sender id to the context
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
+            throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
+        }
+    }
+
+    @Override
+    public void handle(final IObject message, final Object chainName)
+            throws MessageBusHandlerException {
+        try {
+            Object chainId = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
+            );
+            IChainStorage chainStorage = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
+            );
+            IReceiverChain testedChain = chainStorage.resolve(chainId);
+            IMessageProcessingSequence processingSequence =
+                    IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                            this.stackDepth,
+                            testedChain
+                    );
+            IMessageProcessor messageProcessor =
+                    IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                            this.taskQueue,
+                            processingSequence
+                    );
+            IObject context = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+            );
+            messageProcessor.process(message, context);
+        } catch (ResolutionException | ChainNotFoundException | InvalidArgumentException | ChangeValueException e) {
             throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
         }
     }

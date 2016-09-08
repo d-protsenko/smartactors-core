@@ -53,4 +53,21 @@ public class MessageBusTest {
         MessageBus.send(null);
         fail();
     }
+
+    @Test
+    public void checkSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        IObject message = mock(IObject.class);
+        Object chainName = mock(Object.class);
+        MessageBus.send(message, chainName);
+        verify(this.container, times(1)).send(message, chainName);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).send(null, null);
+        MessageBus.send(null, null);
+        fail();
+    }
 }

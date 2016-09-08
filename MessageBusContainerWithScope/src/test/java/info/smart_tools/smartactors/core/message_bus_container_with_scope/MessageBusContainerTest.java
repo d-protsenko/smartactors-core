@@ -76,4 +76,26 @@ public class MessageBusContainerTest {
         messageBusContainer.send(null);
         fail();
     }
+
+    @Test
+    public void checkSendingMessageWithSpecificChain()
+            throws Exception {
+        IMessageBusHandler handler = mock(IMessageBusHandler.class);
+        Object chainName = mock(Object.class);
+        IMessageBusContainer messageBusContainer = new MessageBusContainer();
+        ScopeProvider.getCurrentScope().setValue(messageBusContainer.getMessageBusKey(), handler);
+        IObject message = mock(IObject.class);
+        doNothing().when(handler).handle(message, chainName);
+
+        messageBusContainer.send(message, chainName);
+        verify(handler, times(1)).handle(message, chainName);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkSendingMessageExceptionOnSendWithSpecificChain()
+            throws Exception {
+        IMessageBusContainer messageBusContainer = new MessageBusContainer();
+        messageBusContainer.send(null, null);
+        fail();
+    }
 }

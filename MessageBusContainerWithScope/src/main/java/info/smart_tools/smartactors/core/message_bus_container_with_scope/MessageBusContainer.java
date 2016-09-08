@@ -43,4 +43,17 @@ public class MessageBusContainer implements IMessageBusContainer {
             throw new SendingMessageException("Could not send message.");
         }
     }
+
+    @Override
+    public void send(final IObject message, final Object chainName)
+            throws SendingMessageException {
+        try {
+            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+                    .getCurrentScope()
+                    .getValue(messageBusContainerKey);
+            handler.handle(message, chainName);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not send message.");
+        }
+    }
 }

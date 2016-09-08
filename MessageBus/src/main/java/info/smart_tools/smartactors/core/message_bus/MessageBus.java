@@ -35,12 +35,23 @@ public final class MessageBus {
     }
 
     /**
-     * Send message to the receiver
+     * Send message to the chain call receiver
      * @param message the sending message
      * @throws SendingMessageException if sending of message has been failed
      */
     public static void send(final IObject message)
             throws SendingMessageException {
         container.send(message);
+    }
+
+    /**
+     * Send message to the specific chain
+     * @param message the message for send
+     * @param chainName the name of specific chain
+     * @throws SendingMessageException if message sending has been failed
+     */
+    public static void send(final IObject message, final Object chainName)
+            throws SendingMessageException {
+        container.send(message, chainName);
     }
 }
