@@ -16,7 +16,7 @@ public interface IMessageBusContainer {
     IKey getMessageBusKey();
 
     /**
-     * Send message to the receiver
+     * Send message to the chain call receiver
      * @param message the message for send
      * @throws SendingMessageException if sending message has been failed
      */
