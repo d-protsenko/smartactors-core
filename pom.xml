@@ -295,13 +295,9 @@
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
         <module>DeserializeStrategyGet</module>
-        <module>EndpointPlugin</module>
-        <module>ResolveByNameStrategy</module>
-        <module>IIOCRegistrator</module>
-        <module>DeserializationStrategyRegistrator</module>
         <module>DeserializationStrategyChooser</module>
-        <module>IRequest</module>
         <module>PluginEndpoint</module>
+        <module>IAdditionDependencyStrategy</module>
     </modules>
 
     <build>
