@@ -31,6 +31,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
@@ -248,6 +249,62 @@ public class HttpEndpointPlugin implements IPlugin {
                                 throw new RuntimeException(e);
                             }
                         }
+                )
+        );
+    }
+
+    private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy cookiesSetterChooser =
+                IOC.resolve(Keys.getOrAdd("CookiesSetterChooser"));
+
+        IOC.register(Keys.getOrAdd("key_for_cookies_extractor"), new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                                "HTTP"
+                )
+        );
+
+        cookiesSetterChooser.register("HTTP",
+                new CreateNewInstanceStrategy(
+                        (args) -> new CookiesSetter()
+                )
+        );
+    }
+
+
+    private void registerHeadersExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy cookiesSetterChooser =
+                IOC.resolve(Keys.getOrAdd("HeadersExtractorChooser"));
+
+        IOC.register(Keys.getOrAdd("key_for_headers_extractor"), new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                                "HTTP"
+                )
+        );
+
+        cookiesSetterChooser.register("HTTP",
+                new CreateNewInstanceStrategy(
+                        (args) -> new HttpHeadersExtractor()
+                )
+        );
+    }
+
+
+    private void registerResponseStatusExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy cookiesSetterChooser =
+                IOC.resolve(Keys.getOrAdd("ResponseStatusSetter"));
+
+        IOC.register(Keys.getOrAdd("key_for_response_status_setter"), new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                                "HTTP"
+                )
+        );
+
+        cookiesSetterChooser.register("HTTP",
+                new CreateNewInstanceStrategy(
+                        (args) -> new ResponseStatusExtractor()
                 )
         );
     }

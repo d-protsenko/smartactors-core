@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 
@@ -40,6 +41,7 @@ public class HttpResponseSenderTest {
     private IHeadersExtractor headersExtractor;
     private IResponseStatusExtractor responseStatusExtractor;
     private IResponse response;
+    private String key = null;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
@@ -126,6 +128,10 @@ public class HttpResponseSenderTest {
                         }
                 )
         );
+
+        IOC.register(Keys.getOrAdd("key_for_response_status_setter"), new SingletonStrategy(key));
+        IOC.register(Keys.getOrAdd("key_for_headers_extractor"), new SingletonStrategy(key));
+        IOC.register(Keys.getOrAdd("key_for_cookies_extractor"), new SingletonStrategy(key));
 
     }
 
