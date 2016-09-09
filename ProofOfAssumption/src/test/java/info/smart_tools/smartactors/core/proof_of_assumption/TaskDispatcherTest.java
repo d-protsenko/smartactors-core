@@ -28,7 +28,7 @@ public class TaskDispatcherTest {
             throws Exception {
         ConcurrentLinkedQueue<ITask> innerTaskQueue = new ConcurrentLinkedQueue<>();
         IQueue<ITask> taskQueue = new NonBlockingQueue<>(innerTaskQueue);
-//        IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(10000500));
+//        IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(20000500));
         IThreadPool threadPool = new ThreadPool(8);
         ITaskDispatcher dispatcher = new TaskDispatcher(taskQueue, threadPool, 1000L, 8);
         final Thread mainThread = Thread.currentThread();
@@ -66,7 +66,7 @@ public class TaskDispatcherTest {
         taskQueue.put(() -> startNanoTime.set(System.nanoTime()));
 
         // Many tasks
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 20000000; i++) {
             taskQueue.put(countTask);
         }
 

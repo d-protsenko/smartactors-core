@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -24,6 +25,7 @@ public class ThreadPool implements IThreadPool {
      */
     public ThreadPool(final int threadCount) {
         threadsQueue = new ConcurrentLinkedQueue<>();
+//        threadsQueue = new ArrayBlockingQueue<>(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
             threadsQueue.offer(new ThreadImpl(this));
