@@ -299,6 +299,7 @@
         <module>PluginEndpoint</module>
         <module>IAdditionDependencyStrategy</module>
         <module>ResponseSenderChooser</module>
+        <module>IAddRequestParametersToIObject</module>
     </modules>
 
     <build>

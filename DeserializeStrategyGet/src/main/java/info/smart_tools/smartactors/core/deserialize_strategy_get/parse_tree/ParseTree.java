@@ -10,10 +10,10 @@ import java.util.Map;
  * "/smth/:variable1/smth2/:variable2"
  */
 public class ParseTree implements IParseTree {
-    int level;
-    List<ParseTree> variableChildElems;
-    List<ParseTree> constChildElems;
-    String templateElem;
+    private int level;
+    private List<ParseTree> variableChildElems;
+    private List<ParseTree> constChildElems;
+    private String templateElem;
     private boolean isEnd;
 
     public ParseTree() {
@@ -23,7 +23,7 @@ public class ParseTree implements IParseTree {
         isEnd = false;
     }
 
-    private ParseTree(final int level, Template template) {
+    private ParseTree(final int level, final Template template) {
         constChildElems = new ArrayList<>();
         variableChildElems = new ArrayList<>();
         this.level = level;
@@ -32,7 +32,7 @@ public class ParseTree implements IParseTree {
         }
     }
 
-    public Map<String, String> match(String uri) {
+    public Map<String, String> match(final String uri) {
         TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
         TreeObject resultObject = match(treeObject);
         return resultObject.isEnded() ? resultObject.getResult() : null;
@@ -79,11 +79,11 @@ public class ParseTree implements IParseTree {
         return this.getTemplateElem().startsWith(":");
     }
 
-    public void addTemplate(String template) {
+    public void addTemplate(final String template) {
         addTemplate(new Template(template));
     }
 
-    private void addTemplate(Template template) {
+    private void addTemplate(final Template template) {
         if (template.size() <= level) {
             return;
         }

@@ -31,14 +31,11 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iresponse.IResponse;
-import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -316,10 +313,7 @@ public class HttpEndpointPlugin implements IPlugin {
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
-                        (args) -> {
-                            FullHttpRequest httpRequest = (FullHttpRequest) args[0];
-                            return "HTTP_" + httpRequest.method().toString();
-                        }
+                        (args) -> "HTTP_POST"
                 )
         );
 
@@ -343,9 +337,5 @@ public class HttpEndpointPlugin implements IPlugin {
                         }
                 )
         );
-
-        ResolveByNameIocStrategy resolveStrategy = new ResolveByNameIocStrategy();
-        IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
-        IOC.register(deserializeStrategyKey, resolveStrategy);
     }
 }
