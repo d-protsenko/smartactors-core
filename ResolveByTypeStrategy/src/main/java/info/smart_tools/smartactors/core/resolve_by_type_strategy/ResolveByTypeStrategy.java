@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.core.resolve_by_type_strategy;
 
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -10,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Strategy for resolving by type
  */
-public class ResolveByTypeStrategy implements IResolveDependencyStrategy {
+public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
     /**
      * Specific strategies for resolve
      */
@@ -31,8 +33,18 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy {
      * @param key the key for output type
      * @param strategy the strategy for specific output type
      */
-    public void register(final Class key, final IResolveDependencyStrategy strategy) {
-        resolveStrategies.put(key, strategy);
+    @Override
+    public void register(final Object key, final IResolveDependencyStrategy strategy) {
+        resolveStrategies.put((Class) key, strategy);
+    }
+
+    /**
+     * Remove strategy for specific output type
+     * @param key the key for output type
+     */
+    @Override
+    public void remove(final Object key) throws AdditionDependencyStrategyException {
+        resolveStrategies.remove(key);
     }
 
     @Override
