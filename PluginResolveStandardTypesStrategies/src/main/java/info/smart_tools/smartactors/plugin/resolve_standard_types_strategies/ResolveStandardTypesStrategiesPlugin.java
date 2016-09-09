@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_type_strategy.ResolveByTypeStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.DoubleToBigDecimalResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_bigdecimal.StringToBigDecimalResolveDependencyStrategy;
+import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_character_strategies.StringToCharacterResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_date_strategies.StringToDateResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.DoubleToIntResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.resolve_standard_types_strategies.to_integer_strategies.StringToIntResolveDependencyStrategy;
@@ -90,6 +91,15 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                                     new CharToStringResolveDependencyStrategy());
 
                             IOC.register(stringKey, stringStrategy);
+
+                            // to Character strategies
+                            IKey characterKey = Keys.getOrAdd(Character.class.getCanonicalName() + "convert");
+                            ResolveByTypeStrategy characterStrategy = new ResolveByTypeStrategy();
+
+                            characterStrategy.register(String.class,
+                                new StringToCharacterResolveDependencyStrategy());
+
+                            IOC.register(characterKey, characterStrategy);
 
                             // to Integer strategies
                             IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName() + "convert");
