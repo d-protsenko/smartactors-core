@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 /**
- * Created by sevenbits on 05.09.16.
+ * Root plugin for all endpoints
  */
 public class EndpointPlugin implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;

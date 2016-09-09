@@ -6,12 +6,13 @@ import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.deserialization_strategy_chooser.DeserializationStrategyChooser;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.DeserializeStrategyGet;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -220,7 +221,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                     throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
                                 } catch (InvalidArgumentException e) {
                                     throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
-                                } catch (RegistrationException e) {
+                                } catch (RegistrationException | AdditionDependencyStrategyException e) {
                                     throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
                                 }
                             }
@@ -231,9 +232,10 @@ public class HttpEndpointPlugin implements IPlugin {
         }
     }
 
-    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        DeserializationStrategyChooser deserializationStrategyChooser =
+    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException, AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy deserializationStrategyChooser =
                 IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
+
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
@@ -244,18 +246,26 @@ public class HttpEndpointPlugin implements IPlugin {
                 )
         );
 
-        deserializationStrategyChooser.register("HTTP_GET",
-                (args) -> {
-                    try {
-                        return new DeserializeStrategyGet((List<String>) args[2]);
-                    } catch (ResolutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
         deserializationStrategyChooser.register("HTTP_POST",
-                (args) ->
-                        new DeserializeStrategyPostJson(messageMapper)
+                new CreateNewInstanceStrategy(
+                        //args[0] - type of the request
+                        //args[1] - name of the endpoint
+                        (args) -> new DeserializeStrategyPostJson(messageMapper)
+                )
+        );
+
+        deserializationStrategyChooser.register("HTTP_GET",
+                new CreateNewInstanceStrategy(
+                        //args[0] - type of the request
+                        //args[1] - name of the endpoint
+                        (args) -> {
+                            try {
+                                return new DeserializeStrategyGet((List<String>) args[2]);
+                            } catch (ResolutionException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
         );
 
         ResolveByNameIocStrategy resolveStrategy = new ResolveByNameIocStrategy();

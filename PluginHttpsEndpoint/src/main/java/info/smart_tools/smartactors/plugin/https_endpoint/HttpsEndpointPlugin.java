@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.core.https_endpoint.HttpsEndpoint;
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
@@ -213,6 +214,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                             return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
                                                                     (Integer) configuration.getValue(maxContentLengthFieldName),
                                                                     ScopeProvider.getCurrentScope(), environmentHandler,
+                                                                    (String) configuration.getValue(endpointNameFieldName),
                                                                     (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                                                     sslContextProvider);
                                                         } catch (ReadValueException | InvalidArgumentException
@@ -253,13 +255,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-                                    IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
-                                    IDeserializeStrategy deserializeStrategy =
-                                            new DeserializeStrategyPostJson(messageMapper);
-                                    IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
-
-                                    IOC.register(deserializeStrategyKey, new SingletonStrategy(deserializeStrategy));
-
+                                    registerDeserializationStrategies();
                                     IKey httpResponseSender = Keys.getOrAdd(IResponseSender.class.getCanonicalName());
                                     // TODO: 21.07.16 add opportunity to set custom name of the sender
                                     HttpResponseSender sender = new HttpResponseSender("default");
@@ -296,7 +292,8 @@ public class HttpsEndpointPlugin implements IPlugin {
         }
     }
 
-    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException {
+    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
         DeserializationStrategyChooser deserializationStrategyChooser =
                 IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
         IMessageMapper messageMapper = new MessageToBytesMapper();
@@ -310,17 +307,20 @@ public class HttpsEndpointPlugin implements IPlugin {
         );
 
         deserializationStrategyChooser.register("HTTP_GET",
-                (args) -> {
-                    try {
-                        return new DeserializeStrategyGet((List<String>) args[0]);
-                    } catch (ResolutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            try {
+                                return new DeserializeStrategyGet((List<String>) args[0]);
+                            } catch (ResolutionException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
         );
         deserializationStrategyChooser.register("HTTP_POST",
-                (args) ->
-                        new DeserializeStrategyPostJson(messageMapper)
+                new CreateNewInstanceStrategy(
+                        (args) -> new DeserializeStrategyPostJson(messageMapper)
+                )
         );
 
         ResolveByNameIocStrategy resolveStrategy = new ResolveByNameIocStrategy();

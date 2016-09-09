@@ -26,11 +26,11 @@ public class HttpsEndpoint extends HttpsServer {
      * @param sslContextProvider provider for ssl context
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
-                         final IEnvironmentHandler handler, final IReceiverChain receiverChain,
+                         final IEnvironmentHandler handler, final String name, final IReceiverChain receiverChain,
                          final ISslEngineProvider sslContextProvider
     ) {
         super(port, new EndpointChannelInboundHandler<>(
-                        new HttpRequestHandler(scope, handler, receiverChain),
+                        new HttpRequestHandler(scope, handler, receiverChain, name),
                         FullHttpRequest.class),
                 maxContentLength, sslContextProvider);
     }

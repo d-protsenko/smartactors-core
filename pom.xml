@@ -298,6 +298,7 @@
         <module>DeserializationStrategyChooser</module>
         <module>PluginEndpoint</module>
         <module>IAdditionDependencyStrategy</module>
+        <module>ResponseSenderChooser</module>
     </modules>
 
     <build>
