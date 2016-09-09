@@ -9,10 +9,12 @@ import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * Strategy for choosing {@link IDeserializeStrategy}
+ * There are to parameters: type and name.
+ * There is single strategy for create instance by type.
+ * At resolve method first parameter should be type and second name of the object instance
  */
 public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
 
@@ -21,8 +23,8 @@ public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy,
 
     @Override
     public IDeserializeStrategy resolve(final Object... args) throws ResolveDependencyStrategyException {
-        //args[0] - type of the request
-        //args[1] - name of the endpoint
+        //args[0] - type of the object
+        //args[1] - name of the object
         String keyForResolvingKey = (String) args[0];
         String key = keyForResolvingKey + args[1];
         if (!createdDeserializationStrategies.containsKey(key)) {

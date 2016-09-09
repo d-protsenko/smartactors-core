@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.endpoint_channel_inbound_handler;
 
 
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;

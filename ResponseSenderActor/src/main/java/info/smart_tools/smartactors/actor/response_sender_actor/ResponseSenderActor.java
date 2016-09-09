@@ -51,6 +51,7 @@ public class ResponseSenderActor {
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+            IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
             environment.setValue(responseFieldName, responseIObject);
             environment.setValue(configFieldName, messageWrapper.getEnvironmentIObject(configFieldName));
             environment.setValue(contextFieldName, messageWrapper.getEnvironmentIObject(contextFieldName));
@@ -66,7 +67,8 @@ public class ResponseSenderActor {
             contentStrategy.setContent(responseIObject, response);
 
             IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                    environment);
+                    IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
+                    messageWrapper.getEnvironmentIObject(contextFieldName).getValue(endpointName));
             sender.send(response, environment, channelHandler);
         } catch (Exception e) {
             throw new ResponseSenderActorException(e);

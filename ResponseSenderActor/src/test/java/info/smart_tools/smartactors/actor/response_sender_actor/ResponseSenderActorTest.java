@@ -90,6 +90,9 @@ public class ResponseSenderActorTest {
         IOC.register(keyIResponseSender,
                 new SingletonStrategy(responseSender));
 
+        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"),
+                new SingletonStrategy("HTTP_POST"));
+
 
     }
 

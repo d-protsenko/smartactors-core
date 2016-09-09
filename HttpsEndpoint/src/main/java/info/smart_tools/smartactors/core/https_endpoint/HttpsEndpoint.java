@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.https_endpoint;
 
 
-import info.smart_tools.smartactors.core.EndpointChannelInboundHandler;
+import info.smart_tools.smartactors.core.endpoint_channel_inbound_handler.EndpointChannelInboundHandler;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.https_server.HttpsServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;

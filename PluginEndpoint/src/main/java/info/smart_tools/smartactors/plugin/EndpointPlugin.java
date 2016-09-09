@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgum
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
@@ -46,8 +47,9 @@ public class EndpointPlugin implements IPlugin {
                     .process(
                             () -> {
                                 ResolveByTypeAndNameStrategy deserializationStrategyChooser = new ResolveByTypeAndNameStrategy();
+                                ResolveByTypeAndNameStrategy responseSenderChooser = new ResolveByTypeAndNameStrategy();
                                 try {
-                                    IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"),
+                                    IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"),
                                             new SingletonStrategy(
                                                     deserializationStrategyChooser
                                             )
@@ -55,6 +57,18 @@ public class EndpointPlugin implements IPlugin {
                                     IOC.register(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
                                             deserializationStrategyChooser
                                     );
+
+                                    IOC.register(Keys.getOrAdd("ResponseSenderChooser"),
+                                            new SingletonStrategy(
+                                                    deserializationStrategyChooser
+                                            )
+                                    );
+                                    IOC.register(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
+                                            deserializationStrategyChooser
+                                    );
+
+
+
                                 } catch (RegistrationException e) {
                                     throw new ActionExecuteException("\"EndpointPlugin\" plugin can't load: can't register new strategy", e);
                                 } catch (ResolutionException e) {

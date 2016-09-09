@@ -257,14 +257,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                             )
                                     );
                                     registerDeserializationStrategies();
-                                    IKey httpResponseSender = Keys.getOrAdd(IResponseSender.class.getCanonicalName());
-                                    // TODO: 21.07.16 add opportunity to set custom name of the sender
-                                    HttpResponseSender sender = new HttpResponseSender("default");
-                                    IOC.register(httpResponseSender,
-                                            new SingletonStrategy(
-                                                    sender
-                                            ));
-
+                                    registerResponseSenders();
                                     IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
                                     IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
@@ -293,10 +286,38 @@ public class HttpsEndpointPlugin implements IPlugin {
         }
     }
 
+
+    private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy responseSenderChooser =
+                IOC.resolve(Keys.getOrAdd("ResponseSenderChooser"));
+
+        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"), new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                                "HTTP_POST"
+
+                )
+        );
+
+        responseSenderChooser.register("HTTP_POST",
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            //args[0] - type of the request
+                            //args[1] - name of the endpoint
+                            try {
+                                return new HttpResponseSender((String) args[1]);
+                            } catch (ResolutionException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                )
+        );
+    }
+
     private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException,
             AdditionDependencyStrategyException {
         IAdditionDependencyStrategy deserializationStrategyChooser =
-                IOC.resolve(Keys.getOrAdd("ResolveByTypeAndNameStrategy"));
+                IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
