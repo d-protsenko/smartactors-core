@@ -5,13 +5,14 @@ import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.deserialization_strategy_chooser.DeserializationStrategyChooser;
+import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.DeserializeStrategyGet;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.core.https_endpoint.HttpsEndpoint;
+import info.smart_tools.smartactors.core.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -294,8 +295,8 @@ public class HttpsEndpointPlugin implements IPlugin {
 
     private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException,
             AdditionDependencyStrategyException {
-        DeserializationStrategyChooser deserializationStrategyChooser =
-                IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
+        IAdditionDependencyStrategy deserializationStrategyChooser =
+                IOC.resolve(Keys.getOrAdd("ResolveByTypeAndNameStrategy"));
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(

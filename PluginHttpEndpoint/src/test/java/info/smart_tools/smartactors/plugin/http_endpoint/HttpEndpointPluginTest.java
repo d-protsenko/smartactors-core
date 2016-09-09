@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.plugin.http_endpoint;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.deserialization_strategy_chooser.DeserializationStrategyChooser;
+import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -38,11 +38,11 @@ import static org.mockito.Mockito.reset;
 public class HttpEndpointPluginTest {
     private IBootstrap bootstrap;
     private HttpEndpointPlugin plugin;
-    private DeserializationStrategyChooser deserializationStrategyChooser;
+    private ResolveByTypeAndNameStrategy deserializationStrategyChooser;
 
     @Before
     public void setUp() throws Exception {
-        deserializationStrategyChooser = mock(DeserializationStrategyChooser.class);
+        deserializationStrategyChooser = mock(ResolveByTypeAndNameStrategy.class);
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
@@ -65,7 +65,7 @@ public class HttpEndpointPluginTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );

@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * Strategy for choosing {@link IDeserializeStrategy}
  */
-public class DeserializationStrategyChooser implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
 
     Map<String, IResolveDependencyStrategy> creatingStrategy = new HashMap<>();
     Map<String, IDeserializeStrategy> createdDeserializationStrategies = new ConcurrentHashMap<>();

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin;
 
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.deserialization_strategy_chooser.DeserializationStrategyChooser;
+import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
@@ -45,9 +45,9 @@ public class EndpointPlugin implements IPlugin {
                     .before("starter")
                     .process(
                             () -> {
-                                DeserializationStrategyChooser deserializationStrategyChooser = new DeserializationStrategyChooser();
+                                ResolveByTypeAndNameStrategy deserializationStrategyChooser = new ResolveByTypeAndNameStrategy();
                                 try {
-                                    IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"),
+                                    IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"),
                                             new SingletonStrategy(
                                                     deserializationStrategyChooser
                                             )

@@ -234,7 +234,7 @@ public class HttpEndpointPlugin implements IPlugin {
 
     private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException, AdditionDependencyStrategyException {
         IAdditionDependencyStrategy deserializationStrategyChooser =
-                IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
+                IOC.resolve(Keys.getOrAdd("ResolveByTypeAndNameStrategy"));
 
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
