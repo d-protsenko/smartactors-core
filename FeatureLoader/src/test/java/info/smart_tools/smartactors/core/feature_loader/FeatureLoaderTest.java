@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.path.Path;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 /**
@@ -60,9 +62,11 @@ public class FeatureLoaderTest {
 
     private IKey featureStatusKey = mock(IKey.class);
     private FeatureStatusImpl featureStatusMock1;
+    private FeatureStatusImpl featureStatusMock2;
 
     private IKey configurationObjectKey = mock(IKey.class);
     private IObject featureConfigurationMock1;
+    private IObject featureConfigurationMock2;
 
     private IKey pluginLoaderKey = mock(IKey.class);
     private IPluginLoader pluginLoaderMock;
@@ -77,7 +81,9 @@ public class FeatureLoaderTest {
         configurationManagerMock = mock(IConfigurationManager.class);
         filesystemFacadeMock = mock(IFilesystemFacade.class);
         featureStatusMock1 = mock(FeatureStatusImpl.class);
+        featureStatusMock2 = mock(FeatureStatusImpl.class);
         featureConfigurationMock1 = mock(IObject.class);
+        featureConfigurationMock2 = mock(IObject.class);
         pluginLoaderMock = mock(IPluginLoader.class);
 
         mockStatic(IOC.class, Keys.class);
@@ -163,5 +169,65 @@ public class FeatureLoaderTest {
         when(pluginCreatorMock.create(same(getClass()), any())).thenReturn(pluginMock1);
         classHandler.execute(getClass());
         verify(pluginMock1).load();
+    }
+
+    @Test
+    public void Should_loadFeatureGroup_justReturnStatusIfItIsAlreadyInitialized()
+            throws Exception {
+        when(featureStatusMock1.isInitialized()).thenReturn(true);
+        IPath pathMock = mock(IPath.class);
+
+        FeatureLoader featureLoader = new FeatureLoader();
+
+        IFeatureStatus status = featureLoader.loadGroup(pathMock);
+
+        assertSame(featureStatusMock1, status);
+        verify(featureStatusMock1).isInitialized();
+        verifyNoMoreInteractions(featureStatusMock1);
+    }
+
+    @Test
+    public void Should_loadFeatureGroup_loadFeaturesFromDirectory()
+            throws Exception {
+        IPath groupPathMock = mock(IPath.class);
+        IPath featurePathMock = mock(IPath.class);
+        IPath featureConfigPathMock = mock(IPath.class);
+
+        when(filesystemFacadeMock.listSubdirectories(same(groupPathMock))).thenReturn(Collections.singletonList(featurePathMock));
+        when(filesystemFacadeMock.joinPaths(same(featurePathMock), eq(new Path("config.json")))).thenReturn(featureConfigPathMock);
+
+        when(featureConfigurationMock1.getValue(featureNameFN)).thenReturn("feature1");
+        when(featureConfigurationMock1.getValue(afterFeaturesFN)).thenReturn(Collections.emptyList());
+
+        //noinspection unchecked
+        when(IOC.resolve(same(iobjectKey)))
+                .thenReturn(metafeatureConfigMock)
+                .thenThrow(ResolutionException.class);
+        //noinspection unchecked
+        when(IOC.resolve(same(featureStatusKey), any(), any()))
+                .thenReturn(featureStatusMock1)
+                .thenReturn(featureStatusMock2)
+                .thenThrow(ResolutionException.class);
+        //noinspection unchecked
+        when(IOC.resolve(same(configurationObjectKey), any()))
+                .thenReturn(featureConfigurationMock1)
+                .thenReturn(featureConfigurationMock2)
+                .thenThrow(ResolutionException.class);
+        //noinspection unchecked
+        when(IOC.resolve(same(pluginLoaderKey), any(), any(), any()))
+                .thenReturn(pluginLoaderMock)
+                .thenReturn(pluginLoaderMock)
+                .thenThrow(ResolutionException.class);
+
+        doAnswer(invocationOnMock -> {
+            when(featureStatusMock2.isInitialized()).thenReturn(true);
+            return null;
+        }).when(featureStatusMock2).init(any(), any());
+
+        FeatureLoader featureLoader = new FeatureLoader();
+
+        IFeatureStatus status = featureLoader.loadGroup(groupPathMock);
+
+        assertSame(featureStatusMock1, status);
     }
 }

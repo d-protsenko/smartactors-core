@@ -120,10 +120,6 @@ public class FeatureLoader implements IFeatureLoader {
             throws FeatureLoadException {
         FeatureStatusImpl status = loadFeature0(featurePath);
 
-        if (status.isInitialized()) {
-            return status;
-        }
-
         for (FeatureStatusImpl dependencyStatus : status.getDependencies()) {
             if (!dependencyStatus.isLoaded()) {
                 throw new FeatureLoadException(

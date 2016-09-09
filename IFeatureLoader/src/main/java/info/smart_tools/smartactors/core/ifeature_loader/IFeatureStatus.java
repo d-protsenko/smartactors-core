@@ -40,7 +40,7 @@ public interface IFeatureStatus {
      * Execute the given action when feature load is completed.
      *
      * <p>
-     *     Callback is executed with {@code null} as a argument if load completed successful ang with a exception if load is failed.
+     *     Callback is executed with {@code null} as a argument if load completed successful and with a exception if load is failed.
      * </p>
      *
      * <p>
