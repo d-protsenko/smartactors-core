@@ -14,7 +14,7 @@ import java.io.Reader;
 public class Parser {
     
     private String field;  // the validating field.
-    private Boolean result = true;
+    private boolean result = true;
     
     public Parser(String rules, String field)
     {
@@ -94,7 +94,7 @@ void queryTerm() :
   | t=<RUSSIAN>     {result &= field.matches("[А-яё][-А-яЁё]+");}
   | t=<ADDRESS>     {result &= field.matches("^[0-9а-яё\\s\\.,\\-;\\/\\(\\)]{1,255}$");}
   | t=<HOUSE>       {result &= field.matches("^[0-9а-яa-zё\\/]{1,7}$");}
-  | t=<EMAIL>       {result &= field.matches("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");}
+  | t=<EMAIL>       {result &= field.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");}
   | t=<PASSWORD>    {result &= field.matches("^(?=.*[0-9])(?=.*[!@#$%^&*])[a-z0-9!@#$%^&*]{6,16}$");}
   | t=<NUMERIC>     {result &= field.matches("^\\d+$");}
   | t=<BARCODE>     {result &= field.matches("^[0-9]{13}$");}
@@ -130,7 +130,7 @@ boolean compareTerm() :
            tComparand2=<VALUE> {sComparand2 = Double.parseDouble(field); }
         |  tComparand2=<SUM> {sComparand2 = Double.parseDouble(field); }
         |  tComparand2=<NUM_VALUE> {sComparand2 = Double.parseDouble(tComparand2.toString());}
-        |  tComparand1=<LENGTH>  {{sComparand1 = field.length();}}
+        |  tComparand2=<LENGTH>  {{sComparand2 = field.length();}}
         )
 
         {

@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.plugin.datetime_formatter_strategy.PluginDateTimeFormatter;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
@@ -39,6 +40,7 @@ public class GetItemFromCachedCollectionTaskTest {
         new IFieldPlugin(bootstrap).load();
         new PluginDSObject(bootstrap).load();
         new PostgresDBTasksPlugin(bootstrap).load();
+        new PluginDateTimeFormatter(bootstrap).load();
         bootstrap.start();
     }
 

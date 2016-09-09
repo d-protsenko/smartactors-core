@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
+import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -13,6 +16,7 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.NoExcepti
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -36,6 +40,9 @@ public class MessageProcessingSequenceTest {
     private IObject[] receiverArgsMocks;
     private IObject contextMock;
     private IKey fieldNameKey;
+
+    private IFieldName chainFieldName = mock(IFieldName.class);
+    private IFieldName afterActionFieldName = mock(IFieldName.class);
 
     @Before
     public void setUp()
@@ -63,6 +70,8 @@ public class MessageProcessingSequenceTest {
         PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("causeStep"))).thenReturn(mock(IFieldName.class));
         PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchLevel"))).thenReturn(mock(IFieldName.class));
         PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchStep"))).thenReturn(mock(IFieldName.class));
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("chain"))).thenReturn(this.chainFieldName);
+        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("after"))).thenReturn(this.afterActionFieldName);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -179,10 +188,14 @@ public class MessageProcessingSequenceTest {
             throws Exception {
         IReceiverChain chainMock1 = mock(IReceiverChain.class);
         IReceiverChain chainMock2 = mock(IReceiverChain.class);
+        IObject exceptionalChainAndEnvMock = mock(IObject.class);
         IReceiverChain exceptionalChainMock = mock(IReceiverChain.class);
+        IAction afterAction = mock(IAction.class);
         Throwable exception = mock(Throwable.class);
 
-        when(chainMock1.getExceptionalChain(same(exception))).thenReturn(exceptionalChainMock);
+        when(chainMock2.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnvMock);
+        when(exceptionalChainAndEnvMock.getValue(this.chainFieldName)).thenReturn(exceptionalChainMock);
+        when(exceptionalChainAndEnvMock.getValue(this.afterActionFieldName)).thenReturn(afterAction);
 
         when(exceptionalChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
@@ -220,7 +233,7 @@ public class MessageProcessingSequenceTest {
             throws Exception {
         Throwable exception = mock(Throwable.class);
 
-        when(mainChainMock.getExceptionalChain(same(exception))).thenReturn(null);
+        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
         IMessageProcessingSequence sequence = new MessageProcessingSequence(1, mainChainMock);
@@ -234,9 +247,15 @@ public class MessageProcessingSequenceTest {
         Throwable exception = mock(Throwable.class);
 
         IReceiverChain exceptionalChain = mock(IReceiverChain.class);
+        IObject exceptionalChainAndEnv = mock(IObject.class);
+        IAction afterAction = mock(IAction.class);
         IReceiverChain secondaryChain = mock(IReceiverChain.class);
 
-        when(mainChainMock.getExceptionalChain(same(exception))).thenReturn(exceptionalChain);
+        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+        when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(secondaryChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(secondaryChain.get(eq(1))).thenReturn(messageReceiverMocks[1]);
@@ -299,5 +318,61 @@ public class MessageProcessingSequenceTest {
     public void Should_getStepAtLevelThrow_When_LevelIndexIsGreaterThanIndexOfCurrentLevel()
             throws Exception {
         new MessageProcessingSequence(5, mainChainMock).getStepAtLevel(1);
+    }
+
+    @Test
+    public void Should_returnFalse_When_CallEndMethod()
+            throws Exception {
+
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+        when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
+        when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
+
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        messageProcessingSequence.end();
+        assertFalse(messageProcessingSequence.next());
+    }
+
+    @Test
+    public void Should_returnFalse_When_AfterActionCallEndMethod()
+            throws Exception {
+        Throwable exception = mock(Throwable.class);
+        IReceiverChain exceptionalChain = mock(IReceiverChain.class);
+        IObject exceptionalChainAndEnv = mock(IObject.class);
+        IAction<IMessageProcessingSequence> afterAction = IMessageProcessingSequence::end;
+
+        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+        when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+        when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
+        when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
+
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        messageProcessingSequence.catchException(exception, contextMock);
+
+        assertFalse(messageProcessingSequence.next());
+    }
+
+    @Test
+    public void Should_returnFalse_WhenAfterActionThrowsException() throws Exception {
+        Throwable exception = mock(Throwable.class);
+        IReceiverChain exceptionalChain = mock(IReceiverChain.class);
+        IObject exceptionalChainAndEnv = mock(IObject.class);
+        IAction<IMessageProcessingSequence> afterAction = (mps) -> {throw new ActionExecuteException("exception");};
+
+        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+        when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+        when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
+        when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
+
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        messageProcessingSequence.catchException(exception, contextMock);
+
+        assertFalse(messageProcessingSequence.next());
     }
 }

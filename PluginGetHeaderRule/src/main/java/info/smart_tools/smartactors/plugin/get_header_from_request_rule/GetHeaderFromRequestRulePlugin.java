@@ -35,7 +35,7 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
             item
                 .after("IOC")
                 .after("wds_object")
-                .before("configure")
+                .before("starter")
                     .process(() -> {
                         try {
                             //call IOC.resolve for put GetHeaderFromRequestRule into cache of ResolveByNameDependency strategy

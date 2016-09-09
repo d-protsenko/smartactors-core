@@ -41,7 +41,7 @@ public class GetAsyncOperationPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(GetAsyncOperationActor.class.getCanonicalName());

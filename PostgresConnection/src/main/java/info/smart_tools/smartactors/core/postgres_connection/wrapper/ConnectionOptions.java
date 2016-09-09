@@ -8,11 +8,7 @@ import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
  */
 public interface ConnectionOptions {
     /**
-<<<<<<< HEAD
-     * @return url of database
-=======
      * @return url to connect with database
->>>>>>> 981b6c84a553320f10396ad499c0dfa303cb4dcd
      * @throws ReadValueException if any errors occurred
      */
     String getUrl() throws ReadValueException;
