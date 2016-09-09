@@ -295,6 +295,7 @@
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
         <module>IAdditionDependencyStrategy</module>
+        <module>NonBlockingQueue</module>
     </modules>
 
     <build>

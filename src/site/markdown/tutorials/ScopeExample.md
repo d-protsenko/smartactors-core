@@ -2,11 +2,11 @@
 
 ## Overview
 
-Scope is a key-value storage, where system [service locators]((https://en.wikipedia.org/wiki/Service_locator_pattern)) like [IoC](IOCExample.html) are able to store their internal data.
+Scope is a key-value storage, where system [service locators]((https://en.wikipedia.org/wiki/Service_locator_pattern)) like [IoC](IOCExample.html) are able to store their queue data.
 
 ### Requirement for the keys
 
-Because the data is internal, it's better to use a random [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier) as a key to private data. This key is known only to the users of the data, other users cannot guess the key.
+Because the data is queue, it's better to use a random [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier) as a key to private data. This key is known only to the users of the data, other users cannot guess the key.
 
     Object scopeKey = ScopeProvider.createScope(null);
     IScope scope = ScopeProvider.getScope(scopeKey);
