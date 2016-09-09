@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
@@ -23,7 +22,10 @@ import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Actor check current session, if she's null create new session
@@ -89,7 +91,7 @@ public class CreateSessionActor {
             IObject session;
             String sessionId = inputMessage.getSessionId();
             if (sessionId == null || sessionId.equals("")) {
-                sessionId = String.valueOf(UUID.randomUUID());
+                sessionId = IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
                 IObject authInfo = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                 userAgentF.out(authInfo, inputMessage.getAuthInfo());
                 session = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
@@ -118,8 +120,7 @@ public class CreateSessionActor {
                     searchTask.execute();
 
                     if (items.isEmpty()) {
-                        //TODO:: Should we create new session here?
-                        return;
+                        throw new CreateSessionException("No session has been found by id: " + sessionId);
                     }
                     session = items.get(0);
                     if (session == null) {

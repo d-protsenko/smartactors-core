@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.message_processing;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
@@ -20,7 +19,7 @@ public interface IReceiverChain {
      *
      * @param index    index of the receiver in the chain
      * @return arguments that should be passed to the receiver
-     * @see IMessageReceiver#receive(IMessageProcessor, IObject, IAction)
+     * @see IMessageReceiver#receive(IMessageProcessor)
      */
     IObject getArguments(int index);
 
@@ -32,11 +31,11 @@ public interface IReceiverChain {
     String getName();
 
     /**
-     * Get the chin of receivers that has to be executed if exception occurs during execution of this chain.
+     * Get the chain of receivers (and environments) that has to be executed if exception occurs during execution of this chain.
      *
      * @param exception the exception occurred
-     * @return the chin of receivers that has to be executed if exception occurs during execution of this chain or
+     * @return the chain of receivers (and environments) that has to be executed if exception occurs during execution of this chain or
      *         {@code null} if no such chain defined for this one
      */
-    IReceiverChain getExceptionalChain(Throwable exception);
+    IObject getExceptionalChainAndEnvironments(Throwable exception);
 }

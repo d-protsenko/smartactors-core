@@ -35,7 +35,6 @@ public class PluginResponseSenderActor implements IPlugin {
             IBootstrapItem<String> responseSenderItem = new BootstrapItem("actor:response_sender");
 
             responseSenderItem
-                    .before("configure")
                     .process(() -> {
                         try {
                             IOC.register(

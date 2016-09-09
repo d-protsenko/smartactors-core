@@ -37,7 +37,8 @@ public class CreateAsyncOpPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("configure")
+                    .after("datetime_formatter_plugin")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey createAsyncOpKey = Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());

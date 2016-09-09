@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.core.async_operation_collection.exception.Cr
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -18,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -38,10 +39,14 @@ public class CreateAsyncOperationActorTest {
     private IAsyncOperationCollection collection;
 
     @Before
-    public void setUp() throws ResolutionException, CreateAsyncOperationActorException, ReadValueException, InvalidArgumentException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
+
+        IKey formatterKey = mock(IKey.class);
+        when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
+        when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 
         collection = mock(IAsyncOperationCollection.class);
         IKey collectionKey = mock(IKey.class);

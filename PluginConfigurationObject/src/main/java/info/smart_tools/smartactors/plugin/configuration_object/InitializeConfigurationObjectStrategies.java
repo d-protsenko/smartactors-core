@@ -2,12 +2,10 @@ package info.smart_tools.smartactors.plugin.configuration_object;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -94,7 +92,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             if (obj instanceof String) {
                                                                 IObject innerObject = new ConfigurationObject();
                                                                 innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
-                                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
+                                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }});
 
                                                                 return new ArrayList<IObject>() {{ add(innerObject); }};
                                                             }
@@ -118,7 +116,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             if (obj instanceof String) {
                                                                 IObject innerObject = new ConfigurationObject();
                                                                 innerObject.setValue(new FieldName("name"), "wds_target_strategy");
-                                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
+                                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }});
 
                                                                 return new ArrayList<List<IObject>>() {{
                                                                     add(new ArrayList<IObject>() {{  add(innerObject); }});
@@ -150,6 +148,30 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                     );
                                     IOC.register(
                                             IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(), "configuration object exceptional strategy"
+                                            ),
+                                            new ApplyFunctionToArgumentsStrategy(
+                                                    (a) -> {
+                                                        try {
+                                                            Object obj = a[0];
+                                                            if (obj instanceof List) {
+                                                                for (IObject innerObject : (List<IObject>)obj) {
+                                                                    if (null == innerObject.getValue(new FieldName("after"))) {
+                                                                        innerObject.setValue(new FieldName("after"), "break");
+                                                                    }
+                                                                }
+                                                            }
+                                                            return obj;
+                                                        } catch (Throwable e) {
+                                                            throw new RuntimeException(
+                                                                    "Error in configuration 'wrapper' rule.", e
+                                                            );
+                                                        }
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "resolve key for configuration object"
                                             ),
                                             new ApplyFunctionToArgumentsStrategy(
@@ -158,6 +180,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             Map<String, String> keys = new HashMap<String, String>() {{
                                                                 put("in_", "configuration object in_ strategy");
                                                                 put("out_", "configuration object out_ strategy");
+                                                                put("exceptional", "configuration object exceptional strategy");
                                                             }};
                                                             char[] symbols = a[1].toString().toCharArray();
                                                             String resolvedKey = "configuration object default strategy";

@@ -235,4 +235,4 @@ In this case you have to work with `List<Object>` in Java and cast each element 
       
 ## Code
       
-* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/IOCExample.html) showing examples to work with IObject.
+* [Tests](../core.examples/xref-test/info/smart_tools/smartactors/core/examples/IObjectExample.html) showing examples to work with IObject.

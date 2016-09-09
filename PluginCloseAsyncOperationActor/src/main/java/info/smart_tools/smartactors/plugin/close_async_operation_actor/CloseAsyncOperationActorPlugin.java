@@ -44,7 +44,7 @@ public class CloseAsyncOperationActorPlugin implements IPlugin {
 
             item
                     .after("IOC")
-                    .before("configure")
+                    .before("starter")
                     .process(() -> {
                         try {
                             IKey checkUserByEmailActorKey = Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());

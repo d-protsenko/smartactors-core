@@ -8,7 +8,7 @@ import java.io.Reader;
 public class Parser implements ParserConstants {
 
     private String field;  // the validating field.
-    private Boolean result = true;
+    private boolean result = true;
 
     public Parser(String rules, String field)
     {
@@ -69,7 +69,7 @@ public class Parser implements ParserConstants {
       break;
     case EMAIL:
       t = jj_consume_token(EMAIL);
-                     result &= field.matches("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\u005c\u005c.[A-Z]{2,6}$");
+                     result &= field.matches("^[_A-Za-z0-9-\u005c\u005c+]+(\u005c\u005c.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\u005c\u005c.[A-Za-z0-9]+)*(\u005c\u005c.[A-Za-z]{2,})$");
       break;
     case PASSWORD:
       t = jj_consume_token(PASSWORD);
@@ -166,6 +166,10 @@ public class Parser implements ParserConstants {
       tComparand2 = jj_consume_token(NUM_VALUE);
                                     sComparand2 = Double.parseDouble(tComparand2.toString());
       break;
+    case LENGTH:
+      tComparand2 = jj_consume_token(LENGTH);
+                                  {sComparand2 = field.length();}
+      break;
     default:
       jj_la1[4] = jj_gen;
       jj_consume_token(-1);
@@ -194,7 +198,7 @@ public class Parser implements ParserConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x1ffc0,0x1e0000,0x7c00000,0x1c0000,};
+      jj_la1_0 = new int[] {0x20,0x1ffc0,0x1e0000,0x7c00000,0x1e0000,};
    }
 
   /** Constructor with InputStream. */

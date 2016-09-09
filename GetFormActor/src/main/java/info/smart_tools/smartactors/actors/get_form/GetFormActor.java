@@ -3,9 +3,7 @@ package info.smart_tools.smartactors.actors.get_form;
 import info.smart_tools.smartactors.actors.get_form.exception.GetFormActorException;
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
-import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -17,7 +15,7 @@ import java.util.List;
  * Actor that put form to message from cached collection
  */
 public class GetFormActor {
-    private static final String KEY_NAME = "form";
+
     private ICachedCollection collection;
 
     /**
@@ -27,8 +25,10 @@ public class GetFormActor {
      */
     public GetFormActor(final IObject params) throws GetFormActorException {
         try {
-            IField field = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            collection = IOC.resolve(Keys.getOrAdd(ICachedCollection.class.getCanonicalName()), field.in(params), KEY_NAME);
+            IField cacheKeyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cacheKey");
+            String keyName = cacheKeyField.in(params);
+            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            collection = IOC.resolve(Keys.getOrAdd(ICachedCollection.class.getCanonicalName()), collectionNameField.in(params), keyName);
         } catch (Exception e) {
             throw new GetFormActorException("Can't create GetFormActor", e);
         }
