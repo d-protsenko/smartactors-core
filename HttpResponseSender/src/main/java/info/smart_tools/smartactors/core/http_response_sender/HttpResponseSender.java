@@ -40,8 +40,8 @@ public class HttpResponseSender implements IResponseSender {
      */
     public HttpResponseSender(final String name) throws ResolutionException {
         this.name = name;
-        cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()),
-                IOC.resolve(Keys.getOrAdd("key_for_cookies_extractor")),
+        String keyCookiesSetter = IOC.resolve(Keys.getOrAdd("key_for_cookies_extractor"));
+        cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()), keyCookiesSetter,
                 name);
         headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName()),
                 IOC.resolve(Keys.getOrAdd("key_for_headers_extractor")),

@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IPa
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -97,7 +98,7 @@ public class DeserializeStrategyGetTest {
     }
 
     @Test
-    public void testUriWithEmptyArgs() throws DeserializationException, ResolutionException, InvalidArgumentException, RegistrationException, ChangeValueException {
+    public void testUriWithEmptyArgs() throws DeserializationException, ResolutionException, InvalidArgumentException, RegistrationException, ChangeValueException, AddRequestParametersToIObjectException {
         IOC.register(Keys.getOrAdd("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
                 )
@@ -117,12 +118,12 @@ public class DeserializeStrategyGetTest {
         httpRequest = mock(FullHttpRequest.class);
         when(httpRequest.uri()).thenReturn(testUri);
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet(new ArrayList<>());
-        IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
+        deserializeStrategyGet.extract(emptyIObject, httpRequest);
         verify(emptyIObject).setValue(fieldName, "hello");
     }
 
     @Test
-    public void testUriWithArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException {
+    public void testUriWithArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
 
         String testUri = "www.www.ru/hello?hello=world";
         httpRequest = mock(FullHttpRequest.class);
@@ -139,13 +140,14 @@ public class DeserializeStrategyGetTest {
         when(parseTree.match(arg)).thenReturn(outputMap);
 
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet(new ArrayList<>());
-        IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
+        IObject iObject = new DSObject();
+        deserializeStrategyGet.extract(iObject, httpRequest);
         assertEquals(((List<String>) iObject.getValue(new FieldName("hello"))).get(0), "world");
         assertEquals(iObject.getValue(new FieldName("messageMapId")), "hello");
     }
 
     @Test
-    public void testUriWithoutArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException {
+    public void testUriWithoutArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
         IOC.register(Keys.getOrAdd("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
                 )
@@ -154,7 +156,8 @@ public class DeserializeStrategyGetTest {
         httpRequest = mock(FullHttpRequest.class);
         when(httpRequest.uri()).thenReturn(testUri);
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet(new ArrayList<>());
-        IObject iObject = deserializeStrategyGet.deserialize(httpRequest);
+        IObject iObject = new DSObject();
+        deserializeStrategyGet.extract(iObject, httpRequest);
         assertEquals(iObject, this.emptyIObject);
     }
 }

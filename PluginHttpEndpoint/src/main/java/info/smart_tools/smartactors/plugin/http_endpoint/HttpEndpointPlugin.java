@@ -68,13 +68,7 @@ public class HttpEndpointPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpEndpoint");
             item
-                    .after("IOC")
-                    .after("message_processor")
-                    .after("message_processing_sequence")
-                    .after("response")
-                    .after("response_content_strategy")
-                    .after("FieldNamePlugin")
-                    .after("CreateEndpoint")
+                    .after("EndpointPlugin")
                     .before("starter")
                     .process(
                             () -> {
@@ -107,7 +101,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                     IFieldName endpointNameFieldName =
                                             IOC.resolve(
                                                     IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "endpointName"
+                                                    "name"
                                             );
 
                                     IFieldName queueFieldName =
@@ -122,23 +116,10 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     "templates"
                                             );
 
-                                    ICookiesSetter cookiesSetter = new CookiesSetter();
                                     IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
-                                    IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
-                                    IOC.register(cookiesSetterKey,
-                                            new SingletonStrategy(cookiesSetter));
-
-                                    IHeadersExtractor headersSetter = new HttpHeadersExtractor();
-
-                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
-                                    IOC.register(headersSetterKey,
-                                            new SingletonStrategy(headersSetter));
-
-                                    IResponseStatusExtractor responseStatusExtractor = new ResponseStatusExtractor();
-                                    IKey responseStatusExtractorKey = Keys.getOrAdd(
-                                            IResponseStatusExtractor.class.getCanonicalName());
-                                    IOC.register(responseStatusExtractorKey,
-                                            new SingletonStrategy(responseStatusExtractor));
+                                    registerCookiesSetter();
+                                    registerHeadersExtractor();
+                                    registerResponseStatusExtractor();
 
                                     IOC.register(
                                             Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),

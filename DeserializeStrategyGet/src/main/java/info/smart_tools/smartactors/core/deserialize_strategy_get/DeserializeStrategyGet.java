@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.deserialize_strategy_get;
 
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IParseTree;
+import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.ParseTree;
 import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.IAddRequestParametersToIObject;
 import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -28,7 +29,10 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
      * @throws ResolutionException if there are IOC problems
      */
     public DeserializeStrategyGet(final List<String> templates) throws ResolutionException {
-        this.tree = IOC.resolve(Keys.getOrAdd(IParseTree.class.getCanonicalName()));
+        this.tree = new ParseTree();
+        if (null == templates) {
+            return;
+        }
         for (String template : templates) {
             tree.addTemplate(template);
         }
@@ -36,38 +40,34 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
 
     @Override
     public void extract(final IObject message, final Object requestObject) throws AddRequestParametersToIObjectException {
-        try {
-            FullHttpRequest request = (FullHttpRequest) requestObject;
-            if (!request.uri().contains("/")) {
-                return;
-            }
-            QueryStringDecoder decoder = IOC.resolve(Keys.getOrAdd(QueryStringDecoder.class.getCanonicalName()),
-                    request.uri().substring(request.uri().indexOf("/")));
-            decoder.parameters().forEach(
-                    (k, v) -> {
-                        try {
-                            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
-                            message.setValue(fieldName, v);
-                        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-            );
-            Map<String, String> parameters = tree.match(decoder.uri());
-            parameters.forEach(
-                    (k, v) -> {
-                        try {
-                            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
-                            message.setValue(fieldName, v);
-                        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-            );
+        FullHttpRequest request = (FullHttpRequest) requestObject;
+        if (!request.uri().contains("/")) {
             return;
-        } catch (ResolutionException e) {
-            throw new AddRequestParametersToIObjectException(e);
         }
+        QueryStringDecoder decoder = new QueryStringDecoder(
+                request.uri().substring(request.uri().indexOf("/")));
+        decoder.parameters().forEach(
+                (k, v) -> {
+                    try {
+                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
+                        message.setValue(fieldName, v);
+                    } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        Map<String, String> parameters = tree.match(decoder.uri());
+        parameters.forEach(
+                (k, v) -> {
+                    try {
+                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
+                        message.setValue(fieldName, v);
+                    } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        return;
     }
 
 }

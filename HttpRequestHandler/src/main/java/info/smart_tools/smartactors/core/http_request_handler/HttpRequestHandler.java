@@ -52,7 +52,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
         //resolving uri and another request parameters of the request
         IAddRequestParametersToIObject requestParametersToIObject = IOC.resolve(
-                Keys.getOrAdd(IAddRequestParametersToIObject.class.getCanonicalName()),
+                Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
                 "HTTP_GET",
                 name
         );

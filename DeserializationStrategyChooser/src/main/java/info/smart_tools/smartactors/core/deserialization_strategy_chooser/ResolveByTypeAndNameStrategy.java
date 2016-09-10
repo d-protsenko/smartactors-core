@@ -19,10 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
 
     Map<String, IResolveDependencyStrategy> creatingStrategy = new HashMap<>();
-    Map<String, IDeserializeStrategy> createdDeserializationStrategies = new ConcurrentHashMap<>();
+    Map<String, Object> createdDeserializationStrategies = new ConcurrentHashMap<>();
 
     @Override
-    public IDeserializeStrategy resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public Object resolve(final Object... args) throws ResolveDependencyStrategyException {
         //args[0] - type of the object
         //args[1] - name of the object
         String keyForResolvingKey = (String) args[0];

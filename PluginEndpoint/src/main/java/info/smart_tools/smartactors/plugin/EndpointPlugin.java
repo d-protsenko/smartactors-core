@@ -112,7 +112,8 @@ public class EndpointPlugin implements IPlugin {
 
                             }
                     );
-        } catch (InvalidArgumentException e) {
+            bootstrap.add(item);
+        } catch (Exception e) {
             throw new PluginException("Can't load \"EndpointPlugin\" plugin", e);
         }
     }

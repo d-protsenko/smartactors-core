@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.actor.response_sender_actor;
 
 import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
-import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
@@ -31,7 +30,10 @@ import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ResponseSenderActorTest {
     IResponse response;
@@ -113,7 +115,7 @@ public class ResponseSenderActorTest {
     }
 }
 
-class Wrapper implements IObjectWrapper, ResponseMessage {
+class Wrapper implements IObjectWrapper {
     IObject environment;
 
 //    @Override

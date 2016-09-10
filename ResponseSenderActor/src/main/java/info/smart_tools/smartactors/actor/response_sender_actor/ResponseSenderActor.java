@@ -1,22 +1,16 @@
 package info.smart_tools.smartactors.actor.response_sender_actor;
 
 import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
-import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
+import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseSenderMessage;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**
  * Actor for sending response to client
@@ -35,7 +29,7 @@ public class ResponseSenderActor {
      * @throws ResponseSenderActorException if there are some problems on sending response
      */
     // TODO: 21.07.16 Remake with using interface
-    public void sendResponse(final ResponseMessage message)
+    public void sendResponse(final ResponseSenderMessage message)
             throws ResponseSenderActorException {
 
         IObjectWrapper messageWrapper = (IObjectWrapper) message;
