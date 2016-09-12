@@ -45,7 +45,7 @@ public interface IMessageProcessingSequence {
      */
     void end();
 
-    /*
+    /**
      * Get current level in stack of nested chains.
      *
      * @return current level in stack of nested chains

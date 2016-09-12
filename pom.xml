@@ -298,6 +298,8 @@
         <module>NonBlockingQueue</module>
         <module>PluginBlockingQueue</module>
         <module>PluginNonBlockingQueue</module>
+        <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
     </modules>
 
     <build>
