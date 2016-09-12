@@ -299,6 +299,7 @@
         <module>PluginRepeaterActor</module>
         <module>ITimer</module>
         <module>TimerImpl</module>
+        <module>PluginTimer</module>
     </modules>
 
     <build>
