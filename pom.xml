@@ -296,6 +296,8 @@
         <module>PluginDateTimeFormatterStrategy</module>
         <module>IAdditionDependencyStrategy</module>
         <module>NonBlockingQueue</module>
+        <module>PluginBlockingQueue</module>
+        <module>PluginNonBlockingQueue</module>
     </modules>
 
     <build>

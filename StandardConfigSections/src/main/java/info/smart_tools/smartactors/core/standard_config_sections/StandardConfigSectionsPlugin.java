@@ -77,6 +77,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> executorSectionItem = new BootstrapItem("config_section:executor");
 
             executorSectionItem
+                    .after("queue")
                     .after("configuration_manager")
                     .after("IFieldNamePlugin")
                     .before("starter")

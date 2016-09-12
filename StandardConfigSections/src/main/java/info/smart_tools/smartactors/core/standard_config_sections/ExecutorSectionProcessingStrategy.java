@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
@@ -19,8 +18,6 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
 import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
 
-import java.util.concurrent.ArrayBlockingQueue;
-
 /**
  *
  */
@@ -30,7 +27,6 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     private final IFieldName threadCountFieldName;
     private final IFieldName maxRunningThreadsFieldName;
     private final IFieldName maxExecutionDelayFieldName;
-    private final IFieldName queueSizeFieldName;
 
     /**
      * The constructor.
@@ -43,7 +39,6 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
         this.threadCountFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "threadCount");
         this.maxRunningThreadsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxRunningThreads");
         this.maxExecutionDelayFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxExecutionDelay");
-        this.queueSizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queueSize");
     }
 
     @Override
@@ -53,9 +48,8 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             int threadsCount = Integer.valueOf(String.valueOf(section.getValue(threadCountFieldName)));
             int maxRunningThreads = Integer.valueOf(String.valueOf(section.getValue(maxRunningThreadsFieldName)));
             int maxExecutionDelay = Integer.valueOf(String.valueOf(section.getValue(maxExecutionDelayFieldName)));
-            int queueSize = Integer.valueOf(String.valueOf(section.getValue(queueSizeFieldName)));
 
-            IQueue<ITask> queue = new BlockingQueue<>(new ArrayBlockingQueue<>(queueSize));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()), section);
 
             IThreadPool threadPool = new ThreadPool(threadsCount);
 
