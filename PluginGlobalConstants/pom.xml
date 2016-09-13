@@ -9,55 +9,49 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.iconfiguration_manager</artifactId>
+    <artifactId>plugin.global_constants</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
-            <version>${core.version}</version>
+            <artifactId>core.constants_section_strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iconfiguration_manager</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iplugin</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ibootstrap</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.bootstrap_item</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ioc</artifactId>
-            <version>${core.version}</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
-            <version>${core.version}</version>
+            <artifactId>core.named_keys_storage</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_state_exception</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifield_name</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <!-- Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
+            <artifactId>core.singleton_strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

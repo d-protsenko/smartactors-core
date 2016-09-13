@@ -301,6 +301,8 @@
         <module>IFilesystemFacade</module>
         <module>FilesystemFacade</module>
         <module>PluginFilesystemFacade</module>
+        <module>ConstantsSectionStrategy</module>
+        <module>PluginGlobalConstants</module>
     </modules>
 
     <build>

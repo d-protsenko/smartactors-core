@@ -6,13 +6,10 @@ import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -101,12 +98,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                IConfigurationManager configurationManager =
-                                                        IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-
-//                                                config = configurationManager.getConfig();
-                                                // TODO: Get object with global variables
-                                                config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                config = IOC.resolve(Keys.getOrAdd("global constants"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }

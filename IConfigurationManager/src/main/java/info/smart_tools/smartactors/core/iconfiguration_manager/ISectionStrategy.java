@@ -11,7 +11,7 @@ public interface ISectionStrategy {
     /**
      * Called when configuration is loaded.
      *
-     * @param config    the root configuration object
+     * @param config    the configuration object
      * @throws ConfigurationProcessingException if any error occurs loading the configuration
      * @see info.smart_tools.smartactors.core.iconfiguration_manager
      */
