@@ -153,6 +153,30 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                     );
                                     IOC.register(
                                             IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(), "configuration object exceptional strategy"
+                                            ),
+                                            new ApplyFunctionToArgumentsStrategy(
+                                                    (a) -> {
+                                                        try {
+                                                            Object obj = a[0];
+                                                            if (obj instanceof List) {
+                                                                for (IObject innerObject : (List<IObject>)obj) {
+                                                                    if (null == innerObject.getValue(new FieldName("after"))) {
+                                                                        innerObject.setValue(new FieldName("after"), "break");
+                                                                    }
+                                                                }
+                                                            }
+                                                            return obj;
+                                                        } catch (Throwable e) {
+                                                            throw new RuntimeException(
+                                                                    "Error in configuration 'wrapper' rule.", e
+                                                            );
+                                                        }
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "resolve key for configuration object"
                                             ),
                                             new ApplyFunctionToArgumentsStrategy(
@@ -161,6 +185,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             Map<String, String> keys = new HashMap<String, String>() {{
                                                                 put("in_", "configuration object in_ strategy");
                                                                 put("out_", "configuration object out_ strategy");
+                                                                put("exceptional", "configuration object exceptional strategy");
                                                             }};
                                                             char[] symbols = a[1].toString().toCharArray();
                                                             String resolvedKey = "configuration object default strategy";

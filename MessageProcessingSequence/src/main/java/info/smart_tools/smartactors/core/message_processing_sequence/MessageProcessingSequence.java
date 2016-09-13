@@ -1,10 +1,12 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
@@ -25,11 +27,16 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
     private IObject currentArguments;
     private int stackIndex;
 
+    private boolean isException = false;
+    private IAction<IMessageProcessingSequence> afterExceptionAction = null;
+
     private final IFieldName causeLevelFieldName;
     private final IFieldName causeStepFieldName;
     private final IFieldName catchLevelFieldName;
     private final IFieldName catchStepFieldName;
     private final IFieldName exceptionFieldName;
+    private final IFieldName chainFieldName;
+    private final IFieldName afterExceptionActionFieldName;
 
     /**
      * The constructor.
@@ -64,6 +71,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
         catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchLevel");
         catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchStep");
         exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exception");
+        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "after");
+        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain");
 
         reset();
     }
@@ -88,6 +97,18 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 stackIndex = i;
                 return true;
             }
+
+            if (this.isException) {
+                this.isException = false;
+                try {
+                    this.afterExceptionAction.execute(this);
+                    if (this.stackIndex < 0) {
+                        return false;
+                    }
+                } catch (Throwable e) {
+                    return false;
+                }
+            }
         }
 
         return false;
@@ -101,6 +122,25 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
 
         this.stackIndex = level;
         this.stepStack[level] = step - 1;
+    }
+
+    @Override
+    public void end() {
+        this.stackIndex = -1;
+    }
+
+    @Override
+    public int getCurrentLevel() {
+        return stackIndex;
+    }
+
+    @Override
+    public int getStepAtLevel(final int level) throws InvalidArgumentException {
+        if (level < 0 || level > stackIndex) {
+            throw new InvalidArgumentException("Level index is out of range.");
+        }
+
+        return stepStack[level];
     }
 
     @Override
@@ -135,14 +175,17 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
             throws NoExceptionHandleChainException,
                    NestedChainStackOverflowException,
                    ChangeValueException,
-                   InvalidArgumentException {
+                   InvalidArgumentException,
+                   ReadValueException {
         int causedLevel = stackIndex;
         int causedStep = stepStack[causedLevel];
         int caughtLevel;
         int caughtStep;
 
         for (int i = stackIndex; i >= 0; --i) {
-            IReceiverChain exceptionalChain = chainStack[i].getExceptionalChain(exception);
+            IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainAndEnvironments(exception);
+            this.afterExceptionAction = (IAction<IMessageProcessingSequence>) exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
+            IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(this.chainFieldName);
             if (null != exceptionalChain) {
                 caughtLevel = i;
                 caughtStep = stepStack[caughtLevel];
@@ -153,6 +196,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 context.setValue(catchStepFieldName, caughtStep);
                 context.setValue(exceptionFieldName, exception);
 
+                this.isException = true;
                 callChain(exceptionalChain);
                 return;
             }

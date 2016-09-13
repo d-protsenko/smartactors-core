@@ -312,6 +312,9 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
+        <module>IAdditionDependencyStrategy</module>
+        <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
     </modules>
 
     <build>

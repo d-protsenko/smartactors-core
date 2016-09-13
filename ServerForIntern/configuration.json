@@ -105,7 +105,8 @@
       "exceptional": [
         {
           "class": "info.smart_tools.smartactors.actors.exception.SampleException",
-          "chain": "exceptionHandler"
+          "chain": "exceptionHandler",
+          "after": "break"
         }
       ]
     },

@@ -140,13 +140,13 @@ public class EnvironmentHandlerTest {
                 new SingletonStrategy(iObject)
         );
         IObject environment = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": null}");
-        Map<Class<? extends Throwable>, IReceiverChain> exceptionalChains = new HashMap<>();
-        exceptionalChains.put(InvalidArgumentException.class, null);
+        Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv = new HashMap<>();
+        exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
         IMessageReceiver messageReceivers[] = new IMessageReceiver[1];
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
         iObjects[0] = null;
-        IReceiverChain chain = new ImmutableReceiverChain("name", messageReceivers, iObjects, exceptionalChains);
+        IReceiverChain chain = new ImmutableReceiverChain("name", messageReceivers, iObjects, exceptionalChainsAndEnv);
         IQueue<ITask> queue = new BlockingQueue(null);
 
         IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);

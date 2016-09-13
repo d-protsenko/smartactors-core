@@ -20,6 +20,11 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.i_addition_dependency_strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
