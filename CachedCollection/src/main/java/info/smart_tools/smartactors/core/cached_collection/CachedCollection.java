@@ -36,12 +36,9 @@ public class CachedCollection implements ICachedCollection {
 
     private IField collectionNameField;
     private IField keyNameField;
-    private IField keyValueField;
     private IField specificKeyNameField;
-    private IField documentField;
     private IField idField;
     private IField isActiveField;
-    private IField searchResultField;
 
     private IPool connectionPool;
     private String collectionName;
@@ -64,15 +61,12 @@ public class CachedCollection implements ICachedCollection {
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
             this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
-            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyValue");
-            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
             this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "isActive");
-            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "searchResult");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
             this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), keyName);
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), String.format("%sID", collectionName));
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }

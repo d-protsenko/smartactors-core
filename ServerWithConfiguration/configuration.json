@@ -4,7 +4,8 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.get_form.GetFormActor",
       "name": "getFormActor",
-      "collectionName": "form"
+      "collectionName": "form",
+      "cacheKey": "formKey"
     },
     {
       "kind": "actor",
@@ -90,11 +91,12 @@
       "kind": "actor",
       "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
       "name": "sendMailActor",
-      "username": "mixaildre@gmail.com",
-      "password": "369852147qwerty",
+      "username": "<>",
+      "password": "<>",
       "authenticationMode": "Login",
-      "server": "smtp://aspmx.l.google.com:25",
-      "senderAddress": "mixaildre@gmail.com"
+      "sslProtocol": "SSL",
+      "server": "smtps://smtp.yandex.com:465",
+      "senderAddress": "<>"
     },
     {
       "kind": "actor",
@@ -171,7 +173,7 @@
           "target": "getFormActor",
           "handler": "getForm",
           "wrapper": {
-            "in_getFormKey": "message/formId",
+            "in_getFormKey": "message/formKey",
             "out_setForm": "response/form"
           }
         },

@@ -261,6 +261,8 @@
         <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
+        <module>ActorCollectionReceiver</module>
+        <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
         <module>PluginConnectionOptions</module>
@@ -287,8 +289,14 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>NestedField</module>
+        <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
+        <module>PluginDateTimeFormatterStrategy</module>
+        <module>IAdditionDependencyStrategy</module>
+        <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
     </modules>
 
     <build>

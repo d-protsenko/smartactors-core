@@ -14,7 +14,7 @@ public class ImmutableReceiverChain implements IReceiverChain {
     private final String name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
-    private final Map<Class<? extends Throwable>, IReceiverChain> exceptionalChains;
+    private final Map<Class<? extends Throwable>, IObject> exceptionalChains;
 
     /**
      * The constructor.
@@ -22,12 +22,12 @@ public class ImmutableReceiverChain implements IReceiverChain {
      * @param name                        name of the chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
-     * @param exceptionalChains           mapping from exception class to exceptional chain to use when it occurs
+     * @param exceptionalChainsAndEnv           mapping from exception class to exceptional chain to use when it occurs
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      */
     public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
-                                  final Map<Class<? extends Throwable>, IReceiverChain> exceptionalChains)
+                                  final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv)
             throws InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
@@ -45,14 +45,14 @@ public class ImmutableReceiverChain implements IReceiverChain {
             throw new InvalidArgumentException("Length of arguments list  does not match length of receivers list.");
         }
 
-        if (null == exceptionalChains) {
+        if (null == exceptionalChainsAndEnv) {
             throw new InvalidArgumentException("Exceptional chains list should not be null");
         }
 
         this.name = name;
         this.receivers = receivers;
         this.arguments = arguments;
-        this.exceptionalChains = exceptionalChains;
+        this.exceptionalChains = exceptionalChainsAndEnv;
     }
 
     @Override
@@ -79,11 +79,11 @@ public class ImmutableReceiverChain implements IReceiverChain {
     }
 
     @Override
-    public IReceiverChain getExceptionalChain(final Throwable exception) {
+    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
         Throwable e = exception;
 
         do {
-            for (Map.Entry<Class<? extends Throwable>, IReceiverChain> entry : this.exceptionalChains.entrySet()) {
+            for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChains.entrySet()) {
                 if (entry.getKey().isAssignableFrom(e.getClass())) {
                     return entry.getValue();
                 }

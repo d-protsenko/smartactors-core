@@ -2,14 +2,17 @@ package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
@@ -21,6 +24,7 @@ import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 
 /**
  *
@@ -40,6 +44,45 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
+            /* "after exception actions" - register after exception action strategy */
+            IBootstrapItem<String> afterExceptionActions = new BootstrapItem("after exception actions");
+
+            afterExceptionActions
+                    .after("IOC")
+                    .process(
+                            () -> {
+                                try {
+                                    IAction<IMessageProcessingSequence> breakAction = IMessageProcessingSequence::end;
+                                    IAction<IMessageProcessingSequence> continueAction = (mps) -> {
+                                    };
+                                    IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
+                                        int currentLevel = mps.getCurrentLevel();
+                                        int repeatStep = mps.getStepAtLevel(currentLevel - 1);
+                                        mps.goTo(currentLevel - 1, repeatStep);
+                                    };
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),
+                                            new SingletonStrategy(breakAction)
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#continue"),
+                                            new SingletonStrategy(continueAction)
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#repeat"),
+                                            new SingletonStrategy(repeatAction)
+                                    );
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                                }
+                            }
+                    );
+            bootstrap.add(afterExceptionActions);
+
             /* "message_processor" - register message processor creation strategy */
             IBootstrapItem<String> processorItem = new BootstrapItem("message_processor");
 

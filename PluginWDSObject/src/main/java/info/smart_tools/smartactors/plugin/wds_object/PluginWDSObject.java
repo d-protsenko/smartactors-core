@@ -18,7 +18,8 @@ import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strateg
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
 
 /**
- *
+ * Plugin registers into IOC strategy for creation new instance of
+ * {@link WDSObject} and strategy for storing other strategies that will be using as WDS transformation rules.
  */
 public class PluginWDSObject implements IPlugin {
     private IBootstrap<IBootstrapItem<String>> bootstrap;

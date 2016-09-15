@@ -5,4 +5,5 @@
  * This strategy allows to create new instances of specified classes
  * </pre>
  */
+@Deprecated
 package info.smart_tools.smartactors.core.create_new_instance_strategy;
