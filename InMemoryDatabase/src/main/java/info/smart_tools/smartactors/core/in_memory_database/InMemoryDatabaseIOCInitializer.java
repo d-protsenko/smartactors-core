@@ -432,12 +432,13 @@ public final class InMemoryDatabaseIOCInitializer {
                 }
         );
         verifierMap.put("$not", (condition, document) -> {
-                    boolean result = true;
+                    boolean result = false;
                     try {
                         List<IObject> conditions = (List<IObject>) condition
                                 .getValue(new FieldName("$not"));
                         for (IObject conditionItem : conditions) {
-                            result &= !verifierMap.get("$general_resolver")
+                            // using De Morgan's laws: !(A & B) == !A | !B
+                            result |= !verifierMap.get("$general_resolver")
                                     .verify(conditionItem, document);
                         }
                     } catch (ReadValueException | InvalidArgumentException e) {
