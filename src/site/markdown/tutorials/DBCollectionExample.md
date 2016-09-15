@@ -213,7 +213,7 @@ Available conditions:
 
 * `$and` — ANDs operators and nested conditions
 * `$or` — ORs operators and nested conditions
-* `$not` — negate all nested operators and conditions, is equivalent to NOT(conditionA) AND NOT(conditionB)
+* `$not` — negate all nested operators and conditions, is equivalent to NOT(conditionA AND conditionB)
    
 Available operators:
 

@@ -160,17 +160,28 @@ public class InMemoryDatabaseTest {
     public void testSearchNotOrEq() throws InvalidArgumentException, IDatabaseException, SerializeException {
         InMemoryDatabase database = new InMemoryDatabase();
         database.createCollection("collection_name");
-        IObject document = new DSObject("{\"hello\": \"world\"}");
-        IObject document2 = new DSObject("{\"hello\": \"world1\"}");
-        IObject document3 = new DSObject("{\"hello\": \"world2\"}");
-        IObject document4 = new DSObject("{\"hello\": \"world3\"}");
-        database.insert(document, "collection_name");
+        IObject document1 = new DSObject("{\"hello\": \"world1\"}");
+        IObject document2 = new DSObject("{\"hello\": \"world2\"}");
+        IObject document3 = new DSObject("{\"hello\": \"world3\"}");
+        IObject document4 = new DSObject("{\"hello\": \"world4\"}");
+        database.insert(document1, "collection_name");
         database.insert(document2, "collection_name");
         database.insert(document3, "collection_name");
         database.insert(document4, "collection_name");
         List<IObject> outputList =
                 database.select(
-                        new DSObject("{\"filter\":{\"$and\": [{\"$not\": [{\"$or\": [{\"hello\": {\"$eq\": \"world\"}}, {\"hello\": {\"$eq\": \"world2\"}}]}]}]}}"),
+                        new DSObject("{" +
+                                "\"filter\": {" +
+                                    "\"$and\": [ " +
+                                        "{\"$not\": [" +
+                                            "{\"$or\": [" +
+                                                "{\"hello\": {\"$eq\": \"world1\"}}, " +
+                                                "{\"hello\": {\"$eq\": \"world3\"}}" +
+                                            "]}" +
+                                        "]}" +
+                                    "]" +
+                                "}" +
+                            "}"),
                         "collection_name");
         assertTrue(outputList.size() == 2);
         assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
@@ -741,6 +752,32 @@ public class InMemoryDatabaseTest {
         database.insert(document2, "collection_name");
         long count = database.count(new DSObject("{ }"), "collection_name");
         assertEquals(2L, count);
+    }
+
+    @Test
+    public void testSearchNotEq() throws InvalidArgumentException, IDatabaseException, SerializeException {
+        InMemoryDatabase database = new InMemoryDatabase();
+        database.createCollection("collection_name");
+        IObject document1 = new DSObject("{ \"hello\": \"earth\", \"bye\": \"mars\" }");
+        IObject document2 = new DSObject("{ \"hello\": \"mars\", \"bye\": \"earth\" }");
+        IObject document3 = new DSObject("{\"hello\": \"earth\"}");
+        database.insert(document1, "collection_name");
+        database.insert(document2, "collection_name");
+        database.insert(document3, "collection_name");
+        List<IObject> outputList =
+                database.select(
+                        new DSObject("{ " +
+                                "\"filter\": { " +
+                                "\"$not\": [" +
+                                "{ \"hello\": { \"$eq\": \"earth\" } }, " +
+                                "{ \"bye\": { \"$eq\": \"mars\" } }" +
+                                "]" +
+                                "}" +
+                                "}"),
+                        "collection_name");
+        assertTrue(outputList.size() == 2);
+        assertTrue(outputList.get(0).serialize().equals(document2.serialize()));
+        assertTrue(outputList.get(1).serialize().equals(document3.serialize()));
     }
 
 }
