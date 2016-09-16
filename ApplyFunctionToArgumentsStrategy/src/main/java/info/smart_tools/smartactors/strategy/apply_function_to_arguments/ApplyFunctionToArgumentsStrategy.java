@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.strategy.apply_function_to_arguments;
 
+import info.smart_tools.smartactors.core.iaction.IFunction;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
@@ -18,7 +19,7 @@ public class ApplyFunctionToArgumentsStrategy implements IResolveDependencyStrat
     /**
      * Local function for applying to arguments
      */
-    private Function<Object[], Object> function;
+    private IFunction<Object[], Object> function;
 
     /**
      * Class constructor
@@ -26,7 +27,7 @@ public class ApplyFunctionToArgumentsStrategy implements IResolveDependencyStrat
      * @param func function
      * @throws InvalidArgumentException if any errors occurred
      */
-    public ApplyFunctionToArgumentsStrategy(final Function<Object[], Object> func)
+    public ApplyFunctionToArgumentsStrategy(final IFunction<Object[], Object> func)
             throws InvalidArgumentException {
         if (null == func) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
@@ -44,7 +45,7 @@ public class ApplyFunctionToArgumentsStrategy implements IResolveDependencyStrat
     public <T> T resolve(final Object ... args)
             throws ResolveDependencyStrategyException {
         try {
-            return (T) function.apply(args);
+            return (T) function.execute(args);
         } catch (Exception e) {
             throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }
