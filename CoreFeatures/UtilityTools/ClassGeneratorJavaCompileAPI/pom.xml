@@ -10,9 +10,18 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core.iresolve_dependency_strategy</artifactId>
+
+    <artifactId>core.class_generator</artifactId>
 
     <dependencies>
+
+        <!-- Core interfaces -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iclass_generator</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
