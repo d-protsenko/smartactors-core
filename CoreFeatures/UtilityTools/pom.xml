@@ -22,7 +22,7 @@
         <!--<module>ClassGeneratorJavaCompileAPI</module>-->
     </modules>
 
-    <build>cd ..
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -42,7 +42,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
