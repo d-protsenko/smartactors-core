@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>utility_tools</artifactId>
+        <groupId>info.smart_tools.smartactors</groupId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+
+    <artifactId>interfaces.iclass_generator</artifactId>
+
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-core</id>
+            <name>Smart Actors Core Repository</name>
+            <url>http://archiva.smart-tools.info/repository/smartactors-core/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <!--Core exception -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.invalid_argument_exception</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>

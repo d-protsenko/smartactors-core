@@ -207,6 +207,40 @@ public final class CollectionOperations {
     }
 
     /**
+     * Search the document by the non-existing field using "db.collection.search" task.
+     * @param pool pool of connections
+     * @param collection collection name
+     * @throws ResolutionException if not possible to resolve something from IOC
+     * @throws PoolGuardException if PoolGuard is misused
+     * @throws InvalidArgumentException if search criteria is invalid
+     * @throws TaskExecutionException if the selection failed
+     */
+    public static void searchDocumentByNoneField(final IPool pool, final CollectionName collection)
+            throws ResolutionException, InvalidArgumentException, TaskExecutionException, PoolGuardException {
+        try (PoolGuard guard = new PoolGuard(pool)) {
+            ITask task = IOC.resolve(
+                    Keys.getOrAdd("db.collection.search"),
+                    guard.getObject(),
+                    collection,
+                    new DSObject("{ " +
+                                    "\"filter\": { \"none\": { \"$eq\": \"something\" } }" +
+                                 "}"),
+                    (IAction<IObject[]>) docs -> {
+                        try {
+                            for (IObject doc : docs) {
+                                System.out.println("Found by none");
+                                System.out.println((String) doc.serialize());
+                            }
+                        } catch (SerializeException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    }
+            );
+            task.execute();
+        }
+    }
+
+    /**
      * Deletes the document from the collection using "db.collection.delete" task.
      * @param pool pool of connections
      * @param collection collection name

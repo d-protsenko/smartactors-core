@@ -303,6 +303,10 @@
         <module>PluginFilesystemFacade</module>
         <module>ConstantsSectionStrategy</module>
         <module>PluginGlobalConstants</module>
+        <module>IAdditionDependencyStrategy</module>
+        <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
+        <module>BootstrapPlugin</module>
     </modules>
 
     <build>

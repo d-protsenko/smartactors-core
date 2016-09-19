@@ -42,7 +42,8 @@ public class NestedFieldPlugin implements IPlugin {
                             IOC.register(fieldKey, new ResolveByNameIocStrategy(
                                     (args) -> {
                                         try {
-                                            return new NestedField(((String) args[0]));
+                                            String fieldName = String.valueOf(args[0]);
+                                            return new NestedField(fieldName);
                                         } catch (InvalidArgumentException e) {
                                             throw new RuntimeException("Can't resolve NestedField: ", e);
                                         }

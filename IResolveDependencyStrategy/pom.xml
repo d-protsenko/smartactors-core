@@ -13,12 +13,6 @@
     <artifactId>core.iresolve_dependency_strategy</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
