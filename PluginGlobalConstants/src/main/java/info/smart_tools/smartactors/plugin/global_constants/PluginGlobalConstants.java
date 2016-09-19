@@ -38,7 +38,7 @@ public class PluginGlobalConstants implements IPlugin {
             IBootstrapItem<String> constantsObjectItem = new BootstrapItem("constants_object");
 
             constantsObjectItem.after("IOC");
-            constantsObjectItem.after("IObject");
+            constantsObjectItem.after("iobject");
             constantsObjectItem.process(() -> {
                 try {
                     IObject obj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
