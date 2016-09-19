@@ -9,7 +9,7 @@
     <version>0.2.0-SNAPSHOT</version>
 
     <url>${project.artifactId}/</url>
-    <packaging>pom</packaging>
+    <packaging>bundle</packaging>
 
     <properties>
         <core.version>0.2.0-SNAPSHOT</core.version>
@@ -54,7 +54,7 @@
 
     <distributionManagement>
         <site>
-            <id>${project.artifactId}-site</id>
+            <id>${project.artifactId}</id>
             <url>http://smarttools.github.io/smartactors-core/</url>
         </site>
         <repository>
@@ -63,6 +63,5 @@
             <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
         </repository>
     </distributionManagement>
-
 
 </project>
