@@ -32,6 +32,7 @@ import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -219,6 +220,11 @@ public class FeatureLoader implements IFeatureLoader {
         IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap(doneItems);
         IAction<Class> classHandler = clz -> {
             try {
+                if (Modifier.isAbstract(clz.getModifiers())) {
+                    // Ignore abstract classes.
+                    return;
+                }
+
                 IPlugin plugin = pluginCreator.create(clz, bootstrap);
                 plugin.load();
             } catch (PluginCreationException | PluginException e) {
