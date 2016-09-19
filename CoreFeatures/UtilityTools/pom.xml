@@ -52,16 +52,16 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <site>
-            <id>${project.artifactId}</id>
-            <url>http://smarttools.github.io/smartactors-core/</url>
-        </site>
-        <repository>
-            <id>archiva.smartactors-features</id>
-            <name>Smart Actors Features Repository</name>
-            <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-        </repository>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<site>-->
+            <!--<id>${project.artifactId}</id>-->
+            <!--<url>http://smarttools.github.io/smartactors-core/</url>-->
+        <!--</site>-->
+        <!--<repository>-->
+            <!--<id>archiva.smartactors-features</id>-->
+            <!--<name>Smart Actors Features Repository</name>-->
+            <!--<url>http://archiva.smart-tools.info/repository/smartactors-features/</url>-->
+        <!--</repository>-->
+    <!--</distributionManagement>-->
 
 </project>
