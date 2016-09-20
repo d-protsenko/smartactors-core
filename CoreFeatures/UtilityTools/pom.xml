@@ -40,24 +40,14 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <inherited>false</inherited>
-                <configuration>
-                    <descriptor>bin.xml</descriptor>
-                    <finalName>utility-tools-${pom.version}</finalName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>archiva.smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
