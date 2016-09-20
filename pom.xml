@@ -299,6 +299,7 @@
         <module>PluginRepeaterActor</module>
         <module>ObjectEnumerationActor</module>
         <module>BootstrapPlugin</module>
+        <module>PluginObjectEnumerationActor</module>
     </modules>
 
     <build>
