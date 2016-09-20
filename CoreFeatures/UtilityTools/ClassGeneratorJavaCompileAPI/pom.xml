@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>core</artifactId>
+        <artifactId>utility_tool</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
 
-    <artifactId>core.class_generator</artifactId>
+    <artifactId>class-generator-with-java-compile-api</artifactId>
 
     <dependencies>
 
