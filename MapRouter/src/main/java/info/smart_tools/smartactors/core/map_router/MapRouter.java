@@ -42,6 +42,11 @@ public class MapRouter implements IRouter {
 
     @Override
     public void register(final Object targetId, final IMessageReceiver receiver) {
-        map.put(targetId, receiver);
+        IMessageReceiver oldReceiver = map.put(targetId, receiver);
+
+        if (null != oldReceiver) {
+            System.out.println(MessageFormat.format("Warning: replacing receiver ({0}) registered as ''{1}'' by {2}",
+                    oldReceiver.toString(), targetId.toString(), receiver.toString()));
+        }
     }
 }

@@ -46,11 +46,16 @@ public class ChainStorage implements IChainStorage {
     public void register(final Object chainId, final IObject description)
             throws ChainCreationException {
         try {
-            chainsMap.put(
-                    chainId,
-                    IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
-                            chainId, description, this, router));
+            IReceiverChain newChain = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
+                    chainId, description, this, router);
+
+            IReceiverChain oldChain = chainsMap.put(chainId, newChain);
+
+            if (null != oldChain) {
+                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
+                        oldChain.toString(), chainId.toString(), newChain.toString()));
+            }
         } catch (ResolutionException  e) {
             throw new ChainCreationException("Could not create a chain", e);
         }
