@@ -71,7 +71,7 @@
                             <file>target/utility-tools-0.2.0-SNAPSHOT-archive.zip</file>
                             <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
                             <repositoryId>archiva.smartactors-features</repositoryId>
-                            <artifactId>utility_tools</artifactId>
+                            <artifactId>utility_tool</artifactId>
                             <groupId>info.smart_tools.smartactors</groupId>
                             <packaging>zip</packaging>
                             <version>${core.version}</version>
