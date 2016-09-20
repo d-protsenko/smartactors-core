@@ -297,6 +297,7 @@
         <module>IAdditionDependencyStrategy</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
+        <module>ObjectEnumerationActor</module>
     </modules>
 
     <build>
