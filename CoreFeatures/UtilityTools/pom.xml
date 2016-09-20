@@ -75,6 +75,7 @@
                             <groupId>info.smart_tools.smartactors</groupId>
                             <packaging>zip</packaging>
                             <version>${core.version}</version>
+                            <description>The artifact contains follow list of modules: IClassGenerator, ClassGeneratorJavaCompileAPI</description>
                         </configuration>
                         <goals>
                             <goal>deploy-file</goal>
