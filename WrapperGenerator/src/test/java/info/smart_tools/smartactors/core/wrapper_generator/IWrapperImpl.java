@@ -58,6 +58,9 @@ public class IWrapperImpl implements IObjectWrapper, IObject, IWrapper {
 
     public IObject getEnvironmentIObject(IFieldName fieldName) throws InvalidArgumentException  {
         try {
+            if (IObjectWrapper.class.isAssignableFrom(this.env.getClass())) {
+                return ((IObjectWrapper) this.env).getEnvironmentIObject(fieldName);
+            }
             return (IObject) this.env.getValue(fieldName);
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not get IObject from environments.", e);

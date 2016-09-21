@@ -9,11 +9,10 @@ import static org.junit.Assert.*;
  */
 public class ChainNotFoundExceptionTest {
     @Test(expected = ChainNotFoundException.class)
-    public void checkMessageMethod()
+    public void checkConstruction()
             throws ChainNotFoundException {
-        String str = "test";
-        ChainNotFoundException exception = new ChainNotFoundException(str);
-        assertEquals(exception.getMessage(), str);
+        ChainNotFoundException exception = new ChainNotFoundException("test");
+        assertEquals(exception.getMessage(), "Chain 'test' not found.");
         throw exception;
     }
 }

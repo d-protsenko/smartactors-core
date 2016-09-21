@@ -47,7 +47,7 @@ import java.sql.ResultSet;
  *     <ul>
  *         <li><code>$and</code> — ANDs operators and nested conditions</li>
  *         <li><code>$or</code> — ORs operators and nested conditions</li>
- *         <li><code>$not</code> — negate all nested operators and conditions, is equivalent to NOT(conditionA) AND NOT(conditionB)</li>
+ *         <li><code>$not</code> — negate all nested operators and conditions, is equivalent to NOT(conditionA AND conditionB)</li>
  *     </ul>
  *     Available operators:
  *     <ul>

@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.core.iobject.IObject;
  * Actor for sending response to client
  */
 public class ResponseSenderActor {
+
     /**
      * Constructor for actor
      */
@@ -49,6 +50,7 @@ public class ResponseSenderActor {
             //Create and fill full environment
             IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             environment.setValue(responseFieldName, responseIObject);
@@ -68,6 +70,7 @@ public class ResponseSenderActor {
             IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
                     environment);
             sender.send(response, environment, channelHandler);
+            messageWrapper.getEnvironmentIObject(contextFieldName).setValue(httpResponseIsSentFieldName, true);
         } catch (Exception e) {
             throw new ResponseSenderActorException(e);
         }
