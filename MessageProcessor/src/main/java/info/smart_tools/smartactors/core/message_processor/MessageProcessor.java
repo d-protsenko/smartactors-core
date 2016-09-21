@@ -131,8 +131,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(responseFieldName, response);
         environment.setValue(messageFieldName, theMessage);
         environment.setValue(contextFieldName, theContext);
-
-        messageProcessingSequence.reset();
+        this.messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -257,7 +256,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         if (messageProcessingSequence.next()) {
             enqueue();
         } else {
-            complete();
+            this.complete();
         }
     }
 

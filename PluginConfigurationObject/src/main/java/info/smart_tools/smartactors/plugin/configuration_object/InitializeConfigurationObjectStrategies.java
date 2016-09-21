@@ -55,12 +55,17 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                             ),
                                             new ApplyFunctionToArgumentsStrategy(
                                                     (a) -> {
-                                                        try {
-                                                            return new ConfigurationObject((String) a[0]);
-                                                        } catch (Throwable e) {
-                                                            throw new RuntimeException(
-                                                                    "Could not create new instance of Configuration Object."
-                                                            );
+
+                                                        if (a.length == 0) {
+                                                            return new ConfigurationObject();
+                                                        } else if (a.length == 1 && a[0] instanceof String) {
+                                                            try {
+                                                                return new ConfigurationObject((String) a[0]);
+                                                            } catch (InvalidArgumentException e) {
+                                                                throw new RuntimeException(e);
+                                                            }
+                                                        } else {
+                                                            throw new RuntimeException("Could not create new instance of Configuration Object.");
                                                         }
                                                     }
                                             )

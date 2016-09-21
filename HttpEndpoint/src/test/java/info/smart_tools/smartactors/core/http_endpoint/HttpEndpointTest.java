@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
@@ -167,12 +168,13 @@ public class HttpEndpointTest {
     }
 
     @Test
-    public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler() throws ResolutionException {
+    public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
+            throws ResolutionException, InvalidArgumentException, EnvironmentHandleException {
         IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
         HttpRequest request = createTestRequest();
         sendRequest(request);
-        verify(environmentHandler, timeout(1000)).handle(any(IObject.class), any(IReceiverChain.class));
+        verify(environmentHandler, timeout(1000)).handle(any(IObject.class), any(IReceiverChain.class), any(null));
     }
 
     protected CompletableFuture<Void> sendRequest(HttpRequest request) {

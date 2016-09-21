@@ -271,6 +271,10 @@
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
+        <module>ISource</module>
+        <module>TestDataSourceStringArray</module>
+        <module>TestHttpEndpoint</module>
+        <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
         <module>InMemoryDatabase</module>
@@ -289,6 +293,20 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>TestRunner</module>
+        <module>TestLoadingPlugins</module>
+        <module>ChainTestsConfigSectionStrategy</module>
+        <module>PluginChainTesting</module>
+        <module>TestAssertions</module>
+        <module>PluginChainTestingAssertions</module>
+        <module>TestDataSourceIObject</module>
+        <module>ITestRunner</module>
+        <module>TestEnvironmentHandler</module>
+        <module>IAssertion</module>
+        <module>IResultChecker</module>
+        <module>TestCheckers</module>
+        <module>InitializationException</module>
+        <module>PluginTestCheckers</module>
         <module>NestedField</module>
         <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>

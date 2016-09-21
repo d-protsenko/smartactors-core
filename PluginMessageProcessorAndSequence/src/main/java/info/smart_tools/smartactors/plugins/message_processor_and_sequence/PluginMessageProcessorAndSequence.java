@@ -89,6 +89,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             processorItem
                     .after("IOC")
+                    .after("wds_object")
                     .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
