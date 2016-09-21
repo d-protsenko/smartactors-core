@@ -258,6 +258,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                     );
                                     registerDeserializationStrategies();
                                     registerResponseSenders();
+                                    registerExceptionalResponse();
                                     IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
                                     IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
@@ -348,5 +349,20 @@ public class HttpsEndpointPlugin implements IPlugin {
         ResolveByNameIocStrategy resolveStrategy = new ResolveByNameIocStrategy();
         IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
         IOC.register(deserializeStrategyKey, resolveStrategy);
+    }
+
+    private void registerExceptionalResponse() throws InvalidArgumentException, ResolutionException, RegistrationException {
+        IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"Request body is not json\", \"statusCode\": 400}")
+                )
+        );
+        IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"This url is not registered\", \"statusCode\": 404}")
+                )
+        );
+        IOC.register(Keys.getOrAdd("HttpInternalException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"Internal server error\", \"statusCode\": 500}")
+                )
+        );
     }
 }
