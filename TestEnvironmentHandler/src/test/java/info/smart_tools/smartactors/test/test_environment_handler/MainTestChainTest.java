@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
@@ -72,6 +74,10 @@ public class MainTestChainTest {
                 IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
         );
+        IOC.register(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy((args) -> new FieldName((String) args[0]))
+        );
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -136,8 +142,8 @@ public class MainTestChainTest {
 
         IReceiverChain chain = new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock);
 
-        chain.getExceptionalChain(exceptionMock);
-        chain.getExceptionalChain(exceptionMock);
+        chain.getExceptionalChainAndEnvironments(exceptionMock);
+        chain.getExceptionalChainAndEnvironments(exceptionMock);
 
         verify(this.completionCallbackMock, times(1)).execute(same(exceptionMock));
     }
@@ -173,7 +179,8 @@ public class MainTestChainTest {
             throws Exception {
         IReceiverChain chain = new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock);
         doThrow(InvalidArgumentException.class).when(this.completionCallbackMock).execute(any(Exception.class));
-        IReceiverChain exceptionalChain = chain.getExceptionalChain(new Exception());
+        IObject exceptionalChainAndEnv = chain.getExceptionalChainAndEnvironments(new Exception());
+        IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(new FieldName("chain"));
         assertNotNull(exceptionalChain);
     }
 

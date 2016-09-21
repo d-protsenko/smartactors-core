@@ -2,10 +2,12 @@ package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -23,6 +25,8 @@ public class MainTestChain implements IReceiverChain {
     private IObject testChainReceiverArgs;
     private AtomicBoolean isCompleted;
     private IReceiverChain testChain;
+
+    private IFieldName chainFieldName;
 
     private IMessageReceiver testChainRunnerReceiver = mp -> {
         try {
@@ -66,6 +70,7 @@ public class MainTestChain implements IReceiverChain {
         this.successReceiverArgs = successReceiverArgs;
         this.isCompleted = new AtomicBoolean(false);
         try {
+            this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain");
             this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
             if (null == this.successReceiverArgs) {
                 this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
@@ -99,15 +104,20 @@ public class MainTestChain implements IReceiverChain {
     }
 
     @Override
-    public IReceiverChain getExceptionalChain(final Throwable exception) {
+    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
+        IObject exceptionalChainAndEnv = null;
         try {
+            exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+            exceptionalChainAndEnv.setValue(this.chainFieldName, new ExceptionalTestChain());
             if (isCompleted.compareAndSet(false, true)) {
                 completionCallback.execute(exception);
             }
-        } catch (ActionExecuteException | InvalidArgumentException e) {
+        } catch (ActionExecuteException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
             e.printStackTrace();
         }
 
-        return new ExceptionalTestChain();
+
+
+        return exceptionalChainAndEnv;
     }
 }
