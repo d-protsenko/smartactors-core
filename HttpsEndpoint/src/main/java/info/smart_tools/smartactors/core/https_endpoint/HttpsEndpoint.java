@@ -22,6 +22,7 @@ public class HttpsEndpoint extends HttpsServer {
      * @param maxContentLength   max length of the content
      * @param scope              scope for endpoint
      * @param handler            handler for environment
+     * @param name               name of the endpoint
      * @param receiverChain      chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
      * @param sslContextProvider provider for ssl context
      */

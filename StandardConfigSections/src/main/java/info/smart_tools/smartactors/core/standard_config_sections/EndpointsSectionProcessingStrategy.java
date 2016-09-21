@@ -1,14 +1,10 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.HttpEndpoint;
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
-import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -17,11 +13,9 @@ import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.List;
 

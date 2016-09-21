@@ -16,6 +16,9 @@ public class ParseTree implements IParseTree {
     private String templateElem;
     private boolean isEnd;
 
+    /**
+     * Constructor for creating empty tree
+     */
     public ParseTree() {
         constChildElems = new ArrayList<>();
         variableChildElems = new ArrayList<>();
@@ -31,7 +34,7 @@ public class ParseTree implements IParseTree {
             isEnd = true;
         }
     }
-
+    @Override
     public Map<String, String> match(final String uri) {
         TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
         TreeObject resultObject = match(treeObject);
@@ -79,6 +82,7 @@ public class ParseTree implements IParseTree {
         return this.getTemplateElem().startsWith(":");
     }
 
+    @Override
     public void addTemplate(final String template) {
         addTemplate(new Template(template));
     }

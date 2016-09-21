@@ -1,12 +1,11 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by sevenbits on 03.09.16.
+ * Item of {@link ParseTree}
  */
 public class TreeObject {
     private int level;
@@ -14,7 +13,13 @@ public class TreeObject {
     private Map<String, String> result;
     private boolean ended;
 
-    public TreeObject(int level, List<String> uri) {
+    /**
+     * Constructor for creating item
+     *
+     * @param level level at the tree
+     * @param uri   uri
+     */
+    public TreeObject(final int level, final List<String> uri) {
         this.level = level;
         this.uri = uri;
         this.result = new HashMap<>();

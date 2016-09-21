@@ -21,6 +21,8 @@ public class HttpEndpoint extends HttpServer {
      * @param scope            scope for endpoint
      * @param handler          handler for environment
      * @param receiverChain    chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
+     * @param name             name of the endpoint
+     * @throws ResolutionException if IOC cant resolve smth
      */
     public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
                         final IEnvironmentHandler handler, final IReceiverChain receiverChain,

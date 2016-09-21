@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin;
+package info.smart_tools.smartactors.plugin.endpoint_plugin;
 
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;

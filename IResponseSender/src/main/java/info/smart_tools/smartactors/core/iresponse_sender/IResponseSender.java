@@ -12,10 +12,11 @@ import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSen
 public interface IResponseSender {
     /**
      * Method for sending response to client
+     *
      * @param responseObject Object with content of the response
-     * @param environment Environment of the message processor
-     * @param ctx Channel handler from endpoint
-     * @throws ResolutionException if there are some problems on resolving dependencies
+     * @param environment    Environment of the message processor
+     * @param ctx            Channel handler from endpoint
+     * @throws ResponseSendingException if there are some problems on sending response
      */
     void send(final IResponse responseObject, final IObject environment, final IChannelHandler ctx)
             throws ResponseSendingException;
