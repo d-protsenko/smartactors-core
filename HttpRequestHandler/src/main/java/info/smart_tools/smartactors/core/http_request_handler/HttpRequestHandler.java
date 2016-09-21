@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -110,7 +111,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
             return environment;
-        } catch (Exception e) {
+        } catch (RequestHandlerDataException e) {
+            throw e;
+        } catch (InvalidArgumentException | SerializeException | ChangeValueException | ResolutionException e) {
             try {
                 IObject exception = IOC.resolve(Keys.getOrAdd("HttpInternalException"), e);
                 ctx.writeAndFlush(formExceptionalResponse(exception));
