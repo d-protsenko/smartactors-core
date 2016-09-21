@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSe
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processor.FinalTask;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
@@ -88,8 +89,19 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             processorItem
                     .after("IOC")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
+                            IOC.register(
+                                    Keys.getOrAdd("final task"),
+                                    new CreateNewInstanceStrategy(args -> {
+                                        try {
+                                            return new FinalTask((IObject) args[0]);
+                                        } catch (Exception e) {
+                                            throw new RuntimeException("Could not create instance of FinalTask.");
+                                        }
+                                    })
+                            );
                             IOC.register(
                                     Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
@@ -132,6 +144,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             sequenceItem
                     .after("IOC")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
                             IOC.register(
