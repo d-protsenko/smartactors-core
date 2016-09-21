@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.core.named_keys_storage.Keys;
  * Actor for sending response to client
  */
 public class ResponseSenderActor {
+
     /**
      * Constructor for actor
      */
@@ -43,6 +44,7 @@ public class ResponseSenderActor {
             //Create and fill full environment
             IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
@@ -64,6 +66,7 @@ public class ResponseSenderActor {
                     IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
                     messageWrapper.getEnvironmentIObject(contextFieldName).getValue(endpointName));
             sender.send(response, environment, channelHandler);
+            messageWrapper.getEnvironmentIObject(contextFieldName).setValue(httpResponseIsSentFieldName, true);
         } catch (Exception e) {
             throw new ResponseSenderActorException(e);
         }

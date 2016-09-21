@@ -31,6 +31,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -49,10 +50,12 @@ public class MessageProcessorTest {
     private IObject responseMock;
     private IObject environmentMock;
     private IObject configurationMock;
+    private ITask finalTaskMock;
 
     private final IKey KEY_FOR_KEY_STORAGE = mock(IKey.class);
     private final IKey KEY_FOR_NEW_IOBJECT = mock(IKey.class);
     private final IKey KEY_FOR_FIELD_NAME = mock(IKey.class);
+    private final IKey KEY_FOR_FINAL_TASK = mock(IKey.class);
 
     @Before
     public void setUp()
@@ -64,16 +67,19 @@ public class MessageProcessorTest {
         responseMock = mock(IObject.class);
         environmentMock = mock(IObject.class);
         configurationMock = mock(IObject.class);
+        finalTaskMock = mock(ITask.class);
 
         mockStatic(IOC.class);
 
         when(IOC.getKeyForKeyStorage()).thenReturn(KEY_FOR_KEY_STORAGE);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, "final task")).thenReturn(KEY_FOR_FINAL_TASK);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, IObject.class.getCanonicalName())).thenReturn(KEY_FOR_NEW_IOBJECT);
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(environmentMock);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, IFieldName.class.getCanonicalName())).thenReturn(KEY_FOR_FIELD_NAME);
         when(IOC.resolve(same(KEY_FOR_FIELD_NAME), any()))
                 .thenAnswer(invocationOnMock -> new FieldName((String) invocationOnMock.getArguments()[1]));
+        when(IOC.resolve(same(KEY_FOR_FINAL_TASK), any())).thenReturn(this.finalTaskMock);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -260,6 +266,7 @@ public class MessageProcessorTest {
         }
 
         verify(messageProcessingSequenceMock).catchException(same(exception), same(contextMock));
+        verify(this.taskQueueMock, times(1)).put(this.finalTaskMock);
     }
 
     @Test
