@@ -56,7 +56,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
                     }
                 }
         );
-        Map<String, String> parameters = tree.match(decoder.uri());
+        Map<String, String> parameters = tree.match(decoder.path());
         parameters.forEach(
                 (k, v) -> {
                     try {
