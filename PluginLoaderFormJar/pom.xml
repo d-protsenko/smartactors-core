@@ -40,7 +40,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
+            <artifactId>interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -73,7 +73,7 @@
         <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>exception.invalid_argument_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.iroutable_object_creator;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.core.irouter.IRouter;

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.strategy_container;
 
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.istrategy_container.exception.StrategyContainerException;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <pre>
  * Simple key-value storage
  *  - key is a unique object identifier
- *  - value is a instance of {@link info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy}
+ *  - value is a instance of {@link IResolveDependencyStrategy}
  * </pre>
  */
 public class StrategyContainer implements IStrategyContainer {

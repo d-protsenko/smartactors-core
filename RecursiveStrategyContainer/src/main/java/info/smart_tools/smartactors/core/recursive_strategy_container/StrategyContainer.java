@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.recursive_strategy_container;
 
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.istrategy_container.exception.StrategyContainerException;
 

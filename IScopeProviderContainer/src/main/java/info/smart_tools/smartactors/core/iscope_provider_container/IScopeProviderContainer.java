@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.iscope_provider_container;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 

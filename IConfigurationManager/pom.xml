@@ -39,17 +39,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
+            <artifactId>strategy.singleton_strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>exception.invalid_argument_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_state_exception</artifactId>
+            <artifactId>exception.invalid_state_exception</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

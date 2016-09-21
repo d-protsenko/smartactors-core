@@ -26,11 +26,8 @@
         <module>IocContainer</module>
         <module>ScopeProviderContainer</module>
         <module>IStrategyContainer</module>
-        <module>IResolveDependencyStrategy</module>
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
-        <module>CreateNewInstanceStrategy</module>
-        <module>SingletonStrategy</module>
         <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
@@ -42,7 +39,6 @@
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
         <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
-        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>IMessage</module>
@@ -74,7 +70,6 @@
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
-        <module>InvalidArgumentException</module>
         <module>IBootstrap</module>
         <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
@@ -97,12 +92,7 @@
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
-        <module>IClassGenerator</module>
-        <module>ClassGeneratorJavaCompileAPI</module>
         <module>IMultiActionStrategy</module>
-        <module>IPool</module>
-        <module>Pool</module>
-        <module>PoolGuard</module>
         <module>IResourceSource</module>
         <module>MessageProcessor</module>
         <module>ReceiverChain</module>
@@ -166,7 +156,6 @@
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
-        <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
         <module>ICodec</module>
@@ -189,14 +178,11 @@
         <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
-        <module>IPath</module>
-        <module>Path</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>InvalidStateException</module>
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
@@ -312,7 +298,6 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
-        <module>IAdditionDependencyStrategy</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
     </modules>

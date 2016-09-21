@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.ibootstrap_item;
 
 
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
 

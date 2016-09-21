@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.ioc;
 
 import info.smart_tools.smartactors.core.iioccontainer.IContainer;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.string_ioc_key;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import org.junit.Test;
 
 import java.util.HashMap;

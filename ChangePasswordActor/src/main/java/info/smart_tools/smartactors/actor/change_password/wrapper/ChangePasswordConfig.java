@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actor.change_password.wrapper;
 
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 
 /**
  * Wrapper for constructor of {@link info.smart_tools.smartactors.actor.change_password.ChangePasswordActor}

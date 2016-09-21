@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.iconfiguration_manager;
 
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.invalid_state_exception.InvalidStateException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_state_exception.InvalidStateException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 
 /**

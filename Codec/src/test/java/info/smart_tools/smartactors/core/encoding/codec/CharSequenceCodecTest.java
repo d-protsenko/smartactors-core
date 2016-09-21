@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.encoding.codec;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.security.encoding.codecs.ICharSequenceCodec;
 import info.smart_tools.smartactors.core.security.encoding.decoders.DecodingException;
 import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
