@@ -10,16 +10,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-
     <artifactId>interfaces.iclass_generator</artifactId>
-
-    <repositories>
-        <repository>
-            <id>archiva.smartactors-core</id>
-            <name>Smart Actors Core Repository</name>
-            <url>http://archiva.smart-tools.info/repository/smartactors-core/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
 

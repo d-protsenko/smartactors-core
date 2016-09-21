@@ -317,6 +317,13 @@
         <module>PluginRepeaterActor</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
