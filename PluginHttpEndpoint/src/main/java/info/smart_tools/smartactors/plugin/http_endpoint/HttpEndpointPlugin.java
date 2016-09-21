@@ -16,10 +16,8 @@ import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exceptio
 import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -31,7 +29,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
@@ -43,7 +40,6 @@ import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
 import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.util.List;
 
@@ -120,7 +116,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                     registerCookiesSetter();
                                     registerHeadersExtractor();
                                     registerResponseStatusExtractor();
-
+                                    registerExceptionalResponse();
                                     IOC.register(
                                             Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
@@ -316,6 +312,21 @@ public class HttpEndpointPlugin implements IPlugin {
                                 throw new RuntimeException(e);
                             }
                         }
+                )
+        );
+    }
+
+    private void registerExceptionalResponse() throws InvalidArgumentException, ResolutionException, RegistrationException {
+        IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"Request body is not json\", \"statusCode\": 400}")
+                )
+        );
+        IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"This url is not registered\", \"statusCode\": 404}")
+                )
+        );
+        IOC.register(Keys.getOrAdd("HttpInternalException"), new SingletonStrategy(
+                        new DSObject("{\"exception\": \"Internal server error\", \"statusCode\": 500}")
                 )
         );
     }

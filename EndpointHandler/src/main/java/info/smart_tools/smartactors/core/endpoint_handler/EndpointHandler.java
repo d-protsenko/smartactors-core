@@ -28,6 +28,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param scope              scope for HttpRequestHandler
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
+     * @param name               name of the endpoint
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
                            final IScope scope, final String name) {
@@ -61,7 +62,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
             IObject environment = getEnvironment(ctx, request);
             environmentHandler.handle(environment, receiverChain);
         } catch (Exception e) {
-            throw new ExecutionException("Failed to handle request to endpoint", e);
+            e.printStackTrace();
         }
     }
 }
