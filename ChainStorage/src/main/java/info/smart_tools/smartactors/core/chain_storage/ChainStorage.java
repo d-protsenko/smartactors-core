@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 /**
@@ -61,7 +62,7 @@ public class ChainStorage implements IChainStorage {
         IReceiverChain chain = chainsMap.get(chainId);
 
         if (null == chain) {
-            throw new ChainNotFoundException("Chain not found.");
+            throw new ChainNotFoundException(chainId);
         }
 
         return chain;

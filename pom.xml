@@ -300,6 +300,8 @@
         <module>IAdditionDependencyStrategy</module>
         <module>ResponseSenderChooser</module>
         <module>IAddRequestParametersToIObject</module>
+        <module>RepeaterActor</module>
+        <module>PluginRepeaterActor</module>
     </modules>
 
     <build>

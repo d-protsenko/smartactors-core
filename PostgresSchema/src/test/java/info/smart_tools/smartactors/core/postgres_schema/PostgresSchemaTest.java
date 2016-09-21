@@ -255,4 +255,14 @@ public class PostgresSchemaTest {
         verify(statement, times(0)).pushParameterSetter(any());
     }
 
+    @Test
+    public void testSearchWithNot() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"$not\": { \"a\": { \"$eq\": \"b\" }, \"c\": { \"$eq\": \"d\" } } } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((NOT((((document#>'{a}')=to_json(?)::jsonb))AND(((document#>'{c}')=to_json(?)::jsonb))))) " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(3)).pushParameterSetter(any());
+    }
+
 }
