@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.environment_handler;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
@@ -42,7 +43,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     }
 
     @Override
-    public void handle(final IObject environment, final IReceiverChain receiverChain) {
+    public void handle(final IObject environment, final IReceiverChain receiverChain) throws RequestHandlerInternalException {
         try {
             IMessageProcessingSequence processingSequence =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
@@ -54,8 +55,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             IObject context = (IObject) environment.getValue(contextFieldName);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
-            // TODO: @ValchukDmitry, replace by checked exception!!!
-            throw new RuntimeException(e);
+            throw new RequestHandlerInternalException(e);
         }
     }
 }

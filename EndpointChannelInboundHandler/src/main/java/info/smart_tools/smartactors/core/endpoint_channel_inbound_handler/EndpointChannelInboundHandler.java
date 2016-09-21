@@ -8,7 +8,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Adapter for {@link EndpointHandler} in order to use it in netty {@link io.netty.channel.ChannelHandler}
- * TODO: handle exceptions properly: send to some special channel or just log them.
  * @param <TRequest> type of request written to channel
  */
 @ChannelHandler.Sharable

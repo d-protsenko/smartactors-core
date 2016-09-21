@@ -93,7 +93,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 requestParametersToIObject.extract(message, request);
             } catch (Exception e) {
                 IObject exceptionalResponse = IOC.resolve(Keys.getOrAdd("HttpRequestParametersToIObjectException"));
-                ctx.writeAndFlush(formExceptionalResponse(exceptionalResponse));
+
                 throw new RequestHandlerDataException(e);
             }
 
@@ -145,7 +145,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                     }
                 }
             };
-            context.setValue(finalActionsFieldName, new ArrayList<IAction>() {{ add(httpFinalAction); }});
+            context.setValue(finalActionsFieldName, new ArrayList<IAction>() {{
+                add(httpFinalAction);
+            }});
 
             //create environment
             environment.setValue(messageFieldName, message);
@@ -160,6 +162,13 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 throw new RequestHandlerInternalException("Failed to send response", e);
             }
         }
+    }
+
+    @Override
+    protected void sendExceptionalResponse(final ChannelHandlerContext ctx, final FullHttpRequest request,
+                                           final IObject responseIObject) throws SerializeException,
+            ReadValueException, InvalidArgumentException, ResolutionException {
+        ctx.writeAndFlush(formExceptionalResponse(responseIObject));
     }
 
     private FullHttpResponse formExceptionalResponse(final IObject iObjectResponse)

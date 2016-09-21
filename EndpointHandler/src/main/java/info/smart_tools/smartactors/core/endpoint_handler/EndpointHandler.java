@@ -1,9 +1,15 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
 import java.util.concurrent.ExecutionException;
@@ -50,6 +56,17 @@ public abstract class EndpointHandler<TContext, TRequest> {
     protected abstract IObject getEnvironment(TContext ctx, TRequest request) throws Exception;
 
     /**
+     * Send response to client if there are some problems on handling request
+     *
+     * @param request         request to the endpoint
+     * @param ctx             context of the request
+     * @param responseIObject iobject, that will send to client
+     * @throws Exception if there is exception at environment getting
+     */
+    protected abstract void sendExceptionalResponse(TContext ctx, TRequest request, IObject responseIObject)
+            throws Exception;
+
+    /**
      * Handle an endpoint request using the specified context.
      *
      * @param ctx     endpoint channel context
@@ -62,7 +79,11 @@ public abstract class EndpointHandler<TContext, TRequest> {
             IObject environment = getEnvironment(ctx, request);
             environmentHandler.handle(environment, receiverChain);
         } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }
