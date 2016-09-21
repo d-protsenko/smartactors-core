@@ -111,8 +111,6 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
             return environment;
-        } catch (RequestHandlerDataException e) {
-            throw e;
         } catch (InvalidArgumentException | SerializeException | ChangeValueException | ResolutionException e) {
             try {
                 IObject exception = IOC.resolve(Keys.getOrAdd("HttpInternalException"), e);

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.http_endpoint;
 
 
+import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
@@ -19,6 +20,7 @@ import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByN
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.plugin.EndpointPlugin;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -34,6 +36,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.reset;
 
 public class HttpEndpointPluginTest {
@@ -41,11 +44,17 @@ public class HttpEndpointPluginTest {
     private HttpEndpointPlugin plugin;
     private ResolveByTypeAndNameStrategy deserializationStrategyChooser;
     private ResolveByTypeAndNameStrategy resolveByTypeAndNameStrategy;
+    private ResolveByTypeAndNameStrategy resolveCookies;
+    private ResolveByTypeAndNameStrategy resolveHeaders;
+    private ResolveByTypeAndNameStrategy resolveStatusSetter;
 
     @Before
     public void setUp() throws Exception {
         deserializationStrategyChooser = mock(ResolveByTypeAndNameStrategy.class);
         resolveByTypeAndNameStrategy = mock(ResolveByTypeAndNameStrategy.class);
+        resolveCookies = mock(ResolveByTypeAndNameStrategy.class);
+        resolveHeaders = mock(ResolveByTypeAndNameStrategy.class);
+        resolveStatusSetter = mock(ResolveByTypeAndNameStrategy.class);
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
@@ -54,6 +63,11 @@ public class HttpEndpointPluginTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
+
+        Bootstrap bootstrap = new Bootstrap();
+        new EndpointPlugin(bootstrap);
+        bootstrap.start();
+
         IOC.register(
                 Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new CreateNewInstanceStrategy(
@@ -78,9 +92,18 @@ public class HttpEndpointPluginTest {
                         resolveByTypeAndNameStrategy
                 )
         );
-
-        bootstrap = mock(IBootstrap.class);
-        plugin = new HttpEndpointPlugin(bootstrap);
+        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
+                        resolveCookies
+                )
+        );
+        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
+                        resolveHeaders
+                )
+        );
+        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
+                        resolveStatusSetter
+                )
+        );
     }
 
 
