@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
+            <artifactId>interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
 

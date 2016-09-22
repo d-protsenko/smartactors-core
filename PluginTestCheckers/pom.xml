@@ -81,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
+            <artifactId>strategy.singleton_strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
