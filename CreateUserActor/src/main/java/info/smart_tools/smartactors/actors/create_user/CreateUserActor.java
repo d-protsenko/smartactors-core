@@ -16,8 +16,8 @@ import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
-import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
+import info.smart_tools.smartactors.security.encoding.encoders.EncodingException;
+import info.smart_tools.smartactors.security.encoding.encoders.IPasswordEncoder;
 
 /**
  * Actor for creating user

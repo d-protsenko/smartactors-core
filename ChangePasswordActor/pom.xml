@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.security.encoding</artifactId>
+            <artifactId>security.encoding</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->
