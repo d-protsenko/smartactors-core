@@ -14,12 +14,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_testing</artifactId>
+            <artifactId>test.iassertion</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.iassertion</artifactId>
+            <artifactId>core.ioc</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.named_keys_storage</artifactId>
             <version>${core.version}</version>
         </dependency>
 

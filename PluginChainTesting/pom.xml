@@ -14,11 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_testing</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.chain_testing.section_strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
