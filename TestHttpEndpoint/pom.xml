@@ -95,13 +95,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.singleton_strategy</artifactId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

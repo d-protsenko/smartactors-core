@@ -8,11 +8,11 @@
     <artifactId>base</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
-    <url>${project.artifactId}/</url>
     <packaging>pom</packaging>
 
     <properties>
         <core.version>0.2.0-SNAPSHOT</core.version>
+        <feature.version>0.2.0-SNAPSHOT</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -64,16 +64,28 @@
                 <inherited>false</inherited>
                 <configuration>
                     <descriptor>bin.xml</descriptor>
-                    <finalName>base-${pom.version}</finalName>
+                    <finalName>${artifactId}-${pom.version}</finalName>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <goals>
+                    <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                    <generatePom>false</generatePom>
+                    <file>${basedir}/target/${artifactId}-${feature.version}-archive.zip</file>
+                    <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
+                    <repositoryId>archiva.smartactors-features</repositoryId>
+
+                    <groupId>info.smart_tools.smartactors</groupId>
+                    <artifactId>${artifactId}</artifactId>
+                    <version>${feature.version}</version>
+                    <packaging>zip</packaging>
+                    <description>The artifact contains follow list of modules: </description>
+                </configuration>
             </plugin>
         </plugins>
     </build>

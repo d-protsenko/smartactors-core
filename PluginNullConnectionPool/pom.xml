@@ -60,12 +60,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>pool</artifactId>
+            <artifactId>base.pool</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -106,7 +106,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>pool_guard</artifactId>
+            <artifactId>base.pool-guard</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

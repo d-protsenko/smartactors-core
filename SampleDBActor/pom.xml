@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>pool_guard</artifactId>
+            <artifactId>base.pool-guard</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

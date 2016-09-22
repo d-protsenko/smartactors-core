@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>interfaces.iaction</artifactId>
+            <artifactId>base.interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>path</artifactId>
+            <artifactId>base.path</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->

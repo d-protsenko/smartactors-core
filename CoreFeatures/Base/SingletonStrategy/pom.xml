@@ -10,20 +10,20 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>strategy.singleton_strategy</artifactId>
+    <artifactId>base.strategy.singleton-strategy</artifactId>
 
     <dependencies>
         <!-- Core Interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>interfaces.iresolve_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>exception.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

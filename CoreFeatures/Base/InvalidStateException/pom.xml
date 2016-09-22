@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>exception.invalid_state_exception</artifactId>
+    <artifactId>base.exception.invalid-state-exception</artifactId>
 
     <dependencies>
         <!-- Tests -->

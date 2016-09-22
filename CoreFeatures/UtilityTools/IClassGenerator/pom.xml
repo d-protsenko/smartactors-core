@@ -10,14 +10,14 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>interfaces.iclass_generator</artifactId>
+    <artifactId>utility-tools.interfaces.iclass-generator</artifactId>
 
     <dependencies>
 
         <!--Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>exception.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

@@ -10,7 +10,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>interfaces.ipool</artifactId>
+    <artifactId>base.interfaces.ipool</artifactId>
 
     <dependencies>
         <!-- Tests -->

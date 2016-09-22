@@ -17,7 +17,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>interfaces.iaction</artifactId>
+            <artifactId>base.interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
 

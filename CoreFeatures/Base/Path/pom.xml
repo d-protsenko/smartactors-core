@@ -10,12 +10,12 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>path</artifactId>
+    <artifactId>base.path</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>interfaces.ipath</artifactId>
+            <artifactId>base.interfaces.ipath</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->

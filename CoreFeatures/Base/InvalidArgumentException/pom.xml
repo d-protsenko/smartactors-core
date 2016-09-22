@@ -10,7 +10,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>exception.invalid_argument_exception</artifactId>
+    <artifactId>base.exception.invalid-argument-exception</artifactId>
 
     <dependencies>
         <!-- Tests -->

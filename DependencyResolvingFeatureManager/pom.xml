@@ -27,7 +27,7 @@
         <!-- Path implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>path</artifactId>
+            <artifactId>base.path</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <!-- Aether -->
