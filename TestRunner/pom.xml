@@ -45,7 +45,7 @@
         <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.initialization_exception</artifactId>
+            <artifactId>base.exception.initialization-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandle
 import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
+import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;

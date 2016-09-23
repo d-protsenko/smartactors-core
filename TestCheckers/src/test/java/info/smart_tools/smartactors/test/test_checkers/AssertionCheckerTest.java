@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.test.test_checkers;
 
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.initialization_exception.InitializationException;
+import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
