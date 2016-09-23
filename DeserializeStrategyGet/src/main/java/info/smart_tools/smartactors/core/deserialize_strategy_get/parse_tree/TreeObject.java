@@ -26,23 +26,33 @@ public class TreeObject {
         ended = false;
     }
 
+    /**
+     * Method for getting level of the tree item
+     *
+     * @return level
+     */
     public int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    /**
+     * Method for setting level of the tree item
+     *
+     * @param level level value
+     */
+    public void setLevel(final int level) {
         this.level = level;
     }
 
-    public String getUriElem(int index) {
+    public String getUriElem(final int index) {
         return uri.get(index);
     }
 
-    public void setUri(List<String> uri) {
+    public void setUri(final List<String> uri) {
         this.uri = uri;
     }
 
-    public void addResult(String key, String value) {
+    public void addResult(final String key, final String value) {
         this.result.put(key, value);
     }
 
@@ -50,7 +60,7 @@ public class TreeObject {
         return result;
     }
 
-    public boolean hasElem(int index) {
+    public boolean hasElem(final int index) {
         return uri.size() > index;
     }
 
@@ -62,7 +72,7 @@ public class TreeObject {
         return ended;
     }
 
-    public void setEnded(boolean ended) {
+    public void setEnded(final boolean ended) {
         this.ended = ended;
     }
 }

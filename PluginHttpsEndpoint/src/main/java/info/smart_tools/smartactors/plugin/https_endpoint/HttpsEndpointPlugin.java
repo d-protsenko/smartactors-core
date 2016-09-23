@@ -15,10 +15,8 @@ import info.smart_tools.smartactors.core.i_addition_dependency_strategy.IAdditio
 import info.smart_tools.smartactors.core.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
@@ -30,7 +28,6 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
@@ -43,8 +40,6 @@ import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.strategy.cookies_setter.CookiesSetter;
-import info.smart_tools.smartactors.strategy.http_headers_setter.HttpHeadersExtractor;
-import info.smart_tools.smartactors.strategy.respons_status_extractor.ResponseStatusExtractor;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 
@@ -56,6 +51,15 @@ import java.util.List;
  * Plugin for register http/https endpoint at IOC
  */
 public class HttpsEndpointPlugin implements IPlugin {
+
+    private IFieldName typeFieldName;
+    private IFieldName portFieldName;
+    private IFieldName startChainNameFieldName;
+    private IFieldName stackDepthFieldName;
+    private IFieldName maxContentLengthFieldName;
+    private IFieldName endpointNameFieldName;
+    private IFieldName queueFieldName;
+    private IFieldName templatesFieldName;
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -83,66 +87,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    IFieldName typeFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "type"
-                                            );
-                                    IFieldName portFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "port"
-                                            );
-                                    IFieldName startChainNameFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "startChain"
-                                            );
-                                    IFieldName stackDepthFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "stackDepth"
-                                            );
-                                    IFieldName maxContentLengthFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "maxContentLength"
-                                            );
-                                    IFieldName endpointNameFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "endpointName"
-                                            );
-
-                                    IFieldName queueFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "queue"
-                                            );
-
-                                    IFieldName templatesFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "templates"
-                                            );
-                                    ICookiesSetter cookiesSetter = new CookiesSetter();
-                                    IKey httpsEndpointKey = Keys.getOrAdd("https_endpoint");
-                                    IKey cookiesSetterKey = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
-                                    IOC.register(cookiesSetterKey,
-                                            new SingletonStrategy(cookiesSetter));
-
-                                    IHeadersExtractor headersSetter = new HttpHeadersExtractor();
-
-                                    IKey headersSetterKey = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
-                                    IOC.register(headersSetterKey,
-                                            new SingletonStrategy(headersSetter));
-
-                                    IResponseStatusExtractor responseStatusExtractor = new ResponseStatusExtractor();
-                                    IKey responseStatusExtractorKey = Keys.getOrAdd(
-                                            IResponseStatusExtractor.class.getCanonicalName());
-                                    IOC.register(responseStatusExtractorKey,
-                                            new SingletonStrategy(responseStatusExtractor));
-
+                                    initializeFieldNames();
                                     IOC.register(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
@@ -174,7 +119,8 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-
+                                    registerHttpEndpoint();
+                                    registerHttpsEndpoint();
 
                                     IOC.register(Keys.getOrAdd(FileInputStream.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
@@ -186,77 +132,10 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                         return null;
                                                     }
                                             ));
-
-                                    IOC.register(httpsEndpointKey,
-                                            new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        IObject configuration = (IObject) args[0];
-                                                        try {
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_GET",
-                                                                    configuration.getValue(endpointNameFieldName),
-                                                                    configuration.getValue(templatesFieldName));
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_POST",
-                                                                    configuration.getValue(endpointNameFieldName));
-
-                                                            IEnvironmentHandler environmentHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
-                                                                    configuration);
-                                                            ISslEngineProvider sslContextProvider =
-                                                                    IOC.resolve(
-                                                                            Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
-                                                                            configuration
-                                                                    );
-                                                            return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
-                                                                    (Integer) configuration.getValue(maxContentLengthFieldName),
-                                                                    ScopeProvider.getCurrentScope(), environmentHandler,
-                                                                    (String) configuration.getValue(endpointNameFieldName),
-                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName),
-                                                                    sslContextProvider);
-                                                        } catch (ReadValueException | InvalidArgumentException
-                                                                | ScopeProviderException | ResolutionException e) {
-                                                        }
-                                                        return null;
-                                                    }
-                                            )
-                                    );
-                                    IOC.register(Keys.getOrAdd("http_endpoint"),
-                                            new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        IObject configuration = (IObject) args[0];
-                                                        try {
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_GET",
-                                                                    configuration.getValue(endpointNameFieldName),
-                                                                    configuration.getValue(templatesFieldName));
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_POST",
-                                                                    configuration.getValue(endpointNameFieldName));
-
-
-                                                            IEnvironmentHandler environmentHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
-                                                                    configuration);
-                                                            return new HttpEndpoint((Integer) configuration.getValue(portFieldName),
-                                                                    (Integer) configuration.getValue(maxContentLengthFieldName),
-                                                                    ScopeProvider.getCurrentScope(), environmentHandler,
-                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName),
-                                                                    (String) configuration.getValue(endpointNameFieldName));
-                                                        } catch (ReadValueException | InvalidArgumentException
-                                                                | ScopeProviderException | ResolutionException e) {
-                                                        }
-                                                        return null;
-                                                    }
-                                            )
-                                    );
                                     registerDeserializationStrategies();
                                     registerResponseSenders();
                                     registerExceptionalResponse();
+                                    registerCookiesSetter();
                                     IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
                                     IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
@@ -285,6 +164,144 @@ public class HttpsEndpointPlugin implements IPlugin {
         }
     }
 
+    private void initializeFieldNames() throws ResolutionException {
+
+        typeFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "type"
+                );
+        portFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "port"
+                );
+        startChainNameFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "startChain"
+                );
+        stackDepthFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "stackDepth"
+                );
+        maxContentLengthFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "maxContentLength"
+                );
+        endpointNameFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "endpointName"
+                );
+
+        queueFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "queue"
+                );
+
+        templatesFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "templates"
+                );
+    }
+
+
+    private void registerHttpEndpoint() throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IOC.register(Keys.getOrAdd("http_endpoint"),
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            IObject configuration = (IObject) args[0];
+                            try {
+                                IOC.resolve(
+                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        "HTTP_GET",
+                                        configuration.getValue(endpointNameFieldName),
+                                        configuration.getValue(templatesFieldName));
+                                IOC.resolve(
+                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        "HTTP_POST",
+                                        configuration.getValue(endpointNameFieldName));
+
+
+                                IEnvironmentHandler environmentHandler = IOC.resolve(
+                                        Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                        configuration);
+                                return new HttpEndpoint((Integer) configuration.getValue(portFieldName),
+                                        (Integer) configuration.getValue(maxContentLengthFieldName),
+                                        ScopeProvider.getCurrentScope(), environmentHandler,
+                                        (IReceiverChain) configuration.getValue(startChainNameFieldName),
+                                        (String) configuration.getValue(endpointNameFieldName));
+                            } catch (ReadValueException | InvalidArgumentException
+                                    | ScopeProviderException | ResolutionException e) {
+                            }
+                            return null;
+                        }
+                )
+        );
+    }
+
+    private void registerHttpsEndpoint() throws InvalidArgumentException, RegistrationException, ResolutionException {
+        IKey httpsEndpointKey = Keys.getOrAdd("https_endpoint");
+        IOC.register(httpsEndpointKey,
+                new CreateNewInstanceStrategy(
+                        (args) -> {
+                            IObject configuration = (IObject) args[0];
+                            try {
+                                IOC.resolve(
+                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        "HTTP_GET",
+                                        configuration.getValue(endpointNameFieldName),
+                                        configuration.getValue(templatesFieldName));
+                                IOC.resolve(
+                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        "HTTP_POST",
+                                        configuration.getValue(endpointNameFieldName));
+
+                                IEnvironmentHandler environmentHandler = IOC.resolve(
+                                        Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                        configuration);
+                                ISslEngineProvider sslContextProvider =
+                                        IOC.resolve(
+                                                Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
+                                                configuration
+                                        );
+                                return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
+                                        (Integer) configuration.getValue(maxContentLengthFieldName),
+                                        ScopeProvider.getCurrentScope(), environmentHandler,
+                                        (String) configuration.getValue(endpointNameFieldName),
+                                        (IReceiverChain) configuration.getValue(startChainNameFieldName),
+                                        sslContextProvider);
+                            } catch (ReadValueException | InvalidArgumentException
+                                    | ScopeProviderException | ResolutionException e) {
+                            }
+                            return null;
+                        }
+                )
+        );
+    }
+
+    private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException, RegistrationException,
+            AdditionDependencyStrategyException {
+        IAdditionDependencyStrategy cookiesSetterChooser =
+                IOC.resolve(Keys.getOrAdd("CookiesSetterChooser"));
+
+        IOC.register(Keys.getOrAdd("key_for_cookies_extractor"), new ApplyFunctionToArgumentsStrategy(
+                        (args) ->
+                                "HTTP"
+                )
+        );
+
+        cookiesSetterChooser.register("HTTP",
+                new CreateNewInstanceStrategy(
+                        (args) -> new CookiesSetter()
+                )
+        );
+    }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
             AdditionDependencyStrategyException {

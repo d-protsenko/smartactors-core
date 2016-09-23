@@ -50,6 +50,15 @@ public class HttpEndpointPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
+    private IFieldName typeFieldName;
+    private IFieldName portFieldName;
+    private IFieldName startChainNameFieldName;
+    private IFieldName stackDepthFieldName;
+    private IFieldName maxContentLengthFieldName;
+    private IFieldName endpointNameFieldName;
+    private IFieldName queueFieldName;
+    private IFieldName templatesFieldName;
+
     /**
      * Constructor
      *
@@ -69,49 +78,7 @@ public class HttpEndpointPlugin implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    IFieldName typeFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "type"
-                                            );
-                                    IFieldName portFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "port"
-                                            );
-                                    IFieldName startChainNameFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "startChain"
-                                            );
-                                    IFieldName stackDepthFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "stackDepth"
-                                            );
-                                    IFieldName maxContentLengthFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "maxContentLength"
-                                            );
-                                    IFieldName endpointNameFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "name"
-                                            );
-
-                                    IFieldName queueFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "queue"
-                                            );
-
-                                    IFieldName templatesFieldName =
-                                            IOC.resolve(
-                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                                    "templates"
-                                            );
-
+                                    initializeFieldNames();
                                     IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
                                     registerCookiesSetter();
                                     registerHeadersExtractor();
@@ -198,6 +165,51 @@ public class HttpEndpointPlugin implements IPlugin {
         } catch (Exception e) {
             throw new PluginException("Can't load \"CreateHttpEndpoint\" plugin", e);
         }
+    }
+
+    private void initializeFieldNames() throws ResolutionException {
+        typeFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "type"
+                );
+        portFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "port"
+                );
+        startChainNameFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "startChain"
+                );
+        stackDepthFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "stackDepth"
+                );
+        maxContentLengthFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "maxContentLength"
+                );
+        endpointNameFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "endpointName"
+                );
+
+        queueFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "queue"
+                );
+
+        templatesFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "templates"
+                );
     }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
