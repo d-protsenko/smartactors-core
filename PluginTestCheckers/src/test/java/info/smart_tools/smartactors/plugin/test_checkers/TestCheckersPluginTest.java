@@ -15,9 +15,9 @@ import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
@@ -39,7 +39,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class TestCheckersPluginTest {

@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.thread_pool;
 
-import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

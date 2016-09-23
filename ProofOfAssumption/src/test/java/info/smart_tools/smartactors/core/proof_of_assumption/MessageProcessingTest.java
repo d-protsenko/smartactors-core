@@ -32,7 +32,7 @@ import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChain;
 import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChainResolutionStrategy;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;

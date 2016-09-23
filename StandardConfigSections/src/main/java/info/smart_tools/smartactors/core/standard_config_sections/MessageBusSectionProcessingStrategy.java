@@ -12,14 +12,14 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.message_bus.MessageBus;
 import info.smart_tools.smartactors.core.message_bus_handler.MessageBusHandler;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 /**
  * Initializes MessageBus using configuration.

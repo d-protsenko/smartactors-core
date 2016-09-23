@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
+            <artifactId>scope.scope-provider</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -48,7 +48,7 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_guard</artifactId>
+            <artifactId>scope.scope-guard</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -67,11 +67,6 @@
             <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>core.scope_creation_event_handler</artifactId>-->
-            <!--<version>${core.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.iobject_simple_implementation</artifactId>

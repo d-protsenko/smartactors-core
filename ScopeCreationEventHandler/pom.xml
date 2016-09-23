@@ -16,7 +16,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iscope</artifactId>
+            <artifactId>scope.iscope</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 /**

@@ -12,9 +12,9 @@ import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.test.isource.ISource;
 
 import java.util.ArrayList;

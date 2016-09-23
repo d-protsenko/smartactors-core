@@ -65,7 +65,7 @@
         <!-- Service locators -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
+            <artifactId>scope.scope-provider</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

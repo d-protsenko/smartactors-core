@@ -20,13 +20,8 @@
     <modules>
         <module>IObject</module>
         <module>IOC</module>
-        <module>IScope</module>
-        <module>ScopeProvider</module>
-        <module>RecursiveScope</module>
         <module>IocContainer</module>
-        <module>ScopeProviderContainer</module>
         <module>IStrategyContainer</module>
-        <module>ScopeGuard</module>
         <module>StrategyContainer</module>
         <module>StringIocKey</module>
         <module>IServer</module>
@@ -35,7 +30,6 @@
         <module>IKey</module>
         <module>IIocContainer</module>
         <module>IocContainerSimpleImplementation</module>
-        <module>IScopeProviderContainer</module>
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
         <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
