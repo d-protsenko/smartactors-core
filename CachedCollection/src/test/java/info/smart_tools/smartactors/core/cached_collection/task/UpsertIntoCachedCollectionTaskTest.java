@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;

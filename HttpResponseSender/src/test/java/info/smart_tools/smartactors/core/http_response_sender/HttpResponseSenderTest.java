@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.http_response_sender;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationExc
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.imessage_bus_container;
 
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for MessageBus

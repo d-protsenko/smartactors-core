@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.ActorPara
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;

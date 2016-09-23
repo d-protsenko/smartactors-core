@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.resolve_iobject_strategies;
 
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;

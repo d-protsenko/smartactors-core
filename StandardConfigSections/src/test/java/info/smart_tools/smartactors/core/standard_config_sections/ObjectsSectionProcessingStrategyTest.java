@@ -2,10 +2,10 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;

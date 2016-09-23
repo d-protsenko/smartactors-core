@@ -16,7 +16,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifield</artifactId>
+            <artifactId>iobject.ifield</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject_wrapper</artifactId>
+            <artifactId>iobject.iobject-wrapper</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -45,12 +45,12 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
         </dependency>
 

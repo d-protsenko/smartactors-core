@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.examples.db_collection;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.iserver.IServer;

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.nested_field;
 
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import org.junit.Test;
 

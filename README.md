@@ -19,7 +19,7 @@ When you add a dependency to your `pom.xml`, for example:
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

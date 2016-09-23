@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.https_server;
 
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.exception_handling_receivers;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iresource_source.IResourceSource;
 import info.smart_tools.smartactors.core.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;

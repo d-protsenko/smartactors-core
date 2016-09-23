@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.actors.check_user_is_new.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Wrapper for message for {@link info.smart_tools.smartactors.actors.check_user_is_new.CheckUserIsNewActor} check method

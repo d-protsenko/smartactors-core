@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.iclient;
 
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import java.util.concurrent.CompletableFuture;
 

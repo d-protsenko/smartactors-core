@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.core.in_memory_db_insert_task;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;

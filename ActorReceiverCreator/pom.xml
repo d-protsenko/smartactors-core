@@ -32,7 +32,7 @@
         <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

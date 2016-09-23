@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.server_with_iobject;
 
 import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.iserver.IServer;

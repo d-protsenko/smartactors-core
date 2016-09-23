@@ -2,13 +2,13 @@ package info.smart_tools.smartactors.core.message_to_bytes_mapper;
 
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;

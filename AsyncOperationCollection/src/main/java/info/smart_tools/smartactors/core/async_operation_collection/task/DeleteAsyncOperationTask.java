@@ -5,8 +5,8 @@ import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;

@@ -14,12 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifield</artifactId>
+            <artifactId>iobject.ifield</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

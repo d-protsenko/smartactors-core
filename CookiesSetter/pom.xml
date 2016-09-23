@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifield</artifactId>
+            <artifactId>iobject.ifield</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

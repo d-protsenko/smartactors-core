@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.actor_receiver_creator;
 
 import info.smart_tools.smartactors.core.actor_receiver.ActorReceiver;
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.handler_routing_receiver.HandlerRoutingReceiver;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;

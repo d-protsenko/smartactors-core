@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.core.in_memory_db_insert_task.InMemoryDBInse
 import info.smart_tools.smartactors.core.in_memory_db_select_task.InMemoryDBSelectTask;
 import info.smart_tools.smartactors.core.in_memory_db_upsert_task.InMemoryDBUpsertTask;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;

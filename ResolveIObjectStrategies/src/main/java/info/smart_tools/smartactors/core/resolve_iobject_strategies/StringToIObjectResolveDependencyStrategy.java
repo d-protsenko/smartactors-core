@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.resolve_iobject_strategies;
 
-import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 

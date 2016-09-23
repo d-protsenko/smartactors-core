@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSet
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSetterException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;

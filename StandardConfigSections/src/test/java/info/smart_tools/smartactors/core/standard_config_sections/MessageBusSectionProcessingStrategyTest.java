@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;

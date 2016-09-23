@@ -5,12 +5,12 @@ import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePassword
 import info.smart_tools.smartactors.actor.change_password.wrapper.ChangePasswordMessage;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.ITask;

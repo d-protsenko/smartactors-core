@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.handler_routing_receiver_creator;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.scope.iscope.IScope;

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.test.test_environment_handler;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 

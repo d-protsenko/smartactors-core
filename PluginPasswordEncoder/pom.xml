@@ -48,7 +48,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.security.password_encoder</artifactId>
+            <artifactId>security.password-encoder</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

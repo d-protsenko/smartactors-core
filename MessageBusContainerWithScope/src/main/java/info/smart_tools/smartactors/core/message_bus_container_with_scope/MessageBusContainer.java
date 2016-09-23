@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 

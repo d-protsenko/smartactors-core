@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.core.chain_testing;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;

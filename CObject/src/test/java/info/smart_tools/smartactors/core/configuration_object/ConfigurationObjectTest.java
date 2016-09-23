@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.configuration_object;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;

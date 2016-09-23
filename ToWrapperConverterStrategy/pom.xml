@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject_wrapper</artifactId>
+            <artifactId>iobject.iobject-wrapper</artifactId>
             <version>${core.version}</version>
         </dependency>
 

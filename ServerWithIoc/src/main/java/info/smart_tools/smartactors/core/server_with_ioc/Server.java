@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.server_with_ioc;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject_simple_implementation.IObjectImpl;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;

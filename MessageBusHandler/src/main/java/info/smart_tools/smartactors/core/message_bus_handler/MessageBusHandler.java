@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.core.imessage_bus_handler.exception.MessageBusHandlerException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;

@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.actors.create_session;
 
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field.Field;
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.scope.iscope.IScope;

@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

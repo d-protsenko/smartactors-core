@@ -69,7 +69,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject_simple_implementation</artifactId>
+            <artifactId>iobject.iobject-simple-implementation</artifactId>
             <version>${core.version}</version>
         </dependency>
 

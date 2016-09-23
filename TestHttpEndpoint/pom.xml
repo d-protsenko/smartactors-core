@@ -15,7 +15,7 @@
         <!-- Interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -83,13 +83,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

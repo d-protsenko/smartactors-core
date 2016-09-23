@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actor.change_password.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Wrapper for {@link info.smart_tools.smartactors.actor.change_password.ChangePasswordActor} handler

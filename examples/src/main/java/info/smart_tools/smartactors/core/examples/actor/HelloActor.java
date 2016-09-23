@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.actor;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Sample actor,

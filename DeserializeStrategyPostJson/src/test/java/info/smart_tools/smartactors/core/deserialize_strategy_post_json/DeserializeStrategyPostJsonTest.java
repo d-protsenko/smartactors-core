@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_post_json;
 
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;

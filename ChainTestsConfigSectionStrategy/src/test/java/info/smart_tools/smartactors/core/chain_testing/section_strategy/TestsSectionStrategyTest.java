@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.chain_testing.section_strategy;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
