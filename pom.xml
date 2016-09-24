@@ -283,6 +283,9 @@
         <module>PluginDateTimeFormatterStrategy</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
+        <module>ClientActor</module>
+        <module>IRequestSender</module>
+        <module>NettyRequestSender</module>
     </modules>
 
     <repositories>
