@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.MessageWr
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;

@@ -5,24 +5,24 @@ import info.smart_tools.smartactors.core.async_operation_collection.exception.Cr
 import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 
 /**
  * Implementation of collection for asynchronous operations

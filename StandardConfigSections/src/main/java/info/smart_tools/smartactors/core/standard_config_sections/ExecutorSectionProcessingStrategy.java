@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.Confi
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
 import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
 

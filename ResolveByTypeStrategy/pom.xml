@@ -15,12 +15,12 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresolve_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.i_addition_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

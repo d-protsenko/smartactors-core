@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_get;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IParseTree;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
@@ -9,7 +11,6 @@ import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.exc
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -19,7 +20,6 @@ import info.smart_tools.smartactors.core.iscope_provider_container.exception.Sco
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -156,7 +156,7 @@ public class DeserializeStrategyGetTest {
         httpRequest = mock(FullHttpRequest.class);
         when(httpRequest.uri()).thenReturn(testUri);
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet(new ArrayList<>());
-        IObject iObject = new DSObject();
+        IObject iObject = emptyIObject;
         deserializeStrategyGet.extract(iObject, httpRequest);
         assertEquals(iObject, this.emptyIObject);
     }

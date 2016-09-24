@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.examples;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iscope.IScope;
 import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.iscope_provider_container.exception.Sco
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 import org.junit.Before;

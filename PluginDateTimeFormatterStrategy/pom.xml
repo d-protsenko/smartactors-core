@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

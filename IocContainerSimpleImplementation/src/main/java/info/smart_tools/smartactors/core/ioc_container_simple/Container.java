@@ -5,8 +5,8 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;
 
 import java.util.Map;

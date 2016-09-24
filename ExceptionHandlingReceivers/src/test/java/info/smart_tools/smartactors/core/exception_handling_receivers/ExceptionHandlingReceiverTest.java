@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.exception_handling_receivers;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.iobject.IObject;

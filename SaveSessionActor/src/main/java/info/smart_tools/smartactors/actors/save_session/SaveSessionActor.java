@@ -2,21 +2,19 @@ package info.smart_tools.smartactors.actors.save_session;
 
 import info.smart_tools.smartactors.actors.save_session.exception.SaveSessionException;
 import info.smart_tools.smartactors.actors.save_session.wrapper.SaveSessionMessage;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
 public class SaveSessionActor {

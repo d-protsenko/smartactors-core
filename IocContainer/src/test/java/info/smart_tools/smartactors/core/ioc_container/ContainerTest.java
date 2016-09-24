@@ -5,34 +5,21 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.iscope.IScopeFactory;
-import info.smart_tools.smartactors.core.iscope_provider_container.IScopeProviderContainer;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 
-import info.smart_tools.smartactors.core.scope_provider_container.ScopeProviderContainer;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

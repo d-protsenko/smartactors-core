@@ -73,7 +73,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
         try {
             ScopeProvider.setCurrentScope(scope);
             IObject environment = getEnvironment(ctx, request);
-            environmentHandler.handle(environment, receiverChain);
+            environmentHandler.handle(environment, receiverChain, null);
         } catch (Exception e) {
             try {
                 sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));

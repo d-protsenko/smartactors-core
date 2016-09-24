@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.DeletionExcepti
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.core.string_ioc_key.Key;

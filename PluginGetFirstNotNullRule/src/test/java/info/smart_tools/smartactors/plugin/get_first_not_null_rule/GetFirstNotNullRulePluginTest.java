@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.transformation_rules.get_first_not_null.GetFirstNotNullRule;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;

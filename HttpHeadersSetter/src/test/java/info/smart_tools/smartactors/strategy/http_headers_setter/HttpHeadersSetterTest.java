@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.strategy.http_headers_setter;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.ds_object.DSObject;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ifield.IField;
@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSe
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -18,7 +18,7 @@ import info.smart_tools.smartactors.core.iscope_provider_container.exception.Sco
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;

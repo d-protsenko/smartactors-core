@@ -26,11 +26,8 @@
         <module>IocContainer</module>
         <module>ScopeProviderContainer</module>
         <module>IStrategyContainer</module>
-        <module>IResolveDependencyStrategy</module>
         <module>ScopeGuard</module>
         <module>StrategyContainer</module>
-        <module>CreateNewInstanceStrategy</module>
-        <module>SingletonStrategy</module>
         <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
@@ -42,7 +39,6 @@
         <module>ResolveByNameIocStrategy</module>
         <module>ResolveByNameIocWithLambdaStrategy</module>
         <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
-        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
         <module>IObjectSimpleImplementation</module>
         <module>IMessage</module>
@@ -74,7 +70,6 @@
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
-        <module>InvalidArgumentException</module>
         <module>IBootstrap</module>
         <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
@@ -97,12 +92,7 @@
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
-        <module>IClassGenerator</module>
-        <module>ClassGeneratorJavaCompileAPI</module>
         <module>IMultiActionStrategy</module>
-        <module>IPool</module>
-        <module>Pool</module>
-        <module>PoolGuard</module>
         <module>IResourceSource</module>
         <module>MessageProcessor</module>
         <module>ReceiverChain</module>
@@ -166,12 +156,8 @@
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
-        <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
-        <module>ICodec</module>
-        <module>Codec</module>
-        <module>MDPasswordEncoder</module>
         <module>PluginUserAuthByLoginActor</module>
         <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
@@ -189,14 +175,11 @@
         <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
-        <module>IPath</module>
-        <module>Path</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>InvalidStateException</module>
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
@@ -271,6 +254,10 @@
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
+        <module>ISource</module>
+        <module>TestDataSourceStringArray</module>
+        <module>TestHttpEndpoint</module>
+        <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
         <module>InMemoryDatabase</module>
@@ -289,20 +276,40 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>TestRunner</module>
+        <module>TestLoadingPlugins</module>
+        <module>ChainTestsConfigSectionStrategy</module>
+        <module>PluginChainTesting</module>
+        <module>TestAssertions</module>
+        <module>PluginChainTestingAssertions</module>
+        <module>TestDataSourceIObject</module>
+        <module>ITestRunner</module>
+        <module>TestEnvironmentHandler</module>
+        <module>IAssertion</module>
+        <module>IResultChecker</module>
+        <module>TestCheckers</module>
+        <module>InitializationException</module>
+        <module>PluginTestCheckers</module>
         <module>NestedField</module>
         <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
+        <module>PluginEndpoint</module>
         <module>DeserializeStrategyGet</module>
         <module>DeserializationStrategyChooser</module>
-        <module>PluginEndpoint</module>
-        <module>IAdditionDependencyStrategy</module>
-        <module>ResponseSenderChooser</module>
         <module>IAddRequestParametersToIObject</module>
         <module>RepeaterActor</module>
+        <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

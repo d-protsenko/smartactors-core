@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ClassGenerator;
 import info.smart_tools.smartactors.core.field.Field;
 import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
+import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.core.ifield.IField;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
@@ -17,9 +17,9 @@ import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
-import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

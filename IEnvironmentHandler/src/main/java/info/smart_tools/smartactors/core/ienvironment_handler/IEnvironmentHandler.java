@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.core.ienvironment_handler;
 
-import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
@@ -13,7 +15,9 @@ public interface IEnvironmentHandler {
      *
      * @param environment   Environment of the {@link info.smart_tools.smartactors.core.message_processing.IMessageProcessor}
      * @param receiverChain Chain that should receive environment
-     * @throws RequestHandlerInternalException if there are problems on handling environment
+     * @param callback      the callback for processing exception
+     * @throws EnvironmentHandleException exception for case if there are some problem on handle
      */
-    void handle(IObject environment, IReceiverChain receiverChain) throws RequestHandlerInternalException;
+    void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+            throws EnvironmentHandleException, InvalidArgumentException;
 }

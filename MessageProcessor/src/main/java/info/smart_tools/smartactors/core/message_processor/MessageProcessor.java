@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.message_processor;
 
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -131,8 +131,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(responseFieldName, response);
         environment.setValue(messageFieldName, theMessage);
         environment.setValue(contextFieldName, theContext);
-
-        messageProcessingSequence.reset();
+        this.messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -257,7 +256,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         if (messageProcessingSequence.next()) {
             enqueue();
         } else {
-            complete();
+            this.complete();
         }
     }
 

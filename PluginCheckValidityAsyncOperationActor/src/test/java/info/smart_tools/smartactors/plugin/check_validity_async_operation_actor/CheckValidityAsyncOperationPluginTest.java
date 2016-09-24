@@ -2,12 +2,12 @@ package info.smart_tools.smartactors.plugin.check_validity_async_operation_actor
 
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.CheckValidityAsyncOperationActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ikey.IKey;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

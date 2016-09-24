@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.transformation_rules.get_cookie_from_request;
 
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 

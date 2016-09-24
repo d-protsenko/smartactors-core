@@ -16,7 +16,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresolve_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -28,7 +28,7 @@
         <!-- Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

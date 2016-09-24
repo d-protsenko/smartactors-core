@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.in_memory_db_get_by_id_task;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase.IDatabase;
 import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareExc
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;

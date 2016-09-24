@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.filesystem_tracker;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.io.IOException;
 

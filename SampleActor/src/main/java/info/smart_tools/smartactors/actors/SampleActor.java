@@ -20,25 +20,25 @@ public class SampleActor {
             ++this.state;
             String s = wrapper.getSomeField();
             wrapper.setSomeValueForRequest(s + "_transformed");
-            wrapper.setCurrentActorState(this.state);
             if (wrapper.resetState()) {
                 this.state = 0;
             }
-            IObject newMessage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
-            );
-            IFieldName name = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                    "value"
-            );
-            IFieldName nameMessageMapId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                    "messageMapId"
-            );
-            newMessage.setValue(name, s + "_sendingMessage");
-            newMessage.setValue(nameMessageMapId, "myChainOther");
-            MessageBus.send(newMessage);
-        } catch (Exception e) {
+            wrapper.setCurrentActorState(this.state);
+//            IObject newMessage = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName())
+//            );
+//            IFieldName name = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+//                    "value"
+//            );
+//            IFieldName nameMessageMapId = IOC.resolve(
+//                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+//                    "messageMapId"
+//            );
+//            newMessage.setValue(name, s + "_sendingMessage");
+//            newMessage.setValue(nameMessageMapId, "myChainOther");
+//            MessageBus.send(newMessage);
+        } catch (Throwable e) {
             throw new SampleException();
         }
     }

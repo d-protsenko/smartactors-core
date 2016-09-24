@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api;
 
-import info.smart_tools.smartactors.core.iclass_generator.exception.ClassGenerationException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.exception.ClassGenerationException;
 import org.junit.Test;
 
 import java.net.URL;

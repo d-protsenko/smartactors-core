@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core.deserialize_strategy_get;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IParseTree;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.ParseTree;
@@ -7,7 +8,6 @@ import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.IAd
 import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -29,7 +29,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
      * @throws ResolutionException if there are IOC problems
      */
     public DeserializeStrategyGet(final List<String> templates) throws ResolutionException {
-        this.tree = new ParseTree();
+        this.tree = IOC.resolve(Keys.getOrAdd(IParseTree.class.getCanonicalName()));
         if (null == templates) {
             return;
         }

@@ -1,12 +1,13 @@
 package info.smart_tools.smartactors.core.environment_handler;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iobject.IObject;
 import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
@@ -42,8 +43,8 @@ public class EnvironmentHandler implements IEnvironmentHandler {
         this.taskQueue = taskQueue;
     }
 
-    @Override
-    public void handle(final IObject environment, final IReceiverChain receiverChain) throws RequestHandlerInternalException {
+    public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+            throws EnvironmentHandleException {
         try {
             IMessageProcessingSequence processingSequence =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
@@ -55,7 +56,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             IObject context = (IObject) environment.getValue(contextFieldName);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
-            throw new RequestHandlerInternalException(e);
+            throw new EnvironmentHandleException(e);
         }
     }
 }

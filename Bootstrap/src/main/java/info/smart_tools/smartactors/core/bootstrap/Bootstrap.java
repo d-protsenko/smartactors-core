@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
