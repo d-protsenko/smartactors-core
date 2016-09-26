@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.cached_collection.wrapper.get_item;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 
 /**
  * Using in criteria messages for $dateTo field

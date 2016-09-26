@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_task.search.wrappers;
 
 import info.smart_tools.smartactors.core.db_task.search.utils.IBufferedQuery;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.util.Optional;
 

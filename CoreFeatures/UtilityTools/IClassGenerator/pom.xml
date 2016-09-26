@@ -10,23 +10,14 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-
-    <artifactId>interfaces.iclass_generator</artifactId>
-
-    <repositories>
-        <repository>
-            <id>archiva.smartactors-core</id>
-            <name>Smart Actors Core Repository</name>
-            <url>http://archiva.smart-tools.info/repository/smartactors-core/</url>
-        </repository>
-    </repositories>
+    <artifactId>utility-tools.interfaces.iclass-generator</artifactId>
 
     <dependencies>
 
         <!--Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -38,6 +29,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

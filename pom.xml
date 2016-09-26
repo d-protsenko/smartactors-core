@@ -18,33 +18,10 @@
     </properties>
 
     <modules>
-        <module>IObject</module>
-        <module>IOC</module>
-        <module>IScope</module>
-        <module>ScopeProvider</module>
-        <module>RecursiveScope</module>
-        <module>IocContainer</module>
-        <module>ScopeProviderContainer</module>
-        <module>IStrategyContainer</module>
-        <module>IResolveDependencyStrategy</module>
-        <module>ScopeGuard</module>
-        <module>StrategyContainer</module>
-        <module>CreateNewInstanceStrategy</module>
-        <module>SingletonStrategy</module>
-        <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>IKey</module>
-        <module>IIocContainer</module>
-        <module>IocContainerSimpleImplementation</module>
-        <module>IScopeProviderContainer</module>
-        <module>ResolveByNameIocStrategy</module>
-        <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
-        <module>IAction</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IObjectSimpleImplementation</module>
         <module>IMessage</module>
         <module>IQueue</module>
         <module>BlockingQueue</module>
@@ -74,7 +51,6 @@
         <module>examples</module>
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
-        <module>InvalidArgumentException</module>
         <module>IBootstrap</module>
         <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
@@ -88,21 +64,14 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>PluginTestJar</module>
-        <module>NamedKeysStorage</module>
         <module>FilesystemTracker</module>
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
-        <module>DSObject</module>
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
-        <module>IClassGenerator</module>
-        <module>ClassGeneratorJavaCompileAPI</module>
         <module>IMultiActionStrategy</module>
-        <module>IPool</module>
-        <module>Pool</module>
-        <module>PoolGuard</module>
         <module>IResourceSource</module>
         <module>MessageProcessor</module>
         <module>ReceiverChain</module>
@@ -116,7 +85,6 @@
         <module>PluginPostgresConnectionPool</module>
         <module>PluginIField</module>
         <module>IStorageConnection</module>
-        <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -131,7 +99,6 @@
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
-        <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
         <module>HttpEndpoint</module>
         <module>IMessageMapper</module>
@@ -142,11 +109,9 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>IField</module>
         <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
-        <module>IFieldName</module>
         <module>MessageToBytesMapper</module>
         <module>IResponseSender</module>
         <module>HttpResponseSender</module>
@@ -166,12 +131,8 @@
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
-        <module>ApplyFunctionToArgumentsStrategy</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
-        <module>ICodec</module>
-        <module>Codec</module>
-        <module>MDPasswordEncoder</module>
         <module>PluginUserAuthByLoginActor</module>
         <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
@@ -179,7 +140,6 @@
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
-        <module>FieldName</module>
         <module>PluginIFieldName</module>
         <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
@@ -189,14 +149,11 @@
         <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
-        <module>IPath</module>
-        <module>Path</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>InvalidStateException</module>
         <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
@@ -213,11 +170,8 @@
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
-        <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
         <module>PluginPostgresDBTasks</module>
-        <module>ResolveByTypeStrategy</module>
-        <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
@@ -271,6 +225,10 @@
         <module>PluginExceptionHandlerActor</module>
         <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
+        <module>ISource</module>
+        <module>TestDataSourceStringArray</module>
+        <module>TestHttpEndpoint</module>
+        <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
         <module>InMemoryDatabase</module>
@@ -289,15 +247,34 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>
         <module>InMemoryDBInsertTask</module>
+        <module>TestRunner</module>
+        <module>TestLoadingPlugins</module>
+        <module>ChainTestsConfigSectionStrategy</module>
+        <module>PluginChainTesting</module>
+        <module>TestAssertions</module>
+        <module>PluginChainTestingAssertions</module>
+        <module>TestDataSourceIObject</module>
+        <module>ITestRunner</module>
+        <module>TestEnvironmentHandler</module>
+        <module>IAssertion</module>
+        <module>IResultChecker</module>
+        <module>TestCheckers</module>
+        <module>PluginTestCheckers</module>
         <module>NestedField</module>
         <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
-        <module>IAdditionDependencyStrategy</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

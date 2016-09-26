@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.issl_engine_provider;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
 
 import javax.net.ssl.SSLEngine;

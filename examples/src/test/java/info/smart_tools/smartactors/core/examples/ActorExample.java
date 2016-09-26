@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.core.examples.actor.FarewellMessage;
 import info.smart_tools.smartactors.core.examples.actor.GreetingMessage;
 import info.smart_tools.smartactors.core.examples.actor.HelloActor;
 import info.smart_tools.smartactors.core.examples.actor.HelloActorException;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import org.junit.Before;
 import org.junit.Test;
 

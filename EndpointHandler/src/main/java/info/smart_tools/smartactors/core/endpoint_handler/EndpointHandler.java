@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.endpoint_handler;
 
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.concurrent.ExecutionException;
 
@@ -57,7 +57,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
         try {
             ScopeProvider.setCurrentScope(scope);
             IObject environment = getEnvironment(ctx, request);
-            environmentHandler.handle(environment, receiverChain);
+            environmentHandler.handle(environment, receiverChain, null);
         } catch (Exception e) {
             throw new ExecutionException("Failed to handle request to endpoint", e);
         }
