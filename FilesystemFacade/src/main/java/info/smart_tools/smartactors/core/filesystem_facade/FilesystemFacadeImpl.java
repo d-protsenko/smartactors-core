@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.filesystem_facade;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPathFilter;
+import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.core.ifilesystem_facade.IFilesystemFacade;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ipath.IPath;
-import info.smart_tools.smartactors.core.ipath.IPathFilter;
-import info.smart_tools.smartactors.core.path.Path;
 
 import java.io.File;
 import java.io.IOException;

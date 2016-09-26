@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.in_memory_database;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Class, that should verify, is IObject satisfy condition

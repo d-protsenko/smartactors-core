@@ -2,12 +2,12 @@ package info.smart_tools.smartactors.core.constants_section_strategy;
 
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

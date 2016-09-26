@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.plugin.base.bootstrap_plugin;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.actors.authentication.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Wrapper for message for authentication actor

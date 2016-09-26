@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.icookies_extractor;
 
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for extracting cookies from environment

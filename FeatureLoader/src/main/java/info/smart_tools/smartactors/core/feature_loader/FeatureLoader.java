@@ -1,9 +1,12 @@
 package info.smart_tools.smartactors.core.feature_loader;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.IBiAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.RevertProcessExecutionException;
@@ -13,13 +16,7 @@ import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.Confi
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
 import info.smart_tools.smartactors.core.ifilesystem_facade.IFilesystemFacade;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
@@ -27,9 +24,12 @@ import info.smart_tools.smartactors.core.iplugin_creator.exception.PluginCreatio
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.path.Path;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;

@@ -1,22 +1,18 @@
 package info.smart_tools.smartactors.core.async_operation_collection.task;
 
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
-import info.smart_tools.smartactors.core.db_storage.interfaces.StorageConnection;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-
-import java.time.LocalDateTime;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Task-facade for read task for async operations collection

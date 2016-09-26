@@ -4,10 +4,10 @@ import info.smart_tools.smartactors.actors.check_user_by_email.exception.NotFoun
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

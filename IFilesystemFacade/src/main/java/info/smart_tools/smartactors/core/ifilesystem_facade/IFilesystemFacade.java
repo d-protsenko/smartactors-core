@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.core.ifilesystem_facade;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ipath.*;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPathFilter;
 
 import java.io.IOException;
 import java.nio.file.NotDirectoryException;

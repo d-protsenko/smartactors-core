@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.plugin_loader_from_jar;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.ipath.IPath;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;

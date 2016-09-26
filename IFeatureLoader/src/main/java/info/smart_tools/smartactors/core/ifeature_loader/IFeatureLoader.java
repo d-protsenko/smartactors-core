@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.ifeature_loader;
 
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
-import info.smart_tools.smartactors.core.ipath.IPath;
 
 /**
  * Feature loader.

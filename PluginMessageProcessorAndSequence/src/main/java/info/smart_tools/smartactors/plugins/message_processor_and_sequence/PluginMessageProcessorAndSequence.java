@@ -1,16 +1,17 @@
 package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
@@ -19,9 +20,9 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSe
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processor.FinalTask;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  *
@@ -85,8 +86,20 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             processorItem
                     .after("IOC")
+                    .after("wds_object")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
+                            IOC.register(
+                                    Keys.getOrAdd("final task"),
+                                    new CreateNewInstanceStrategy(args -> {
+                                        try {
+                                            return new FinalTask((IObject) args[0]);
+                                        } catch (Exception e) {
+                                            throw new RuntimeException("Could not create instance of FinalTask.");
+                                        }
+                                    })
+                            );
                             IOC.register(
                                     Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
@@ -126,6 +139,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             sequenceItem
                     .after("IOC")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
                             IOC.register(

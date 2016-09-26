@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.ifeature_loader;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 /**
  * Feature status.

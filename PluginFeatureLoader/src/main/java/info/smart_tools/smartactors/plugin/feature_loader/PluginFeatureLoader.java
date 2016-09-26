@@ -1,24 +1,24 @@
 package info.smart_tools.smartactors.plugin.feature_loader;
 
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.feature_loader.FeatureLoader;
 import info.smart_tools.smartactors.core.feature_loader.FeatureStatusImpl;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.IBiAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifeature_loader.GlobalFeatureLoader;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.plugin.base.bootstrap_plugin.BootstrapPlugin;
 
 /**

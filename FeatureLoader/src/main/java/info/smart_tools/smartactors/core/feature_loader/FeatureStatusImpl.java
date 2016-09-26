@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.core.feature_loader;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.IBiAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifeature_loader.exceptions.FeatureLoadException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipath.IPath;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;

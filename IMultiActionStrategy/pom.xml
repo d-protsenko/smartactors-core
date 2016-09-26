@@ -18,19 +18,19 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresolve_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
+            <artifactId>base.interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actors.save_session.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Message wrapper for {@link info.smart_tools.smartactors.actors.save_session.SaveSessionActor}

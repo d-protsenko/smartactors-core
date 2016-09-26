@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.imulti_action_strategy;
 
-import info.smart_tools.smartactors.core.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.core.imulti_action_strategy.exception.FunctionNotFoundException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 
 /**
  * Interface IMultiActionStrategy

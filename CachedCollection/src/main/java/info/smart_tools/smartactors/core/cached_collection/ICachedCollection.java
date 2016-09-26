@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.util.List;
 
