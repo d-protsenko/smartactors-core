@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.db_task.create_collection.psql.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import java.util.Map;
 

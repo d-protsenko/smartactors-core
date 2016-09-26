@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.actors.check_user_by_email.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Wrapper for params for {@link info.smart_tools.smartactors.actors.check_user_by_email.CheckUserByEmailActor}

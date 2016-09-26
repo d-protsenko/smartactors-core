@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.postgres_count_task;
 
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
@@ -47,7 +47,7 @@ import java.sql.ResultSet;
  *     <ul>
  *         <li><code>$and</code> — ANDs operators and nested conditions</li>
  *         <li><code>$or</code> — ORs operators and nested conditions</li>
- *         <li><code>$not</code> — negate all nested operators and conditions, is equivalent to NOT(conditionA) AND NOT(conditionB)</li>
+ *         <li><code>$not</code> — negate all nested operators and conditions, is equivalent to NOT(conditionA AND conditionB)</li>
  *     </ul>
  *     Available operators:
  *     <ul>

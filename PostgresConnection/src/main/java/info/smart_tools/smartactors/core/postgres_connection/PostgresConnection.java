@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_connection;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.istorage_connection.ICompiledQuery;
 import info.smart_tools.smartactors.core.istorage_connection.IPreparedQuery;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;

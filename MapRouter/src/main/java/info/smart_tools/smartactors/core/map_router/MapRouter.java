@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.map_router;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;

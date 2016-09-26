@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.core.async_operation_collection.exception.Co
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.GetAsyncOperationException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for AsyncOperationCollection

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.ichain_storage;
 
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
 import java.util.List;
