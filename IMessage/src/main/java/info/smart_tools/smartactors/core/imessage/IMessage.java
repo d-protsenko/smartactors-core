@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.imessage;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for objects representing messages.

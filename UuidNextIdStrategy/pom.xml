@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresolve_dependency_strategy</artifactId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -3,10 +3,10 @@ package info.smart_tools.smartactors.core.postgres_schema;
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
@@ -253,6 +253,16 @@ public class PostgresSchemaTest {
         PostgresSchema.count(statement, collection, null);
         assertEquals("SELECT COUNT(*) FROM test_collection", body.toString());
         verify(statement, times(0)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithNot() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"$not\": { \"a\": { \"$eq\": \"b\" }, \"c\": { \"$eq\": \"d\" } } } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((NOT((((document#>'{a}')=to_json(?)::jsonb))AND(((document#>'{c}')=to_json(?)::jsonb))))) " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(3)).pushParameterSetter(any());
     }
 
 }

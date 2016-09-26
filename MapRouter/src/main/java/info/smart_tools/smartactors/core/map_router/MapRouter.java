@@ -1,11 +1,13 @@
 package info.smart_tools.smartactors.core.map_router;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,16 @@ public class MapRouter implements IRouter {
 
     @Override
     public void register(final Object targetId, final IMessageReceiver receiver) {
-        map.put(targetId, receiver);
+        IMessageReceiver oldReceiver = map.put(targetId, receiver);
+
+        if (null != oldReceiver) {
+            System.out.println(MessageFormat.format("Warning: replacing receiver ({0}) registered as ''{1}'' by {2}",
+                    oldReceiver.toString(), targetId.toString(), receiver.toString()));
+        }
+    }
+
+    @Override
+    public List<Object> enumerate() {
+        return new ArrayList<>(map.keySet());
     }
 }

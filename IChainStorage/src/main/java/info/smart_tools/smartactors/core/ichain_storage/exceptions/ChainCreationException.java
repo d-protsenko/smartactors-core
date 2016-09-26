@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.ichain_storage.exceptions;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Exception thrown by {@link info.smart_tools.smartactors.core.ichain_storage.IChainStorage#register(Object, IObject)}
