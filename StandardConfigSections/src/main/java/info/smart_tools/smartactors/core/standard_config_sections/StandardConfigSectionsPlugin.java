@@ -34,7 +34,8 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> objectsSectionItem = new BootstrapItem("config_section:objects");
 
             objectsSectionItem
-                    .after("configuration_manager")
+                    .after("config_sections:start")
+                    .before("config_sections:done")
                     .after("router")
                     .after("IFieldNamePlugin")
                     .before("starter")
@@ -55,8 +56,9 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> mapsSectionItem = new BootstrapItem("config_section:maps");
 
             mapsSectionItem
+                    .after("config_sections:start")
+                    .before("config_sections:done")
                     .after("config_section:objects")
-                    .after("configuration_manager")
                     .after("receiver_chains_storage")
                     .after("receiver_chain")
                     .after("IFieldNamePlugin")
@@ -78,8 +80,9 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> executorSectionItem = new BootstrapItem("config_section:executor");
 
             executorSectionItem
+                    .after("config_sections:start")
+                    .before("config_sections:done")
                     .after("queue")
-                    .after("configuration_manager")
                     .after("IFieldNamePlugin")
                     .before("starter")
                     .process(() -> {
@@ -99,7 +102,8 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> endpointsSectionItem = new BootstrapItem("config_section:endpoints");
 
             endpointsSectionItem
-                    .after("configuration_manager")
+                    .after("config_sections:start")
+                    .before("config_sections:done")
                     .after("config_section:maps")
                     .after("config_section:executor")
                     .after("IFieldNamePlugin")
@@ -121,7 +125,8 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> messageBusItem = new BootstrapItem("config_section:messageBus");
 
             messageBusItem
-                    .after("configuration_manager")
+                    .after("config_sections:start")
+                    .before("config_sections:done")
                     .after("config_section:maps")
                     .after("config_section:executor")
                     .after("IFieldNamePlugin")

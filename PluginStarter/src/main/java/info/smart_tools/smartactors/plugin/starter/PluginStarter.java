@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * Implementation of {@link IPlugin}.
  *
  */
+// TODO: Delete
 public class PluginStarter implements IPlugin {
 
     /** Local storage for instance of {@link IBootstrap}*/
@@ -42,14 +43,14 @@ public class PluginStarter implements IPlugin {
             IBootstrapItem<String> configureItem = new BootstrapItem("starter");
             configureItem
                     .process(() -> {
-                        try {
-                            IConfigurationManager configurationManager = IOC.resolve(
-                                    Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-
-                            configurationManager.configure();
-                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
-                            throw new ActionExecuteException(e);
-                        }
+//                        try {
+//                            IConfigurationManager configurationManager = IOC.resolve(
+//                                    Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+//
+//                            configurationManager.configure();
+//                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
+//                            throw new ActionExecuteException(e);
+//                        }
                     });
 
             bootstrap.add(configureItem);

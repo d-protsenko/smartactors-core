@@ -36,7 +36,6 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("response_content_strategy");
 
             item
-                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(

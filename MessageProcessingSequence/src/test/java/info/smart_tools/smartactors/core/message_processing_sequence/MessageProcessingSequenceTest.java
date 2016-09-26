@@ -231,10 +231,10 @@ public class MessageProcessingSequenceTest {
             throws Exception {
         Throwable exception = mock(Throwable.class);
 
-        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+//        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequence(1, mainChainMock);
+        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock);
 
         sequence.catchException(exception, contextMock);
     }
@@ -250,7 +250,7 @@ public class MessageProcessingSequenceTest {
         IReceiverChain secondaryChain = mock(IReceiverChain.class);
 
         when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
-        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+//        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
         when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
 
