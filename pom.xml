@@ -21,7 +21,6 @@
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>ScopeCreationEventHandler</module>
         <module>IMessage</module>
         <module>IQueue</module>
@@ -171,11 +170,8 @@
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
-        <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
         <module>PluginPostgresDBTasks</module>
-        <module>ResolveByTypeStrategy</module>
-        <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
