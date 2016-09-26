@@ -24,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -70,7 +71,6 @@ public class ChainStorageTest {
 
         assertSame(chainMock, storage.resolve(idMock));
     }
-/*
 
     @Test
     public void Should_resolveAndStoreChains()
@@ -87,7 +87,7 @@ public class ChainStorageTest {
         IObject chainDesc = mock(IObject.class);
 
         PowerMockito.when(IOC.getKeyForKeyStorage()).thenReturn(keyStorageKey);
-        PowerMockito.when(IOC.resolve(same(keyStorageKey), eq(IReceiverChain.class.toString())))
+        PowerMockito.when(IOC.resolve(same(keyStorageKey), eq(IReceiverChain.class.getCanonicalName())))
                 .thenReturn(receiverChainKey);
 
         ChainStorage chainStorage = new ChainStorage(mapMock, routerMock);
@@ -99,8 +99,17 @@ public class ChainStorageTest {
         chainStorage.register(chainId, chainDesc);
 
         Mockito.verify(mapMock).put(chainId, receiverChainMock);
+        reset(mapMock);
+
+        when(mapMock.put(chainId, receiverChainMock)).thenReturn(mock(IReceiverChain.class));
+        PowerMockito
+                .when(IOC.resolve(same(receiverChainKey), same(chainId), same(chainDesc), same(chainStorage), same(routerMock)))
+                .thenReturn(receiverChainMock);
+
+        chainStorage.register(chainId, chainDesc);
+
+        Mockito.verify(mapMock).put(chainId, receiverChainMock);
     }
-*/
 
     @Test
     public void Should_wrapExceptionsThrownByIOC()
