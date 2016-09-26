@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.nested_field;
+package info.smart_tools.smartactors.field.nested_field;
 
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.iobject.IObject;

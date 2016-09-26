@@ -50,13 +50,14 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ifield-name</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>iobject.iobject</artifactId>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.iobject</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>iobject.ifield-name</artifactId>
+            <version>${core.version}</version>
         </dependency>
+
     </dependencies>
 </project>

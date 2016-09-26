@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field</artifactId>
+            <artifactId>field.field</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

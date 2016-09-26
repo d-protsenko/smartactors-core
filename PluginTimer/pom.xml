@@ -37,7 +37,7 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.ioc-container</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
