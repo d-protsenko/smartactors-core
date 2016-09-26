@@ -265,6 +265,9 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
+        <module>NonBlockingQueue</module>
+        <module>PluginBlockingQueue</module>
+        <module>PluginNonBlockingQueue</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
         <module>ITimer</module>
