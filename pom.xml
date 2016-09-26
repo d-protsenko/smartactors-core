@@ -109,7 +109,6 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
         <module>MessageToBytesMapper</module>
@@ -260,7 +259,6 @@
         <module>IResultChecker</module>
         <module>TestCheckers</module>
         <module>PluginTestCheckers</module>
-        <module>NestedField</module>
         <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>

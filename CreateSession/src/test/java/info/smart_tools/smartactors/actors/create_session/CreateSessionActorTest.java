@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.actors.create_session;
 
 import info.smart_tools.smartactors.actors.create_session.wrapper.CreateSessionMessage;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.iobject.ifield.IField;
