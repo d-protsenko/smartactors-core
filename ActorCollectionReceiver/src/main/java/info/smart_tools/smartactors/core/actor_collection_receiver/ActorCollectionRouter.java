@@ -4,7 +4,9 @@ import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,5 +25,10 @@ public class ActorCollectionRouter implements IRouter {
     @Override
     public void register(final Object targetId, final IMessageReceiver receiver) {
         this.storage.put(targetId, receiver);
+    }
+
+    @Override
+    public List<Object> enumerate() {
+        return new ArrayList<>(storage.keySet());
     }
 }

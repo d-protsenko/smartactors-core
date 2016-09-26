@@ -7,14 +7,14 @@ import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Implementation of {@link IThreadPool}.
  */
 public class ThreadPool implements IThreadPool {
-    private final BlockingQueue<ThreadImpl> threadsQueue;
+    private final Queue<ThreadImpl> threadsQueue;
     private IScope scope;
 
     /**
@@ -23,7 +23,7 @@ public class ThreadPool implements IThreadPool {
      * @param threadCount    initial count of threads.
      */
     public ThreadPool(final int threadCount) {
-        threadsQueue = new ArrayBlockingQueue<>(threadCount);
+        threadsQueue = new ConcurrentLinkedQueue<>();
 
         for (int i = 0; i < threadCount; i++) {
             threadsQueue.offer(new ThreadImpl(this));

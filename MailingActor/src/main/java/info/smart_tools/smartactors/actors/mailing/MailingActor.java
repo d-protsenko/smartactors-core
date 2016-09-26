@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.actors.mailing.email.MessagePartCreators;
 import info.smart_tools.smartactors.actors.mailing.email.SMTPMessageAdaptor;
 import info.smart_tools.smartactors.actors.mailing.exception.MailingActorException;
 import info.smart_tools.smartactors.actors.mailing.wrapper.MailingMessage;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;

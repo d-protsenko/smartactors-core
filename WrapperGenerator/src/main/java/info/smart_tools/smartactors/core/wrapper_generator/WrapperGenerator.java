@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ClassGenerator;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.iobject.ifield.IField;

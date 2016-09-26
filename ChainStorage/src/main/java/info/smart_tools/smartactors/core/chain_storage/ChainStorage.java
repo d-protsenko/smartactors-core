@@ -10,6 +10,9 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,11 +48,16 @@ public class ChainStorage implements IChainStorage {
     public void register(final Object chainId, final IObject description)
             throws ChainCreationException {
         try {
-            chainsMap.put(
-                    chainId,
-                    IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
-                            chainId, description, this, router));
+            IReceiverChain newChain = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
+                    chainId, description, this, router);
+
+            IReceiverChain oldChain = chainsMap.put(chainId, newChain);
+
+            if (null != oldChain) {
+                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
+                        oldChain.toString(), chainId.toString(), newChain.toString()));
+            }
         } catch (ResolutionException  e) {
             throw new ChainCreationException("Could not create a chain", e);
         }
@@ -65,5 +73,10 @@ public class ChainStorage implements IChainStorage {
         }
 
         return chain;
+    }
+
+    @Override
+    public List<Object> enumerate() {
+        return new ArrayList<>(chainsMap.keySet());
     }
 }

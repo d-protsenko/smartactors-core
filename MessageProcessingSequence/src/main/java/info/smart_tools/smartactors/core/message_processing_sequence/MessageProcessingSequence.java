@@ -184,9 +184,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
 
         for (int i = stackIndex; i >= 0; --i) {
             IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainAndEnvironments(exception);
-            this.afterExceptionAction = (IAction<IMessageProcessingSequence>) exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
-            IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(this.chainFieldName);
-            if (null != exceptionalChain) {
+            if (null != exceptionalChainAndEnv) {
+                this.afterExceptionAction = (IAction<IMessageProcessingSequence>) exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
+                IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(this.chainFieldName);
                 caughtLevel = i;
                 caughtStep = stepStack[caughtLevel];
 

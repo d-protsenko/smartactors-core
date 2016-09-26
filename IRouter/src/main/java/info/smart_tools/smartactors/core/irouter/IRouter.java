@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.core.irouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 
+import java.util.List;
+
 /**
  * The router stores {@link IMessageReceiver}s.
  */
@@ -23,4 +25,11 @@ public interface IRouter {
      * @param receiver    e receiver
      */
     void register(Object targetId, IMessageReceiver receiver);
+
+    /**
+     * Enumerate receivers registered in this router.
+     *
+     * @return list of identifiers of all receivers registered in this router
+     */
+    List<Object> enumerate();
 }
