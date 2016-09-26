@@ -21,7 +21,6 @@
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>ScopeCreationEventHandler</module>
         <module>IMessage</module>
         <module>IQueue</module>
@@ -110,7 +109,6 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
         <module>MessageToBytesMapper</module>
@@ -171,11 +169,8 @@
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginIObjectSimpleImpl</module>
-        <module>ResolveIObjectStrategies</module>
         <module>PluginResolveIObjectStrategies</module>
         <module>PluginPostgresDBTasks</module>
-        <module>ResolveByTypeStrategy</module>
-        <module>ResolveStandardTypesStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
         <module>PluginFieldName</module>
@@ -264,13 +259,21 @@
         <module>IResultChecker</module>
         <module>TestCheckers</module>
         <module>PluginTestCheckers</module>
-        <module>NestedField</module>
         <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
+        <module>NonBlockingQueue</module>
+        <module>PluginBlockingQueue</module>
+        <module>PluginNonBlockingQueue</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
+        <module>ITimer</module>
+        <module>TimerImpl</module>
+        <module>PluginTimer</module>
+        <module>ObjectEnumerationActor</module>
+        <module>BootstrapPlugin</module>
+        <module>PluginObjectEnumerationActor</module>
     </modules>
 
     <repositories>

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
