@@ -45,6 +45,7 @@ public class UserAuthByLoginActor {
     private IField pageF;
     private IField filterF;
 
+    private IField userIdF;
     private IField loginF;
     private IField passwordF;
     private IField equalsF;
@@ -83,8 +84,9 @@ public class UserAuthByLoginActor {
             pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
             filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
 
+            userIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
             loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
-            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
             this.passwordEncoder = IOC.resolve(
@@ -120,6 +122,7 @@ public class UserAuthByLoginActor {
             checkMsg(message);
             IObject user = resolveLogin(message, poolGuard);
             validatePassword(message, user);
+            message.setUserId(userIdF.in(user));
             setSuccessResponse(message);
         } catch (PoolGuardException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
             try {
