@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.core.message_processing_sequence.MessageProc
 import info.smart_tools.smartactors.core.message_processor.FinalTask;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 
 /**
  *
@@ -112,10 +111,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                IConfigurationManager configurationManager =
-                                                        IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-
-                                                config = configurationManager.getConfig();
+                                                config = IOC.resolve(Keys.getOrAdd("global constants"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }

@@ -266,6 +266,15 @@
         <module>NonBlockingQueue</module>
         <module>PluginBlockingQueue</module>
         <module>PluginNonBlockingQueue</module>
+        <module>ServerWithFeatures</module>
+        <module>IFeatureLoader</module>
+        <module>FeatureLoader</module>
+        <module>PluginFeatureLoader</module>
+        <module>IFilesystemFacade</module>
+        <module>FilesystemFacade</module>
+        <module>PluginFilesystemFacade</module>
+        <module>ConstantsSectionStrategy</module>
+        <module>PluginGlobalConstants</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
         <module>ITimer</module>

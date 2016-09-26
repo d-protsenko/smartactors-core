@@ -24,7 +24,8 @@ public class ThreadPoolTest {
         threadPool = new ThreadPool(2);
     }
 
-    @Test
+    // Disable as unlimited queue is used
+//    @Test()
     public void Should_interruptThread_WhenThereIsNoMorePlaceInQueue()
             throws Exception {
         ThreadImpl threadMock = mock(ThreadImpl.class);

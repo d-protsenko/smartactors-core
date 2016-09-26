@@ -93,7 +93,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
                         continue;
                     }
 
-                    if (Arrays.asList(clazz.getInterfaces()).contains(IPlugin.class)) {
+                    if (IPlugin.class.isAssignableFrom(clazz) && clazz != IPlugin.class) {
                         creator.execute(clazz);
                     }
                 }

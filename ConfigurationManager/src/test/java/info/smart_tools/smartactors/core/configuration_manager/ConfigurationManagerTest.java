@@ -2,17 +2,16 @@ package info.smart_tools.smartactors.core.configuration_manager;
 
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.exception.invalid_state_exception.InvalidStateException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link ConfigurationManager}.
@@ -45,84 +44,50 @@ public class ConfigurationManagerTest {
         new ConfigurationManager().addSectionStrategy(null);
     }
 
-    @Test(expected = InvalidArgumentException.class)
-    public void Should_throwWhenConfigIsNull()
-            throws Exception {
-        new ConfigurationManager().setInitialConfig(null);
-    }
-
     @Test
-    public void Should_storeInitialConfigurationObject()
+    public void Should_applyStrategyToConfigurationIfSectionIsPresent()
             throws Exception {
-        IObject configMock = mock(IObject.class);
-
-        IConfigurationManager configurationManager = new ConfigurationManager();
-
-        configurationManager.setInitialConfig(configMock);
-
-        assertSame(configMock, configurationManager.getConfig());
-    }
-
-    @Test
-    public void Should_configure_callAllStrategies()
-            throws Exception {
+        IFieldName sectionNameMock1 = mock(IFieldName.class);
+        IFieldName sectionNameMock2 = mock(IFieldName.class);
         ISectionStrategy sectionStrategy1 = mock(ISectionStrategy.class);
         ISectionStrategy sectionStrategy2 = mock(ISectionStrategy.class);
+
         IObject configMock = mock(IObject.class);
 
-        when(sectionStrategy1.getSectionName()).thenReturn(mock(IFieldName.class));
-        when(sectionStrategy2.getSectionName()).thenReturn(mock(IFieldName.class));
+        when(sectionStrategy1.getSectionName()).thenReturn(sectionNameMock1);
+        when(sectionStrategy2.getSectionName()).thenReturn(sectionNameMock2);
+
+        when(configMock.getValue(sectionNameMock1)).thenReturn(null);
+        when(configMock.getValue(sectionNameMock2)).thenReturn(new Object());
 
         IConfigurationManager configurationManager = new ConfigurationManager();
 
         configurationManager.addSectionStrategy(sectionStrategy1);
         configurationManager.addSectionStrategy(sectionStrategy2);
-        configurationManager.setInitialConfig(configMock);
 
-        configurationManager.configure();
+        configurationManager.applyConfig(configMock);
 
-        verify(sectionStrategy1).onLoadConfig(same(configMock));
         verify(sectionStrategy2).onLoadConfig(same(configMock));
+        verify(sectionStrategy1, times(2)).getSectionName();
+        verify(sectionStrategy2, times(2)).getSectionName();
+        verifyNoMoreInteractions(sectionStrategy1, sectionStrategy2);
     }
 
-    @Test(expected = InvalidStateException.class)
-    public void Should_configure_throw_When_initialConfigIsNotSet()
+    @Test(expected = ConfigurationProcessingException.class)
+    public void Should_wrapExceptionWhenCannotReadSectionValue()
             throws Exception {
-        new ConfigurationManager().configure();
-    }
+        IFieldName sectionNameMock1 = mock(IFieldName.class);
+        ISectionStrategy sectionStrategy1 = mock(ISectionStrategy.class);
 
-    @Test(expected = InvalidStateException.class)
-    public void Should_configure_throw_When_calledTwice()
-            throws Exception {
         IObject configMock = mock(IObject.class);
+
+        when(sectionStrategy1.getSectionName()).thenReturn(sectionNameMock1);
+
+        when(configMock.getValue(sectionNameMock1)).thenThrow(ReadValueException.class);
 
         IConfigurationManager configurationManager = new ConfigurationManager();
 
-        configurationManager.setInitialConfig(configMock);
-
-        try {
-            configurationManager.configure();
-        } catch (Exception e) {
-            fail();
-        }
-
-        configurationManager.configure();
-    }
-
-    @Test(expected = InvalidStateException.class)
-    public void Should_throw_whenTryingToSetInitialConfigAfterConfigureCall()
-            throws Exception {
-        IObject configMock = mock(IObject.class);
-
-        IConfigurationManager configurationManager = new ConfigurationManager();
-
-        try {
-            configurationManager.setInitialConfig(configMock);
-            configurationManager.configure();
-        } catch (Exception e) {
-            fail();
-        }
-
-        configurationManager.setInitialConfig(configMock);
+        configurationManager.addSectionStrategy(sectionStrategy1);
+        configurationManager.applyConfig(configMock);
     }
 }
