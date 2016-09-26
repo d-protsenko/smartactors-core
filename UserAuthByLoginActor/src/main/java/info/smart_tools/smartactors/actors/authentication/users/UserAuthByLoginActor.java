@@ -84,7 +84,7 @@ public class UserAuthByLoginActor {
             filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
 
             loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
-            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
             this.passwordEncoder = IOC.resolve(
