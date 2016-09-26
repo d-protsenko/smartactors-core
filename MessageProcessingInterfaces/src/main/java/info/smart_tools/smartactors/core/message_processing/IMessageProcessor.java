@@ -42,12 +42,20 @@ public interface IMessageProcessor {
     IMessageProcessingSequence getSequence();
 
     /**
-     * Returns the message environment object. The environment object should contain at least the following fields:
-     * - "message" - the message itself (as instance of {@link IObject})
-     * - "context" - the {@link IObject} containing non-serializable objects related to processing of the message
-     * - "response" - the {@link IObject} containing fields that will be sent as a response to the processed message
-     * - "sequence" - the {@link IMessageProcessingSequence} instance associated with the message
-     * - "arguments" - the arguments {@link IObject} passed from {@link IReceiverChain}
+     * Returns the message environment object.
+     *
+     * <p>
+     * If there is no wrapper IObject generated (it is generated when arguments of current target contain "wrapper" field) the environment
+     * object should contain at least the following fields:
+     * </p>
+     * <ul>
+     *   <li>{@code "message"} - the message itself (as instance of {@link IObject})</li>
+     *   <li>{@code "context"} - the {@link IObject} containing non-serializable objects related to processing of the message</li>
+     *   <li>{@code "response"} - the {@link IObject} containing fields that will be sent as a response to the processed message</li>
+     *   <li>{@code "sequence"} - the {@link IMessageProcessingSequence} instance associated with the message</li>
+     *   <li>{@code "arguments"} - the arguments {@link IObject} passed from {@link IReceiverChain}</li>
+     *   <li>{@code "processor"} - reference to this message processor itself</li>
+     * </ul>
      *
      * @return the environment object
      */
