@@ -30,6 +30,7 @@ public class ClientActor {
         try {
             requestSender = IOC.resolve(Keys.getOrAdd(IRequestSender.class.getCanonicalName()), message.getRequest());
             requestSender.sendRequest(message.getRequest());
+            IOC.resolve(Keys.getOrAdd("stopHttpClient"), requestSender);
         } catch (RequestSenderException | ResolutionException e) {
             throw new RequestSenderActorException(e);
         }
