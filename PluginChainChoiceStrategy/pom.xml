@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

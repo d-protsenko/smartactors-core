@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.https_server;
 
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.tcp_server.TcpServer;
 import info.smart_tools.smartactors.core.tcp_server.exceptions.ServerInitializationException;
 import io.netty.channel.ChannelInboundHandler;

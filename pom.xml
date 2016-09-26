@@ -18,19 +18,9 @@
     </properties>
 
     <modules>
-        <module>IOC</module>
-        <module>IocContainer</module>
-        <module>IStrategyContainer</module>
-        <module>StrategyContainer</module>
-        <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>IKey</module>
-        <module>IIocContainer</module>
-        <module>IocContainerSimpleImplementation</module>
-        <module>ResolveByNameIocStrategy</module>
-        <module>ResolveByNameIocWithLambdaStrategy</module>
         <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>ScopeCreationEventHandler</module>
         <module>IMessage</module>
@@ -75,7 +65,6 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>PluginTestJar</module>
-        <module>NamedKeysStorage</module>
         <module>FilesystemTracker</module>
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
@@ -97,7 +86,6 @@
         <module>PluginPostgresConnectionPool</module>
         <module>PluginIField</module>
         <module>IStorageConnection</module>
-        <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>

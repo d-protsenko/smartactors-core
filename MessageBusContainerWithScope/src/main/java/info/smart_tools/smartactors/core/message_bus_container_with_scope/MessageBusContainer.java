@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.message_bus_container_with_scope;
 
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.core.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 
 /**
  * Implementation of {@link IMessageBusContainer}.

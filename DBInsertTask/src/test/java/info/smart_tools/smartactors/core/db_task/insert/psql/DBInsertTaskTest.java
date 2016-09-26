@@ -23,7 +23,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.core.sql_commons.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.sql_commons.QueryStatement;
 import info.smart_tools.smartactors.core.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.core.string_ioc_key.Key;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
