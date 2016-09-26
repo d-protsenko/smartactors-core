@@ -2,10 +2,10 @@ package info.smart_tools.smartactors.core.configuration_manager;
 
 import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.invalid_state_exception.InvalidStateException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_state_exception.InvalidStateException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

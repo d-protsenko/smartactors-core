@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.core.message_processor;
 
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
 
 import java.util.Map;
@@ -42,6 +42,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private IFieldName sequenceFieldName;
     private IFieldName argumentsFieldName;
     private IFieldName wrapperFieldName;
+
+    private ITask finalTask;
 
     /**
      * True if processing was interrupted (using {@link #pauseProcess()}) during execution of last receiver.
@@ -112,6 +114,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
         wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
+
+        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "final task"), this.environment);
     }
 
     @Override
@@ -127,8 +131,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(responseFieldName, response);
         environment.setValue(messageFieldName, theMessage);
         environment.setValue(contextFieldName, theContext);
-
-        messageProcessingSequence.reset();
+        this.messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -252,6 +255,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private void enqueueNext() {
         if (messageProcessingSequence.next()) {
             enqueue();
+        } else {
+            this.complete();
         }
     }
 
@@ -264,6 +269,12 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     }
 
     private void complete() {
+        try {
+            this.taskQueue.put(this.finalTask);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         // TODO: Return message, context, response and {@code this} to the pool
     }
 }

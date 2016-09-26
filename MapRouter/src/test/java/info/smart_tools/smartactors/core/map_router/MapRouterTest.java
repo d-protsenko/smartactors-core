@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.core.map_router;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
@@ -44,5 +45,17 @@ public class MapRouterTest {
     public void Should_throwWhenNoRouteFound()
             throws Exception {
         new MapRouter(mock(Map.class)).route(mock(Object.class));
+    }
+
+    @Test
+    public void Should_enumerate_returnListOfIdentifiersOfAllReceivers()
+            throws Exception {
+        Set<Object> keys = new HashSet<>(Arrays.asList(new Object(), new Object()));
+        Map<Object, IMessageReceiver> mapMock = mock(Map.class);
+        when(mapMock.keySet()).thenReturn(keys);
+
+        IRouter router = new MapRouter(mapMock);
+
+        assertEquals(new ArrayList<Object>(keys), router.enumerate());
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actors.authentication.users.wrappers;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import javax.annotation.Nonnull;
 

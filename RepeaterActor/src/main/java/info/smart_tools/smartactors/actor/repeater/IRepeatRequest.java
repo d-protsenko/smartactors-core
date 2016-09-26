@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.actor.repeater;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 

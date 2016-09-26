@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.ifeature_manager;
 
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 
 /**
  *

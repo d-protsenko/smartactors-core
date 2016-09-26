@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.plugin.null_connection_pool;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;

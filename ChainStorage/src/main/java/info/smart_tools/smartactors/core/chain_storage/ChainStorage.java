@@ -3,13 +3,15 @@ package info.smart_tools.smartactors.core.chain_storage;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,9 +63,14 @@ public class ChainStorage implements IChainStorage {
         IReceiverChain chain = chainsMap.get(chainId);
 
         if (null == chain) {
-            throw new ChainNotFoundException("Chain not found.");
+            throw new ChainNotFoundException(chainId);
         }
 
         return chain;
+    }
+
+    @Override
+    public List<Object> enumerate() {
+        return new ArrayList<>(chainsMap.keySet());
     }
 }

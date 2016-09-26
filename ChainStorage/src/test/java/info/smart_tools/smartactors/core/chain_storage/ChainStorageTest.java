@@ -3,20 +3,20 @@ package info.smart_tools.smartactors.core.chain_storage;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -123,5 +123,21 @@ public class ChainStorageTest {
         } catch (ChainCreationException e) {
             assertSame(resolutionException, e.getCause());
         }
+    }
+
+    @Test
+    public void Should_enumerate_returnListOfAllChainIdentifiers()
+            throws Exception {
+        IRouter routerMock = mock(IRouter.class);
+        Map<Object, IReceiverChain> map = new HashMap<>();
+        Object key1 = mock(Object.class), key2 = mock(Object.class);
+        IReceiverChain chainMock = mock(IReceiverChain.class);
+
+        map.put(key1, chainMock);
+        map.put(key2, chainMock);
+
+        ChainStorage chainStorage = new ChainStorage(map, routerMock);
+
+        assertEquals(new ArrayList<Object>(map.keySet()), chainStorage.enumerate());
     }
 }

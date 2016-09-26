@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.transformation_rules.get_first_not_null;
 
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -24,19 +24,19 @@
         <!-- Service locator -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Core implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ds_object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -51,27 +51,27 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.singleton_strategy</artifactId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.create_new_instance_strategy</artifactId>
+            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

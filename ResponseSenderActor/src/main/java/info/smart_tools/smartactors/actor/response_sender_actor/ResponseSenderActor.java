@@ -3,25 +3,20 @@ package info.smart_tools.smartactors.actor.response_sender_actor;
 import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
 import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Actor for sending response to client
  */
 public class ResponseSenderActor {
+
     /**
      * Constructor for actor
      */
@@ -49,6 +44,7 @@ public class ResponseSenderActor {
             //Create and fill full environment
             IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             environment.setValue(responseFieldName, responseIObject);
@@ -68,6 +64,7 @@ public class ResponseSenderActor {
             IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
                     environment);
             sender.send(response, environment, channelHandler);
+            messageWrapper.getEnvironmentIObject(contextFieldName).setValue(httpResponseIsSentFieldName, true);
         } catch (Exception e) {
             throw new ResponseSenderActorException(e);
         }
