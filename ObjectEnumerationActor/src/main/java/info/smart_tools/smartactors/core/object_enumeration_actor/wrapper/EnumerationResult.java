@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.object_enumeration_actor.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 
 import java.util.List;
 

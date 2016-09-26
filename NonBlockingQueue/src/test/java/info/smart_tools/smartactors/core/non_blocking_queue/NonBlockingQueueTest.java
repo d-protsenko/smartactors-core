@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.non_blocking_queue;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import org.junit.Test;
 
