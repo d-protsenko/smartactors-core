@@ -267,6 +267,9 @@
         <module>PluginDateTimeFormatterStrategy</module>
         <module>RepeaterActor</module>
         <module>PluginRepeaterActor</module>
+        <module>ITimer</module>
+        <module>TimerImpl</module>
+        <module>PluginTimer</module>
         <module>ObjectEnumerationActor</module>
         <module>BootstrapPlugin</module>
         <module>PluginObjectEnumerationActor</module>
