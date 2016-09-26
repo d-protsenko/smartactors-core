@@ -1,0 +1,4 @@
+{
+  "out_getSessionId": "context/sessionId",
+  "out_getProcessor": "processor"
+}
