@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 
 /**
  * Implementation of {@link IPlugin}.
@@ -51,7 +52,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                                                     IOC.resolve(
                                                             IOC.resolve(
                                                                     IOC.getKeyForKeyStorage(),
-                                                                    "info.smart_tools.smartactors.core.ifield_name.IFieldName"
+                                                                    IFieldName.class.getCanonicalName()
                                                             ), "messageMapId"
                                                     )
                                             );
