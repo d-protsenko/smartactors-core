@@ -15,6 +15,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -121,5 +123,21 @@ public class ChainStorageTest {
         } catch (ChainCreationException e) {
             assertSame(resolutionException, e.getCause());
         }
+    }
+
+    @Test
+    public void Should_enumerate_returnListOfAllChainIdentifiers()
+            throws Exception {
+        IRouter routerMock = mock(IRouter.class);
+        Map<Object, IReceiverChain> map = new HashMap<>();
+        Object key1 = mock(Object.class), key2 = mock(Object.class);
+        IReceiverChain chainMock = mock(IReceiverChain.class);
+
+        map.put(key1, chainMock);
+        map.put(key2, chainMock);
+
+        ChainStorage chainStorage = new ChainStorage(map, routerMock);
+
+        assertEquals(new ArrayList<Object>(map.keySet()), chainStorage.enumerate());
     }
 }

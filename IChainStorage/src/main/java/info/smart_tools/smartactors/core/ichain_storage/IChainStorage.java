@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFound
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.util.List;
+
 /**
  * Storage of {@link IReceiverChain}'s.
  */
@@ -26,4 +28,11 @@ public interface IChainStorage {
      * @throws ChainNotFoundException if there is no chain associated with given identifier
      */
     IReceiverChain resolve(Object chainId) throws ChainNotFoundException;
+
+    /**
+     * Get list of identifiers of all chains stored in this storage.
+     *
+     * @return list of identifiers of all chains
+     */
+    List<Object> enumerate();
 }
