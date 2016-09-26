@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.plugin.http_client_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.core.http_client.HttpClient;
@@ -12,6 +13,7 @@ import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionExcep
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -70,12 +72,12 @@ public class HttpClientPlugin implements IPlugin {
 
                                                 }
                                             };
-                                    HttpClientHandler handler = new HttpClientHandler();
+                                    HttpClientHandler handler = new HttpClientHandler(null);
                                     IOC.register(Keys.getOrAdd("httpClient"), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         IObject requestConfiguration = (IObject) args[0];
                                                         try {
-                                                            return new HttpClient(
+                                                            HttpClient client = new HttpClient(
                                                                     IOC.resolve(
                                                                             Keys.getOrAdd(URI.class.getCanonicalName()),
                                                                             requestConfiguration.getValue(uriFieldName)
@@ -83,9 +85,19 @@ public class HttpClientPlugin implements IPlugin {
                                                                     handler
 
                                                             );
-                                                        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
+                                                            client.start();
+                                                            return client;
+                                                        } catch (ResolutionException | InvalidArgumentException
+                                                                | ReadValueException | RequestSenderException e) {
                                                             throw new RuntimeException(e);
                                                         }
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(Keys.getOrAdd("stopHttpClient"), new ApplyFunctionToArgumentsStrategy(
+                                                    (args) -> {
+                                                        HttpClient client = (HttpClient) args[0];
+                                                        return client.stop();
                                                     }
                                             )
                                     );

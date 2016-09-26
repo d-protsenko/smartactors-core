@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.iclient.IClient;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.core.irequest_sender.IRequestSender;
+import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
@@ -32,7 +33,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     private IClientConfig clientConfig;
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
     private static final int DEFAULT_READ_TIMEOUT_SEC = 5;
-
+    private int port;
     /**
      * Constructor for netty client
      * @param serverUri URI of the server
@@ -44,6 +45,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         this.serverUri = serverUri;
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
+        this.port = serverUri.getPort() == -1 ? 80 : serverUri.getPort();
     }
 
     public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
@@ -65,7 +67,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         Bootstrap bootstrap = bootstrapClient();
         NettyClient<TRequest> me = this;
         ChannelFuture future = bootstrap.connect(serverUri.getHost(),
-                serverUri.getPort()).addListener(new ChannelFutureListener() {
+                port).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(final ChannelFuture future) throws Exception {
                 if (!future.isSuccess()) {
@@ -89,6 +91,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      */
     public CompletableFuture<Void> send(final TRequest request) {
         return CompletableNettyFuture.from(channel.writeAndFlush(request));
+
     }
 
     @Override
@@ -96,7 +99,6 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         return wrapToCompletableFuture(channel.close())
                 .thenCompose(x -> wrapToCompletableFuture(workerGroup.shutdownGracefully()));
     }
-
     /**
      * Setup a communication channel pipeline.
      * Typically, it will add some decoders for initial bytes received from some kind of Socket.

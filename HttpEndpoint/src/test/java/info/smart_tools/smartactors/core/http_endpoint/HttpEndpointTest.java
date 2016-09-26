@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
@@ -64,7 +65,7 @@ public class HttpEndpointTest {
 
 
     @BeforeMethod
-    public void setUp() throws ExecutionException, InterruptedException, URISyntaxException, InvalidArgumentException, ResolutionException, RegistrationException, ScopeProviderException {
+    public void setUp() throws ExecutionException, InterruptedException, URISyntaxException, InvalidArgumentException, ResolutionException, RegistrationException, ScopeProviderException, RequestSenderException {
         mapperStub = mock(IMessageMapper.class);
         receiver = mock(IReceiverChain.class);
         environmentHandler = mock(IEnvironmentHandler.class);
@@ -190,7 +191,7 @@ public class HttpEndpointTest {
                 environmentHandler, receiver);
     }
 
-    protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException {
+    protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException, RequestSenderException {
         return new HttpClient(new URI("http://localhost:" + getTestingPort()), handler);
     }
 
