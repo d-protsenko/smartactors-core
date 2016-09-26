@@ -18,29 +18,11 @@
     </properties>
 
     <modules>
-        <module>IObject</module>
-        <module>IOC</module>
-        <module>IScope</module>
-        <module>ScopeProvider</module>
-        <module>RecursiveScope</module>
-        <module>IocContainer</module>
-        <module>ScopeProviderContainer</module>
-        <module>IStrategyContainer</module>
-        <module>ScopeGuard</module>
-        <module>StrategyContainer</module>
-        <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>IKey</module>
-        <module>IIocContainer</module>
-        <module>IocContainerSimpleImplementation</module>
-        <module>IScopeProviderContainer</module>
-        <module>ResolveByNameIocStrategy</module>
-        <module>ResolveByNameIocWithLambdaStrategy</module>
         <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IObjectSimpleImplementation</module>
         <module>IMessage</module>
         <module>IQueue</module>
         <module>BlockingQueue</module>
@@ -83,12 +65,10 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>PluginTestJar</module>
-        <module>NamedKeysStorage</module>
         <module>FilesystemTracker</module>
         <module>IFilesystemTracker</module>
         <module>IFeatureManager</module>
         <module>FeatureManager</module>
-        <module>DSObject</module>
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
@@ -106,7 +86,6 @@
         <module>PluginPostgresConnectionPool</module>
         <module>PluginIField</module>
         <module>IStorageConnection</module>
-        <module>RecursiveStrategyContainer</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -121,7 +100,6 @@
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
-        <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
         <module>HttpEndpoint</module>
         <module>IMessageMapper</module>
@@ -132,11 +110,9 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>IField</module>
         <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
-        <module>IFieldName</module>
         <module>MessageToBytesMapper</module>
         <module>IResponseSender</module>
         <module>HttpResponseSender</module>
@@ -165,7 +141,6 @@
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
-        <module>FieldName</module>
         <module>PluginIFieldName</module>
         <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
@@ -288,7 +263,6 @@
         <module>IAssertion</module>
         <module>IResultChecker</module>
         <module>TestCheckers</module>
-        <module>InitializationException</module>
         <module>PluginTestCheckers</module>
         <module>NestedField</module>
         <module>PluginNestedField</module>

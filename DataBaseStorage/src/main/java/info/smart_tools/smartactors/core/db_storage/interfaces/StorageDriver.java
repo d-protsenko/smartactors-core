@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.db_storage.interfaces;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.StorageException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 public interface StorageDriver {
 

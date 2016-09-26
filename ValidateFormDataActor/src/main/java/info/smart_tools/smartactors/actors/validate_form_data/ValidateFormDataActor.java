@@ -3,12 +3,12 @@ package info.smart_tools.smartactors.actors.validate_form_data;
 import info.smart_tools.smartactors.actors.validate_form_data.exception.ValidateFormException;
 import info.smart_tools.smartactors.actors.validate_form_data.parser.Parser;
 import info.smart_tools.smartactors.actors.validate_form_data.wrapper.ValidateFormDataMessage;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.field.Field;
 
 import java.util.Iterator;

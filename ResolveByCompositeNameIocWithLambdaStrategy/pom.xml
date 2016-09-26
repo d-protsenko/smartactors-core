@@ -21,14 +21,14 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
+            <artifactId>ioc.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.string_ioc_key</artifactId>
+            <artifactId>ioc.string-ioc-key</artifactId>
             <version>${core.version}</version>
         </dependency>
 

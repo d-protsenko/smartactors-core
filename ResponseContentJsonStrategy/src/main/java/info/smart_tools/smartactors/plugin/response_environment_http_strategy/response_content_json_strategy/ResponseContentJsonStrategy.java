@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.response_environment_http_strategy.response_content_json_strategy;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
 

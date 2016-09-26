@@ -124,7 +124,7 @@ public class ClassGeneratorTest {
         ClassGenerator classGenerator = new ClassGenerator(cl);
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
-                "import info.smart_tools.smartactors.core.ifield_name.IFieldName;\n" +
+                "import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;\n" +
                 "public class TestClass implements TestInterface, IFieldName {\n" +
                 "    private int a;\n" +
                 "    public Integer getA() {\n" +

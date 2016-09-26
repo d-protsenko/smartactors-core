@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.cached_collection.wrapper.delete;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Item for deleting which using in @DeleteFromCachedCollectionQuery
