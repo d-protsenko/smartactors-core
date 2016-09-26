@@ -288,6 +288,8 @@
         <module>PluginHttpClient</module>
         <module>HttpClientHandler</module>
         <module>IHttpResponseHandler</module>
+        <module>HttpResponseHandler</module>
+        <module>HttpResponseDeserializationStrategy</module>
     </modules>
 
     <repositories>

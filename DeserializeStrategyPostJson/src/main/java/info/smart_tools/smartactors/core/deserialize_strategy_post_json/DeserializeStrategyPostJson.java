@@ -11,7 +11,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
  * Strategy for deserialization message from post request with application/json content-type.
  * Default strategy.
  */
-public class DeserializeStrategyPostJson implements IDeserializeStrategy {
+public class DeserializeStrategyPostJson implements IDeserializeStrategy<FullHttpRequest> {
     private final IMessageMapper<byte[]> messageMapper;
 
     /**
