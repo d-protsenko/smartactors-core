@@ -8,17 +8,9 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
  */
 public interface IRequestSender {
     /**
-     * Method for initialize request sender
-     *
-     * @param configuration IObject with configuration of request sender
-     */
-    void init(final IObject configuration) throws RequestSenderException;
-
-    /**
      * Method for sending request to other server
      *
-     * @param request request, that should be sended
-     * @return IObject, that contains response from the server
+     * @param request request, that should be send
      */
-    IObject sendRequest(final IObject request) throws RequestSenderException;
+    void sendRequest(final IObject request) throws RequestSenderException;
 }

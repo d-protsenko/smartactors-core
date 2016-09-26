@@ -285,7 +285,8 @@
         <module>PluginRepeaterActor</module>
         <module>ClientActor</module>
         <module>IRequestSender</module>
-        <module>NettyRequestSender</module>
+        <module>PluginHttpClient</module>
+        <module>HttpClientHandler</module>
     </modules>
 
     <repositories>

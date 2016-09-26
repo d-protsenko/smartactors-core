@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.core.netty_client;
 
 import info.smart_tools.smartactors.core.CompletableNettyFuture;
+import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.iclient.IClient;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
+import info.smart_tools.smartactors.core.irequest_sender.IRequestSender;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
@@ -21,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <TRequest> type of the request which client can send
  */
-public abstract class NettyClient<TRequest> implements IClient<TRequest> {
+public abstract class NettyClient<TRequest> implements IClient<TRequest>, IRequestSender {
     private static EventLoopGroup workerGroup = new NioEventLoopGroup(1);
     private Channel channel;
     private URI serverUri;

@@ -28,8 +28,8 @@ public class ClientActor {
             throws RequestSenderActorException {
         IRequestSender requestSender = null;
         try {
-            requestSender = IOC.resolve(Keys.getOrAdd(IRequestSender.class.getCanonicalName()), message.getRequestSettings());
-            message.setResponse(requestSender.sendRequest(message.getRequest()));
+            requestSender = IOC.resolve(Keys.getOrAdd(IRequestSender.class.getCanonicalName()), message.getRequest());
+            requestSender.sendRequest(message.getRequest());
         } catch (RequestSenderException | ResolutionException e) {
             throw new RequestSenderActorException(e);
         }
