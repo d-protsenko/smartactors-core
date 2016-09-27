@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.itask</artifactId>
+            <artifactId>task.interfaces.itask</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

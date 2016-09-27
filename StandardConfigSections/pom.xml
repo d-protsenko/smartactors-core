@@ -89,17 +89,17 @@
         <!-- Executor creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iqueue</artifactId>
+            <artifactId>task.interfaces.iqueue</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.task_dispatcher</artifactId>
+            <artifactId>task.task-dispatcher</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.thread_pool</artifactId>
+            <artifactId>task.thread-pool</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.core.imessage_bus_handler.exception.MessageB
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;

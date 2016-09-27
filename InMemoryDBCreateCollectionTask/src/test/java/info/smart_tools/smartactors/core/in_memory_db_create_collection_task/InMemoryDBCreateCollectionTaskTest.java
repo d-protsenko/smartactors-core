@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;

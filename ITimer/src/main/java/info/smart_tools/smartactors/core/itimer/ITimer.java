@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.itimer;
 
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.itimer.exceptions.TaskScheduleException;
 
 /**

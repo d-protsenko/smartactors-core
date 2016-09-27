@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;

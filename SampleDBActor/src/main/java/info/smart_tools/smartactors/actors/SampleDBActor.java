@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;

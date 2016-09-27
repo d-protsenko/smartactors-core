@@ -12,8 +12,8 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 

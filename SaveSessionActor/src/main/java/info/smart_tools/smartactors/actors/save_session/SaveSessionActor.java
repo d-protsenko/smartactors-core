@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;

@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.timer_impl;
 
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.itimer.ITimerTask;
 import info.smart_tools.smartactors.core.itimer.exceptions.TaskScheduleException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;

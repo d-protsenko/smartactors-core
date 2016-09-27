@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;

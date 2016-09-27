@@ -23,13 +23,6 @@
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
         <module>IMessage</module>
-        <module>IQueue</module>
-        <module>BlockingQueue</module>
-        <module>IThreadPool</module>
-        <module>ThreadPool</module>
-        <module>ITaskDispatcher</module>
-        <module>TaskDispatcher</module>
-        <module>ITask</module>
         <module>DataBaseStorage</module>
         <module>SqlCommons</module>
         <module>IAsyncService</module>
@@ -263,7 +256,6 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
-        <module>NonBlockingQueue</module>
         <module>PluginBlockingQueue</module>
         <module>PluginNonBlockingQueue</module>
         <module>ServerWithFeatures</module>

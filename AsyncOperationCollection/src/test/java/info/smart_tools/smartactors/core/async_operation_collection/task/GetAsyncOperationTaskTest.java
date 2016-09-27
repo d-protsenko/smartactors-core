@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;

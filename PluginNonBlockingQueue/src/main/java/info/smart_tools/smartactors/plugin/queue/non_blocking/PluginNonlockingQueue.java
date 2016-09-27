@@ -10,9 +10,9 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.non_blocking_queue.NonBlockingQueue;
+import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
