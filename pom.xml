@@ -284,6 +284,7 @@
         <module>BootstrapPlugin</module>
         <module>PluginObjectEnumerationActor</module>
         <module>SchedulerInterfaces</module>
+        <module>SchedulerActor</module>
     </modules>
 
     <repositories>
