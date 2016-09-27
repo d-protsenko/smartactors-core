@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wrapper_generator</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

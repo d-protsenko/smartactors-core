@@ -42,6 +42,11 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ifield</artifactId>
             <version>${core.version}</version>
         </dependency>

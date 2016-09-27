@@ -150,7 +150,9 @@ public class ServerWithConfiguration implements IServer {
 
 
                     "info.smart_tools.smartactors:plugin.datetime_formatter_strategy:0.2.0-SNAPSHOT",
-                    "info.smart_tools.smartactors:plugin.starter:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.starter:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.queue.non_blocking:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.global_constants:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {
