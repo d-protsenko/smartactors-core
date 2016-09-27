@@ -48,6 +48,7 @@ public class UserAuthByLoginActorTest {
 
     private IField loginField;
     private IField passwordField;
+    private IField userIdF;
     private IField eqField;
 
     private IField collectionNameField;
@@ -99,6 +100,7 @@ public class UserAuthByLoginActorTest {
         pageNumberField = mock(IField.class);
         pageField = mock(IField.class);
         filterField = mock(IField.class);
+        userIdF = mock(IField.class);
 
         when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
@@ -106,6 +108,7 @@ public class UserAuthByLoginActorTest {
         when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
         when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
 
+        when(IOC.resolve(iFieldKey, "userId")).thenReturn(userIdF);
         when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
         when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
         when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
@@ -380,7 +383,7 @@ public class UserAuthByLoginActorTest {
         verifyStatic(times(4));
         Keys.getOrAdd(IObject.class.getCanonicalName());
 
-        verifyStatic(times(8));//plus static invocations
+        verifyStatic(times(9));//plus static invocations
         Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();

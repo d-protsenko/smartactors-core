@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.idatabase_task;
 
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
 /**
  * Database oriented task

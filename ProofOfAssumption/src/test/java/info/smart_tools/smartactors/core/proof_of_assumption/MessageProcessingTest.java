@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
-import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
+import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.core.chain_call_receiver.ChainCallReceiver;
 import info.smart_tools.smartactors.core.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.core.chain_storage.ChainStorage;
@@ -16,13 +16,13 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
+import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.core.map_router.MapRouter;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -35,8 +35,8 @@ import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
-import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
+import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
+import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 import org.junit.Before;
 import org.junit.Test;
 
