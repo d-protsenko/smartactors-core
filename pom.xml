@@ -283,6 +283,7 @@
         <module>ObjectEnumerationActor</module>
         <module>BootstrapPlugin</module>
         <module>PluginObjectEnumerationActor</module>
+        <module>SchedulerInterfaces</module>
     </modules>
 
     <repositories>
