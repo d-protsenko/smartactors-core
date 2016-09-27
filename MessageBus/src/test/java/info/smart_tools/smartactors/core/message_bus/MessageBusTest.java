@@ -50,4 +50,56 @@ public class MessageBusTest {
         MessageBus.send(null);
         fail();
     }
+
+    @Test
+    public void checkSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        IObject message = mock(IObject.class);
+        Object chainName = mock(Object.class);
+        MessageBus.send(message, chainName);
+        verify(this.container, times(1)).send(message, chainName);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).send(null, null);
+        MessageBus.send(null, null);
+        fail();
+    }
+
+    @Test
+    public void checkSendingMessageWithReply()
+            throws Exception {
+        IObject message = mock(IObject.class);
+        Object chainNameForReply = mock(Object.class);
+        MessageBus.sendAndReply(message, chainNameForReply);
+        verify(this.container, times(1)).sendAndReply(message, chainNameForReply);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithReply()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null);
+        MessageBus.sendAndReply(null, null);
+        fail();
+    }
+
+    @Test
+    public void checkSendingMessageWithSpecificChainAndReply()
+            throws Exception {
+        IObject message = mock(IObject.class);
+        Object chainName = mock(Object.class);
+        Object chainNameForReply = mock(Object.class);
+        MessageBus.sendAndReply(message, chainName, chainNameForReply);
+        verify(this.container, times(1)).sendAndReply(message, chainName, chainNameForReply);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithSpecificChainAndReply()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null, null);
+        MessageBus.sendAndReply(null, null, null);
+        fail();
+    }
 }
