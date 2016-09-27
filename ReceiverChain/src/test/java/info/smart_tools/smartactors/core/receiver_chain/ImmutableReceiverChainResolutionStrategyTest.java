@@ -1,19 +1,17 @@
 package info.smart_tools.smartactors.core.receiver_chain;
 
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -37,22 +35,26 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class ImmutableReceiverChainResolutionStrategyTest {
     private IKey keyStorageKey;
     private IKey fieldNameKey;
+    private IKey iobjectKey;
     private IKey receiverIdKey;
     private IKey chainIdKey;
 
     private IChainStorage chainStorageMock;
     private IRouter routerMock;
+    private IObject chainAndEnv;
 
     @Before
     public void setUp()
             throws Exception {
         keyStorageKey = mock(IKey.class);
         fieldNameKey = mock(IKey.class);
+        iobjectKey = mock(IKey.class);
         receiverIdKey = mock(IKey.class);
         chainIdKey = mock(IKey.class);
 
         chainStorageMock = mock(IChainStorage.class);
         routerMock = mock(IRouter.class);
+        this.chainAndEnv = mock(IObject.class);
 
         mockStatic(IOC.class);
 
@@ -60,11 +62,13 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         when(IOC.resolve(keyStorageKey, IFieldName.class.getCanonicalName())).thenReturn(fieldNameKey);
         when(IOC.resolve(keyStorageKey, "chain_id")).thenReturn(chainIdKey);
         when(IOC.resolve(keyStorageKey, "receiver_id_from_iobject")).thenReturn(receiverIdKey);
+        when(IOC.resolve(keyStorageKey, IObject.class.getCanonicalName())).thenReturn(iobjectKey);
 
         when(IOC.resolve(fieldNameKey, "steps")).thenReturn(mock(IFieldName.class));
         when(IOC.resolve(fieldNameKey, "exceptional")).thenReturn(mock(IFieldName.class));
         when(IOC.resolve(fieldNameKey, "class")).thenReturn(mock(IFieldName.class));
         when(IOC.resolve(fieldNameKey, "chain")).thenReturn(mock(IFieldName.class));
+        when(IOC.resolve(iobjectKey)).thenReturn(this.chainAndEnv);
     }
 
     @Test

@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.core.receiver_generator;
 
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.ClassGenerator;
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.core.class_generator_java_compile_api.class_builder.Modifiers;
-import info.smart_tools.smartactors.core.iclass_generator.IClassGenerator;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.core.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.core.ireceiver_generator.exception.ReceiverGeneratorException;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;

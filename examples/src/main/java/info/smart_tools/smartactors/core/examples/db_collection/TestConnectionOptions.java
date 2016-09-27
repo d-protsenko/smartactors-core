@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
 /**
@@ -11,17 +11,17 @@ public class TestConnectionOptions implements ConnectionOptions {
 
     @Override
     public String getUrl() throws ReadValueException {
-        return "jdbc:postgresql://localhost:5432/test_async";
+        return "jdbc:postgresql://localhost:5432/test";
     }
 
     @Override
     public String getUsername() throws ReadValueException {
-        return "test_user";
+        return "test";
     }
 
     @Override
     public String getPassword() throws ReadValueException {
-        return "qwerty";
+        return "test";
     }
 
     @Override
@@ -30,19 +30,19 @@ public class TestConnectionOptions implements ConnectionOptions {
     }
 
     @Override
-    public void setUrl(String url) throws ChangeValueException {
+    public void setUrl(final String url) throws ChangeValueException {
     }
 
     @Override
-    public void setUsername(String username) throws ChangeValueException {
+    public void setUsername(final String username) throws ChangeValueException {
     }
 
     @Override
-    public void setPassword(String password) throws ChangeValueException {
+    public void setPassword(final String password) throws ChangeValueException {
     }
 
     @Override
-    public void setMaxConnections(Integer maxConnections) throws ChangeValueException {
+    public void setMaxConnections(final Integer maxConnections) throws ChangeValueException {
     }
 
 }

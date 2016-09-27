@@ -4,20 +4,21 @@ import info.smart_tools.smartactors.actors.create_async_operation.exception.Crea
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -38,10 +39,14 @@ public class CreateAsyncOperationActorTest {
     private IAsyncOperationCollection collection;
 
     @Before
-    public void setUp() throws ResolutionException, CreateAsyncOperationActorException, ReadValueException, InvalidArgumentException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
+
+        IKey formatterKey = mock(IKey.class);
+        when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
+        when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 
         collection = mock(IAsyncOperationCollection.class);
         IKey collectionKey = mock(IKey.class);
@@ -75,8 +80,6 @@ public class CreateAsyncOperationActorTest {
 
         actor.create(message);
 
-        verify(message).getSessionId();
-        verify(message).setSessionIdInData(sessionId);
         verify(collection).createAsyncOperation(eq(asyncDataObj), anyString(), anyString());
         verify(message).setAsyncOperationToken(anyString());
     }

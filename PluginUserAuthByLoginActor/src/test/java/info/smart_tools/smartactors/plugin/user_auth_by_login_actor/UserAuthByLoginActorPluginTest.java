@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.plugin.user_auth_by_login_actor;
 import info.smart_tools.smartactors.actors.authentication.users.UserAuthByLoginActor;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class UserAuthByLoginActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("UserAuthByLoginActorPlugin");
         verify(item).after("IOC");
-        verify(item).before("configure");
+        verify(item).before("starter");
 
         verify(item).process(actionArgumentCaptor.getValue());
 

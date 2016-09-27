@@ -1,16 +1,17 @@
 package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
@@ -19,8 +20,9 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSe
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.core.message_processor.FinalTask;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  *
@@ -40,13 +42,64 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
+            /* "after exception actions" - register after exception action strategy */
+            IBootstrapItem<String> afterExceptionActions = new BootstrapItem("after exception actions");
+
+            afterExceptionActions
+                    .after("IOC")
+                    .process(
+                            () -> {
+                                try {
+                                    IAction<IMessageProcessingSequence> breakAction = IMessageProcessingSequence::end;
+                                    IAction<IMessageProcessingSequence> continueAction = (mps) -> {
+                                    };
+                                    IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
+                                        int currentLevel = mps.getCurrentLevel();
+                                        int repeatStep = mps.getStepAtLevel(currentLevel - 1);
+                                        mps.goTo(currentLevel - 1, repeatStep);
+                                    };
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),
+                                            new SingletonStrategy(breakAction)
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#continue"),
+                                            new SingletonStrategy(continueAction)
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#repeat"),
+                                            new SingletonStrategy(repeatAction)
+                                    );
+                                } catch (ResolutionException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
+                                } catch (InvalidArgumentException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                                } catch (RegistrationException e) {
+                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                                }
+                            }
+                    );
+            bootstrap.add(afterExceptionActions);
+
             /* "message_processor" - register message processor creation strategy */
             IBootstrapItem<String> processorItem = new BootstrapItem("message_processor");
 
             processorItem
                     .after("IOC")
+                    .after("wds_object")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
+                            IOC.register(
+                                    Keys.getOrAdd("final task"),
+                                    new CreateNewInstanceStrategy(args -> {
+                                        try {
+                                            return new FinalTask((IObject) args[0]);
+                                        } catch (Exception e) {
+                                            throw new RuntimeException("Could not create instance of FinalTask.");
+                                        }
+                                    })
+                            );
                             IOC.register(
                                     Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
@@ -58,10 +111,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                IConfigurationManager configurationManager =
-                                                        IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-
-                                                config = configurationManager.getConfig();
+                                                config = IOC.resolve(Keys.getOrAdd("global constants"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }
@@ -89,6 +139,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             sequenceItem
                     .after("IOC")
+                    .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
                             IOC.register(

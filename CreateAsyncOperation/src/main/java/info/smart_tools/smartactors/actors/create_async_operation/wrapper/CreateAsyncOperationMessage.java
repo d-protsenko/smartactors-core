@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.actors.create_async_operation.wrapper;
 
 import info.smart_tools.smartactors.actors.create_async_operation.CreateAsyncOperationActor;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import java.util.List;
 
@@ -48,14 +48,14 @@ public interface CreateAsyncOperationMessage {
     void setAsyncOperationToken(String token) throws ChangeValueException;
 
     /**
-     * Getter
+     * Getter from list of tokens in session
      * @return list of tokens of async op's
      * @throws ReadValueException Throw when can't correct read value
      */
     List<String> getOperationTokens() throws ReadValueException;
 
     /**
-     * Setter
+     * Setter to list of tokens in session
      * @param operationTokens list of tokens of async op's
      * @throws ChangeValueException if error during set is occurred
      */

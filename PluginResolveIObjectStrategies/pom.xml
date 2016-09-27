@@ -32,17 +32,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_type_strategy</artifactId>
+            <artifactId>ioc-strategy-pack.resolve-by-type-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_iobject_strategies</artifactId>
+            <artifactId>ioc-strategy-pack.resolve-iobject-strategies</artifactId>
             <version>${core.version}</version>
         </dependency>
 

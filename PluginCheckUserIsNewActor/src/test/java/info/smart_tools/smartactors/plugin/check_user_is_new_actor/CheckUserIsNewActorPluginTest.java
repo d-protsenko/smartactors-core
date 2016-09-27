@@ -2,18 +2,18 @@ package info.smart_tools.smartactors.plugin.check_user_is_new_actor;
 
 import info.smart_tools.smartactors.actors.check_user_is_new.CheckUserIsNewActor;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +61,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -118,7 +118,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -150,7 +150,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -206,7 +206,7 @@ public class CheckUserIsNewActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).after("IOC");         verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
@@ -257,7 +257,7 @@ public class CheckUserIsNewActorPluginTest {
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
         verify(bootstrapItem).after("IOC");
-        verify(bootstrapItem).before("configure");
+        verify(bootstrapItem).before("starter");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);

@@ -3,27 +3,28 @@ package info.smart_tools.smartactors.core.postgres_search_task;
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.core.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
@@ -31,13 +32,11 @@ import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleC
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -92,9 +91,9 @@ public class PostgresSearchTaskTest {
     }
 
     @Test
-    public void testSearch() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        final List<IObject> results = new ArrayList<>();
-        when(message.getCallback()).thenReturn(docs -> results.addAll(Arrays.asList(docs)));
+    public void testSearch() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecuteException {
+        IAction<IObject[]> callback = mock(IAction.class);
+        when(message.getCallback()).thenReturn(callback);
         when(resultSet.next()).thenReturn(true, true, false);
         when(resultSet.getString(1)).thenReturn("{ \"testID\": 123, \"test\": \"value\" }");
 
@@ -106,7 +105,10 @@ public class PostgresSearchTaskTest {
         verify(resultSet, times(3)).next();
         verify(resultSet, times(2)).getString(anyInt());
         verify(connection).commit();
-        assertEquals(2, results.size());
+
+        ArgumentCaptor<IObject[]> results = ArgumentCaptor.forClass(IObject[].class);
+        verify(callback).execute(results.capture());
+        assertEquals(2, results.getValue().length);
     }
 
     @Test
@@ -131,9 +133,9 @@ public class PostgresSearchTaskTest {
     }
 
     @Test
-    public void testSearchNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException {
-        final List<IObject> results = new ArrayList<>();
-        when(message.getCallback()).thenReturn(docs -> results.addAll(Arrays.asList(docs)));
+    public void testSearchNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecuteException {
+        IAction<IObject[]> callback = mock(IAction.class);
+        when(message.getCallback()).thenReturn(callback);
         when(resultSet.next()).thenReturn(false);
         when(resultSet.getString(anyInt())).thenThrow(SQLException.class);
 
@@ -145,7 +147,10 @@ public class PostgresSearchTaskTest {
         verify(resultSet, times(1)).next();
         verify(resultSet, times(0)).getString(anyInt());
         verify(connection).commit();
-        assertEquals(0, results.size());
+
+        ArgumentCaptor<IObject[]> results = ArgumentCaptor.forClass(IObject[].class);
+        verify(callback).execute(results.capture());
+        assertEquals(0, results.getValue().length);
     }
 
     @Test

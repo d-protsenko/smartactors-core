@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.iresource_source.exceptions;
 
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iresource_source.IResourceSource;
 
 /**

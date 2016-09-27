@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,8 +28,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     private IField startDateTimeField;
     private IField collectionNameField;
     private IField documentField;
-    //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    private DateTimeFormatter formatter;
 
     /**
      * @param connection storage connection for executing query
@@ -38,6 +37,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     public UpsertIntoCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
+            this.formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document/startDateTime");
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
@@ -64,7 +64,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
 
         try {
             if (startDateTimeField.in(query) == null) {
-                startDateTimeField.out(query, LocalDateTime.now().format(FORMATTER));
+                startDateTimeField.out(query, LocalDateTime.now().format(formatter));
             }
             upsertTask = IOC.resolve(
                 Keys.getOrAdd("db.collection.upsert"),

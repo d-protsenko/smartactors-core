@@ -1,24 +1,21 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.field.Field;
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.wrapper_generator.IWrapper;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iobject.exception.DeleteValueException;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.field.field.Field;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.Integer;
-import info.smart_tools.smartactors.core.wrapper_generator.TestClass;
 import java.util.List;
-import info.smart_tools.smartactors.core.wrapper_generator.IInnerWrapper;
 
 public class IWrapperImpl implements IObjectWrapper, IObject, IWrapper {
     private IField fieldFor_in_getIntValue;
@@ -58,6 +55,9 @@ public class IWrapperImpl implements IObjectWrapper, IObject, IWrapper {
 
     public IObject getEnvironmentIObject(IFieldName fieldName) throws InvalidArgumentException  {
         try {
+            if (IObjectWrapper.class.isAssignableFrom(this.env.getClass())) {
+                return ((IObjectWrapper) this.env).getEnvironmentIObject(fieldName);
+            }
             return (IObject) this.env.getValue(fieldName);
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not get IObject from environments.", e);

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.iresponse_status_extractor;
 
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for extracting http response status from environment

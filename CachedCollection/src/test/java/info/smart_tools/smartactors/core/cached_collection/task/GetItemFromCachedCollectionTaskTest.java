@@ -1,16 +1,17 @@
 package info.smart_tools.smartactors.core.cached_collection.task;
 
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.ds_object.DSObject;
-import info.smart_tools.smartactors.core.field_name.FieldName;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.plugin.datetime_formatter_strategy.PluginDateTimeFormatter;
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
@@ -39,6 +40,7 @@ public class GetItemFromCachedCollectionTaskTest {
         new IFieldPlugin(bootstrap).load();
         new PluginDSObject(bootstrap).load();
         new PostgresDBTasksPlugin(bootstrap).load();
+        new PluginDateTimeFormatter(bootstrap).load();
         bootstrap.start();
     }
 

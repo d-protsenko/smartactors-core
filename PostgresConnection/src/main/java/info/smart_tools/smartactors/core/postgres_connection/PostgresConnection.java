@@ -1,19 +1,16 @@
 package info.smart_tools.smartactors.core.postgres_connection;
 
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.istorage_connection.ICompiledQuery;
 import info.smart_tools.smartactors.core.istorage_connection.IPreparedQuery;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * Implementation of {@link IStorageConnection}
@@ -22,15 +19,6 @@ public class PostgresConnection implements IStorageConnection {
     private static final String POSTGRESQL_JDBC_DRIVER_NAME = "org.postgresql.Driver";
     private Connection connection;
     private PreparedStatement validationQueryStatement;
-    private static final Properties INIT_PROPS = new Properties();
-
-    static {
-        try (InputStream src = PostgresConnection.class.getResourceAsStream("db-init.properties")) {
-            INIT_PROPS.load(src);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Constructor by sql connection and options
@@ -51,11 +39,6 @@ public class PostgresConnection implements IStorageConnection {
                         options.getUrl(),
                         options.getUsername(),
                         options.getPassword());
-
-                for (Object key : INIT_PROPS.keySet()) {
-                    connection.createStatement().execute(INIT_PROPS.getProperty((String) key));
-                }
-
                 connection.setAutoCommit(false);
                 this.connection = connection;
             } catch (SQLException | ReadValueException e) {

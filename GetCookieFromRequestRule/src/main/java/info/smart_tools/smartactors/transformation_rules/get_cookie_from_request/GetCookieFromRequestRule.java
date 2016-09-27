@@ -1,8 +1,9 @@
 package info.smart_tools.smartactors.transformation_rules.get_cookie_from_request;
 
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
+
 import java.util.stream.Stream;
 
 /**
@@ -21,11 +22,18 @@ public class GetCookieFromRequestRule implements IResolveDependencyStrategy {
     public <T> T resolve(final Object... args) {
         String cookieString = ((FullHttpRequest) args[0]).headers().get(HttpHeaders.Names.COOKIE);
 
-        String cookie = Stream.of(cookieString.split(";"))
-                .map(x -> x.split("="))
-                .filter(x -> x[0].equals((String) args[1]))
-                .findFirst().get()[1];
+        if (cookieString == null)
+            return null;
 
-        return (T) cookie;
+        String[] cookie = Stream.of(cookieString.split(";"))
+                .map(x -> x.split("="))
+                .filter(x -> x[0].trim().equals(((String) args[1])))
+                .findFirst().orElse(null);
+
+        if (cookie == null) {
+            return null;
+        }
+
+        return (T) cookie[1];
     }
 }

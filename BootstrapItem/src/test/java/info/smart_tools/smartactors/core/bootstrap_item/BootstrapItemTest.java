@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core.bootstrap_item;
 import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.core.ibootstrap_item.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

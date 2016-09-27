@@ -3,18 +3,24 @@ package info.smart_tools.smartactors.plugin.postgres_db_tasks;
 import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.core.postgres_count_task.CountMessage;
+import info.smart_tools.smartactors.core.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
+import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
+import info.smart_tools.smartactors.core.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.core.postgres_insert_task.InsertMessage;
+import info.smart_tools.smartactors.core.postgres_insert_task.PostgresInsertTask;
 import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
 import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
@@ -100,6 +106,35 @@ public class PostgresDBTasksPluginTest {
         IAction callback = mock(IAction.class);
         assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.search"), connection, collection, criteria, callback)
                 instanceof PostgresSearchTask);
+    }
+
+    @Test
+    public void testDeleteTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(DeleteMessage.class.getCanonicalName()), message)
+                instanceof DeleteMessage);
+        IObject document = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.delete"), connection, collection, document)
+                instanceof PostgresDeleteTask);
+    }
+
+    @Test
+    public void testInsertTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(InsertMessage.class.getCanonicalName()), message)
+                instanceof InsertMessage);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.nextid")) instanceof String);
+        IObject document = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.insert"), connection, collection, document)
+                instanceof PostgresInsertTask);
+    }
+
+    @Test
+    public void testCountTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getOrAdd(CountMessage.class.getCanonicalName()), message)
+                instanceof CountMessage);
+        IObject criteria = mock(IObject.class);
+        IAction callback = mock(IAction.class);
+        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.count"), connection, collection, criteria, callback)
+                instanceof PostgresCountTask);
     }
 
 }

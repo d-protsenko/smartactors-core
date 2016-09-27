@@ -1,21 +1,24 @@
 package info.smart_tools.smartactors.core.receiver_chain;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
+import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -77,6 +80,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
             IFieldName exceptionClassFieldName = IOC.resolve(fieldNameKey, "class");
             IFieldName exceptionChainFieldName = IOC.resolve(fieldNameKey, "chain");
+            IFieldName exceptionAfterFieldName = IOC.resolve(fieldNameKey, "after");
 
             List chainSteps = (List) description.getValue(stepsFieldName);
             List exceptionalChains = (List) description.getValue(exceptionalChainsFieldName);
@@ -91,20 +95,25 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 arguments[i] = step;
             }
 
-            LinkedHashMap<Class<? extends Throwable>, IReceiverChain> exceptionalChainsMap = new LinkedHashMap<>();
+            LinkedHashMap<Class<? extends Throwable>, IObject> exceptionalChainsMap = new LinkedHashMap<>();
 
             for (Object chainDesc : exceptionalChains) {
                 IObject desc = (IObject) chainDesc;
 
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainFieldName)));
-
-                exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chain);
+                IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
+                );
+                IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+                chainAndEnv.setValue(exceptionChainFieldName, chain);
+                chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
+                exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
             }
 
             return (T) new ImmutableReceiverChain(String.valueOf(chainId), receivers, arguments, exceptionalChainsMap);
         } catch (ChainNotFoundException | ClassNotFoundException | ResolutionException | ReadValueException |
-                RouteNotFoundException | InvalidArgumentException e) {
+                RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);
         }
     }

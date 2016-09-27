@@ -3,22 +3,22 @@ package info.smart_tools.smartactors.core.cached_collection;
 import info.smart_tools.smartactors.core.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.core.cached_collection.exception.UpsertCacheItemException;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,12 +36,9 @@ public class CachedCollection implements ICachedCollection {
 
     private IField collectionNameField;
     private IField keyNameField;
-    private IField keyValueField;
     private IField specificKeyNameField;
-    private IField documentField;
     private IField idField;
     private IField isActiveField;
-    private IField searchResultField;
 
     private IPool connectionPool;
     private String collectionName;
@@ -64,15 +61,12 @@ public class CachedCollection implements ICachedCollection {
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
             this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
-            this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyValue");
-            this.documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
             this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "isActive");
-            this.searchResultField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "searchResult");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
             this.specificKeyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), keyName);
+            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), String.format("%sID", collectionName));
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }

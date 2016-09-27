@@ -4,24 +4,25 @@ package info.smart_tools.smartactors.actors.mailing;
 import info.smart_tools.smartactors.actors.mailing.email.MessageAttributeSetters;
 import info.smart_tools.smartactors.actors.mailing.email.MessagePartCreators;
 import info.smart_tools.smartactors.actors.mailing.email.SMTPMessageAdaptor;
-import info.smart_tools.smartactors.actors.mailing.exception.AttributeSetterException;
 import info.smart_tools.smartactors.actors.mailing.exception.MailingActorException;
 import info.smart_tools.smartactors.actors.mailing.wrapper.MailingMessage;
-import info.smart_tools.smartactors.core.field.Field;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.field.field.Field;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import me.normanmaurer.niosmtp.delivery.Authentication;
+import me.normanmaurer.niosmtp.delivery.DeliveryRecipientStatus;
 import me.normanmaurer.niosmtp.delivery.SMTPDeliveryAgent;
 import me.normanmaurer.niosmtp.delivery.SMTPDeliveryEnvelope;
 import me.normanmaurer.niosmtp.delivery.impl.AuthenticationImpl;
 import me.normanmaurer.niosmtp.delivery.impl.SMTPDeliveryAgentConfigImpl;
 import me.normanmaurer.niosmtp.delivery.impl.SMTPDeliveryEnvelopeImpl;
+import me.normanmaurer.niosmtp.transport.FutureResult;
 import me.normanmaurer.niosmtp.transport.SMTPClientTransport;
 import me.normanmaurer.niosmtp.transport.netty.NettyLMTPClientTransportFactory;
 import me.normanmaurer.niosmtp.transport.netty.NettySMTPClientTransportFactory;
@@ -34,9 +35,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -166,7 +165,11 @@ public class MailingActor {
             SMTPDeliveryEnvelope deliveryEnvelope = new SMTPDeliveryEnvelopeImpl(
                     senderAddress_Context_F.in(mailingContext, String.class), recipients, smtpMessage);
 
-            deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope);
+            Collection<FutureResult<Iterator<DeliveryRecipientStatus>>> cfr = deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope).get();
+
+            for (FutureResult<Iterator<DeliveryRecipientStatus>> fr : cfr) {
+                System.out.println(fr);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

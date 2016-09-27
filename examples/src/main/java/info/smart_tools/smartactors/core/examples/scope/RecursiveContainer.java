@@ -1,12 +1,14 @@
 package info.smart_tools.smartactors.core.examples.scope;
 
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  A sample of container which takes care on the parent-child relationships.
  *  It's {@link #get} method queries parent container if cannot find the requested value in it's own storage.
- *  @param <K> type of the key for the container, should be {@link info.smart_tools.smartactors.core.ikey.IKey} for IOC.
+ *  @param <K> type of the key for the container, should be {@link IKey} for IOC.
  *  @param <V> type of the value for the container, should be Object for IOC.
  */
 public class RecursiveContainer<K, V> {

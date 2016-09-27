@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.core.cached_collection.task;
 import info.smart_tools.smartactors.core.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,8 +36,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     private IField dateToField;
     private IField startDateTimeField;
 
-    //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    private DateTimeFormatter formatter;
 
     /**
      * @param connection storage connection for executing query
@@ -46,6 +45,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     public GetItemFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
+            this.formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
             this.keyValueField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "key");
@@ -105,7 +105,7 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
             isActiveField.out(filterObject, isActiveObject);
 
             IObject dateObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            dateToField.out(dateObject, LocalDateTime.now().format(FORMATTER));
+            dateToField.out(dateObject, LocalDateTime.now().format(formatter));
             startDateTimeField.out(filterObject, dateObject);
 
             filterField.out(queryForNestedTask, filterObject);

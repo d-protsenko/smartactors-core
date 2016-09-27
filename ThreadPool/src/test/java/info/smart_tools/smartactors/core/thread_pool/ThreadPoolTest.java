@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.thread_pool;
 
-import info.smart_tools.smartactors.core.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,8 @@ public class ThreadPoolTest {
         threadPool = new ThreadPool(2);
     }
 
-    @Test
+    // Disable as unlimited queue is used
+//    @Test()
     public void Should_interruptThread_WhenThereIsNoMorePlaceInQueue()
             throws Exception {
         ThreadImpl threadMock = mock(ThreadImpl.class);

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.plugin_loader_from_jar;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.ipath.IPath;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.core.iplugin_loader.exception.PluginLoaderException;
@@ -89,12 +89,11 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
                     try {
                         clazz = classLoader.loadClass(className);
                     } catch (Throwable e) {
-                        System.err.println("\n\n\nError loading class " + className + ":");
-                        e.printStackTrace();
+                        // ignoring, because the plugin which class cannot be loaded cannot be loaded
                         continue;
                     }
 
-                    if (Arrays.asList(clazz.getInterfaces()).contains(IPlugin.class)) {
+                    if (IPlugin.class.isAssignableFrom(clazz) && clazz != IPlugin.class) {
                         creator.execute(clazz);
                     }
                 }

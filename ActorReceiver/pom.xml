@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->

@@ -4,17 +4,15 @@ import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildExcepti
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.PostgresSchema;
@@ -48,6 +46,9 @@ public class PostgresUpsertTask implements IDatabaseTask {
      */
     private QueryStatement preparedQuery;
 
+    /**
+     * Interfaces to a method to be called during execution phase.
+     */
     private interface Executor {
         void execute() throws TaskExecutionException;
     }
@@ -94,18 +95,17 @@ public class PostgresUpsertTask implements IDatabaseTask {
     /**
      * Prepares the insert query.
      */
-    private void prepareInsert() throws ResolutionException, QueryBuildException, ChangeValueException, InvalidArgumentException, SerializeException {
+    private void prepareInsert() throws QueryBuildException {
         executeMethod = this::executeInsert;
         PostgresSchema.insert(preparedQuery, collection);
 
         preparedQuery.pushParameterSetter((statement, index) -> {
-            String sqlDoc = null;
             try {
-                sqlDoc = document.serialize();
+                String sqlDoc = document.serialize();
+                statement.setString(index++, sqlDoc);
             } catch (SerializeException e) {
                 throw new SQLException("Cannot serialize document", e);
             }
-            statement.setString(index++, sqlDoc);
             return index;
         });
     }
@@ -128,14 +128,13 @@ public class PostgresUpsertTask implements IDatabaseTask {
         PostgresSchema.update(preparedQuery, collection);
 
         preparedQuery.pushParameterSetter((statement, index) -> {
-            String sqlDoc = null;
             try {
-                sqlDoc = document.serialize();
+                String sqlDoc = document.serialize();
+                statement.setString(index++, sqlDoc);
+                statement.setObject(index++, id);
             } catch (SerializeException e) {
                 throw new SQLException("Cannot serialize document", e);
             }
-            statement.setString(index++, sqlDoc);
-            statement.setObject(index++, id);
             return index;
         });
     }

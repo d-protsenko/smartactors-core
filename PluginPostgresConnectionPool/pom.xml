@@ -56,18 +56,18 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.apply_function_to_arguments</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.pool</artifactId>
+            <artifactId>base.pool</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -75,7 +75,11 @@
             <artifactId>core.postgres_connection</artifactId>
             <version>${core.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
@@ -84,15 +88,27 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>1.6.4</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>1.6.4</version>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.bootstrap</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.ioc_simple_container</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>plugin.ioc_keys</artifactId>
+            <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

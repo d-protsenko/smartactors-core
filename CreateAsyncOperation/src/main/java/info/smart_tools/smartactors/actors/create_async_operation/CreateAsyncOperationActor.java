@@ -4,20 +4,19 @@ import info.smart_tools.smartactors.actors.create_async_operation.exception.Crea
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Actor for creation asynchronous operation
@@ -26,8 +25,7 @@ public class CreateAsyncOperationActor {
 
     private IAsyncOperationCollection collection;
 
-    //TODO:: this format should be setted for whole project?
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+    private DateTimeFormatter formatter;
 
     /**
      * Constructor needed for registry actor
@@ -36,6 +34,7 @@ public class CreateAsyncOperationActor {
      */
     public CreateAsyncOperationActor(final IObject params) throws CreateAsyncOperationActorException {
         try {
+            formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             collection = IOC.resolve(
                 Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params)
@@ -59,15 +58,13 @@ public class CreateAsyncOperationActor {
     public void create(final CreateAsyncOperationMessage message) throws CreateAsyncOperationActorException {
 
         try {
-            //TODO:: move generate to util class and add server number
-            String token = String.valueOf(UUID.randomUUID());
+            String token = IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
-            String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(FORMATTER);
+            String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(formatter);
             message.setSessionIdInData(message.getSessionId());
             IObject authOperationData = message.getOperationData();
             collection.createAsyncOperation(authOperationData, token, expiredTime);
 
-            //NOTE: this setter should set token to session and to response!
             message.setAsyncOperationToken(token);
 
             List<String> availableTokens = message.getOperationTokens();
@@ -77,7 +74,7 @@ public class CreateAsyncOperationActor {
                 availableTokens.add(token);
                 message.setOperationTokens(availableTokens);
             }
-        } catch (ReadValueException | ChangeValueException | CreateAsyncOperationException e) {
+        } catch (ResolutionException | ReadValueException | ChangeValueException | CreateAsyncOperationException e) {
             throw new CreateAsyncOperationActorException("Can't create async operation.", e);
         }
     }

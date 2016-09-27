@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.iresource_source;
 
-import info.smart_tools.smartactors.core.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 
 /**
  * Source of resources.

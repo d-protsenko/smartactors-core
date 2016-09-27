@@ -3,24 +3,24 @@ package info.smart_tools.smartactors.actors.authentication.users;
 import info.smart_tools.smartactors.actors.authentication.users.exceptions.AuthenticateUserException;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.pool_guard.exception.PoolGuardException;
-import info.smart_tools.smartactors.core.security.encoding.encoders.EncodingException;
-import info.smart_tools.smartactors.core.security.encoding.encoders.IPasswordEncoder;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.security.encoding.encoders.EncodingException;
+import info.smart_tools.smartactors.security.encoding.encoders.IPasswordEncoder;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -45,6 +45,7 @@ public class UserAuthByLoginActor {
     private IField pageF;
     private IField filterF;
 
+    private IField userIdF;
     private IField loginF;
     private IField passwordF;
     private IField equalsF;
@@ -83,8 +84,9 @@ public class UserAuthByLoginActor {
             pageF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "page");
             filterF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
 
+            userIdF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "userId");
             loginF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "email");
-            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "пароль");
+            passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
             equalsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
 
             this.passwordEncoder = IOC.resolve(
@@ -120,6 +122,7 @@ public class UserAuthByLoginActor {
             checkMsg(message);
             IObject user = resolveLogin(message, poolGuard);
             validatePassword(message, user);
+            message.setUserId(userIdF.in(user));
             setSuccessResponse(message);
         } catch (PoolGuardException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
             try {

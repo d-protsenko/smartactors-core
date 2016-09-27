@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.De
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -122,9 +122,11 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.validation_form_actor:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.create_session_plugin:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.save_session_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.authentication_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.get_header_from_request_rule:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.get_query_parameter_rule:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.get_cookie_from_request:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.password_encoder:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
@@ -134,12 +136,21 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.user_auth_by_login_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.mailing_actor:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.prepare_mail_confirm_registration_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.check_user_is_new_actor:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.change_password_actor:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.connection_options:0.2.0-SNAPSHOT",
 
-                    "info.smart_tools.smartactors:plugin.create_user:0.2.0-SNAPSHOT"
+                    "info.smart_tools.smartactors:plugin.create_user:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.get_first_not_null_rule:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.datetime_formatter_strategy:0.2.0-SNAPSHOT",
+
+
+                    "info.smart_tools.smartactors:plugin.datetime_formatter_strategy:0.2.0-SNAPSHOT",
+                    "info.smart_tools.smartactors:plugin.starter:0.2.0-SNAPSHOT"
             };
 
             for (String artifact : coreArtifacts) {

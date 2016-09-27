@@ -6,9 +6,9 @@
 
 [How to use Scopes](ScopeExample.html)
 
-How to use IObject (TBD)
+[How to use IObject](IObjectExample.html)
 
-How to use Wrappers (TBD)
+[How to use Wrappers](WrapperExample.html)
 
 [How to work with database collections](DBCollectionExample.html)
 

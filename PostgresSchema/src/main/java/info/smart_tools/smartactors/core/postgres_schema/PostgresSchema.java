@@ -2,14 +2,7 @@ package info.smart_tools.smartactors.core.postgres_schema;
 
 import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.core.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.core.postgres_schema.indexes.IndexCreators;
 import info.smart_tools.smartactors.core.postgres_schema.search.FieldPath;
@@ -46,6 +39,11 @@ public final class PostgresSchema {
     public static final String FTS_DICTIONARY = "russian";
 
     /**
+     * Default page size. How many documents to return when the paging is not defined.
+     */
+    public static final int DEFAULT_PAGE_SIZE = 100;
+
+    /**
      * Private constructor to avoid instantiation.
      */
     private PostgresSchema() {
@@ -59,17 +57,19 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void create(final QueryStatement statement, final CollectionName collection, IObject options) throws QueryBuildException {
+    public static void create(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
+            CreateClauses.writeFunctions(body);
             body.write("CREATE TABLE ");
-            body.write(collection.toString ());
+            body.write(collection.toString());
             body.write(" (");
             body.write(DOCUMENT_COLUMN);
             body.write(" jsonb NOT NULL");
-            writeFullTextColumn(body, options);
+            CreateClauses.writeFullTextColumn(body, options);
             body.write(");\n");
-            writePrimaryKey(body, collection);
+            CreateClauses.writePrimaryKey(body, collection);
             if (options != null) {
                 IndexCreators.writeIndexes(body, collection, options);
             }
@@ -78,42 +78,14 @@ public final class PostgresSchema {
         }
     }
 
-    private static FieldPath getIdFieldPath(CollectionName collection) throws QueryBuildException {
+    /**
+     * Returns the path to ID property of the document in the specified collection.
+     * @param collection name of the collection
+     * @return path to field like "collectionID"
+     * @throws QueryBuildException if the path is invalid
+     */
+    static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
         return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
-    }
-
-    private static void writePrimaryKey(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
-        String collectionName = collection.toString();
-        FieldPath idPath = getIdFieldPath(collection);
-        body.write("CREATE UNIQUE INDEX ");
-        body.write(collectionName);
-        body.write("_pkey ON ");
-        body.write(collectionName);
-        body.write(" USING BTREE ((");
-        body.write(idPath.toSQL());
-        body.write("));\n");
-    }
-
-    private static void writeFullTextColumn(final Writer body, final IObject options)
-            throws ResolutionException, InvalidArgumentException, IOException {
-        if (options == null) {
-            // ignoring absence of fulltext option
-            return;
-        }
-        try {
-            IKey fieldKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-            IFieldName fullTextField = IOC.resolve(fieldKey, "fulltext");
-            Object fullTextDefinition = options.getValue(fullTextField);
-            if (fullTextDefinition == null) {
-                // ignoring absence of fulltext option
-                return;
-            }
-        } catch (ReadValueException e) {
-            // ignoring absence of fulltext option
-        }
-        body.write(", ");
-        body.write(FULLTEXT_COLUMN);
-        body.write(" tsvector");
     }
 
     /**
@@ -217,6 +189,7 @@ public final class PostgresSchema {
             body.write(collection.toString());
 
             if (criteria == null) {
+                SearchClauses.writeDefaultPaging(statement);
                 return;
             }
             SearchClauses.writeSearchWhere(statement, criteria);
@@ -224,6 +197,63 @@ public final class PostgresSchema {
             SearchClauses.writeSearchPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the collection name for the DELETE statement to delete the document by ID.
+     * @param statement statement to fill the body
+     * @param collection collection name to use as the table name
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void delete(final QueryStatement statement, final CollectionName collection) throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("DELETE FROM ");
+            body.write(collection.toString());
+            body.write(" WHERE (");
+            body.write(getIdFieldPath(collection).toSQL());
+            body.write(") = to_json(?)::jsonb");
+        } catch (IOException e) {
+            throw new QueryBuildException("Failed to build delete body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body and it's list of parameter setters with the collection name and WHERE clause
+     * for the SELECT COUNT(*) statement to count the documents in the collection.
+     * <p>
+     *     The example of search criteria.
+     *     <pre>
+     *  {
+     *      "filter": {
+     *          "$or": [
+     *              "a": { "$eq": "b" },
+     *              "b": { "$gt": 42 }
+     *          ]
+     *      }
+     *  }
+     *     </pre>
+     * </p>
+     * @param statement statement to fill the body and add parameter setters
+     * @param collection collection name to use as the table name
+     * @param criteria complex JSON describing the search criteria
+     * @throws QueryBuildException when something goes wrong
+     */
+    public static void count(final QueryStatement statement, final CollectionName collection, final IObject criteria)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+
+            body.write("SELECT COUNT(*) FROM ");
+            body.write(collection.toString());
+
+            if (criteria == null) {
+                return;
+            }
+            SearchClauses.writeSearchWhere(statement, criteria);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build count query", e);
         }
     }
 
