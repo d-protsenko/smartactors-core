@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.core.imulti_action_strategy.exception;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+
 /**
  * Exception that occurs when instance of {@link info.smart_tools.smartactors.core.imulti_action_strategy.IMultiActionStrategy}
- * doesn't contains specified {@link info.smart_tools.smartactors.core.iaction.IFunction}
+ * doesn't contains specified {@link IFunction}
  */
 public class FunctionNotFoundException extends Exception {
 

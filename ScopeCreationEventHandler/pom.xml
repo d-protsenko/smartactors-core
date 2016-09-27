@@ -16,36 +16,36 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iscope</artifactId>
+            <artifactId>scope.iscope</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
+            <artifactId>base.interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istrategy_container</artifactId>
+            <artifactId>ioc.istrategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
+            <artifactId>ioc.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Core exception -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
 

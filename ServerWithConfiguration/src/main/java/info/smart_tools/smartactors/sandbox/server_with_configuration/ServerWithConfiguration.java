@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.De
 import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
 import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
@@ -145,6 +145,9 @@ public class ServerWithConfiguration implements IServer {
                     "info.smart_tools.smartactors:plugin.create_user:0.2.0-SNAPSHOT",
 
                     "info.smart_tools.smartactors:plugin.get_first_not_null_rule:0.2.0-SNAPSHOT",
+
+                    "info.smart_tools.smartactors:plugin.datetime_formatter_strategy:0.2.0-SNAPSHOT",
+
 
                     "info.smart_tools.smartactors:plugin.datetime_formatter_strategy:0.2.0-SNAPSHOT",
                     "info.smart_tools.smartactors:plugin.starter:0.2.0-SNAPSHOT"

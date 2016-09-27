@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actor.exception_handler_actor.wrapper;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
  * Created by sevenbits on 8/10/16.

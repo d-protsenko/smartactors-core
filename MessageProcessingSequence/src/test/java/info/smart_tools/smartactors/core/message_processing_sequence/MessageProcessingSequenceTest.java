@@ -1,13 +1,12 @@
 package info.smart_tools.smartactors.core.message_processing_sequence;
 
-import info.smart_tools.smartactors.core.field_name.FieldName;
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
@@ -16,7 +15,6 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.NoExcepti
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -233,10 +231,10 @@ public class MessageProcessingSequenceTest {
             throws Exception {
         Throwable exception = mock(Throwable.class);
 
-        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+//        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequence(1, mainChainMock);
+        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock);
 
         sequence.catchException(exception, contextMock);
     }
@@ -252,7 +250,7 @@ public class MessageProcessingSequenceTest {
         IReceiverChain secondaryChain = mock(IReceiverChain.class);
 
         when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
-        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+//        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
         when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
 

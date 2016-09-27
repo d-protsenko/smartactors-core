@@ -1,11 +1,10 @@
 package info.smart_tools.smartactors.core.feature_manager;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.core.ifilesystem_tracker.IFilesystemTracker;
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

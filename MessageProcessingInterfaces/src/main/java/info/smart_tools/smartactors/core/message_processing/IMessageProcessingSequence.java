@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.message_processing;
 
-import info.smart_tools.smartactors.core.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -45,7 +45,7 @@ public interface IMessageProcessingSequence {
      */
     void end();
 
-    /*
+    /**
      * Get current level in stack of nested chains.
      *
      * @return current level in stack of nested chains

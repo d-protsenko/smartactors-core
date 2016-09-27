@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.filesystem_tracker;
 
-import info.smart_tools.smartactors.core.iaction.IAction;
-import info.smart_tools.smartactors.core.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ipath.IPath;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,9 +91,9 @@ public class ListenerTaskTest {
 
         task.run();
 
-        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/one")));
-        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/two")));
-        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.core.path.Path("dir/new")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.base.path.Path("dir/one")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.base.path.Path("dir/two")));
+        verify(actionMock, times(1)).execute(eq(new info.smart_tools.smartactors.base.path.Path("dir/new")));
         verify(actionMock, times(3)).execute(any());
     }
 

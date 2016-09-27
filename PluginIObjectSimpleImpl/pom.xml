@@ -32,17 +32,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.create_new_instance_strategy</artifactId>
+            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject_simple_implementation</artifactId>
+            <artifactId>iobject.iobject-simple-implementation</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

@@ -15,18 +15,18 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
+            <artifactId>ioc.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Service Locator -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.scope_provider</artifactId>
+            <artifactId>scope.scope-provider</artifactId>
             <version>${core.version}</version>
         </dependency>
 

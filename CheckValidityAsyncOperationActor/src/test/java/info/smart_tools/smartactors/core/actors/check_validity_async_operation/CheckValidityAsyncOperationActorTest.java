@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.core.actors.check_validity_async_operation;
 
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.exception.InvalidAsyncOperationIdException;
 import info.smart_tools.smartactors.core.actors.check_validity_async_operation.wrapper.CheckValidityMessage;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 

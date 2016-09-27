@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.imessage_bus_handler;
 
 import info.smart_tools.smartactors.core.imessage_bus_handler.exception.MessageBusHandlerException;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * MessageBusHandler interface for represent handler for processing sent message to the MessageBus

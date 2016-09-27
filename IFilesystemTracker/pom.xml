@@ -15,17 +15,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iaction</artifactId>
+            <artifactId>base.interfaces.iaction</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.invalid_argument_exception</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ipath</artifactId>
+            <artifactId>base.interfaces.ipath</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->
