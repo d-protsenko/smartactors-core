@@ -29,7 +29,7 @@ public class IFormsStrategyPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("GetFormActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("GetFirstFormItemStrategyPlugin");
             item
                     .after("IOC")
                     .process(() -> {
@@ -49,7 +49,7 @@ public class IFormsStrategyPlugin implements IPlugin {
                     });
             bootstrap.add(item);
         } catch (Exception e) {
-            throw new PluginException("Can't load GetFormActor plugin", e);
+            throw new PluginException("Can't load GetFirstFormItemStrategy plugin", e);
         }
     }
 }
