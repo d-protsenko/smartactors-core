@@ -42,6 +42,7 @@ public class PluginStarter implements IPlugin {
         try {
             IBootstrapItem<String> configureItem = new BootstrapItem("starter");
             configureItem
+                    .before("read_initial_config")
                     .process(() -> {
 //                        try {
 //                            IConfigurationManager configurationManager = IOC.resolve(

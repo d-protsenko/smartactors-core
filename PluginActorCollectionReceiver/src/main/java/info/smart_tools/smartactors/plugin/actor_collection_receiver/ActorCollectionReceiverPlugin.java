@@ -44,6 +44,7 @@ public class ActorCollectionReceiverPlugin implements IPlugin {
             item
                     .after("IOC")
                     .before("configure")
+                    .before("starter")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
                     .process(
