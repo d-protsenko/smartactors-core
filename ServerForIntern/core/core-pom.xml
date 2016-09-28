@@ -68,7 +68,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

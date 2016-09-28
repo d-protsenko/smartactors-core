@@ -16,8 +16,8 @@ import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.in_memory_database.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.plugin.in_memory_db_tasks.PluginInMemoryDBTasks;
-import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.null_connection_pool.NullConnectionPoolPlugin;
 
 /**

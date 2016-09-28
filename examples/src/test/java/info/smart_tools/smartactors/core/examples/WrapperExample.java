@@ -25,8 +25,8 @@ import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObje
 import info.smart_tools.smartactors.plugin.fieldname.FieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
-import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.resolve_standard_types_strategies.ResolveStandardTypesStrategiesPlugin;
 import info.smart_tools.smartactors.plugin.wds_object.PluginWDSObject;
 import info.smart_tools.smartactors.plugin.wrapper_generator.RegisterWrapperGenerator;

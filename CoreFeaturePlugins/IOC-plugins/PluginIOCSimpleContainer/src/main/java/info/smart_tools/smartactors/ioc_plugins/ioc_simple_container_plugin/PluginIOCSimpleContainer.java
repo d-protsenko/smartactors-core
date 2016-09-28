@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.ioc_simple_container;
+package info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;

@@ -155,7 +155,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_simple_container</artifactId>
+            <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -170,7 +170,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

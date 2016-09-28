@@ -132,8 +132,6 @@
         <module>ServerWithConfiguration</module>
         <module>HandlerRoutingReceiverCreator</module>
         <module>ActorReceiverCreator</module>
-        <module>PluginIOCSimpleContainer</module>
-        <module>PluginIOCKeys</module>
         <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
