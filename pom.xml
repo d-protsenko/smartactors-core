@@ -58,7 +58,6 @@
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>PluginIField</module>
         <module>IStorageConnection</module>
         <module>CachedCollection</module>
         <module>IRouter</module>
@@ -226,7 +225,6 @@
         <module>IResultChecker</module>
         <module>TestCheckers</module>
         <module>PluginTestCheckers</module>
-        <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>

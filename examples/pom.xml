@@ -150,7 +150,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.field</artifactId>
+            <artifactId>field-plugins.field-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

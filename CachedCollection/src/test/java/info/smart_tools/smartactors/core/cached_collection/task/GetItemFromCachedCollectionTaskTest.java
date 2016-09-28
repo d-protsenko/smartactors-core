@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.plugin.datetime_formatter_strategy.PluginDateTimeFormatter;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;

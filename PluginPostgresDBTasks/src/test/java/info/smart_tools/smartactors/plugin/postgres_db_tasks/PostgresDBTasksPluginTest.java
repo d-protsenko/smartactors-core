@@ -26,7 +26,7 @@ import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;

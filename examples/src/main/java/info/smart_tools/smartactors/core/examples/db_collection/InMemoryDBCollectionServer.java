@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeExcep
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.in_memory_database.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.plugin.in_memory_db_tasks.PluginInMemoryDBTasks;

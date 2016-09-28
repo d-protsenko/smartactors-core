@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.ifield;
+package info.smart_tools.smartactors.field_plugins.ifield_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.field.field.Field;
