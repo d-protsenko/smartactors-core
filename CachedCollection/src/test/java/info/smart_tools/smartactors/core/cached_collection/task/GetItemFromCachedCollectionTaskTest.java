@@ -12,9 +12,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.plugin.datetime_formatter_strategy.PluginDateTimeFormatter;
-import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
-import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.postgres_db_tasks.PostgresDBTasksPlugin;

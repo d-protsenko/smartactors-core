@@ -145,7 +145,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -160,7 +160,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

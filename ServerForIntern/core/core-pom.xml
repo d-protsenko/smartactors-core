@@ -28,7 +28,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -58,7 +58,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -21,10 +21,10 @@ import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGen
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.wds_object.WDSObject;
 import info.smart_tools.smartactors.plugin.configuration_object.InitializeConfigurationObjectStrategies;
-import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.plugin.fieldname.FieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
-import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
 import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.resolve_standard_types_strategies.ResolveStandardTypesStrategiesPlugin;
