@@ -123,12 +123,12 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scoped_ioc</artifactId>
+            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scope_provider</artifactId>
+            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

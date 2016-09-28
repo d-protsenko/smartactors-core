@@ -90,12 +90,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scoped_ioc</artifactId>
+            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scope_provider</artifactId>
+            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -11,8 +11,8 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
-import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.test.itest_runner.exception.TestExecutionException;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;

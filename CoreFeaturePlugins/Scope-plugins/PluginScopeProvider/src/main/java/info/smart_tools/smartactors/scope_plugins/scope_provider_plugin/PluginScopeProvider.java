@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.scope_provider;
+package info.smart_tools.smartactors.scope_plugins.scope_provider_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;

@@ -42,7 +42,6 @@
         <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
-        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>IWrapperGenerator</module>
@@ -137,8 +136,6 @@
         <module>PluginIOCSimpleContainer</module>
         <module>PluginIOCKeys</module>
         <module>PluginDsobject</module>
-        <module>PluginScopedIOC</module>
-        <module>PluginScopeProvider</module>
         <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>

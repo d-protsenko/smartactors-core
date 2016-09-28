@@ -14,8 +14,8 @@ import info.smart_tools.smartactors.plugin.configuration_object.InitializeConfig
 import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
 import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
 import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
-import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
