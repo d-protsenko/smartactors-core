@@ -109,7 +109,6 @@
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
         <module>PluginUserAuthByLoginActor</module>
-        <module>PluginPasswordEncoder</module>
         <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>

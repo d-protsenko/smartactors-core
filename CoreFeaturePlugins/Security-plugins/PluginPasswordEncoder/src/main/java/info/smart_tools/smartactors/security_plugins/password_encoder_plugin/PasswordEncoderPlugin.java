@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.encoder;
+package info.smart_tools.smartactors.security_plugins.password_encoder_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.security.encoding.codec.Base64;
