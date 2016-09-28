@@ -225,8 +225,6 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
-        <module>PluginBlockingQueue</module>
-        <module>PluginNonBlockingQueue</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
