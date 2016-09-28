@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>core</artifactId>
+        <artifactId>database</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core.sql_commons</artifactId>
+    <artifactId>database.sql-commons</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.idatabase_task</artifactId>
+            <artifactId>database.interfaces.idatabase-task</artifactId>
             <version>${core.version}</version>
         </dependency>
 

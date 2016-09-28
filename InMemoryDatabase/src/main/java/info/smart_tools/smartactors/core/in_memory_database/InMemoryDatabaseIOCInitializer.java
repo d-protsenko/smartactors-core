@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.in_memory_database;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
+import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;

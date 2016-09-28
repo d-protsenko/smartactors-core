@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.plugin.cached_collection;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.cached_collection.task.DeleteFromCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.task.GetItemFromCachedCollectionTask;
-import info.smart_tools.smartactors.core.cached_collection.task.UpsertIntoCachedCollectionTask;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.cached_collection.task.DeleteFromCachedCollectionTask;
+import info.smart_tools.smartactors.database.cached_collection.task.GetItemFromCachedCollectionTask;
+import info.smart_tools.smartactors.database.cached_collection.task.UpsertIntoCachedCollectionTask;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 

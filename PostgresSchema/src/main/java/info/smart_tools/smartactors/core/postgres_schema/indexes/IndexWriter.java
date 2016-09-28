@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_schema.indexes;
 
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.core.postgres_schema.search.FieldPath;
 
 import java.io.Writer;

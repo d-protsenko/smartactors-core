@@ -7,10 +7,10 @@ import info.smart_tools.smartactors.core.async_operation_collection.task.DeleteA
 import info.smart_tools.smartactors.core.async_operation_collection.task.GetAsyncOperationTask;
 import info.smart_tools.smartactors.core.async_operation_collection.task.UpdateAsyncOperationTask;
 import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;

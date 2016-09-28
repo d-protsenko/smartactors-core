@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_getbyid_task;
 
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;

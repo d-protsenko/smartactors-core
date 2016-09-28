@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.core.postgres_insert_task;
 
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;

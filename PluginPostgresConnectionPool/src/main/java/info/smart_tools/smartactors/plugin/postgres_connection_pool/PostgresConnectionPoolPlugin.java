@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool.Pool;
 import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;

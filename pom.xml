@@ -23,15 +23,12 @@
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
         <module>IMessage</module>
-        <module>DataBaseStorage</module>
-        <module>SqlCommons</module>
         <module>IAsyncService</module>
         <module>EndpointHandler</module>
         <module>NettyServer</module>
         <module>TcpServer</module>
         <module>HttpServer</module>
         <!-- database tasks modules -->
-        <module>IDatabaseTask</module>
         <module>PostgresSchema</module>
         <module>PostgresCreateCollectionTask</module>
         <module>PostgresUpsertTask</module>
@@ -58,8 +55,6 @@
         <module>PluginCachedCollection</module>
         <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>IStorageConnection</module>
-        <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
         <module>MapRouter</module>
@@ -69,7 +64,6 @@
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
         <module>CheckUserByEmailActor</module>
-        <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
@@ -202,7 +196,6 @@
         <module>InMemoryDBSelectTask</module>
         <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
-        <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
         <module>UuidNextIdStrategy</module>
         <module>PrepareRegistrationMailActor</module>

@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.idatabase_task</artifactId>
+            <artifactId>database.interfaces.idatabase-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

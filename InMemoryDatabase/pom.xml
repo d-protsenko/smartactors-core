@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.idatabase</artifactId>
+            <artifactId>database.interfaces.idatabase</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

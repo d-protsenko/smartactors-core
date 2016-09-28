@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.postgres_connection;
 
-import info.smart_tools.smartactors.core.istorage_connection.IPreparedQuery;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IPreparedQuery;
 
 import java.io.StringWriter;
 import java.io.Writer;

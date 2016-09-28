@@ -1,20 +1,20 @@
 package info.smart_tools.smartactors.core.postgres_create_task;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.db_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.core.postgres_connection.JDBCCompiledQuery;

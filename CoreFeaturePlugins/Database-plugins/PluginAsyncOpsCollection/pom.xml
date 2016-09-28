@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.async_operation_collection</artifactId>
+            <artifactId>database.async-operation-collection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

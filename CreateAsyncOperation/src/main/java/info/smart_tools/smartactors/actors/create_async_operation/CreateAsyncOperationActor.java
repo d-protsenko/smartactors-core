@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.actors.create_async_operation;
 
 import info.smart_tools.smartactors.actors.create_async_operation.exception.CreateAsyncOperationActorException;
 import info.smart_tools.smartactors.actors.create_async_operation.wrapper.CreateAsyncOperationMessage;
-import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.CreateAsyncOperationException;
+import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
+import info.smart_tools.smartactors.database.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;

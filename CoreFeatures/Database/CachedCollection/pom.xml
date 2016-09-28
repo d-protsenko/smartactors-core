@@ -3,18 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>database-core</artifactId>
+        <artifactId>database</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>database-core.cached-collection</artifactId>
+    <artifactId>database.cached-collection</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-core.interfaces.idatabase-task</artifactId>
+            <artifactId>database.interfaces.idatabase-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -113,18 +113,18 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.datetime_formatter_strategy</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>plugin.postgres_db_tasks</artifactId>-->
+            <!--<version>${core.version}</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>plugin.datetime_formatter_strategy</artifactId>-->
+            <!--<version>${core.version}</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
     </dependencies>
 
 </project>

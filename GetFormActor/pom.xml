@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.cached_collection</artifactId>
+            <artifactId>database.cached-collection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

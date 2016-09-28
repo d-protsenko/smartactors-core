@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.plugin.null_connection_pool;
 
-import info.smart_tools.smartactors.core.istorage_connection.ICompiledQuery;
-import info.smart_tools.smartactors.core.istorage_connection.IPreparedQuery;
-import info.smart_tools.smartactors.core.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.ICompiledQuery;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IPreparedQuery;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 
 /**
  * Stub for database connection which does nothing.

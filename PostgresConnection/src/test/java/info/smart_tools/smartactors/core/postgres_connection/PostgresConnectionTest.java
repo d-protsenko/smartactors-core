@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.postgres_connection;
 
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.istorage_connection.exception.StorageException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
 import org.junit.Before;
 import org.junit.Test;

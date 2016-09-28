@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.actors.check_user_is_new;
 
 import info.smart_tools.smartactors.actors.check_user_is_new.wrapper.MessageWrapper;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskSetConnectionException;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskSetConnectionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;

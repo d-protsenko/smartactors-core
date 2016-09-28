@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.async_ops_collection;
 
-import info.smart_tools.smartactors.core.async_operation_collection.AsyncOperationCollection;
-import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
+import info.smart_tools.smartactors.database.async_operation_collection.AsyncOperationCollection;
+import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

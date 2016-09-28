@@ -15,7 +15,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istorage_connection</artifactId>
+            <artifactId>database.interfaces.istorage-connection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.in_memory_db_count_task;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.core.idatabase.IDatabase;
-import info.smart_tools.smartactors.core.idatabase_task.IDatabaseTask;
-import info.smart_tools.smartactors.core.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.idatabase.IDatabase;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
