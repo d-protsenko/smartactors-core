@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>iobject-plugins</artifactId>
+    <artifactId>ioc-strategy-pack-plugins</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -18,10 +18,8 @@
     </properties>
 
     <modules>
-        <module>PluginIFieldName</module>
-        <module>PluginDSObject</module>
-        <module>PluginIObjectSimpleImpl</module>
-        <module>PluginFieldName</module>
+        <module>PluginResolveIObjectStrategies</module>
+        <module>PluginResolveStandardTypesStrategies</module>
     </modules>
 
     <repositories>

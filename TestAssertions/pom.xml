@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.fieldname</artifactId>
+            <artifactId>iobject-plugins.fieldname-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

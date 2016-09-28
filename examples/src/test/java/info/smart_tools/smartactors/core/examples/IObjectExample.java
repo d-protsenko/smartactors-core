@@ -22,7 +22,7 @@ import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
-import info.smart_tools.smartactors.plugin.resolve_standard_types_strategies.ResolveStandardTypesStrategiesPlugin;
+import info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin.ResolveStandardTypesStrategiesPlugin;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

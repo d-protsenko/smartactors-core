@@ -135,11 +135,8 @@
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginResolveIObjectStrategies</module>
         <module>PluginPostgresDBTasks</module>
-        <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
-        <module>PluginFieldName</module>
         <module>PluginAsyncOpsCollection</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
