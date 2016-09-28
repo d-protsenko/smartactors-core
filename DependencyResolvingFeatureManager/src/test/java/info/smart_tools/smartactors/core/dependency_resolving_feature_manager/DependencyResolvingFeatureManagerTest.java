@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.dependency_resolving_feature_manager;
 
-import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
-import info.smart_tools.smartactors.core.ifeature_manager.exception.FeatureManagementException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeature;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.junit.Before;

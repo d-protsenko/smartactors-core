@@ -1,22 +1,22 @@
 package info.smart_tools.smartactors.sandbox.server_with_configuration;
 
-import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.core.dependency_resolving_feature_manager.DependencyResolvingFeatureManager;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ifeature_manager.IFeature;
-import info.smart_tools.smartactors.core.ifeature_manager.IFeatureManager;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeature;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
-import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.iplugin_creator.IPluginCreator;
-import info.smart_tools.smartactors.core.iplugin_loader.IPluginLoader;
-import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_creator.IPluginCreator;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.core.plugin_loader_from_jar.ExpansibleURLClassLoader;
-import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
-import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 
 import java.net.URL;
 import java.util.Collection;

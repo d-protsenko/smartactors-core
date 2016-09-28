@@ -7,19 +7,19 @@ import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.C
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.feature_loader.FeatureLoader;
 import info.smart_tools.smartactors.core.feature_loader.FeatureStatusImpl;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.core.ifeature_loader.GlobalFeatureLoader;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureLoader;
-import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.core.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.core.plugin_loader_from_jar.PluginLoader;
-import info.smart_tools.smartactors.core.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.plugin.base.bootstrap_plugin.BootstrapPlugin;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 
 /**
  *

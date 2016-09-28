@@ -42,25 +42,9 @@
         <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
-        <module>BootstrapItem</module>
-        <module>IBootstrapItem</module>
-        <module>IBootstrap</module>
-        <module>IPlugin</module>
         <module>PluginSubscribeScopeProviderOnScopeCreation</module>
-        <module>IPluginLoader</module>
-        <module>IPluginLoaderVisitor</module>
-        <module>PluginLoaderVisitorEmptyImplementation</module>
-        <module>PluginLoaderFormJar</module>
-        <module>Bootstrap</module>
-        <module>IPluginCreator</module>
-        <module>PluginCreator</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
-        <module>PluginTestJar</module>
-        <module>FilesystemTracker</module>
-        <module>IFilesystemTracker</module>
-        <module>IFeatureManager</module>
-        <module>FeatureManager</module>
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
@@ -272,7 +256,6 @@
         <module>TimerImpl</module>
         <module>PluginTimer</module>
         <module>ObjectEnumerationActor</module>
-        <module>BootstrapPlugin</module>
         <module>PluginObjectEnumerationActor</module>
     </modules>
 
