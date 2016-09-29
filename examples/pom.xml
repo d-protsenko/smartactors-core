@@ -175,12 +175,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.in_memory_db_tasks</artifactId>
+            <artifactId>database-in-memory-plugins.in-memory-db-tasks-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.in_memory_database</artifactId>
+            <artifactId>database-in-memory-plugins.in-memory-database-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

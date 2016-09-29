@@ -173,8 +173,6 @@
         <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
-        <module>PluginInMemoryDatabase</module>
-        <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
