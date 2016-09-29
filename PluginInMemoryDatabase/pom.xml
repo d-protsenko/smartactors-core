@@ -48,7 +48,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_database</artifactId>
+            <artifactId>database-in-memory.in-memory-database</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

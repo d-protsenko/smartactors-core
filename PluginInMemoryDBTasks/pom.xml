@@ -48,7 +48,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_upsert_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-upsert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -58,32 +58,32 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_get_by_id_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-get-by-id-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_select_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-select-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_create_collection_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-create-collection-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_delete_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-delete-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_count_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-count-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.in_memory_db_insert_task</artifactId>
+            <artifactId>database-in-memory.in-memory-db-insert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

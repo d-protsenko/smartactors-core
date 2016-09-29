@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
+import info.smart_tools.smartactors.database_in_memory.in_memory_database.InMemoryDatabase;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;

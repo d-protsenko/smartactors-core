@@ -173,20 +173,12 @@
         <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
-        <module>InMemoryDatabase</module>
         <module>PluginInMemoryDatabase</module>
-        <module>InMemoryDBCreateCollectionTask</module>
-        <module>InMemoryDBGetByIdTask</module>
-        <module>InMemoryDBUpsertTask</module>
-        <module>InMemoryDBDeleteTask</module>
-        <module>InMemoryDBSelectTask</module>
         <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>InMemoryDBCountTask</module>
-        <module>InMemoryDBInsertTask</module>
         <module>TestRunner</module>
         <module>TestLoadingPlugins</module>
         <module>ChainTestsConfigSectionStrategy</module>
