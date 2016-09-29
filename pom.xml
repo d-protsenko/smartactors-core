@@ -43,8 +43,6 @@
         <module>MessageProcessingSequence</module>
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
-        <module>PluginCachedCollection</module>
-        <module>PluginPostgresConnectionPool</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
         <module>MapRouter</module>
@@ -119,9 +117,7 @@
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginPostgresDBTasks</module>
         <module>PluginWrapperGenerator</module>
-        <module>PluginAsyncOpsCollection</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>

@@ -210,12 +210,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

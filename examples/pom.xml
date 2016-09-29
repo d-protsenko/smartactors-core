@@ -140,7 +140,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -165,7 +165,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
