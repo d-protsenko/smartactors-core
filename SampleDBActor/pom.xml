@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_connection</artifactId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

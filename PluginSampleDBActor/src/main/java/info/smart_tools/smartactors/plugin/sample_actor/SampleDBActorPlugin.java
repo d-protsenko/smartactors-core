@@ -17,7 +17,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 
 import java.io.FileReader;
 import java.io.IOException;

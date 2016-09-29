@@ -18,22 +18,22 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.postgres_count_task.CountMessage;
-import info.smart_tools.smartactors.core.postgres_count_task.PostgresCountTask;
-import info.smart_tools.smartactors.core.postgres_create_task.CreateCollectionMessage;
-import info.smart_tools.smartactors.core.postgres_create_task.PostgresCreateTask;
-import info.smart_tools.smartactors.core.postgres_delete_task.DeleteMessage;
-import info.smart_tools.smartactors.core.postgres_delete_task.PostgresDeleteTask;
-import info.smart_tools.smartactors.core.postgres_getbyid_task.GetByIdMessage;
-import info.smart_tools.smartactors.core.postgres_getbyid_task.PostgresGetByIdTask;
-import info.smart_tools.smartactors.core.postgres_insert_task.InsertMessage;
-import info.smart_tools.smartactors.core.postgres_insert_task.PostgresInsertTask;
-import info.smart_tools.smartactors.core.postgres_search_task.PostgresSearchTask;
-import info.smart_tools.smartactors.core.postgres_search_task.SearchMessage;
-import info.smart_tools.smartactors.core.postgres_upsert_task.PostgresUpsertTask;
-import info.smart_tools.smartactors.core.postgres_upsert_task.UpsertMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_create_task.PostgresCreateTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.DeleteMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.PostgresDeleteTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.GetByIdMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.PostgresGetByIdTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_insert_task.InsertMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_insert_task.PostgresInsertTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_search_task.PostgresSearchTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_search_task.SearchMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.PostgresUpsertTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.UpsertMessage;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.strategy.uuid_nextid_strategy.UuidNextIdStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.uuid_nextid_strategy.UuidNextIdStrategy;
 
 /**
  * Plugin with IOC-strategies for database tasks

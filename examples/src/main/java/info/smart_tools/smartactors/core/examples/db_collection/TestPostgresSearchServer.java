@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;

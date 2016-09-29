@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 
 public class SaveSessionActor {
     private IPool connectionPool;

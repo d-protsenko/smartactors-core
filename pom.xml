@@ -29,14 +29,6 @@
         <module>TcpServer</module>
         <module>HttpServer</module>
         <!-- database tasks modules -->
-        <module>PostgresSchema</module>
-        <module>PostgresCreateCollectionTask</module>
-        <module>PostgresUpsertTask</module>
-        <module>PostgresInsertTask</module>
-        <module>PostgresGetByIdTask</module>
-        <module>PostgresSearchTask</module>
-        <module>PostgresDeleteTask</module>
-        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>ServerWithPluginLoader</module>
@@ -52,7 +44,6 @@
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
         <module>PluginCachedCollection</module>
-        <module>PostgresConnection</module>
         <module>PluginPostgresConnectionPool</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
@@ -196,7 +187,6 @@
         <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
-        <module>UuidNextIdStrategy</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
         <module>InMemoryDBCountTask</module>

@@ -16,8 +16,8 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool.Pool;
-import info.smart_tools.smartactors.core.postgres_connection.PostgresConnection;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.PostgresConnection;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 

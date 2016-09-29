@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.uuid_nextid_strategy</artifactId>
+            <artifactId>ioc-strategy-pack.uuid-nextid-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

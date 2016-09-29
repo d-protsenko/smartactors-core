@@ -71,42 +71,42 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_upsert_task</artifactId>
+            <artifactId>database-postgresql.postgres-upsert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_getbyid_task</artifactId>
+            <artifactId>database-postgresql.postgres-getbyid-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_search_task</artifactId>
+            <artifactId>database-postgresql.postgres-search-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_create_task</artifactId>
+            <artifactId>database-postgresql.postgres-create-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.uuid_nextid_strategy</artifactId>
+            <artifactId>ioc-strategy-pack.uuid-nextid-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_delete_task</artifactId>
+            <artifactId>database-postgresql.postgres-delete-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_insert_task</artifactId>
+            <artifactId>database-postgresql.postgres-insert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_count_task</artifactId>
+            <artifactId>database-postgresql.postgres-count-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

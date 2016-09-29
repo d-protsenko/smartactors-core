@@ -105,7 +105,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_upsert_task</artifactId>
+            <artifactId>database-postgresql.postgres-upsert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -115,7 +115,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_getbyid_task</artifactId>
+            <artifactId>database-postgresql.postgres-getbyid-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -130,7 +130,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_search_task</artifactId>
+            <artifactId>database-postgresql.postgres-search-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

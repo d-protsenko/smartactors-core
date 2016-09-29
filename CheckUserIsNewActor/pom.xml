@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_search_task</artifactId>
+            <artifactId>database-postgresql.postgres-search-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
