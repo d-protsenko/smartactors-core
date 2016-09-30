@@ -21,7 +21,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
     /**
      * The constructor.
      *
-     * @param bootstrap    the bootstrap
+     * @param bootstrap the bootstrap
      */
     public StandardConfigSectionsPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
@@ -135,6 +135,27 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             throw new ActionExecuteException(e);
                         }
                     });
+             /* "client" section */
+            IBootstrapItem<String> clientSectionItem = new BootstrapItem("config_section:client");
+
+            clientSectionItem
+                    .after("configuration_manager")
+                    .after("config_section:maps")
+                    .after("config_section:executor")
+                    .after("IFieldNamePlugin")
+                    .before("starter")
+                    .process(() -> {
+                        try {
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+
+                            configurationManager.addSectionStrategy(new ClientSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(clientSectionItem);
 
             bootstrap.add(messageBusItem);
         } catch (InvalidArgumentException e) {

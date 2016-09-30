@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.http_client_handler;
 
-import info.smart_tools.smartactors.core.ihttp_response_handler.IHttpResponseHandler;
+import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -9,9 +9,9 @@ import io.netty.handler.codec.http.FullHttpResponse;
  * Handler for responses, that received after sending request
  */
 public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
-    IHttpResponseHandler httpResponseHandler;
+    IResponseHandler httpResponseHandler;
 
-    public HttpClientHandler(final IHttpResponseHandler handler) {
+    public HttpClientHandler(final IResponseHandler handler) {
         this.httpResponseHandler = handler;
     }
 

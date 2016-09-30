@@ -18,6 +18,7 @@ import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iplugin.IPlugin;
 import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
@@ -33,7 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Created by sevenbits on 26.09.16.
+ * Plugin for http client
  */
 public class HttpClientPlugin implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -78,7 +79,7 @@ public class HttpClientPlugin implements IPlugin {
 
                                                 }
                                             };
-                                    HttpClientHandler handler = new HttpClientHandler(null);
+                                    //HttpClientHandler handler = new HttpClientHandler(null);
                                     IOC.register(Keys.getOrAdd("httpClient"), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         IObject requestConfiguration = (IObject) args[0];
@@ -88,8 +89,11 @@ public class HttpClientPlugin implements IPlugin {
                                                                             Keys.getOrAdd(URI.class.getCanonicalName()),
                                                                             requestConfiguration.getValue(uriFieldName)
                                                                     ),
-                                                                    handler
-
+                                                                    IOC.resolve(
+                                                                            Keys.getOrAdd(
+                                                                                    IResponseHandler.class.getCanonicalName()
+                                                                            )
+                                                                    )
                                                             );
                                                             client.start();
                                                             return client;

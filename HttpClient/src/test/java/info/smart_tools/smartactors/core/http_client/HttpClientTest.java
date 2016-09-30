@@ -4,7 +4,7 @@ package info.smart_tools.smartactors.core.http_client;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.http_client_handler.HttpClientHandler;
-import info.smart_tools.smartactors.core.ihttp_response_handler.IHttpResponseHandler;
+import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
@@ -35,11 +35,11 @@ import static org.mockito.Mockito.verify;
  */
 public class HttpClientTest {
     HttpClientHandler handler;
-    IHttpResponseHandler responseHandler;
+    IResponseHandler responseHandler;
 
     @Before
     public void setUp() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException {
-        responseHandler = mock(IHttpResponseHandler.class);
+        responseHandler = mock(IResponseHandler.class);
         handler = new HttpClientHandler(responseHandler);
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {

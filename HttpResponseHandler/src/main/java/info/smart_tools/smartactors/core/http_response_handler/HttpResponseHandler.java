@@ -3,10 +3,11 @@ package info.smart_tools.smartactors.core.http_response_handler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.ihttp_response_handler.IHttpResponseHandler;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
+import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.core.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.core.itask.ITask;
 import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
@@ -25,17 +26,18 @@ import java.util.ArrayList;
 /**
  * Handler for http response
  */
-public class HttpResponseHandler implements IHttpResponseHandler {
+public class HttpResponseHandler implements IResponseHandler<ChannelHandlerContext, FullHttpResponse> {
     private IQueue<ITask> taskQueue;
     private int stackDepth;
     private IReceiverChain receiverChain;
 
-    IFieldName messageFieldName;
-    IFieldName contextFieldName;
-    IFieldName httpResponseStatusCodeFieldName;
-    IFieldName responseFieldName;
-    IFieldName headersFieldName;
-    IFieldName cookiesFieldName;
+    private IFieldName messageFieldName;
+    private IFieldName contextFieldName;
+    private IFieldName httpResponseStatusCodeFieldName;
+    private IFieldName responseFieldName;
+    private IFieldName headersFieldName;
+    private IFieldName cookiesFieldName;
+    private IFieldName messageMapIdFieldName;
 
     public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain) {
         this.taskQueue = taskQueue;
@@ -51,6 +53,7 @@ public class HttpResponseHandler implements IHttpResponseHandler {
             responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
+            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -71,16 +74,12 @@ public class HttpResponseHandler implements IHttpResponseHandler {
                 IObject message = (IObject) environment.getValue(messageFieldName);
                 IObject context = (IObject) environment.getValue(contextFieldName);
                 messageProcessor.process(message, context);
-            } catch (ResolutionException e) {
-                e.printStackTrace();
-            } catch (InvalidArgumentException e) {
-                e.printStackTrace();
-            } catch (ReadValueException e) {
-                e.printStackTrace();
-            } catch (ChangeValueException e) {
-                e.printStackTrace();
+            } catch (ResolutionException | ChangeValueException | ReadValueException |
+                    InvalidArgumentException | ResponseHandlerException e) {
+                throw new TaskExecutionException(e);
             }
         };
+
         try {
             taskQueue.put(task);
         } catch (InterruptedException e) {
@@ -88,12 +87,14 @@ public class HttpResponseHandler implements IHttpResponseHandler {
         }
     }
 
-    private IObject getEnvironment(FullHttpResponse response) {
+    private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {
         try {
             IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd("httpResponseResolver"), response);
             IObject message = deserializeStrategy.deserialize(response);
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
-            IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            String messageMapId = String.valueOf(response.headers().get("messageMapId"));
+            environment.setValue(messageMapIdFieldName, messageMapId);
+            IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             context.setValue(cookiesFieldName, new ArrayList<IObject>());
             context.setValue(headersFieldName, new ArrayList<IObject>());
             context.setValue(responseFieldName, response);
@@ -101,12 +102,8 @@ public class HttpResponseHandler implements IHttpResponseHandler {
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
             return environment;
-        } catch (ResolutionException | DeserializationException e) {
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
-        } catch (ChangeValueException e) {
-            e.printStackTrace();
+        } catch (ResolutionException | DeserializationException | ChangeValueException | InvalidArgumentException e) {
+            throw new ResponseHandlerException(e);
         }
-        return null;
     }
 }

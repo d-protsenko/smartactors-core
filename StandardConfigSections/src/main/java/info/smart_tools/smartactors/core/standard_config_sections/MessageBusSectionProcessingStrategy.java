@@ -76,9 +76,9 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
             IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain);
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
+            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
         } catch (ResolutionException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
+            throw new ConfigurationProcessingException("Error occurred resolving \"client\".", e);
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
         }

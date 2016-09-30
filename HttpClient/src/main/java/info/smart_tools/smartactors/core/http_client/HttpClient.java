@@ -31,12 +31,13 @@ import java.util.List;
  * Client for HTTP server
  */
 public class HttpClient extends NettyClient<HttpRequest> {
-    IFieldName uriFieldName;
-    IFieldName methodFieldName;
-    IFieldName headersFieldName;
-    IFieldName nameFieldName;
-    IFieldName valueFieldName;
-    IFieldName cookiesFieldName;
+    private IFieldName uriFieldName;
+    private IFieldName methodFieldName;
+    private IFieldName headersFieldName;
+    private IFieldName nameFieldName;
+    private IFieldName valueFieldName;
+    private IFieldName cookiesFieldName;
+    private IFieldName messageMapIdFieldName;
 
     /**
      * Constructor for http client
@@ -53,6 +54,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
             nameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             valueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookie");
+            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }
@@ -86,6 +88,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
                     httpRequest.headers().set((String) header.getValue(nameFieldName), header.getValue(valueFieldName));
                 }
             }
+            httpRequest.headers().set("messageMapId", request.getValue(messageMapIdFieldName));
             List<IObject> cookies = (List<IObject>) request.getValue(cookiesFieldName);
             if (null != cookies) {
                 for (IObject cookie : cookies) {

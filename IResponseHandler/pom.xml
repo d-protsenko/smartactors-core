@@ -9,13 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.ihttp_response_handler</artifactId>
+    <artifactId>core.iresponse_handler</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>5.0.0.Alpha2</version>
-        </dependency>
     </dependencies>
 
 
