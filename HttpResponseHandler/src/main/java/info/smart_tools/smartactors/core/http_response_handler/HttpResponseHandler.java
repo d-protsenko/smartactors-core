@@ -39,6 +39,13 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
 
+    /**
+     * Constructor
+     *
+     * @param taskQueue     main queue of the {@link ITask}
+     * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
+     * @param receiverChain chain, that should receive message
+     */
     public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain) {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;

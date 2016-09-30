@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.http_response_handler.HttpResponseHandler;
-import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
@@ -21,35 +20,35 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
-import java.util.List;
-
 /**
  * Creates endpoints using configuration.
  * <p>
  * Expects the following configuration format:
  * <p>
  * <pre>
- *     {
- *         "client": [
- *             {
- *                 "startChain": "mainChain",
- *                 "stackDepth": 5 (temporarily)
- *             },
+ * "client":  {
+ *      "startChain": "mainChain",
+ *      "stackDepth": 5 (temporarily)
+ * }
  */
 public class ClientSectionProcessingStrategy implements ISectionStrategy {
 
-    IFieldName name;
-    IFieldName startChainNameFieldName;
-    IFieldName queueFieldName;
+    private IFieldName name, startChainNameFieldName, queueFieldName, stackDepthFieldName;
 
+    /**
+     * Constructor
+     *
+     * @throws ResolutionException if there are problems on resolving IFieldName
+     */
     ClientSectionProcessingStrategy() throws ResolutionException {
         this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "client");
         this.startChainNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "startChain");
         this.queueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queue");
+        this.stackDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
     }
 
     @Override
-    public void onLoadConfig(IObject config) throws ConfigurationProcessingException {
+    public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject clientObject = (IObject) config.getValue(name);
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
@@ -60,7 +59,8 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
             IReceiverChain chain = chainStorage.resolve(mapId);
             clientObject.setValue(startChainNameFieldName, chain);
             clientObject.setValue(queueFieldName, queue);
-            IResponseHandler handler = new HttpResponseHandler(queue, 5, chain);
+            Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
+            IResponseHandler handler = new HttpResponseHandler(queue, stackDepth, chain);
             IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(handler));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);

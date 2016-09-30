@@ -21,8 +21,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
-import io.netty.handler.codec.http.cookie.CookieEncoder;
-import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.net.URI;
 import java.util.List;
@@ -44,6 +42,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
      *
      * @param serverUri      URI of the server, that will receive requests
      * @param inboundHandler Channel
+     * @throws RequestSenderException if there are exception on resolving IFieldName
      */
     public HttpClient(final URI serverUri, final ChannelInboundHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
@@ -77,7 +76,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
     }
 
     @Override
-    public void sendRequest(IObject request) throws RequestSenderException {
+    public void sendRequest(final IObject request) throws RequestSenderException {
         try {
             HttpMethod method = HttpMethod.valueOf((String) request.getValue(methodFieldName));
             String uri = (String) request.getValue(uriFieldName);

@@ -8,17 +8,22 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import io.netty.handler.codec.http.FullHttpResponse;
 
 /**
- * Created by sevenbits on 26.09.16.
+ * Deserialization strategy for {@link FullHttpResponse}
  */
 public class HttpResponseDeserializationStrategy implements IDeserializeStrategy<FullHttpResponse> {
     private final IMessageMapper<byte[]> messageMapper;
 
+    /**
+     * Constuctor
+     *
+     * @param messageMapper message mapper for this deserialization strategy
+     */
     public HttpResponseDeserializationStrategy(final IMessageMapper<byte[]> messageMapper) {
         this.messageMapper = messageMapper;
     }
 
     @Override
-    public IObject deserialize(FullHttpResponse response) throws DeserializationException {
+    public IObject deserialize(final FullHttpResponse response) throws DeserializationException {
         byte[] bytes = new byte[response.content().capacity()];
 
         for (int i = 0, size = response.content().capacity(); i < size; i++) {
