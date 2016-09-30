@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.test.iresult_checker;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 
 /**

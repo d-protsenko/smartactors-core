@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -20,7 +20,7 @@ import info.smart_tools.smartactors.scope.iscope_provider_container.exception.Sc
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.message_bus.MessageBus;
 import info.smart_tools.smartactors.core.message_bus_handler.MessageBusHandler;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.test.test_environment_handler;
 
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

@@ -29,7 +29,7 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.handler_routing_receiver_creator</artifactId>
+            <artifactId>message-processing.handler-routing-receiver-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

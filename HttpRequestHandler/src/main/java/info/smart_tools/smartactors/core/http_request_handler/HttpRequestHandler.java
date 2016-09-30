@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;

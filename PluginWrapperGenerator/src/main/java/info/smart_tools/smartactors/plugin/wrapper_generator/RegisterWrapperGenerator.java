@@ -10,9 +10,9 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
+import info.smart_tools.smartactors.message_processing.wrapper_generator.WrapperGenerator;
 
 /**
  * Plugin creates instance of {@link WrapperGenerator} and registers it into IOC,

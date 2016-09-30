@@ -15,7 +15,7 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

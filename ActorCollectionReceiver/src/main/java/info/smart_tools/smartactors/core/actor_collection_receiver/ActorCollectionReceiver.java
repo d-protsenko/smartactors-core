@@ -5,12 +5,12 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

@@ -3,8 +3,9 @@ package info.smart_tools.smartactors.core;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
@@ -18,7 +19,7 @@ public class HttpEndpoint extends HttpServer {
      * @param maxContentLength max length of the content
      * @param scope            scope for endpoint
      * @param handler          handler for environment
-     * @param receiverChain    chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
+     * @param receiverChain    chain, that should receive {@link MessageProcessor}
      */
     public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
                         final IEnvironmentHandler handler, final IReceiverChain receiverChain

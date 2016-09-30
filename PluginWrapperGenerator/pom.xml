@@ -51,7 +51,7 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wrapper_generator</artifactId>
+            <artifactId>message-processing.wrapper-generator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

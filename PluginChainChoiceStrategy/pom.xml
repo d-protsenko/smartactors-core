@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_call_receiver</artifactId>
+            <artifactId>message-processing.chain-call-receiver</artifactId>
             <version>${core.version}</version>
         </dependency>
 

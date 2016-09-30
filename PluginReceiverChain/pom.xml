@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.immutable_receiver_chain</artifactId>
+            <artifactId>message-processing.immutable-receiver-chain</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

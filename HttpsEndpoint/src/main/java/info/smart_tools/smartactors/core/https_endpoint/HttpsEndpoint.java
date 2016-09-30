@@ -5,9 +5,10 @@ import info.smart_tools.smartactors.core.EndpointChannelInboundHandler;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.https_server.HttpsServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
@@ -22,7 +23,7 @@ public class HttpsEndpoint extends HttpsServer {
      * @param maxContentLength   max length of the content
      * @param scope              scope for endpoint
      * @param handler            handler for environment
-     * @param receiverChain      chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
+     * @param receiverChain      chain, that should receive {@link MessageProcessor}
      * @param sslContextProvider provider for ssl context
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,

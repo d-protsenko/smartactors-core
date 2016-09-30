@@ -6,10 +6,10 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
-import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**

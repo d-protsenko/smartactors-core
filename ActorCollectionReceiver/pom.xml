@@ -20,17 +20,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouter</artifactId>
+            <artifactId>message-processing-interfaces.irouter</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouted_object_creator</artifactId>
+            <artifactId>message-processing-interfaces.irouted-object-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
 

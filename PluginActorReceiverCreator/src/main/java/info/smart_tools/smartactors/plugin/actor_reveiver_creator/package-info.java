@@ -1,7 +1,7 @@
 /**
- * Package contains plugin for {@link info.smart_tools.smartactors.core.actor_receiver_creator.ActorReceiverCreator}.
+ * Package contains plugin for {@link info.smart_tools.smartactors.message_processing.actor_receiver_creator.ActorReceiverCreator}.
  * Implementation of {@link info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin}.
- * Plugin creates instance of {@link info.smart_tools.smartactors.core.actor_receiver_creator.ActorReceiverCreator}
+ * Plugin creates instance of {@link info.smart_tools.smartactors.message_processing.actor_receiver_creator.ActorReceiverCreator}
  * and registers its into IOC.
  */
 package info.smart_tools.smartactors.plugin.actor_reveiver_creator;

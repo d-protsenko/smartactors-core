@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichain_storage</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
 

@@ -13,9 +13,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
 
