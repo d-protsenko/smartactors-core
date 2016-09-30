@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.constants_section_strategy;
 
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;

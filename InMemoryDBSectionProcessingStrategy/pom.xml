@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iconfiguration_manager</artifactId>
+            <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

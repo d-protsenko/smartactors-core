@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.in_memory_db_section_processing_strategy;
 
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.database.interfaces.idatabase.IDatabase;
 import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;

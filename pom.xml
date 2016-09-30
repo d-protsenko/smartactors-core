@@ -93,7 +93,6 @@
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
-        <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
@@ -106,7 +105,6 @@
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>ConfigurationManager</module>
         <module>PluginConfigurationManager</module>
         <module>PluginReadConfigFile</module>
         <module>ServerWithConfiguration</module>

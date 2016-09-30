@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.core.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.core.ifilesystem_facade.IFilesystemFacade;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
