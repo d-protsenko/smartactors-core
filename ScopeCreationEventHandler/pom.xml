@@ -26,12 +26,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istrategy_container</artifactId>
+            <artifactId>ioc.istrategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ikey</artifactId>
+            <artifactId>ioc.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -45,7 +45,7 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
 

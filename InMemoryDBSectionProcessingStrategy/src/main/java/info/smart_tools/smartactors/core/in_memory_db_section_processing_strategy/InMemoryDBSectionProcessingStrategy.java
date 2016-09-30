@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.core.in_memory_db_section_processing_strategy;
 
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.idatabase.IDatabase;
-import info.smart_tools.smartactors.core.idatabase.exception.IDatabaseException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.database.interfaces.idatabase.IDatabase;
+import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.in_memory_database.InMemoryDatabase;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.database_in_memory.in_memory_database.InMemoryDatabase;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.List;
 

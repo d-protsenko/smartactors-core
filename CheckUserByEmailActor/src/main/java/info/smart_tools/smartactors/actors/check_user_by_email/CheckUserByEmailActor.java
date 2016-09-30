@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.actors.check_user_by_email;
 import info.smart_tools.smartactors.actors.check_user_by_email.exception.NotFoundUserException;
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.ActorParams;
 import info.smart_tools.smartactors.actors.check_user_by_email.wrapper.MessageWrapper;
-import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
-import info.smart_tools.smartactors.core.cached_collection.exception.GetCacheItemException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.database.cached_collection.ICachedCollection;
+import info.smart_tools.smartactors.database.cached_collection.exception.GetCacheItemException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.List;
 

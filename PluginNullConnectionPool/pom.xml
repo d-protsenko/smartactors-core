@@ -39,23 +39,23 @@
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Other implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap_item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istorage_connection</artifactId>
+            <artifactId>database.interfaces.istorage-connection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Test -->
@@ -88,19 +88,19 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap</artifactId>
+            <artifactId>feature-loading-system.bootstrap</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_simple_container</artifactId>
+            <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -112,7 +112,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_connection</artifactId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

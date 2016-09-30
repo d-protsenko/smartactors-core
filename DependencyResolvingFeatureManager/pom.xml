@@ -21,7 +21,7 @@
         <!-- Feature manager interface -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifeature_manager</artifactId>
+            <artifactId>feature-loading-system.interfaces.ifeature-manager</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <!-- Path implementation -->

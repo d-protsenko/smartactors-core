@@ -4,11 +4,11 @@ import info.smart_tools.smartactors.actors.validate_form_data.exception.Validate
 import info.smart_tools.smartactors.actors.validate_form_data.wrapper.ValidateFormDataMessage;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.field.Field;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.field.field.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -15,17 +15,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -45,57 +45,57 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_creator</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_creator</artifactId>
+            <artifactId>feature-loading-system.plugin-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin_loader_visitor</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin-loader-visitor</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_from_jar</artifactId>
+            <artifactId>feature-loading-system.plugin-loader-from-jar</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap</artifactId>
+            <artifactId>feature-loading-system.bootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap_item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.feature_manager</artifactId>
+            <artifactId>feature-loading-system.feature-manager</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.filesystem_tracker</artifactId>
+            <artifactId>feature-loading-system.filesystem-tracker</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -105,7 +105,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_upsert_task</artifactId>
+            <artifactId>database-postgresql.postgres-upsert-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -115,12 +115,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_getbyid_task</artifactId>
+            <artifactId>database-postgresql.postgres-getbyid-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.istorage_connection</artifactId>
+            <artifactId>database.interfaces.istorage-connection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -130,57 +130,57 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_search_task</artifactId>
+            <artifactId>database-postgresql.postgres-search-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.fieldname</artifactId>
+            <artifactId>iobject-plugins.fieldname-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.field</artifactId>
+            <artifactId>field-plugins.field-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_simple_container</artifactId>
+            <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.in_memory_db_tasks</artifactId>
+            <artifactId>database-in-memory-plugins.in-memory-db-tasks-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.in_memory_database</artifactId>
+            <artifactId>database-in-memory-plugins.in-memory-database-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -202,25 +202,25 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.recursive_strategy_container</artifactId>
+            <artifactId>ioc.recursive-strategy-container</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.resolve_standard_types_strategies</artifactId>
+            <artifactId>ioc-strategy-pack-plugins.resolve-standard-types-strategies-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.wds_object</artifactId>
+            <artifactId>iobject-extension-plugins.wds-object-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.configuration_object</artifactId>
+            <artifactId>iobject-extension-plugins.configuration-object-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

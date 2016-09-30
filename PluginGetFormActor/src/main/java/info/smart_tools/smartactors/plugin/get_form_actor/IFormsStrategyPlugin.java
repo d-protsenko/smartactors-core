@@ -2,17 +2,17 @@ package info.smart_tools.smartactors.plugin.get_form_actor;
 
 import info.smart_tools.smartactors.actors.get_form.strategy.FirstItemStrategy;
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
-import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 public class IFormsStrategyPlugin implements IPlugin {
@@ -29,7 +29,7 @@ public class IFormsStrategyPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("GetFormActorPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("GetFirstFormItemStrategyPlugin");
             item
                     .after("IOC")
                     .process(() -> {
@@ -49,7 +49,7 @@ public class IFormsStrategyPlugin implements IPlugin {
                     });
             bootstrap.add(item);
         } catch (Exception e) {
-            throw new PluginException("Can't load GetFormActor plugin", e);
+            throw new PluginException("Can't load GetFirstFormItemStrategy plugin", e);
         }
     }
 }

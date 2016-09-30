@@ -19,12 +19,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -37,37 +37,37 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scoped_ioc</artifactId>
+            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scope_provider</artifactId>
+            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.fieldname</artifactId>
+            <artifactId>iobject-plugins.fieldname-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

@@ -3,13 +3,16 @@ package info.smart_tools.smartactors.core.chain_storage;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.irouter.IRouter;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,11 +48,16 @@ public class ChainStorage implements IChainStorage {
     public void register(final Object chainId, final IObject description)
             throws ChainCreationException {
         try {
-            chainsMap.put(
-                    chainId,
-                    IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
-                            chainId, description, this, router));
+            IReceiverChain newChain = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.getCanonicalName()),
+                    chainId, description, this, router);
+
+            IReceiverChain oldChain = chainsMap.put(chainId, newChain);
+
+            if (null != oldChain) {
+                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
+                        oldChain.toString(), chainId.toString(), newChain.toString()));
+            }
         } catch (ResolutionException  e) {
             throw new ChainCreationException("Could not create a chain", e);
         }
@@ -65,5 +73,10 @@ public class ChainStorage implements IChainStorage {
         }
 
         return chain;
+    }
+
+    @Override
+    public List<Object> enumerate() {
+        return new ArrayList<>(chainsMap.keySet());
     }
 }

@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
-import info.smart_tools.smartactors.core.db_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 

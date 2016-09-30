@@ -1,6 +1,6 @@
 /**
  * Package contains 'TestEndpointAndEnvironment' plugin.
- * Implementation of {@link info.smart_tools.smartactors.core.iplugin.IPlugin}.
+ * Implementation of {@link info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin}.
  * Plugin creates instance of {@link info.smart_tools.smartactors.test.test_http_endpoint.TestHttpEndpoint} and
  * other testing instances. Registers them into IOC.
  */

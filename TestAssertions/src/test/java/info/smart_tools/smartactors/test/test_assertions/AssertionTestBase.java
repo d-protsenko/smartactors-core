@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.test.test_assertions;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
-import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
-import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.scope_provider.PluginScopeProvider;
-import info.smart_tools.smartactors.plugin.scoped_ioc.ScopedIOCPlugin;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 

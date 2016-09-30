@@ -5,8 +5,8 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.core.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;

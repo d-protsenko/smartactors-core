@@ -1,11 +1,8 @@
 package info.smart_tools.smartactors.core.message_bus;
 
-import info.smart_tools.smartactors.core.iioccontainer.IContainer;
 import info.smart_tools.smartactors.core.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.message_bus_container_with_scope.MessageBusContainer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +48,58 @@ public class MessageBusTest {
             throws SendingMessageException {
         doThrow(new SendingMessageException("")).when(this.container).send(null);
         MessageBus.send(null);
+        fail();
+    }
+
+    @Test
+    public void checkSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        IObject message = mock(IObject.class);
+        Object chainName = mock(Object.class);
+        MessageBus.send(message, chainName);
+        verify(this.container, times(1)).send(message, chainName);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithSpecificChain()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).send(null, null);
+        MessageBus.send(null, null);
+        fail();
+    }
+
+    @Test
+    public void checkSendingMessageWithReply()
+            throws Exception {
+        IObject message = mock(IObject.class);
+        Object chainNameForReply = mock(Object.class);
+        MessageBus.sendAndReply(message, chainNameForReply);
+        verify(this.container, times(1)).sendAndReply(message, chainNameForReply);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithReply()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null);
+        MessageBus.sendAndReply(null, null);
+        fail();
+    }
+
+    @Test
+    public void checkSendingMessageWithSpecificChainAndReply()
+            throws Exception {
+        IObject message = mock(IObject.class);
+        Object chainName = mock(Object.class);
+        Object chainNameForReply = mock(Object.class);
+        MessageBus.sendAndReply(message, chainName, chainNameForReply);
+        verify(this.container, times(1)).sendAndReply(message, chainName, chainNameForReply);
+    }
+
+    @Test (expected = SendingMessageException.class)
+    public void checkExceptionOnSendingMessageWithSpecificChainAndReply()
+            throws SendingMessageException {
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null, null);
+        MessageBus.sendAndReply(null, null, null);
         fail();
     }
 }

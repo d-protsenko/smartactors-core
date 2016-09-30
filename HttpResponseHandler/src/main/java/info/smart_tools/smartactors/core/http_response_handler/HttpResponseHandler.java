@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.core.http_response_handler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.ioc.IOC;
 import info.smart_tools.smartactors.core.iqueue.IQueue;
 import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
@@ -18,6 +17,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 
@@ -81,8 +81,8 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 IObject message = (IObject) environment.getValue(messageFieldName);
                 IObject context = (IObject) environment.getValue(contextFieldName);
                 messageProcessor.process(message, context);
-            } catch (ResolutionException | ChangeValueException | ReadValueException |
-                    InvalidArgumentException | ResponseHandlerException e) {
+            } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
+                    ResolutionException | info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException e) {
                 throw new TaskExecutionException(e);
             }
         };

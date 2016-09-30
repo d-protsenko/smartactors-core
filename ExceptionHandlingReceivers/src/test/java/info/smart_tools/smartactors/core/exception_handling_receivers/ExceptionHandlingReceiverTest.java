@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.exception_handling_receivers;
 
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import org.junit.Before;
 import org.junit.Ignore;

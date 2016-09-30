@@ -1,29 +1,28 @@
 package info.smart_tools.smartactors.plugins.message_processor_and_sequence;
 
-import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
-import info.smart_tools.smartactors.core.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.core.message_processor.FinalTask;
 import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  *
@@ -112,10 +111,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                IConfigurationManager configurationManager =
-                                                        IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-
-                                                config = configurationManager.getConfig();
+                                                config = IOC.resolve(Keys.getOrAdd("global constants"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }

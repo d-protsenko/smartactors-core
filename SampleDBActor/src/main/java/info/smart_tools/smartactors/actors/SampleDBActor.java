@@ -4,16 +4,16 @@ import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.actors.wrapper.SampleGetByIdWrapper;
 import info.smart_tools.smartactors.actors.wrapper.SampleUpsertWrapper;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 
 /**
  * Sample actor which upserts and retreives the document from database.

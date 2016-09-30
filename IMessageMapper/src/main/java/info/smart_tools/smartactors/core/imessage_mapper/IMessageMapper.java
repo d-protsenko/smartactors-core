@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.imessage_mapper;
 
 
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage.IMessage;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 

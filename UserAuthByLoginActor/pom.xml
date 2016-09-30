@@ -24,17 +24,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.itask</artifactId>
+            <artifactId>task.interfaces.itask</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.db_storage</artifactId>
+            <artifactId>database.database-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.testing.helpers.plugins_loading_test_base;
 
-import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import org.junit.Before;
 
 /**

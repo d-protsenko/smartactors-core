@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.core.http_response_deserialization_strategy
 
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import io.netty.handler.codec.http.FullHttpResponse;
 
 /**
@@ -32,7 +32,7 @@ public class HttpResponseDeserializationStrategy implements IDeserializeStrategy
         try {
             return messageMapper.deserialize(bytes);
         } catch (ResolutionException e) {
-            throw new DeserializationException("Failed to deserialize request", e);
+            throw new DeserializationException(e);
         }
     }
 }

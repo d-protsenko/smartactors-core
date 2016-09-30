@@ -5,11 +5,11 @@ import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.Response
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.core.iresponse.IResponse;
 import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**

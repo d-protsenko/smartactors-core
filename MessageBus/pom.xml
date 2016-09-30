@@ -22,7 +22,7 @@
         <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.string_ioc_key</artifactId>
+            <artifactId>ioc.string-ioc-key</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

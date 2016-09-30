@@ -35,4 +35,6 @@ public interface IUserAuthByLoginMessage {
      * @throws ChangeValueException if any error is occurred
      */
     void setAuthMessage(@Nonnull final String message) throws ChangeValueException;
+
+    void setUserId(@Nonnull final String userId) throws ChangeValueException;
 }

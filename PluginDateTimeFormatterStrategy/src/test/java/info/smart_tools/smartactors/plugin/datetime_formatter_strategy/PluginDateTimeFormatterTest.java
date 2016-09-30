@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.plugin.datetime_formatter_strategy;
 
-import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
