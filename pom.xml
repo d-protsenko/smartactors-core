@@ -105,8 +105,6 @@
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>PluginConfigurationManager</module>
-        <module>PluginReadConfigFile</module>
         <module>ServerWithConfiguration</module>
         <module>HandlerRoutingReceiverCreator</module>
         <module>ActorReceiverCreator</module>

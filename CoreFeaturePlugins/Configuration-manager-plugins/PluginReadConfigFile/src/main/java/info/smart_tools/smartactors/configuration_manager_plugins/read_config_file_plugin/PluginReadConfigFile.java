@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.read_config_file;
+package info.smart_tools.smartactors.configuration_manager_plugins.read_config_file_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;

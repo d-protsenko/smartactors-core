@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.configuration_manager;
+package info.smart_tools.smartactors.configuration_manager_plugins.configuration_manager_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.configuration_manager.configuration_manager.ConfigurationManager;
