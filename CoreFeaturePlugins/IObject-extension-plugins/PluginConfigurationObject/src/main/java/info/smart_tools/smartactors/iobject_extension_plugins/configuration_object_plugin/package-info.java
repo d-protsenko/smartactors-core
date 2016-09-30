@@ -4,4 +4,4 @@
  * Plugin creates and register some strategies for correct work of
  * {@link info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject}.
  */
-package info.smart_tools.smartactors.plugin.configuration_object;
+package info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin;

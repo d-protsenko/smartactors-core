@@ -33,7 +33,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.configuration_object</artifactId>
+            <artifactId>iobject-extension-plugins.configuration-object-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -138,7 +138,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.wds_object</artifactId>
+            <artifactId>iobject-extension-plugins.wds-object-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

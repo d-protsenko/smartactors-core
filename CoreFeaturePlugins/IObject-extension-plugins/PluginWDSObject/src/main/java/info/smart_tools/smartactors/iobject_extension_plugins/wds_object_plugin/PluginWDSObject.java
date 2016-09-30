@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.wds_object;
+package info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;

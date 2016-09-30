@@ -5,4 +5,4 @@
  * {@link info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject} and strategy for storing
  * other strategies that will be using as WDS transformation rules.
  */
-package info.smart_tools.smartactors.plugin.wds_object;
+package info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin;

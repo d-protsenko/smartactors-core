@@ -20,7 +20,7 @@ import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
-import info.smart_tools.smartactors.plugin.configuration_object.InitializeConfigurationObjectStrategies;
+import info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin.InitializeConfigurationObjectStrategies;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.fieldname_plugin.FieldNamePlugin;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -28,7 +28,7 @@ import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldName
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin.ResolveStandardTypesStrategiesPlugin;
-import info.smart_tools.smartactors.plugin.wds_object.PluginWDSObject;
+import info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin.PluginWDSObject;
 import info.smart_tools.smartactors.plugin.wrapper_generator.RegisterWrapperGenerator;
 import org.junit.BeforeClass;
 import org.junit.Test;

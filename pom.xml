@@ -128,7 +128,6 @@
         <module>HttpsEndpoint</module>
         <module>PluginMessageProcessorAndSequence</module>
         <module>PluginResponseSenderActor</module>
-        <module>PluginWDSObject</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
@@ -137,7 +136,6 @@
         <module>PluginHttpsEndpoint</module>
         <module>ISslEngineProvider</module>
         <module>SslEngineProvider</module>
-        <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>PluginChainCallReceiver</module>
