@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.configuration_object</artifactId>
+            <artifactId>iobject-extension.configuration-object</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

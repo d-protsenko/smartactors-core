@@ -14,7 +14,7 @@ import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSe
 import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.core.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
+import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 
 import java.util.Map;
 import java.util.WeakHashMap;

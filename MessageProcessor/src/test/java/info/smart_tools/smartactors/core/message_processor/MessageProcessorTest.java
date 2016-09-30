@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.core.message_processing.exceptions.Asynchron
 import info.smart_tools.smartactors.core.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.core.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
+import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

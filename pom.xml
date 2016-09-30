@@ -89,7 +89,6 @@
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
         <module>PluginUserAuthByLoginActor</module>
-        <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
@@ -138,7 +137,6 @@
         <module>PluginHttpsEndpoint</module>
         <module>ISslEngineProvider</module>
         <module>SslEngineProvider</module>
-        <module>CObject</module>
         <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>

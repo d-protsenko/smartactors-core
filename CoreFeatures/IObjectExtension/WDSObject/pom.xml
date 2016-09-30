@@ -2,26 +2,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>core</artifactId>
+        <artifactId>iobject-extension</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.server_with_iobject</artifactId>
+    <artifactId>iobject-extension.wds-object</artifactId>
 
     <dependencies>
 
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iserver</artifactId>
+            <artifactId>iobject.ifield</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.iobject-wrapper</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Service locator -->
+        <!-- Core service locators-->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
@@ -33,42 +42,7 @@
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Core implementation -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ds-object</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-extension.configuration-object</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wrapper_generator</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.strategy-container</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
-            <version>${core.version}</version>
-        </dependency>
+        <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.field-name</artifactId>
@@ -76,17 +50,36 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-extension.wds-object</artifactId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.strategy-container</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
 </project>

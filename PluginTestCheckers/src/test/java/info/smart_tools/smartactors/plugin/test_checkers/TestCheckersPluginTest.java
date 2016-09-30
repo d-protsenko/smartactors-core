@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.test_checkers;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

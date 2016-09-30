@@ -1,186 +1,57 @@
-package info.smart_tools.smartactors.core.server_with_iobject;
+package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.core.iserver.IServer;
-import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
-import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
-import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
-import info.smart_tools.smartactors.core.wrapper_generator.WrapperGenerator;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 /**
- * Implementation of {@link IServer} with
+ * Tests for {@link ConfigurationObject}
  */
-public class Server implements IServer {
+public class ConfigurationObjectTest {
 
-    private IObject ds_config;
-    private IObject co_config;
+    private String configString;
 
-    @Override
-    public void initialize() throws ServerInitializeException {
-        try {
-            scopeInit();
-            registerKeysStorageStrategyAndFieldNameStrategy();
-            registerWrapperGenerator();
-            initObjects();
-        } catch (Throwable e) {
-            throw new ServerInitializeException("Could not initialize server.");
-        }
-    }
-
-    @Override
-    public void start()
-            throws ServerExecutionException {
-        try {
-            /** Get wrapper generator by IOC.resolve */
-            IWrapperGenerator wg = IOC.resolve(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()));
-
-            /** Get message, context, response */
-            IObject message = getMessage();
-            IObject context = getContext();
-            IObject response = getResponse();
-            IObject environment = new DSObject();
-            environment.setValue(new FieldName("message"), message);
-            environment.setValue(new FieldName("context"), context);
-            environment.setValue(new FieldName("response"), response);
-
-            /** Generate wrapper class by given interface and create instance of generated class */
-            IWrapper wrapper = wg.generate(IWrapper.class);
-
-            /** Check registration of IWrapper instance creation strategy to IOC */
-            IWrapper newInstanceOfWrapper = IOC.resolve(Keys.getOrAdd(IWrapper.class.getCanonicalName() + "wrapper"));
-
-            WDSObject wds = new WDSObject(((IObject) this.co_config.getValue(new FieldName("wrapper"))));
-
-            /** Initialize wrapper */
-            wds.init(environment);
-            ((IObjectWrapper) wrapper).init(wds);
-
-            /** Wrapper usage: get values */
-            Integer i = wrapper.getIntValue();
-            String s = wrapper.getStringValue();
-            Boolean b = wrapper.getBoolValue();
-            IObject io = wrapper.getIObject();
-            List<Integer> intList = wrapper.getListOfInt();
-            List<String> stringList = wrapper.getListOfString();
-
-            /** Wrapper usage: set values */
-            wrapper.setIntValue(2);
-            wrapper.setBoolValue(false);
-            wrapper.setStringValue("new text");
-            wrapper.setIObject(new DSObject());
-            wrapper.setListOfString(new ArrayList<String>() {{ add("new string"); }});
-            wrapper.setListOfInt(new ArrayList<Integer>() {{ add(2); }});
-
-        } catch (Throwable e) {
-            throw new ServerExecutionException(e);
-        }
-    }
-
-    private void scopeInit()
+    @Before
+    public void init()
             throws Exception {
-        ScopeProvider.subscribeOnCreationNewScope(
-                scope -> {
-                    try {
-                        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-                    } catch (Exception e) {
-                        throw new Error(e);
-                    }
-                }
-        );
-
-
         Object keyOfMainScope = ScopeProvider.createScope(null);
-        IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
-        ScopeProvider.setCurrentScope(mainScope);
-    }
+        IScope scope = ScopeProvider.getScope(keyOfMainScope);
+        scope.setValue(IOC.getIocKey(), new StrategyContainer());
+        ScopeProvider.setCurrentScope(scope);
 
-    private void registerKeysStorageStrategyAndFieldNameStrategy()
-            throws Exception {
         IOC.register(
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy(
-                        (arg) -> {
-                            try {
-                                return new Key((String) arg[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
-        IOC.register(
-                Keys.getOrAdd(FieldName.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
-                                return new FieldName((String) a[0]);
+                                return new Key((String) a[0]);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
                         })
         );
-    }
 
-    private void registerWrapperGenerator()
-            throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
-        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()), new SingletonStrategy(wg));
-    }
-
-    private IObject getMessage()
-            throws Exception {
-        IObject obj = new DSObject();
-        obj.setValue(new FieldName("IntValue"), 1);
-        obj.setValue(new FieldName("StringValue"), "some text");
-        obj.setValue(
-                new FieldName("ListOfInt"),
-                new ArrayList<Integer>() {{ add(1); add(2); }}
-        );
-        obj.setValue(
-                new FieldName("ListOfString"),
-                new ArrayList<String>() {{ add("some text"); add("another text"); }}
-        );
-
-        return obj;
-    }
-
-    private IObject getContext()
-            throws Exception {
-        IObject obj = new DSObject();
-        obj.setValue(new FieldName("BoolValue"), true);
-        obj.setValue(new FieldName("IObject"), new DSObject());
-
-        return obj;
-    }
-
-    private IObject getResponse()
-            throws Exception {
-        IObject obj = new DSObject();
-
-        return obj;
-    }
-
-    private void initObjects()
-            throws Exception {
         IOC.register(
                 IOC.resolve(
                         IOC.getKeyForKeyStorage(), "configuration object"
@@ -311,18 +182,10 @@ public class Server implements IServer {
                         }
                 )
         );
-        this.co_config = new DSObject("{\n" +
+        this.configString = "{\n" +
                 "  \"wrapper\": {\n" +
-                "    \"in_getIntValue\": [{\n" +
-                "      \"name\": \"wds_getter_strategy\",\n" +
-                "      \"args\": [\"message/IntValue\"]\n" +
-                "    }],\n" +
-                "    \"out_setIntValue\": [\n" +
-                "      [{\n" +
-                "        \"name\": \"wds_target_strategy\",\n" +
-                "        \"args\": [\"local/value\", \"response/IntValue\"]\n" +
-                "      }]\n" +
-                "    ],\n" +
+                "    \"in_getIntValue\": \"message/IntValue\",\n" +
+                "    \"out_setIntValue\": \"response/IntValue\",\n" +
                 "    \"in_getStringValue\": [{\n" +
                 "      \"name\": \"wds_getter_strategy\",\n" +
                 "      \"args\": [\"message/StringValue\"]\n" +
@@ -369,11 +232,101 @@ public class Server implements IServer {
                 "    }],\n" +
                 "    \"out_setIObject\": [\n" +
                 "      [{\n" +
-                "        \"name\": \"wds_target_strategy\",\n" +
-                "        \"args\": [\"local/value\", \"response/IObject\"]\n" +
+                "        \"name\": \"target\",\n" +
+                "        \"args\": [\"response/IObject\"]\n" +
                 "      }]\n" +
                 "    ]\n" +
                 "  }\n" +
-                "}");
+                "}";
+    }
+
+    @Test
+    public void checkCreationAndResolutionSomeFields()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+
+        List<IObject> in_getIntValue = (List<IObject>) ((IObject)co.getValue(new FieldName("wrapper"))).getValue(new FieldName("in_getIntValue"));
+        assertEquals(in_getIntValue.get(0).getValue(new FieldName("name")), "wds_getter_strategy");
+        assertEquals(((List)in_getIntValue.get(0).getValue(new FieldName("args"))).get(0), "message/IntValue");
+
+        List<List<IObject>> out_setIntValue = (List<List<IObject>>) ((IObject)co.getValue(new FieldName("wrapper"))).getValue(new FieldName("out_setIntValue"));
+        assertEquals(out_setIntValue.get(0).get(0).getValue(new FieldName("name")), "wds_target_strategy");
+        assertEquals(((List)out_setIntValue.get(0).get(0).getValue(new FieldName("args"))).get(0), "local/value");
+        assertEquals(((List)out_setIntValue.get(0).get(0).getValue(new FieldName("args"))).get(1), "response/IntValue");
+
+        List<List<IObject>> out_setIObject = (List<List<IObject>>) ((IObject)co.getValue(new FieldName("wrapper"))).getValue(new FieldName("out_setIObject"));
+        assertEquals(out_setIObject.get(0).get(0).getValue(new FieldName("name")), "wds_target_strategy");
+        assertEquals(((List)out_setIObject.get(0).get(0).getValue(new FieldName("args"))).get(0), "local/value");
+        assertEquals(((List)out_setIObject.get(0).get(0).getValue(new FieldName("args"))).get(1), "response/IObject");
+
+        List<IObject> in_getStringValue = (List<IObject>) ((IObject)co.getValue(new FieldName("wrapper"))).getValue(new FieldName("in_getStringValue"));
+        assertEquals(in_getStringValue.get(0).getValue(new FieldName("name")), "wds_getter_strategy");
+        assertEquals(((List)in_getStringValue.get(0).getValue(new FieldName("args"))).get(0), "message/StringValue");
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkCreationExceptionOnNullArg()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject("");
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkExceptionOnNullArgInGetValueMethod()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+        co.getValue(null);
+        fail();
+    }
+
+    @Test (expected = DeleteValueException.class)
+    public void checkExceptionOnUseDeleteFieldMethod()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+        co.deleteField(null);
+        fail();
+    }
+
+    @Test (expected = SerializeException.class)
+    public void checkExceptionOnUseSerializeMethod()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+        co.serialize();
+        fail();
+    }
+
+    @Test
+    public void checkNullOnTryToGetIterator()
+            throws Exception {
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+        assertNull(co.iterator());
+    }
+
+    @Test (expected = ReadValueException.class)
+    public void checkReadValueExceptionOnUseGetValueMethod() throws Exception {
+        Object scopeId = ScopeProvider.createScope(null);
+        IScope oldScope = ScopeProvider.getCurrentScope();
+        ScopeProvider.setCurrentScope(ScopeProvider.getScope(scopeId));
+
+        ConfigurationObject co = new ConfigurationObject(this.configString);
+        co.getValue(new FieldName("in_getIntValue"));
+        ScopeProvider.setCurrentScope(oldScope);
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnOnNullFieldNameInSetValue()
+            throws Exception {
+        IObject object = new ConfigurationObject();
+        object.setValue(null, new Object());
+        fail();
+    }
+
+    @Test (expected = InvalidArgumentException.class)
+    public void checkInvalidArgumentExceptionOnCreationWithNullMap()
+            throws Exception {
+        Map entries = null;
+        IObject object = new ConfigurationObject(entries);
+        fail();
     }
 }

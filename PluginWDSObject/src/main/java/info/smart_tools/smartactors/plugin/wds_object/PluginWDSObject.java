@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
+import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 
 /**
  * Plugin registers into IOC strategy for creation new instance of

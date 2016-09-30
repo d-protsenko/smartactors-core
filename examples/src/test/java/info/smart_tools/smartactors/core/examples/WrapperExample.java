@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.core.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.core.examples.actor.GreetingMessage;
 import info.smart_tools.smartactors.core.examples.wrapper.ConcatSplitRulesPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.wds_object.WDSObject;
+import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import info.smart_tools.smartactors.plugin.configuration_object.InitializeConfigurationObjectStrategies;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.fieldname_plugin.FieldNamePlugin;
