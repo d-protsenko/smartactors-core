@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.test.test_environment_handler;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
 /**
  * Implementation of {@link IReceiverChain} used as a exceptional chain for exceptions processing in testing chain.

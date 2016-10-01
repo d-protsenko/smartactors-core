@@ -22,7 +22,6 @@
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IMessage</module>
         <module>IAsyncService</module>
         <module>EndpointHandler</module>
         <module>NettyServer</module>
@@ -33,21 +32,8 @@
         <module>examples</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
-        <module>IWrapperGenerator</module>
-        <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
         <module>IMultiActionStrategy</module>
-        <module>IResourceSource</module>
-        <module>MessageProcessor</module>
-        <module>ReceiverChain</module>
-        <module>MessageProcessingSequence</module>
-        <module>MessageProcessingInterfaces</module>
-        <module>ExceptionHandlingReceivers</module>
-        <module>IRouter</module>
-        <module>IChainStorage</module>
-        <module>MapRouter</module>
-        <module>ChainStorage</module>
-        <module>ChainCallReceiver</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
@@ -92,22 +78,15 @@
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
-        <module>ReceiverGenerator</module>
         <module>StandardConfigSections</module>
-        <module>ActorReceiver</module>
-        <module>HandlerRoutingReceiver</module>
-        <module>IReceiverGenerator</module>
         <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
         <module>PluginMapRouter</module>
         <module>PluginReceiverChain</module>
         <module>PluginReceiverChainsStorage</module>
-        <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
         <module>ServerWithConfiguration</module>
-        <module>HandlerRoutingReceiverCreator</module>
-        <module>ActorReceiverCreator</module>
         <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>

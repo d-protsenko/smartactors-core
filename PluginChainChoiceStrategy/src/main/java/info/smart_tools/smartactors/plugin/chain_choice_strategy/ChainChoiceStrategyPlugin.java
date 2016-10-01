@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.chain_choice_strategy;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.chain_call_receiver.IChainChoiceStrategy;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;

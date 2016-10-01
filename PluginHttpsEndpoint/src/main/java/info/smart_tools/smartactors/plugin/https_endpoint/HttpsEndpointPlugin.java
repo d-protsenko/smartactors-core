@@ -18,7 +18,7 @@ import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandle
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;

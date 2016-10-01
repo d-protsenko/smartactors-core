@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.handler_routing_receiver_creator;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.handler_routing_receiver_creator.HandlerRoutingReceiverCreator;
+import info.smart_tools.smartactors.message_processing.handler_routing_receiver_creator.HandlerRoutingReceiverCreator;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -11,8 +11,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.core.iroutable_object_creator.exceptions.ObjectCreationException;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 
 /**
