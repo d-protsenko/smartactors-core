@@ -3,7 +3,10 @@ package info.smart_tools.smartactors.core.http_client;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
+import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
 import info.smart_tools.smartactors.core.netty_client.NettyClient;
+import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -21,7 +24,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
+import io.netty.handler.ssl.SslHandler;
 
+import javax.net.ssl.SSLEngine;
 import java.net.URI;
 import java.util.List;
 
@@ -36,6 +41,16 @@ public class HttpClient extends NettyClient<HttpRequest> {
     private IFieldName valueFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
+    private static ISslEngineProvider sslEngineProvider;
+
+    static {
+        sslEngineProvider = new SslEngineProvider();
+        try {
+            sslEngineProvider.init(null);
+        } catch (SSLEngineProviderException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Constructor for http client
@@ -72,6 +87,13 @@ public class HttpClient extends NettyClient<HttpRequest> {
     //TODO:: set maxContentLength from configuration
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
+        if (serverUri.getScheme().equals("https")) {
+            SSLEngine engine =
+                    sslEngineProvider.getClientContext();
+            engine.setUseClientMode(true);
+            pipeline.addLast("ssl", new SslHandler(engine));
+        }
+
         return super.setupPipeline(pipeline).addLast(new HttpClientCodec(), new HttpObjectAggregator(4096));
     }
 

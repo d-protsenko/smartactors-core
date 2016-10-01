@@ -39,21 +39,22 @@ public class SslEngineProvider implements ISslEngineProvider {
         } catch (ResolutionException e) {
             throw new SSLEngineProviderException("An exception on resolving \"FieldName\"", e);
         }
-        try {
-            certKey = (String) params.getValue(certPassFieldName);
-            certPath = (String) params.getValue(certPathFieldName);
-            initialized = certKey != null && certPath != null;
-        } catch (Exception e) {
-            throw new SSLEngineProviderException("An exception on getting values from parameters", e);
+        if (params != null) {
+            try {
+                certKey = (String) params.getValue(certPassFieldName);
+                certPath = (String) params.getValue(certPathFieldName);
+                initialized = certKey != null && certPath != null;
+            } catch (Exception e) {
+                throw new SSLEngineProviderException("An exception on getting values from parameters", e);
+            }
         }
-
         try {
             if (initialized) {
                 SslContextBuilder sslContextBuilder = SslContextBuilder.forServer(new File(certPath), new File(certKey));
                 sslServerContext = sslContextBuilder.build();
-                SslContextBuilder sslClientContextBuilder = SslContextBuilder.forClient();
-                sslClientContext = sslClientContextBuilder.build();
             }
+            SslContextBuilder sslClientContextBuilder = SslContextBuilder.forClient();
+            sslClientContext = sslClientContextBuilder.build();
         } catch (SSLException e) {
             throw new SSLEngineProviderException("An exception on building ssl context", e);
         }

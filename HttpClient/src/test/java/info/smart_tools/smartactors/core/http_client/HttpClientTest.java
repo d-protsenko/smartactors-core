@@ -74,9 +74,9 @@ public class HttpClientTest {
 
     @Test
     public void test() throws URISyntaxException, RequestSenderException, InvalidArgumentException, InterruptedException {
-        HttpClient client = new HttpClient(new URI("http://google.com"), handler);
+        HttpClient client = new HttpClient(new URI("https://google.com"), handler);
         client.start();
-        IObject request = new DSObject("{\"uri\": \"http://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
+        IObject request = new DSObject("{\"uri\": \"https://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
         client.sendRequest(request);
         verify(responseHandler, timeout(1000)).handle(any(), any());
         client.stop();
