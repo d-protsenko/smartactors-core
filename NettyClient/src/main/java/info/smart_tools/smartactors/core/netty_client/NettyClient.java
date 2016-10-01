@@ -6,7 +6,14 @@ import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.concurrent.Future;
@@ -33,8 +40,9 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest> {
 
     /**
      * Constructor for netty client
-     * @param serverUri URI of the server
-     * @param channelClass
+     *
+     * @param serverUri      URI of the server
+     * @param channelClass   class of the channel
      * @param inboundHandler
      */
     public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,

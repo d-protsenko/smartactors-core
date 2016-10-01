@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.test.test_environment_handler.exception.InvalidTestDescriptionException;
 
+
 import java.util.List;
 
 /**
@@ -58,7 +59,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
 
     @Override
     public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
-            throws InvalidArgumentException, EnvironmentHandleException {
+            throws EnvironmentHandleException, InvalidArgumentException {
         if (null == environment) {
             throw new InvalidArgumentException("Description should not be null.");
         }

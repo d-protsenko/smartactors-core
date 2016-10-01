@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.environment_handler;
 
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
@@ -121,7 +122,7 @@ public class EnvironmentHandlerTest {
 
     @Test
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
-            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException {
+            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException, RequestHandlerInternalException {
         messageProcessor = mock(IMessageProcessor.class);
         IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
         IOC.register(

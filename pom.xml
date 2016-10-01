@@ -164,6 +164,10 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
+        <module>PluginEndpoint</module>
+        <module>DeserializeStrategyGet</module>
+        <module>DeserializationStrategyChooser</module>
+        <module>IAddRequestParametersToIObject</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
@@ -174,6 +178,7 @@
         <module>ConstantsSectionStrategy</module>
         <module>PluginGlobalConstants</module>
         <module>RepeaterActor</module>
+        <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
         <module>ITimer</module>
         <module>TimerImpl</module>

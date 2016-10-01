@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.plugin.https_endpoint;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -36,9 +38,19 @@ public class HttpsEndpointPluginTest {
 
     private IBootstrap bootstrap;
     private HttpsEndpointPlugin plugin;
+    private ResolveByTypeAndNameStrategy deserializationStrategyChooser;
+    private ResolveByTypeAndNameStrategy resolveCookies;
+    private ResolveByTypeAndNameStrategy resolveHeaders;
+    private ResolveByTypeAndNameStrategy resolveStatusSetter;
+    private ResolveByTypeAndNameStrategy resolveResponseSender;
 
     @Before
     public void setUp() throws Exception {
+        deserializationStrategyChooser = mock(ResolveByTypeAndNameStrategy.class);
+        resolveCookies = mock(ResolveByTypeAndNameStrategy.class);
+        resolveHeaders = mock(ResolveByTypeAndNameStrategy.class);
+        resolveStatusSetter = mock(ResolveByTypeAndNameStrategy.class);
+        resolveResponseSender = mock(ResolveByTypeAndNameStrategy.class);
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
@@ -61,8 +73,32 @@ public class HttpsEndpointPluginTest {
                 )
         );
 
+        IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
+                        deserializationStrategyChooser
+                )
+        );
+        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
+                        deserializationStrategyChooser
+                )
+        );
+        IOC.register(Keys.getOrAdd("ResponseSenderChooser"), new SingletonStrategy(
+                        resolveResponseSender
+                )
+        );
         bootstrap = mock(IBootstrap.class);
         plugin = new HttpsEndpointPlugin(bootstrap);
+        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
+                        resolveCookies
+                )
+        );
+        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
+                        resolveHeaders
+                )
+        );
+        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
+                        resolveStatusSetter
+                )
+        );
     }
 
     @Test
@@ -110,6 +146,7 @@ public class HttpsEndpointPluginTest {
     }
 
 }
+
 class Checker {
     public IBootstrapItem<String> item;
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actor.response_sender_actor;
 
 import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
-import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
+import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseSenderMessage;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
@@ -30,7 +30,7 @@ public class ResponseSenderActor {
      * @throws ResponseSenderActorException if there are some problems on sending response
      */
     // TODO: 21.07.16 Remake with using interface
-    public void sendResponse(final ResponseMessage message)
+    public void sendResponse(final ResponseSenderMessage message)
             throws ResponseSenderActorException {
 
         IObjectWrapper messageWrapper = (IObjectWrapper) message;
@@ -47,6 +47,7 @@ public class ResponseSenderActor {
             IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+            IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
             environment.setValue(responseFieldName, responseIObject);
             environment.setValue(configFieldName, messageWrapper.getEnvironmentIObject(configFieldName));
             environment.setValue(contextFieldName, messageWrapper.getEnvironmentIObject(contextFieldName));
@@ -62,7 +63,8 @@ public class ResponseSenderActor {
             contentStrategy.setContent(responseIObject, response);
 
             IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                    environment);
+                    IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
+                    messageWrapper.getEnvironmentIObject(contextFieldName).getValue(endpointName));
             sender.send(response, environment, channelHandler);
             messageWrapper.getEnvironmentIObject(contextFieldName).setValue(httpResponseIsSentFieldName, true);
         } catch (Exception e) {

@@ -118,7 +118,8 @@ public class ChainTestRunner implements ITestRunner {
 
             IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "test environment handler"));
             handler.handle(description, testedChain, callback);
-        } catch (ResolutionException | ReadValueException | ChainNotFoundException | EnvironmentHandleException e) {
+        } catch (ResolutionException | ReadValueException | ChainNotFoundException |
+                EnvironmentHandleException e) {
             throw new TestExecutionException(e);
         }
     }

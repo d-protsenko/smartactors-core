@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.https_endpoint;
 
 
-import info.smart_tools.smartactors.core.EndpointChannelInboundHandler;
+import info.smart_tools.smartactors.core.endpoint_channel_inbound_handler.EndpointChannelInboundHandler;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.https_server.HttpsServer;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
@@ -23,15 +23,20 @@ public class HttpsEndpoint extends HttpsServer {
      * @param maxContentLength   max length of the content
      * @param scope              scope for endpoint
      * @param handler            handler for environment
+<<<<<<< HEAD
+     * @param name               name of the endpoint
+     * @param receiverChain      chain, that should receive {@link info.smart_tools.smartactors.core.message_processor.MessageProcessor}
+=======
      * @param receiverChain      chain, that should receive {@link MessageProcessor}
+>>>>>>> develop
      * @param sslContextProvider provider for ssl context
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
-                         final IEnvironmentHandler handler, final IReceiverChain receiverChain,
+                         final IEnvironmentHandler handler, final String name, final IReceiverChain receiverChain,
                          final ISslEngineProvider sslContextProvider
     ) {
         super(port, new EndpointChannelInboundHandler<>(
-                        new HttpRequestHandler(scope, handler, receiverChain),
+                        new HttpRequestHandler(scope, handler, receiverChain, name),
                         FullHttpRequest.class),
                 maxContentLength, sslContextProvider);
     }

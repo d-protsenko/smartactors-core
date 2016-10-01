@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core;
+package info.smart_tools.smartactors.core.endpoint_channel_inbound_handler;
 
 
 import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
@@ -8,7 +8,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Adapter for {@link EndpointHandler} in order to use it in netty {@link io.netty.channel.ChannelHandler}
- * TODO: handle exceptions properly: send to some special channel or just log them.
  * @param <TRequest> type of request written to channel
  */
 @ChannelHandler.Sharable
