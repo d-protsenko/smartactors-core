@@ -14,6 +14,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManager;
 import java.io.File;
 
 /**
@@ -21,7 +22,8 @@ import java.io.File;
  */
 public class SslEngineProvider implements ISslEngineProvider {
 
-    private SslContext sslContext = null;
+    private SslContext sslServerContext = null;
+    private SslContext sslClientContext = null;
     private String certKey;
     private String certPath;
     private boolean initialized = false;
@@ -48,7 +50,9 @@ public class SslEngineProvider implements ISslEngineProvider {
         try {
             if (initialized) {
                 SslContextBuilder sslContextBuilder = SslContextBuilder.forServer(new File(certPath), new File(certKey));
-                sslContext = sslContextBuilder.build();
+                sslServerContext = sslContextBuilder.build();
+                SslContextBuilder sslClientContextBuilder = SslContextBuilder.forClient();
+                sslClientContext = sslClientContextBuilder.build();
             }
         } catch (SSLException e) {
             throw new SSLEngineProviderException("An exception on building ssl context", e);
@@ -61,8 +65,13 @@ public class SslEngineProvider implements ISslEngineProvider {
     }
 
     @Override
-    public SSLEngine get() {
-        return sslContext.newEngine(ByteBufAllocator.DEFAULT);
+    public SSLEngine getServerContext() {
+        return sslServerContext.newEngine(ByteBufAllocator.DEFAULT);
+    }
+
+    @Override
+    public SSLEngine getClientContext() {
+        return sslClientContext.newEngine(ByteBufAllocator.DEFAULT);
     }
 
 

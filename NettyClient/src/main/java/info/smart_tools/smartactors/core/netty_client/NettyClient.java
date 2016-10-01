@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.core.CompletableNettyFuture;
 import info.smart_tools.smartactors.core.iclient.IClient;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
 import info.smart_tools.smartactors.core.irequest_sender.IRequestSender;
+import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
@@ -15,9 +16,11 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.concurrent.Future;
 
+import javax.net.ssl.SSLEngine;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,6 +41,8 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
     private static final int DEFAULT_READ_TIMEOUT_SEC = 5;
     private int port;
+    private SslEngineProvider sslEngineProvider;
+
     /**
      * Constructor for netty client
      *
@@ -51,6 +56,15 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
         this.port = serverUri.getPort() == -1 ? 80 : serverUri.getPort();
+    }
+
+    public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,
+                       final ChannelInboundHandler inboundHandler, final SslEngineProvider sslEngineProvider) {
+        this.serverUri = serverUri;
+        this.channelClass = channelClass;
+        this.inboundHandler = inboundHandler;
+        this.port = serverUri.getPort() == -1 ? 80 : serverUri.getPort();
+        this.sslEngineProvider = sslEngineProvider;
     }
 
     public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
@@ -104,6 +118,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         return wrapToCompletableFuture(channel.close())
                 .thenCompose(x -> wrapToCompletableFuture(workerGroup.shutdownGracefully()));
     }
+
     /**
      * Setup a communication channel pipeline.
      * Typically, it will add some decoders for initial bytes received from some kind of Socket.
@@ -112,6 +127,12 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      * @return a given pipeline enriched with some input-handling logic.
      */
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
+        if (sslEngineProvider != null) {
+            SSLEngine engine =
+                    sslEngineProvider.getClientContext();
+            engine.setUseClientMode(true);
+            pipeline.addLast("ssl", new SslHandler(engine));
+        }
         return pipeline;
     }
 

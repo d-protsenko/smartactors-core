@@ -59,7 +59,7 @@ public class HttpsServer extends TcpServer {
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         if (sslEnable) {
             SSLEngine sslEngine = null;
-            sslEngine = engineProvider.get();
+            sslEngine = engineProvider.getServerContext();
             sslEngine.setUseClientMode(false);
             return pipeline.addLast(
                     new HttpServerCodec(),
