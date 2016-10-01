@@ -14,17 +14,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.postgres_search_task</artifactId>
+            <artifactId>database-postgresql.postgres-search-task</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ifield</artifactId>
+            <artifactId>iobject.ifield</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

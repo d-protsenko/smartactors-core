@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
 
-import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
+import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
+import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
+import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 import org.junit.Test;
 
 import java.text.MessageFormat;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,7 +24,9 @@ public class TaskDispatcherTest {
     @Test
     public void test_taskQueuePerformance()
             throws Exception {
-        IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(10000500));
+        ConcurrentLinkedQueue<ITask> innerTaskQueue = new ConcurrentLinkedQueue<>();
+        IQueue<ITask> taskQueue = new NonBlockingQueue<>(innerTaskQueue);
+//        IQueue<ITask> taskQueue = new BlockingQueue<>(new ArrayBlockingQueue<>(20000500));
         IThreadPool threadPool = new ThreadPool(8);
         ITaskDispatcher dispatcher = new TaskDispatcher(taskQueue, threadPool, 1000L, 8);
         final Thread mainThread = Thread.currentThread();
@@ -41,6 +43,7 @@ public class TaskDispatcherTest {
             while (!mainThread.isInterrupted() && !Thread.interrupted()) {
                 try {
                     taskQueue.put(countTask);
+                    Thread.yield();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -61,7 +64,7 @@ public class TaskDispatcherTest {
         taskQueue.put(() -> startNanoTime.set(System.nanoTime()));
 
         // Many tasks
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 20000000; i++) {
             taskQueue.put(countTask);
         }
 

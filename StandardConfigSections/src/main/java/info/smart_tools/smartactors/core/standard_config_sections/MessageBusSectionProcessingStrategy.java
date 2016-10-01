@@ -1,25 +1,28 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.core.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.core.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.iscope.exception.ScopeException;
-import info.smart_tools.smartactors.core.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.core.itask.ITask;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.core.message_bus.MessageBus;
 import info.smart_tools.smartactors.core.message_bus_handler.MessageBusHandler;
 import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 /**
  * Initializes MessageBus using configuration.
@@ -73,7 +76,30 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
             IReceiverChain chain = chainStorage.resolve(mapId);
-            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain);
+            IAction<IObject> finalAction = new IAction<IObject>() {
+                @Override
+                public void execute(final IObject environment) throws ActionExecuteException, InvalidArgumentException {
+                    try {
+                        IFieldName messageFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "message"
+                        );
+                        IFieldName contextFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "context"
+                        );
+                        IFieldName replyToFieldName = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                                "messageBusReplyTo"
+                        );
+                        IObject context = (IObject) environment.getValue(contextFieldName);
+                        MessageBus.send((IObject) environment.getValue(messageFieldName), context.getValue(replyToFieldName));
+                    } catch (ResolutionException | ReadValueException | SendingMessageException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                }
+            };
+            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain, finalAction);
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);

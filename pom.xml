@@ -18,77 +18,21 @@
     </properties>
 
     <modules>
-        <module>IObject</module>
-        <module>IOC</module>
-        <module>IScope</module>
-        <module>ScopeProvider</module>
-        <module>RecursiveScope</module>
-        <module>IocContainer</module>
-        <module>ScopeProviderContainer</module>
-        <module>IStrategyContainer</module>
-        <module>ScopeGuard</module>
-        <module>StrategyContainer</module>
-        <module>StringIocKey</module>
         <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
-        <module>IKey</module>
-        <module>IIocContainer</module>
-        <module>IocContainerSimpleImplementation</module>
-        <module>IScopeProviderContainer</module>
-        <module>ResolveByNameIocStrategy</module>
-        <module>ResolveByNameIocWithLambdaStrategy</module>
-        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IObjectSimpleImplementation</module>
         <module>IMessage</module>
-        <module>IQueue</module>
-        <module>BlockingQueue</module>
-        <module>IThreadPool</module>
-        <module>ThreadPool</module>
-        <module>ITaskDispatcher</module>
-        <module>TaskDispatcher</module>
-        <module>ITask</module>
-        <module>DataBaseStorage</module>
-        <module>SqlCommons</module>
         <module>IAsyncService</module>
         <module>EndpointHandler</module>
         <module>NettyServer</module>
         <module>TcpServer</module>
         <module>HttpServer</module>
         <!-- database tasks modules -->
-        <module>IDatabaseTask</module>
-        <module>PostgresSchema</module>
-        <module>PostgresCreateCollectionTask</module>
-        <module>PostgresUpsertTask</module>
-        <module>PostgresInsertTask</module>
-        <module>PostgresGetByIdTask</module>
-        <module>PostgresSearchTask</module>
-        <module>PostgresDeleteTask</module>
-        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
-        <module>BootstrapItem</module>
-        <module>IBootstrapItem</module>
-        <module>IBootstrap</module>
-        <module>IPlugin</module>
-        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
-        <module>IPluginLoader</module>
-        <module>IPluginLoaderVisitor</module>
-        <module>PluginLoaderVisitorEmptyImplementation</module>
-        <module>PluginLoaderFormJar</module>
-        <module>Bootstrap</module>
-        <module>IPluginCreator</module>
-        <module>PluginCreator</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
-        <module>PluginTestJar</module>
-        <module>NamedKeysStorage</module>
-        <module>FilesystemTracker</module>
-        <module>IFilesystemTracker</module>
-        <module>IFeatureManager</module>
-        <module>FeatureManager</module>
-        <module>DSObject</module>
         <module>IWrapperGenerator</module>
         <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
@@ -99,15 +43,6 @@
         <module>MessageProcessingSequence</module>
         <module>MessageProcessingInterfaces</module>
         <module>ExceptionHandlingReceivers</module>
-        <module>PluginCompileQuery</module>
-        <module>PluginCollectionName</module>
-        <module>PluginCachedCollection</module>
-        <module>PostgresConnection</module>
-        <module>PluginPostgresConnectionPool</module>
-        <module>PluginIField</module>
-        <module>IStorageConnection</module>
-        <module>RecursiveStrategyContainer</module>
-        <module>CachedCollection</module>
         <module>IRouter</module>
         <module>IChainStorage</module>
         <module>MapRouter</module>
@@ -117,11 +52,9 @@
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
         <module>CheckUserByEmailActor</module>
-        <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
-        <module>IObjectWrapper</module>
         <module>CreateUserActor</module>
         <module>HttpEndpoint</module>
         <module>IMessageMapper</module>
@@ -132,11 +65,8 @@
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>IField</module>
-        <module>Field</module>
         <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
-        <module>IFieldName</module>
         <module>MessageToBytesMapper</module>
         <module>IResponseSender</module>
         <module>HttpResponseSender</module>
@@ -159,15 +89,10 @@
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
         <module>PluginUserAuthByLoginActor</module>
-        <module>PluginPasswordEncoder</module>
-        <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>ReceiverGenerator</module>
-        <module>FieldName</module>
-        <module>PluginIFieldName</module>
-        <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
         <module>ActorReceiver</module>
         <module>HandlerRoutingReceiver</module>
@@ -180,31 +105,14 @@
         <module>PluginReceiverChainsStorage</module>
         <module>IRoutedObjectCreator</module>
         <module>PluginStandardObjectCreators</module>
-        <module>ConfigurationManager</module>
-        <module>PluginConfigurationManager</module>
-        <module>PluginReadConfigFile</module>
         <module>ServerWithConfiguration</module>
         <module>HandlerRoutingReceiverCreator</module>
         <module>ActorReceiverCreator</module>
-        <module>PluginIOCSimpleContainer</module>
-        <module>PluginIOCKeys</module>
-        <module>PluginDsobject</module>
-        <module>PluginScopedIOC</module>
-        <module>PluginScopeProvider</module>
         <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginIObjectSimpleImpl</module>
-        <module>ResolveIObjectStrategies</module>
-        <module>PluginResolveIObjectStrategies</module>
-        <module>PluginPostgresDBTasks</module>
-        <module>ResolveByTypeStrategy</module>
-        <module>ResolveStandardTypesStrategies</module>
-        <module>PluginResolveStandardTypesStrategies</module>
         <module>PluginWrapperGenerator</module>
-        <module>PluginFieldName</module>
-        <module>PluginAsyncOpsCollection</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>
@@ -216,7 +124,6 @@
         <module>HttpsEndpoint</module>
         <module>PluginMessageProcessorAndSequence</module>
         <module>PluginResponseSenderActor</module>
-        <module>PluginWDSObject</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
@@ -225,8 +132,6 @@
         <module>PluginHttpsEndpoint</module>
         <module>ISslEngineProvider</module>
         <module>SslEngineProvider</module>
-        <module>CObject</module>
-        <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>PluginChainCallReceiver</module>
@@ -260,22 +165,10 @@
         <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
-        <module>InMemoryDatabase</module>
-        <module>PluginInMemoryDatabase</module>
-        <module>InMemoryDBCreateCollectionTask</module>
-        <module>InMemoryDBGetByIdTask</module>
-        <module>InMemoryDBUpsertTask</module>
-        <module>InMemoryDBDeleteTask</module>
-        <module>InMemoryDBSelectTask</module>
-        <module>PluginInMemoryDBTasks</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
-        <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
-        <module>UuidNextIdStrategy</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>InMemoryDBCountTask</module>
-        <module>InMemoryDBInsertTask</module>
         <module>TestRunner</module>
         <module>TestLoadingPlugins</module>
         <module>ChainTestsConfigSectionStrategy</module>
@@ -288,10 +181,7 @@
         <module>IAssertion</module>
         <module>IResultChecker</module>
         <module>TestCheckers</module>
-        <module>InitializationException</module>
         <module>PluginTestCheckers</module>
-        <module>NestedField</module>
-        <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
@@ -299,9 +189,23 @@
         <module>DeserializeStrategyGet</module>
         <module>DeserializationStrategyChooser</module>
         <module>IAddRequestParametersToIObject</module>
+        <module>ServerWithFeatures</module>
+        <module>IFeatureLoader</module>
+        <module>FeatureLoader</module>
+        <module>PluginFeatureLoader</module>
+        <module>IFilesystemFacade</module>
+        <module>FilesystemFacade</module>
+        <module>PluginFilesystemFacade</module>
+        <module>ConstantsSectionStrategy</module>
+        <module>PluginGlobalConstants</module>
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
+        <module>ITimer</module>
+        <module>TimerImpl</module>
+        <module>PluginTimer</module>
+        <module>ObjectEnumerationActor</module>
+        <module>PluginObjectEnumerationActor</module>
     </modules>
 
     <repositories>

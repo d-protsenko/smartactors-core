@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.wrapper_generator;
 
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 
 /**
  * Test incorrect mapping in target

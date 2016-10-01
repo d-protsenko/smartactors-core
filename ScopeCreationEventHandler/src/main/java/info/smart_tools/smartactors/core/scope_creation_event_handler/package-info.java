@@ -1,6 +1,6 @@
 /**
  * Implementation of {@link info.smart_tools.smartactors.base.interfaces.iaction.IAction}
- * on create new instance of {@link info.smart_tools.smartactors.core.iscope.IScope}
+ * on create new instance of {@link info.smart_tools.smartactors.scope.iscope.IScope}
  * <pre>
  *     Main features:
  *     -

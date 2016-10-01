@@ -38,14 +38,14 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <!-- Core exceptions -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.initialization_exception</artifactId>
+            <artifactId>base.exception.initialization-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -64,13 +64,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_with_lambda_strategy</artifactId>
+            <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.field_name</artifactId>
+            <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

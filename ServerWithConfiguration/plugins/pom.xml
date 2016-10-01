@@ -35,12 +35,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ifieldname</artifactId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.fieldname</artifactId>
+            <artifactId>iobject-plugins.fieldname-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -75,27 +75,27 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.ioc_keys</artifactId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.dsobject</artifactId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.configuration_object</artifactId>
+            <artifactId>iobject-extension.configuration-object</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scoped_ioc</artifactId>
+            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.scope_provider</artifactId>
+            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -135,7 +135,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.wds_object</artifactId>
+            <artifactId>iobject-extension-plugins.wds-object-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -155,7 +155,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.field</artifactId>
+            <artifactId>field-plugins.field-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -170,7 +170,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.configuration_object</artifactId>
+            <artifactId>iobject-extension-plugins.configuration-object-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -210,12 +210,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_connection_pool</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.postgres_db_tasks</artifactId>
+            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

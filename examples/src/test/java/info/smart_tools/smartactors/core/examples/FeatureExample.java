@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples;
 
 import info.smart_tools.smartactors.core.examples.feature.FeatureServer;
-import info.smart_tools.smartactors.core.feature_manager.FeatureManager;
+import info.smart_tools.smartactors.feature_loading_system.feature_manager.FeatureManager;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
 import org.junit.Test;
 

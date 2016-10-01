@@ -4,15 +4,15 @@ package info.smart_tools.smartactors.actors.authentication.users;
 import info.smart_tools.smartactors.actors.authentication.users.exceptions.AuthenticateUserException;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginMessage;
 import info.smart_tools.smartactors.actors.authentication.users.wrappers.IUserAuthByLoginParams;
-import info.smart_tools.smartactors.core.ifield.IField;
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.core.ioc.IOC;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.core.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.security.encoding.encoders.IPasswordEncoder;
@@ -48,6 +48,7 @@ public class UserAuthByLoginActorTest {
 
     private IField loginField;
     private IField passwordField;
+    private IField userIdF;
     private IField eqField;
 
     private IField collectionNameField;
@@ -99,6 +100,7 @@ public class UserAuthByLoginActorTest {
         pageNumberField = mock(IField.class);
         pageField = mock(IField.class);
         filterField = mock(IField.class);
+        userIdF = mock(IField.class);
 
         when(IOC.resolve(iFieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(iFieldKey, "size")).thenReturn(pageSizeField);
@@ -106,6 +108,7 @@ public class UserAuthByLoginActorTest {
         when(IOC.resolve(iFieldKey, "page")).thenReturn(pageField);
         when(IOC.resolve(iFieldKey, "filter")).thenReturn(filterField);
 
+        when(IOC.resolve(iFieldKey, "userId")).thenReturn(userIdF);
         when(IOC.resolve(iFieldKey, "email")).thenReturn(loginField);
         when(IOC.resolve(iFieldKey, "password")).thenReturn(passwordField);
         when(IOC.resolve(iFieldKey, "$eq")).thenReturn(eqField);
@@ -380,7 +383,7 @@ public class UserAuthByLoginActorTest {
         verifyStatic(times(4));
         Keys.getOrAdd(IObject.class.getCanonicalName());
 
-        verifyStatic(times(8));//plus static invocations
+        verifyStatic(times(9));//plus static invocations
         Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();

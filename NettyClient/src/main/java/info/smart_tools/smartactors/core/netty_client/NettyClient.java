@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.core.netty_client;
 import info.smart_tools.smartactors.core.CompletableNettyFuture;
 import info.smart_tools.smartactors.core.iclient.IClient;
 import info.smart_tools.smartactors.core.iclient.IClientConfig;
-import info.smart_tools.smartactors.core.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.core.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
 
 import io.netty.channel.Channel;

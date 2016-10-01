@@ -2,10 +2,6 @@ package info.smart_tools.smartactors.actors;
 
 import info.smart_tools.smartactors.actors.exception.SampleException;
 import info.smart_tools.smartactors.actors.wrapper.SampleWrapper;
-import info.smart_tools.smartactors.core.ifield_name.IFieldName;
-import info.smart_tools.smartactors.core.iobject.IObject;
-import info.smart_tools.smartactors.core.ioc.IOC;
-import info.smart_tools.smartactors.core.message_bus.MessageBus;
 
 /**
  * Created by sevenbits on 7/28/16.

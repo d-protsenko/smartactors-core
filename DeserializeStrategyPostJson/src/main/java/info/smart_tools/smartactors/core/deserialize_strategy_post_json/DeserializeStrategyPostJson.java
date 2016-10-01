@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.core.deserialize_strategy_post_json;
 
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**

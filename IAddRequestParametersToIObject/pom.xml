@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core.i_add_request_parameters_to_message</artifactId>
+    <artifactId>core.i_add_request_parameters_to_iobject</artifactId>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iobject</artifactId>
+            <artifactId>iobject.iobject</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iconfiguration_manager</artifactId>
+            <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -30,34 +30,39 @@
         <!-- Bootstrap & plugins -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap_item</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap_item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- IOC -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.named_keys_storage</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ioc</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <!-- Message exchanging system -->
         <dependency>
@@ -84,22 +89,17 @@
         <!-- Executor creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iqueue</artifactId>
+            <artifactId>task.interfaces.iqueue</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.blocking_queue</artifactId>
+            <artifactId>task.task-dispatcher</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.task_dispatcher</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.thread_pool</artifactId>
+            <artifactId>task.thread-pool</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -121,13 +121,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.resolve_by_name_ioc_strategy</artifactId>
+            <artifactId>ioc.resolve-by-name-ioc-strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.strategy_container</artifactId>
+            <artifactId>ioc.strategy-container</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>

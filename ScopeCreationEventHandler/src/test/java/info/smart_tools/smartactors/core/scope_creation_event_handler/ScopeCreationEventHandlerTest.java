@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.scope_creation_event_handler;
 
-import info.smart_tools.smartactors.core.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iscope.IScope;
-import info.smart_tools.smartactors.core.istrategy_container.IStrategyContainer;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

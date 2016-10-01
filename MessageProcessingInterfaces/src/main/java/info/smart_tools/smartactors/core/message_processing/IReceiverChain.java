@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.message_processing;
 
-import info.smart_tools.smartactors.core.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Chain of message receivers.
