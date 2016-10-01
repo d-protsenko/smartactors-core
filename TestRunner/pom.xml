@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichain_storage</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -91,6 +91,16 @@
             <artifactId>iobject.field-name</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iaction</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

@@ -16,12 +16,12 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processor.FinalTask;
-import info.smart_tools.smartactors.core.message_processor.MessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing.message_processor.FinalTask;
+import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**

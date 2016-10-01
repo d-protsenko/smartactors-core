@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.core.standard_config_sections;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
-import info.smart_tools.smartactors.core.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.core.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.List;
@@ -34,7 +34,11 @@ import java.util.List;
  *                 "port": 8080,
  *                 "startChain": "mainChain",
  *                 "maxContentLength": 4098,
- *                 "stackDepth": 5 (temporarily)
+ *                 "stackDepth": 5 (temporarily),
+ *                 "templates": [
+ *                     "/messageMapId/:messageMapId/bar/:barId",
+ *                     "/:messageMapId"
+ *                 ]
  *                 // . . .
  *             },
  *             {
@@ -46,7 +50,11 @@ import java.util.List;
  *                 "stackDepth": 5,
  *                 "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/cert.pem",
  *                 "keyPass": "123456",
- *                 "storePass": "123456"
+ *                 "storePass": "123456",
+ *                 "templates": [
+ *                     "/messageMapId/:messageMapId/bar/:barId",
+ *                     "/:messageMapId"
+ *                 ]
  *             }
  *         ]
  *     }
@@ -92,9 +100,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             for (IObject endpoint : endpointObjects) {
-                // TODO: 25.07.16 add endpoint type
                 // TODO: 25.07.16 remove stack depth from endpoint config
-                // TODO: 25.07.16 add endpoint name
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);

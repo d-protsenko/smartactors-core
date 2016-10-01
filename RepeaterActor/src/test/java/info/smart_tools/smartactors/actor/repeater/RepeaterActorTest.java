@@ -1,10 +1,9 @@
 package info.smart_tools.smartactors.actor.repeater;
 
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

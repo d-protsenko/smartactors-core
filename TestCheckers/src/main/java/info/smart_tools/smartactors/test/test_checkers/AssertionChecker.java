@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.test.iassertion.IAssertion;
 import info.smart_tools.smartactors.test.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;

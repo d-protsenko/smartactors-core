@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.actor_collection_receiver;
 
-import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.irouter.exceptions.RouteNotFoundException;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

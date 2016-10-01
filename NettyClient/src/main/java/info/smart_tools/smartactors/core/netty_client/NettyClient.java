@@ -40,8 +40,9 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     private int port;
     /**
      * Constructor for netty client
-     * @param serverUri URI of the server
-     * @param channelClass
+     *
+     * @param serverUri      URI of the server
+     * @param channelClass   class of the channel
      * @param inboundHandler
      */
     public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,

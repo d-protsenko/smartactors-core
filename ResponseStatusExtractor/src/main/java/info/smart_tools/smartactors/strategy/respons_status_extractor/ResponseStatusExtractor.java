@@ -16,6 +16,11 @@ public class ResponseStatusExtractor implements IResponseStatusExtractor {
     private IFieldName httpResponseStatusCodeFieldName;
     private IFieldName contextFieldName;
 
+    /**
+     * Constructor
+     *
+     * @throws ResolutionException throws if there are problems with resolving object
+     */
     public ResponseStatusExtractor() throws ResolutionException {
         this.httpResponseStatusCodeFieldName = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "httpResponseStatusCode"

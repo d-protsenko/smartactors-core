@@ -13,12 +13,12 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.imessage</artifactId>
+            <artifactId>message-processing-interfaces.imessage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -28,12 +28,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processor</artifactId>
+            <artifactId>message-processing.message-processor</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing_sequence</artifactId>
+            <artifactId>message-processing.message-processing-sequence</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.wrapper_generator</artifactId>
+            <artifactId>message-processing.wrapper-generator</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -59,13 +59,18 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.immutable_receiver_chain</artifactId>
+            <artifactId>message-processing.immutable-receiver-chain</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core.ienvironment_handler</artifactId>
             <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core.iresponse-sender</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

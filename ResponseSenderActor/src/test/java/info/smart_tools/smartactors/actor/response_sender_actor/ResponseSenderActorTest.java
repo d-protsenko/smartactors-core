@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.actor.response_sender_actor;
 
 import info.smart_tools.smartactors.actor.response_sender_actor.exceptions.ResponseSenderActorException;
-import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseMessage;
+import info.smart_tools.smartactors.actor.response_sender_actor.wrapper.ResponseSenderMessage;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -31,7 +31,10 @@ import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ResponseSenderActorTest {
     IResponse response;
@@ -90,6 +93,9 @@ public class ResponseSenderActorTest {
         IOC.register(keyIResponseSender,
                 new SingletonStrategy(responseSender));
 
+        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"),
+                new SingletonStrategy("HTTP_POST"));
+
 
     }
 
@@ -110,7 +116,7 @@ public class ResponseSenderActorTest {
     }
 }
 
-class Wrapper implements IObjectWrapper, ResponseMessage {
+class Wrapper implements IObjectWrapper, ResponseSenderMessage {
     IObject environment;
 
 //    @Override

@@ -158,8 +158,6 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             configurationManager.addSectionStrategy(new ClientSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
-                        } catch (info.smart_tools.smartactors.core.iioccontainer.exception.ResolutionException e) {
-                            e.printStackTrace();
                         }
                     });
 

@@ -10,8 +10,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.irouter.IRouter;
-import info.smart_tools.smartactors.core.map_router.MapRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing.map_router.MapRouter;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 

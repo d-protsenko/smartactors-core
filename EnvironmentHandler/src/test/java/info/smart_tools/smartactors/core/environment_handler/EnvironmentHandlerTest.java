@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.core.environment_handler;
 
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
@@ -20,13 +21,13 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.core.receiver_chain.ImmutableReceiverChain;
+import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChain;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -121,7 +122,7 @@ public class EnvironmentHandlerTest {
 
     @Test
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
-            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException {
+            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException, RequestHandlerInternalException {
         messageProcessor = mock(IMessageProcessor.class);
         IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
         IOC.register(

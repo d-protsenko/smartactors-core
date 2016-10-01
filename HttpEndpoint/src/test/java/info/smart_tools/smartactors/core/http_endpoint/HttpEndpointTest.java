@@ -1,41 +1,44 @@
 package info.smart_tools.smartactors.core.http_endpoint;
 
-import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
-import info.smart_tools.smartactors.core.http_client.HttpClient;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
 import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.ienvironment_handler.exception.EnvironmentHandleException;
+import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.core.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpVersion;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,8 +49,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 
 public class HttpEndpointTest {
@@ -167,10 +169,12 @@ public class HttpEndpointTest {
     public void tearDown() throws ExecutionException, InterruptedException {
         CompletableFuture.allOf(endpoint.stop()).get();
     }
-/*
-    @Test
+
+
+
+   /* @Test
     public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
-            throws ResolutionException, InvalidArgumentException, EnvironmentHandleException {
+            throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
         IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
         HttpRequest request = createTestRequest();
@@ -188,7 +192,7 @@ public class HttpEndpointTest {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
-                environmentHandler, receiver);
+                environmentHandler, receiver, "");
     }
 
     protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException, RequestSenderException {

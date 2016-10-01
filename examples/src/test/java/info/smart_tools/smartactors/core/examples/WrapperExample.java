@@ -16,8 +16,8 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.core.iwrapper_generator.IWrapperGenerator;
-import info.smart_tools.smartactors.core.iwrapper_generator.exception.WrapperGeneratorException;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin.InitializeConfigurationObjectStrategies;

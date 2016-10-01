@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.core.iclient;
 
 import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
-
 import java.util.concurrent.CompletableFuture;
 
 /**

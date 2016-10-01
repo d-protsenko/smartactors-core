@@ -14,9 +14,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.core.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
@@ -43,9 +43,8 @@ public class EnvironmentHandler implements IEnvironmentHandler {
         this.taskQueue = taskQueue;
     }
 
-    @Override
     public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
-            throws InvalidArgumentException, EnvironmentHandleException {
+            throws EnvironmentHandleException {
         try {
             IMessageProcessingSequence processingSequence =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
@@ -57,8 +56,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             IObject context = (IObject) environment.getValue(contextFieldName);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
-            // TODO: @ValchukDmitry, replace by checked exception!!!
-            throw new RuntimeException(e);
+            throw new EnvironmentHandleException(e);
         }
     }
 }

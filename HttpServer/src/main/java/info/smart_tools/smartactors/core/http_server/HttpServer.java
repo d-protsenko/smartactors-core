@@ -8,7 +8,6 @@ import io.netty.handler.codec.http.HttpServerCodec;
 
 /**
  * A server which handles HTTP requests.
- * TODO: configuration
  * TODO: handle OPTION requests to allow cross-domain requests
  * TODO: handle input/output compression (e.g. gzip, deflate etc.)
  */
