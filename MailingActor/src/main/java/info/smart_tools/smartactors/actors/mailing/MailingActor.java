@@ -165,6 +165,14 @@ public class MailingActor {
             SMTPDeliveryEnvelope deliveryEnvelope = new SMTPDeliveryEnvelopeImpl(
                     senderAddress_Context_F.in(mailingContext, String.class), recipients, smtpMessage);
 
+            // Bug fix: can't find handler of MIME type of data
+            // in javax.mail.internet.MimeMultipart#writeTo(java.io.OutputStream).
+            // JavaMail depends on some configuration files to map MIME types to Java classes
+            // (e.g., "maultipart/mixed" to "javax.mail.internet.MimeMultipart").
+            // These configuration files are loaded using the ClassLoader for the application.
+            // If the ClassLoader doesn't function properly, these configuration files won't be found.
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
             Collection<FutureResult<Iterator<DeliveryRecipientStatus>>> cfr = deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope).get();
 
             for (FutureResult<Iterator<DeliveryRecipientStatus>> fr : cfr) {
