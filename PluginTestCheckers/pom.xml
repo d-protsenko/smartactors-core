@@ -28,7 +28,7 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_checkers</artifactId>
+            <artifactId>testing.test-checkers</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

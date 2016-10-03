@@ -28,12 +28,12 @@
         <!-- Implementations -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_http_endpoint</artifactId>
+            <artifactId>testing.test-http-endpoint</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_data_source_iobject</artifactId>
+            <artifactId>testing.test-data-source-iobject</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

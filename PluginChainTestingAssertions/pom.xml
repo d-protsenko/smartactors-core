@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_assertions</artifactId>
+            <artifactId>testing.test-assertions</artifactId>
             <version>${core.version}</version>
         </dependency>
 

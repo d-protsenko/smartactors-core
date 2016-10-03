@@ -72,9 +72,6 @@
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>ISource</module>
-        <module>TestDataSourceStringArray</module>
-        <module>TestHttpEndpoint</module>
         <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
@@ -82,18 +79,8 @@
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>TestRunner</module>
-        <module>TestLoadingPlugins</module>
-        <module>ChainTestsConfigSectionStrategy</module>
         <module>PluginChainTesting</module>
-        <module>TestAssertions</module>
         <module>PluginChainTestingAssertions</module>
-        <module>TestDataSourceIObject</module>
-        <module>ITestRunner</module>
-        <module>TestEnvironmentHandler</module>
-        <module>IAssertion</module>
-        <module>IResultChecker</module>
-        <module>TestCheckers</module>
         <module>PluginTestCheckers</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>

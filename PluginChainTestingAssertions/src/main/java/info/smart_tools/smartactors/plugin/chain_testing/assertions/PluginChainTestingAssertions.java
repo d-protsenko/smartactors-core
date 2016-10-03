@@ -12,8 +12,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.test.test_assertions.EqualAssertion;
-import info.smart_tools.smartactors.test.test_assertions.NotEqualAssertion;
+import info.smart_tools.smartactors.testing.test_assertions.EqualAssertion;
+import info.smart_tools.smartactors.testing.test_assertions.NotEqualAssertion;
 
 /**
  * Plugin registering some assertions for chain tests.

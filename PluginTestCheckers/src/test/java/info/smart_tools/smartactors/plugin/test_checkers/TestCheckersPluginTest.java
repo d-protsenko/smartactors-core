@@ -22,8 +22,8 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.test.iassertion.IAssertion;
-import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
+import info.smart_tools.smartactors.testing.interfaces.iassertion.IAssertion;
+import info.smart_tools.smartactors.testing.interfaces.iresult_checker.IResultChecker;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;

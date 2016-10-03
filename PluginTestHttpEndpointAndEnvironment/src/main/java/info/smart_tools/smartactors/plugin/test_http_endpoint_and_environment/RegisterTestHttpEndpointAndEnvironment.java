@@ -18,10 +18,10 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.test.isource.ISource;
-import info.smart_tools.smartactors.test.test_data_source_iobject.IObjectDataSource;
-import info.smart_tools.smartactors.test.test_http_endpoint.TestChannelHandler;
-import info.smart_tools.smartactors.test.test_http_endpoint.TestHttpEndpoint;
+import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
+import info.smart_tools.smartactors.testing.test_data_source_iobject.IObjectDataSource;
+import info.smart_tools.smartactors.testing.test_http_endpoint.TestChannelHandler;
+import info.smart_tools.smartactors.testing.test_http_endpoint.TestHttpEndpoint;
 
 import java.util.ArrayList;
 import java.util.List;

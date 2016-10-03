@@ -13,9 +13,9 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.test.iresult_checker.IResultChecker;
-import info.smart_tools.smartactors.test.test_checkers.AssertionChecker;
-import info.smart_tools.smartactors.test.test_checkers.ExceptionInterceptor;
+import info.smart_tools.smartactors.testing.interfaces.iresult_checker.IResultChecker;
+import info.smart_tools.smartactors.testing.test_checkers.AssertionChecker;
+import info.smart_tools.smartactors.testing.test_checkers.ExceptionInterceptor;
 
 import java.util.List;
 

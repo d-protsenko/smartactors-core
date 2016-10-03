@@ -14,17 +14,17 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.chain_testing.section_strategy</artifactId>
+            <artifactId>testing.section-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_runner</artifactId>
+            <artifactId>testing.test-runner</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>test.test_environment_handler</artifactId>
+            <artifactId>testing.test-environment-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

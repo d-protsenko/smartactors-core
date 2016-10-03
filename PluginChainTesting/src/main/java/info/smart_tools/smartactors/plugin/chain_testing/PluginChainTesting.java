@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.plugin.chain_testing;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.chain_testing.ChainTestRunner;
-import info.smart_tools.smartactors.core.chain_testing.HttpEndpointTestRunner;
-import info.smart_tools.smartactors.core.chain_testing.section_strategy.TestsSectionStrategy;
+import info.smart_tools.smartactors.testing.test_runner.ChainTestRunner;
+import info.smart_tools.smartactors.testing.test_runner.HttpEndpointTestRunner;
+import info.smart_tools.smartactors.testing.chain_testing.section_strategy.TestsSectionStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -22,9 +22,9 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.test.itest_runner.ITestRunner;
-import info.smart_tools.smartactors.test.test_environment_handler.MainTestChain;
-import info.smart_tools.smartactors.test.test_environment_handler.TestEnvironmentHandler;
+import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
+import info.smart_tools.smartactors.testing.test_environment_handler.MainTestChain;
+import info.smart_tools.smartactors.testing.test_environment_handler.TestEnvironmentHandler;
 
 /**
  * Plugin that registers strategy processing "tests" section of configuration and some related components.
