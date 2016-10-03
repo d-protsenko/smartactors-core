@@ -95,11 +95,6 @@
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
         <module>PluginChangePasswordActor</module>
-        <module>MessageBus</module>
-        <module>IMessageBusContainer</module>
-        <module>MessageBusContainerWithScope</module>
-        <module>MessageBusHandler</module>
-        <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
         <module>ActorCollectionReceiver</module>

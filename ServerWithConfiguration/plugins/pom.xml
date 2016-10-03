@@ -205,7 +205,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus</artifactId>
+            <artifactId>message-bus.message-bus</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
