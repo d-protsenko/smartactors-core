@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.test.test_http_endpoint;
 
-import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 
 import java.util.List;
 

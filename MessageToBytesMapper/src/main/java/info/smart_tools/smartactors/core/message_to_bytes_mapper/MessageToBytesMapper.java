@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.message_to_bytes_mapper;
 
 
 import com.google.common.base.Charsets;
-import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;

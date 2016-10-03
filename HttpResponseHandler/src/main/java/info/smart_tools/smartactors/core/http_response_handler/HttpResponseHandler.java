@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.http_response_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
-import info.smart_tools.smartactors.core.iresponse_handler.exception.ResponseHandlerException;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;

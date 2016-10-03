@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.core.http_request_handler;
 
 
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
-import info.smart_tools.smartactors.core.endpoint_handler.EndpointHandler;
+import info.smart_tools.smartactors.endpoint.endpoint_handler.EndpointHandler;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.exceptions.DeserializationException;
-import info.smart_tools.smartactors.core.i_add_request_parameters_to_iobject.IAddRequestParametersToIObject;
-import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
-import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerDataException;
-import info.smart_tools.smartactors.core.ienvironment_handler.exception.RequestHandlerInternalException;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
+import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.IAddRequestParametersToIObject;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.RequestHandlerDataException;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.RequestHandlerInternalException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -20,9 +20,9 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iresponse.IResponse;
-import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;

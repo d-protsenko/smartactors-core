@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ienvironment_handler</artifactId>
+            <artifactId>endpoint.interfaces.ienvironment-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

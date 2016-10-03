@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.channel_handler_netty;
 
-import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

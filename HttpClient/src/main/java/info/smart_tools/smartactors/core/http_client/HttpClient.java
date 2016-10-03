@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.http_client;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.iclient.IClientConfig;
-import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
+import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.core.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;

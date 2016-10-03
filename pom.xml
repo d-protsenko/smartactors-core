@@ -22,8 +22,6 @@
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IAsyncService</module>
-        <module>EndpointHandler</module>
         <module>NettyServer</module>
         <module>TcpServer</module>
         <module>HttpServer</module>
@@ -43,26 +41,15 @@
         <module>ToWrapperConverterStrategy</module>
         <module>CreateUserActor</module>
         <module>HttpEndpoint</module>
-        <module>IMessageMapper</module>
-        <module>IDeserializeStrategy</module>
-        <module>EndpointChannelInboundHandler</module>
         <module>NettyClient</module>
-        <module>IClient</module>
         <module>HttpClient</module>
         <module>CompletableNettyFuture</module>
         <module>DeserializeStrategyPostJson</module>
-        <module>IEnvironmentHandler</module>
         <module>EnvironmentHandler</module>
         <module>MessageToBytesMapper</module>
-        <module>IResponseSender</module>
         <module>HttpResponseSender</module>
-        <module>ResponseSenderActor</module>
-        <module>IResponse</module>
-        <module>IResponseContentStrategy</module>
-        <module>Response</module>
         <module>ResponseContentJsonStrategy</module>
         <module>IResponseStatusExtractor</module>
-        <module>IChannelHandler</module>
         <module>ICookiesSetter</module>
         <module>IHeadersExtractor</module>
         <module>ChannelHandlerNetty</module>
@@ -167,7 +154,6 @@
         <module>PluginEndpoint</module>
         <module>DeserializeStrategyGet</module>
         <module>DeserializationStrategyChooser</module>
-        <module>IAddRequestParametersToIObject</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
@@ -180,11 +166,9 @@
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
-        <module>ClientActor</module>
         <module>IRequestSender</module>
         <module>PluginHttpClient</module>
         <module>HttpClientHandler</module>
-        <module>IResponseHandler</module>
         <module>HttpResponseHandler</module>
         <module>HttpResponseDeserializationStrategy</module>
         <module>ITimer</module>

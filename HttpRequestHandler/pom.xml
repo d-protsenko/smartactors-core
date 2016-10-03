@@ -18,22 +18,22 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.endpoint_handler</artifactId>
+            <artifactId>endpoint.endpoint-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.i_add_request_parameters_to_iobject</artifactId>
+            <artifactId>endpoint.interfaces.iadd-request-parameters-to-iobject</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ideserialize_strategy</artifactId>
+            <artifactId>endpoint.interfaces.ideserialize-strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichannel_handler</artifactId>
+            <artifactId>endpoint.interfaces.ichannel-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -43,17 +43,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresponse</artifactId>
+            <artifactId>endpoint.interfaces.iresponse</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresponse_body_strategy</artifactId>
+            <artifactId>endpoint.interfaces.iresponse-body-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresponse-sender</artifactId>
+            <artifactId>endpoint.interfaces.iresponse-sender</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

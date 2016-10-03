@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iasync_service</artifactId>
+            <artifactId>endpoint.interfaces.iasync-service</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ienvironment_handler</artifactId>
+            <artifactId>endpoint.interfaces.ienvironment-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichannel_handler</artifactId>
+            <artifactId>endpoint.interfaces.ichannel-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

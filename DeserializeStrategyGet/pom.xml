@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ideserialize_strategy</artifactId>
+            <artifactId>endpoint.interfaces.ideserialize-strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.i_add_request_parameters_to_iobject</artifactId>
+            <artifactId>endpoint.interfaces.iadd-request-parameters-to-iobject</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

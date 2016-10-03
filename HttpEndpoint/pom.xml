@@ -23,17 +23,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ideserialize_strategy</artifactId>
+            <artifactId>endpoint.interfaces.ideserialize-strategy</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.imessage_mapper</artifactId>
+            <artifactId>endpoint.interfaces.imessage-mapper</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.endpoint_channel_inbound_handler</artifactId>
+            <artifactId>endpoint.endpoint-channel-inbound-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -124,7 +124,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iresponse-sender</artifactId>
+            <artifactId>endpoint.interfaces.iresponse-sender</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -134,7 +134,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichannel_handler</artifactId>
+            <artifactId>endpoint.interfaces.ichannel-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

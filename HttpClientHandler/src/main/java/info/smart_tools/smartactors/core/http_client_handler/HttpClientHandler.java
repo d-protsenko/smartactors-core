@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.http_client_handler;
 
-import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;

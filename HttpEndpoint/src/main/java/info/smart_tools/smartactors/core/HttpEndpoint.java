@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core;
 
-import info.smart_tools.smartactors.core.endpoint_channel_inbound_handler.EndpointChannelInboundHandler;
+import info.smart_tools.smartactors.endpoint.endpoint_channel_inbound_handler.EndpointChannelInboundHandler;
 import info.smart_tools.smartactors.core.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.core.http_server.HttpServer;
-import info.smart_tools.smartactors.core.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;

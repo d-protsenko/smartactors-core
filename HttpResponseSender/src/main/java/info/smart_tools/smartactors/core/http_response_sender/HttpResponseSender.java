@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.http_response_sender;
 
-import info.smart_tools.smartactors.core.ichannel_handler.IChannelHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.core.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
@@ -8,9 +8,9 @@ import info.smart_tools.smartactors.core.iheaders_extractor.exceptions.HeadersSe
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iresponse.IResponse;
-import info.smart_tools.smartactors.core.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_sender.exceptions.ResponseSendingException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.buffer.Unpooled;

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.plugin.response_sender_actor;
 
-import info.smart_tools.smartactors.actor.response_sender_actor.ResponseSenderActor;
+import info.smart_tools.smartactors.endpoint.actor.response_sender_actor.ResponseSenderActor;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

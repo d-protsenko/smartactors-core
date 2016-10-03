@@ -46,7 +46,7 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.response</artifactId>
+            <artifactId>endpoint.response</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

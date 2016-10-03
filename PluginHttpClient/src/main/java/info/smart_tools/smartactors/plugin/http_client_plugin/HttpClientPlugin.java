@@ -4,12 +4,12 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.http_client.HttpClient;
 import info.smart_tools.smartactors.core.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
-import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.core.irequest_sender.exception.RequestSenderException;
-import info.smart_tools.smartactors.core.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.core.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

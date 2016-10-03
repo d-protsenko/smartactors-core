@@ -1,5 +1,5 @@
 import com.google.common.util.concurrent.Uninterruptibles;
-import info.smart_tools.smartactors.core.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;

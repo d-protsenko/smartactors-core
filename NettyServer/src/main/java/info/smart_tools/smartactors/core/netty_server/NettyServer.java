@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.netty_server;
 
 import info.smart_tools.smartactors.core.CompletableNettyFuture;
-import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
+import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

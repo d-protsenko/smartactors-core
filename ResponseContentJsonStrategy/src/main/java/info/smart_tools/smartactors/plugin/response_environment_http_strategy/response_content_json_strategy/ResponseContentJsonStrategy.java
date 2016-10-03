@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.plugin.response_environment_http_strategy.r
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.core.iresponse.IResponse;
-import info.smart_tools.smartactors.core.iresponse_content_strategy.IResponseContentStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
 
 import java.nio.charset.Charset;
 

@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.client</artifactId>
+            <artifactId>endpoint.interfaces.iclient</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
