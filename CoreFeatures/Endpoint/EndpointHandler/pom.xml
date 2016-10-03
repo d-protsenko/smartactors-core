@@ -54,11 +54,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ds-object</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing.immutable-receiver-chain</artifactId>
             <version>${core.version}</version>
         </dependency>

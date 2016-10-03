@@ -29,7 +29,7 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin.ResolveStandardTypesStrategiesPlugin;
 import info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin.PluginWDSObject;
-import info.smart_tools.smartactors.plugin.wrapper_generator.RegisterWrapperGenerator;
+import info.smart_tools.smartactors.message_processing_plugins.wrapper_generator_plugin.RegisterWrapperGenerator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

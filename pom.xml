@@ -66,29 +66,19 @@
         <module>PluginCheckUserByEmailActor</module>
         <module>PluginGetHeaderRule</module>
         <module>StandardConfigSections</module>
-        <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
-        <module>PluginMapRouter</module>
-        <module>PluginReceiverChain</module>
-        <module>PluginReceiverChainsStorage</module>
-        <module>PluginStandardObjectCreators</module>
         <module>ServerWithConfiguration</module>
-        <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginWrapperGenerator</module>
         <module>HttpRequestHandler</module>
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>
         <module>ResponseStatusExtractor</module>
         <module>PluginHttpEndpoint</module>
-        <module>PluginActorReceiverCreator</module>
-        <module>PluginHandlerRoutingReceiverCreator</module>
         <module>HttpsServer</module>
         <module>HttpsEndpoint</module>
-        <module>PluginMessageProcessorAndSequence</module>
         <module>PluginResponseSenderActor</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
@@ -100,11 +90,8 @@
         <module>SslEngineProvider</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
-        <module>PluginChainCallReceiver</module>
-        <module>PluginChainChoiceStrategy</module>
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
-        <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
         <module>PluginChangePasswordActor</module>
