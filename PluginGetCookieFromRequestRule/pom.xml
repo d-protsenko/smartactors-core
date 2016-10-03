@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>transformation_rule.get_cookie_from_request</artifactId>
+            <artifactId>http-endpoint.strategy.get-cookie-from-request</artifactId>
             <version>${core.version}</version>
         </dependency>
 

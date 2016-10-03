@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.transformation_rules.get_cookie_from_request.GetCookieFromRequestRule;
+import info.smart_tools.smartactors.http_endpoint.strategy.get_cookie_from_request.GetCookieFromRequestRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

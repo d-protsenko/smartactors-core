@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.HttpEndpoint;
+import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
+import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;

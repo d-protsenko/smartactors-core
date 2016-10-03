@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>transformation_rule.get_query_parameter</artifactId>
+            <artifactId>http-endpoint.strategy.get-query-parameter</artifactId>
             <version>${core.version}</version>
         </dependency>
 

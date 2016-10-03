@@ -22,9 +22,6 @@
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
-        <module>NettyServer</module>
-        <module>TcpServer</module>
-        <module>HttpServer</module>
         <!-- database tasks modules -->
         <!-- /database tasks modules -->
         <module>examples</module>
@@ -40,24 +37,9 @@
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
         <module>CreateUserActor</module>
-        <module>HttpEndpoint</module>
-        <module>NettyClient</module>
-        <module>HttpClient</module>
-        <module>CompletableNettyFuture</module>
-        <module>DeserializeStrategyPostJson</module>
-        <module>EnvironmentHandler</module>
-        <module>MessageToBytesMapper</module>
-        <module>HttpResponseSender</module>
-        <module>ResponseContentJsonStrategy</module>
-        <module>IResponseStatusExtractor</module>
-        <module>ICookiesSetter</module>
-        <module>IHeadersExtractor</module>
-        <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
         <module>CreateSession</module>
         <module>PluginCreateSession</module>
-        <module>GetCookieFromRequestRule</module>
-        <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
@@ -72,10 +54,6 @@
         <module>PluginCloseAsyncOperationActor</module>
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>HttpRequestHandler</module>
-        <module>CookiesSetter</module>
-        <module>HttpHeadersSetter</module>
-        <module>ResponseStatusExtractor</module>
         <module>PluginHttpEndpoint</module>
         <module>HttpsServer</module>
         <module>HttpsEndpoint</module>
@@ -105,7 +83,6 @@
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>GetQueryParameterRule</module>
         <module>PluginGetQueryParameterRule</module>
         <module>ISource</module>
         <module>TestDataSourceStringArray</module>
@@ -134,7 +111,6 @@
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
         <module>PluginEndpoint</module>
-        <module>DeserializeStrategyGet</module>
         <module>DeserializationStrategyChooser</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
@@ -148,11 +124,7 @@
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
-        <module>IRequestSender</module>
         <module>PluginHttpClient</module>
-        <module>HttpClientHandler</module>
-        <module>HttpResponseHandler</module>
-        <module>HttpResponseDeserializationStrategy</module>
         <module>ITimer</module>
         <module>TimerImpl</module>
         <module>PluginTimer</module>

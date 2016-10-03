@@ -47,7 +47,7 @@
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.response_content_json_strategy</artifactId>
+            <artifactId>http-endpoint.response-content-json-strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

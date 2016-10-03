@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.tcp_server</artifactId>
+            <artifactId>http-endpoint.tcp-server</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

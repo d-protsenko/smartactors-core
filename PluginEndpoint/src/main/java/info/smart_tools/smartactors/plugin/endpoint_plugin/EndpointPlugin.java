@@ -6,10 +6,10 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.deserialization_strategy_chooser.ResolveByTypeAndNameStrategy;
-import info.smart_tools.smartactors.core.icookies_extractor.ICookiesSetter;
-import info.smart_tools.smartactors.core.iheaders_extractor.IHeadersExtractor;
+import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.ICookiesSetter;
+import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.core.iresponse_status_extractor.IResponseStatusExtractor;
+import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;

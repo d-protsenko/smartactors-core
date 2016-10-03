@@ -54,6 +54,12 @@
             <artifactId>base.strategy.singleton-strategy</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <!-- Endpoint -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint.interfaces.iasync-service</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
         <!-- Message exchanging system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -90,16 +96,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.thread-pool</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.http_endpoint</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.environment_handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->

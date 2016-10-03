@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.http_endpoint</artifactId>
+            <artifactId>http-endpoint.http-endpoint</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -58,17 +58,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.deserialize_strategy_get</artifactId>
+            <artifactId>http-endpoint.deserialize-strategy-get</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.deserialize_strategy_post_json</artifactId>
+            <artifactId>http-endpoint.deserialize-strategy-post-json</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.environment_handler</artifactId>
+            <artifactId>http-endpoint.environment-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -88,12 +88,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_to_bytes_mapper</artifactId>
+            <artifactId>http-endpoint.message-to-bytes-mapper</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>strategy.cookies_setter</artifactId>
+            <artifactId>http-endpoint.cookies-setter</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -104,12 +104,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.http_endpoint</artifactId>
+            <artifactId>http-endpoint.http-endpoint</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.environment_handler</artifactId>
+            <artifactId>http-endpoint.environment-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->
@@ -156,7 +156,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.http_response_handler</artifactId>
+            <artifactId>http-endpoint.http-response-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

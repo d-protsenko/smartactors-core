@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>transformation_rule.get_header_from_request</artifactId>
+            <artifactId>http-endpoint.strategy.get-header-from-request</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

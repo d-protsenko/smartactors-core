@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.plugin.response_environment_http_strategy.response_content_json_strategy.ResponseContentJsonStrategy;
+import info.smart_tools.smartactors.http_endpoint.response_content_json_strategy.ResponseContentJsonStrategy;
 
 /**
  *

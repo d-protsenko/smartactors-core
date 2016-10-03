@@ -11,10 +11,10 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.transformation_rules.get_query_parameter.GetQueryParameterRule;
+import info.smart_tools.smartactors.http_endpoint.strategy.get_query_parameter.GetQueryParameterRule;
 
 /**
- * Plugin for register {@link info.smart_tools.smartactors.transformation_rules.get_query_parameter.GetQueryParameterRule}
+ * Plugin for register {@link GetQueryParameterRule}
  */
 public class GetQueryParameterRulePlugin implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;

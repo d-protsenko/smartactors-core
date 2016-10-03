@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.iasync_service.IAsyncService;
+import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
