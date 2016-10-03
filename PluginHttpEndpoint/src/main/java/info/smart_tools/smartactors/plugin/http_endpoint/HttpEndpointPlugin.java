@@ -12,6 +12,8 @@ import info.smart_tools.smartactors.core.HttpEndpoint;
 import info.smart_tools.smartactors.core.IDeserializeStrategy;
 import info.smart_tools.smartactors.core.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.core.deserialize_strategy_get.DeserializeStrategyGet;
+import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.IParseTree;
+import info.smart_tools.smartactors.core.deserialize_strategy_get.parse_tree.ParseTree;
 import info.smart_tools.smartactors.core.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.core.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.core.http_response_sender.HttpResponseSender;
@@ -332,6 +334,11 @@ public class HttpEndpointPlugin implements IPlugin {
                                 throw new RuntimeException(e);
                             }
                         }
+                )
+        );
+        IParseTree tree = new ParseTree();
+        IOC.register(Keys.getOrAdd(IParseTree.class.getCanonicalName()), new SingletonStrategy(
+                        tree
                 )
         );
     }
