@@ -55,8 +55,6 @@
         <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
         <module>PluginHttpEndpoint</module>
-        <module>HttpsServer</module>
-        <module>HttpsEndpoint</module>
         <module>PluginResponseSenderActor</module>
         <module>PluginResponse</module>
         <module>PluginResponseJsonContentStrategy</module>
@@ -64,8 +62,6 @@
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
         <module>PluginHttpsEndpoint</module>
-        <module>ISslEngineProvider</module>
-        <module>SslEngineProvider</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>DependencyResolvingFeatureManager</module>
