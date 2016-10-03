@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>ioc-strategy-pack</artifactId>
+    <artifactId>http-endpoint-plugins</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -18,12 +18,14 @@
     </properties>
 
     <modules>
-        <module>ResolveByCompositeNameIocWithLambdaStrategy</module>
-        <module>ResolveByTypeStrategy</module>
-        <module>ResolveIObjectStrategies</module>
-        <module>ResolveStandardTypesStrategies</module>
-        <module>UuidNextIdStrategy</module>
-        <module>ResolveByTypeAndNameStrategy</module>
+        <module>PluginGetCookieFromRequestRule</module>
+        <module>PluginGetHeaderRule</module>
+        <module>PluginGetQueryParameterRule</module>
+        <module>PluginHttpClient</module>
+        <module>PluginHttpEndpoint</module>
+        <module>PluginResponse</module>
+        <module>PluginResponseJsonContentStrategy</module>
+        <module>PluginEndpoint</module>
     </modules>
 
     <repositories>

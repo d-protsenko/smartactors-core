@@ -46,21 +46,15 @@
         <module>PluginUserAuthByLoginActor</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
-        <module>PluginGetHeaderRule</module>
         <module>StandardConfigSections</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
         <module>ServerWithConfiguration</module>
         <module>PluginCloseAsyncOperationActor</module>
-        <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginHttpEndpoint</module>
-        <module>PluginResponse</module>
-        <module>PluginResponseJsonContentStrategy</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
-        <module>PluginHttpsEndpoint</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>DependencyResolvingFeatureManager</module>
@@ -78,7 +72,6 @@
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>PluginGetQueryParameterRule</module>
         <module>ISource</module>
         <module>TestDataSourceStringArray</module>
         <module>TestHttpEndpoint</module>
@@ -105,8 +98,6 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
-        <module>PluginEndpoint</module>
-        <module>DeserializationStrategyChooser</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
@@ -119,7 +110,6 @@
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
-        <module>PluginHttpClient</module>
         <module>ITimer</module>
         <module>TimerImpl</module>
         <module>PluginTimer</module>
