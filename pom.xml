@@ -72,16 +72,12 @@
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
         <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>PluginChainTesting</module>
-        <module>PluginChainTestingAssertions</module>
-        <module>PluginTestCheckers</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>PluginDateTimeFormatterStrategy</module>
