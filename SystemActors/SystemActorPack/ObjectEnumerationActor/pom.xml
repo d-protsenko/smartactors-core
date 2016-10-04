@@ -3,31 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>core</artifactId>
+        <artifactId>system-actors-pack</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin.repeater_actor</artifactId>
+    <artifactId>system-actors-pack.object-enumeration-actor</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
@@ -40,14 +24,33 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.irouter</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Tests -->
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>system-actors-pack.repeater-actor</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

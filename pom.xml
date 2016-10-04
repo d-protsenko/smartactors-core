@@ -63,7 +63,6 @@
         <module>PluginChangePasswordActor</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>ActorCollectionReceiver</module>
         <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
@@ -86,10 +85,8 @@
         <module>IFilesystemFacade</module>
         <module>FilesystemFacade</module>
         <module>PluginFilesystemFacade</module>
-        <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
-        <module>ObjectEnumerationActor</module>
         <module>PluginObjectEnumerationActor</module>
     </modules>
 

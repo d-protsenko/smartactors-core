@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.actor_collection_receiver;
 
-import info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionReceiver;
-import info.smart_tools.smartactors.core.actor_collection_receiver.ActorCollectionRouter;
+import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver.ActorCollectionReceiver;
+import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver.ActorCollectionRouter;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.plugin.repeater_actor;
 
-import info.smart_tools.smartactors.actor.repeater.RepeaterActor;
+import info.smart_tools.smartactors.system_actors_pack.repeater_actor.RepeaterActor;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 
 /**
- * Plugin that registers {@link info.smart_tools.smartactors.actor.repeater.RepeaterActor}.
+ * Plugin that registers {@link RepeaterActor}.
  */
 public class RepeaterActorPlugin implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;

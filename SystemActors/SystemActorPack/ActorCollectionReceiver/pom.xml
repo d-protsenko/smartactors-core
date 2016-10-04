@@ -3,42 +3,41 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>core</artifactId>
+        <artifactId>system-actors-pack</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugin.actor_collection_receiver</artifactId>
+    <artifactId>system-actors-pack.actor-collection-receiver</artifactId>
 
     <dependencies>
-
         <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.irouter</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.irouted-object-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Implementations -->
+        <!-- Implementation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>system-actors-pack.actor-collection-receiver</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
+            <artifactId>iobject-extension.wds-object</artifactId>
             <version>${core.version}</version>
         </dependency>
 
@@ -67,6 +66,7 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>
