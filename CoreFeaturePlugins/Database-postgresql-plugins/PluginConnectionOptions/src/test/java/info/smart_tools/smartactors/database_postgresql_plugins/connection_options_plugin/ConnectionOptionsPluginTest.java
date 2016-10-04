@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.connection_options;
+package info.smart_tools.smartactors.database_postgresql_plugins.connection_options_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
