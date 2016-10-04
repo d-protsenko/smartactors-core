@@ -41,7 +41,7 @@ public class SchedulerActor {
 
         // TODO: Download schedules asynchronously
         while (true) {
-            if (storage.downloadNextPage()) {
+            if (storage.downloadNextPage(0)) {
                 break;
             }
         }

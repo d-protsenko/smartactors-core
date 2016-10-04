@@ -6,8 +6,6 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
@@ -15,6 +13,8 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class EntryStorage {
             throws EntryStorageAccessException {
         ISchedulerEntry oldEntry = localEntries.put(entry.getId(), entry);
 
-        if (null != oldEntry) {
+        if (null != oldEntry && entry != oldEntry) {
             try {
                 oldEntry.cancel();
             } catch (EntryScheduleException e) {
@@ -160,13 +160,18 @@ public class EntryStorage {
      * May be called from different threads (but from not more than one at time).
      * </p>
      *
+     * @param preferSize preferred size of page {@code 0} or negative number is for default size
      * @return {@code true} if there is no more entries to download
      * @throws EntryStorageAccessException if any error occurs
      */
-    public boolean downloadNextPage()
+    public boolean downloadNextPage(final int preferSize)
             throws EntryStorageAccessException {
         if (isInitialized) {
             return true;
+        }
+
+        if (preferSize > 0 && downloadedPages == 0) {
+            downloadPageSize = preferSize;
         }
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
@@ -174,7 +179,7 @@ public class EntryStorage {
 
             IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                     String.format("{'filter':{},'page':{'size':%s,'number':%s},'sort':[{'entryId':'asc'}]}"
-                            .replace('\'', '"'), downloadPageSize, downloadedPages));
+                            .replace('\'', '"'), downloadPageSize, downloadedPages + 1));
 
             ITask task = IOC.resolve(
                     Keys.getOrAdd("db.collection.search"),

@@ -1,11 +1,6 @@
 package info.smart_tools.smartactors.core.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.core.itimer.ITimer;
-import info.smart_tools.smartactors.core.itimer.ITimerTask;
-import info.smart_tools.smartactors.core.itimer.exceptions.TaskScheduleException;
 import info.smart_tools.smartactors.core.message_bus.MessageBus;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulingStrategy;
@@ -19,6 +14,11 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
+import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 import java.util.UUID;
 
