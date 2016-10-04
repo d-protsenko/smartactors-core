@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.actors.close_async_operation;
 
 import info.smart_tools.smartactors.actors.close_async_operation.wrapper.CloseAsyncOpMessage;
-import info.smart_tools.smartactors.core.async_operation_collection.IAsyncOperationCollection;
-import info.smart_tools.smartactors.core.async_operation_collection.exception.CompleteAsyncOperationException;
+import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
+import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;

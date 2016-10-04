@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.core.examples;
 
-import info.smart_tools.smartactors.core.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.core.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -15,14 +15,14 @@ import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.plugin.dsobject.PluginDSObject;
-import info.smart_tools.smartactors.plugin.ifield.IFieldPlugin;
-import info.smart_tools.smartactors.plugin.ifieldname.IFieldNamePlugin;
-import info.smart_tools.smartactors.plugin.ioc_keys.PluginIOCKeys;
-import info.smart_tools.smartactors.plugin.ioc_simple_container.PluginIOCSimpleContainer;
-import info.smart_tools.smartactors.plugin.resolve_standard_types_strategies.ResolveStandardTypesStrategiesPlugin;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin.ResolveStandardTypesStrategiesPlugin;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -14,38 +14,38 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iconfiguration_manager</artifactId>
+            <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus</artifactId>
+            <artifactId>message-bus.message-bus</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus_handler</artifactId>
+            <artifactId>message-bus.message-bus-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Bootstrap & plugins -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iplugin</artifactId>
+            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ibootstrap_item</artifactId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap_item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- IOC -->
@@ -67,49 +67,49 @@
         <!-- Message exchanging system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processing</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.ichain_storage</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouter</artifactId>
+            <artifactId>message-processing-interfaces.irouter</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Object creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.irouted_object_creator</artifactId>
+            <artifactId>message-processing-interfaces.irouted-object-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Executor creation -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.iqueue</artifactId>
+            <artifactId>task.interfaces.iqueue</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.task_dispatcher</artifactId>
+            <artifactId>task.task-dispatcher</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.thread_pool</artifactId>
+            <artifactId>task.thread-pool</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.http_endpoint</artifactId>
+            <artifactId>http-endpoint.http-endpoint</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.environment_handler</artifactId>
+            <artifactId>http-endpoint.environment-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <!-- Tests -->
@@ -153,6 +153,16 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.5</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>http-endpoint.http-response-handler</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint.interfaces.iresponse-handler</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

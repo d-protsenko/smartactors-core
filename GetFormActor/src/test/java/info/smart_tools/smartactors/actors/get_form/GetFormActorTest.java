@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.actors.get_form.exception.GetFormActorExcept
 import info.smart_tools.smartactors.actors.get_form.strategy.FirstItemStrategy;
 import info.smart_tools.smartactors.actors.get_form.strategy.IFormsStrategy;
 import info.smart_tools.smartactors.actors.get_form.wrapper.GetFormMessage;
-import info.smart_tools.smartactors.core.cached_collection.CachedCollection;
-import info.smart_tools.smartactors.core.cached_collection.ICachedCollection;
+import info.smart_tools.smartactors.database.cached_collection.CachedCollection;
+import info.smart_tools.smartactors.database.cached_collection.ICachedCollection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;

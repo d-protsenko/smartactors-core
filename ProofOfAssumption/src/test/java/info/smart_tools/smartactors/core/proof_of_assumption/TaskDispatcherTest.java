@@ -1,18 +1,16 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
 
-import info.smart_tools.smartactors.core.blocking_queue.BlockingQueue;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.core.non_blocking_queue.NonBlockingQueue;
-import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
+import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
+import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
+import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 import org.junit.Test;
 
 import java.text.MessageFormat;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;

@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.cached_collection</artifactId>
+            <artifactId>database.cached-collection</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -34,12 +34,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_processor</artifactId>
+            <artifactId>message-processing.message-processor</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>field.field</artifactId>
             <version>${core.version}</version>
         </dependency>
 

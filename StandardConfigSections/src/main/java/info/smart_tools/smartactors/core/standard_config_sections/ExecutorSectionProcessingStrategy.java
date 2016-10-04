@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.core.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -9,14 +9,14 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iqueue.IQueue;
-import info.smart_tools.smartactors.core.itask.ITask;
-import info.smart_tools.smartactors.core.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.core.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
+import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.core.thread_pool.ThreadPool;
+import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
+import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 
 /**
  *

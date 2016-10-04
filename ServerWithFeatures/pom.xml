@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap</artifactId>
+            <artifactId>feature-loading-system.bootstrap</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -29,22 +29,22 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.configuration_object</artifactId>
+            <artifactId>iobject-extension.configuration-object</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_from_jar</artifactId>
+            <artifactId>feature-loading-system.plugin-loader-from-jar</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_visitor_empty_implementation</artifactId>
+            <artifactId>feature-loading-system.plugin-loader-visitor-empty-implementation</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_creator</artifactId>
+            <artifactId>feature-loading-system.plugin-creator</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
