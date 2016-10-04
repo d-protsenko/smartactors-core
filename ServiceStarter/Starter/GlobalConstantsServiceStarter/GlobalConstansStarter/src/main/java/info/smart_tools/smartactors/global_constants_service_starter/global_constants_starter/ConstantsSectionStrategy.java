@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.constants_section_strategy;
+package info.smart_tools.smartactors.global_constants_service_starter.global_constants_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;

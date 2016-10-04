@@ -86,8 +86,6 @@
         <module>IFilesystemFacade</module>
         <module>FilesystemFacade</module>
         <module>PluginFilesystemFacade</module>
-        <module>ConstantsSectionStrategy</module>
-        <module>PluginGlobalConstants</module>
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
