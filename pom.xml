@@ -75,7 +75,6 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>PluginDateTimeFormatterStrategy</module>
         <module>ServerWithFeatures</module>
         <module>IFeatureLoader</module>
         <module>FeatureLoader</module>
