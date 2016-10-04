@@ -31,6 +31,7 @@
         <module>PluginWrapperGenerator</module>
         <module>PluginStarter</module>
         <module>PluginStandardObjectCreators</module>
+        <module>PluginConstantChainChoiceStrategy</module>
     </modules>
 
     <repositories>
