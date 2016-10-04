@@ -39,7 +39,17 @@ public final class EntryImpl implements ISchedulerEntry {
     private final IFieldName idFieldName;
     private final IFieldName messageFieldName;
 
-    private EntryImpl(
+    /**
+     * The constructor.
+     *
+     * @param state       entry state object
+     * @param strategy    scheduling strategy
+     * @param storage     storage to save entry in
+     * @throws ResolutionException if fails to resolve any dependencies
+     * @throws ReadValueException if error occurs reading values from state object
+     * @throws InvalidArgumentException if error occurs reading values from state object
+     */
+    public EntryImpl(
             final IObject state,
             final ISchedulingStrategy strategy,
             final EntryStorage storage)
@@ -160,6 +170,8 @@ public final class EntryImpl implements ISchedulerEntry {
             } else {
                 timerTask.reschedule(time);
             }
+
+            lastScheduledTime = time;
 
             storage.saveLocally(this);
         } catch (TaskScheduleException | EntryStorageAccessException e) {

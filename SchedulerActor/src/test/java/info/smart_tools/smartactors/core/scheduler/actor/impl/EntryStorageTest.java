@@ -135,6 +135,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         assertFalse(storage.downloadNextPage(2));
         assertFalse(storage.downloadNextPage(2));
         assertTrue(storage.downloadNextPage(2));
+        assertTrue(storage.downloadNextPage(2));
 
         verify(restoreEntryStrategy, times(saved.length)).resolve(any(), same(storage));
     }
