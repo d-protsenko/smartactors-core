@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>endpoint-service-starter</artifactId>
+    <artifactId>messagebus-service-starter</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -18,7 +18,7 @@
     </properties>
 
     <modules>
-        <module>EndpointStarter</module>
+        <module>MessageBusStarter</module>
     </modules>
 
     <repositories>

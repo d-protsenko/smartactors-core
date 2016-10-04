@@ -28,7 +28,6 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>ServerWithIObject</module>
-        <module>IMultiActionStrategy</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
@@ -74,7 +73,6 @@
         <module>PluginExceptionHandlerActor</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
-        <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
