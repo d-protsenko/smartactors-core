@@ -14,4 +14,13 @@ public class EntryStorageAccessException extends Exception {
     public EntryStorageAccessException(final String msg, final Throwable cause) {
         super(msg, cause);
     }
+
+    /**
+     * The constructor.
+     *
+     * @param msg      the exception message
+     */
+    public EntryStorageAccessException(final String msg) {
+        super(msg);
+    }
 }

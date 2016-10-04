@@ -29,7 +29,8 @@ public interface ISchedulingStrategy {
     void restore(final ISchedulerEntry entry);
 
     /**
-     * Called by scheduler when an exception occurs sending the message associated with the given entry.
+     * Called by scheduler when an exception occurs sending the message associated with the given entry or executing {@link
+     * #postProcess(ISchedulerEntry)} method of this strategy.
      *
      * @param entry    the entry
      * @param e        the exception

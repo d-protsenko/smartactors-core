@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.core.scheduler.actor;
+package info.smart_tools.smartactors.core.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.itask.ITask;
@@ -25,10 +25,10 @@ import java.util.UUID;
 /**
  * Implementation of {@link ISchedulerEntry}.
  */
-final class EntryImpl implements ISchedulerEntry {
+public final class EntryImpl implements ISchedulerEntry {
+    private final EntryStorage storage;
     private final IObject state;
     private final String id;
-    private boolean saved;
     private final ISchedulingStrategy strategy;
     private long lastScheduledTime;
     private ITimerTask timerTask;
@@ -41,16 +41,16 @@ final class EntryImpl implements ISchedulerEntry {
 
     private EntryImpl(
             final IObject state,
-            final boolean saved,
-            final ISchedulingStrategy strategy)
+            final ISchedulingStrategy strategy,
+            final EntryStorage storage)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
         idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
 
         this.timer = IOC.resolve(Keys.getOrAdd("timer"));
 
+        this.storage = storage;
         this.state = state;
-        this.saved = saved;
         this.strategy = strategy;
         this.lastScheduledTime = -1;
 
@@ -60,7 +60,20 @@ final class EntryImpl implements ISchedulerEntry {
         this.id = (String) state.getValue(idFieldName);
     }
 
-    public static EntryImpl newEntry(final IObject args)
+    /**
+     * Create a new entry from given description.
+     *
+     * @param args       entry description
+     * @param storage    the {@link EntryStorage storage} to store entry in (if necessary)
+     *
+     * @return the new entry
+     *
+     * @throws ResolutionException if cannot resolve dependencies
+     * @throws ReadValueException if cannot read description fields
+     * @throws ChangeValueException if can not modify description to use it as entry state object
+     * @throws InvalidArgumentException if invalid arguments were passed to some method
+     */
+    public static EntryImpl newEntry(final IObject args, final EntryStorage storage)
             throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
         IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
@@ -73,14 +86,26 @@ final class EntryImpl implements ISchedulerEntry {
 
         EntryImpl entry = new EntryImpl(
                 args,
-                false,
-                strategy);
+                strategy,
+                storage);
 
         strategy.init(entry, args);
         return entry;
     }
 
-    public static EntryImpl restoreEntry(final IObject savedState)
+    /**
+     * Create new entry from entry state object loaded from database.
+     *
+     * @param savedState    the saved entry state object
+     * @param storage       the storage to use to store the entry (or to delete it from when it is completed)
+     *
+     * @return the new entry
+     *
+     * @throws ResolutionException if cannot resolve dependencies
+     * @throws ReadValueException if cannot read description fields
+     * @throws InvalidArgumentException if invalid arguments were passed to some method
+     */
+    public static EntryImpl restoreEntry(final IObject savedState, final EntryStorage storage)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
 
@@ -88,8 +113,8 @@ final class EntryImpl implements ISchedulerEntry {
 
         EntryImpl entry = new EntryImpl(
                 savedState,
-                true,
-                strategy);
+                strategy,
+                storage);
 
         strategy.restore(entry);
         return entry;
@@ -111,8 +136,7 @@ final class EntryImpl implements ISchedulerEntry {
 
     @Override
     public void save() throws EntryStorageAccessException {
-        this.saved = true;
-        //TODO: Save
+        storage.save(this);
     }
 
     @Override
@@ -123,9 +147,7 @@ final class EntryImpl implements ISchedulerEntry {
                 this.timerTask.cancel();
             }
 
-            //if (saved) {
-                //TODO: Delete if saved
-            //}
+            storage.delete(this);
         }
     }
 
@@ -138,7 +160,9 @@ final class EntryImpl implements ISchedulerEntry {
             } else {
                 timerTask.reschedule(time);
             }
-        } catch (TaskScheduleException e) {
+
+            storage.saveLocally(this);
+        } catch (TaskScheduleException | EntryStorageAccessException e) {
             throw new EntryScheduleException("Could not reschedule entry.", e);
         }
     }
