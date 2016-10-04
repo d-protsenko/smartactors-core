@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin;
+package info.smart_tools.smartactors.timer_plugins.timer_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;

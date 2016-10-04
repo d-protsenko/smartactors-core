@@ -91,7 +91,6 @@
         <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
         <module>PluginRepeaterActor</module>
-        <module>PluginTimer</module>
         <module>ObjectEnumerationActor</module>
         <module>PluginObjectEnumerationActor</module>
     </modules>
