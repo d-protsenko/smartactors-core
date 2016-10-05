@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.filesystem_facade;
+package info.smart_tools.smartactors.feature_loader_plugins.filesystem_facade_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;

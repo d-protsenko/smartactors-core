@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.plugin.feature_loader;
+package info.smart_tools.smartactors.feature_loader_plugins.feature_loader_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
