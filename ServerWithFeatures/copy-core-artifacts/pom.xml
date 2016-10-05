@@ -123,6 +123,16 @@
             <artifactId>ioc-strategy-pack-plugins.datetime-formatter-strategy-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-strategy-pack.resolve-by-composite-name-ioc-with-lambda-strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-strategy-pack.resolve-by-type-and-name-strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Task -->
         <dependency>
