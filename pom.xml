@@ -91,6 +91,7 @@
         <module>SchedulerInterfaces</module>
         <module>SchedulerActor</module>
         <module>PluginScheduler</module>
+        <module>SchedulingStrategies</module>
     </modules>
 
     <repositories>

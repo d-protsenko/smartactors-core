@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntrySto
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -83,9 +84,11 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ReadValueException if cannot read description fields
      * @throws ChangeValueException if can not modify description to use it as entry state object
      * @throws InvalidArgumentException if invalid arguments were passed to some method
+     * @throws SchedulingStrategyExecutionException if error occurs executing scheduling strategy
      */
     public static EntryImpl newEntry(final IObject args, final ISchedulerEntryStorage storage)
-            throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
+            throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException,
+            SchedulingStrategyExecutionException {
         IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
 
@@ -115,9 +118,11 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ResolutionException if cannot resolve dependencies
      * @throws ReadValueException if cannot read description fields
      * @throws InvalidArgumentException if invalid arguments were passed to some method
+     * @throws SchedulingStrategyExecutionException if error occurs executing scheduling strategy
      */
     public static EntryImpl restoreEntry(final IObject savedState, final ISchedulerEntryStorage storage)
-            throws ResolutionException, ReadValueException, InvalidArgumentException {
+            throws ResolutionException, ReadValueException, InvalidArgumentException,
+            SchedulingStrategyExecutionException {
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
 
         ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd((String) savedState.getValue(strategyFieldName)));
@@ -136,7 +141,12 @@ public final class EntryImpl implements ISchedulerEntry {
             MessageBus.send(makeMessageClone());
             strategy.postProcess(this);
         } catch (Exception e) {
-            strategy.processException(this, e);
+            try {
+                strategy.processException(this, e);
+            } catch (SchedulingStrategyExecutionException ee) {
+                ee.addSuppressed(e);
+                throw new TaskExecutionException(ee);
+            }
         }
     }
 
