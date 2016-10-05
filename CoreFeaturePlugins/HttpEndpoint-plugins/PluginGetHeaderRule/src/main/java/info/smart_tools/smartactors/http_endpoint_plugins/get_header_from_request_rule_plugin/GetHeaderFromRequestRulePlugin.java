@@ -33,9 +33,9 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetHeaderFromRequestRulePlugin");
 
             item
-                .after("IOC")
-                .after("wds_object")
-                .before("starter")
+//                .after("IOC")
+//                .after("wds_object")
+//                .before("starter")
                     .process(() -> {
                         try {
                             //call IOC.resolve for put GetHeaderFromRequestRule into cache of ResolveByNameDependency strategy

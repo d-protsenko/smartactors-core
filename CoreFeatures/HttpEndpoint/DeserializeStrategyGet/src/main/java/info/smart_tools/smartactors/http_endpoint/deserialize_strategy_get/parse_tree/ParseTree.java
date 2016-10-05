@@ -34,6 +34,7 @@ public class ParseTree implements IParseTree {
             isEnd = true;
         }
     }
+
     @Override
     public Map<String, String> match(final String uri) {
         TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
@@ -42,6 +43,9 @@ public class ParseTree implements IParseTree {
     }
 
     private TreeObject match(final TreeObject treeObject) {
+        if (!treeObject.hasElem(0)) {
+            treeObject.setEnded(true);
+        }
         if (!treeObject.hasElem(level)) {
             return treeObject;
         }

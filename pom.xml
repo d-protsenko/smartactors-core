@@ -63,10 +63,8 @@
         <module>PluginChangePasswordActor</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
-        <module>PluginConnectionOptions</module>
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
@@ -77,17 +75,8 @@
         <module>PluginPrepareMailRegistrationActor</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>PluginDateTimeFormatterStrategy</module>
         <module>ServerWithFeatures</module>
-        <module>IFeatureLoader</module>
-        <module>FeatureLoader</module>
-        <module>PluginFeatureLoader</module>
-        <module>IFilesystemFacade</module>
-        <module>FilesystemFacade</module>
-        <module>PluginFilesystemFacade</module>
         <module>CoreFeatures/Base</module>
-        <module>PluginRepeaterActor</module>
-        <module>PluginObjectEnumerationActor</module>
         <module>SchedulerInterfaces</module>
         <module>SchedulerActor</module>
         <module>PluginScheduler</module>
