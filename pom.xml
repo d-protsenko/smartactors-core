@@ -76,8 +76,6 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>ServerWithFeatures</module>
-        <module>PluginFeatureLoader</module>
-        <module>PluginFilesystemFacade</module>
         <module>CoreFeatures/Base</module>
     </modules>
 
