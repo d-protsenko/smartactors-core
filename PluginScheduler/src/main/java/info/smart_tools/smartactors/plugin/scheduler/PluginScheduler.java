@@ -25,7 +25,7 @@ public class PluginScheduler extends BootstrapPlugin {
      *
      * @param bootstrap    the bootstrap
      */
-    protected PluginScheduler(final IBootstrap bootstrap) {
+    public PluginScheduler(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 

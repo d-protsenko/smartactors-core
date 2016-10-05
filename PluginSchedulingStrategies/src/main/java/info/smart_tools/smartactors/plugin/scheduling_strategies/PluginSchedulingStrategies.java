@@ -1,0 +1,48 @@
+package info.smart_tools.smartactors.plugin.scheduling_strategies;
+
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.scheduling_strategies.ContinuouslyRepeatScheduleStrategy;
+import info.smart_tools.smartactors.core.scheduling_strategies.OnceSchedulingStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+
+/**
+ * Plugin that registers some scheduling strategies.
+ */
+public class PluginSchedulingStrategies extends BootstrapPlugin {
+    /**
+     * The constructor.
+     *
+     * @param bootstrap    the bootstrap
+     */
+    public PluginSchedulingStrategies(final IBootstrap bootstrap) {
+        super(bootstrap);
+    }
+
+    /**
+     * Register strategies.
+     *
+     * @throws ResolutionException if error occurs resolving the keys
+     * @throws RegistrationException if error occurs registering the strategies in IOC
+     * @throws InvalidArgumentException if {@link SingletonStrategy} hates {@link
+     *                                  info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulingStrategy scheduling strategies}
+     */
+    @Item("scheduling_strategies")
+    @After({"IOC"})
+    @Before({"scheduler_actor"})
+    public void registerSchedulingStrategies()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(
+                Keys.getOrAdd("repeat continuously scheduling strategy"),
+                new SingletonStrategy(new ContinuouslyRepeatScheduleStrategy()));
+
+        IOC.register(
+                Keys.getOrAdd("do once scheduling strategy"),
+                new SingletonStrategy(new OnceSchedulingStrategy()));
+    }
+}
