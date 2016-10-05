@@ -22,18 +22,12 @@
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IAsyncService</module>
-        <module>EndpointHandler</module>
-        <module>NettyServer</module>
-        <module>TcpServer</module>
-        <module>HttpServer</module>
         <!-- database tasks modules -->
         <!-- /database tasks modules -->
         <module>examples</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>ServerWithIObject</module>
-        <module>IMultiActionStrategy</module>
         <module>CloseAsyncOperationActor</module>
         <module>GetFormActor</module>
         <module>AuthenticationActor</module>
@@ -42,156 +36,47 @@
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
         <module>CreateUserActor</module>
-        <module>HttpEndpoint</module>
-        <module>IMessageMapper</module>
-        <module>IDeserializeStrategy</module>
-        <module>EndpointChannelInboundHandler</module>
-        <module>NettyClient</module>
-        <module>IClient</module>
-        <module>HttpClient</module>
-        <module>CompletableNettyFuture</module>
-        <module>DeserializeStrategyPostJson</module>
-        <module>IEnvironmentHandler</module>
-        <module>EnvironmentHandler</module>
-        <module>MessageToBytesMapper</module>
-        <module>IResponseSender</module>
-        <module>HttpResponseSender</module>
-        <module>ResponseSenderActor</module>
-        <module>IResponse</module>
-        <module>IResponseContentStrategy</module>
-        <module>Response</module>
-        <module>ResponseContentJsonStrategy</module>
-        <module>IResponseStatusExtractor</module>
-        <module>IChannelHandler</module>
-        <module>ICookiesSetter</module>
-        <module>IHeadersExtractor</module>
-        <module>ChannelHandlerNetty</module>
         <module>PluginGetFormActor</module>
         <module>CreateSession</module>
         <module>PluginCreateSession</module>
-        <module>GetCookieFromRequestRule</module>
-        <module>GetHeaderFromRequestRule</module>
         <module>CheckUserIsNewActor</module>
         <module>PluginCreateAsyncOperationActor</module>
         <module>UserAuthByLoginActor</module>
         <module>PluginUserAuthByLoginActor</module>
         <module>ValidateFormDataActor</module>
         <module>PluginCheckUserByEmailActor</module>
-        <module>PluginGetHeaderRule</module>
         <module>StandardConfigSections</module>
-        <module>PluginReceiverGenerator</module>
         <module>PluginCheckUserIsNewActor</module>
         <module>PluginAuthenticationActor</module>
-        <module>PluginMapRouter</module>
-        <module>PluginReceiverChain</module>
-        <module>PluginReceiverChainsStorage</module>
-        <module>PluginStandardObjectCreators</module>
         <module>ServerWithConfiguration</module>
-        <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
-        <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginWrapperGenerator</module>
-        <module>HttpRequestHandler</module>
-        <module>CookiesSetter</module>
-        <module>HttpHeadersSetter</module>
-        <module>ResponseStatusExtractor</module>
-        <module>PluginHttpEndpoint</module>
-        <module>PluginActorReceiverCreator</module>
-        <module>PluginHandlerRoutingReceiverCreator</module>
-        <module>HttpsServer</module>
-        <module>HttpsEndpoint</module>
-        <module>PluginMessageProcessorAndSequence</module>
-        <module>PluginResponseSenderActor</module>
-        <module>PluginResponse</module>
-        <module>PluginResponseJsonContentStrategy</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
         <module>PluginCreateUser</module>
-        <module>PluginHttpsEndpoint</module>
-        <module>ISslEngineProvider</module>
-        <module>SslEngineProvider</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
-        <module>PluginChainCallReceiver</module>
-        <module>PluginChainChoiceStrategy</module>
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
-        <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
         <module>ChangePasswordActor</module>
         <module>PluginChangePasswordActor</module>
-        <module>MessageBus</module>
-        <module>IMessageBusContainer</module>
-        <module>MessageBusContainerWithScope</module>
-        <module>MessageBusHandler</module>
-        <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>ActorCollectionReceiver</module>
-        <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
-        <module>PluginConnectionOptions</module>
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>GetQueryParameterRule</module>
-        <module>PluginGetQueryParameterRule</module>
-        <module>ISource</module>
-        <module>TestDataSourceStringArray</module>
-        <module>TestHttpEndpoint</module>
-        <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>SaveSessionActor</module>
         <module>PluginSaveSession</module>
-        <module>InMemoryDBSectionProcessingStrategy</module>
         <module>PluginNullConnectionPool</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>TestRunner</module>
-        <module>TestLoadingPlugins</module>
-        <module>ChainTestsConfigSectionStrategy</module>
-        <module>PluginChainTesting</module>
-        <module>TestAssertions</module>
-        <module>PluginChainTestingAssertions</module>
-        <module>TestDataSourceIObject</module>
-        <module>ITestRunner</module>
-        <module>TestEnvironmentHandler</module>
-        <module>IAssertion</module>
-        <module>IResultChecker</module>
-        <module>TestCheckers</module>
-        <module>PluginTestCheckers</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>PluginDateTimeFormatterStrategy</module>
-        <module>PluginEndpoint</module>
-        <module>DeserializeStrategyGet</module>
-        <module>DeserializationStrategyChooser</module>
-        <module>IAddRequestParametersToIObject</module>
         <module>ServerWithFeatures</module>
-        <module>IFeatureLoader</module>
-        <module>FeatureLoader</module>
-        <module>PluginFeatureLoader</module>
-        <module>IFilesystemFacade</module>
-        <module>FilesystemFacade</module>
-        <module>PluginFilesystemFacade</module>
-        <module>ConstantsSectionStrategy</module>
-        <module>PluginGlobalConstants</module>
-        <module>RepeaterActor</module>
         <module>CoreFeatures/Base</module>
-        <module>PluginRepeaterActor</module>
-        <module>ClientActor</module>
-        <module>IRequestSender</module>
-        <module>PluginHttpClient</module>
-        <module>HttpClientHandler</module>
-        <module>IResponseHandler</module>
-        <module>HttpResponseHandler</module>
-        <module>HttpResponseDeserializationStrategy</module>
-        <module>ITimer</module>
-        <module>TimerImpl</module>
-        <module>PluginTimer</module>
-        <module>ObjectEnumerationActor</module>
-        <module>PluginObjectEnumerationActor</module>
     </modules>
 
     <repositories>

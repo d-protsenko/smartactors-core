@@ -143,7 +143,7 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>plugin.wrapper_generator</artifactId>
+            <artifactId>message-processing-plugins.wrapper-generator-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -163,12 +163,12 @@ Run `mvn -f core-pom.xml dependency:copy-dependencies` to retrieve all dependent
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus</artifactId>
+            <artifactId>message-bus.message-bus</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.message_bus_handler</artifactId>
+            <artifactId>message-bus.message-bus-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>

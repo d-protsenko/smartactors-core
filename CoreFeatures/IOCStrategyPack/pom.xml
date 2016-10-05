@@ -23,6 +23,7 @@
         <module>ResolveIObjectStrategies</module>
         <module>ResolveStandardTypesStrategies</module>
         <module>UuidNextIdStrategy</module>
+        <module>ResolveByTypeAndNameStrategy</module>
     </modules>
 
     <repositories>
