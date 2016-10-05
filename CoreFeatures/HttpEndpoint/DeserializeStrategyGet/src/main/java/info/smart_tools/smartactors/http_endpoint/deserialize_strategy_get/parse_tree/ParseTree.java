@@ -34,10 +34,14 @@ public class ParseTree implements IParseTree {
             isEnd = true;
         }
     }
+
     @Override
     public Map<String, String> match(final String uri) {
         TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
         TreeObject resultObject = match(treeObject);
+        if (!resultObject.hasElem(0)) {
+            return resultObject.getResult();
+        }
         return resultObject.isEnded() ? resultObject.getResult() : null;
     }
 

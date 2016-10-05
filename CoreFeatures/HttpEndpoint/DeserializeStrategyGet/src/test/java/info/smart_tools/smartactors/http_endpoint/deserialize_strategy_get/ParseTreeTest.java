@@ -107,4 +107,12 @@ public class ParseTreeTest {
         assertNull(resultMap2);
     }
 
+    @Test
+    public void testEmptyTemplate() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/");
+        Map<String, String> resultMap = tree.match("/");
+        assertEquals(resultMap.size(), 0);
+    }
+
 }
