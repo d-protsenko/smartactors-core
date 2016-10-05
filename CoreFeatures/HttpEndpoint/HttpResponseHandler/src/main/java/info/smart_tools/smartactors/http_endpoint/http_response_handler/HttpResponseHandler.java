@@ -41,6 +41,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private String messageMapId;
 
     private boolean isReceived;
+    private boolean isBlocked;
 
     /**
      * Constructor
@@ -73,36 +74,43 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     }
 
     @Override
-    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) {
-        isReceived = true;
-        ITask task = () -> {
+    public synchronized void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) {
+        if (!isBlocked) {
+            isReceived = true;
+            ITask task = () -> {
+                try {
+                    IObject environment = getEnvironment(response);
+                    IMessageProcessingSequence processingSequence =
+                            IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
+                    IMessageProcessor messageProcessor =
+                            IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, processingSequence);
+                    IFieldName messageFieldName = null;
+                    messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+                    IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+                    IObject message = (IObject) environment.getValue(messageFieldName);
+                    message.setValue(messageMapIdFieldName, messageMapId);
+                    IObject context = (IObject) environment.getValue(contextFieldName);
+                    messageProcessor.process(message, context);
+                } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
+                        ResolutionException e) {
+                    throw new TaskExecutionException(e);
+                }
+            };
             try {
-                IObject environment = getEnvironment(response);
-                IMessageProcessingSequence processingSequence =
-                        IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
-                IMessageProcessor messageProcessor =
-                        IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, processingSequence);
-                IFieldName messageFieldName = null;
-                messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-                IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-                IObject message = (IObject) environment.getValue(messageFieldName);
-                message.setValue(messageMapIdFieldName, messageMapId);
-                IObject context = (IObject) environment.getValue(contextFieldName);
-                messageProcessor.process(message, context);
-            } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
-                    ResolutionException e) {
-                throw new TaskExecutionException(e);
+                taskQueue.put(task);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        };
-        try {
-            taskQueue.put(task);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
+    private synchronized void block() {
+        isBlocked = true;
+    }
+
     @Override
-    public boolean isReceived() {
+    public synchronized boolean isReceived() {
+        block();
         return isReceived;
     }
 
