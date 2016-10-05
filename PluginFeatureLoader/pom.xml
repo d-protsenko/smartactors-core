@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.feature_loader</artifactId>
+            <artifactId>feature-loader.feature-loader</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
