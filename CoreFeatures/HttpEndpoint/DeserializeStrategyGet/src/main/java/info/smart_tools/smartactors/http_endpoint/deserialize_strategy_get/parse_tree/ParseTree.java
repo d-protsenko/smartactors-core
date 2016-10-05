@@ -39,13 +39,13 @@ public class ParseTree implements IParseTree {
     public Map<String, String> match(final String uri) {
         TreeObject treeObject = new TreeObject(0, Arrays.asList(uri.split("/")));
         TreeObject resultObject = match(treeObject);
-        if (!resultObject.hasElem(0)) {
-            return resultObject.getResult();
-        }
         return resultObject.isEnded() ? resultObject.getResult() : null;
     }
 
     private TreeObject match(final TreeObject treeObject) {
+        if (!treeObject.hasElem(0)) {
+            treeObject.setEnded(true);
+        }
         if (!treeObject.hasElem(level)) {
             return treeObject;
         }

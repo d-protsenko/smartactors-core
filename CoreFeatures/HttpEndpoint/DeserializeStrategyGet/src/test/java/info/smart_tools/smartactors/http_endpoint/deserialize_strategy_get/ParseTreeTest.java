@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by sevenbits on 01.09.16.
@@ -113,6 +114,22 @@ public class ParseTreeTest {
         tree.addTemplate("/");
         Map<String, String> resultMap = tree.match("/");
         assertEquals(resultMap.size(), 0);
+    }
+
+    @Test
+    public void testConstTemplateNotPass() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/api");
+        Map<String, String> resultMap = tree.match("/hello");
+        assertEquals(resultMap, null);
+    }
+
+    @Test
+    public void testConstTemplatePass() {
+        IParseTree tree = new ParseTree();
+        tree.addTemplate("/api");
+        Map<String, String> resultMap = tree.match("/api");
+        assertTrue(resultMap.isEmpty());
     }
 
 }
