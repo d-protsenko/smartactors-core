@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.core.server_with_features;
 
 import info.smart_tools.smartactors.core.iserver.IServer;
+import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -16,5 +17,12 @@ public class ServerWithFeaturesTest {
         IServer server = new ServerWithFeatures();
         server.initialize();
         server.start();
+        try {
+            while (!Thread.interrupted()) {
+                Thread.sleep(1L);
+            }
+        } catch (Throwable e) {
+            throw new ServerExecutionException(e);
+        }
     }
 }

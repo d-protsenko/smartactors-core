@@ -41,13 +41,13 @@ public class EndpointPlugin implements IPlugin {
         try {
             item = new BootstrapItem("EndpointPlugin");
             item
-                    .after("IOC")
-                    .after("message_processor")
-                    .after("message_processing_sequence")
+//                    .after("IOC")
+//                    .after("message_processor")
+//                    .after("message_processing_sequence")
                     .after("response")
                     .after("response_content_strategy")
-                    .after("FieldNamePlugin")
-                    .before("starter")
+//                    .after("FieldNamePlugin")
+//                    .before("starter")
                     .process(
                             () -> {
                                 ResolveByTypeAndNameStrategy deserializationStrategyChooser = new ResolveByTypeAndNameStrategy();

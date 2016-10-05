@@ -33,9 +33,9 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetCookieFromRequestRulePlugin");
 
             item
-                    .after("IOC")
-                    .after("wds_object")
-                    .before("starter")
+//                    .after("IOC")
+//                    .after("wds_object")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IOC.resolve(

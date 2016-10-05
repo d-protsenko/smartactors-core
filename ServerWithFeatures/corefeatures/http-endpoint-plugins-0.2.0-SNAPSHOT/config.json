@@ -1,0 +1,14 @@
+{
+  "featureName": "http-endpoint-plugin",
+  "afterFeatures": ["http-endpoint"],
+  "endpoints": [
+    {
+      "name": "mainHttpEp",
+      "type": "http",
+      "port": 9909,
+      "startChain": "SelectChain",
+      "maxContentLength": 4098,
+      "stackDepth": 5
+    }
+  ]
+}
