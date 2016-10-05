@@ -1,0 +1,4 @@
+{
+  "featureName": "ioc-strategy-pack",
+  "afterFeatures": ["base", "iobject", "ioc"]
+}
