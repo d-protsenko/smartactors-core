@@ -80,8 +80,9 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
             entry.getState().setValue(startFieldName, startTime.toString());
             entry.getState().setValue(intervalFieldName, interval.toString());
 
-            entry.scheduleNext(nextTime(startTime, interval, datetimeToMillis(now)));
             entry.save();
+
+            entry.scheduleNext(nextTime(startTime, interval, datetimeToMillis(now)));
         } catch (ReadValueException | InvalidArgumentException | EntryScheduleException | EntryStorageAccessException
                 | ChangeValueException e) {
             throw new SchedulingStrategyExecutionException("Error occurred initializing scheduler entry.", e);
