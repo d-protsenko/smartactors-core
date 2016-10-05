@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -22,9 +23,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Provides local (in-memory) and remote (database) storage for {@link ISchedulerEntry scheduler entries}.
+ * Implementation of {@link ISchedulerEntryStorage}.
  */
-public class EntryStorage {
+public class EntryStorage implements ISchedulerEntryStorage {
     private static final int DEFAULT_PAGE_SIZE = 100;
 
     private final ConcurrentHashMap<String, ISchedulerEntry> localEntries = new ConcurrentHashMap<>();
@@ -50,12 +51,7 @@ public class EntryStorage {
         this.collectionName = collectionName;
     }
 
-    /**
-     * Save the entry to both local and remote storage.
-     *
-     * @param entry    the entry to save
-     * @throws EntryStorageAccessException if error occurs accessing remote storage
-     */
+    @Override
     public void save(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
@@ -73,12 +69,7 @@ public class EntryStorage {
         }
     }
 
-    /**
-     * Save the entry to local storage.
-     *
-     * @param entry    the entry to save
-     * @throws EntryStorageAccessException if error occurs
-     */
+    @Override
     public void saveLocally(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         ISchedulerEntry oldEntry = localEntries.put(entry.getId(), entry);
@@ -92,12 +83,7 @@ public class EntryStorage {
         }
     }
 
-    /**
-     * Delete the given entry from both local and remote storage.
-     *
-     * @param entry    the entry
-     * @throws EntryStorageAccessException if error occurs accessing remote storage
-     */
+    @Override
     public void delete(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
@@ -119,24 +105,13 @@ public class EntryStorage {
         }
     }
 
-    /**
-     * Get list of all locally saved entries.
-     *
-     * @return list of all locally saved entries
-     * @throws EntryStorageAccessException if any error occurs
-     */
+    @Override
     public List<ISchedulerEntry> listLocalEntries()
             throws EntryStorageAccessException {
         return new ArrayList<>(localEntries.values());
     }
 
-    /**
-     * Get (a locally saved) entry with given identifier.
-     *
-     * @param id    the entry identifier
-     * @return the entry saved with given identifier
-     * @throws EntryStorageAccessException if there is no entry with given identifier
-     */
+    @Override
     public ISchedulerEntry getEntry(final String id)
             throws EntryStorageAccessException {
         ISchedulerEntry entry = localEntries.get(id);
@@ -148,22 +123,7 @@ public class EntryStorage {
         return entry;
     }
 
-    /**
-     * Download next page of entries from remote storage.
-     *
-     * <p>
-     * This method should be called continuously (until returns {@code true}) before any other method may be used safely. It will download
-     * entries saved in remote storage (database) page by page.
-     * </p>
-     *
-     * <p>
-     * May be called from different threads (but from not more than one at time).
-     * </p>
-     *
-     * @param preferSize preferred size of page {@code 0} or negative number is for default size
-     * @return {@code true} if there is no more entries to download
-     * @throws EntryStorageAccessException if any error occurs
-     */
+    @Override
     public boolean downloadNextPage(final int preferSize)
             throws EntryStorageAccessException {
         if (isInitialized) {

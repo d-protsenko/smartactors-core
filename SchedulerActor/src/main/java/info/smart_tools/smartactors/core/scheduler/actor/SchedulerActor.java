@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.core.scheduler.actor;
 
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.core.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.AddEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.DeleteEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.ListEntriesQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.SchedulerConstructorArgs;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Actor that manages schedules.
  */
 public class SchedulerActor {
-    private final EntryStorage storage;
+    private final ISchedulerEntryStorage storage;
 
     /**
      * The constructor.
@@ -35,7 +35,7 @@ public class SchedulerActor {
             throws ResolutionException, ReadValueException, EntryStorageAccessException {
         Object connectionOptions = IOC.resolve(Keys.getOrAdd(args.getConnectionOptionsDependency()));
         IPool connectionPool = IOC.resolve(Keys.getOrAdd(args.getConnectionPoolDependency()), connectionOptions);
-        storage = IOC.resolve(Keys.getOrAdd(EntryStorage.class.getCanonicalName()),
+        storage = IOC.resolve(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()),
                 connectionPool,
                 args.getCollectionName());
 
