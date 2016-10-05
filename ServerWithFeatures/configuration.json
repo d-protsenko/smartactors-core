@@ -1,0 +1,8 @@
+{
+  "executor": {
+    "threadCount": 4,
+    "maxRunningThreads": 2,
+    "maxExecutionDelay": 100000,
+    "queueSize": 10000000
+  }
+}

@@ -2,15 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>feature-template</artifactId>
-        <groupId>info.smart_tools.smartactors</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+    <!--<parent>-->
+        <!--<artifactId>feature-template</artifactId>-->
+        <!--<groupId>info.smart_tools.smartactors</groupId>-->
+        <!--<version>0.0.1-SNAPSHOT</version>-->
+        <!--<relativePath>../pom.xml</relativePath>-->
+    <!--</parent>-->
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>copiers.copy-core-artifacts</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <build>
@@ -28,6 +31,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>archiva.smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -135,31 +145,129 @@
         </dependency>
 
         <!-- Database-postgresql -->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-postgresql-plugins.async-ops-collection-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-postgresql-plugins.cached-collection-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-postgresql-plugins.connection-options-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!--IObject-extension -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-plugins.async-ops-collection-plugin</artifactId>
+            <artifactId>iobject-extension-plugins.configuration-object-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-plugins.cached-collection-plugin</artifactId>
+            <artifactId>iobject-extension-plugins.wds-object-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- MessageProcessing -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.actor-receiver-creator-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-plugins.connection-options-plugin</artifactId>
+            <artifactId>message-processing-plugins.chain-call-receiver-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
+            <artifactId>message-processing-plugins.chain-choice-strategy-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
+            <artifactId>message-procesing-plugins.constant-chain-choice-strategy-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.handler-routing-receiver-creator-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.map-router-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.message-processor-and-sequence-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.messaging-identifiers-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.immutable-receiver-chain-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.receiver-chains-storage-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.receiver-generator-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.standard-object-creators-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.starter-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.wrapper-generator-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
+
+
+        <!---->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId></artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+
+
+
+
 
         <!--<dependency>-->
             <!--<groupId>info.smart_tools.smartactors</groupId>-->

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.filesystem_facade</artifactId>
+            <artifactId>feature-loader.filesystem-facade</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
