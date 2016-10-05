@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "database-in-memory",
+  "afterFeatures": ["database", "in-memory-database-starter"]
 }

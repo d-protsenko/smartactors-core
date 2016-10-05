@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "configuration-manager",
+  "afterFeatures": ["base", "iobject"]
 }

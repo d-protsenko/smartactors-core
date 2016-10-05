@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "message-processing-interfaces",
+  "afterFeatures": ["base", "iobject", "ioc"]
 }

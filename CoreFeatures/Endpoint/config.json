@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "endpoint",
+  "afterFeatures": ["endpoint-starter"]
 }

@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "message-bus",
+  "afterFeatures": ["message-bus-starter"]
 }

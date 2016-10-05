@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "message-processing",
+  "afterFeatures": ["base", "utility-tools", "iobject", "ioc", "task", "iobject-extension", "message-processing-interfaces"]
 }

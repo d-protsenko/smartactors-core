@@ -1,4 +1,4 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "database-psql-plugins",
+  "afterFeatures": ["database-psql", "database-plugin"]
 }

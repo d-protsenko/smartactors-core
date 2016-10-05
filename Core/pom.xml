@@ -144,13 +144,12 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
-
-        <!-- Database -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-plugins.collection-name-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
+        <!--&lt;!&ndash; Database &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>database-plugins.collection-name-plugin</artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <!--IObject-extension -->
         <dependency>
