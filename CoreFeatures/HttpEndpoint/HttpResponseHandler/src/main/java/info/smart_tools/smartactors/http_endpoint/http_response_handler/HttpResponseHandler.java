@@ -67,7 +67,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     }
 
     @Override
-    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) {
+    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response, final String messageMapId) {
         ITask task = () -> {
             try {
                 IObject environment = getEnvironment(response);
@@ -79,6 +79,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
                 IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
                 IObject message = (IObject) environment.getValue(messageFieldName);
+                message.setValue(messageMapIdFieldName, messageMapId);
                 IObject context = (IObject) environment.getValue(contextFieldName);
                 messageProcessor.process(message, context);
             } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
@@ -99,8 +100,6 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd("httpResponseResolver"), response);
             IObject message = deserializeStrategy.deserialize(response);
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
-            String messageMapId = String.valueOf(response.headers().get("messageMapId"));
-            environment.setValue(messageMapIdFieldName, messageMapId);
             IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             context.setValue(cookiesFieldName, new ArrayList<IObject>());
             context.setValue(headersFieldName, new ArrayList<IObject>());

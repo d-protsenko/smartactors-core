@@ -1,11 +1,9 @@
 package info.smart_tools.smartactors.http_endpoint.http_client;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.issl_engine_provider.ISslEngineProvider;
-import info.smart_tools.smartactors.core.issl_engine_provider.exception.SSLEngineProviderException;
-import info.smart_tools.smartactors.core.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -13,20 +11,22 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
-import io.netty.handler.ssl.SslHandler;
 
-import javax.net.ssl.SSLEngine;
 import java.net.URI;
 import java.util.List;
 
@@ -41,16 +41,8 @@ public class HttpClient extends NettyClient<HttpRequest> {
     private IFieldName valueFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
-    private static ISslEngineProvider sslEngineProvider;
-
-    static {
-        sslEngineProvider = new SslEngineProvider();
-        try {
-            sslEngineProvider.init(null);
-        } catch (SSLEngineProviderException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private String messageMapId;
+    private IResponseHandler inboundHandler;
 
     /**
      * Constructor for http client
@@ -59,7 +51,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
      * @param inboundHandler Channel
      * @throws RequestSenderException if there are exception on resolving IFieldName
      */
-    public HttpClient(final URI serverUri, final ChannelInboundHandler inboundHandler) throws RequestSenderException {
+    public HttpClient(final URI serverUri, final IResponseHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
         try {
             uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
@@ -72,7 +64,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }
-
+        this.inboundHandler = inboundHandler;
     }
 
     /**
@@ -87,14 +79,16 @@ public class HttpClient extends NettyClient<HttpRequest> {
     //TODO:: set maxContentLength from configuration
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
-        if (serverUri.getScheme().equals("https")) {
-            SSLEngine engine =
-                    sslEngineProvider.getClientContext();
-            engine.setUseClientMode(true);
-            pipeline.addLast("ssl", new SslHandler(engine));
-        }
 
-        return super.setupPipeline(pipeline).addLast(new HttpClientCodec(), new HttpObjectAggregator(4096));
+        return super.setupPipeline(pipeline)
+                .addLast(new HttpClientCodec(), new HttpObjectAggregator(4096))
+                .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
+                            @Override
+                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpResponse response) throws Exception {
+                                inboundHandler.handle(channelHandlerContext, response, messageMapId);
+                            }
+                        }
+                );
     }
 
     @Override
@@ -109,7 +103,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
                     httpRequest.headers().set((String) header.getValue(nameFieldName), header.getValue(valueFieldName));
                 }
             }
-            httpRequest.headers().set("messageMapId", request.getValue(messageMapIdFieldName));
+            messageMapId = (String) request.getValue(messageMapIdFieldName);
             List<IObject> cookies = (List<IObject>) request.getValue(cookiesFieldName);
             if (null != cookies) {
                 for (IObject cookie : cookies) {

@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -74,11 +75,11 @@ public class HttpClientTest {
 
     @Test
     public void test() throws URISyntaxException, RequestSenderException, InvalidArgumentException, InterruptedException {
-        HttpClient client = new HttpClient(new URI("https://google.com"), handler);
+        HttpClient client = new HttpClient(new URI("http://google.com"), responseHandler);
         client.start();
-        IObject request = new DSObject("{\"uri\": \"https://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
+        IObject request = new DSObject("{\"uri\": \"http://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
         client.sendRequest(request);
-        verify(responseHandler, timeout(1000)).handle(any(), any());
+        verify(responseHandler, timeout(5000)).handle(any(), any(), eq("messageMapId"));
         client.stop();
     }
 }

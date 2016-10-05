@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.netty_client;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClient;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.IRequestSender;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.completable_netty_future.CompletableNettyFuture;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -33,7 +34,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     private Channel channel;
     protected URI serverUri;
     private Class<? extends Channel> channelClass;
-    private ChannelInboundHandler inboundHandler;
+    private IResponseHandler inboundHandler;
     private IClientConfig clientConfig;
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
     private static final int DEFAULT_READ_TIMEOUT_SEC = 5;
@@ -49,7 +50,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      * @param inboundHandler
      */
     public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,
-                       final ChannelInboundHandler inboundHandler) {
+                       final IResponseHandler inboundHandler) {
         this.serverUri = serverUri;
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
@@ -67,7 +68,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         this.clientConfig = clientConfig;
         try {
             this.serverUri = clientConfig.getServerUri();
-            this.inboundHandler = (ChannelInboundHandler) clientConfig.getHandler();
+            this.inboundHandler = (IResponseHandler) clientConfig.getHandler();
         } catch (ReadValueException | ChangeValueException e) {
             throw new RuntimeException("Can't create NettyClient", e);
         }
@@ -144,8 +145,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
                                 .addLast(new ReadTimeoutHandler(
                                         clientConfig != null && clientConfig.getReadTimeout() != null ?
                                                 clientConfig.getReadTimeout() / 1000 : DEFAULT_READ_TIMEOUT_SEC
-                                ))
-                                .addLast(inboundHandler);
+                                ));
                     }
                 });
     }

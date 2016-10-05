@@ -17,6 +17,6 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpRespo
 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final FullHttpResponse response) throws Exception {
-        httpResponseHandler.handle(channelHandlerContext, response);
+        //httpResponseHandler.handle(channelHandlerContext, response);
     }
 }
