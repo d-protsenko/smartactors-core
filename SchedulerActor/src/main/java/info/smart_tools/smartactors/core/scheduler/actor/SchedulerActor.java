@@ -1,14 +1,16 @@
 package info.smart_tools.smartactors.core.scheduler.actor;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.AddEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.DeleteEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.ListEntriesQueryMessage;
-import info.smart_tools.smartactors.core.scheduler.actor.wrappers.SchedulerConstructorArgs;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -30,14 +32,22 @@ public class SchedulerActor {
      * @throws ResolutionException if fails to resolve any dependencies
      * @throws ReadValueException if fails to read any value from arguments object
      * @throws EntryStorageAccessException if fails to download entries saved in database
+     * @throws InvalidArgumentException if it occurs
      */
-    public SchedulerActor(final SchedulerConstructorArgs args)
-            throws ResolutionException, ReadValueException, EntryStorageAccessException {
-        Object connectionOptions = IOC.resolve(Keys.getOrAdd(args.getConnectionOptionsDependency()));
-        IPool connectionPool = IOC.resolve(Keys.getOrAdd(args.getConnectionPoolDependency()), connectionOptions);
+    public SchedulerActor(final IObject args)
+            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException {
+        String connectionOptionsDependency = (String) args.getValue(
+                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
+        String connectionPoolDependency = (String) args.getValue(
+                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionPoolDependency"));
+        String collectionName = (String) args.getValue(
+                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
+
+        Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
+        IPool connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);
         storage = IOC.resolve(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()),
                 connectionPool,
-                args.getCollectionName());
+                collectionName);
 
         // TODO: Download schedules asynchronously
         while (true) {

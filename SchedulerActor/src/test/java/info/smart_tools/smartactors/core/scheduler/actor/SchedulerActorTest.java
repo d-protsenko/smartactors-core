@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.AddEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.DeleteEntryQueryMessage;
 import info.smart_tools.smartactors.core.scheduler.actor.wrappers.ListEntriesQueryMessage;
-import info.smart_tools.smartactors.core.scheduler.actor.wrappers.SchedulerConstructorArgs;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class SchedulerActorTest extends PluginsLoadingTestBase {
     private IPool pool;
     private ISchedulerEntryStorage storage;
-    private SchedulerConstructorArgs args;
+    private IObject args;
     private AddEntryQueryMessage addEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
@@ -73,10 +72,12 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("the connection pool dependency"), poolStrategy);
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), storageStrategy);
 
-        args = mock(SchedulerConstructorArgs.class);
-        when(args.getConnectionOptionsDependency()).thenReturn("the connection options dependency");
-        when(args.getConnectionPoolDependency()).thenReturn("the connection pool dependency");
-        when(args.getCollectionName()).thenReturn("the_collection_name");
+        args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{" +
+                        "'connectionOptionsDependency':'the connection options dependency'," +
+                        "'connectionPoolDependency':'the connection pool dependency'," +
+                        "'collectionName':'the_collection_name'" +
+                        "}").replace('\'','"'));
 
         addEntryQueryMessage = mock(AddEntryQueryMessage.class);
         when(addEntryQueryMessage.getEntryArguments()).thenReturn(mock(IObject.class));

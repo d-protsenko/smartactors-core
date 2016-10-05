@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core.scheduler.actor.impl;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.message_bus.MessageBus;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
@@ -26,7 +27,7 @@ import java.util.UUID;
  * Implementation of {@link ISchedulerEntry}.
  */
 public final class EntryImpl implements ISchedulerEntry {
-    private final EntryStorage storage;
+    private final ISchedulerEntryStorage storage;
     private final IObject state;
     private final String id;
     private final ISchedulingStrategy strategy;
@@ -52,7 +53,7 @@ public final class EntryImpl implements ISchedulerEntry {
     public EntryImpl(
             final IObject state,
             final ISchedulingStrategy strategy,
-            final EntryStorage storage)
+            final ISchedulerEntryStorage storage)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
         idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
@@ -83,7 +84,7 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ChangeValueException if can not modify description to use it as entry state object
      * @throws InvalidArgumentException if invalid arguments were passed to some method
      */
-    public static EntryImpl newEntry(final IObject args, final EntryStorage storage)
+    public static EntryImpl newEntry(final IObject args, final ISchedulerEntryStorage storage)
             throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException {
         IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
@@ -115,7 +116,7 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ReadValueException if cannot read description fields
      * @throws InvalidArgumentException if invalid arguments were passed to some method
      */
-    public static EntryImpl restoreEntry(final IObject savedState, final EntryStorage storage)
+    public static EntryImpl restoreEntry(final IObject savedState, final ISchedulerEntryStorage storage)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
 

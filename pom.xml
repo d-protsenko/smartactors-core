@@ -90,6 +90,7 @@
         <module>PluginObjectEnumerationActor</module>
         <module>SchedulerInterfaces</module>
         <module>SchedulerActor</module>
+        <module>PluginScheduler</module>
     </modules>
 
     <repositories>
