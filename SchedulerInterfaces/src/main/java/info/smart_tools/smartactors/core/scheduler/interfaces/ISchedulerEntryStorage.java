@@ -27,6 +27,13 @@ public interface ISchedulerEntryStorage {
     /**
      * Delete the given entry from both local and remote storage.
      *
+     * <p>
+     * <b>IMPORTANT:</b> this method should be called only by entry implementation's {@link ISchedulerEntry#cancel() #cancel()} method. When
+     * called from outside the result is undefined: the entry may remain active (if it saves itself on next execution) or remain active only
+     * until server shutdown (when it does not). To delete and cancel the entry call {@link ISchedulerEntry#cancel() #cancel()} method of
+     * the entry itself.
+     * </p>
+     *
      * @param entry    the entry
      * @throws EntryStorageAccessException if error occurs accessing remote storage
      */
