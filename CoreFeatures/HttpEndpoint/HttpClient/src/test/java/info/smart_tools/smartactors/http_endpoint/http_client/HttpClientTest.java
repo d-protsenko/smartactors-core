@@ -79,7 +79,7 @@ public class HttpClientTest {
         client.start();
         IObject request = new DSObject("{\"uri\": \"http://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
         client.sendRequest(request);
-        verify(responseHandler, timeout(5000)).handle(any(), any(), eq("messageMapId"));
+        verify(responseHandler, timeout(5000)).handle(any(), any());
         client.stop();
     }
 }

@@ -5,17 +5,17 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
-import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
-import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
-import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
+import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
+import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -71,6 +71,12 @@ public class HttpClientPlugin implements IPlugin {
                                             )
                                     );
 
+                                    IOC.register(Keys.getOrAdd("setTimerOnTask"), new ApplyFunctionToArgumentsStrategy(
+                                                    (args) -> {
+                                                        return null;
+                                                    }
+                                            )
+                                    );
                                     ChannelInboundHandler channelInboundHandler =
                                             new SimpleChannelInboundHandler<FullHttpResponse>(FullHttpResponse.class) {
                                                 @Override
@@ -79,22 +85,40 @@ public class HttpClientPlugin implements IPlugin {
                                                 }
                                             };
                                     //HttpClientHandler handler = new HttpClientHandler(null);
-                                    IOC.register(Keys.getOrAdd("httpClient"), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.getOrAdd("sendRequestHttp"), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         IObject requestConfiguration = (IObject) args[0];
                                                         try {
+                                                            IResponseHandler responseHandler =
+                                                                    IOC.resolve(
+                                                                            Keys.getOrAdd(
+                                                                                    IResponseHandler.class.getCanonicalName()
+                                                                            )
+                                                                    );
                                                             HttpClient client = new HttpClient(
                                                                     IOC.resolve(
                                                                             Keys.getOrAdd(URI.class.getCanonicalName()),
                                                                             requestConfiguration.getValue(uriFieldName)
                                                                     ),
-                                                                    IOC.resolve(
-                                                                            Keys.getOrAdd(
-                                                                                    IResponseHandler.class.getCanonicalName()
-                                                                            )
-                                                                    )
+                                                                    responseHandler
                                                             );
-                                                            client.start();
+                                                            client.start().thenAccept(x -> {
+                                                                        try {
+                                                                            client.sendRequest(requestConfiguration);
+                                                                        } catch (RequestSenderException e) {
+                                                                            e.printStackTrace();
+                                                                        }
+                                                                    }
+                                                            ).thenAccept(
+                                                                    x -> {
+                                                                        /*
+                                                                        IResponseChecker checker =
+                                                                        IOC.resolve(Keys.getOrAdd(IResponseChecker.class.getCanonicalName()),
+                                                                        responseHandler, ITask);
+                                                                        IOC.resolver(Keys.getOrAdd("setTimerOnTask"), checker, 1000);
+                                                                        */
+                                                                    }
+                                                            );
                                                             return client;
                                                         } catch (ResolutionException | InvalidArgumentException
                                                                 | ReadValueException | RequestSenderException e) {

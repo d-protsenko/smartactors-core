@@ -38,6 +38,9 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName headersFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
+    private String messageMapId;
+
+    private boolean isReceived;
 
     /**
      * Constructor
@@ -46,7 +49,8 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
      * @param receiverChain chain, that should receive message
      */
-    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain) {
+    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain,
+                               final String messageMapId) {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
         this.receiverChain = receiverChain;
@@ -61,13 +65,16 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
+            this.messageMapId = messageMapId;
+            isReceived = false;
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response, final String messageMapId) {
+    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) {
+        isReceived = true;
         ITask task = () -> {
             try {
                 IObject environment = getEnvironment(response);
@@ -87,12 +94,16 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 throw new TaskExecutionException(e);
             }
         };
-
         try {
             taskQueue.put(task);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean isReceived() {
+        return isReceived;
     }
 
     private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {

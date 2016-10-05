@@ -85,7 +85,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
                 .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
                             @Override
                             protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpResponse response) throws Exception {
-                                inboundHandler.handle(channelHandlerContext, response, messageMapId);
+                                inboundHandler.handle(channelHandlerContext, response);
                             }
                         }
                 );
