@@ -77,6 +77,11 @@
         <module>PluginGetFirstNotNullRule</module>
         <module>ServerWithFeatures</module>
         <module>CoreFeatures/Base</module>
+        <module>CoreFeatures/Endpoint</module>
+        <module>CoreFeatures/HttpEndpoint</module>
+        <module>CoreFeatures/HttpsEndpoint</module>
+        <module>CoreFeatures/Timer</module>
+        <module>CoreFeaturePlugins/HttpEndpoint-plugins</module>
     </modules>
 
     <repositories>

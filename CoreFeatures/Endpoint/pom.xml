@@ -35,6 +35,8 @@
         <module>Response</module>
         <module>ResponseSenderActor</module>
         <module>ClientActor</module>
+        <module>IResponseChecker</module>
+        <module>ResponseChecker</module>
     </modules>
 
     <repositories>

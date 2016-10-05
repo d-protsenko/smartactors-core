@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_checker.IResponseChecker;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -24,6 +25,9 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
+import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -111,12 +115,21 @@ public class HttpClientPlugin implements IPlugin {
                                                                     }
                                                             ).thenAccept(
                                                                     x -> {
-                                                                        /*
                                                                         IResponseChecker checker =
-                                                                        IOC.resolve(Keys.getOrAdd(IResponseChecker.class.getCanonicalName()),
-                                                                        responseHandler, ITask);
-                                                                        IOC.resolver(Keys.getOrAdd("setTimerOnTask"), checker, 1000);
-                                                                        */
+                                                                                null;
+                                                                        try {
+                                                                            ITask task = IOC.resolve(Keys.getOrAdd("task_from_checker"), checker);
+                                                                            checker = IOC.resolve(Keys.getOrAdd(IResponseChecker.class.getCanonicalName()),
+                                                                                    responseHandler);
+                                                                            ITimer timer =
+                                                                                    IOC.resolve(Keys.getOrAdd(ITimer.class.getCanonicalName()));
+                                                                            timer.schedule(task, 1000);
+                                                                        } catch (ResolutionException e) {
+                                                                            e.printStackTrace();
+                                                                        } catch (TaskScheduleException e) {
+                                                                            e.printStackTrace();
+                                                                        }
+
                                                                     }
                                                             );
                                                             return client;
