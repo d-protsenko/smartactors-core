@@ -36,9 +36,9 @@ public class PluginGlobalConstants implements IPlugin {
             /* "constants_object" - create global constants object */
             IBootstrapItem<String> constantsObjectItem = new BootstrapItem("constants_object");
 
-            constantsObjectItem.after("IOC");
-            constantsObjectItem.before("starter");
-            constantsObjectItem.after("iobject");
+//            constantsObjectItem.after("IOC");
+//            constantsObjectItem.before("starter");
+//            constantsObjectItem.after("iobject");
             constantsObjectItem.process(() -> {
                 try {
                     IObject obj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
@@ -54,8 +54,8 @@ public class PluginGlobalConstants implements IPlugin {
             IBootstrapItem<String> constantsSectionItem = new BootstrapItem("config_section:const");
 
             constantsSectionItem.after("constants_object");
-            constantsSectionItem.after("config_sections:start");
-            constantsSectionItem.before("config_sections:done");
+//            constantsSectionItem.after("config_sections:start");
+//            constantsSectionItem.before("config_sections:done");
             constantsSectionItem.process(() -> {
                 try {
                     IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
