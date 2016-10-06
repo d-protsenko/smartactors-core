@@ -44,9 +44,9 @@ public class CachedCollectionTasksPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CachedCollectionTasksPlugin");
 
             item
-                    .after("IOC")
-                    .after("datetime_formatter_plugin")
-                    .after("IFieldPlugin")
+//                    .after("IOC")
+//                    .after("datetime_formatter_plugin")
+//                    .after("IFieldPlugin")
                     .process(() -> {
                         try {
                             IField collectionNameField = IOC.resolve(

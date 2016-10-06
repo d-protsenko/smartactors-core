@@ -45,9 +45,9 @@ public class PluginChainTesting implements IPlugin {
         try {
             IBootstrapItem<String> testHandlerItem = new BootstrapItem("test environment handler");
             testHandlerItem
-                    .after("IOC")
+//                    .after("IOC")
                     .after("test checkers")
-                    .after("iobject")
+//                    .after("iobject")
                     .after("test assertions")
                     .process(
                             () -> {
@@ -72,12 +72,12 @@ public class PluginChainTesting implements IPlugin {
 
             IBootstrapItem<String> runnerItem = new BootstrapItem("chain tests runner");
             runnerItem
-                    .after("IOC")
-                    .after("iobject")
-                    .after("IFieldNamePlugin")
+//                    .after("IOC")
+//                    .after("iobject")
+//                    .after("IFieldNamePlugin")
                     .after("test assertions")
                     .after("test environment handler")
-                    .after("router")
+//                    .after("router")
                     .process(
                             () -> {
                                 try {
@@ -106,14 +106,14 @@ public class PluginChainTesting implements IPlugin {
             IBootstrapItem<String> strategyItem = new BootstrapItem("config_section:tests");
 
             strategyItem
-                    .after("config_section:executor")
-                    .after("config_section:maps")
-                    .after("config_section:objects")
-                    .after("message_processor")
-                    .after("message_processing_sequence")
+//                    .after("config_section:executor")
+//                    .after("config_section:maps")
+//                    .after("config_section:objects")
+//                    .after("message_processor")
+//                    .after("message_processing_sequence")
                     .after("main_test_chain")
                     .after("chain tests runner")
-                    .before("starter")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

@@ -41,8 +41,8 @@ public class AsyncOpsCollectionPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("AsyncOpsCollectionPlugin");
 
             item
-                    .after("IOC")
-                    .before("starter")
+//                    .after("IOC")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IKey asyncCollectionKey = Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
