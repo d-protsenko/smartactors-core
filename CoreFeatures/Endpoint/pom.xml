@@ -37,6 +37,7 @@
         <module>ClientActor</module>
         <module>IResponseChecker</module>
         <module>ResponseChecker</module>
+        <module>HttpClientInitializer</module>
     </modules>
 
     <repositories>

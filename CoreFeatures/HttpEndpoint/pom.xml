@@ -47,6 +47,7 @@
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>GetQueryParameterRule</module>
+        <module>HttpClientInitializer</module>
     </modules>
 
     <repositories>

@@ -1,37 +1,24 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.http_client_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.endpoint.http_client_initializer.HttpClientInitializer;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_checker.IResponseChecker;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
-import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -74,79 +61,6 @@ public class HttpClientPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-
-                                    IOC.register(Keys.getOrAdd("setTimerOnTask"), new ApplyFunctionToArgumentsStrategy(
-                                                    (args) -> {
-                                                        return null;
-                                                    }
-                                            )
-                                    );
-                                    ChannelInboundHandler channelInboundHandler =
-                                            new SimpleChannelInboundHandler<FullHttpResponse>(FullHttpResponse.class) {
-                                                @Override
-                                                protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
-
-                                                }
-                                            };
-                                    //HttpClientHandler handler = new HttpClientHandler(null);
-                                    IOC.register(Keys.getOrAdd("sendRequestHttp"), new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        IObject requestConfiguration = (IObject) args[0];
-                                                        try {
-                                                            IResponseHandler responseHandler =
-                                                                    IOC.resolve(
-                                                                            Keys.getOrAdd(
-                                                                                    IResponseHandler.class.getCanonicalName()
-                                                                            )
-                                                                    );
-                                                            HttpClient client = new HttpClient(
-                                                                    IOC.resolve(
-                                                                            Keys.getOrAdd(URI.class.getCanonicalName()),
-                                                                            requestConfiguration.getValue(uriFieldName)
-                                                                    ),
-                                                                    responseHandler
-                                                            );
-                                                            client.start().thenAccept(x -> {
-                                                                        try {
-                                                                            client.sendRequest(requestConfiguration);
-                                                                        } catch (RequestSenderException e) {
-                                                                            e.printStackTrace();
-                                                                        }
-                                                                    }
-                                                            ).thenAccept(
-                                                                    x -> {
-                                                                        IResponseChecker checker =
-                                                                                null;
-                                                                        try {
-                                                                            ITask task = IOC.resolve(Keys.getOrAdd("task_from_checker"), checker);
-                                                                            checker = IOC.resolve(Keys.getOrAdd(IResponseChecker.class.getCanonicalName()),
-                                                                                    responseHandler);
-                                                                            ITimer timer =
-                                                                                    IOC.resolve(Keys.getOrAdd(ITimer.class.getCanonicalName()));
-                                                                            timer.schedule(task, 1000);
-                                                                        } catch (ResolutionException e) {
-                                                                            e.printStackTrace();
-                                                                        } catch (TaskScheduleException e) {
-                                                                            e.printStackTrace();
-                                                                        }
-
-                                                                    }
-                                                            );
-                                                            return client;
-                                                        } catch (ResolutionException | InvalidArgumentException
-                                                                | ReadValueException | RequestSenderException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                    IOC.register(Keys.getOrAdd("stopHttpClient"), new ApplyFunctionToArgumentsStrategy(
-                                                    (args) -> {
-                                                        HttpClient client = (HttpClient) args[0];
-                                                        return client.stop();
-                                                    }
-                                            )
-                                    );
                                     IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
 
 
@@ -161,12 +75,10 @@ public class HttpClientPlugin implements IPlugin {
                                                     (args) -> new DSObject()
                                             )
                                     );
-                                } catch (RegistrationException e) {
+                                    HttpClientInitializer.init();
+                                } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
                                     e.printStackTrace();
-                                } catch (ResolutionException e) {
-                                    e.printStackTrace();
-                                } catch (InvalidArgumentException e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             }
                     );
