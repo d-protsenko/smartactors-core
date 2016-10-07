@@ -1,4 +1,4 @@
 {
   "featureName": "database-in-memory-plugins",
-  "afterFeatures": ["database-in-memory", "database-plugin"]
+  "afterFeatures": ["database-in-memory", "database-plugins"]
 }
