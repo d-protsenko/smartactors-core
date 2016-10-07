@@ -138,7 +138,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                         response.setContent("".getBytes());
 
                         IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                                environment);
+                                IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
+                                name);
+
                         context.setValue(httpResponseStatusCodeFieldName, INTERNAL_SERVER_ERROR_STATUS_CODE);
                         sender.send(response, environment, channelHandler);
                     } catch (ResolutionException | ReadValueException | ResponseSendingException | ChangeValueException e) {
