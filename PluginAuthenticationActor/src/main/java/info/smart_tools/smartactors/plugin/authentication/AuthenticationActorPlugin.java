@@ -40,8 +40,8 @@ public class AuthenticationActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("AuthenticationActorPlugin");
 
             item
-                    .after("IOC")
-                    .before("starter")
+//                    .after("IOC")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd(AuthenticationActor.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
