@@ -35,12 +35,12 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> endpointsSectionItem = new BootstrapItem("config_section:endpoints");
 
             endpointsSectionItem
-                    .after("config_sections:start")
-                    .before("config_sections:done")
-                    .after("config_section:maps")
-                    .after("config_section:executor")
-                    .after("IFieldNamePlugin")
-                    .before("starter")
+//                    .after("config_sections:start")
+//                    .before("config_sections:done")
+//                    .after("config_section:maps")
+//                    .after("config_section:executor")
+//                    .after("IFieldNamePlugin")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -58,11 +58,11 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> clientSectionItem = new BootstrapItem("config_section:client");
 
             clientSectionItem
-                    .after("configuration_manager")
-                    .after("config_section:maps")
-                    .after("config_section:executor")
-                    .after("IFieldNamePlugin")
-                    .before("starter")
+//                    .after("configuration_manager")
+//                    .after("config_section:maps")
+//                    .after("config_section:executor")
+//                    .after("IFieldNamePlugin")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

@@ -51,13 +51,13 @@ public class HttpClientPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpClient");
             item
-                    .after("IOC")
-                    .after("message_processor")
-                    .after("message_processing_sequence")
+//                    .after("IOC")
+//                    .after("message_processor")
+//                    .after("message_processing_sequence")
                     .after("response")
                     .after("response_content_strategy")
-                    .after("FieldNamePlugin")
-                    .before("starter")
+//                    .after("FieldNamePlugin")
+//                    .before("starter")
                     .process(
                             () -> {
                                 try {

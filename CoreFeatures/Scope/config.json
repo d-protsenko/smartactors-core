@@ -1,0 +1,4 @@
+{
+  "featureName": "scope",
+  "afterFeatures": ["base"]
+}

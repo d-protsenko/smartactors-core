@@ -33,9 +33,9 @@ public class GetQueryParameterRulePlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("GetQueryParameterFromRequestRulePlugin");
 
             item
-                    .after("IOC")
-                    .after("wds_object")
-                    .before("starter")
+//                    .after("IOC")
+//                    .after("wds_object")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             //call IOC.resolve for put GetQueryParameterRule into cache of ResolveByNameDependency strategy

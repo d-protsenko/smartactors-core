@@ -41,8 +41,8 @@ public class ConnectionOptionsPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("ConnectionOptionsPlugin");
 
             item
-                .after("IOC")
-                .before("starter")
+//                .after("IOC")
+//                .before("starter")
                 .process(() -> {
                     try {
                         IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(

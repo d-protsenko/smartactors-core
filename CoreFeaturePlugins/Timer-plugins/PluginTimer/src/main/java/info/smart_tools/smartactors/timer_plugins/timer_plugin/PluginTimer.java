@@ -38,7 +38,7 @@ public class PluginTimer implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("timer");
 
             item
-                    .after("IOC")
+//                    .after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(

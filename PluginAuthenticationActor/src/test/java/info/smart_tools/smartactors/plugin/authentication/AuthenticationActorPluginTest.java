@@ -66,7 +66,7 @@ public class AuthenticationActorPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(item).after("IOC");
+//        verify(item).after("IOC");
         verify(item).process(actionArgumentCaptor.capture());
 
         actionArgumentCaptor.getValue().execute();

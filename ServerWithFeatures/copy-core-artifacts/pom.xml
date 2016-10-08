@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <!--<parent>-->
-        <!--<artifactId>feature-template</artifactId>-->
-        <!--<groupId>info.smart_tools.smartactors</groupId>-->
-        <!--<version>0.0.1-SNAPSHOT</version>-->
-        <!--<relativePath>../pom.xml</relativePath>-->
-    <!--</parent>-->
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
@@ -129,6 +123,16 @@
             <artifactId>ioc-strategy-pack-plugins.datetime-formatter-strategy-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-strategy-pack.resolve-by-composite-name-ioc-with-lambda-strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-strategy-pack.resolve-by-type-and-name-strategy</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Task -->
         <dependency>
@@ -136,6 +140,19 @@
             <artifactId>task-plugins.blocking-queue.blocking-queue-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- FeatureLoader -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loader-plugins.feature-loader-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loader-plugins.filesystem-facade-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- Database -->
         <dependency>
@@ -255,18 +272,32 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
-
-
         <!---->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>core-service-starter.core-starter</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>info.smart_tools.smartactors</groupId>-->
             <!--<artifactId></artifactId>-->
             <!--<version>0.2.0-SNAPSHOT</version>-->
         <!--</dependency>-->
-
-
-
-
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId></artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId></artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId></artifactId>-->
+            <!--<version>0.2.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
 
         <!--<dependency>-->

@@ -44,8 +44,8 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CachedCollectionTasksPlugin");
 
             item
-                    .after("IOC")
-                    .after("IFieldPlugin")
+//                    .after("IOC")
+//                    .after("IFieldPlugin")
                     .process(() -> {
                         try {
                             IField collectionNameField = IOC.resolve(

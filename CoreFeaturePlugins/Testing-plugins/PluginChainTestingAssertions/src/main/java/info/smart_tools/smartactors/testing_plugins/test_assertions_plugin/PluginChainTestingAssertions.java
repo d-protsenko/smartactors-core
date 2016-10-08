@@ -42,9 +42,9 @@ public class PluginChainTestingAssertions implements IPlugin {
             IBootstrapItem<String> assertionsItem = new BootstrapItem("test assertions");
 
             assertionsItem
-                    .after("IOC")
-                    .after("IFieldNamePlugin")
-                    .before("configure")
+//                    .after("IOC")
+//                    .after("IFieldNamePlugin")
+//                    .before("configure")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));

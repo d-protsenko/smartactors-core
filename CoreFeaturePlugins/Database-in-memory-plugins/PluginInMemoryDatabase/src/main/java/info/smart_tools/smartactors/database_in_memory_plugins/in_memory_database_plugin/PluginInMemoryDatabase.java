@@ -30,8 +30,8 @@ public class PluginInMemoryDatabase implements IPlugin {
         try {
             BootstrapItem item = new BootstrapItem("InMemoryDatabase");
             item
-                    .after("IOC")
-                    .after("IFieldNamePlugin")
+//                    .after("IOC")
+//                    .after("IFieldNamePlugin")
                     .process(() -> {
                                 try {
                                     InMemoryDatabaseIOCInitializer.init();

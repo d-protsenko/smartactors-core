@@ -52,9 +52,9 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("RegisterTestHttpEndpoint");
             item
-                    .after("IOC")
-                    .after("IFieldNamePlugin")
-                    .after("iobject")
+//                    .after("IOC")
+//                    .after("IFieldNamePlugin")
+//                    .after("iobject")
                     .after("test environment handler")
                     .before("chain tests runner")
                     .process(
