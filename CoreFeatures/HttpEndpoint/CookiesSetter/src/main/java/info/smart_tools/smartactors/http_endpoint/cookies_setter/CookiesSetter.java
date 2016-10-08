@@ -29,7 +29,8 @@ import java.util.List;
  *         {
  *             "name": "nameOfTheCookie",
  *             "value": "valueOfTheCookie",
- *             "maxAge": "10"
+ *             "maxAge": "10",
+ *             "path": "/"
  *         }
  *     ]
  * </pre>
@@ -44,11 +45,13 @@ public class CookiesSetter implements ICookiesSetter {
         IFieldName cookieName;
         IFieldName cookieValue;
         IFieldName maxAgeFieldName;
+        IFieldName cookiePath;
         try {
             contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
             cookiesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
             cookieName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             cookieValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
+            cookiePath = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "path");
             maxAgeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxAge");
         } catch (ResolutionException e) {
             throw new CookieSettingException("Failed to resolve fieldName", e);
@@ -71,6 +74,12 @@ public class CookiesSetter implements ICookiesSetter {
                 Cookie cookie = new DefaultCookie(
                         cookieObject.getValue(cookieName).toString(),
                         cookieObject.getValue(cookieValue).toString());
+
+                String path = (String) cookieObject.getValue(cookiePath);
+                if (path != null) {
+                    cookie.setPath(path);
+                }
+
                 Integer maxCookieAge = (Integer) cookieObject.getValue(maxAgeFieldName);
                 if (maxCookieAge != null) {
                     cookie.setDiscard(false);
