@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.http_client;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.http_endpoint.http_client_handler.HttpClientHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
@@ -74,7 +75,7 @@ public class HttpClientTest {
     }
 
     @Test
-    public void test() throws URISyntaxException, RequestSenderException, InvalidArgumentException, InterruptedException {
+    public void test() throws URISyntaxException, RequestSenderException, InvalidArgumentException, InterruptedException, ResponseHandlerException {
         HttpClient client = new HttpClient(new URI("http://google.com"), responseHandler);
         client.start();
         IObject request = new DSObject("{\"uri\": \"http://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");

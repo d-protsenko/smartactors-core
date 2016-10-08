@@ -43,7 +43,7 @@ public class ClientActor {
                     () -> {
                         try {
                             IObject request = message.getRequest();
-                            request.setValue(uidFieldName, UUID.randomUUID());
+                            request.setValue(uidFieldName, UUID.randomUUID().toString());
                             MessageBus.send(message.getRequest(), message.getSendingChain());
                         } catch (SendingMessageException | InvalidArgumentException | ChangeValueException e) {
                             throw new RuntimeException(e);

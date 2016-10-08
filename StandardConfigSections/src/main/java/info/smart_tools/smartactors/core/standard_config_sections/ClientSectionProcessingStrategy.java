@@ -60,17 +60,16 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
             clientObject.setValue(startChainNameFieldName, chain);
             clientObject.setValue(queueFieldName, queue);
             Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
-            IResponseHandler handler = new HttpResponseHandler(queue, stackDepth, chain);
-            IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(handler));
+            clientObject.setValue(stackDepthFieldName, stackDepth);
+            IOC.register(Keys.getOrAdd("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
         } catch (ReadValueException | InvalidArgumentException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
+            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
-        } catch (ChangeValueException e) {
-            e.printStackTrace();
-        } catch (RegistrationException e) {
+        } catch (ChangeValueException | RegistrationException e) {
+            throw new ConfigurationProcessingException("Error occurred registering \"client\".", e);
         }
     }
 

@@ -38,10 +38,10 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName headersFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
-    private String messageMapId;
-
+    private IFieldName uuidFieldName;
+    private Object messageMapId;
+    private Object uuid;
     private boolean isReceived;
-    private boolean isBlocked;
 
     /**
      * Constructor
@@ -51,7 +51,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
      * @param receiverChain chain, that should receive message
      */
     public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain,
-                               final String messageMapId) {
+                               final IObject request) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
         this.receiverChain = receiverChain;
@@ -66,16 +66,19 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
-            this.messageMapId = messageMapId;
+            uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
+            this.messageMapId = request.getValue(messageMapIdFieldName);
+            this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
-        } catch (ResolutionException e) {
-            e.printStackTrace();
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
+            throw new ResponseHandlerException(e);
         }
     }
 
     @Override
-    public synchronized void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) {
-        if (!isBlocked) {
+    public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) throws ResponseHandlerException {
+        try {
+            IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
             isReceived = true;
             ITask task = () -> {
                 try {
@@ -96,22 +99,11 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                     throw new TaskExecutionException(e);
                 }
             };
-            try {
-                taskQueue.put(task);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            taskQueue.put(task);
+        } catch (InterruptedException | ResolutionException e) {
+            throw new ResponseHandlerException(e);
         }
-    }
 
-    private synchronized void block() {
-        isBlocked = true;
-    }
-
-    @Override
-    public synchronized boolean isReceived() {
-        block();
-        return isReceived;
     }
 
     private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {

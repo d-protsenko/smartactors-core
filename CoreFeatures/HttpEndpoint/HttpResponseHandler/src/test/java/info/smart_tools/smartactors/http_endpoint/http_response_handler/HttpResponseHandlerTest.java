@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.C
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -49,7 +50,7 @@ public class HttpResponseHandlerTest {
     ChannelHandlerContext ctx;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
+    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException, ResponseHandlerException {
         this.taskQueue = mock(IQueue.class);
         this.receiverChain = mock(IReceiverChain.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
@@ -58,7 +59,17 @@ public class HttpResponseHandlerTest {
         this.strategy = mock(IDeserializeStrategy.class);
         this.ctx = mock(ChannelHandlerContext.class);
         this.headers = mock(HttpHeaders.class);
-        this.responseHandler = new HttpResponseHandler(taskQueue, 5, receiverChain);
+        this.responseHandler = new HttpResponseHandler(taskQueue,
+                5,
+                receiverChain,
+                new DSObject("{" +
+                        "\"uuid\": \"uuid\", " +
+                        "\"messageMapId\": \"messageMapId\", " +
+                        "\"message\": {}, " +
+                        "\"method\": \"POST\", " +
+                        "\"uri\": \"https://foo.bar\"" +
+                        "}")
+        );
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -110,7 +121,7 @@ public class HttpResponseHandlerTest {
     }
 
     @Test
-    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException {
+    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
         String chainName = "chainName";
         when(response.headers()).thenReturn(headers);
         when(headers.get("messageMapId")).thenReturn("messageMap");

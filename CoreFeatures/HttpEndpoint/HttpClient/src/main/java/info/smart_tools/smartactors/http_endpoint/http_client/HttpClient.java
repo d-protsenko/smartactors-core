@@ -12,8 +12,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -79,7 +77,6 @@ public class HttpClient extends NettyClient<HttpRequest> {
     //TODO:: set maxContentLength from configuration
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
-
         return super.setupPipeline(pipeline)
                 .addLast(new HttpClientCodec(), new HttpObjectAggregator(4096))
                 .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {

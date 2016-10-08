@@ -58,6 +58,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         if (port == -1) {
             this.port = serverUri.getScheme().equals("http") ? DEFAULT_HTTP_PORT : DEFAULT_HTTPS_PORT;
         }
+        start();
     }
 
     public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
@@ -90,7 +91,11 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
                 me.channel = future.channel();
             }
         });
-
+        try {
+            future.sync();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return wrapToCompletableFuture(future);
     }
 
