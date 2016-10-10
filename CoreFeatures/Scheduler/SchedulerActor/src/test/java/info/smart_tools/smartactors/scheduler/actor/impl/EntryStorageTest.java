@@ -1,13 +1,12 @@
-package info.smart_tools.smartactors.core.scheduler.actor.impl;
+package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntry;
-import info.smart_tools.smartactors.core.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tasks_plugin.PluginInMemoryDBTasks;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -24,7 +23,6 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 
 import static org.junit.Assert.*;
