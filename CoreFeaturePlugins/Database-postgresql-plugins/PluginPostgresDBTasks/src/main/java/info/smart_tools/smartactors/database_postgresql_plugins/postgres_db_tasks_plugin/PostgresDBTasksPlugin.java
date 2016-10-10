@@ -56,9 +56,9 @@ public class PostgresDBTasksPlugin implements IPlugin {
         try {
             BootstrapItem item = new BootstrapItem("PostgresDBTasksPlugin");
             item
-                .after("IOC")
-                .after("IFieldPlugin")
-                .after("iobject")
+//                .after("IOC")
+//                .after("IFieldPlugin")
+//                .after("iobject")
                 .process(() -> {
                     try {
                         registerCreateTask();

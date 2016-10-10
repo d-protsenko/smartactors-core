@@ -45,12 +45,12 @@ public class TestCheckersPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("test checkers");
             item
-                    .after("IOC")
-                    .after("iobject")
-                    .after("IFieldNamePlugin")
+//                    .after("IOC")
+//                    .after("iobject")
+//                    .after("IFieldNamePlugin")
                     .after("test assertions")
-                    .after("ConfigurationObject")
-                    .after("router")
+//                    .after("ConfigurationObject")
+//                    .after("router")
                     .process(
                             () -> {
                                 try {

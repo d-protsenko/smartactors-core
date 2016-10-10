@@ -47,8 +47,8 @@ public class PluginInMemoryDBTasks implements IPlugin {
         try {
             BootstrapItem item = new BootstrapItem("InMemoryDBTasksPlugin");
             item
-                    .after("IOC")
-                    .after("IFieldPlugin")
+//                    .after("IOC")
+//                    .after("IFieldPlugin")
                     .after("InMemoryDatabase")
                     .process(() -> {
                         try {

@@ -50,7 +50,8 @@ public class FeatureLoader implements IFeatureLoader {
 
     private final IFieldName featureNameFieldName;
     private final IFieldName afterFeaturesFieldName;
-    private final ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[0], getClass().getClassLoader());
+//    TODO:: check for using getClass().getClassLoader() instead of this more detailed
+//    private final ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[0], getClass().getClassLoader());
     private final IPluginCreator pluginCreator;
     private final IPluginLoaderVisitor<String> pluginLoaderVisitor;
     private final IConfigurationManager configurationManager;
@@ -234,7 +235,7 @@ public class FeatureLoader implements IFeatureLoader {
 
         IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                 Keys.getOrAdd("plugin loader"),
-                classLoader,
+                getClass().getClassLoader(),
                 classHandler,
                 pluginLoaderVisitor);
         pluginLoader.loadPlugin(jars);

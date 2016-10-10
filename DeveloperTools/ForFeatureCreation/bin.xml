@@ -4,7 +4,6 @@
     <id>archive</id>
     <formats>
         <format>zip</format>
-        <format>jar</format>
     </formats>
 
     <includeBaseDirectory>true</includeBaseDirectory>
@@ -14,18 +13,15 @@
             <binaries>
                 <outputDirectory>/</outputDirectory>
                 <unpack>false</unpack>
-                <dependencySets>
-                    <dependencySet>
-                        <unpack>false</unpack>
-                        <scope>runtime</scope>
-                        <outputDirectory>/</outputDirectory>
-                        <excludes>
-                            <exclude>info.smart_tools.smartactors:*</exclude>
-                        </excludes>
-                    </dependencySet>
-                </dependencySets>
             </binaries>
         </moduleSet>
     </moduleSets>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>config.json</include>
+            </includes>
+        </fileSet>
+    </fileSets>
 </assembly>
 
