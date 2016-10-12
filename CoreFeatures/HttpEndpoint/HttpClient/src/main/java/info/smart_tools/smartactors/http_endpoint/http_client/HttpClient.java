@@ -19,12 +19,14 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 
@@ -78,7 +80,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
         return super.setupPipeline(pipeline)
-                .addLast(new HttpClientCodec(), new HttpObjectAggregator(4096))
+                .addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE))
                 .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
                             @Override
                             protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpResponse response) throws Exception {
@@ -92,8 +94,10 @@ public class HttpClient extends NettyClient<HttpRequest> {
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
             HttpMethod method = HttpMethod.valueOf((String) request.getValue(methodFieldName));
-            String uri = (String) request.getValue(uriFieldName);
-            FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri);
+            URI uri = URI.create((String) request.getValue(uriFieldName));
+            FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
+            httpRequest.headers().set(HttpHeaders.Names.HOST, uri.getHost());
+            httpRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
             List<IObject> headers = (List<IObject>) request.getValue(headersFieldName);
             if (null != headers) {
                 for (IObject header : headers) {

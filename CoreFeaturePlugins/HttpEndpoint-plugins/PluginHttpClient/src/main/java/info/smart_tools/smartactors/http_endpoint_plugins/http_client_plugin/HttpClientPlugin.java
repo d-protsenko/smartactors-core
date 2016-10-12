@@ -102,7 +102,7 @@ public class HttpClientPlugin implements IPlugin {
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
-                                                                    (IReceiverChain) request.getValue(startChainNameFieldName),
+                                                                    request.getValue(startChainNameFieldName),
                                                                     request,
                                                                     ScopeProvider.getCurrentScope()
                                                             );

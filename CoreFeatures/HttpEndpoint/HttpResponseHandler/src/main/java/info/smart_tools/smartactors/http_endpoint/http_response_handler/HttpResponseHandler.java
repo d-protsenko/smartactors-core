@@ -12,6 +12,8 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -55,12 +57,16 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
      * @param receiverChain chain, that should receive message
      */
-    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain,
+    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object receiverChain,
                                final IObject request, final IScope scope) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
-        this.receiverChain = receiverChain;
+
         try {
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                    IChainStorage.class.getCanonicalName()));
+            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverChain);
+            this.receiverChain = chainStorage.resolve(mapId);
             messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
             httpResponseStatusCodeFieldName = IOC.resolve(
@@ -76,7 +82,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
             currentScope = scope;
-        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChainNotFoundException e) {
             throw new ResponseHandlerException(e);
         }
     }

@@ -76,11 +76,11 @@ public class HttpClientTest {
 
     @Test
     public void test() throws URISyntaxException, RequestSenderException, InvalidArgumentException, InterruptedException, ResponseHandlerException {
-        HttpClient client = new HttpClient(new URI("http://google.com"), responseHandler);
+        HttpClient client = new HttpClient(new URI("http://requestb.in/1c9yd801"), responseHandler);
         client.start();
-        IObject request = new DSObject("{\"uri\": \"http://google.com\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
+        IObject request = new DSObject("{\"uri\": \"http://requestb.in/1c9yd801\", \"method\": \"GET\", \"messageMapId\": \"messageMapId\"}");
         client.sendRequest(request);
-        verify(responseHandler, timeout(5000)).handle(any(), any());
+        verify(responseHandler, timeout(500000)).handle(any(), any());
         client.stop();
     }
 }
