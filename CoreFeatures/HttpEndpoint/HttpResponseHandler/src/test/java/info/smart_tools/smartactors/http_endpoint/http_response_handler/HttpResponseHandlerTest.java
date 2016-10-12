@@ -59,17 +59,6 @@ public class HttpResponseHandlerTest {
         this.strategy = mock(IDeserializeStrategy.class);
         this.ctx = mock(ChannelHandlerContext.class);
         this.headers = mock(HttpHeaders.class);
-        this.responseHandler = new HttpResponseHandler(taskQueue,
-                5,
-                receiverChain,
-                new DSObject("{" +
-                        "\"uuid\": \"uuid\", " +
-                        "\"messageMapId\": \"messageMapId\", " +
-                        "\"message\": {}, " +
-                        "\"method\": \"POST\", " +
-                        "\"uri\": \"https://foo.bar\"" +
-                        "}")
-        );
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -117,6 +106,21 @@ public class HttpResponseHandlerTest {
                         (args) -> new DSObject()
 
                 )
+        );
+        Object obj = mock(Object.class);
+        IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
+                new SingletonStrategy(obj));
+        this.responseHandler = new HttpResponseHandler(taskQueue,
+                5,
+                receiverChain,
+                new DSObject("{" +
+                        "\"uuid\": \"uuid\", " +
+                        "\"messageMapId\": \"messageMapId\", " +
+                        "\"message\": {}, " +
+                        "\"method\": \"POST\", " +
+                        "\"uri\": \"https://foo.bar\"" +
+                        "}"),
+                ScopeProvider.getCurrentScope()
         );
     }
 

@@ -47,8 +47,15 @@ public class HttpClientInitializer {
                                         throw new RuntimeException(e);
                                     }
                                 };
-                                timer = IOC.resolve(Keys.getOrAdd(ITimer.class.getCanonicalName()));
-                                ITimerTask timerTask = timer.schedule(task, (Long) message.getValue(timeFieldName));
+                                timer = IOC.resolve(Keys.getOrAdd("timer"));
+                                ITimerTask timerTask =
+                                        timer.schedule(task,
+                                                Long.valueOf(
+                                                        String.valueOf(
+                                                                message.getValue(timeFieldName)
+                                                        )
+                                                )
+                                        );
                                 timerTasks.put(message.getValue(uuidFieldName), timerTask);
                                 return timerTask;
                             } catch (ResolutionException | TaskScheduleException | ReadValueException e) {

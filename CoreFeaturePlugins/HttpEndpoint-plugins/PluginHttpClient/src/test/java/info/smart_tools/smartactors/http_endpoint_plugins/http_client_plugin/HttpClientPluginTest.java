@@ -125,37 +125,6 @@ public class HttpClientPluginTest {
     }
 
     @Test
-    public void testGettingHttpClient() throws PluginException, ProcessExecutionException, ResolutionException,
-            InvalidArgumentException, RegistrationException {
-        Checker checker = new Checker();
-        checker.item = new BootstrapItem("test");
-        IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
-        List<IBootstrapItem<String>> itemList = new ArrayList<>();
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                checker.item = (IBootstrapItem<String>) args[0];
-                itemList.add(checker.item);
-                return null;
-            }
-        })
-                .when(bootstrap)
-                .add(any(IBootstrapItem.class));
-
-        IPlugin plugin = new HttpClientPlugin(bootstrap);
-        plugin.load();
-
-        IBootstrapItem<String> item = itemList.get(0);
-        item.executeProcess();
-
-        IResponseHandler responseHandler = mock(IResponseHandler.class);
-        IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
-        IClient client = IOC.resolve(Keys.getOrAdd("getHttpClient"),
-                new DSObject("{\"messageMapId\": \"messageMapId\", \"message\": {}, \"method\": \"POST\", \"uri\": \"https://foo.bar\"}"));
-        assertNotNull(client);
-    }
-
-    @Test
     public void testSendingHttpRequest() throws PluginException, ProcessExecutionException, ResolutionException,
             InvalidArgumentException, RegistrationException, RequestSenderException {
         Checker checker = new Checker();

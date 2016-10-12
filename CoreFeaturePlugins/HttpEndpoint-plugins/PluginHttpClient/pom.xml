@@ -78,17 +78,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.interfaces.iresponse-checker</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>timer.interfaces.itimer</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.http-client-initializer</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

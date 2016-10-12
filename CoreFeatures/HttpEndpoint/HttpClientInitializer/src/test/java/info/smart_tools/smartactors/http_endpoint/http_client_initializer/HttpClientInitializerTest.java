@@ -71,41 +71,4 @@ public class HttpClientInitializerTest {
                 }
         ));
     }
-
-    @Test
-    public void testAdditionOfErrorOnConvertRequestToTimeoutRequest() throws ResolutionException, RegistrationException, InvalidArgumentException, ReadValueException {
-        HttpClientInitializer.init();
-        IFieldName errorFieldName = new FieldName("error");
-        IObject request = new DSObject("{\"message\": \"Hello, world\", \"uri\": \"http://foo.bar\", \"method\": \"POST\"}");
-        IObject timeoutRequest = IOC.resolve(Keys.getOrAdd("convert_request_to_timeout_request"), request);
-        assertEquals(timeoutRequest.getValue(errorFieldName), "Time limit exceeded");
-    }
-
-    @Test
-    public void testRemovingMessageOnConvertRequestToTimeoutRequest() throws ResolutionException, RegistrationException, InvalidArgumentException, ReadValueException {
-        HttpClientInitializer.init();
-        IFieldName messageFieldName = new FieldName("message");
-        IObject request = new DSObject("{\"message\": \"Hello, world\", \"uri\": \"http://foo.bar\", \"method\": \"POST\"}");
-        IObject timeoutRequest = IOC.resolve(Keys.getOrAdd("convert_request_to_timeout_request"), request);
-        assertEquals(timeoutRequest.getValue(messageFieldName), null);
-    }
-
-    @Test
-    public void testSendingTimeoutResponseTask() throws ResolutionException, RegistrationException,
-            InvalidArgumentException, TaskExecutionException {
-        HttpClientInitializer.init();
-        IObject request = new DSObject("{\"error\": \"Time limit exceeded\", \"uri\": \"http://foo.bar\", \"method\": \"POST\"}");
-        IOC.register(Keys.getOrAdd("convert_request_to_timeout_request"), new SingletonStrategy(request));
-        IResponseHandler responseHandler = mock(IResponseHandler.class);
-        IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
-        HttpClient httpClient = mock(HttpClient.class);
-        IOC.register(Keys.getOrAdd(HttpClient.class.getCanonicalName()), new SingletonStrategy(httpClient));
-        CompletableFuture completableFuture = mock(CompletableFuture.class);
-        when(httpClient.start()).thenReturn(completableFuture);
-        when(completableFuture.thenAccept(any())).thenCallRealMethod();
-        ITask task = IOC.resolve(Keys.getOrAdd("send_timeout_response_task"), request);
-        task.execute();
-        verify(httpClient.start(), timeout(1000));
-        verify(httpClient.send(any()), timeout(2000));
-    }
 }

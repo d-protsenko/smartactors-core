@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.http_endpoint;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
@@ -149,18 +150,13 @@ public class HttpEndpointTest {
                 )
         );
 
-        ChannelInboundHandler handler = new SimpleChannelInboundHandler<FullHttpResponse>(getResponseClass()) {
-            @Override
-            protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
-                me.handlerStub.accept(ctx, msg);
-            }
-        };
+        IResponseHandler responseHandler = mock(IResponseHandler.class);
         try {
             endpoint = createEndpoint(environmentHandler, receiver, mapperStub);
         } catch (ResolutionException e) {
             fail("Failed to create endpoint");
         }
-        client = createClient(handler);
+        client = createClient(responseHandler);
         endpoint.start().thenCompose(x -> client.start()).get();
     }
 
@@ -170,17 +166,16 @@ public class HttpEndpointTest {
     }
 
 
-
-   /* @Test
-    public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
-            throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
-        IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
-        when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
-        HttpRequest request = createTestRequest();
-        sendRequest(request);
-        verify(environmentHandler, timeout(1000)).handle(any(IObject.class), any(IReceiverChain.class), any(null));
-    }
-*/
+    /* @Test
+     public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
+             throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
+         IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
+         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
+         HttpRequest request = createTestRequest();
+         sendRequest(request);
+         verify(environmentHandler, timeout(1000)).handle(any(IObject.class), any(IReceiverChain.class), any(null));
+     }
+ */
     protected CompletableFuture<Void> sendRequest(HttpRequest request) {
         return client.send(request);
     }
@@ -194,7 +189,7 @@ public class HttpEndpointTest {
                 environmentHandler, receiver, "");
     }
 
-    protected HttpClient createClient(ChannelInboundHandler handler) throws URISyntaxException, RequestSenderException {
+    protected HttpClient createClient(IResponseHandler handler) throws URISyntaxException, RequestSenderException {
         return new HttpClient(new URI("http://localhost:" + getTestingPort()), handler);
     }
 

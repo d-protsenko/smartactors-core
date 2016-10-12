@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.ID
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -27,6 +28,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
@@ -44,7 +47,13 @@ public class HttpClientPlugin implements IPlugin {
     }
 
     IFieldName uriFieldName;
-    private IFieldName messageFieldName, startChainNameFieldName, queueFieldName, stackDepthFieldName, uuidFieldName, messageMapIdFieldName;
+    private IFieldName exceptionalMessageFieldName,
+            startChainNameFieldName,
+            queueFieldName,
+            stackDepthFieldName,
+            uuidFieldName,
+            messageMapIdFieldName,
+            exceptionalMessageMapId;
 
     @Override
     public void load() throws PluginException {
@@ -89,16 +98,18 @@ public class HttpClientPlugin implements IPlugin {
                                                     (args) -> {
                                                         try {
                                                             IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
-                                                            String uuid = (String) args[0];
-                                                            String messageMapId = (String) args[1];
+                                                            IObject request = (IObject) args[0];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
-                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName),
-                                                                    messageMapId
+                                                                    (IReceiverChain) request.getValue(startChainNameFieldName),
+                                                                    request,
+                                                                    ScopeProvider.getCurrentScope()
                                                             );
                                                             return responseHandler;
-                                                        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                                                        } catch (ResponseHandlerException | ResolutionException |
+                                                                ReadValueException | InvalidArgumentException |
+                                                                ScopeProviderException e) {
                                                             throw new RuntimeException(e);
                                                         }
                                                     }
@@ -113,8 +124,8 @@ public class HttpClientPlugin implements IPlugin {
                                                             client.sendRequest(request);
                                                             IOC.resolve(
                                                                     Keys.getOrAdd("createTimerOnRequest"),
-                                                                    request.getValue(messageFieldName),
-                                                                    request.getValue(messageMapIdFieldName)
+                                                                    request,
+                                                                    request.getValue(exceptionalMessageMapId)
                                                             );
                                                             return client;
                                                         } catch (ResolutionException | RequestSenderException | ReadValueException e) {
@@ -130,8 +141,7 @@ public class HttpClientPlugin implements IPlugin {
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
-                                                                    request.getValue(uuidFieldName),
-                                                                    request.getValue(messageMapIdFieldName)
+                                                                    request
                                                             );
                                                             HttpClient client =
                                                                     new HttpClient(
@@ -166,6 +176,7 @@ public class HttpClientPlugin implements IPlugin {
         this.stackDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
         uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
         messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        exceptionalMessageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptionalMessage");
+        exceptionalMessageMapId = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptionalMessageMapId");
     }
 }

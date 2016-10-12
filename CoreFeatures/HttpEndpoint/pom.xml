@@ -48,6 +48,8 @@
         <module>GetHeaderFromRequestRule</module>
         <module>GetQueryParameterRule</module>
         <module>HttpClientInitializer</module>
+        <module>HttpRequestSenderActor</module>
+        <module>PluginHttpRequestSenderActor</module>
     </modules>
 
     <repositories>

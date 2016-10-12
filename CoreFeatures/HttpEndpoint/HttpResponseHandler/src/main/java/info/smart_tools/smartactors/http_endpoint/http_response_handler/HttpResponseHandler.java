@@ -15,10 +15,14 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private Object messageMapId;
     private Object uuid;
     private boolean isReceived;
+    private IScope currentScope;
 
     /**
      * Constructor
@@ -51,7 +56,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
      * @param receiverChain chain, that should receive message
      */
     public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain,
-                               final IObject request) throws ResponseHandlerException {
+                               final IObject request, final IScope scope) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
         this.receiverChain = receiverChain;
@@ -70,6 +75,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
+            currentScope = scope;
         } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
             throw new ResponseHandlerException(e);
         }
@@ -78,11 +84,13 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     @Override
     public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) throws ResponseHandlerException {
         try {
+            ScopeProvider.setCurrentScope(currentScope);
             IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
             isReceived = true;
+            FullHttpResponse responseCopy = response.copy();
             ITask task = () -> {
                 try {
-                    IObject environment = getEnvironment(response);
+                    IObject environment = getEnvironment(responseCopy);
                     IMessageProcessingSequence processingSequence =
                             IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
                     IMessageProcessor messageProcessor =
@@ -100,7 +108,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 }
             };
             taskQueue.put(task);
-        } catch (InterruptedException | ResolutionException e) {
+        } catch (ScopeProviderException | InterruptedException | ResolutionException e) {
             throw new ResponseHandlerException(e);
         }
 
