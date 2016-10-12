@@ -39,8 +39,8 @@ public class MailigActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("MailingActorPlugin");
 
             item
-                    .after("IOC")
-                    .before("starter")
+//                    .after("IOC")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IKey actorKey = Keys.getOrAdd(MailingActor.class.getCanonicalName());
