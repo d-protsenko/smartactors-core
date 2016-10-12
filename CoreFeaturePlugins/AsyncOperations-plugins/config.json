@@ -1,4 +1,24 @@
 {
-  "featureName": "",
-  "afterFeatures": []
+  "featureName": "async-operations-plugin",
+  "afterFeatures": ["async-operations"],
+  "objects": [
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actor.create_async_operation.CreateAsyncOperationActor",
+      "name": "createAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actor.get_async_operation.GetAsyncOperationActor",
+      "name": "getAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.actor.close_async_operation.CloseAsyncOperationActor",
+      "name": "closeAsyncOpsActor",
+      "collectionName": "operation"
+    }
+  ]
 }
