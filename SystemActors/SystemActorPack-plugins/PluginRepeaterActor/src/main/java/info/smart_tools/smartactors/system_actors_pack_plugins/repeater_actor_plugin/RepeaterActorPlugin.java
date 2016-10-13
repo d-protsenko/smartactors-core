@@ -34,8 +34,8 @@ public class RepeaterActorPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("actor:repeater");
 
             item
-                    .after("IOC")
-                    .before("configure")
+//                    .after("IOC")
+//                    .before("configure")
                     .process(() -> {
                         try {
                             IOC.register(
