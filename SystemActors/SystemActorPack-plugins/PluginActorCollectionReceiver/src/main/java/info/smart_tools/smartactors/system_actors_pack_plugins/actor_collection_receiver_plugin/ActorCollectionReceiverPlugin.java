@@ -42,11 +42,11 @@ public class ActorCollectionReceiverPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("ActorCollectionReceiver");
             item
-                    .after("IOC")
-                    .before("configure")
-                    .before("starter")
-                    .after("IFieldPlugin")
-                    .after("IFieldNamePlugin")
+//                    .after("IOC")
+//                    .before("configure")
+//                    .before("starter")
+//                    .after("IFieldPlugin")
+//                    .after("IFieldNamePlugin")
                     .process(
                             () -> {
                                 try {
