@@ -22,6 +22,7 @@
         <module>HttpsEndpoint</module>
         <module>HttpsServer</module>
         <module>SslEngineProvider</module>
+        <module>HttpsClient</module>
     </modules>
 
     <repositories>
