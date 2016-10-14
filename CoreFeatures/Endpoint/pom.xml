@@ -35,6 +35,7 @@
         <module>Response</module>
         <module>ResponseSenderActor</module>
         <module>ClientActor</module>
+        <module>IRequestMaker</module>
     </modules>
 
     <repositories>
