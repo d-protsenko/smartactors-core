@@ -12,6 +12,21 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Actor for sending request by http
+ *
+ * Request example
+ * <pre>
+ * "request": {
+        "uuid": "some_uuid",
+        "uri": "http://uri.for.request/something",
+        "method": "POST",
+        "timeout": 100, after this timeout to "exceptionalMessageMapId" will send message with full request
+        "exceptionalMessageMapId": "SelectChain",
+        "messageMapId": "sendRequest", start chain for response
+        "content": {
+            "hello": "world"
+        }
+    }
+ * </pre>
  */
 public class HttpRequestSenderActor {
     IFieldName uriFieldName;
