@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -48,9 +49,13 @@ public class HttpResponseHandlerTest {
     IDeserializeStrategy strategy;
     HttpHeaders headers;
     ChannelHandlerContext ctx;
+    Object mapId;
+    IChainStorage chainStorage;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException, ResponseHandlerException {
+        this.mapId = mock(Object.class);
+        this.chainStorage = mock(IChainStorage.class);
         this.taskQueue = mock(IQueue.class);
         this.receiverChain = mock(IReceiverChain.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
@@ -110,6 +115,15 @@ public class HttpResponseHandlerTest {
         Object obj = mock(Object.class);
         IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
                 new SingletonStrategy(obj));
+
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new SingletonStrategy(
+                        mapId
+                )
+        );
+        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
+                        chainStorage
+                )
+        );
         this.responseHandler = new HttpResponseHandler(taskQueue,
                 5,
                 receiverChain,
