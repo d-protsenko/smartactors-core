@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
+import java.text.Normalizer;
+
 /**
  * Implementation of {@link IMessageMapper} which map message to byte array
  */
@@ -24,10 +26,11 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
     @Override
     public IObject deserialize(final byte[] serializedInput) throws ResolutionException {
         String string = new String(serializedInput);
+        string = string.replaceAll("[^\\p{ASCII}]", "");
         if (serializedInput.length == 0) {
             return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         }
-        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), string.trim());
+        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), string);
     }
 
     @Override
