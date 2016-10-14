@@ -2,8 +2,10 @@ package info.smart_tools.smartactors.http_endpoint.http_client;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -11,6 +13,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -26,7 +29,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
     private IFieldName valueFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
+    private IFieldName contentFieldName;
     private String messageMapId;
     private IResponseHandler inboundHandler;
 
@@ -61,6 +64,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
             valueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookie");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
+            contentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "content");
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }
@@ -95,7 +99,18 @@ public class HttpClient extends NettyClient<HttpRequest> {
         try {
             HttpMethod method = HttpMethod.valueOf((String) request.getValue(methodFieldName));
             URI uri = URI.create((String) request.getValue(uriFieldName));
-            FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
+            FullHttpRequest httpRequest = null;
+            if (request.getValue(contentFieldName) == null) {
+                httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
+            } else {
+                IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()));
+                byte[] content = messageMapper.serialize((IObject) request.getValue(contentFieldName));
+                httpRequest = new DefaultFullHttpRequest(
+                        HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)
+                );
+                httpRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpRequest.content().readableBytes());
+                httpRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+            }
             httpRequest.headers().set(HttpHeaders.Names.HOST, uri.getHost());
             httpRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
             List<IObject> headers = (List<IObject>) request.getValue(headersFieldName);
@@ -115,7 +130,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
                 }
             }
             send(httpRequest);
-        } catch (ReadValueException | InvalidArgumentException e) {
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new RequestSenderException(e);
         }
     }

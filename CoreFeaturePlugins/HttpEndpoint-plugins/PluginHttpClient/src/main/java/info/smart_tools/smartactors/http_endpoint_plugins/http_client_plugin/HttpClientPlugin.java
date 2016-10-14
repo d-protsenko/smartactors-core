@@ -115,7 +115,11 @@ public class HttpClientPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-
+                                    IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
+                                            new SingletonStrategy(
+                                                    messageMapper
+                                            )
+                                    );
                                     IOC.register(Keys.getOrAdd("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
