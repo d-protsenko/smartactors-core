@@ -22,6 +22,7 @@
         <module>PluginPostgresDBTasks</module>
         <module>PluginAsyncOpsCollection</module>
         <module>PluginCachedCollection</module>
+        <module>PluginConnectionOptions</module>
     </modules>
 
     <repositories>

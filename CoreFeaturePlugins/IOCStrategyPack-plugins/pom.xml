@@ -20,6 +20,7 @@
     <modules>
         <module>PluginResolveIObjectStrategies</module>
         <module>PluginResolveStandardTypesStrategies</module>
+        <module>PluginDateTimeFormatterStrategy</module>
     </modules>
 
     <repositories>

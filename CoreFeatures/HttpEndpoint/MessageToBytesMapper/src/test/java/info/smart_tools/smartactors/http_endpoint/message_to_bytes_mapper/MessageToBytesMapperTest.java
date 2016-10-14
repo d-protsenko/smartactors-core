@@ -82,4 +82,13 @@ public class MessageToBytesMapperTest {
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));
     }
+    @Test
+    public void messageToBytesMapperShouldDeleteNonASCIICharacters() throws ResolutionException, SerializeException {
+        MessageToBytesMapper mapper = new MessageToBytesMapper();
+        String stringWithNonASCII = "\uFEFF{\"hello\": \"world\"}";
+        IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
+        byte[] bytes = stringWithNonASCII.getBytes();
+        IObject iObject2 = mapper.deserialize(bytes);
+        verify(iObject.serialize().equals(iObject2.serialize()));
+    }
 }

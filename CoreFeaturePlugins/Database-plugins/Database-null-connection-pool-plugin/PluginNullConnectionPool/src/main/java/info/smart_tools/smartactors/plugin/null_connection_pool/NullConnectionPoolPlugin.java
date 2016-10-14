@@ -44,7 +44,7 @@ public class NullConnectionPoolPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionPoolPlugin");
             item
-                .after("IOC")
+//                .after("IOC")
                 .process(() -> {
                     try {
                         IResolveDependencyStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(

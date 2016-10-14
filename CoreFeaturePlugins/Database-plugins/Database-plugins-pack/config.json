@@ -1,0 +1,4 @@
+{
+  "featureName": "database-plugins",
+  "afterFeatures": ["database"]
+}

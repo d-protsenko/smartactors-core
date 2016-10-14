@@ -1,0 +1,4 @@
+{
+  "featureName": "iobject-extension",
+  "afterFeatures": ["base", "iobject", "ioc"]
+}
