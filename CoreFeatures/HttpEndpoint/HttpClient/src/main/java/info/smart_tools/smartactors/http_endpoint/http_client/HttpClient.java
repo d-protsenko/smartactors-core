@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
+import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -97,40 +99,11 @@ public class HttpClient extends NettyClient<HttpRequest> {
     @Override
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
-            HttpMethod method = HttpMethod.valueOf((String) request.getValue(methodFieldName));
-            URI uri = URI.create((String) request.getValue(uriFieldName));
-            FullHttpRequest httpRequest = null;
-            if (request.getValue(contentFieldName) == null) {
-                httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
-            } else {
-                IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()));
-                byte[] content = messageMapper.serialize((IObject) request.getValue(contentFieldName));
-                httpRequest = new DefaultFullHttpRequest(
-                        HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)
-                );
-                httpRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpRequest.content().readableBytes());
-                httpRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
-            }
-            httpRequest.headers().set(HttpHeaders.Names.HOST, uri.getHost());
-            httpRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-            List<IObject> headers = (List<IObject>) request.getValue(headersFieldName);
-            if (null != headers) {
-                for (IObject header : headers) {
-                    httpRequest.headers().set((String) header.getValue(nameFieldName), header.getValue(valueFieldName));
-                }
-            }
             messageMapId = (String) request.getValue(messageMapIdFieldName);
-            List<IObject> cookies = (List<IObject>) request.getValue(cookiesFieldName);
-            if (null != cookies) {
-                for (IObject cookie : cookies) {
-                    httpRequest.headers().set("Cookie", ClientCookieEncoder.STRICT.encode(
-                            (String) cookie.getValue(nameFieldName),
-                            (String) cookie.getValue(valueFieldName))
-                    );
-                }
-            }
+            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()));
+            FullHttpRequest httpRequest = requestMaker.make(request);
             send(httpRequest);
-        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+        } catch (RequestMakerException | ReadValueException | ResolutionException | InvalidArgumentException e) {
             throw new RequestSenderException(e);
         }
     }

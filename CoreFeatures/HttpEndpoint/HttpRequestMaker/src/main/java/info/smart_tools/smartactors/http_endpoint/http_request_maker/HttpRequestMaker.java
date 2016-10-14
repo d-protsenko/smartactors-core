@@ -34,7 +34,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private IFieldName cookiesFieldName;
     private IFieldName contentFieldName;
 
-    HttpRequestMaker() throws ResolutionException {
+    public HttpRequestMaker() throws ResolutionException {
         uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
         methodFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "method");
         headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");

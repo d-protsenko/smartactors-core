@@ -50,6 +50,7 @@
         <module>HttpClientInitializer</module>
         <module>HttpRequestSenderActor</module>
         <module>PluginHttpRequestSenderActor</module>
+        <module>HttpRequestMaker</module>
     </modules>
 
     <repositories>

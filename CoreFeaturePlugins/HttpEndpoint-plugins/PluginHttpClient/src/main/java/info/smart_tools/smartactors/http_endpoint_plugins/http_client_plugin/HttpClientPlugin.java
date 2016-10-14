@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessage
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
+import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -16,6 +17,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
+import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
@@ -32,6 +34,7 @@ import info.smart_tools.smartactors.scope.iscope_provider_container.exception.Sc
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -114,6 +117,11 @@ public class HttpClientPlugin implements IPlugin {
                                                         }
                                                     }
                                             )
+                                    );
+                                    IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
+                                    IOC.register(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
+                                            requestMaker
+                                        )
                                     );
                                     IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
                                             new SingletonStrategy(
