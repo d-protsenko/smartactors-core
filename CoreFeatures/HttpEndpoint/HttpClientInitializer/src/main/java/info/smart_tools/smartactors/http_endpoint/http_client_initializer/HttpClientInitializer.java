@@ -50,7 +50,7 @@ public class HttpClientInitializer {
                                 timer = IOC.resolve(Keys.getOrAdd("timer"));
                                 ITimerTask timerTask =
                                         timer.schedule(task,
-                                                Long.valueOf(
+                                                System.currentTimeMillis() + Long.valueOf(
                                                         String.valueOf(
                                                                 message.getValue(timeFieldName)
                                                         )
