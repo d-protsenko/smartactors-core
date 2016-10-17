@@ -1,6 +1,6 @@
 {
   "featureName": "async-operations-plugin",
-  "afterFeatures": ["async-operations"],
+  "afterFeatures": ["async-operations", "database-psql-plugins"],
   "objects": [
     {
       "kind": "actor",
