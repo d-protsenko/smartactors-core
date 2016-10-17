@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core.examples.plugin;
 
-import info.smart_tools.smartactors.core.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 
 /**
  *  Simplest visitor which just prints the calls to System.out.

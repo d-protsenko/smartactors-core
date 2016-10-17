@@ -22,267 +22,43 @@
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
-        <module>IMessage</module>
-        <module>IQueue</module>
-        <module>BlockingQueue</module>
-        <module>IThreadPool</module>
-        <module>ThreadPool</module>
-        <module>ITaskDispatcher</module>
-        <module>TaskDispatcher</module>
-        <module>ITask</module>
-        <module>DataBaseStorage</module>
-        <module>SqlCommons</module>
-        <module>IAsyncService</module>
-        <module>EndpointHandler</module>
-        <module>NettyServer</module>
-        <module>TcpServer</module>
-        <module>HttpServer</module>
         <!-- database tasks modules -->
-        <module>IDatabaseTask</module>
-        <module>PostgresSchema</module>
-        <module>PostgresCreateCollectionTask</module>
-        <module>PostgresUpsertTask</module>
-        <module>PostgresInsertTask</module>
-        <module>PostgresGetByIdTask</module>
-        <module>PostgresSearchTask</module>
-        <module>PostgresDeleteTask</module>
-        <module>PostgresCountTask</module>
         <!-- /database tasks modules -->
         <module>examples</module>
-        <module>BootstrapItem</module>
-        <module>IBootstrapItem</module>
-        <module>IBootstrap</module>
-        <module>IPlugin</module>
-        <module>PluginSubscribeScopeProviderOnScopeCreation</module>
-        <module>IPluginLoader</module>
-        <module>IPluginLoaderVisitor</module>
-        <module>PluginLoaderVisitorEmptyImplementation</module>
-        <module>PluginLoaderFormJar</module>
-        <module>Bootstrap</module>
-        <module>IPluginCreator</module>
-        <module>PluginCreator</module>
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
-        <module>PluginTestJar</module>
-        <module>FilesystemTracker</module>
-        <module>IFilesystemTracker</module>
-        <module>IFeatureManager</module>
-        <module>FeatureManager</module>
-        <module>IWrapperGenerator</module>
-        <module>WrapperGenerator</module>
         <module>ServerWithIObject</module>
-        <module>IMultiActionStrategy</module>
-        <module>IResourceSource</module>
-        <module>MessageProcessor</module>
-        <module>ReceiverChain</module>
-        <module>MessageProcessingSequence</module>
-        <module>MessageProcessingInterfaces</module>
-        <module>ExceptionHandlingReceivers</module>
-        <module>PluginCompileQuery</module>
-        <module>PluginCollectionName</module>
-        <module>PluginCachedCollection</module>
-        <module>PostgresConnection</module>
-        <module>PluginPostgresConnectionPool</module>
-        <module>PluginIField</module>
-        <module>IStorageConnection</module>
-        <module>CachedCollection</module>
-        <module>IRouter</module>
-        <module>IChainStorage</module>
-        <module>MapRouter</module>
-        <module>ChainStorage</module>
-        <module>ChainCallReceiver</module>
         <module>CloseAsyncOperationActor</module>
-        <module>GetFormActor</module>
-        <module>AuthenticationActor</module>
-        <module>CheckUserByEmailActor</module>
-        <module>AsyncOperationCollection</module>
         <module>CreateAsyncOperation</module>
         <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
-        <module>CreateUserActor</module>
-        <module>HttpEndpoint</module>
-        <module>IMessageMapper</module>
-        <module>IDeserializeStrategy</module>
-        <module>EndpointChannelInboundHandler</module>
-        <module>NettyClient</module>
-        <module>IClient</module>
-        <module>HttpClient</module>
-        <module>CompletableNettyFuture</module>
-        <module>DeserializeStrategyPostJson</module>
-        <module>IEnvironmentHandler</module>
-        <module>EnvironmentHandler</module>
-        <module>MessageToBytesMapper</module>
-        <module>IResponseSender</module>
-        <module>HttpResponseSender</module>
-        <module>ResponseSenderActor</module>
-        <module>IResponse</module>
-        <module>IResponseContentStrategy</module>
-        <module>Response</module>
-        <module>ResponseContentJsonStrategy</module>
-        <module>IResponseStatusExtractor</module>
-        <module>IChannelHandler</module>
-        <module>ICookiesSetter</module>
-        <module>IHeadersExtractor</module>
-        <module>ChannelHandlerNetty</module>
-        <module>PluginGetFormActor</module>
-        <module>CreateSession</module>
-        <module>PluginCreateSession</module>
-        <module>GetCookieFromRequestRule</module>
-        <module>GetHeaderFromRequestRule</module>
-        <module>CheckUserIsNewActor</module>
         <module>PluginCreateAsyncOperationActor</module>
-        <module>UserAuthByLoginActor</module>
-        <module>PluginUserAuthByLoginActor</module>
-        <module>PluginPasswordEncoder</module>
-        <module>WDSObject</module>
         <module>ValidateFormDataActor</module>
-        <module>PluginCheckUserByEmailActor</module>
-        <module>PluginGetHeaderRule</module>
-        <module>ReceiverGenerator</module>
-        <module>PluginIFieldName</module>
-        <module>IConfigurationManager</module>
         <module>StandardConfigSections</module>
-        <module>ActorReceiver</module>
-        <module>HandlerRoutingReceiver</module>
-        <module>IReceiverGenerator</module>
-        <module>PluginReceiverGenerator</module>
-        <module>PluginCheckUserIsNewActor</module>
-        <module>PluginAuthenticationActor</module>
-        <module>PluginMapRouter</module>
-        <module>PluginReceiverChain</module>
-        <module>PluginReceiverChainsStorage</module>
-        <module>IRoutedObjectCreator</module>
-        <module>PluginStandardObjectCreators</module>
-        <module>ConfigurationManager</module>
-        <module>PluginConfigurationManager</module>
-        <module>PluginReadConfigFile</module>
         <module>ServerWithConfiguration</module>
-        <module>HandlerRoutingReceiverCreator</module>
-        <module>ActorReceiverCreator</module>
-        <module>PluginIOCSimpleContainer</module>
-        <module>PluginIOCKeys</module>
-        <module>PluginDsobject</module>
-        <module>PluginScopedIOC</module>
-        <module>PluginScopeProvider</module>
-        <module>PluginMessagingIdentifiers</module>
         <module>PluginCloseAsyncOperationActor</module>
-        <module>PluginGetCookieFromRequestRule</module>
         <module>PluginGetAsyncOperation</module>
-        <module>PluginIObjectSimpleImpl</module>
-        <module>PluginResolveIObjectStrategies</module>
-        <module>PluginPostgresDBTasks</module>
-        <module>PluginResolveStandardTypesStrategies</module>
-        <module>PluginWrapperGenerator</module>
-        <module>PluginFieldName</module>
-        <module>PluginAsyncOpsCollection</module>
-        <module>HttpRequestHandler</module>
-        <module>CookiesSetter</module>
-        <module>HttpHeadersSetter</module>
-        <module>ResponseStatusExtractor</module>
-        <module>PluginHttpEndpoint</module>
-        <module>PluginActorReceiverCreator</module>
-        <module>PluginHandlerRoutingReceiverCreator</module>
-        <module>HttpsServer</module>
-        <module>HttpsEndpoint</module>
-        <module>PluginMessageProcessorAndSequence</module>
-        <module>PluginResponseSenderActor</module>
-        <module>PluginWDSObject</module>
-        <module>PluginResponse</module>
-        <module>PluginResponseJsonContentStrategy</module>
         <module>PluginCheckValidityAsyncOperationActor</module>
         <module>CheckValidityAsyncOperationActor</module>
-        <module>PluginCreateUser</module>
-        <module>PluginHttpsEndpoint</module>
-        <module>ISslEngineProvider</module>
-        <module>SslEngineProvider</module>
-        <module>CObject</module>
-        <module>PluginConfigurationObject</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
-        <module>PluginChainCallReceiver</module>
-        <module>PluginChainChoiceStrategy</module>
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
-        <module>PluginStarter</module>
         <module>PluginValidationFormActor</module>
-        <module>ChangePasswordActor</module>
-        <module>PluginChangePasswordActor</module>
-        <module>MessageBus</module>
-        <module>IMessageBusContainer</module>
-        <module>MessageBusContainerWithScope</module>
-        <module>MessageBusHandler</module>
-        <module>IMessageBusHandler</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>ActorCollectionReceiver</module>
-        <module>PluginActorCollectionReceiver</module>
         <module>MailingActor</module>
         <module>PluginMailingActor</module>
-        <module>PluginConnectionOptions</module>
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>GetQueryParameterRule</module>
-        <module>PluginGetQueryParameterRule</module>
-        <module>ISource</module>
-        <module>TestDataSourceStringArray</module>
-        <module>TestHttpEndpoint</module>
-        <module>PluginTestHttpEndpointAndEnvironment</module>
-        <module>SaveSessionActor</module>
-        <module>PluginSaveSession</module>
-        <module>InMemoryDatabase</module>
-        <module>PluginInMemoryDatabase</module>
-        <module>InMemoryDBCreateCollectionTask</module>
-        <module>InMemoryDBGetByIdTask</module>
-        <module>InMemoryDBUpsertTask</module>
-        <module>InMemoryDBDeleteTask</module>
-        <module>InMemoryDBSelectTask</module>
-        <module>PluginInMemoryDBTasks</module>
-        <module>InMemoryDBSectionProcessingStrategy</module>
-        <module>IDatabase</module>
         <module>PluginNullConnectionPool</module>
-        <module>UuidNextIdStrategy</module>
         <module>PrepareRegistrationMailActor</module>
         <module>PluginPrepareMailRegistrationActor</module>
-        <module>InMemoryDBCountTask</module>
-        <module>InMemoryDBInsertTask</module>
-        <module>TestRunner</module>
-        <module>TestLoadingPlugins</module>
-        <module>ChainTestsConfigSectionStrategy</module>
-        <module>PluginChainTesting</module>
-        <module>TestAssertions</module>
-        <module>PluginChainTestingAssertions</module>
-        <module>TestDataSourceIObject</module>
-        <module>ITestRunner</module>
-        <module>TestEnvironmentHandler</module>
-        <module>IAssertion</module>
-        <module>IResultChecker</module>
-        <module>TestCheckers</module>
-        <module>PluginTestCheckers</module>
-        <module>PluginNestedField</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>PluginDateTimeFormatterStrategy</module>
-        <module>NonBlockingQueue</module>
-        <module>PluginBlockingQueue</module>
-        <module>PluginNonBlockingQueue</module>
         <module>ServerWithFeatures</module>
-        <module>IFeatureLoader</module>
-        <module>FeatureLoader</module>
-        <module>PluginFeatureLoader</module>
-        <module>IFilesystemFacade</module>
-        <module>FilesystemFacade</module>
-        <module>PluginFilesystemFacade</module>
-        <module>ConstantsSectionStrategy</module>
-        <module>PluginGlobalConstants</module>
-        <module>RepeaterActor</module>
-        <module>PluginRepeaterActor</module>
-        <module>ITimer</module>
-        <module>TimerImpl</module>
-        <module>PluginTimer</module>
-        <module>ObjectEnumerationActor</module>
-        <module>BootstrapPlugin</module>
-        <module>PluginObjectEnumerationActor</module>
+        <module>CoreFeatures/Base</module>
         <module>DebuggerActor</module>
     </modules>
 

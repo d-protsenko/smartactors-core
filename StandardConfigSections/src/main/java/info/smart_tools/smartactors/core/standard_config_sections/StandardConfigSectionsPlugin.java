@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.core.standard_config_sections;
 
-import info.smart_tools.smartactors.core.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.core.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.core.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.core.iplugin.IPlugin;
-import info.smart_tools.smartactors.core.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
@@ -21,7 +21,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
     /**
      * The constructor.
      *
-     * @param bootstrap    the bootstrap
+     * @param bootstrap the bootstrap
      */
     public StandardConfigSectionsPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
@@ -141,6 +141,27 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             throw new ActionExecuteException(e);
                         }
                     });
+             /* "client" section */
+            IBootstrapItem<String> clientSectionItem = new BootstrapItem("config_section:client");
+
+            clientSectionItem
+                    .after("configuration_manager")
+                    .after("config_section:maps")
+                    .after("config_section:executor")
+                    .after("IFieldNamePlugin")
+                    .before("starter")
+                    .process(() -> {
+                        try {
+                            IConfigurationManager configurationManager =
+                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+
+                            configurationManager.addSectionStrategy(new ClientSectionProcessingStrategy());
+                        } catch (ResolutionException | InvalidArgumentException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(clientSectionItem);
 
             bootstrap.add(messageBusItem);
         } catch (InvalidArgumentException e) {

@@ -1,0 +1,4 @@
+{
+  "featureName": "http-endpoint",
+  "afterFeatures": ["endpoint"]
+}

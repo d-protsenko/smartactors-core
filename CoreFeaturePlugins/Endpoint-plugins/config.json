@@ -1,0 +1,4 @@
+{
+  "featureName": "endpoint-plugins",
+  "afterFeatures": ["endpoint"]
+}

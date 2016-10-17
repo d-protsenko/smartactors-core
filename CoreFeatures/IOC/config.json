@@ -1,0 +1,4 @@
+{
+  "featureName": "ioc",
+  "afterFeatures": ["base", "scope"]
+}

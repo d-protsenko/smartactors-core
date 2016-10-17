@@ -19,27 +19,27 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap_item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_from_jar</artifactId>
+            <artifactId>feature-loading-system.plugin-loader-from-jar</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_loader_visitor_empty_implementation</artifactId>
+            <artifactId>feature-loading-system.plugin-loader-visitor-empty-implementation</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.bootstrap</artifactId>
+            <artifactId>feature-loading-system.bootstrap</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.plugin_creator</artifactId>
+            <artifactId>feature-loading-system.plugin-creator</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core.filesystem_tracker</artifactId>
+            <artifactId>feature-loading-system.filesystem-tracker</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
