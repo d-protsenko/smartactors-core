@@ -16,6 +16,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.util.stream.Collectors;
 
@@ -25,6 +28,27 @@ import java.util.stream.Collectors;
 public class SchedulerActor {
     private final ISchedulerEntryStorage storage;
 
+    private final IQueue<ITask> taskQueue;
+
+    /**
+     * Task downloading entries from remote storage.
+     */
+    private class DownloadEntriesTask implements ITask {
+
+        @Override
+        public void execute() throws TaskExecutionException {
+            try {
+                if (!storage.downloadNextPage(0)) {
+                    taskQueue.put(DownloadEntriesTask.this);
+                }
+            } catch (EntryStorageAccessException e) {
+                throw new TaskExecutionException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
     /**
      * The constructor.
      *
@@ -33,9 +57,10 @@ public class SchedulerActor {
      * @throws ReadValueException if fails to read any value from arguments object
      * @throws EntryStorageAccessException if fails to download entries saved in database
      * @throws InvalidArgumentException if it occurs
+     * @throws InterruptedException if thread is interrupted while enqueuing task downloading entries from remote storage
      */
     public SchedulerActor(final IObject args)
-            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException {
+            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, InterruptedException {
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
@@ -43,18 +68,15 @@ public class SchedulerActor {
         String collectionName = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
 
+        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
         Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
         IPool connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);
         storage = IOC.resolve(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()),
                 connectionPool,
                 collectionName);
 
-        // TODO: Download schedules asynchronously
-        while (true) {
-            if (storage.downloadNextPage(0)) {
-                break;
-            }
-        }
+        taskQueue.put(new DownloadEntriesTask());
     }
 
     /**

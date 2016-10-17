@@ -19,6 +19,8 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -43,6 +45,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
     private IResolveDependencyStrategy newEntryStrategy;
     private ISchedulerEntry entryMock;
+    private IQueue taskQueueMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -92,11 +95,19 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(mock(IObject.class));
+
+        taskQueueMock = mock(IQueue.class);
+        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
     }
 
     @Test
     public void Should_downloadEntriesOnStartup()
             throws Exception {
+        doAnswer(invocation -> {
+            invocation.getArgumentAt(0, ITask.class).execute();
+            return null;
+        }).when(taskQueueMock).put(any());
+
         when(storage.downloadNextPage(anyInt()))
                 .thenReturn(false)
                 .thenReturn(false)
