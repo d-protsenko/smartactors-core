@@ -21,6 +21,7 @@
         <module>DebuggerActor</module>
         <module>DebuggerInterfaces</module>
         <module>DebuggerSequenceImpl</module>
+        <module>DebuggerSessionImpl</module>
     </modules>
 
     <repositories>

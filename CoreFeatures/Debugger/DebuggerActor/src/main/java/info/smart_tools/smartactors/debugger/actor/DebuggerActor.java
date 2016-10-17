@@ -27,14 +27,15 @@ public class DebuggerActor {
     private final Map<String, IDebuggerSession> sessions = new HashMap<>();
     private final Map<String, IDebuggerCommand> globalCommands = new HashMap<>();
 
+    private Object debuggerAddress;
+
     {
         globalCommands.put("newSession",
                 arg -> {
             String id = UUID.randomUUID().toString();
 
             try {
-                // TODO: Pass address of this actor
-                IDebuggerSession session = IOC.resolve(Keys.getOrAdd("debugger session"), id, arg);
+                IDebuggerSession session = IOC.resolve(Keys.getOrAdd("debugger session"), id, debuggerAddress, arg);
 
                 sessions.put(id, session);
             } catch (ResolutionException e) {
@@ -68,13 +69,14 @@ public class DebuggerActor {
      * @param message    the message containing command name and arguments
      * @throws ReadValueException if error occurs reading command name, session identifier or command arguments from message
      * @throws ChangeValueException if error occurs saving command result
-     * @throws InvalidArgumentException if command argument is not valid
+     * @throws InvalidArgumentException if command name or argument is not valid
      * @throws CommandExecutionException if error occurs processing a global command
      * @throws SessionNotFoundException if cannot find a session to execute command within
      */
     public void execute(final CommandMessage message)
             throws ReadValueException, ChangeValueException, CommandExecutionException, InvalidArgumentException,
                 SessionNotFoundException {
+        debuggerAddress = message.getDebuggerAddress();
         String command = message.getCommand();
 
         if (globalCommands.containsKey(command)) {

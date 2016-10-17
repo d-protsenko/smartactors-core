@@ -14,12 +14,6 @@ public interface CommandMessage {
     String getCommand() throws ReadValueException;
 
     /**
-     * @param sessionId    the session identifier to store in the message
-     * @throws ChangeValueException if any error occurs
-     */
-    void setSessionId(final String sessionId) throws ChangeValueException;
-
-    /**
      * @return identifier of debugger session associated with this message
      * @throws ReadValueException if any error occurs
      */
@@ -36,4 +30,10 @@ public interface CommandMessage {
      * @throws ChangeValueException if any error occurs
      */
     void setCommandResult(final Object object) throws ChangeValueException;
+
+    /**
+     * @return address ("target") of the debugger actor.
+     * @throws ReadValueException if any error occurs
+     */
+    Object getDebuggerAddress() throws ReadValueException;
 }

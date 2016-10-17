@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.debugger.interfaces;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.core.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
 /**
  *
@@ -20,9 +21,10 @@ public interface IDebuggerSession {
      * @param name    name of the command to execute
      * @param args    arguments of the command
      * @return result of command execution
-     * @throws InvalidArgumentException if command arguments are not valid
+     * @throws InvalidArgumentException if command name or arguments are not valid
+     * @throws CommandExecutionException if any error occurs executing the command
      */
-    Object executeCommand(final String name, final Object args) throws InvalidArgumentException;
+    Object executeCommand(final String name, final Object args) throws InvalidArgumentException, CommandExecutionException;
 
     /**
      * Close this session.
