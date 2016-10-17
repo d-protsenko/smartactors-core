@@ -7,8 +7,7 @@ import java.util.function.Supplier;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for Pool
@@ -61,5 +60,16 @@ public class PoolTest {
     public void Should_throwExceptionWhenMaxItemsCountLessZero()
             throws Exception {
         Pool pool = new Pool(-1, Object::new);
+    }
+
+    @Test
+    public void Should_createItemOneTimeWhenItemReturns() throws Exception {
+        Supplier<Object> createFunc = mock(Supplier.class);
+        when(createFunc.get()).thenReturn(new Object());
+        Pool pool = new Pool(10, createFunc);
+        Object item = pool.take();
+        pool.put(item);
+        pool.take();
+        verify(createFunc, times(1)).get();
     }
 }
