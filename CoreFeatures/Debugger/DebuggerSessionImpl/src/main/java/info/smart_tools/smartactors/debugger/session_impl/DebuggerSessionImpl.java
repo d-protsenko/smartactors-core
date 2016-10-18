@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -20,6 +21,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +45,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     private boolean paused;
     private boolean prePaused;
+    private boolean breakOnException;
 
     private int stackDepth = DEFAULT_STACK_DEPTH;
 
@@ -75,6 +79,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("getChainName", args -> mainChain.getName());
         commands.put("isRunning", args -> isRunning());
         commands.put("isPaused", args -> isPaused());
+        commands.put("getBreakOnException", args -> breakOnException);
+        commands.put("getStackTrace", this::getStackTrace);
 
         commands.put("setMessage", stopModeCommand(args -> message = (IObject) args));
         commands.put("setChain", stopModeCommand(args -> {
@@ -89,12 +95,37 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
             return "OK";
         }));
+        commands.put("setBreakOnException", args -> breakOnException = (Boolean) args);
+    }
 
+    private void pauseProcessor() throws AsynchronousOperationException {
+        processor.pauseProcess();
+        paused = true;
+        prePaused = false;
     }
 
     @Override
-    public void handleInterrupt(final IMessageProcessor messageProcessor) {
+    public void handleInterrupt(final IMessageProcessor messageProcessor)
+            throws InterruptProcessingException {
+        if (messageProcessor != processor || !isRunning()) {
+            return;
+        }
 
+        try {
+            if (prePaused || sequence.getCurrentLevel() <= stepModeMaxDepth) {
+                pauseProcessor();
+            } else
+            //noinspection ThrowableResultOfMethodCallIgnored
+            if (sequence.getException() != null) {
+                if (breakOnException) {
+                    pauseProcessor();
+                } else if (!sequence.processException()) {
+                    pauseProcessor();
+                }
+            }
+        } catch (AsynchronousOperationException e) {
+            throw new InterruptProcessingException("Error occurred pausing processing of debuggable message.", e);
+        }
     }
 
     @Override
@@ -232,5 +263,30 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         return "OK";
+    }
+
+    private Object getStackTrace(final Object arg)
+            throws CommandExecutionException {
+        if (!isPaused()) {
+            throw new CommandExecutionException("Not paused now.");
+        }
+
+        try {
+            List<IObject> trace = new LinkedList<>();
+
+            IFieldName indexFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "index");
+
+            for (int i = 0; i < sequence.getCurrentLevel(); i++) {
+                IObject levelObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                levelObject.setValue(indexFieldName, sequence.getStepAtLevel(i));
+
+                // TODO: Get chain name and step arguments
+            }
+
+            return trace;
+        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+            throw new CommandExecutionException(e);
+        }
     }
 }
