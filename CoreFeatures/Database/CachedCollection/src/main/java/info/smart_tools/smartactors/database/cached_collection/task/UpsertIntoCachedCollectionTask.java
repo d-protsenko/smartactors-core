@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.database.cached_collection.task;
 import info.smart_tools.smartactors.database.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.field.nested_field.NestedField;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -38,7 +39,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
         this.connection = connection;
         try {
             this.formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
-            this.startDateTimeField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document/startDateTime");
+            this.startDateTimeField = IOC.resolve(Keys.getOrAdd(NestedField.class.getCanonicalName()), "document/startDateTime");
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
