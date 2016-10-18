@@ -11,9 +11,12 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -23,6 +26,8 @@ import java.util.Map;
  * Implementation of a debugger session.
  */
 public class DebuggerSessionImpl implements IDebuggerSession {
+    private static final int DEFAULT_STACK_DEPTH = 5;
+
     private final IFieldName sessionIdFieldName;
 
     private final Map<String, IDebuggerCommand> commands = new HashMap<>();
@@ -34,6 +39,13 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     private IObject message;
     private IReceiverChain mainChain;
+
+    private boolean paused;
+    private boolean prePaused;
+
+    private int stackDepth = DEFAULT_STACK_DEPTH;
+
+    private int stepModeMaxDepth = Integer.MAX_VALUE;
 
     /**
      * The constructor.
@@ -50,6 +62,34 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         sessionIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sessionId");
 
         commands.put("start", this::startDebugging);
+        commands.put("continue", this::continueDebugging);
+        commands.put("processException", this::processException);
+        commands.put("stop", this::stopDebugging);
+        commands.put("pause", runModeCommand(args -> prePaused = true));
+
+        commands.put("stepMode", this::setStepMode);
+
+        //noinspection ThrowableResultOfMethodCallIgnored
+        commands.put("getException", args -> (isRunning() ? sequence.getException() : null));
+        commands.put("getMessage", args -> message);
+        commands.put("getChainName", args -> mainChain.getName());
+        commands.put("isRunning", args -> isRunning());
+        commands.put("isPaused", args -> isPaused());
+
+        commands.put("setMessage", stopModeCommand(args -> message = (IObject) args));
+        commands.put("setChain", stopModeCommand(args -> {
+            try {
+                IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args));
+            } catch (ResolutionException e) {
+                throw new CommandExecutionException(e);
+            } catch (ChainNotFoundException e) {
+                return "NO SUCH CHAIN";
+            }
+
+            return "OK";
+        }));
+
     }
 
     @Override
@@ -71,18 +111,45 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     }
 
+    private boolean isRunning() {
+        return processor != null && !paused;
+    }
+
+    private boolean isPaused() {
+        return processor != null && paused;
+    }
+
+    private IDebuggerCommand runModeCommand(final IDebuggerCommand command) {
+        return args -> {
+            if (isRunning()) {
+                return command.execute(args);
+            } else {
+                throw new CommandExecutionException("Not debugging now.");
+            }
+        };
+    }
+
+    private IDebuggerCommand stopModeCommand(final IDebuggerCommand command) {
+        return args -> {
+            if (!isRunning() && !isPaused()) {
+                return command.execute(args);
+            } else {
+                throw new CommandExecutionException("Debugger is not stopped now.");
+            }
+        };
+    }
+
     private Object startDebugging(final Object arg)
             throws CommandExecutionException {
-        if (message == null || mainChain == null || sequence != null) {
+        if (message == null || mainChain == null || isRunning() || isPaused()) {
             throw new CommandExecutionException("Can not start debugging.");
         }
 
         try {
             IMessageProcessingSequence innerSequence = IOC.resolve(
-                    Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), 5, mainChain);
+                    Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, mainChain);
 
-            // TODO: Pass debugger address
-            sequence = IOC.resolve(Keys.getOrAdd("new debugger sequence"), innerSequence);
+            sequence = IOC.resolve(Keys.getOrAdd("new debugger sequence"), innerSequence, debuggerAddress);
 
             Object taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
@@ -93,10 +160,77 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             context.setValue(sessionIdFieldName, id);
 
             processor.process(message, context);
+
+            paused = false;
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
             throw new CommandExecutionException(e);
         }
 
-        return null;
+        return "OK";
+    }
+
+    private Object continueDebugging(final Object arg)
+            throws CommandExecutionException {
+        if (!isPaused()) {
+            throw new CommandExecutionException("Not paused now.");
+        }
+
+        try {
+            processor.continueProcess(null);
+            paused = false;
+        } catch (AsynchronousOperationException e) {
+            throw new CommandExecutionException(e);
+        }
+
+        return "OK";
+    }
+
+    private Object processException(final Object arg)
+            throws CommandExecutionException {
+        //noinspection ThrowableResultOfMethodCallIgnored
+        if (!isPaused() || sequence.getException() == null) {
+            throw new CommandExecutionException("No exception occurred.");
+        }
+
+        if (sequence.processException()) {
+            return "OK";
+        } else {
+            return "FAIL";
+        }
+    }
+
+    private Object stopDebugging(final Object arg)
+            throws CommandExecutionException {
+        if (!isPaused() && !isRunning()) {
+            throw new CommandExecutionException("Not debugging now.");
+        }
+
+        sequence.stop();
+
+        sequence = null;
+        processor = null;
+
+        return "OK";
+    }
+
+    private Object setStepMode(final Object arg)
+            throws CommandExecutionException {
+        if ("none".equals(arg)) {
+            stepModeMaxDepth = -1;
+        } else if (null == arg || "all".equals(arg)) {
+            stepModeMaxDepth = Integer.MAX_VALUE;
+        } else {
+            if (arg instanceof Number) {
+                stepModeMaxDepth = ((Number) arg).intValue();
+            } else {
+                try {
+                    stepModeMaxDepth = Integer.parseInt(arg.toString());
+                } catch (NumberFormatException e) {
+                    throw new CommandExecutionException("Step mode should br \"none\", \"all\" (or null) or a number.");
+                }
+            }
+        }
+
+        return "OK";
     }
 }
