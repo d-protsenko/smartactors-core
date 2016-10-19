@@ -5,6 +5,11 @@ import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -12,38 +17,97 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 
 /**
- *
+ * Implementation of {@link IDebuggerSequence}.
  */
 public class DebuggerSequenceImpl implements IDebuggerSequence {
     private final IMessageProcessingSequence wrapped;
 
-    public DebuggerSequenceImpl(final IMessageProcessingSequence sequence)
-            throws InvalidArgumentException {
+    private Throwable exception;
+    private IObject exceptionContext;
+    private boolean isInDebugger;
+    private boolean isCompleted;
+
+    private static final String DEBUGGER_INTERRUPT_TARGET =
+                   ("{" +
+                    "   'handler':'interrupt'," +
+                    "   'wrapper': {" +
+                    "       'out_getSessionId':'context/sessionId'," +
+                    "       'out_getProcessor':'processor'" +
+                    "   }" +
+                    "}").replace('\'', '"');
+
+    private final IObject debuggerArguments;
+    private final IMessageReceiver debuggerReceiver;
+
+    /**
+     * The constructor.
+     *
+     * @param sequence           the underlying sequence to use
+     * @param debuggerAddress    address of the debugger actor
+     * @throws InvalidArgumentException if {@code sequence} is {@code null}
+     * @throws InvalidArgumentException if {@code debuggerAddress} is {@code null} or is not valid address
+     * @throws ResolutionException if error occurs resolving any dependency
+     */
+    public DebuggerSequenceImpl(final IMessageProcessingSequence sequence, final Object debuggerAddress)
+            throws InvalidArgumentException, ResolutionException {
+        if (null == sequence) {
+            throw new InvalidArgumentException("Sequence should not be null.");
+        }
+
+        if (null == debuggerAddress) {
+            throw new InvalidArgumentException("Debugger address should not be null.");
+        }
+
         this.wrapped = sequence;
+
+        debuggerArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), DEBUGGER_INTERRUPT_TARGET);
+
+        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+
+        try {
+            debuggerReceiver = router.route(debuggerAddress);
+        } catch (RouteNotFoundException e) {
+            throw new InvalidArgumentException("Invalid debugger address.", e);
+        }
+
+        isInDebugger = true;
+        isCompleted = false;
     }
 
     @Override
     public boolean isExceptionOccurred() {
-        return false;
+        return exception != null;
     }
 
     @Override
     public boolean isCompleted() {
-        return false;
+        return isCompleted;
     }
 
     @Override
     public void stop() {
-
+        isCompleted = true;
     }
 
     @Override
     public Throwable getException() {
-        return null;
+        return exception;
     }
 
     @Override
     public boolean processException() {
+        if (null != exception) {
+            try {
+                wrapped.catchException(exception, exceptionContext);
+                exception = null;
+                return true;
+            } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException | InvalidArgumentException
+                    | ReadValueException e) {
+                e.addSuppressed(exception);
+                exception = e;
+            }
+        }
+
         return false;
     }
 
@@ -54,8 +118,18 @@ public class DebuggerSequenceImpl implements IDebuggerSequence {
 
     @Override
     public boolean next() {
-        // TODO: Implement
-        return false;
+        if (isCompleted) {
+            return false;
+        }
+
+        if (isInDebugger) {
+            isInDebugger = false;
+        } else {
+            isCompleted = !wrapped.next();
+            isInDebugger = true;
+        }
+
+        return true;
     }
 
     @Override
@@ -80,14 +154,12 @@ public class DebuggerSequenceImpl implements IDebuggerSequence {
 
     @Override
     public IMessageReceiver getCurrentReceiver() {
-        // TODO: Implement
-        return null;
+        return isInDebugger ? debuggerReceiver : wrapped.getCurrentReceiver();
     }
 
     @Override
     public IObject getCurrentReceiverArguments() {
-        // TODO: Implement
-        return null;
+        return isInDebugger ? debuggerArguments : wrapped.getCurrentReceiverArguments();
     }
 
     @Override
@@ -96,9 +168,10 @@ public class DebuggerSequenceImpl implements IDebuggerSequence {
     }
 
     @Override
-    public void catchException(final Throwable exception, final IObject context)
+    public void catchException(final Throwable exc, final IObject context)
             throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
             InvalidArgumentException, ReadValueException {
-
+        this.exception = exc;
+        this.exceptionContext = context;
     }
 }

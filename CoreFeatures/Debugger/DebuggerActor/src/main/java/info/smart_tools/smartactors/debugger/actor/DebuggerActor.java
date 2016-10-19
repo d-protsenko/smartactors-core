@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.debugger.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
@@ -102,9 +103,10 @@ public class DebuggerActor {
      * @param message the message being debugged
      * @throws ReadValueException if error occurs reading values from message
      * @throws SessionNotFoundException if cannot find the session the message is associated with
+     * @throws InterruptProcessingException if error occurs processing interrupt
      */
     public void interrupt(final DebuggableMessage message)
-            throws ReadValueException, SessionNotFoundException {
+            throws ReadValueException, SessionNotFoundException, InterruptProcessingException {
         getSession(message.getSessionId()).handleInterrupt(message.getProcessor());
     }
 

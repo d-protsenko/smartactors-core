@@ -3,7 +3,8 @@ package info.smart_tools.smartactors.debugger.interfaces;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 
 /**
- *
+ * {@link IMessageProcessingSequence Message processing sequence} used by a debugger to substitute debugger calls between real sequence
+ * steps.
  */
 public interface IDebuggerSequence extends IMessageProcessingSequence {
     /**
