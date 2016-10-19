@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,14 +49,15 @@ public class DebuggerActor {
                 arg -> {
             String id = (String) arg;
 
-            if (!sessions.containsKey(id)) {
-                throw new CommandExecutionException(
-                        MessageFormat.format("There is no debugger session with id=''{0}}''.", id));
+            try {
+                getSession(id).close();
+            } catch (SessionNotFoundException e) {
+                throw new CommandExecutionException(e);
+            } finally {
+                sessions.remove(id);
             }
 
-            sessions.remove(id).close();
-
-            return null;
+            return "OK";
         });
 
         globalCommands.put("listSessions",
@@ -74,7 +74,7 @@ public class DebuggerActor {
      * @throws CommandExecutionException if error occurs processing a global command
      * @throws SessionNotFoundException if cannot find a session to execute command within
      */
-    public void execute(final CommandMessage message)
+    public void executeCommand(final CommandMessage message)
             throws ReadValueException, ChangeValueException, CommandExecutionException, InvalidArgumentException,
                 SessionNotFoundException {
         debuggerAddress = message.getDebuggerAddress();
