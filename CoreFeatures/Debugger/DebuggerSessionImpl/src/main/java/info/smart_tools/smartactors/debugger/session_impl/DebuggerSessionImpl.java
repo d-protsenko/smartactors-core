@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProc
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -83,6 +84,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("getStackTrace", this::getStackTrace);
 
         commands.put("setMessage", stopModeCommand(args -> message = (IObject) args));
+        commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
             try {
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
@@ -96,6 +98,9 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             return "OK";
         }));
         commands.put("setBreakOnException", args -> breakOnException = (Boolean) args);
+
+        commands.put("setStackDepth", stopModeCommand(args -> stackDepth = ((Number) args).intValue()));
+        commands.put("getStackDepth", args -> stackDepth);
     }
 
     private void pauseProcessor() throws AsynchronousOperationException {
@@ -139,7 +144,9 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     @Override
     public void close() {
-
+        if (isRunning() || isPaused()) {
+            sequence.stop();
+        }
     }
 
     private boolean isRunning() {
@@ -286,6 +293,35 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
             return trace;
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+            throw new CommandExecutionException(e);
+        }
+    }
+
+    private Object setMessageField(final Object arg)
+            throws CommandExecutionException {
+        if (isRunning()) {
+            throw new CommandExecutionException("Is not stopped or paused now.");
+        }
+
+        try {
+            IObject args = (IObject) arg;
+
+            IFieldName fieldNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
+            IFieldName fieldValueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
+            IFieldName dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
+
+            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), args.getValue(fieldNameFieldName));
+            Object dependencyName = args.getValue(dependencyFieldName);
+            Object value = args.getValue(fieldValueFieldName);
+
+            if (dependencyName != null) {
+                value = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), dependencyName), value);
+            }
+
+            message.setValue(fieldName, value);
+
+            return "OK";
+        } catch (ClassCastException | ResolutionException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new CommandExecutionException(e);
         }
     }
