@@ -1,9 +1,10 @@
-package info.smart_tools.smartactors.http_endpoint_plugins.http_client_plugin;
+package info.smart_tools.smartactors.https_endopint_plugins.https_client_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.core.https_endpoint.https_client.HttpsClient;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
@@ -15,9 +16,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
-import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
 import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
+import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
@@ -39,19 +39,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Plugin for http client
+ * Created by sevenbits on 15.10.16.
  */
-public class HttpClientPlugin implements IPlugin {
-    private final IBootstrap<IBootstrapItem<String>> bootstrap;
+public class HttpsClientPlugin implements IPlugin {
 
-    /**
-     * Constructor
-     *
-     * @param bootstrap bootstrap
-     */
-    public HttpClientPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
-        this.bootstrap = bootstrap;
-    }
+    private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
     private IFieldName uriFieldName;
     private IFieldName startChainNameFieldName,
@@ -59,10 +51,14 @@ public class HttpClientPlugin implements IPlugin {
             stackDepthFieldName,
             exceptionalMessageMapId;
 
+    public HttpsClientPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+        this.bootstrap = bootstrap;
+    }
+
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CreateHttpClient");
+            IBootstrapItem<String> item = new BootstrapItem("CreateHttpsClient");
             item
 //                    .after("IOC")
 //                    .after("message_processor")
@@ -129,10 +125,11 @@ public class HttpClientPlugin implements IPlugin {
                                                     messageMapper
                                             )
                                     );
-                                    IOC.register(Keys.getOrAdd("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
+
+                                    IOC.register(Keys.getOrAdd("sendHttpsRequest"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
-                                                            HttpClient client = (HttpClient) args[0];
+                                                            HttpsClient client = (HttpsClient) args[0];
                                                             IObject request = (IObject) args[1];
                                                             client.sendRequest(request);
                                                             IOC.resolve(
@@ -148,7 +145,7 @@ public class HttpClientPlugin implements IPlugin {
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(Keys.getOrAdd("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
                                                         try {
@@ -156,8 +153,8 @@ public class HttpClientPlugin implements IPlugin {
                                                                     Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
                                                                     request
                                                             );
-                                                            HttpClient client =
-                                                                    new HttpClient(
+                                                            HttpsClient client =
+                                                                    new HttpsClient(
                                                                             URI.create((String) request.getValue(uriFieldName)),
                                                                             responseHandler
                                                                     );
@@ -180,6 +177,7 @@ public class HttpClientPlugin implements IPlugin {
         } catch (Exception e) {
             throw new PluginException(e);
         }
+
     }
 
     private void registerFieldNames() throws ResolutionException {

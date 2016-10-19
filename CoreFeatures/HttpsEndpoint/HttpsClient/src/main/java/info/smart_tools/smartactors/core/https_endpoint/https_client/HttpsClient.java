@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IRespo
 import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
 import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
+import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -28,8 +29,15 @@ import java.net.URI;
 public class HttpsClient extends NettyClient<FullHttpRequest> {
     private IResponseHandler inboundHandler;
 
-    private SSLEngine clientEngine;
-
+    private static ISslEngineProvider sslEngineProvider;
+    private static SSLEngine clientEngine;
+    static {
+        try {
+            sslEngineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()));
+        } catch (ResolutionException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Constructor
      * @param serverUri uri of the server for request
@@ -39,17 +47,15 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
     public HttpsClient(final URI serverUri, final IResponseHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
         this.inboundHandler = inboundHandler;
-        try {
-            this.clientEngine = IOC.resolve(Keys.getOrAdd("sslClientContext"));
-            clientEngine.setUseClientMode(true);
-        } catch (ResolutionException e) {
-            throw new RequestSenderException(e);
-        }
     }
 
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
+        clientEngine = sslEngineProvider.getClientContext();
+        clientEngine.setUseClientMode(true);
+        SslHandler sslHandler = new SslHandler(clientEngine);
         return super.setupPipeline(pipeline)
+                .addLast("ssl", sslHandler)
                 .addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE))
                 .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
                             @Override
@@ -57,8 +63,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
                                 inboundHandler.handle(channelHandlerContext, response);
                             }
                         }
-                )
-                .addLast("ssl", new SslHandler(clientEngine));
+                );
     }
 
     @Override

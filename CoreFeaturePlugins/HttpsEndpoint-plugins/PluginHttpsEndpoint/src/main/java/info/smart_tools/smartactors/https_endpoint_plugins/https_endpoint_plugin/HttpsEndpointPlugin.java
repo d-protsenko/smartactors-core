@@ -1,31 +1,20 @@
 package info.smart_tools.smartactors.https_endpoint_plugins.https_endpoint_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
-import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
-import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.DeserializeStrategyGet;
-import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_json.DeserializeStrategyPostJson;
-import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
-import info.smart_tools.smartactors.http_endpoint.http_response_sender.HttpResponseSender;
-import info.smart_tools.smartactors.https_endpoint.https_endpoint.HttpsEndpoint;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
-import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.exception.SSLEngineProviderException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
-import info.smart_tools.smartactors.https_endpoint.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
+import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
+import info.smart_tools.smartactors.https_endpoint.https_endpoint.HttpsEndpoint;
+import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
+import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.exception.SSLEngineProviderException;
+import info.smart_tools.smartactors.https_endpoint.ssl_engine_provider.SslEngineProvider;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -35,17 +24,14 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.http_endpoint.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 
 /**
  * Plugin for register http/https endpoint at IOC
@@ -93,7 +79,11 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     (args) -> {
                                                         ISslEngineProvider sslContextProvider = new SslEngineProvider();
                                                         try {
-                                                            sslContextProvider.init((IObject) args[0]);
+                                                            if (args != null && args.length > 0) {
+                                                                sslContextProvider.init((IObject) args[0]);
+                                                            } else {
+                                                                sslContextProvider.init(null);
+                                                            }
                                                         } catch (SSLEngineProviderException e) {
                                                         }
                                                         return sslContextProvider;
@@ -119,7 +109,6 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-                                    registerHttpEndpoint();
                                     registerHttpsEndpoint();
 
                                     IOC.register(Keys.getOrAdd(FileInputStream.class.getCanonicalName()),
@@ -132,10 +121,6 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                         return null;
                                                     }
                                             ));
-                                    registerDeserializationStrategies();
-                                    registerResponseSenders();
-                                    registerExceptionalResponse();
-                                    registerCookiesSetter();
                                     IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
                                     IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
@@ -211,39 +196,6 @@ public class HttpsEndpointPlugin implements IPlugin {
     }
 
 
-    private void registerHttpEndpoint() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("http_endpoint"),
-                new CreateNewInstanceStrategy(
-                        (args) -> {
-                            IObject configuration = (IObject) args[0];
-                            try {
-                                IOC.resolve(
-                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                        "HTTP_GET",
-                                        configuration.getValue(endpointNameFieldName),
-                                        configuration.getValue(templatesFieldName));
-                                IOC.resolve(
-                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                        "HTTP_POST",
-                                        configuration.getValue(endpointNameFieldName));
-
-
-                                IEnvironmentHandler environmentHandler = IOC.resolve(
-                                        Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
-                                        configuration);
-                                return new HttpEndpoint((Integer) configuration.getValue(portFieldName),
-                                        (Integer) configuration.getValue(maxContentLengthFieldName),
-                                        ScopeProvider.getCurrentScope(), environmentHandler,
-                                        (IReceiverChain) configuration.getValue(startChainNameFieldName),
-                                        (String) configuration.getValue(endpointNameFieldName));
-                            } catch (ReadValueException | ScopeProviderException | ResolutionException | InvalidArgumentException e) {
-                            }
-                            return null;
-                        }
-                )
-        );
-    }
-
     private void registerHttpsEndpoint() throws InvalidArgumentException, RegistrationException, ResolutionException {
         IKey httpsEndpointKey = Keys.getOrAdd("https_endpoint");
         IOC.register(httpsEndpointKey,
@@ -279,102 +231,6 @@ public class HttpsEndpointPlugin implements IPlugin {
                             }
                             return null;
                         }
-                )
-        );
-    }
-
-    private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            AdditionDependencyStrategyException {
-        IAdditionDependencyStrategy cookiesSetterChooser =
-                IOC.resolve(Keys.getOrAdd("CookiesSetterChooser"));
-
-        IOC.register(Keys.getOrAdd("key_for_cookies_extractor"), new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                                "HTTP"
-                )
-        );
-
-        cookiesSetterChooser.register("HTTP",
-                new CreateNewInstanceStrategy(
-                        (args) -> new CookiesSetter()
-                )
-        );
-    }
-
-    private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            AdditionDependencyStrategyException {
-        IAdditionDependencyStrategy responseSenderChooser =
-                IOC.resolve(Keys.getOrAdd("ResponseSenderChooser"));
-
-        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"), new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                                "HTTP_POST"
-
-                )
-        );
-
-        responseSenderChooser.register("HTTP_POST",
-                new CreateNewInstanceStrategy(
-                        (args) -> {
-                            //args[0] - type of the request
-                            //args[1] - name of the endpoint
-                            try {
-                                return new HttpResponseSender((String) args[1]);
-                            } catch (ResolutionException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
-    }
-
-    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            AdditionDependencyStrategyException {
-        IAdditionDependencyStrategy deserializationStrategyChooser =
-                IOC.resolve(Keys.getOrAdd("DeserializationStrategyChooser"));
-        IMessageMapper messageMapper = new MessageToBytesMapper();
-
-        IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
-                        (args) -> {
-                            FullHttpRequest httpRequest = (FullHttpRequest) args[0];
-                            return "HTTP_" + httpRequest.method().toString();
-                        }
-                )
-        );
-
-        deserializationStrategyChooser.register("HTTP_GET",
-                new CreateNewInstanceStrategy(
-                        (args) -> {
-                            try {
-                                return new DeserializeStrategyGet((List<String>) args[0]);
-                            } catch (ResolutionException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-        );
-        deserializationStrategyChooser.register("HTTP_POST",
-                new CreateNewInstanceStrategy(
-                        (args) -> new DeserializeStrategyPostJson(messageMapper)
-                )
-        );
-
-        ResolveByNameIocStrategy resolveStrategy = new ResolveByNameIocStrategy();
-        IKey deserializeStrategyKey = Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName());
-        IOC.register(deserializeStrategyKey, resolveStrategy);
-    }
-
-    private void registerExceptionalResponse() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
-                        new DSObject("{\"exception\": \"Request body is not json\", \"statusCode\": 400}")
-                )
-        );
-        IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(
-                        new DSObject("{\"exception\": \"This url is not registered\", \"statusCode\": 404}")
-                )
-        );
-        IOC.register(Keys.getOrAdd("HttpInternalException"), new SingletonStrategy(
-                        new DSObject("{\"exception\": \"Internal server error\", \"statusCode\": 500}")
                 )
         );
     }

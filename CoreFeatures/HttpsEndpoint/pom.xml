@@ -23,6 +23,7 @@
         <module>HttpsServer</module>
         <module>SslEngineProvider</module>
         <module>HttpsClient</module>
+        <module>HttpsRequestSenderActor</module>
     </modules>
 
     <repositories>
