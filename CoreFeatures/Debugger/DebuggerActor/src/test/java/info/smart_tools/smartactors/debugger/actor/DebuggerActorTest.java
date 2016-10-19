@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
 import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;

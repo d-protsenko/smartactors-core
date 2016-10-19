@@ -73,6 +73,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("pause", runModeCommand(args -> prePaused = true));
 
         commands.put("stepMode", this::setStepMode);
+        commands.put("getStepMode", args -> stepModeMaxDepth);
 
         //noinspection ThrowableResultOfMethodCallIgnored
         commands.put("getException", args -> (isRunning() ? sequence.getException() : null));
@@ -282,13 +283,17 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             List<IObject> trace = new LinkedList<>();
 
             IFieldName indexFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "index");
+            IFieldName nameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
+            IFieldName stepsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "steps");
 
-            for (int i = 0; i < sequence.getCurrentLevel(); i++) {
+            for (int i = 0; i <= sequence.getCurrentLevel(); i++) {
                 IObject levelObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
                 levelObject.setValue(indexFieldName, sequence.getStepAtLevel(i));
 
                 // TODO: Get chain name and step arguments
+
+                trace.add(levelObject);
             }
 
             return trace;
