@@ -42,6 +42,8 @@ import info.smart_tools.smartactors.http_endpoint.http_headers_setter.HttpHeader
 import info.smart_tools.smartactors.http_endpoint.respons_status_extractor.ResponseStatusExtractor;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 import java.util.List;
 
@@ -120,7 +122,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                                     configuration.getValue(templatesFieldName));
                                                             IOC.resolve(
                                                                     Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_POST",
+                                                                    "HTTP_application/json",
                                                                     configuration.getValue(endpointNameFieldName));
 
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
@@ -312,11 +314,17 @@ public class HttpEndpointPlugin implements IPlugin {
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
-                        (args) -> "HTTP_POST"
+                        (args) -> {
+                            FullHttpRequest request = (FullHttpRequest) args[0];
+                            if (request.method().equals("GET")) {
+                                return "HTTP_GET";
+                            }
+                            return "HTTP_" + request.headers().get(HttpHeaders.Names.CONTENT_TYPE);
+                        }
                 )
         );
 
-        deserializationStrategyChooser.register("HTTP_POST",
+        deserializationStrategyChooser.register("HTTP_application/json",
                 new CreateNewInstanceStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
