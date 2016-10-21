@@ -26,7 +26,7 @@ public class DeserializeStrategyPostJson implements IDeserializeStrategy<FullHtt
      * Method, that deserialize json content of request
      * @param request Http request, that should be deserialize
      * @return {@link IObject} deserializated json
-     * @throws info.smart_tools.smartactors.core.exceptions.DeserializationException
+     * @throws info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException
      */
     @Override
     public IObject deserialize(final FullHttpRequest request) throws DeserializationException {
