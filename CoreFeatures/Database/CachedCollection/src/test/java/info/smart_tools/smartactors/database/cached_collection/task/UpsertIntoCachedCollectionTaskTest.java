@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.database.cached_collection.task;
 
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.field.nested_field.NestedField;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -44,12 +45,14 @@ public class UpsertIntoCachedCollectionTaskTest {
         when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
         when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 
-        startDateTimeField = mock(IField.class);
+        startDateTimeField = mock(NestedField.class);
         collectionNameField = mock(IField.class);
         documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
+        IKey keyNestedField = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
-        when(IOC.resolve(keyField, "document/startDateTime")).thenReturn(startDateTimeField);
+        when(Keys.getOrAdd(NestedField.class.getCanonicalName())).thenReturn(keyNestedField);
+        when(IOC.resolve(keyNestedField, "document/startDateTime")).thenReturn(startDateTimeField);
         when(IOC.resolve(keyField, "document")).thenReturn(documentField);
         when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
 

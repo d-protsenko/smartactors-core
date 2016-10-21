@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>actor.mailing_actor</artifactId>
+            <artifactId>email.actor.mailing</artifactId>
             <version>${core.version}</version>
         </dependency>
     </dependencies>

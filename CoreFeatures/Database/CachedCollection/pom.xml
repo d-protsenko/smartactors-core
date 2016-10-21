@@ -32,6 +32,11 @@
             <artifactId>iobject.ifield</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>field.nested-field</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
