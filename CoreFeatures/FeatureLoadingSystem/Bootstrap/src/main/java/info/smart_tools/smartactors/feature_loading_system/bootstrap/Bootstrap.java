@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
      * Creates instance of {@link IBootstrap} and initialize field {@code loadedItems} by given agrument
      * @param loadedItems the list of already loaded items
      */
-    public Bootstrap(final List<IBootstrapItem<String>> loadedItems) {
+    public Bootstrap(final Collection<IBootstrapItem<String>> loadedItems) {
         for (IBootstrapItem<String> item : loadedItems) {
             this.itemStorage.add(item.process(() -> { }));
         }
