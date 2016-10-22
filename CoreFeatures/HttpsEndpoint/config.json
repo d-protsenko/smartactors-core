@@ -2,7 +2,8 @@
   "featureName": "https-endpoint",
   "afterFeatures": [
     "endpoint",
-    "http-endpoint"
+    "http-endpoint",
+    "message-bus"
   ],
   "objects": [
     {

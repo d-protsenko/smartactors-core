@@ -1,21 +1,23 @@
 package info.smart_tools.smartactors.https_endpoint.ssl_engine_provider;
 
-
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.exception.SSLEngineProviderException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.handler.ssl.ClientAuth;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManager;
+import javax.net.ssl.SSLParameters;
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Class for getting ssl engine
@@ -28,8 +30,25 @@ public class SslEngineProvider implements ISslEngineProvider {
     private String certPath;
     private boolean initialized = false;
 
+    private String[] supportedCiphers = new String[]{
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+            "TLS_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_RSA_WITH_AES_128_CBC_SHA",
+            "TLS_RSA_WITH_AES_256_CBC_SHA",
+            "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA"
+    };
+
     @Override
     public void init(final IObject params) throws SSLEngineProviderException {
+        //System.setProperty("https.protocols", "TLSv1.2");
         IFieldName certPassFieldName = null;
         IFieldName certPathFieldName = null;
         IFieldName keyPassFieldName = null;
@@ -51,10 +70,10 @@ public class SslEngineProvider implements ISslEngineProvider {
         try {
             if (initialized) {
                 SslContextBuilder sslContextBuilder = SslContextBuilder.forServer(new File(certPath), new File(certKey));
-                sslServerContext = sslContextBuilder.build();
+                sslServerContext = sslContextBuilder.ciphers(Arrays.asList(supportedCiphers)).build();
             }
-            SslContextBuilder sslClientContextBuilder = SslContextBuilder.forClient();
-            sslClientContext = sslClientContextBuilder.build();
+            SslContextBuilder sslClientContextBuilder = SslContextBuilder.forClient().clientAuth(ClientAuth.OPTIONAL);
+            sslClientContext = sslClientContextBuilder.sslProvider(SslProvider.JDK).ciphers(Arrays.asList(supportedCiphers)).build();
         } catch (SSLException e) {
             throw new SSLEngineProviderException("An exception on building ssl context", e);
         }
@@ -72,7 +91,9 @@ public class SslEngineProvider implements ISslEngineProvider {
 
     @Override
     public SSLEngine getClientContext() {
-        return sslClientContext.newEngine(ByteBufAllocator.DEFAULT);
+        SSLEngine engine = sslClientContext.newEngine(ByteBufAllocator.DEFAULT);
+        engine.setEnabledCipherSuites(supportedCiphers);
+        return engine;
     }
 
 
