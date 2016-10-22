@@ -18,7 +18,10 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.ssl.SslProvider;
 
 import javax.net.ssl.SSLEngine;
 import java.net.URI;
@@ -28,9 +31,9 @@ import java.net.URI;
  */
 public class HttpsClient extends NettyClient<FullHttpRequest> {
     private IResponseHandler inboundHandler;
-
     private static ISslEngineProvider sslEngineProvider;
-    private static SSLEngine clientEngine;
+
+
     static {
         try {
             sslEngineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()));
@@ -38,9 +41,11 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
             e.printStackTrace();
         }
     }
+
     /**
      * Constructor
-     * @param serverUri uri of the server for request
+     *
+     * @param serverUri      uri of the server for request
      * @param inboundHandler response handler
      * @throws RequestSenderException throw if there is problem with resolving "sslClientContext"
      */
@@ -51,8 +56,10 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
 
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
-        clientEngine = sslEngineProvider.getClientContext();
-        clientEngine.setUseClientMode(true);
+        SSLEngine clientEngine = sslEngineProvider.getClientContext(
+                super.serverUri.getHost(),
+                super.serverUri.getPort() == -1 ? 443 : super.serverUri.getPort()
+        );
         SslHandler sslHandler = new SslHandler(clientEngine);
         return super.setupPipeline(pipeline)
                 .addLast("ssl", sslHandler)

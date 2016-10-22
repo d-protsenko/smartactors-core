@@ -33,6 +33,15 @@ public interface ISslEngineProvider {
     SSLEngine getClientContext();
 
     /**
+     * Method for getting ssl engine
+     *
+     * @param hostname hostname of the server
+     * @param port     port of the server
+     * @return ssl engine
+     */
+    SSLEngine getClientContext(final String hostname, final int port);
+
+    /**
      * Is ssl engine provider initialized
      *
      * @return true if ssl engine provider initialized and false otherwise

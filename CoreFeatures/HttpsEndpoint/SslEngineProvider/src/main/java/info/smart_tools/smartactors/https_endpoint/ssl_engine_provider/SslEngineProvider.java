@@ -48,10 +48,8 @@ public class SslEngineProvider implements ISslEngineProvider {
 
     @Override
     public void init(final IObject params) throws SSLEngineProviderException {
-        //System.setProperty("https.protocols", "TLSv1.2");
         IFieldName certPassFieldName = null;
         IFieldName certPathFieldName = null;
-        IFieldName keyPassFieldName = null;
         try {
             certPassFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPass");
             certPathFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPath");
@@ -90,9 +88,17 @@ public class SslEngineProvider implements ISslEngineProvider {
     }
 
     @Override
+    public SSLEngine getClientContext(final String hostname, final int port) {
+        SSLEngine engine = sslClientContext.newEngine(ByteBufAllocator.DEFAULT, hostname, port);
+        engine.setEnabledCipherSuites(supportedCiphers);
+        engine.setUseClientMode(true);
+        return engine;
+    }
+    @Override
     public SSLEngine getClientContext() {
         SSLEngine engine = sslClientContext.newEngine(ByteBufAllocator.DEFAULT);
         engine.setEnabledCipherSuites(supportedCiphers);
+        engine.setUseClientMode(true);
         return engine;
     }
 
