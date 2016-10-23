@@ -4,6 +4,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -49,10 +51,16 @@ public class DeserializeStrategyPostFormUrlencodedTest {
         );
         IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
         IOC.register(keyIObject,
+            new CreateNewInstanceStrategy(
+                (args) -> new DSObject()
+
+            )
+        );
+        IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new DSObject((String) args[0]);
+                                return new FieldName((String) args[0]);
                             } catch (InvalidArgumentException ignored) {
                             }
                             return null;

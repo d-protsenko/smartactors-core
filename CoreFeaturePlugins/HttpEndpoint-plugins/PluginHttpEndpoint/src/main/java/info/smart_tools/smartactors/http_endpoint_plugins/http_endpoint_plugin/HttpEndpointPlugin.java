@@ -324,7 +324,7 @@ public class HttpEndpointPlugin implements IPlugin {
                             if (request.method().equals("GET")) {
                                 return "HTTP_GET";
                             }
-                            return "HTTP_" + request.headers().get(HttpHeaders.Names.CONTENT_TYPE);
+                            return "HTTP_" + ((HttpHeaders) request.headers()).get(HttpHeaders.Names.CONTENT_TYPE);
                         }
                 )
         );

@@ -1,12 +1,16 @@
 package info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
 /**
  * Strategy for deserialization message from post request with application/x-www-form-urlencoded content-type.
@@ -29,9 +33,19 @@ public class DeserializeStrategyPostFormUrlencoded implements IDeserializeStrate
                 bytes[i] = request.content().getByte(i);
             }
             String string = new String(bytes);
-            string = string.replaceAll("=", "\":\"");
-            string = string.replaceAll("&", "\",\"");
-            return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"" + string + "\"}");
+            QueryStringDecoder decoder = new QueryStringDecoder(string, false);
+            IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            decoder.parameters().forEach(
+                    (k, v) -> {
+                        try {
+                            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
+                            message.setValue(fieldName, v.get(0));
+                        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+            );
+            return message;
         } catch (ResolutionException e) {
             throw new DeserializationException("Failed to deserialize request", e);
         }
