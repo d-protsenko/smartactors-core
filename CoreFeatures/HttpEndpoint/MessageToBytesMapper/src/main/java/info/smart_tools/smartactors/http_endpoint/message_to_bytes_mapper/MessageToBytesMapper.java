@@ -9,8 +9,6 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-import java.text.Normalizer;
-
 /**
  * Implementation of {@link IMessageMapper} which map message to byte array
  */

@@ -29,7 +29,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * </pre>
  */
 public class HttpRequestSenderActor {
-    IFieldName uriFieldName;
+    private IFieldName uriFieldName;
 
     /**
      * Constructor for actor

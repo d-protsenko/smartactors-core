@@ -2,12 +2,10 @@ package info.smart_tools.smartactors.http_endpoint.http_client;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
-import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
 import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
-import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -15,24 +13,17 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * Client for HTTP server
@@ -89,7 +80,8 @@ public class HttpClient extends NettyClient<HttpRequest> {
                 .addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE))
                 .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
                             @Override
-                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpResponse response) throws Exception {
+                            protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final FullHttpResponse response)
+                                    throws Exception {
                                 inboundHandler.handle(channelHandlerContext, response);
                             }
                         }
