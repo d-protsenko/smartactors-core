@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.http_endpoint.netty_client;
 
-import info.smart_tools.smartactors.http_endpoint.completable_netty_future.CompletableNettyFuture;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClient;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.IRequestSender;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.http_endpoint.completable_netty_future.CompletableNettyFuture;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -31,13 +31,16 @@ import java.util.concurrent.CompletableFuture;
 public abstract class NettyClient<TRequest> implements IClient<TRequest>, IRequestSender {
     private static EventLoopGroup workerGroup = new NioEventLoopGroup(1);
     private Channel channel;
-    private URI serverUri;
+    protected URI serverUri;
     private Class<? extends Channel> channelClass;
-    private ChannelInboundHandler inboundHandler;
+    private IResponseHandler inboundHandler;
     private IClientConfig clientConfig;
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
     private static final int DEFAULT_READ_TIMEOUT_SEC = 5;
+    private static final int DEFAULT_HTTP_PORT = 80;
+    private static final int DEFAULT_HTTPS_PORT = 443;
     private int port;
+
     /**
      * Constructor for netty client
      *
@@ -46,11 +49,15 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      * @param inboundHandler
      */
     public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,
-                       final ChannelInboundHandler inboundHandler) {
+                       final IResponseHandler inboundHandler) {
         this.serverUri = serverUri;
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
-        this.port = serverUri.getPort() == -1 ? 80 : serverUri.getPort();
+        this.port = serverUri.getPort();
+        if (port == -1) {
+            this.port = serverUri.getScheme().equals("http") ? DEFAULT_HTTP_PORT : DEFAULT_HTTPS_PORT;
+        }
+        start();
     }
 
     public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
@@ -61,7 +68,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         this.clientConfig = clientConfig;
         try {
             this.serverUri = clientConfig.getServerUri();
-            this.inboundHandler = (ChannelInboundHandler) clientConfig.getHandler();
+            this.inboundHandler = (IResponseHandler) clientConfig.getHandler();
         } catch (ReadValueException | ChangeValueException e) {
             throw new RuntimeException("Can't create NettyClient", e);
         }
@@ -83,7 +90,11 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
                 me.channel = future.channel();
             }
         });
-
+        try {
+            future.sync();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return wrapToCompletableFuture(future);
     }
 
@@ -104,6 +115,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         return wrapToCompletableFuture(channel.close())
                 .thenCompose(x -> wrapToCompletableFuture(workerGroup.shutdownGracefully()));
     }
+
     /**
      * Setup a communication channel pipeline.
      * Typically, it will add some decoders for initial bytes received from some kind of Socket.
@@ -137,8 +149,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
                                 .addLast(new ReadTimeoutHandler(
                                         clientConfig != null && clientConfig.getReadTimeout() != null ?
                                                 clientConfig.getReadTimeout() / 1000 : DEFAULT_READ_TIMEOUT_SEC
-                                ))
-                                .addLast(inboundHandler);
+                                ));
                     }
                 });
     }

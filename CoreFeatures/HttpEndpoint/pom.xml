@@ -47,6 +47,10 @@
         <module>GetCookieFromRequestRule</module>
         <module>GetHeaderFromRequestRule</module>
         <module>GetQueryParameterRule</module>
+        <module>HttpClientInitializer</module>
+        <module>HttpRequestSenderActor</module>
+        <module>PluginHttpRequestSenderActor</module>
+        <module>HttpRequestMaker</module>
         <module>DeserializeStrategyPostFormUrlencoded</module>
     </modules>
 

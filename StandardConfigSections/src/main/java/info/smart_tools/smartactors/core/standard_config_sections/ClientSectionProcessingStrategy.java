@@ -54,23 +54,16 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            String startChainName = (String) clientObject.getValue(startChainNameFieldName);
-            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-            IReceiverChain chain = chainStorage.resolve(mapId);
-            clientObject.setValue(startChainNameFieldName, chain);
             clientObject.setValue(queueFieldName, queue);
             Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
-            IResponseHandler handler = new HttpResponseHandler(queue, stackDepth, chain);
-            IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(handler));
+            clientObject.setValue(stackDepthFieldName, stackDepth);
+            IOC.register(Keys.getOrAdd("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
         } catch (ReadValueException | InvalidArgumentException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
+            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
-        } catch (ChainNotFoundException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
-        } catch (ChangeValueException e) {
-            e.printStackTrace();
-        } catch (RegistrationException e) {
+        } catch (ChangeValueException | RegistrationException e) {
+            throw new ConfigurationProcessingException("Error occurred registering \"client\".", e);
         }
     }
 

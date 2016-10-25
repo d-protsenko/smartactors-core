@@ -35,12 +35,12 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> messageBusItem = new BootstrapItem("config_section:messageBus");
 
             messageBusItem
-                    .after("config_sections:start")
-                    .before("config_sections:done")
-                    .after("config_section:maps")
-                    .after("config_section:executor")
-                    .after("IFieldNamePlugin")
-                    .before("starter")
+//                    .after("config_sections:start")
+//                    .before("config_sections:done")
+//                    .after("config_section:maps")
+//                    .after("config_section:executor")
+//                    .after("IFieldNamePlugin")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

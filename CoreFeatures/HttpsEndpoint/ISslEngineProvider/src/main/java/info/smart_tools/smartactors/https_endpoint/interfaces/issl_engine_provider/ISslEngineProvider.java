@@ -23,7 +23,23 @@ public interface ISslEngineProvider {
      *
      * @return ssl engine
      */
-    SSLEngine get();
+    SSLEngine getServerContext();
+
+    /**
+     * Method for getting ssl engine
+     *
+     * @return ssl engine
+     */
+    SSLEngine getClientContext();
+
+    /**
+     * Method for getting ssl engine
+     *
+     * @param hostname hostname of the server
+     * @param port     port of the server
+     * @return ssl engine
+     */
+    SSLEngine getClientContext(final String hostname, final int port);
 
     /**
      * Is ssl engine provider initialized

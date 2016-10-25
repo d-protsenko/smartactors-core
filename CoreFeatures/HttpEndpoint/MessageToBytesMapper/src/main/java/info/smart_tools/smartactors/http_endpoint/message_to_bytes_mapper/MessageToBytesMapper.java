@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper;
 
 import com.google.common.base.Charsets;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-
-import java.text.Normalizer;
 
 /**
  * Implementation of {@link IMessageMapper} which map message to byte array
@@ -34,6 +33,12 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
 
     @Override
     public byte[] serialize(final IObject message) {
-        return message.toString().getBytes(Charsets.UTF_8);
+        try {
+            String serializedMessage = message.serialize();
+            return serializedMessage.getBytes(Charsets.UTF_8);
+        } catch (SerializeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
