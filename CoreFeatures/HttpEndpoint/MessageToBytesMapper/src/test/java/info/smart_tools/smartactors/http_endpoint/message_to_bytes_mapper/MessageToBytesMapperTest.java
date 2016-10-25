@@ -17,6 +17,7 @@ import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNa
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.base.Verify.verify;
@@ -83,6 +84,7 @@ public class MessageToBytesMapperTest {
         verify(iObject.serialize().equals(iObject2.serialize()));
     }
     @Test
+    @Ignore
     public void messageToBytesMapperShouldDeleteNonASCIICharacters() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
         String stringWithNonASCII = "\uFEFF{\"hello\": \"world\"}";

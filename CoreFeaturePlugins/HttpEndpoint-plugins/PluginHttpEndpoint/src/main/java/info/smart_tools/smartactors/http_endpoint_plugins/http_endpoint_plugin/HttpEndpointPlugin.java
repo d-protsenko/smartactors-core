@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
@@ -42,6 +43,8 @@ import info.smart_tools.smartactors.http_endpoint.http_headers_setter.HttpHeader
 import info.smart_tools.smartactors.http_endpoint.respons_status_extractor.ResponseStatusExtractor;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 import java.util.List;
 
@@ -120,7 +123,11 @@ public class HttpEndpointPlugin implements IPlugin {
                                                                     configuration.getValue(templatesFieldName));
                                                             IOC.resolve(
                                                                     Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                                                                    "HTTP_POST",
+                                                                    "HTTP_application/json",
+                                                                    configuration.getValue(endpointNameFieldName));
+                                                            IOC.resolve(
+                                                                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                                                    "HTTP_application/x-www-form-urlencoded",
                                                                     configuration.getValue(endpointNameFieldName));
 
                                                             IEnvironmentHandler environmentHandler = IOC.resolve(
@@ -312,15 +319,28 @@ public class HttpEndpointPlugin implements IPlugin {
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
-                        (args) -> "HTTP_POST"
+                        (args) -> {
+                            FullHttpRequest request = (FullHttpRequest) args[0];
+                            if (request.method().equals("GET")) {
+                                return "HTTP_GET";
+                            }
+                            return "HTTP_" + ((HttpHeaders) request.headers()).get(HttpHeaders.Names.CONTENT_TYPE);
+                        }
                 )
         );
 
-        deserializationStrategyChooser.register("HTTP_POST",
+        deserializationStrategyChooser.register("HTTP_application/json",
                 new CreateNewInstanceStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
                         (args) -> new DeserializeStrategyPostJson(messageMapper)
+                )
+        );
+        deserializationStrategyChooser.register("HTTP_application/x-www-form-urlencoded",
+                new CreateNewInstanceStrategy(
+                        //args[0] - type of the request
+                        //args[1] - name of the endpoint
+                        (args) -> new DeserializeStrategyPostFormUrlencoded()
                 )
         );
         deserializationStrategyChooser.register("HTTP_GET",
