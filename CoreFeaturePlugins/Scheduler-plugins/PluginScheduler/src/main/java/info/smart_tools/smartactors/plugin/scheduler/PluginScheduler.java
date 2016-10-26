@@ -72,8 +72,13 @@ public class PluginScheduler extends BootstrapPlugin {
     @After({"scheduler_entry_strategies"})
     public void registerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args ->
-            new EntryStorage((IPool) args[0], (String) args[1])));
+        IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return new EntryStorage((IPool) args[0], (String) args[1]);
+            } catch (ResolutionException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
     }
 
     /**
