@@ -17,6 +17,7 @@ import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 
 /**
  * Plugin that registers scheduler actor and related components.
@@ -92,7 +93,8 @@ public class PluginScheduler extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                return new EntryStorage((IPool) args[0], (String) args[1]);
+                ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
+                return new EntryStorage((IPool) args[0], (String) args[1], observer);
             } catch (ResolutionException e) {
                 throw new FunctionExecutionException(e);
             }
