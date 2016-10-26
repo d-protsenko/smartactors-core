@@ -176,6 +176,16 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                     }
                                             )
                                     );
+                                    final String checkpointWrapperConfig = ("{" +
+                                            "'in_getProcessor':'processor'," +
+                                            "'in_getMessage':'message'," +
+                                            "'in_getCheckpointId':'arguments/id'," +
+                                            "'in_getSchedulingConfiguration':'arguments/scheduling'," +
+                                            "'in_getRecoverConfiguration':'arguments/recover'," +
+                                            "'in_getCheckpointStatus':'message/checkpointStatus'," +
+                                            "'out_setCheckpointStatus':'message/checkpointStatus'" +
+                                            "}")
+                                            .replace('"', '\'');
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "checkpoint step"
@@ -194,7 +204,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
 
                                                             checkpointConfig.setValue(wrapperFieldName, IOC.resolve(
                                                                     IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
-                                                                    "{'in_getProcessor':'processor'}".replace('"', '\'')
+                                                                    checkpointWrapperConfig
                                                             ));
 
                                                             return checkpointConfig;

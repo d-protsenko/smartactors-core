@@ -19,6 +19,7 @@
 
     <modules>
         <module>CheckpointActor</module>
+        <module>CheckpointInterfaces</module>
     </modules>
 
     <repositories>

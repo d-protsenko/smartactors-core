@@ -55,6 +55,7 @@ public interface ISchedulerEntryStorage {
      * @throws EntryStorageAccessException if there is no entry with given identifier
      */
     ISchedulerEntry getEntry(final String id) throws EntryStorageAccessException;
+
     /**
      * Download next page of entries from remote storage.
      *

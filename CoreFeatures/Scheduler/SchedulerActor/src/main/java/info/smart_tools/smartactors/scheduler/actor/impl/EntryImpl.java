@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
@@ -14,7 +13,6 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -43,9 +41,6 @@ public final class EntryImpl implements ISchedulerEntry {
     private final ISchedulerAction action;
     private final ITask task = this::executeTask;
 
-    private final IFieldName idFieldName;
-    private final IFieldName messageFieldName;
-
     /**
      * The constructor.
      *
@@ -57,14 +52,13 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ReadValueException if error occurs reading values from state object
      * @throws InvalidArgumentException if error occurs reading values from state object
      */
-    public EntryImpl(
+    EntryImpl(
             final IObject state,
             final ISchedulingStrategy strategy,
             final ISchedulerEntryStorage storage,
             final ISchedulerAction action)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
-        idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
 
         this.timer = IOC.resolve(Keys.getOrAdd("timer"));
 

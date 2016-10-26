@@ -23,5 +23,46 @@
             <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.ioc</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.named-keys-storage</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>checkpoint.interfaces</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.iqueue</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.itask</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>scheduler.interfaces</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-bus.message-bus</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
