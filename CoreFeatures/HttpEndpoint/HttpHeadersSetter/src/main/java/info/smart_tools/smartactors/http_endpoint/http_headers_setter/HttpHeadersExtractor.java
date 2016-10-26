@@ -59,8 +59,8 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
         }
         for (IObject header : headers) {
             try {
-                httpResponse.headers().set(header.getValue(headerName).toString(),
-                        header.getValue(headerValue).toString());
+                httpResponse.headers().set(String.valueOf(header.getValue(headerName)),
+                        String.valueOf(header.getValue(headerValue)));
             } catch (ReadValueException | InvalidArgumentException e) {
                 throw new HeadersSetterException("Failed to resolve header", e);
             }
