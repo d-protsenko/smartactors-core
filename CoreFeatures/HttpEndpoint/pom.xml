@@ -53,6 +53,7 @@
         <module>HttpRequestMaker</module>
         <module>DeserializeStrategyPostFormUrlencoded</module>
         <module>ResponseContentChunkedJsonStrategy</module>
+        <module>HttpChunkedHeadersSetter</module>
     </modules>
 
     <repositories>
