@@ -37,7 +37,7 @@ public class ResponseContentChunkedJsonStrategy implements IResponseContentStrat
             if (!chunked.equals("end")) {
                 responseString = responseString.substring(0, responseString.lastIndexOf('}'));
             }
-            responseString = String.valueOf(responseString.length()).concat("\r\n").concat(responseString).concat("\r\n");
+            responseString = String.valueOf(Integer.toHexString(responseString.length())).concat("\r\n").concat(responseString).concat("\r\n");
             responseObject.setValue(chunkedFieldName, chunked);
             return responseString.getBytes(Charset.forName("UTF-8"));
         } catch (ResolutionException e) {
