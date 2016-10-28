@@ -52,6 +52,7 @@
         <module>PluginHttpRequestSenderActor</module>
         <module>HttpRequestMaker</module>
         <module>DeserializeStrategyPostFormUrlencoded</module>
+        <module>ResponseContentChunkedJsonStrategy</module>
     </modules>
 
     <repositories>
