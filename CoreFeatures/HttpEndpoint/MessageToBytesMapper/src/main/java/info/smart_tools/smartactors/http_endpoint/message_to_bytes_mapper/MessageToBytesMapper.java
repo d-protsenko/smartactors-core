@@ -24,7 +24,6 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
     @Override
     public IObject deserialize(final byte[] serializedInput) throws ResolutionException {
         String string = new String(serializedInput);
-        string = string.replaceAll("[^\\p{ASCII}]", "");
         if (serializedInput.length == 0) {
             return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
         }

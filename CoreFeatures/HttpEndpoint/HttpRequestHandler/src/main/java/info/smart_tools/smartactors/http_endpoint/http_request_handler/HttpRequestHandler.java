@@ -68,20 +68,22 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request)
             throws RequestHandlerDataException, RequestHandlerInternalException, ReadValueException {
         try {
-            IDeserializeStrategy deserializeStrategy = IOC.resolve(
-                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                    IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
-                    name
-            );
-
-            //resolving body of the request
             IObject message = null;
-            try {
-                message = deserializeStrategy.deserialize(request);
-            } catch (DeserializationException e) {
-                IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
-                ctx.writeAndFlush(formExceptionalResponse(exception));
-                throw new RequestHandlerDataException(e);
+            if (!request.method().toString().equals("GET")) {
+                IDeserializeStrategy deserializeStrategy = IOC.resolve(
+                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                        IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
+                        name
+                );
+
+                //resolving body of the request
+                try {
+                    message = deserializeStrategy.deserialize(request);
+                } catch (DeserializationException e) {
+                    IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
+                    ctx.writeAndFlush(formExceptionalResponse(exception));
+                    throw new RequestHandlerDataException(e);
+                }
             }
 
             //resolving uri and another request parameters of the request
