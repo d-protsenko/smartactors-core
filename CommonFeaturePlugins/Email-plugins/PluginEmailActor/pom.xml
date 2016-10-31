@@ -3,16 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>async-operations-plugins</artifactId>
+        <artifactId>email-plugins</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>async-operations-plugins.get-async-operation-actor-plugin</artifactId>
+    <artifactId>email-plugins.email-actor-plugin</artifactId>
 
     <dependencies>
-        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
@@ -20,14 +19,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>async-operations.get-async-operation</artifactId>
+            <artifactId>ioc.ikey</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -37,35 +29,23 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
+            <artifactId>email.email-actor</artifactId>
             <version>${core.version}</version>
         </dependency>
-
-        <!--testing-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>1.6.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>1.6.4</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
-
 </project>
