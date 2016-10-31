@@ -56,11 +56,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-bus.message-bus</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>

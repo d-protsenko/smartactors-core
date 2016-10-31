@@ -13,8 +13,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
@@ -36,7 +34,6 @@ public class CheckpointActor {
 
     private final IQueue<ITask> taskQueue;
     private final ISchedulerEntryStorage storage;
-    private final IChainStorage chainStorage;
     private final Object feedbackChainId;
 
     private final CheckpointSchedulerEntryStorageObserver storageObserver;
@@ -91,7 +88,6 @@ public class CheckpointActor {
         actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
 
-        // Start downloading entries from remote storage ...
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
@@ -110,10 +106,10 @@ public class CheckpointActor {
                 collectionName,
                 storageObserver);
 
+        // Start downloading entries from remote storage ...
         taskQueue.put(new DownloadEntriesTask());
 
         //
-        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
         feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
     }
 
@@ -125,13 +121,12 @@ public class CheckpointActor {
      * @throws ChangeValueException if error occurs writing something
      * @throws InvalidArgumentException if something goes wrong
      * @throws ResolutionException if error occurs resolving any dependency
-     * @throws ChainNotFoundException if feedback chain cannot be found
      * @throws SendingMessageException if error occurs sending feedback message
      * @throws SerializeException if error occurs serializing message
      */
     public void enter(final EnteringMessage message)
             throws ReadValueException, InvalidArgumentException, ResolutionException, ChangeValueException,
-            ChainNotFoundException, SendingMessageException, SerializeException {
+            SendingMessageException, SerializeException {
         IObject originalCheckpointStatus = message.getCheckpointStatus();
 
         if (null != originalCheckpointStatus) {
@@ -141,7 +136,7 @@ public class CheckpointActor {
             if (null != presentEntry) {
                 // If this checkpoint already received the message and has entry for it ...
                 // Notify (again) previous checkpoint
-                sendFeedbackTo(originalCheckpointStatus, message.getCheckpointId(),
+                sendFeedback(originalCheckpointStatus, message.getCheckpointId(),
                         presentEntry.getId());
 
                 // And stop processing of the message
@@ -168,7 +163,8 @@ public class CheckpointActor {
 
         ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), entryArguments, storage);
 
-        // Update checkpoint status in message
+        // Update checkpoint status in message.
+        // Checkpoint status of re-sent messages will be set by checkpoint scheduler action.
         IObject newCheckpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
         newCheckpointStatus.setValue(responsibleCheckpointIdFieldName, message.getCheckpointId());
@@ -178,7 +174,7 @@ public class CheckpointActor {
 
         // Send feedback message to previous checkpoint
         if (null != originalCheckpointStatus) {
-            sendFeedbackTo(originalCheckpointStatus, message.getCheckpointId(), entry.getId());
+            sendFeedback(originalCheckpointStatus, message.getCheckpointId(), entry.getId());
         }
     }
 
@@ -204,9 +200,8 @@ public class CheckpointActor {
         return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serialized);
     }
 
-    private void sendFeedbackTo(final IObject checkpointStatus, final String fromCheckpoint, final String newId)
-            throws ResolutionException, SendingMessageException, InvalidArgumentException, ChangeValueException, ReadValueException,
-                    ChainNotFoundException {
+    private void sendFeedback(final IObject checkpointStatus, final String fromCheckpoint, final String newId)
+            throws ResolutionException, SendingMessageException, InvalidArgumentException, ChangeValueException, ReadValueException {
         IObject feedbackMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
         feedbackMessage.setValue(responsibleCheckpointIdFieldName, fromCheckpoint);
@@ -214,6 +209,6 @@ public class CheckpointActor {
         feedbackMessage.setValue(prevCheckpointIdFieldName, checkpointStatus.getValue(responsibleCheckpointIdFieldName));
         feedbackMessage.setValue(prevCheckpointEntryIdFieldName, checkpointStatus.getValue(checkpointEntryIdFieldName));
 
-        MessageBus.send(feedbackMessage, chainStorage.resolve(feedbackChainId));
+        MessageBus.send(feedbackMessage, feedbackChainId);
     }
 }
