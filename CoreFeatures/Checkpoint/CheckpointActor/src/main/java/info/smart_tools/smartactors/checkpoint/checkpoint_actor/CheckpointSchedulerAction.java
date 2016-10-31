@@ -14,8 +14,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
@@ -60,13 +58,15 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             throws SchedulerActionInitializationException {
         try {
             IObject recoverConfig = (IObject) args.getValue(recoverFieldName);
-            String recoverStrategyId = (String) args.getValue(strategyFieldName);
+            String recoverStrategyId = (String) recoverConfig.getValue(strategyFieldName);
             IObject message = (IObject) args.getValue(messageFieldName);
 
             if (null == message) {
                 throw new SchedulerActionInitializationException(
                         "Checkpoint scheduler action arguments should contain message object.", null);
             }
+
+            entry.getState().setValue(messageFieldName, message);
 
             IRecoverStrategy strategy = IOC.resolve(Keys.getOrAdd(recoverStrategyId));
 
@@ -95,22 +95,20 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             Object chainId = recoverStrategy.chooseRecoveryChain(entry.getState());
 
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-
             IObject messageClone = cloneMessage((IObject) entry.getState().getValue(messageFieldName));
 
             IObject checkpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-            checkpointStatus.setValue(responsibleCheckpointIdFieldName, entry.getState().getValue(prevCheckpointIdFieldName));
+            checkpointStatus.setValue(responsibleCheckpointIdFieldName, entry.getState().getValue(responsibleCheckpointIdFieldName));
             checkpointStatus.setValue(checkpointEntryIdFieldName, entry.getId());
             checkpointStatus.setValue(prevCheckpointEntryIdFieldName, entry.getState().getValue(prevCheckpointEntryIdFieldName));
             checkpointStatus.setValue(prevCheckpointIdFieldName, entry.getState().getValue(prevCheckpointIdFieldName));
 
             messageClone.setValue(checkpointStatusFieldName, checkpointStatus);
 
-            MessageBus.send(messageClone, chainStorage.resolve(chainId));
+            MessageBus.send(messageClone, chainId);
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
-                | SerializeException | ChainNotFoundException | SendingMessageException | ChangeValueException e) {
+                | SerializeException | SendingMessageException | ChangeValueException e) {
             throw new SchedulerActionExecutionException("Error occurred executing ch", e);
         }
     }
