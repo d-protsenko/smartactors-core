@@ -30,6 +30,12 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
     private final IFieldName recoverStrategyFieldName;
     private final IFieldName messageFieldName;
 
+    private final IFieldName responsibleCheckpointIdFieldName;
+    private final IFieldName checkpointEntryIdFieldName;
+    private final IFieldName prevCheckpointEntryIdFieldName;
+    private final IFieldName prevCheckpointIdFieldName;
+    private final IFieldName checkpointStatusFieldName;
+
     /**
      * The constructor.
      *
@@ -41,6 +47,12 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
         strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
         recoverStrategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recoverStrategy");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
+        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
+        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus");
     }
 
     @Override
@@ -61,6 +73,12 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             strategy.init(entry.getState(), recoverConfig);
 
             entry.getState().setValue(recoverStrategyFieldName, recoverStrategyId);
+
+            // Store id's of currently and previously responsible for the message checkpoints and identifier of the message in storage of
+            // previous checkpoint in the entry state.
+            entry.getState().setValue(responsibleCheckpointIdFieldName, args.getValue(responsibleCheckpointIdFieldName));
+            entry.getState().setValue(prevCheckpointIdFieldName, args.getValue(prevCheckpointIdFieldName));
+            entry.getState().setValue(prevCheckpointEntryIdFieldName, args.getValue(prevCheckpointEntryIdFieldName));
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | RecoverStrategyInitializationException
                 | ChangeValueException e) {
             throw new SchedulerActionInitializationException("Error occurred initializing checkpoint action.", e);
@@ -79,9 +97,20 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
-            MessageBus.send(cloneMessage((IObject) entry.getState().getValue(messageFieldName)), chainStorage.resolve(chainId));
+            IObject messageClone = cloneMessage((IObject) entry.getState().getValue(messageFieldName));
+
+            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+            checkpointStatus.setValue(responsibleCheckpointIdFieldName, entry.getState().getValue(prevCheckpointIdFieldName));
+            checkpointStatus.setValue(checkpointEntryIdFieldName, entry.getId());
+            checkpointStatus.setValue(prevCheckpointEntryIdFieldName, entry.getState().getValue(prevCheckpointEntryIdFieldName));
+            checkpointStatus.setValue(prevCheckpointIdFieldName, entry.getState().getValue(prevCheckpointIdFieldName));
+
+            messageClone.setValue(checkpointStatusFieldName, checkpointStatus);
+
+            MessageBus.send(messageClone, chainStorage.resolve(chainId));
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
-                | SerializeException | ChainNotFoundException | SendingMessageException e) {
+                | SerializeException | ChainNotFoundException | SendingMessageException | ChangeValueException e) {
             throw new SchedulerActionExecutionException("Error occurred executing ch", e);
         }
     }
