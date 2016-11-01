@@ -5,10 +5,11 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -186,7 +187,7 @@ public final class EntryImpl implements ISchedulerEntry {
         try {
             action.execute(this);
             strategy.postProcess(this);
-        } catch (Exception e) {
+        } catch (SchedulerActionExecutionException | SchedulingStrategyExecutionException e) {
             try {
                 strategy.processException(this, e);
             } catch (SchedulingStrategyExecutionException ee) {

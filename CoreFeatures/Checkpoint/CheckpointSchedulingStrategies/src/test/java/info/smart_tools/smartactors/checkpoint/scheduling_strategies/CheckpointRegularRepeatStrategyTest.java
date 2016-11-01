@@ -22,9 +22,9 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
- * Test for {@link CheckpointRepeatStrategy}.
+ * Test for {@link CheckpointRegularRepeatStrategy}.
  */
-public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
+public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase {
     private ISchedulerEntry entryMock;
     private IObject entryState;
 
@@ -55,7 +55,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_copyArgumentsToEntryState()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{}");
 
@@ -96,7 +96,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_notSaveEntryWith0TimesToRepeat()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{}");
 
@@ -105,13 +105,14 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
                 "'interval':'PT3H'" +
                 "}"));
 
-        verifyNoMoreInteractions(entryMock);
+        verify(entryMock, never()).save();
+        verify(entryMock, never()).scheduleNext(anyLong());
     }
 
     @Test
     public void Should_cancelCompletedEntryWithNoTrialsRemaining()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'completed':true," +
@@ -126,7 +127,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_saveCompletedEntryForPostCompletionDelay()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'completed':true," +
@@ -144,7 +145,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_markEntryAsCompletedAndSaveItForPostCompletionDelayIfItRunsOutOfTrials()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'remainingTimes':0," +
@@ -163,7 +164,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_rescheduleEntryInIntervalWhenThereAreTrialsRemainingAndTheEntryIsNotCompleted()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'remainingTimes':1," +
@@ -182,7 +183,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_applyPostCompletionDelayWhenRestoresCompletedEntry()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'completed':true," +
@@ -203,7 +204,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_applyPostRestoreDelayWhenRestoresNotCompletedEntry()
             throws Exception {
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{" +
                 "'remainingTimes':1," +
@@ -223,7 +224,7 @@ public class CheckpointRepeatStrategyTest extends PluginsLoadingTestBase {
     public void Should_cancelEntryWhenExceptionOccurs()
             throws Exception {
         // TODO: Should it work another way ?
-        ISchedulingStrategy strategy = new CheckpointRepeatStrategy();
+        ISchedulingStrategy strategy = new CheckpointRegularRepeatStrategy();
 
         makeEntry("{}");
 

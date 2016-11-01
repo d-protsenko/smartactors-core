@@ -12,30 +12,16 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 
 /**
- * Strategy that re-sends the message with fixed intervals fixed number of times.
- *
- * <p> Configuration example: </p>
- * <pre>
- * {
- *   "strategy": "checkpoint repeat strategy",
- *   "interval": "PT3H",                    //Interval in ISO-8601 format
- *   "times": 3,                            // How many times to re-send the message
- *
- *   "postRestoreDelay": "PT2M",            // (optional) delay before first re-send of the message after the entry is restored from remote
- *                                          // storage. By default "interval" is used.
- *   "postCompletionDelay": "PT5M"          // (optional) delay before deletion of the entry when feedback successfully received. By default
- *                                          // "interval" is used.
- * }
- * </pre>
+ * Base class for checkpoint scheduling strategies.
  */
-public class CheckpointRepeatStrategy implements ISchedulingStrategy {
-    private final IFieldName intervalFieldName;
+public abstract class CheckpointRepeatStrategy implements ISchedulingStrategy {
     private final IFieldName timesFieldName;
     private final IFieldName remainingTimesFieldName;
     private final IFieldName postRestoreDelayFieldName;
@@ -47,15 +33,48 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
      *
      * @throws ResolutionException if error occurs resolving any dependencies
      */
-    public CheckpointRepeatStrategy()
+    protected CheckpointRepeatStrategy()
             throws ResolutionException {
-        intervalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "interval");
         timesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "times");
         remainingTimesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "remainingTimes");
         postRestoreDelayFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "postRestoreDelay");
         postCompletionDelayFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "postCompletionDelay");
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
     }
+
+    /**
+     * Calculate interval before re-sending the message next time.
+     *
+     * @param entry    the entry
+     * @return interval in milliseconds
+     * @throws ReadValueException if error occurs reading values from entry state
+     * @throws InvalidArgumentException if error occurs reading values from entry state
+     * @throws ChangeValueException if error occurs changing entry state to update data about next interval
+     */
+    protected abstract long calculateNextInterval(ISchedulerEntry entry)
+            throws ReadValueException, InvalidArgumentException, ChangeValueException;
+
+    /**
+     * Get default post-restore delay.
+     *
+     * @param entry the entry
+     * @return default post-restore delay
+     * @throws ReadValueException if error occurs reading values from entry state
+     * @throws InvalidArgumentException if error occurs reading values from entry state
+     */
+    protected abstract Duration defaultPostRestoreDelay(ISchedulerEntry entry)
+            throws ReadValueException, InvalidArgumentException;
+
+    /**
+     * Get default post-completion delay.
+     *
+     * @param entry the entry
+     * @return default post-completion delay
+     * @throws ReadValueException if error occurs reading values from entry state
+     * @throws InvalidArgumentException if error occurs reading values from entry state
+     */
+    protected abstract Duration defaultPostCompletionDelay(ISchedulerEntry entry)
+            throws ReadValueException, InvalidArgumentException;
 
     @Override
     public void init(final ISchedulerEntry entry, final IObject args) throws SchedulingStrategyExecutionException {
@@ -66,15 +85,13 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
                 return;
             }
 
-            Duration interval = Duration.parse((String) args.getValue(intervalFieldName));
             Duration postRestoreDelay = (args.getValue(postRestoreDelayFieldName) != null)
-                    ? Duration.parse((String) args.getValue(postRestoreDelayFieldName)) : interval;
+                    ? Duration.parse((String) args.getValue(postRestoreDelayFieldName)) : defaultPostRestoreDelay(entry);
             Duration postCompletionDelay = (args.getValue(postCompletionDelayFieldName) != null)
-                    ? Duration.parse((String) args.getValue(postCompletionDelayFieldName)) : interval;
+                    ? Duration.parse((String) args.getValue(postCompletionDelayFieldName)) : defaultPostCompletionDelay(entry);
 
             IObject state = entry.getState();
 
-            state.setValue(intervalFieldName, interval.toString());
             state.setValue(postRestoreDelayFieldName, postRestoreDelay.toString());
             state.setValue(postCompletionDelayFieldName, postCompletionDelay.toString());
             state.setValue(timesFieldName, times);
@@ -82,7 +99,7 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
 
             entry.save();
 
-            entry.scheduleNext(System.currentTimeMillis() + interval.toMillis());
+            entry.scheduleNext(System.currentTimeMillis() + calculateNextInterval(entry));
         } catch (ReadValueException | InvalidArgumentException | ChangeValueException | DateTimeParseException
                 | EntryStorageAccessException | EntryScheduleException e) {
             throw new SchedulingStrategyExecutionException("Error occurred initializing scheduling strategy.", e);
@@ -111,9 +128,9 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
                     Duration delay = Duration.parse((String) entry.getState().getValue(postCompletionDelayFieldName));
                     scheduleTime += delay.toMillis();
                 } else {
-                    Duration interval = Duration.parse((String) entry.getState().getValue(intervalFieldName));
+                    long interval = calculateNextInterval(entry);
                     entry.getState().setValue(remainingTimesFieldName, remainingTimes - 1);
-                    scheduleTime += interval.toMillis();
+                    scheduleTime += interval;
                 }
             }
 
@@ -147,7 +164,15 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
 
     @Override
     public void processException(final ISchedulerEntry entry, final Throwable e) throws SchedulingStrategyExecutionException {
+        if (e instanceof SchedulerActionExecutionException) {
+            // Action execution failed. This may happen because of errors the checkpoint is created to avoid (chain not fond, message bus or
+            // other components are not initialized properly, etc.)
+            // OK, let's retry next time.
+            return;
+        }
+
         try {
+            // The exception occurred in scheduling strategy itself.
             // TODO: Handle another way (?)
             entry.cancel();
         } catch (EntryScheduleException | EntryStorageAccessException e1) {
