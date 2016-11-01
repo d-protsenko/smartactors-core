@@ -18,13 +18,19 @@ import java.time.Duration;
 import java.time.format.DateTimeParseException;
 
 /**
+ * Strategy that re-sends the message with fixed intervals fixed number of times.
  *
- *
+ * <p> Configuration example: </p>
  * <pre>
  * {
  *   "strategy": "checkpoint repeat strategy",
- *   "interval": "PT3H", //Interval in ISO-8601 format
- *   "times": 3 // How many times to re-send the message
+ *   "interval": "PT3H",                    //Interval in ISO-8601 format
+ *   "times": 3,                            // How many times to re-send the message
+ *
+ *   "postRestoreDelay": "PT2M",            // (optional) delay before first re-send of the message after the entry is restored from remote
+ *                                          // storage. By default "interval" is used.
+ *   "postCompletionDelay": "PT5M"          // (optional) delay before deletion of the entry when feedback successfully received. By default
+ *                                          // "interval" is used.
  * }
  * </pre>
  */
@@ -87,14 +93,14 @@ public class CheckpointRepeatStrategy implements ISchedulingStrategy {
     public void postProcess(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
         try {
             int remainingTimes = ((Number) entry.getState().getValue(remainingTimesFieldName)).intValue();
-            long scheduleTime = System.currentTimeMillis();
+            long scheduleTime = entry.getLastTime();
 
             if (null != entry.getState().getValue(completedFieldName)) {
                 if (0 == remainingTimes) {
                     entry.cancel();
                     return;
                 } else {
-                    // The was trials remaining but checkpoint actor marked the entry as completed because of received feedback message
+                    // There were trials remaining but checkpoint actor marked the entry as completed because of received feedback message
                     entry.getState().setValue(remainingTimesFieldName, 0);
                     Duration delay = Duration.parse((String) entry.getState().getValue(postCompletionDelayFieldName));
                     scheduleTime += delay.toMillis();
