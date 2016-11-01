@@ -4,7 +4,7 @@
   "objects": [
     {
       "kind": "actor",
-      "dependency": "info.smart_tools.smartactors.actors.mailing.MailingActor",
+      "dependency": "info.smart_tools.smartactors.email.email_actor.MailingActor",
       "name": "sendMailActor",
       "username": "<>",
       "password": "<>",
