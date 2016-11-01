@@ -31,6 +31,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 public class CheckpointActor {
     private static final String FEEDBACK_CHAIN_NAME = "checkpoint_feedback_chain";
     private static final String CHECKPOINT_ACTION = "checkpoint scheduler action";
+    private static final long COMPLETE_ENTRY_RESCHEDULE_DELAY = 1000;
 
     private final IQueue<ITask> taskQueue;
     private final ISchedulerEntryStorage storage;
@@ -46,6 +47,7 @@ public class CheckpointActor {
     private final IFieldName prevCheckpointIdFieldName;
     private final IFieldName actionFieldName;
     private final IFieldName recoverFieldName;
+    private final IFieldName completedFieldName;
 
     /**
      * Task downloading entries from remote storage.
@@ -87,6 +89,7 @@ public class CheckpointActor {
         prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
         actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
+        completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
 
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
@@ -184,11 +187,22 @@ public class CheckpointActor {
      * @param message    the message sent by the next checkpoint
      * @throws ReadValueException if error occurs reading values from message
      * @throws EntryScheduleException if error occurs cancelling the entry
+     * @throws InvalidArgumentException if something goes wrong
+     * @throws ChangeValueException if error occurs updating entry state
      */
     public void feedback(final FeedbackMessage message)
-            throws ReadValueException, EntryScheduleException {
+            throws ReadValueException, ChangeValueException, InvalidArgumentException, EntryScheduleException {
         try {
-            storage.getEntry(message.getPrevCheckpointEntryId()).cancel();
+            ISchedulerEntry entry = storage.getEntry(message.getPrevCheckpointEntryId());
+
+            if (null != entry.getState().getValue(completedFieldName)) {
+                // If the entry is already completed then ignore the feedback message
+                return;
+            }
+
+            entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
+
+            entry.getState().setValue(completedFieldName, true);
         } catch (EntryStorageAccessException ignore) {
             // There is no entry with required identifier. OK
         }

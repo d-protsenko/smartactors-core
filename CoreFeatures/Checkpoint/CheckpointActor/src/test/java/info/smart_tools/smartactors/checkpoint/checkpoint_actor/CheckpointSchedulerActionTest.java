@@ -130,4 +130,24 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
 
         assertNotSame(sent, entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
     }
+
+    @Test
+    public void Should_notSendMessageIfEntryIsMarkedAsCompleted()
+            throws Exception {
+        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{'recoverStrategy':'the recover strategy'," +
+                        "'message':{'a':'1'}," +
+                        "'responsibleCheckpointId':'rCP'," +
+                        "'prevCheckpointId':'prCP'," +
+                        "'prevCheckpointEntryId':'pcpEi'," +
+                        "'completed':true}").replace('\'','"'));
+
+        when(entryMock.getState()).thenReturn(entryState);
+
+        CheckpointSchedulerAction action = new CheckpointSchedulerAction();
+
+        action.execute(entryMock);
+
+        verify(messageBusHandlerMock, never()).handle(any(), any());
+    }
 }

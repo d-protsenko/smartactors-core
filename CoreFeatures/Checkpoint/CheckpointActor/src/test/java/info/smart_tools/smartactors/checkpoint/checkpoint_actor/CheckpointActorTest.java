@@ -287,6 +287,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_processFeedbackMessages()
             throws Exception {
+        long startTime = System.currentTimeMillis();
         IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
@@ -294,14 +295,22 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
                         "'collectionName':'" + collectionName + "'" +
                         "}").replace('\'','"'));
 
+        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
         CheckpointActor actor = new CheckpointActor(args);
 
         when(feedbackMessageMock.getPrevCheckpointEntryId()).thenReturn("prevId");
         when(storageMock.getEntry("prevId")).thenReturn(entryMock[0]);
+        when(entryMock[0].getState()).thenReturn(entryState);
 
         actor.feedback(feedbackMessageMock);
 
-        verify(entryMock[0]).cancel();
+        ArgumentCaptor<Long> timeCaptor = ArgumentCaptor.forClass(long.class);
+
+        assertNotNull(entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed")));
+        verify(entryMock[0]).scheduleNext(timeCaptor.capture());
+
+        assertTrue(timeCaptor.getValue() >= (startTime + 1000));
     }
 
     @Test
@@ -320,5 +329,30 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         when(storageMock.getEntry("prevId")).thenThrow(EntryStorageAccessException.class);
 
         actor.feedback(feedbackMessageMock);
+    }
+
+    @Test
+    public void Should_ignoreFeedbackMessagesIfTheEntryIsAlreadyCompleted()
+            throws Exception {
+        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{" +
+                        "'connectionOptionsDependency':'the connection options'," +
+                        "'connectionPoolDependency':'the connection pool'," +
+                        "'collectionName':'" + collectionName + "'" +
+                        "}").replace('\'','"'));
+
+        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{'completed':true}").replace('\'','"'));
+
+        CheckpointActor actor = new CheckpointActor(args);
+
+        when(feedbackMessageMock.getPrevCheckpointEntryId()).thenReturn("prevId");
+        when(storageMock.getEntry("prevId")).thenReturn(entryMock[0]);
+        when(entryMock[0].getState()).thenReturn(entryState);
+
+        actor.feedback(feedbackMessageMock);
+
+        verify(entryMock[0]).getState();
+        verifyNoMoreInteractions(entryMock[0]);
     }
 }

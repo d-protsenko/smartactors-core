@@ -27,6 +27,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
     private final IFieldName strategyFieldName;
     private final IFieldName recoverStrategyFieldName;
     private final IFieldName messageFieldName;
+    private final IFieldName completedFieldName;
 
     private final IFieldName responsibleCheckpointIdFieldName;
     private final IFieldName checkpointEntryIdFieldName;
@@ -45,6 +46,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
         strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
         recoverStrategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recoverStrategy");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
 
         responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
         checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
@@ -88,6 +90,13 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
     @Override
     public void execute(final ISchedulerEntry entry) throws SchedulerActionExecutionException {
         try {
+            // Scheduling strategy or checkpoint actor may write a non-null value into "completed" field of entry state if the message
+            // should be no more re-sent.
+            // The entry will still be kept in both remote and local storage to avoid duplication of the message until it will be deleted.
+            if (null != entry.getState().getValue(completedFieldName)) {
+                return;
+            }
+
             IRecoverStrategy recoverStrategy = IOC.resolve(IOC.resolve(
                     IOC.getKeyForKeyStorage(),
                     entry.getState().getValue(recoverStrategyFieldName)
@@ -109,7 +118,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             MessageBus.send(messageClone, chainId);
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
                 | SerializeException | SendingMessageException | ChangeValueException e) {
-            throw new SchedulerActionExecutionException("Error occurred executing ch", e);
+            throw new SchedulerActionExecutionException("Error occurred executing checkpoint action.", e);
         }
     }
 
