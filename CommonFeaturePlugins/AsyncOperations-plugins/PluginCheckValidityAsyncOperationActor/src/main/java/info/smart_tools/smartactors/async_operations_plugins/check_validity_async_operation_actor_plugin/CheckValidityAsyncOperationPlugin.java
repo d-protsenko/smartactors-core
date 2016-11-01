@@ -37,8 +37,8 @@ public class CheckValidityAsyncOperationPlugin implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("CreateCheckValidityAsyncOperationActor");
 
             item
-                    .after("IOC")
-                    .before("starter")
+//                    .after("IOC")
+//                    .before("starter")
                     .process(() -> {
                 try {
                     IKey operationKey = Keys.getOrAdd(CheckValidityAsyncOperationActor.class.getCanonicalName());
