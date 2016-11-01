@@ -20,6 +20,8 @@
     <modules>
         <module>CheckpointActor</module>
         <module>CheckpointInterfaces</module>
+        <module>CheckpointSchedulingStrategies</module>
+        <module>CheckpointRecoverStrategies</module>
     </modules>
 
     <repositories>
