@@ -18,7 +18,6 @@
     </properties>
 
     <modules>
-        <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
@@ -44,7 +43,6 @@
         <module>PluginNullConnectionPool</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>ServerWithFeatures</module>
         <module>CoreFeatures/Base</module>
     </modules>
 

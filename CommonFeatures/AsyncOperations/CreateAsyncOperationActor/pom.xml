@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>async-operations.actor.create-async-operation</artifactId>
+    <artifactId>async-operations.create-async-operation</artifactId>
 
     <dependencies>
         <dependency>

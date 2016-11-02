@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>async-operations.actor.close-async-operation</artifactId>
+    <artifactId>async-operations.close-async-operation</artifactId>
 
     <dependencies>
         <dependency>
