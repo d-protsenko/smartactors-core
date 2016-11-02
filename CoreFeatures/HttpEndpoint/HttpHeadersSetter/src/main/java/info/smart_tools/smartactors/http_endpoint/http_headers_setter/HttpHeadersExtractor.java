@@ -33,13 +33,14 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
     @Override
     public void set(final Object response, final IObject environment) throws HeadersSetterException {
         FullHttpResponse httpResponse = (FullHttpResponse) response;
+        httpResponse.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         IField contextField;
         IField headersField;
         IFieldName headerName;
         IFieldName headerValue;
         try {
             contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
-            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
+            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "headers");
             headerName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             headerValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
         } catch (ResolutionException e) {
@@ -67,6 +68,5 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
         }
         httpResponse.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpResponse.content().readableBytes());
         httpResponse.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-        httpResponse.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
     }
 }
