@@ -68,7 +68,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request)
             throws RequestHandlerDataException, RequestHandlerInternalException, ReadValueException {
         try {
-            IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject message = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             if (!request.method().toString().equals("GET")) {
                 IDeserializeStrategy deserializeStrategy = IOC.resolve(
                         Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
