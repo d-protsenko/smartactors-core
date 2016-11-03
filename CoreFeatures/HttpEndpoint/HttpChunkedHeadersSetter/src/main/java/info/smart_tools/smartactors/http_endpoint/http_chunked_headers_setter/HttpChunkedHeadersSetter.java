@@ -29,12 +29,16 @@ public class HttpChunkedHeadersSetter implements IHeadersExtractor {
         IFieldName headerValue;
         try {
             contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
-            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
+            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "headers");
             headerName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
             headerValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
         } catch (ResolutionException e) {
             throw new HeadersSetterException("Failed to resolve fieldName", e);
         }
+
+        httpResponse.headers().set(HttpHeaderNames.TRANSFER_ENCODING, "chunked");
+        httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
         IObject context = null;
         List<IObject> headers = null;
         try {
@@ -55,8 +59,5 @@ public class HttpChunkedHeadersSetter implements IHeadersExtractor {
                 throw new HeadersSetterException("Failed to resolve header", e);
             }
         }
-        httpResponse.headers().set(HttpHeaderNames.TRANSFER_ENCODING, "chunked");
-        httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
     }
 }
