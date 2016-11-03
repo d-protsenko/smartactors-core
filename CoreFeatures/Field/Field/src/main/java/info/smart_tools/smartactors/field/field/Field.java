@@ -62,7 +62,7 @@ public class Field implements IField {
                     value
             );
         } catch (Throwable e) {
-            throw new InvalidArgumentException("Could not cast value to required type.");
+            throw new InvalidArgumentException("Could not cast value - " + value.getClass().getCanonicalName() + " to required type - " + type.getCanonicalName() + ".");
         }
     }
 
