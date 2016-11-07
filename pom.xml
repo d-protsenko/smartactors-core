@@ -18,7 +18,6 @@
     </properties>
 
     <modules>
-        <module>IServer</module>
         <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
@@ -28,54 +27,22 @@
         <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
         <module>ServerWithIObject</module>
-        <module>CloseAsyncOperationActor</module>
-        <module>GetFormActor</module>
-        <module>AuthenticationActor</module>
-        <module>CheckUserByEmailActor</module>
-        <module>CreateAsyncOperation</module>
-        <module>GetAsyncOperation</module>
         <module>ToWrapperConverterStrategy</module>
-        <module>CreateUserActor</module>
-        <module>PluginGetFormActor</module>
-        <module>CreateSession</module>
-        <module>PluginCreateSession</module>
-        <module>CheckUserIsNewActor</module>
-        <module>PluginCreateAsyncOperationActor</module>
-        <module>UserAuthByLoginActor</module>
-        <module>PluginUserAuthByLoginActor</module>
         <module>ValidateFormDataActor</module>
-        <module>PluginCheckUserByEmailActor</module>
-        <module>StandardConfigSections</module>
-        <module>PluginCheckUserIsNewActor</module>
-        <module>PluginAuthenticationActor</module>
         <module>ServerWithConfiguration</module>
-        <module>PluginCloseAsyncOperationActor</module>
-        <module>PluginGetAsyncOperation</module>
-        <module>PluginCheckValidityAsyncOperationActor</module>
-        <module>CheckValidityAsyncOperationActor</module>
-        <module>PluginCreateUser</module>
         <module>SampleActor</module>
         <module>PluginSampleActor</module>
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
         <module>PluginValidationFormActor</module>
-        <module>ChangePasswordActor</module>
-        <module>PluginChangePasswordActor</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>MailingActor</module>
-        <module>PluginMailingActor</module>
         <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
-        <module>SaveSessionActor</module>
-        <module>PluginSaveSession</module>
         <module>PluginNullConnectionPool</module>
-        <module>PrepareRegistrationMailActor</module>
-        <module>PluginPrepareMailRegistrationActor</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
-        <module>ServerWithFeatures</module>
         <module>CoreFeatures/Base</module>
         <module>PluginScheduler</module>
         <module>PluginSchedulingStrategies</module>

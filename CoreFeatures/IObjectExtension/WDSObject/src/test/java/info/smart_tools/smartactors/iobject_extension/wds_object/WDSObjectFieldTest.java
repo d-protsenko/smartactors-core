@@ -131,21 +131,21 @@ public class WDSObjectFieldTest {
                 "Transform",
                 strategy2
         );
-        when(strategy1.resolve("CONST", 1)).thenReturn("CONST1");
-        when(strategy2.resolve("CONST1", "abc")).thenReturn("CONST1abc");
+        when(strategy1.resolve("CONST/a", 1)).thenReturn("CONST/a1");
+        when(strategy2.resolve("CONST/a1", "abc")).thenReturn("CONST/a1abc");
         IObject rule1 = mock(IObject.class);
         IObject rule2 = mock(IObject.class);
         IObject env = mock(IObject.class);
         IObject message = mock(IObject.class);
         when(rule1.getValue(new FieldName("name"))).thenReturn("GetValue");
-        when(rule1.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("const/CONST"); add("message/intValue");}});
+        when(rule1.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("const/CONST/a"); add("message/intValue");}});
         when(rule2.getValue(new FieldName("name"))).thenReturn("Transform");
         when(rule2.getValue(new FieldName("args"))).thenReturn(new ArrayList<String>(){{add("local/value"); add("const/abc");}});
         when(env.getValue(new FieldName("message"))).thenReturn(message);
         when(message.getValue(new FieldName("intValue"))).thenReturn(1);
         IField field = new WDSObjectField(new ArrayList<IObject>(){{add(rule1);add(rule2);}});
-        assertEquals(field.in(env), "CONST1abc");
-        when(strategy2.resolve("CONST1", "abc")).thenReturn(null);
+        assertEquals(field.in(env), "CONST/a1abc");
+        when(strategy2.resolve("CONST/a1", "abc")).thenReturn(null);
         assertNull(field.in(env));
     }
 

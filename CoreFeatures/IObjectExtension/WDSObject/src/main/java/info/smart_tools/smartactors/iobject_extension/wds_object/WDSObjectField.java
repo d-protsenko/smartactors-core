@@ -233,7 +233,7 @@ public class WDSObjectField implements IField {
                 new IFunction<Arg, Object>() {
                     @Override
                     public Object execute(final Arg o) throws FunctionExecutionException, InvalidArgumentException {
-                        return o.getArg().split(SPLITTER)[1];
+                        return o.getArg().split(SPLITTER, 2)[1];
                     }
                 }
         );

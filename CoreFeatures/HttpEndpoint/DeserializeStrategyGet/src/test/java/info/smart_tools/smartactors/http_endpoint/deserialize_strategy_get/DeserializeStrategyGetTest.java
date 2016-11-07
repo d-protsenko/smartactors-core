@@ -142,7 +142,7 @@ public class DeserializeStrategyGetTest {
         DeserializeStrategyGet deserializeStrategyGet = new DeserializeStrategyGet(new ArrayList<>());
         IObject iObject = new DSObject();
         deserializeStrategyGet.extract(iObject, httpRequest);
-        assertEquals(((List<String>) iObject.getValue(new FieldName("hello"))).get(0), "world");
+        assertEquals((iObject.getValue(new FieldName("hello"))), "world");
         assertEquals(iObject.getValue(new FieldName("messageMapId")), "hello");
     }
 

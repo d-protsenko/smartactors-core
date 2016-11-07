@@ -13,6 +13,7 @@ import java.util.function.Supplier;
  * Implementation of {@link IPool}
  */
 public class Pool implements IPool {
+    private Integer maxItemsCount;
     private final ArrayBlockingQueue<Object> freeItems;
     private AtomicInteger freeItemsCounter = new AtomicInteger();
 
@@ -33,6 +34,7 @@ public class Pool implements IPool {
         if (maxItems <= 0) {
             throw new IllegalArgumentException("Count of max items mast be more 0");
         }
+        this.maxItemsCount = maxItems;
         this.freeItems = new ArrayBlockingQueue<>(maxItems);
         this.freeItemsCounter.set(maxItems);
         this.creationFunction = func;
@@ -69,7 +71,7 @@ public class Pool implements IPool {
      */
     public void put(final Object item) throws PoolPutException {
         try {
-            if (freeItems.size() >= freeItemsCounter.get()) {
+            if (maxItemsCount >= freeItemsCounter.get()) {
                 freeItems.add(item);
                 freeItemsCounter.getAndIncrement();
             }

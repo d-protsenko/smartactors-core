@@ -26,7 +26,7 @@ public class PluginObjectEnumerationActor extends BootstrapPlugin {
      * @throws Exception if any error occurs registering the actor
      */
     @Item("actor:object_enumerator")
-    @After({"IOC"})
+    //@After({"IOC"})
     public void objectEnumerationActor()
             throws Exception {
         IOC.register(
