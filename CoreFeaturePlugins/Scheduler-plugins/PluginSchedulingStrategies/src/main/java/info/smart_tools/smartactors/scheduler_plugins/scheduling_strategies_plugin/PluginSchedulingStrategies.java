@@ -1,15 +1,15 @@
-package info.smart_tools.smartactors.plugin.scheduling_strategies;
+package info.smart_tools.smartactors.scheduler_plugins.scheduling_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.core.scheduling_strategies.ContinuouslyRepeatScheduleStrategy;
-import info.smart_tools.smartactors.core.scheduling_strategies.OnceSchedulingStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.strategies.ContinuouslyRepeatScheduleStrategy;
+import info.smart_tools.smartactors.scheduler.strategies.OnceSchedulingStrategy;
 
 /**
  * Plugin that registers some scheduling strategies.
@@ -30,7 +30,7 @@ public class PluginSchedulingStrategies extends BootstrapPlugin {
      * @throws ResolutionException if error occurs resolving the keys
      * @throws RegistrationException if error occurs registering the strategies in IOC
      * @throws InvalidArgumentException if {@link SingletonStrategy} hates {@link
-     *                                  info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulingStrategy scheduling strategies}
+     *                                  info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy scheduling strategies}
      */
     @Item("scheduling_strategies")
     @After({"IOC"})

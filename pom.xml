@@ -77,10 +77,7 @@
         <module>PluginGetFirstNotNullRule</module>
         <module>ServerWithFeatures</module>
         <module>CoreFeatures/Base</module>
-        <module>SchedulerInterfaces</module>
-        <module>SchedulerActor</module>
         <module>PluginScheduler</module>
-        <module>SchedulingStrategies</module>
         <module>PluginSchedulingStrategies</module>
     </modules>
 

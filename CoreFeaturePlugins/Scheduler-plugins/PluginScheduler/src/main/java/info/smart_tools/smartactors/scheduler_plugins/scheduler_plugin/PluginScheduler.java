@@ -1,13 +1,9 @@
-package info.smart_tools.smartactors.plugin.scheduler;
+package info.smart_tools.smartactors.scheduler_plugins.scheduler_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.core.scheduler.actor.SchedulerActor;
-import info.smart_tools.smartactors.core.scheduler.actor.impl.EntryImpl;
-import info.smart_tools.smartactors.core.scheduler.actor.impl.EntryStorage;
-import info.smart_tools.smartactors.core.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -15,6 +11,10 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
+import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
+import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 
 /**
  * Plugin that registers scheduler actor and related components.
@@ -37,7 +37,6 @@ public class PluginScheduler extends BootstrapPlugin {
      * @throws InvalidArgumentException if {@link ApplyFunctionToArgumentsStrategy} does not like our function
      */
     @Item("scheduler_entry_strategies")
-    @After({"IOC"})
     public void registerEntry()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
@@ -73,8 +72,13 @@ public class PluginScheduler extends BootstrapPlugin {
     @After({"scheduler_entry_strategies"})
     public void registerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args ->
-            new EntryStorage((IPool) args[0], (String) args[1])));
+        IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return new EntryStorage((IPool) args[0], (String) args[1]);
+            } catch (ResolutionException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
     }
 
     /**
