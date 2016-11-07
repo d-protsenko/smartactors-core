@@ -44,6 +44,8 @@
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>CoreFeatures/Base</module>
+        <module>PluginScheduler</module>
+        <module>PluginSchedulingStrategies</module>
     </modules>
 
     <repositories>
