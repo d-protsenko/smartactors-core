@@ -1,0 +1,56 @@
+package info.smart_tools.smartactors.checkpoint_plugins.recover_strategies_plugin;
+
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.ChainSequenceRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.SingleChainRecoverStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+
+/**
+ * Plugin that registers some recover strategies for checkpoint.
+ */
+public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
+    /**
+     * The constructor.
+     *
+     * @param bootstrap    the bootstrap
+     */
+    public CheckpointRecoverStrategiesPlugin(final IBootstrap bootstrap) {
+        super(bootstrap);
+    }
+
+    /**
+     * Registers recover strategy that sends message to the same chain every time.
+     *
+     * @throws ResolutionException if error occurs resolving key or dependencies
+     * @throws RegistrationException if error occurs registering actor creation strategy
+     * @throws InvalidArgumentException if some unexpected error occurs
+     */
+    @Item("checkpoint_recover_strategy:single_chain")
+    @Before({"checkpoint_actor"})
+    public void singleChainRecoverStrategyItem()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("single chain recover strategy"),
+                new SingletonStrategy(new SingleChainRecoverStrategy()));
+    }
+
+    /**
+     * Registers recover strategy that sends message to different chains depending on re-send trial number.
+     *
+     * @throws ResolutionException if error occurs resolving key or dependencies
+     * @throws RegistrationException if error occurs registering actor creation strategy
+     * @throws InvalidArgumentException if some unexpected error occurs
+     */
+    @Item("checkpoint_recover_strategy:chain_sequence")
+    @Before({"checkpoint_actor"})
+    public void chainSequenceRecoverStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("chain sequence recover strategy"),
+                new SingletonStrategy(new ChainSequenceRecoverStrategy()));
+    }
+}

@@ -19,6 +19,8 @@
 
     <modules>
         <module>CheckpointActorPlugin</module>
+        <module>CheckpointRecoverStrategies</module>
+        <module>CheckpointSchedulingStrategiesPlugin</module>
     </modules>
 
     <repositories>
