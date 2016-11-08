@@ -12,4 +12,6 @@ public interface ClientActorMessage {
     IObject getRequestSettings();
 
     void setResponse(IObject response);
+
+    Object getSendingChain();
 }

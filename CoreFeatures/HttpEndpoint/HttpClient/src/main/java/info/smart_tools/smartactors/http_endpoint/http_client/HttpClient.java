@@ -3,6 +3,9 @@ package info.smart_tools.smartactors.http_endpoint.http_client;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
+import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
+import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
 import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -10,20 +13,17 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * Client for HTTP server
@@ -36,6 +36,9 @@ public class HttpClient extends NettyClient<HttpRequest> {
     private IFieldName valueFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName messageMapIdFieldName;
+    private IFieldName contentFieldName;
+    private String messageMapId;
+    private IResponseHandler inboundHandler;
 
     /**
      * Constructor for http client
@@ -44,7 +47,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
      * @param inboundHandler Channel
      * @throws RequestSenderException if there are exception on resolving IFieldName
      */
-    public HttpClient(final URI serverUri, final ChannelInboundHandler inboundHandler) throws RequestSenderException {
+    public HttpClient(final URI serverUri, final IResponseHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
         try {
             uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
@@ -54,10 +57,11 @@ public class HttpClient extends NettyClient<HttpRequest> {
             valueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookie");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
+            contentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "content");
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }
-
+        this.inboundHandler = inboundHandler;
     }
 
     /**
@@ -72,33 +76,26 @@ public class HttpClient extends NettyClient<HttpRequest> {
     //TODO:: set maxContentLength from configuration
     @Override
     protected ChannelPipeline setupPipeline(final ChannelPipeline pipeline) {
-        return super.setupPipeline(pipeline).addLast(new HttpClientCodec(), new HttpObjectAggregator(4096));
+        return super.setupPipeline(pipeline)
+                .addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE))
+                .addLast("handleResponse", new SimpleChannelInboundHandler<FullHttpResponse>() {
+                            @Override
+                            protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final FullHttpResponse response)
+                                    throws Exception {
+                                inboundHandler.handle(channelHandlerContext, response);
+                            }
+                        }
+                );
     }
 
     @Override
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
-            HttpMethod method = HttpMethod.valueOf((String) request.getValue(methodFieldName));
-            String uri = (String) request.getValue(uriFieldName);
-            FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri);
-            List<IObject> headers = (List<IObject>) request.getValue(headersFieldName);
-            if (null != headers) {
-                for (IObject header : headers) {
-                    httpRequest.headers().set((String) header.getValue(nameFieldName), header.getValue(valueFieldName));
-                }
-            }
-            httpRequest.headers().set("messageMapId", request.getValue(messageMapIdFieldName));
-            List<IObject> cookies = (List<IObject>) request.getValue(cookiesFieldName);
-            if (null != cookies) {
-                for (IObject cookie : cookies) {
-                    httpRequest.headers().set("Cookie", ClientCookieEncoder.STRICT.encode(
-                            (String) cookie.getValue(nameFieldName),
-                            (String) cookie.getValue(valueFieldName))
-                    );
-                }
-            }
+            messageMapId = (String) request.getValue(messageMapIdFieldName);
+            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()));
+            FullHttpRequest httpRequest = requestMaker.make(request);
             send(httpRequest);
-        } catch (ReadValueException | InvalidArgumentException e) {
+        } catch (RequestMakerException | ReadValueException | ResolutionException | InvalidArgumentException e) {
             throw new RequestSenderException(e);
         }
     }

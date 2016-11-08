@@ -19,6 +19,8 @@
 
     <modules>
         <module>PluginHttpsEndpoint</module>
+        <module>HttpsClientPlugin</module>
+        <module>PluginHttpsRequestSenderActor</module>
     </modules>
 
     <repositories>

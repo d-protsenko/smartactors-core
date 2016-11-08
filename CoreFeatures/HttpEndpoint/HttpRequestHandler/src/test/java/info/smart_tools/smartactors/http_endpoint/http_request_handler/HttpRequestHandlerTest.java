@@ -27,6 +27,7 @@ import info.smart_tools.smartactors.scope.iscope_provider_container.exception.Sc
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,6 +124,7 @@ public class HttpRequestHandlerTest {
         FullHttpRequest request = mock(FullHttpRequest.class);
         IObject message = new DSObject("{\"hello\": \"world\"}");
         when(deserializeStrategy.deserialize(request)).thenReturn(message);
+        when(request.method()).thenReturn(HttpMethod.POST);
         HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null);
         IObject environment = requestHandler.getEnvironment(ctx, request);
         assertEquals(environment.getValue(new FieldName("message")), message);
@@ -134,6 +136,7 @@ public class HttpRequestHandlerTest {
         FullHttpRequest request = mock(FullHttpRequest.class);
         IObject message = new DSObject("{\"hello\": \"world\"}");
         when(deserializeStrategy.deserialize(request)).thenThrow(DeserializationException.class);
+        when(request.method()).thenReturn(HttpMethod.POST);
         HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null);
         IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"statusCode\": 200}")
@@ -148,6 +151,7 @@ public class HttpRequestHandlerTest {
         ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         FullHttpRequest request = mock(FullHttpRequest.class);
         IObject message = new DSObject("{\"hello\": \"world\"}");
+        when(request.method()).thenReturn(HttpMethod.GET);
         doThrow(new AddRequestParametersToIObjectException("exception")).when(requestParametersToIObject).extract(any(), any());
         HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null);
         IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(

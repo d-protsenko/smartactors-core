@@ -47,7 +47,7 @@ import java.util.ArrayList;
 public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, FullHttpRequest> {
     private final String name;
 
-    private final int INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
+    private static final int INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
 
     /**
      * Constructor for HttpRequestHandler
@@ -68,20 +68,22 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request)
             throws RequestHandlerDataException, RequestHandlerInternalException, ReadValueException {
         try {
-            IDeserializeStrategy deserializeStrategy = IOC.resolve(
-                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                    IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
-                    name
-            );
+            IObject message = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            if (!request.method().toString().equals("GET")) {
+                IDeserializeStrategy deserializeStrategy = IOC.resolve(
+                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                        IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
+                        name
+                );
 
-            //resolving body of the request
-            IObject message = null;
-            try {
-                message = deserializeStrategy.deserialize(request);
-            } catch (DeserializationException e) {
-                IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
-                ctx.writeAndFlush(formExceptionalResponse(exception));
-                throw new RequestHandlerDataException(e);
+                //resolving body of the request
+                try {
+                    message = deserializeStrategy.deserialize(request);
+                } catch (DeserializationException e) {
+                    IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
+                    ctx.writeAndFlush(formExceptionalResponse(exception));
+                    throw new RequestHandlerDataException(e);
+                }
             }
 
             //resolving uri and another request parameters of the request
@@ -138,8 +140,8 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                         response.setContent("".getBytes());
 
                         IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                            IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
-                            context.getValue(endpointName));
+                                IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
+                                name);
                         context.setValue(httpResponseStatusCodeFieldName, INTERNAL_SERVER_ERROR_STATUS_CODE);
                         sender.send(response, environment, channelHandler);
                     } catch (ResolutionException | ReadValueException | ResponseSendingException | ChangeValueException e) {

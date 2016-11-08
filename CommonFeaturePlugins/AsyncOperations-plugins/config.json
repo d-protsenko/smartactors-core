@@ -1,0 +1,29 @@
+{
+  "featureName": "async-operations-plugin",
+  "afterFeatures": ["async-operations", "database-psql-plugins"],
+  "objects": [
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.async_operations.create_async_operation.CreateAsyncOperationActor",
+      "name": "createAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.async_operations.get_async_operation.GetAsyncOperationActor",
+      "name": "getAsyncOpsActor",
+      "collectionName": "operation"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.async_operations.check_validity_async_operation.CheckValidityAsyncOperationActor",
+      "name": "checkValAsOpActor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "info.smart_tools.smartactors.async_operations.close_async_operation.CloseAsyncOperationActor",
+      "name": "closeAsyncOpsActor",
+      "collectionName": "operation"
+    }
+  ]
+}

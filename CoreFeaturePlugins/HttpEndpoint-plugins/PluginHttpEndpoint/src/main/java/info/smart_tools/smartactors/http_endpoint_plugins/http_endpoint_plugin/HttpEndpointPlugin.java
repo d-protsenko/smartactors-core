@@ -321,7 +321,7 @@ public class HttpEndpointPlugin implements IPlugin {
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             FullHttpRequest request = (FullHttpRequest) args[0];
-                            if (request.method().equals("GET")) {
+                            if (request.method().toString().equals("GET")) {
                                 return "HTTP_GET";
                             }
                             return "HTTP_" + ((HttpHeaders) request.headers()).get(HttpHeaders.Names.CONTENT_TYPE);
