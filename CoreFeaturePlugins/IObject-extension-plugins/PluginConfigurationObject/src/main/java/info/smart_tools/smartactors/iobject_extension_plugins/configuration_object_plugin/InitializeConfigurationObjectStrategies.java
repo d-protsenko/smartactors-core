@@ -203,7 +203,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             checkpointConfig.setValue(handlerFieldName, "enter");
 
                                                             checkpointConfig.setValue(wrapperFieldName, IOC.resolve(
-                                                                    IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                                                                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
                                                                     checkpointWrapperConfig
                                                             ));
 
