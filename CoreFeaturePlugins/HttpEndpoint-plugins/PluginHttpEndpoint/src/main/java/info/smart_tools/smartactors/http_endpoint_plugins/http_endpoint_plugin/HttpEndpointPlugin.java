@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
+import info.smart_tools.smartactors.http_endpoint.http_chunked_headers_setter.HttpChunkedHeadersSetter;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
@@ -307,7 +308,7 @@ public class HttpEndpointPlugin implements IPlugin {
                 new CreateNewInstanceStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
-                        (args) -> new ResponseContentChunkedJsonStrategy()
+                        (args) -> new HttpChunkedHeadersSetter()
                 )
         );
         headersSetterChooser.register("HTTP",
