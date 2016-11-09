@@ -63,10 +63,9 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
                                                 } catch (ReadValueException e) {
                                                     throw new RuntimeException(e);
                                                 }
-
                                             }
                                     )
-                            )
+                            );
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResponseJsonContentStrategy plugin can't load: can't get ResponseJsonContentStrategy key", e);
                         } catch (InvalidArgumentException e) {
