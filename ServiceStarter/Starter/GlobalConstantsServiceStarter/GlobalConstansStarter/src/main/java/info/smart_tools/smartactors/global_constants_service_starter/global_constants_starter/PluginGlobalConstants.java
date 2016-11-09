@@ -43,6 +43,33 @@ public class PluginGlobalConstants implements IPlugin {
                 try {
                     IObject obj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                     IOC.register(Keys.getOrAdd("global constants"), new SingletonStrategy(obj));
+
+                    IOC.register(
+                            Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+                            new CreateNewInstanceStrategy(args -> {
+                                IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
+                                IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
+                                IObject config;
+
+                                if (args.length > 2) {
+                                    config = (IObject) args[2];
+                                } else {
+                                    try {
+                                        config = obj;
+                                    } catch (ResolutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+
+                                try {
+                                    return new MessageProcessor(taskQueue, sequence, config);
+                                } catch (InvalidArgumentException | ResolutionException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }));
+
+
+
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);
                 }
