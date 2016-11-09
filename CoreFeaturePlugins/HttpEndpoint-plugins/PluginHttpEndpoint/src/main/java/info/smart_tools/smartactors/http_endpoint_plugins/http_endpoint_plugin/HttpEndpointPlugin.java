@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.http_endpoint.response_content_chunked_json_strategy.ResponseContentChunkedJsonStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -44,6 +45,7 @@ import info.smart_tools.smartactors.http_endpoint.respons_status_extractor.Respo
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 
 import java.util.List;
@@ -63,6 +65,8 @@ public class HttpEndpointPlugin implements IPlugin {
     private IFieldName endpointNameFieldName;
     private IFieldName queueFieldName;
     private IFieldName templatesFieldName;
+    private IFieldName responseFieldName;
+    private IFieldName chunkedFieldName;
 
     /**
      * Constructor
@@ -221,6 +225,16 @@ public class HttpEndpointPlugin implements IPlugin {
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
                         "templates"
                 );
+        responseFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "response"
+                );
+        chunkedFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        "chunked"
+                );
     }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
@@ -271,16 +285,32 @@ public class HttpEndpointPlugin implements IPlugin {
 
     private void registerHeadersExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
             AdditionDependencyStrategyException {
-        IAdditionDependencyStrategy cookiesSetterChooser =
+        IAdditionDependencyStrategy headersSetterChooser =
                 IOC.resolve(Keys.getOrAdd("HeadersExtractorChooser"));
 
         IOC.register(Keys.getOrAdd("key_for_headers_extractor"), new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                                "HTTP"
+                        (args) -> {
+                            IObject environment = (IObject) args[0];
+                            try {
+                                IObject response = (IObject) environment.getValue(responseFieldName);
+                                if (response.getValue(chunkedFieldName) != null) {
+                                    return "HTTP_chunked";
+                                }
+                                return "HTTP";
+                            } catch (ReadValueException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                 )
         );
-
-        cookiesSetterChooser.register("HTTP",
+        headersSetterChooser.register("HTTP_chunked",
+                new CreateNewInstanceStrategy(
+                        //args[0] - type of the request
+                        //args[1] - name of the endpoint
+                        (args) -> new ResponseContentChunkedJsonStrategy()
+                )
+        );
+        headersSetterChooser.register("HTTP",
                 new CreateNewInstanceStrategy(
                         (args) -> new HttpHeadersExtractor()
                 )

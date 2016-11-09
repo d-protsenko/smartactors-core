@@ -27,9 +27,9 @@ public class HttpResponseSender implements IResponseSender {
     /**
      * Constructor for http response sender
      */
-    private final ICookiesSetter cookiesSetter;
-    private final IHeadersExtractor headersSetter;
-    private final IResponseStatusExtractor responseStatusSetter;
+    private ICookiesSetter cookiesSetter;
+    private IHeadersExtractor headersSetter;
+    private IResponseStatusExtractor responseStatusSetter;
     private final String name;
 
     /**
@@ -40,15 +40,6 @@ public class HttpResponseSender implements IResponseSender {
      */
     public HttpResponseSender(final String name) throws ResolutionException {
         this.name = name;
-        String keyCookiesSetter = IOC.resolve(Keys.getOrAdd("key_for_cookies_extractor"));
-        cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()), keyCookiesSetter,
-                name);
-        headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName()),
-                IOC.resolve(Keys.getOrAdd("key_for_headers_extractor")),
-                name);
-        responseStatusSetter = IOC.resolve(Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName()),
-                IOC.resolve(Keys.getOrAdd("key_for_response_status_setter")),
-                name);
     }
 
     @Override
@@ -57,6 +48,16 @@ public class HttpResponseSender implements IResponseSender {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1, getResponseStatus(environment),
                 Unpooled.wrappedBuffer(responseObject.getContent()));
+        try {
+            String keyCookiesSetter = IOC.resolve(Keys.getOrAdd("key_for_cookies_extractor"), environment);
+            cookiesSetter = IOC.resolve(Keys.getOrAdd(ICookiesSetter.class.getCanonicalName()), keyCookiesSetter,
+                    name);
+            headersSetter = IOC.resolve(Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("key_for_headers_extractor"), environment),
+                    name);
+        } catch(ResolutionException e) {
+            throw new ResponseSendingException(e);
+        }
         try {
             headersSetter.set(response, environment);
         } catch (HeadersSetterException e) {
@@ -70,8 +71,16 @@ public class HttpResponseSender implements IResponseSender {
         ctx.send(response);
     }
 
-    private HttpResponseStatus getResponseStatus(final IObject environment) {
+    private HttpResponseStatus getResponseStatus(final IObject environment) throws ResponseSendingException {
+        try {
+            responseStatusSetter = IOC.resolve(Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("key_for_response_status_setter")),
+                    name);
+        } catch (ResolutionException e) {
+            throw new ResponseSendingException(e);
+        }
         Integer responseStatusCode = responseStatusSetter.extract(environment);
+
         if (null != responseStatusCode) {
             return HttpResponseStatus.valueOf(responseStatusCode);
         }

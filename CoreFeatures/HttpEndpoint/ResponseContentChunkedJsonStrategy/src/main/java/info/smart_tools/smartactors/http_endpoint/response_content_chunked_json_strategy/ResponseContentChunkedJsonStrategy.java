@@ -42,9 +42,7 @@ public class ResponseContentChunkedJsonStrategy implements IResponseContentStrat
             return responseString.getBytes(Charset.forName("UTF-8"));
         } catch (ResolutionException e) {
             throw new SerializeException("Failed to resolve \"IFieldName\"", e);
-        } catch (ReadValueException | InvalidArgumentException e) {
-            throw new SerializeException(e);
-        } catch (DeleteValueException | ChangeValueException e) {
+        } catch (ReadValueException | InvalidArgumentException | DeleteValueException | ChangeValueException e) {
             throw new SerializeException(e);
         }
     }

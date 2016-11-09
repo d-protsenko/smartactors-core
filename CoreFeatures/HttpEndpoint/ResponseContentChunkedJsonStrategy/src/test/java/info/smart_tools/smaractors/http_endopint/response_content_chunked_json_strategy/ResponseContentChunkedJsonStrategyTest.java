@@ -68,7 +68,7 @@ public class ResponseContentChunkedJsonStrategyTest {
         when(response.getValue(chunkedFieldName)).thenReturn("start");
         when(response.serialize()).thenReturn(content);
         jsonStrategy.setContent(response, responseObject);
-        verify(responseObject).setContent((17 + "\r\n" + content.substring(0, content.length() - 1) + "\r\n").getBytes(Charset.forName("UTF-8")));
+        verify(responseObject).setContent((11 + "\r\n" + content.substring(0, content.length() - 1) + "\r\n").getBytes(Charset.forName("UTF-8")));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ResponseContentChunkedJsonStrategyTest {
         when(response.getValue(chunkedFieldName)).thenReturn("end");
         when(response.serialize()).thenReturn(content);
         jsonStrategy.setContent(response, responseObject);
-        verify(responseObject).setContent((17 + "\r\n" + content.substring(1, content.length()) + "\r\n").getBytes(Charset.forName("UTF-8")));
+        verify(responseObject).setContent((11 + "\r\n" + content.substring(1, content.length()) + "\r\n").getBytes(Charset.forName("UTF-8")));
     }
 
 
@@ -107,7 +107,7 @@ public class ResponseContentChunkedJsonStrategyTest {
         when(response.getValue(chunkedFieldName)).thenReturn("continue");
         when(response.serialize()).thenReturn(content);
         jsonStrategy.setContent(response, responseObject);
-        verify(responseObject).setContent((16 + "\r\n" + content.substring(1, content.length()-1) + "\r\n").getBytes(Charset.forName("UTF-8")));
+        verify(responseObject).setContent((10 + "\r\n" + content.substring(1, content.length()-1) + "\r\n").getBytes(Charset.forName("UTF-8")));
     }
 
 }
