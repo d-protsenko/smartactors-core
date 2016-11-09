@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.message_processing_interfaces.message_proce
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
+import java.util.Collection;
+
 /**
  * Chain of message receivers.
  */
@@ -38,4 +40,15 @@ public interface IReceiverChain {
      *         {@code null} if no such chain defined for this one
      */
     IObject getExceptionalChainAndEnvironments(Throwable exception);
+
+    /**
+     * Get list of all exceptional chain used y this chain.
+     *
+     * <p>
+     *     This method may be used for serialization of chains to create clones of exceptional chains on deserialization.
+     * </p>
+     *
+     * @return list of all exceptional chains used by this one
+     */
+    Collection<IReceiverChain> getExceptionalChains();
 }

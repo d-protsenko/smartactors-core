@@ -1,22 +1,41 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link ImmutableReceiverChain}.
  */
-public class ImmutableReceiverChainTest {
+public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
+
+    @Override
+    protected void loadPlugins() throws Exception {
+        load(ScopedIOCPlugin.class);
+        load(PluginScopeProvider.class);
+        load(PluginIOCKeys.class);
+        load(PluginDSObject.class);
+        load(IFieldNamePlugin.class);
+    }
+
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidNamePassed()
             throws Exception {
@@ -95,5 +114,27 @@ public class ImmutableReceiverChainTest {
         assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(new InvalidArgumentException("invalid")));
         assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(
                 new IllegalStateException(new InvalidArgumentException(new Throwable()))));
+    }
+
+    @Test
+    public void Should_provideCollectionOfUniqueExceptionalChains()
+            throws Exception {
+        IReceiverChain exceptional1 = mock(IReceiverChain.class), exceptional2 = mock(IReceiverChain.class);
+        IFieldName chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        IObject eobj1 = mock(IObject.class), eobj2 = mock(IObject.class), eobj3 = mock(IObject.class);
+        when(eobj1.getValue(eq(chainFN))).thenReturn(exceptional1);
+        when(eobj2.getValue(eq(chainFN))).thenReturn(exceptional2);
+        when(eobj3.getValue(eq(chainFN))).thenReturn(exceptional1);
+
+        Map<Class<? extends Throwable>, IObject> eMap = new HashMap<>();
+        eMap.put(Exception.class, eobj1);
+        eMap.put(NullPointerException.class, eobj2);
+        eMap.put(RuntimeException.class, eobj3);
+
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", new IMessageReceiver[0], new IObject[0], eMap);
+
+        Collection<IReceiverChain> eColl = chain.getExceptionalChains();
+
+        assertEquals(new HashSet<>(Arrays.asList(exceptional1, exceptional2)), eColl);
     }
 }
