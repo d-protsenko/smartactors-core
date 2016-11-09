@@ -169,7 +169,31 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             return obj;
                                                         } catch (Throwable e) {
                                                             throw new RuntimeException(
-                                                                    "Error in configuration 'wrapper' rule.", e
+                                                                    "Error in configuration 'exceptional' rule.", e
+                                                            );
+                                                        }
+                                                    }
+                                            )
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(), "configuration object canonical maps strategy"
+                                            ),
+                                            new ApplyFunctionToArgumentsStrategy(
+                                                    (a) -> {
+                                                        try {
+                                                            Object obj = a[0];
+                                                            if (obj instanceof List) {
+                                                                for (IObject innerObject : (List<IObject>)obj) {
+                                                                    if (null == innerObject.getValue(new FieldName("externalAccess"))) {
+                                                                        innerObject.setValue(new FieldName("externalAccess"), false);
+                                                                    }
+                                                                }
+                                                            }
+                                                            return obj;
+                                                        } catch (Throwable e) {
+                                                            throw new RuntimeException(
+                                                                    "Error in configuration 'canonical maps' rule.", e
                                                             );
                                                         }
                                                     }
@@ -186,6 +210,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                                 put("in_", "configuration object in_ strategy");
                                                                 put("out_", "configuration object out_ strategy");
                                                                 put("exceptional", "configuration object exceptional strategy");
+                                                                put("maps", "configuration object canonical maps strategy");
                                                             }};
                                                             char[] symbols = a[1].toString().toCharArray();
                                                             String resolvedKey = "configuration object default strategy";
