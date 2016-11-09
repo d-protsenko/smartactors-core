@@ -124,4 +124,9 @@ public class ImmutableReceiverChain implements IReceiverChain {
     public Collection<IReceiverChain> getExceptionalChains() {
         return allExceptionalChains;
     }
+
+    @Override
+    public IObject dump() {
+        throw new RuntimeException("not implemented");
+    }
 }

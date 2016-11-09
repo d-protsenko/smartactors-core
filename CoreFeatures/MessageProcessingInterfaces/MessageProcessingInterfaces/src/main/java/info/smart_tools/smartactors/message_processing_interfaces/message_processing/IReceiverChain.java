@@ -51,4 +51,12 @@ public interface IReceiverChain {
      * @return list of all exceptional chains used by this one
      */
     Collection<IReceiverChain> getExceptionalChains();
+
+    /**
+     * Get a object describing this chain.
+     *
+     * @return the object describing this chain in format acceptable by chain creation strategy
+     * TODO: Replace by serialization method
+     */
+    IObject dump();
 }

@@ -206,4 +206,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 Arrays.copyOf(chainStack, stackIndex + 1),
                 Arrays.copyOf(stepStack, stackIndex + 1));
     }
+
+    @Override
+    public IObject dump(final IObject options) {
+        throw new RuntimeException("not implemented");
+    }
 }
