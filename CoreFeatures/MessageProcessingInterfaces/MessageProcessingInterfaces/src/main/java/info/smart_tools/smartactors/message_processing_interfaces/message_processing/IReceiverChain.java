@@ -38,4 +38,10 @@ public interface IReceiverChain {
      *         {@code null} if no such chain defined for this one
      */
     IObject getExceptionalChainAndEnvironments(Throwable exception);
+
+    /**
+     * Get chain description
+     * @return the description of chain
+     */
+    IObject getChainDescription();
 }

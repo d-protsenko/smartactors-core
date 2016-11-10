@@ -120,4 +120,9 @@ public class MainTestChain implements IReceiverChain {
 
         return exceptionalChainAndEnv;
     }
+
+    @Override
+    public IObject getChainDescription() {
+        return null;
+    }
 }

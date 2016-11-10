@@ -111,7 +111,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
             }
 
-            return (T) new ImmutableReceiverChain(String.valueOf(chainId), receivers, arguments, exceptionalChainsMap);
+            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainsMap);
         } catch (ChainNotFoundException | ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);

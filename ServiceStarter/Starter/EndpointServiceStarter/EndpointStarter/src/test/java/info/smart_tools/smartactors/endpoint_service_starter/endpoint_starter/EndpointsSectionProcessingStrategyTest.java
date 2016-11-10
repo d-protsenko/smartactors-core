@@ -104,7 +104,7 @@ public class EndpointsSectionProcessingStrategyTest {
                         stackDepth =
                             (Integer) configuration.getValue(new FieldName("stackDepth"));
                         return new EnvironmentHandler(queue, stackDepth);
-                    } catch (ReadValueException | InvalidArgumentException e) {
+                    } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return null;
                 }
