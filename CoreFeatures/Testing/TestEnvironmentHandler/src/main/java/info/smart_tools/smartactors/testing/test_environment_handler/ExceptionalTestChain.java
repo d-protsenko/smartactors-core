@@ -28,4 +28,9 @@ class ExceptionalTestChain implements IReceiverChain {
     public IObject getExceptionalChainAndEnvironments(Throwable exception) {
         return null;
     }
+
+    @Override
+    public IObject getChainDescription() {
+        return null;
+    }
 }
