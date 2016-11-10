@@ -144,7 +144,7 @@ public class EnvironmentHandlerTest {
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
         iObjects[0] = null;
-        IReceiverChain chain = new ImmutableReceiverChain("name", messageReceivers, iObjects, exceptionalChainsAndEnv);
+        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv);
         IQueue<ITask> queue = new BlockingQueue(null);
 
         IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
