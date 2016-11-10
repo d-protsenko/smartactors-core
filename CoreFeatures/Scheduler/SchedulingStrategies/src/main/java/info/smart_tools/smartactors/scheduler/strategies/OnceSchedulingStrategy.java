@@ -86,7 +86,7 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
     @Override
     public void restore(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
         try {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
             LocalDateTime time = LocalDateTime.parse((String) entry.getState().getValue(timeFieldName));
             Boolean ntl = (Boolean) entry.getState().getValue(neverTooLateFieldName);
 
