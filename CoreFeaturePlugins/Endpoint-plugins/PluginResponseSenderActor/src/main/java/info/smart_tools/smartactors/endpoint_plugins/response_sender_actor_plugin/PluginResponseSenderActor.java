@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 
 /**
- *
+ * Plugin for actor, that send response
  */
 public class PluginResponseSenderActor implements IPlugin {
     private IBootstrap<IBootstrapItem<String>> bootstrap;
@@ -23,7 +23,7 @@ public class PluginResponseSenderActor implements IPlugin {
     /**
      * The constructor
      *
-     * @param bootstrap    the bootstrap
+     * @param bootstrap the bootstrap
      */
     public PluginResponseSenderActor(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
