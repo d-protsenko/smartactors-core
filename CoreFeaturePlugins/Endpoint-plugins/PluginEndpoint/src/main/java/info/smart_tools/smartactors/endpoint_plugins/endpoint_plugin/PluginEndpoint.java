@@ -53,6 +53,9 @@ public class PluginEndpoint implements IPlugin {
                                                 if (args.length == 1) {
                                                     return endpoints.get(args[0]);
                                                 }
+                                                if (endpoints.containsKey(args[0])) {
+                                                    throw new RuntimeException("Failed to add endpoint, endpoint with this name already exist");
+                                                }
                                                 endpoints.put((String) args[0], (IAsyncService) args[1]);
                                                 return endpoints.get(args[0]);
                                             }
@@ -60,6 +63,9 @@ public class PluginEndpoint implements IPlugin {
                             IOC.register(Keys.getOrAdd("removeEndpoint"),
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
+                                                if (!endpoints.containsKey(args[0])) {
+                                                    throw new RuntimeException("Failed to remove endpoint, endpoint with this name doesn`t exist");
+                                                }
                                                 endpoints.remove((String) args[0]);
                                                 return true;
                                             }
