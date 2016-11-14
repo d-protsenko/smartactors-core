@@ -30,4 +30,9 @@ public class TestChannelHandler implements IChannelHandler {
     public void send(final Object response) {
         this.responses.add(response);
     }
+
+    @Override
+    public Object getHandler() {
+        return null;
+    }
 }
