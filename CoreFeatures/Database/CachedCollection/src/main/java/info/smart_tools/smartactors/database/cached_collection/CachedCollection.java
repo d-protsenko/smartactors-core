@@ -217,7 +217,7 @@ public class CachedCollection implements ICachedCollection {
                     items.add(message);
                 }
             } else {
-                map.put(key, Collections.singletonList(message));
+                map.put(key, new ArrayList<>(Arrays.asList(message)));
             }
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new UpsertCacheItemException("Can't add or update cached object.", e);

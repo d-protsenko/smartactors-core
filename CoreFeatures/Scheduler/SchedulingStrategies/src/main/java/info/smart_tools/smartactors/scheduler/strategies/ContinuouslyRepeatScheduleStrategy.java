@@ -69,7 +69,7 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
             String start = (String) args.getValue(startFieldName);
             LocalDateTime startTime;
             Duration interval = Duration.parse((String) args.getValue(intervalFieldName));
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
             if (start == null) {
                 startTime = now;

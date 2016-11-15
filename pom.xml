@@ -30,22 +30,17 @@
         <module>ToWrapperConverterStrategy</module>
         <module>ValidateFormDataActor</module>
         <module>ServerWithConfiguration</module>
-        <module>SampleActor</module>
-        <module>PluginSampleActor</module>
         <module>DependencyResolvingFeatureManager</module>
         <module>ServerForIntern</module>
         <module>PluginValidationFormActor</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
-        <module>SampleOtherActor</module>
         <module>ExceptionHandlerActor</module>
         <module>PluginExceptionHandlerActor</module>
         <module>PluginNullConnectionPool</module>
         <module>GetFirstNotNullRule</module>
         <module>PluginGetFirstNotNullRule</module>
         <module>CoreFeatures/Base</module>
-        <module>PluginScheduler</module>
-        <module>PluginSchedulingStrategies</module>
     </modules>
 
     <repositories>

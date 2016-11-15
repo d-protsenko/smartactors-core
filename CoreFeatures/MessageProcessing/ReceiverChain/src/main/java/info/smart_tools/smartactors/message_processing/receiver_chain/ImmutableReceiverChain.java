@@ -1,36 +1,54 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
  */
-public class ImmutableReceiverChain implements IReceiverChain {
+public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final String name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
     private final Map<Class<? extends Throwable>, IObject> exceptionalChains;
+    private final IObject description;
+    private final Set<IReceiverChain> allExceptionalChains;
 
     /**
      * The constructor.
      *
      * @param name                        name of the chain
+     * @param chainDescription            the description of chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
      * @param exceptionalChainsAndEnv           mapping from exception class to exceptional chain to use when it occurs
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
+     * @throws ResolutionException if cannot resolve any dependency
+     * @throws ReadValueException if cannot read chains from {@code exceptionalChainsAndEnv}
      */
-    public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
+    public ImmutableReceiverChain(final String name, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
                                   final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, ResolutionException, ReadValueException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
+        }
+
+        if (null == chainDescription) {
+            throw new InvalidArgumentException("Chain description should not be null.");
         }
 
         if (null == receivers) {
@@ -50,9 +68,18 @@ public class ImmutableReceiverChain implements IReceiverChain {
         }
 
         this.name = name;
+        this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
         this.exceptionalChains = exceptionalChainsAndEnv;
+
+        allExceptionalChains = new HashSet<>();
+
+        IFieldName chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+
+        for (IObject exceptionEnv : exceptionalChainsAndEnv.values()) {
+            allExceptionalChains.add((IReceiverChain) exceptionEnv.getValue(chainFieldName));
+        }
     }
 
     @Override
@@ -99,5 +126,21 @@ public class ImmutableReceiverChain implements IReceiverChain {
         } while (null != e);
 
         return null;
+    }
+
+    @Override
+    public IObject getChainDescription() {
+        return this.description;
+    }
+
+    @Override
+    public Collection<IReceiverChain> getExceptionalChains() {
+        return allExceptionalChains;
+    }
+
+    @Override
+    public IObject dump(final IObject options) {
+        // As the chain is immutable we may just return the description it was created from. And we do.
+        return getChainDescription();
     }
 }

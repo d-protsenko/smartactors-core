@@ -84,7 +84,6 @@ public class MessageToBytesMapperTest {
         verify(iObject.serialize().equals(iObject2.serialize()));
     }
     @Test
-    @Ignore
     public void messageToBytesMapperShouldDeleteNonASCIICharacters() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
         String stringWithNonASCII = "\uFEFF{\"hello\": \"world\"}";

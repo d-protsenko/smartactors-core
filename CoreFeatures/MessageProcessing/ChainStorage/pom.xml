@@ -32,6 +32,7 @@
             <artifactId>message-processing.immutable-receiver-chain</artifactId>
             <version>${core.version}</version>
         </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

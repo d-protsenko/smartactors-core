@@ -103,6 +103,14 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- "make dump" strategy for IOC -->
+        <!-- TODO: Implement more generic serialization mechanism and replace by strategy that uses it -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>dumpable-plugins.make-dump</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Field -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

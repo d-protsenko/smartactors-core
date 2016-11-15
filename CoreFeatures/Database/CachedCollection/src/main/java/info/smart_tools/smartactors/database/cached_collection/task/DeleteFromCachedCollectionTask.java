@@ -1,18 +1,19 @@
 package info.smart_tools.smartactors.database.cached_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.field.nested_field.NestedField;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 /**
  * Deletes object from cached collection (sets isActive flag to false)
@@ -33,7 +34,7 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
     public DeleteFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
-            this.isActiveField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document/isActive");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(NestedField.class.getCanonicalName()), "document/isActive");
             this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
             this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
