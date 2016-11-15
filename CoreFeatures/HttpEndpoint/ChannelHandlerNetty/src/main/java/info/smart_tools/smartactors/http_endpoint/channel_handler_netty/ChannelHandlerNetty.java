@@ -19,4 +19,9 @@ public class ChannelHandlerNetty implements IChannelHandler<ChannelHandlerContex
     public void send(final Object response) {
         channelHandler.writeAndFlush(response);
     }
+
+    @Override
+    public ChannelHandlerContext getHandler() {
+        return this.channelHandler;
+    }
 }

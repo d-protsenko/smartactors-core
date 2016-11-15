@@ -99,7 +99,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
 
         assertTrue(Duration.between(
                 LocalDateTime.parse((String) entry.getState().getValue(start)),
-                LocalDateTime.now()).abs().getSeconds()
+                LocalDateTime.now(ZoneOffset.UTC)).abs().getSeconds()
                     <= 1);
         assertEquals("PT24H", entry.getState().getValue(interval));
     }

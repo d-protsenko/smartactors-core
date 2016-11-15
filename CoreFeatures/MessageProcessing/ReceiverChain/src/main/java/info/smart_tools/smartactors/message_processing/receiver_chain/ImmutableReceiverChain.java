@@ -24,12 +24,14 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
     private final Map<Class<? extends Throwable>, IObject> exceptionalChains;
+    private final IObject description;
     private final Set<IReceiverChain> allExceptionalChains;
 
     /**
      * The constructor.
      *
      * @param name                        name of the chain
+     * @param chainDescription            the description of chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
      * @param exceptionalChainsAndEnv           mapping from exception class to exceptional chain to use when it occurs
@@ -38,11 +40,15 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
      * @throws ResolutionException if cannot resolve any dependency
      * @throws ReadValueException if cannot read chains from {@code exceptionalChainsAndEnv}
      */
-    public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
+    public ImmutableReceiverChain(final String name, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
                                   final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv)
             throws InvalidArgumentException, ResolutionException, ReadValueException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
+        }
+
+        if (null == chainDescription) {
+            throw new InvalidArgumentException("Chain description should not be null.");
         }
 
         if (null == receivers) {
@@ -62,6 +68,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
         }
 
         this.name = name;
+        this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
         this.exceptionalChains = exceptionalChainsAndEnv;
@@ -119,6 +126,11 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
         } while (null != e);
 
         return null;
+    }
+
+    @Override
+    public IObject getChainDescription() {
+        return this.description;
     }
 
     @Override
