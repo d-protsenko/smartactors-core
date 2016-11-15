@@ -146,7 +146,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
         eMap.put(NullPointerException.class, eobj2);
         eMap.put(RuntimeException.class, eobj3);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", new IMessageReceiver[0], new IObject[0], eMap);
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], eMap);
 
         Collection<IReceiverChain> eColl = chain.getExceptionalChains();
 
