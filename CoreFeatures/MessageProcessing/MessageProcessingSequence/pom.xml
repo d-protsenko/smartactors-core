@@ -27,6 +27,11 @@
             <artifactId>ioc.ioc</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>dumpable-interfce.idumpable</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>

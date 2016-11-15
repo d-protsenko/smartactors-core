@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -18,7 +19,7 @@ import java.util.Set;
 /**
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
  */
-public class ImmutableReceiverChain implements IReceiverChain {
+public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final String name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
@@ -126,7 +127,7 @@ public class ImmutableReceiverChain implements IReceiverChain {
     }
 
     @Override
-    public IObject dump() {
+    public IObject dump(final IObject options) {
         throw new RuntimeException("not implemented");
     }
 }

@@ -1,0 +1,4 @@
+{
+  "featureName": "dumpable-plugins",
+  "afterFeatures": ["dumpable-interface"]
+}

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.message_processing_sequence;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 /**
  * Implementation of {@link IMessageProcessingSequence}.
  */
-public class MessageProcessingSequence implements IMessageProcessingSequence {
+public class MessageProcessingSequence implements IMessageProcessingSequence, IDumpable {
     private final IReceiverChain mainChain;
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
@@ -207,6 +208,51 @@ public class MessageProcessingSequence implements IMessageProcessingSequence {
                 Arrays.copyOf(stepStack, stackIndex + 1));
     }
 
+    /**
+     * Create a description (dump) of current state of this sequence.
+     *
+     * <p>
+     *     The returned object will look like the following:
+     * </p>
+     * <pre>
+     *     {
+     *         "stepsStack": [1, 3, 0, 2],               // Step indexes: steps[i] = getStepAtLevel(i)
+     *         "chainsStack":                            // Names of chains at levels
+     *              ["rootChain", "nestedChain",
+     *              "otherChain", "oneMreChain"],
+     *         "maxDepth": 5,                            // Depth limit
+     *         "chainsDump": {                           // Chins in the same format as they are described in configuration
+     *             "rootChain": {
+     *                 ...
+     *             },
+     *             "nestedChain": {
+     *                 ... ,
+     *                 "exceptional": [
+     *                     {
+     *                         "class": "java.lang.NullPointerException",
+     *                         "chain": "npeChain",
+     *                         "after": "break"
+     *                     }
+     *                 ]
+     *             },
+     *             "npeChain": {...}
+     *         }
+     *     }
+     * </pre>
+     *
+     * <p>
+     *     Options may contain the following fields:
+     * </p>
+     * <ul>
+     *     <li>{@code "excludeChains"} - list of names of chins that should not be included in {@code "chainsDump"}</li>
+     *     <li>{@code "excludeExceptional"} - {@code true} if exceptional chains should not be included in {@code "chainsDump"}</li>
+     *     <li>{@code "skipChains"} - {@code true} if {@code "chainsDump"} should be empty</li>
+     * </ul>
+     *
+     * @param options    dump creation options
+     * @return the description of current sequence's state
+     * TODO: Replace by serialization method
+     */
     @Override
     public IObject dump(final IObject options) {
         throw new RuntimeException("not implemented");
