@@ -140,6 +140,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
 
     @Override
     public IObject dump(final IObject options) {
-        throw new RuntimeException("not implemented");
+        // As the chain is immutable we may just return the description it was created from. And we do.
+        return getChainDescription();
     }
 }

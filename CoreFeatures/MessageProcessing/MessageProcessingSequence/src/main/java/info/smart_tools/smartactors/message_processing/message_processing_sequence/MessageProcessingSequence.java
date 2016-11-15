@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.exceptions.DumpException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -9,6 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -16,6 +18,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link IMessageProcessingSequence}.
@@ -38,6 +43,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName exceptionFieldName;
     private final IFieldName chainFieldName;
     private final IFieldName afterExceptionActionFieldName;
+    private final IFieldName stepsStackFieldName;
+    private final IFieldName chainsStackFieldName;
+    private final IFieldName maxDepthFieldName;
+    private final IFieldName chainsDumpFieldName;
+    private final IFieldName excludeExceptionalFieldName;
+    private final IFieldName skipChainsFieldName;
 
     /**
      * The constructor.
@@ -74,6 +85,13 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exception");
         this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "after");
         this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain");
+
+        stepsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepsStack");
+        chainsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack");
+        maxDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth");
+        chainsDumpFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump");
+        excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "excludeExceptional");
+        skipChainsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "skipChains");
 
         reset();
     }
@@ -244,7 +262,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      *     Options may contain the following fields:
      * </p>
      * <ul>
-     *     <li>{@code "excludeChains"} - list of names of chins that should not be included in {@code "chainsDump"}</li>
      *     <li>{@code "excludeExceptional"} - {@code true} if exceptional chains should not be included in {@code "chainsDump"}</li>
      *     <li>{@code "skipChains"} - {@code true} if {@code "chainsDump"} should be empty</li>
      * </ul>
@@ -254,7 +271,50 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      * TODO: Replace by serialization method
      */
     @Override
-    public IObject dump(final IObject options) {
-        throw new RuntimeException("not implemented");
+    public IObject dump(final IObject options) throws DumpException {
+        try {
+            IObject dump = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+            dump.setValue(maxDepthFieldName, chainStack.length);
+            dump.setValue(stepsStackFieldName,
+                    Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
+            dump.setValue(chainsStackFieldName,
+                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).collect(Collectors.toList()));
+
+            Object skipChains = options.getValue(skipChainsFieldName);
+            Object excludeExceptional = options.getValue(excludeExceptionalFieldName);
+
+            if (skipChains == null || !(boolean) skipChains) {
+                IObject chainsDump = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                dump.setValue(chainsDumpFieldName, chainsDump);
+
+                Set<IReceiverChain> dumpedChains = new HashSet<>();
+
+                for (int i = 0; i <= stackIndex; i++) {
+                    addChainsToDump(dumpedChains, chainStack[i],
+                            excludeExceptional != null && (boolean) excludeExceptional);
+                }
+
+                for (IReceiverChain chain : dumpedChains) {
+                    Object chainDump = IOC.resolve(Keys.getOrAdd("make dump"), chain, options);
+                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), chain.getName());
+
+                    chainsDump.setValue(fieldName, chainDump);
+                }
+            }
+
+            return dump;
+        } catch (ResolutionException | ChangeValueException | ReadValueException | InvalidArgumentException e) {
+            throw new DumpException("Error occurred creating dump of message processing sequence.", e);
+        }
+    }
+
+    private void addChainsToDump(final Set<IReceiverChain> toDump, final IReceiverChain chain, final boolean skipExceptional) {
+        if (toDump.add(chain) && !skipExceptional) {
+            for (IReceiverChain exceptionalChain : chain.getExceptionalChains()) {
+                addChainsToDump(toDump, exceptionalChain, false);
+            }
+        }
     }
 }

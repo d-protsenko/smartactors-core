@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -123,12 +124,22 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     }
 
     @Test
-    public void checkGetChainDescriptionMehtod() throws Exception {
+    public void checkGetChainDescriptionMethod() throws Exception {
         IMessageReceiver[] receivers = new IMessageReceiver[0];
         IObject description = mock(IObject.class);
 
         IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class));
         assertSame(description, chain.getChainDescription());
+    }
+
+
+    @Test
+    public void Should_dumpMethodReturnTheChainDescription() throws Exception {
+        IMessageReceiver[] receivers = new IMessageReceiver[0];
+        IObject description = mock(IObject.class);
+
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class));
+        assertSame(description, ((IDumpable) chain).dump(null));
     }
 
     @Test
