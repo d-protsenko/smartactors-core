@@ -50,7 +50,7 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
     public void init(final IObject state, final IObject args, final IMessageProcessor processor)
             throws RecoverStrategyInitializationException {
         try {
-            IObject sequenceDump = IOC.resolve(Keys.getOrAdd("make dump"), processor.getSequence());
+            IObject sequenceDump = IOC.resolve(Keys.getOrAdd("make dump"), processor.getSequence(), args);
 
             state.setValue(sequenceDumpFieldName, sequenceDump);
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
@@ -72,7 +72,6 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
             checkpointStatus.setValue(prevCheckpointIdFieldName, state.getValue(prevCheckpointIdFieldName));
 
             messageClone.setValue(checkpointStatusFieldName, checkpointStatus);
-
 
             IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd("recover message processing sequence"),
                     state.getValue(sequenceDumpFieldName));
