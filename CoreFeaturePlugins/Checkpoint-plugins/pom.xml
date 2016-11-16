@@ -19,7 +19,7 @@
 
     <modules>
         <module>CheckpointActorPlugin</module>
-        <module>CheckpointRecoverStrategies</module>
+        <module>CheckpointRecoverStrategiesPlugin</module>
         <module>CheckpointSchedulingStrategiesPlugin</module>
     </modules>
 
