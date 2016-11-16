@@ -17,4 +17,11 @@ public interface IChannelHandler<T> {
      * @param response Object of the response
      */
     void send(final Object response);
+
+    /**
+     * Method for getting channel handler
+     *
+     * @return the handler
+     */
+    T getHandler();
 }
