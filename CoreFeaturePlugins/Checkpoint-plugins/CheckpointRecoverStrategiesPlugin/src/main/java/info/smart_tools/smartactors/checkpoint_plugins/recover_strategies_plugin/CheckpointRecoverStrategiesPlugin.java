@@ -2,8 +2,10 @@ package info.smart_tools.smartactors.checkpoint_plugins.recover_strategies_plugi
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.checkpoint.recover_strategies.ChainSequenceRecoverStrategy;
-import info.smart_tools.smartactors.checkpoint.recover_strategies.SingleChainRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.ReSendRestoringSequenceRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.ReSendToChainRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.ChainSequenceRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.SingleChainRecoverStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -36,7 +38,7 @@ public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
     public void singleChainRecoverStrategyItem()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("single chain recover strategy"),
-                new SingletonStrategy(new SingleChainRecoverStrategy()));
+                new SingletonStrategy(new ReSendToChainRecoverStrategy(new SingleChainRecoverStrategy())));
     }
 
     /**
@@ -51,6 +53,21 @@ public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
     public void chainSequenceRecoverStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("chain sequence recover strategy"),
-                new SingletonStrategy(new ChainSequenceRecoverStrategy()));
+                new SingletonStrategy(new ReSendToChainRecoverStrategy(new ChainSequenceRecoverStrategy())));
+    }
+
+    /**
+     * Registers recover strategy that re-sends message restoring message processing sequence state of original message.
+     *
+     * @throws ResolutionException if error occurs resolving key or dependencies
+     * @throws RegistrationException if error occurs registering actor creation strategy
+     * @throws InvalidArgumentException if some unexpected error occurs
+     */
+    @Item("checkpoint_recover_strategy:recover_sequence")
+    @Before({"checkpoint_actor"})
+    public void sequenceRecoverStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("restore sequence recover strategy"),
+                new SingletonStrategy(new ReSendRestoringSequenceRecoverStrategy()));
     }
 }

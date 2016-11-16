@@ -48,6 +48,7 @@ public class CheckpointActor {
     private final IFieldName actionFieldName;
     private final IFieldName recoverFieldName;
     private final IFieldName completedFieldName;
+    private final IFieldName processorFieldName;
 
     /**
      * Task downloading entries from remote storage.
@@ -90,6 +91,7 @@ public class CheckpointActor {
         actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
+        processorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor");
 
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
@@ -163,6 +165,7 @@ public class CheckpointActor {
         // Checkpoint action will initialize recover strategy
         entryArguments.setValue(recoverFieldName, message.getRecoverConfiguration());
         entryArguments.setValue(actionFieldName, CHECKPOINT_ACTION);
+        entryArguments.setValue(processorFieldName, message.getProcessor());
 
         ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), entryArguments, storage);
 

@@ -1,7 +1,6 @@
-package info.smart_tools.smartactors.checkpoint.recover_strategies;
+package info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -29,7 +28,7 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class ChainSequenceRecoverStrategy implements IRecoverStrategy {
+public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrategy {
     private final IFieldName trialsFieldName;
     private final IFieldName chainsFieldName;
 

@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -51,7 +52,6 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         recoverStrategy = mock(IRecoverStrategy.class);
-        when(recoverStrategy.chooseRecoveryChain(any())).thenReturn(chainId);
         IOC.register(Keys.getOrAdd("the recover strategy"), new SingletonStrategy(recoverStrategy));
 
         entryMock = mock(ISchedulerEntry.class);
@@ -79,6 +79,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
     public void Should_initializeRecoverStrategyAndCopyFieldsToEntryStateOnInitialization()
             throws Exception {
         CheckpointSchedulerAction action = new CheckpointSchedulerAction();
+        IMessageProcessor processorMock = mock(IMessageProcessor.class);
 
         IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 ("{'recover':{'strategy':'the recover strategy'}," +
@@ -87,9 +88,11 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
                         "'prevCheckpointId':'prCP'," +
                         "'prevCheckpointEntryId':'pcpEi'}").replace('\'','"'));
 
+        args.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor"), processorMock);
+
         action.init(entryMock, args);
 
-        verify(recoverStrategy).init(same(entryState), any());
+        verify(recoverStrategy).init(same(entryState), any(), same(processorMock));
         assertEquals("rCP", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
         assertEquals("prCP", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
         assertEquals("pcpEi", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
@@ -114,21 +117,23 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
 
         action.execute(entryMock);
 
-        ArgumentCaptor<IObject> mc = ArgumentCaptor.forClass(IObject.class);
+        verify(recoverStrategy).reSend(same(entryState));
 
-        verify(messageBusHandlerMock).handle(mc.capture(), same(chainId));
-
-        IObject sent = mc.getValue();
-        IObject sentCPS = (IObject) sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus"));
-
-        assertEquals("1", sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a")));
-
-        assertEquals(entryId, sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId")));
-        assertEquals("rCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
-        assertEquals("prCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
-        assertEquals("pcpEi", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
-
-        assertNotSame(sent, entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
+//        ArgumentCaptor<IObject> mc = ArgumentCaptor.forClass(IObject.class);
+//
+//        verify(messageBusHandlerMock).handle(mc.capture(), same(chainId));
+//
+//        IObject sent = mc.getValue();
+//        IObject sentCPS = (IObject) sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus"));
+//
+//        assertEquals("1", sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a")));
+//
+//        assertEquals(entryId, sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId")));
+//        assertEquals("rCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
+//        assertEquals("prCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
+//        assertEquals("pcpEi", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
+//
+//        assertNotSame(sent, entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
     }
 
     @Test

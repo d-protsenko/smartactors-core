@@ -2,8 +2,9 @@ package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.ChainSequenceRecoverStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.IRecoveryChainChoiceStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -48,7 +49,7 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
                 "{'trials':[1,3,2],'chains':['A','B','C','D']}".replace('\'','"'));
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        IRecoverStrategy strategy = new ChainSequenceRecoverStrategy();
+        IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
         strategy.init(state, args);
 
@@ -72,7 +73,7 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
         IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        IRecoverStrategy strategy = new ChainSequenceRecoverStrategy();
+        IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
         strategy.init(state, args);
     }
@@ -84,7 +85,7 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
                 "{'trials':[1,3,2],'chains':['A','B','C','D','E']}".replace('\'', '"'));
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-        IRecoverStrategy strategy = new ChainSequenceRecoverStrategy();
+        IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
         strategy.init(state, args);
     }

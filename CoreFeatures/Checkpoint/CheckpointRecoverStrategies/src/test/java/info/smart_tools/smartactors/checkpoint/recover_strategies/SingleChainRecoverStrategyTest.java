@@ -2,8 +2,9 @@ package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.IRecoveryChainChoiceStrategy;
+import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.SingleChainRecoverStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -44,7 +45,7 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_alwaysReturnTheSameChainForAStateObject()
             throws Exception {
-        IRecoverStrategy strategy = new SingleChainRecoverStrategy();
+        IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
@@ -60,7 +61,7 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = RecoverStrategyInitializationException.class)
     public void Should_throwWhenArgumentsContainNoChainName()
             throws Exception {
-        IRecoverStrategy strategy = new SingleChainRecoverStrategy();
+        IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));

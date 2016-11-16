@@ -8,12 +8,10 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
-import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
@@ -30,10 +28,9 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
     private final IFieldName completedFieldName;
 
     private final IFieldName responsibleCheckpointIdFieldName;
-    private final IFieldName checkpointEntryIdFieldName;
     private final IFieldName prevCheckpointEntryIdFieldName;
     private final IFieldName prevCheckpointIdFieldName;
-    private final IFieldName checkpointStatusFieldName;
+    private final IFieldName processorFieldName;
 
     /**
      * The constructor.
@@ -49,10 +46,9 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
 
         responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
-        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
         prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
         prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
-        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus");
+        processorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor");
     }
 
     @Override
@@ -72,7 +68,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             IRecoverStrategy strategy = IOC.resolve(Keys.getOrAdd(recoverStrategyId));
 
-            strategy.init(entry.getState(), recoverConfig);
+            strategy.init(entry.getState(), recoverConfig, (IMessageProcessor) args.getValue(processorFieldName));
 
             entry.getState().setValue(recoverStrategyFieldName, recoverStrategyId);
 
@@ -102,29 +98,9 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
                     entry.getState().getValue(recoverStrategyFieldName)
             ));
 
-            Object chainId = recoverStrategy.chooseRecoveryChain(entry.getState());
-
-            IObject messageClone = cloneMessage((IObject) entry.getState().getValue(messageFieldName));
-
-            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-
-            checkpointStatus.setValue(responsibleCheckpointIdFieldName, entry.getState().getValue(responsibleCheckpointIdFieldName));
-            checkpointStatus.setValue(checkpointEntryIdFieldName, entry.getId());
-            checkpointStatus.setValue(prevCheckpointEntryIdFieldName, entry.getState().getValue(prevCheckpointEntryIdFieldName));
-            checkpointStatus.setValue(prevCheckpointIdFieldName, entry.getState().getValue(prevCheckpointIdFieldName));
-
-            messageClone.setValue(checkpointStatusFieldName, checkpointStatus);
-
-            MessageBus.send(messageClone, chainId);
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
-                | SerializeException | SendingMessageException | ChangeValueException e) {
+            recoverStrategy.reSend(entry.getState());
+        } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException e) {
             throw new SchedulerActionExecutionException("Error occurred executing checkpoint action.", e);
         }
-    }
-
-    private IObject cloneMessage(final IObject original)
-            throws SerializeException, ResolutionException {
-        String serialized = original.serialize();
-        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serialized);
     }
 }

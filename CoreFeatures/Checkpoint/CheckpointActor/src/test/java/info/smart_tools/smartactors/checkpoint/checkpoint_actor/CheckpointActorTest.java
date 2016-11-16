@@ -187,6 +187,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
                 ((IObject) entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")))
                     .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "theUniqueAndVeryImportantField")));
         assertNotSame(message, entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
+        assertSame(messageProcessorMock, entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor")));
 
         verify(enteringMessageMock).setCheckpointStatus(iObjectArgumentCaptor.capture());
 
