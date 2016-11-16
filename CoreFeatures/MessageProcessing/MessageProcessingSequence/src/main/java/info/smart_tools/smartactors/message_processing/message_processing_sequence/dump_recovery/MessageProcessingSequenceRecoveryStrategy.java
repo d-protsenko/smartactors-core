@@ -59,7 +59,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
             int mainChainPos = ((Number) stepStack.next()).intValue();
 
             IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, storage.resolve(mainChainId));
-            sequence.goTo(0, mainChainPos);
+            sequence.goTo(0, mainChainPos + 1);
 
             int level = 1;
 
@@ -68,7 +68,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
                 int pos = ((Number) stepStack.next()).intValue();
 
                 sequence.callChain(storage.resolve(chainId));
-                sequence.goTo(level++, pos);
+                sequence.goTo(level++, pos + 1);
             }
 
             return (T) sequence;
