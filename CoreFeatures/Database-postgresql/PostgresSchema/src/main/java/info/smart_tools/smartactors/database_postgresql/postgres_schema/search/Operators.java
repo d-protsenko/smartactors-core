@@ -27,7 +27,7 @@ final class Operators {
 
         // Basic field comparison operators
         resolver.addQueryWriter("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$neq", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
         resolver.addQueryWriter("$lt", formattedCheckWriter("((%s)<to_json(?)::jsonb)"));
         resolver.addQueryWriter("$gt", formattedCheckWriter("((%s)>to_json(?)::jsonb)"));
         resolver.addQueryWriter("$lte", formattedCheckWriter("((%s)<=to_json(?)::jsonb)"));
