@@ -207,7 +207,7 @@ public class HttpEndpointPlugin implements IPlugin {
         endpointNameFieldName =
                 IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                        "endpointName"
+                        "name"
                 );
 
         queueFieldName =
