@@ -1,4 +1,31 @@
 {
   "featureName": "http-endpoint",
-  "afterFeatures": ["endpoint"]
+  "afterFeatures": [
+    "endpoint"
+  ],
+  "objects": [
+    {
+      "kind": "stateless_actor",
+      "dependency": "HttpRequestSenderActor",
+      "name": "request-sender"
+    }
+  ],
+  "maps": [
+    {
+      "id": "sendRequest",
+      "steps": [
+        {
+          "target": "request-sender",
+          "handler": "sendRequest",
+          "wrapper": {
+            "in_getRequest": "message/request"
+          }
+        }
+      ],
+      "exceptional": []
+    }
+  ],
+  "client": {
+    "stackDepth": 5
+  }
 }

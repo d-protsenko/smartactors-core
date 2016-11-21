@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.C
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -14,6 +15,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -47,9 +49,13 @@ public class HttpResponseHandlerTest {
     IDeserializeStrategy strategy;
     HttpHeaders headers;
     ChannelHandlerContext ctx;
+    Object mapId;
+    IChainStorage chainStorage;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
+    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException, ResponseHandlerException {
+        this.mapId = mock(Object.class);
+        this.chainStorage = mock(IChainStorage.class);
         this.taskQueue = mock(IQueue.class);
         this.receiverChain = mock(IReceiverChain.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
@@ -58,7 +64,6 @@ public class HttpResponseHandlerTest {
         this.strategy = mock(IDeserializeStrategy.class);
         this.ctx = mock(ChannelHandlerContext.class);
         this.headers = mock(HttpHeaders.class);
-        this.responseHandler = new HttpResponseHandler(taskQueue, 5, receiverChain);
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -107,10 +112,34 @@ public class HttpResponseHandlerTest {
 
                 )
         );
+        Object obj = mock(Object.class);
+        IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
+                new SingletonStrategy(obj));
+
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new SingletonStrategy(
+                        mapId
+                )
+        );
+        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
+                        chainStorage
+                )
+        );
+        this.responseHandler = new HttpResponseHandler(taskQueue,
+                5,
+                receiverChain,
+                new DSObject("{" +
+                        "\"uuid\": \"uuid\", " +
+                        "\"messageMapId\": \"messageMapId\", " +
+                        "\"message\": {}, " +
+                        "\"method\": \"POST\", " +
+                        "\"uri\": \"https://foo.bar\"" +
+                        "}"),
+                ScopeProvider.getCurrentScope()
+        );
     }
 
     @Test
-    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException {
+    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
         String chainName = "chainName";
         when(response.headers()).thenReturn(headers);
         when(headers.get("messageMapId")).thenReturn("messageMap");

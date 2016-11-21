@@ -49,7 +49,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
                 (k, v) -> {
                     try {
                         IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
-                        message.setValue(fieldName, v);
+                        message.setValue(fieldName, v.get(0));
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);
                     }

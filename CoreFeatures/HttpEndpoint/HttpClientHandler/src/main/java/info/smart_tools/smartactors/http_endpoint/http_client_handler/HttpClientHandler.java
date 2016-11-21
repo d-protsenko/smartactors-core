@@ -9,7 +9,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
  * Handler for responses, that received after sending request
  */
 public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
-    IResponseHandler httpResponseHandler;
+    private final IResponseHandler httpResponseHandler;
 
     public HttpClientHandler(final IResponseHandler handler) {
         this.httpResponseHandler = handler;
@@ -17,6 +17,6 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<FullHttpRespo
 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final FullHttpResponse response) throws Exception {
-        httpResponseHandler.handle(channelHandlerContext, response);
+        //httpResponseHandler.handle(channelHandlerContext, response);
     }
 }

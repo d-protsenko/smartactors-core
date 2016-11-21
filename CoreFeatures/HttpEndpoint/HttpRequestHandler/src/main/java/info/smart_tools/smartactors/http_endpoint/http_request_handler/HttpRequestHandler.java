@@ -47,7 +47,8 @@ import java.util.ArrayList;
 public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, FullHttpRequest> {
     private final String name;
 
-    private final int INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
+    private static final int INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
+    private static final int NOT_FOUND_ERROR_STATUS_CODE = 404;
 
     /**
      * Constructor for HttpRequestHandler
@@ -68,20 +69,22 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     protected IObject getEnvironment(final ChannelHandlerContext ctx, final FullHttpRequest request)
             throws RequestHandlerDataException, RequestHandlerInternalException, ReadValueException {
         try {
-            IDeserializeStrategy deserializeStrategy = IOC.resolve(
-                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
-                    IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
-                    name
-            );
+            IObject message = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            if (!request.method().toString().equals("GET")) {
+                IDeserializeStrategy deserializeStrategy = IOC.resolve(
+                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                        IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
+                        name
+                );
 
-            //resolving body of the request
-            IObject message = null;
-            try {
-                message = deserializeStrategy.deserialize(request);
-            } catch (DeserializationException e) {
-                IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
-                ctx.writeAndFlush(formExceptionalResponse(exception));
-                throw new RequestHandlerDataException(e);
+                //resolving body of the request
+                try {
+                    message = deserializeStrategy.deserialize(request);
+                } catch (DeserializationException e) {
+                    IObject exception = IOC.resolve(Keys.getOrAdd("HttpPostParametersToIObjectException"));
+                    ctx.writeAndFlush(formExceptionalResponse(exception));
+                    throw new RequestHandlerDataException(e);
+                }
             }
 
             //resolving uri and another request parameters of the request
@@ -104,6 +107,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             IFieldName finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
             IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
             IFieldName httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseStatusCode");
+            IFieldName accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
             IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
             IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
             IFieldName headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
@@ -138,9 +142,15 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                         response.setContent("".getBytes());
 
                         IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
-                            IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
-                            context.getValue(endpointName));
-                        context.setValue(httpResponseStatusCodeFieldName, INTERNAL_SERVER_ERROR_STATUS_CODE);
+                                IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
+                                name);
+                        // ToDo: need refactoring. Need create hashMap - errorName to statusCode
+                        Boolean accessForbidden = (Boolean) context.getValue(accessForbiddenFieldName);
+                        if (accessForbidden != null && accessForbidden) {
+                            context.setValue(httpResponseStatusCodeFieldName, NOT_FOUND_ERROR_STATUS_CODE);
+                        } else {
+                            context.setValue(httpResponseStatusCodeFieldName, INTERNAL_SERVER_ERROR_STATUS_CODE);
+                        }
                         sender.send(response, environment, channelHandler);
                     } catch (ResolutionException | ReadValueException | ResponseSendingException | ChangeValueException e) {
                         throw new ActionExecuteException("Could not execute final http action.");

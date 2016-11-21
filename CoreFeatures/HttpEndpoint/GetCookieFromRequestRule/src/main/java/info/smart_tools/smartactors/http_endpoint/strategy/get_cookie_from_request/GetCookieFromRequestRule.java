@@ -32,7 +32,7 @@ public class GetCookieFromRequestRule implements IResolveDependencyStrategy {
                 .filter(x -> x[0].trim().equals(((String) args[1])))
                 .findFirst().orElse(null);
 
-        if (cookie == null) {
+        if (cookie == null || cookie.length == 1) {
             return null;
         }
 

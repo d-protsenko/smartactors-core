@@ -203,15 +203,21 @@ public class CachedCollection implements ICachedCollection {
             String key = specificKeyNameField.in(message);
             List<IObject> items = map.get(key);
             if (items != null && !items.isEmpty()) {
+                Boolean isInsert = true;
                 for (IObject obj : items) {
                     if (idField.in(obj).equals(idField.in(message))) {
                         items.remove(obj);
                         items.add(message);
+                        isInsert = false;
                         break;
                     }
                 }
+
+                if (isInsert) {
+                    items.add(message);
+                }
             } else {
-                map.put(key, Collections.singletonList(message));
+                map.put(key, new ArrayList<>(Arrays.asList(message)));
             }
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new UpsertCacheItemException("Can't add or update cached object.", e);

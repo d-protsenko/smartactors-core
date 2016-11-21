@@ -20,31 +20,37 @@ public class ImmutableReceiverChainTest {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidNamePassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain(null, new IMessageReceiver[0], new IObject[0], mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain(null, mock(IObject.class), new IMessageReceiver[0], new IObject[0], mock(Map.class)));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_constructorThrow_When_invalidDescriptionListPassed()
+            throws Exception {
+        assertNotNull(new ImmutableReceiverChain("theChain", null, new IMessageReceiver[0], null, mock(Map.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidArgumentsListPassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", new IMessageReceiver[0], null, mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], null, mock(Map.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_numberOfReceiversDoesNotMatchNumberOfArgumentsObjects()
             throws Exception {
-        new ImmutableReceiverChain("theChain", new IMessageReceiver[1], new IObject[0], mock(Map.class));
+        new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[1], new IObject[0], mock(Map.class));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidReceiversListPassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", null, new IObject[0], mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), null, new IObject[0], mock(Map.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidExceptionsMappingGiven()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", new IMessageReceiver[0], new IObject[0], null));
+        assertNotNull(new ImmutableReceiverChain("theChain",mock(IObject.class), new IMessageReceiver[0], new IObject[0], null));
     }
 
     @Test
@@ -52,7 +58,7 @@ public class ImmutableReceiverChainTest {
             throws Exception {
         IMessageReceiver[] receivers = new IMessageReceiver[0];
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", receivers, new IObject[0], mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, new IObject[0], mock(Map.class));
 
         assertEquals("theChain", chain.getName());
     }
@@ -67,7 +73,7 @@ public class ImmutableReceiverChainTest {
                 mock(IObject.class),
                 mock(IObject.class)};
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", receivers, arguments, mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, arguments, mock(Map.class));
 
         assertSame(receivers[0], chain.get(0));
         assertSame(arguments[0], chain.getArguments(0));
@@ -87,7 +93,7 @@ public class ImmutableReceiverChainTest {
 
         when(selfCaused.getCause()).thenReturn(selfCaused);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", new IMessageReceiver[0], new IObject[0], mappingMap);
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], mappingMap);
 
         assertNull(chain.getExceptionalChainAndEnvironments(new NullPointerException()));
         assertNull(chain.getExceptionalChainAndEnvironments(new IllegalStateException()));
@@ -95,5 +101,14 @@ public class ImmutableReceiverChainTest {
         assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(new InvalidArgumentException("invalid")));
         assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(
                 new IllegalStateException(new InvalidArgumentException(new Throwable()))));
+    }
+
+    @Test
+    public void checkGetChainDescriptionMehtod() throws Exception {
+        IMessageReceiver[] receivers = new IMessageReceiver[0];
+        IObject description = mock(IObject.class);
+
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class));
+        assertSame(description, chain.getChainDescription());
     }
 }

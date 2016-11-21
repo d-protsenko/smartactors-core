@@ -111,7 +111,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                config = IOC.resolve(Keys.getOrAdd("global constants"));
+                                                config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }

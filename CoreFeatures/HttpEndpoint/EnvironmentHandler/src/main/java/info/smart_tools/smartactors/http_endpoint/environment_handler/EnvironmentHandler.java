@@ -26,13 +26,21 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     private final IQueue<ITask> taskQueue;
     private final int stackDepth;
 
+    private final IFieldName messageFieldName;
+    private final IFieldName contextFieldName;
+    private final IFieldName fromExternalFieldName;
+
     /**
      * Handler for environment from endpoint
      * @param taskQueue Queue of the tasks
      * @param stackDepth Stack depth of the {@link IMessageProcessor}
      * @throws InvalidArgumentException if there is invalid arguments
      */
-    public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth) throws InvalidArgumentException {
+    public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth)
+            throws InvalidArgumentException, ResolutionException {
+        this.messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "message");
+        this.contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
+        this.fromExternalFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "fromExternal");
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");
         }
@@ -50,10 +58,10 @@ public class EnvironmentHandler implements IEnvironmentHandler {
                     IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
             IMessageProcessor messageProcessor =
                     IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, processingSequence);
-            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "message");
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
-            IObject message = (IObject) environment.getValue(messageFieldName);
-            IObject context = (IObject) environment.getValue(contextFieldName);
+
+            IObject message = (IObject) environment.getValue(this.messageFieldName);
+            IObject context = (IObject) environment.getValue(this.contextFieldName);
+            context.setValue(this.fromExternalFieldName, true);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException e) {
             throw new EnvironmentHandleException(e);

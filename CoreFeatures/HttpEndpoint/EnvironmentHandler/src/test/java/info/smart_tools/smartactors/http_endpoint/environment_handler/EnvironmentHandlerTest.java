@@ -32,6 +32,7 @@ import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNa
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +47,8 @@ public class EnvironmentHandlerTest {
     IMessageProcessor messageProcessor;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
+    public void setUp()
+            throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -122,7 +124,7 @@ public class EnvironmentHandlerTest {
 
     @Test
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
-            throws ResolutionException, InvalidArgumentException, RegistrationException, EnvironmentHandleException, RequestHandlerInternalException {
+            throws Exception {
         messageProcessor = mock(IMessageProcessor.class);
         IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
         IOC.register(
@@ -135,14 +137,14 @@ public class EnvironmentHandlerTest {
                 keyIObject,
                 new SingletonStrategy(iObject)
         );
-        IObject environment = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": null}");
+        IObject environment = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
         Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv = new HashMap<>();
         exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
         IMessageReceiver messageReceivers[] = new IMessageReceiver[1];
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
         iObjects[0] = null;
-        IReceiverChain chain = new ImmutableReceiverChain("name", messageReceivers, iObjects, exceptionalChainsAndEnv);
+        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv);
         IQueue<ITask> queue = new BlockingQueue(null);
 
         IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
@@ -154,5 +156,7 @@ public class EnvironmentHandlerTest {
         } catch (ReadValueException | ChangeValueException e) {
             e.printStackTrace();
         }
+
+        Assert.assertTrue(((boolean) ((IObject)environment.getValue(new FieldName("context"))).getValue(new FieldName("fromExternal"))));
     }
 }

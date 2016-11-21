@@ -15,22 +15,28 @@ public class ImmutableReceiverChain implements IReceiverChain {
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
     private final Map<Class<? extends Throwable>, IObject> exceptionalChains;
+    private final IObject description;
 
     /**
      * The constructor.
      *
      * @param name                        name of the chain
+     * @param chainDescription            the description of chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
      * @param exceptionalChainsAndEnv           mapping from exception class to exceptional chain to use when it occurs
      * @throws InvalidArgumentException if name is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      */
-    public ImmutableReceiverChain(final String name, final IMessageReceiver[] receivers, final IObject[] arguments,
+    public ImmutableReceiverChain(final String name, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
                                   final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv)
             throws InvalidArgumentException {
         if (null == name) {
             throw new InvalidArgumentException("Chain name should not be null.");
+        }
+
+        if (null == chainDescription) {
+            throw new InvalidArgumentException("Chain description should not be null.");
         }
 
         if (null == receivers) {
@@ -50,6 +56,7 @@ public class ImmutableReceiverChain implements IReceiverChain {
         }
 
         this.name = name;
+        this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
         this.exceptionalChains = exceptionalChainsAndEnv;
@@ -99,5 +106,10 @@ public class ImmutableReceiverChain implements IReceiverChain {
         } while (null != e);
 
         return null;
+    }
+
+    @Override
+    public IObject getChainDescription() {
+        return this.description;
     }
 }

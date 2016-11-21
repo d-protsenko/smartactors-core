@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.global_constants_service_starter.global_con
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -14,6 +15,11 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
 /**
  * Plugin that creates and registers global constants object and registers a strategy processing "const" section  of configuration.
@@ -43,6 +49,29 @@ public class PluginGlobalConstants implements IPlugin {
                 try {
                     IObject obj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                     IOC.register(Keys.getOrAdd("global constants"), new SingletonStrategy(obj));
+
+                    IOC.register(
+                            Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+                            new CreateNewInstanceStrategy(args -> {
+                                IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
+                                IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
+                                IObject config;
+
+                                if (args.length > 2) {
+                                    config = (IObject) args[2];
+                                } else {
+                                    try {
+                                        config = IOC.resolve(Keys.getOrAdd("global constants"));;
+                                    } catch (ResolutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                                try {
+                                    return new MessageProcessor(taskQueue, sequence, config);
+                                } catch (InvalidArgumentException | ResolutionException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }));
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);
                 }

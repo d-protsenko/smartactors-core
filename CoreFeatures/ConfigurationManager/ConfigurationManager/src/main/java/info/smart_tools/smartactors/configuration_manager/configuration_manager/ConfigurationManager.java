@@ -9,10 +9,10 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Implementation of {@link IConfigurationManager}
@@ -25,8 +25,8 @@ public class ConfigurationManager implements IConfigurationManager {
      * The constructor.
      */
     public ConfigurationManager() {
-        sectionStrategies = new LinkedList<>();
-        registeredSections = new HashSet<>();
+        sectionStrategies = new CopyOnWriteArrayList<>();
+        registeredSections = new CopyOnWriteArraySet<>();
     }
 
     @Override
