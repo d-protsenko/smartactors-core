@@ -1,0 +1,33 @@
+{
+  "featureName": "debugger-plugins",
+  "afterFeatures": ["debugger"],
+
+  "objects": [
+    {
+      "kind": "actor",
+      "dependency": "debugger actor",
+      "name": "debugger"
+    }
+  ],
+
+  "maps": [
+    {
+      "id": "execute_debugger_command",
+      "steps": [
+        {
+          "target": "debugger",
+          "handler": "executeCommand",
+          "wrapper": {
+            "in_getCommand": "message/command",
+            "in_getSessionId": "message/sessionId",
+            "in_getCommandArguments": "message/args",
+            "in_getDebuggerAddress": "arguments/target",
+
+            "out_setCommandResult": "response/result"
+          }
+        }
+      ],
+      "exceptional": []
+    }
+  ]
+}
