@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.dump_recovery.MessageProcessingSequenceRecoveryStrategy;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
@@ -160,6 +161,24 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     });
 
             bootstrap.add(sequenceItem);
+
+            /* "message_processing_sequence_dump_recovery" - register strategy recovering sequence state from dump */
+            IBootstrapItem<String> recoverItem = new BootstrapItem("message_processing_sequence_dump_recovery");
+
+            recoverItem
+                    .after("IOC")
+                    .after("IFieldNamePlugin")
+                    .process(() -> {
+                        try {
+                            IOC.register(
+                                    Keys.getOrAdd("recover message processing sequence"),
+                                    new MessageProcessingSequenceRecoveryStrategy());
+                        } catch (ResolutionException | RegistrationException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(recoverItem);
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }

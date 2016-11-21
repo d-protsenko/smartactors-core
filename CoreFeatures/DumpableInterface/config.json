@@ -1,0 +1,4 @@
+{
+  "featureName": "dumpable-interface",
+  "afterFeatures": ["iobject"]
+}

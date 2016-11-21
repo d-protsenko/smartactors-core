@@ -83,7 +83,7 @@ public interface IMessageProcessingSequence {
      * @param chain    the {@link IReceiverChain} to call
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
-    void callChain(final IReceiverChain chain)
+    void callChain(IReceiverChain chain)
             throws NestedChainStackOverflowException;
 
     /**
@@ -102,6 +102,6 @@ public interface IMessageProcessingSequence {
      * @throws ReadValueException if error occurs during reading data from exception description
      * @see #callChain(IReceiverChain)
      */
-    void catchException(final Throwable exception, final IObject context)
+    void catchException(Throwable exception, IObject context)
             throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException, ReadValueException;
 }
