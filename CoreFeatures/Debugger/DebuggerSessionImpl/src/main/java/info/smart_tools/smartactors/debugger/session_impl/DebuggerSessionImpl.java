@@ -22,8 +22,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -280,24 +278,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         try {
-            List<IObject> trace = new LinkedList<>();
-
-            IFieldName indexFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "index");
-            IFieldName nameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            IFieldName stepsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "steps");
-
-            for (int i = 0; i <= sequence.getCurrentLevel(); i++) {
-                IObject levelObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-
-                levelObject.setValue(indexFieldName, sequence.getStepAtLevel(i));
-
-                // TODO: Get chain name and step arguments
-
-                trace.add(levelObject);
-            }
-
-            return trace;
-        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+            return IOC.resolve(Keys.getOrAdd("make dump"), sequence, arg);
+        } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }
     }

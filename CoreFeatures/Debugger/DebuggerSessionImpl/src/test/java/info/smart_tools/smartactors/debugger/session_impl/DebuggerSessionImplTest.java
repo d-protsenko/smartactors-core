@@ -43,6 +43,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy sequenceStrategyMock;
     private IResolveDependencyStrategy debuggerSequenceStrategyMock;
     private IResolveDependencyStrategy processorStrategyMock;
+    private IResolveDependencyStrategy sequenceDumpStrategyMock;
     private Object taskQueue = new Object();
 
     private IDebuggerSession session;
@@ -77,6 +78,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         sequenceStrategyMock = mock(IResolveDependencyStrategy.class);
         debuggerSequenceStrategyMock = mock(IResolveDependencyStrategy.class);
         processorStrategyMock = mock(IResolveDependencyStrategy.class);
+        sequenceDumpStrategyMock = mock(IResolveDependencyStrategy.class);
         when(sequenceStrategyMock.resolve(eq(12), same(chainMock)))
                 .thenReturn(innerSequenceMock)
                 .thenThrow(ResolveDependencyStrategyException.class);
@@ -90,6 +92,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("new debugger sequence"), debuggerSequenceStrategyMock);
         IOC.register(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), processorStrategyMock);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
+        IOC.register(Keys.getOrAdd("make dump"), sequenceDumpStrategyMock);
 
         IOC.register(Keys.getOrAdd("value_dependency"), new IResolveDependencyStrategy() {
             @Override
@@ -266,15 +269,16 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             throws Exception {
         Should_startDebugging();
 
+        Object dump = new Object();
+        IObject dumpOptions = mock(IObject.class);
+
         session.handleInterrupt(messageProcessorMock);
 
-        when(debuggerSequenceMock.getCurrentLevel()).thenReturn(2);
-        when(debuggerSequenceMock.getStepAtLevel(0)).thenReturn(1);
-        when(debuggerSequenceMock.getStepAtLevel(1)).thenReturn(3);
-        when(debuggerSequenceMock.getStepAtLevel(2)).thenReturn(2);
-        List<IObject> trace = (List) c("getStackTrace", null);
+        when(sequenceDumpStrategyMock.resolve(same(debuggerSequenceMock), same(dumpOptions))).thenReturn(dump);
 
-        assertEquals(3, trace.size());
+        Object trace = c("getStackTrace", dumpOptions);
+
+        assertSame(dump, trace);
     }
 
     @Test
