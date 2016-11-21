@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.debugger.sequence_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
+import info.smart_tools.smartactors.dumpable_interface.idumpable.exceptions.DumpException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -19,7 +21,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 /**
  * Implementation of {@link IDebuggerSequence}.
  */
-public class DebuggerSequenceImpl implements IDebuggerSequence {
+public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     private final IMessageProcessingSequence wrapped;
 
     private Throwable exception;
@@ -173,5 +175,14 @@ public class DebuggerSequenceImpl implements IDebuggerSequence {
             InvalidArgumentException, ReadValueException {
         this.exception = exc;
         this.exceptionContext = context;
+    }
+
+    @Override
+    public IObject dump(final IObject options) throws DumpException, InvalidArgumentException {
+        try {
+            return IOC.resolve(Keys.getOrAdd("make dump"), wrapped, options);
+        } catch (ResolutionException e) {
+            throw new DumpException("Error creating dump of debugger sequence.", e);
+        }
     }
 }

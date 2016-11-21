@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.debugger.sequence_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -35,6 +36,7 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
     private IMessageReceiver sequenceReceiverMock = mock(IMessageReceiver.class);
     private IObject sequenceArgumentsMock = mock(IObject.class);
     private Object debuggerAddress = new Object();
+    private IResolveDependencyStrategy dumpCreationStrategy;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -56,6 +58,9 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
 
         debuggerReceiverMock = mock(IMessageReceiver.class);
         when(routerMock.route(same(debuggerAddress))).thenReturn(debuggerReceiverMock);
+
+        dumpCreationStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("make dump"), dumpCreationStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -184,5 +189,17 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
 
         assertFalse(sequence.next());
         assertFalse(sequence.next());
+    }
+
+    @Test
+    public void Should_createDumpOfUnderlyingSequence()
+            throws Exception {
+        IObject options = mock(IObject.class);
+        IObject dump = mock(IObject.class);
+        when(dumpCreationStrategy.resolve(same(sequenceMock), same(options))).thenReturn(dump);
+
+        IObject doneDump = new DebuggerSequenceImpl(sequenceMock, debuggerAddress).dump(options);
+
+        assertSame(dump, doneDump);
     }
 }
