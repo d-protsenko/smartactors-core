@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * There are to parameters: type and name.
@@ -33,6 +34,7 @@ public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy,
 
     @Override
     public void register(final Object key, final IResolveDependencyStrategy strategy) throws AdditionDependencyStrategyException {
+        createdDeserializationStrategies.entrySet().removeIf((k -> k.getKey().startsWith((String) key)));
         creatingStrategy.put((String) key, strategy);
     }
 

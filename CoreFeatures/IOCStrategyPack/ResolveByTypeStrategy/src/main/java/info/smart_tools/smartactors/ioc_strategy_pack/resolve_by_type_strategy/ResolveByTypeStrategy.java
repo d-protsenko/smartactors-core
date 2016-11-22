@@ -35,6 +35,7 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAddit
      */
     @Override
     public void register(final Object key, final IResolveDependencyStrategy strategy) {
+        cacheStrategiesMap.remove((Class) key);
         resolveStrategies.put((Class) key, strategy);
     }
 
