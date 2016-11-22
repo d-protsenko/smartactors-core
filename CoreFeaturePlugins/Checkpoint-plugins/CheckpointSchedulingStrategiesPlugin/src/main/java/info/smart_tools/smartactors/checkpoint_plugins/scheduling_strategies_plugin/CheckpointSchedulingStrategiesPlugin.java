@@ -20,7 +20,7 @@ public class CheckpointSchedulingStrategiesPlugin extends BootstrapPlugin {
      *
      * @param bootstrap    the bootstrap
      */
-    protected CheckpointSchedulingStrategiesPlugin(final IBootstrap bootstrap) {
+    public CheckpointSchedulingStrategiesPlugin(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
