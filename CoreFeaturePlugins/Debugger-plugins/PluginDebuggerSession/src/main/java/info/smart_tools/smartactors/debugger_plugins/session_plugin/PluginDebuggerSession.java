@@ -20,7 +20,7 @@ public class PluginDebuggerSession extends BootstrapPlugin {
      *
      * @param bootstrap the bootstrap
      */
-    protected PluginDebuggerSession(final IBootstrap bootstrap) {
+    public PluginDebuggerSession(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 

@@ -21,7 +21,7 @@ public class PluginDebuggerSequence extends BootstrapPlugin {
      *
      * @param bootstrap the bootstrap
      */
-    protected PluginDebuggerSequence(final IBootstrap bootstrap) {
+    public PluginDebuggerSequence(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 

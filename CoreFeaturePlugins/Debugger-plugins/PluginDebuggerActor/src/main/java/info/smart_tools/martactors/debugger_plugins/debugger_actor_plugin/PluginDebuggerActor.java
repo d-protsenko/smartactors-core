@@ -19,7 +19,7 @@ public class PluginDebuggerActor extends BootstrapPlugin {
      *
      * @param bootstrap the bootstrap
      */
-    protected PluginDebuggerActor(final IBootstrap bootstrap) {
+    public PluginDebuggerActor(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
