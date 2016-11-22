@@ -258,30 +258,32 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                             IFieldName stepsFieldName = new FieldName("steps");
                                                             IFieldName targetFieldName = new FieldName("target");
 
-                                                            List<IObject> mapDescriptions = (List<IObject>) a[0];
+                                                            if (a[0] instanceof List) {
+                                                                List<IObject> mapDescriptions = (List<IObject>) a[0];
 
-                                                            for (IObject mapDesc : mapDescriptions) {
-                                                                Object cpDesc = mapDesc.getValue(checkpointFieldName);
-                                                                List<IObject> stepsDec = (List<IObject>) mapDesc.getValue(stepsFieldName);
+                                                                for (IObject mapDesc : mapDescriptions) {
+                                                                    Object cpDesc = mapDesc.getValue(checkpointFieldName);
+                                                                    List<IObject> stepsDec = (List<IObject>) mapDesc.getValue(stepsFieldName);
 
-                                                                if (null != cpDesc) {
-                                                                    IObject cpStep = IOC.resolve(
-                                                                            IOC.resolve(
-                                                                                    IOC.getKeyForKeyStorage(),
-                                                                                    "checkpoint step"
-                                                                            ),
-                                                                            cpDesc
-                                                                    );
+                                                                    if (null != cpDesc) {
+                                                                        IObject cpStep = IOC.resolve(
+                                                                                IOC.resolve(
+                                                                                        IOC.getKeyForKeyStorage(),
+                                                                                        "checkpoint step"
+                                                                                ),
+                                                                                cpDesc
+                                                                        );
 
-                                                                    if (stepsDec.isEmpty() ||
-                                                                            !stepsDec.get(stepsDec.size() - 1).getValue(targetFieldName)
-                                                                                    .equals(cpStep.getValue(targetFieldName))) {
-                                                                        stepsDec.add(cpStep);
+                                                                        if (stepsDec.isEmpty() ||
+                                                                                !stepsDec.get(stepsDec.size() - 1).getValue(targetFieldName)
+                                                                                        .equals(cpStep.getValue(targetFieldName))) {
+                                                                            stepsDec.add(cpStep);
+                                                                        }
                                                                     }
                                                                 }
                                                             }
 
-                                                            return mapDescriptions;
+                                                            return a[0];
                                                         } catch (Throwable e) {
                                                             throw new RuntimeException(e);
                                                         }
