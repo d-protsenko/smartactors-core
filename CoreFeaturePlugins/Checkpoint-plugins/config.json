@@ -1,6 +1,6 @@
 {
   "featureName": "checkpoint-plugins",
-  "afterFeatures": ["checkpoint"],
+  "afterFeatures": ["checkpoint", "database-psql-plugins"],
 
   "objects_example": [
     {

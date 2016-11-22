@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
@@ -62,5 +63,5 @@ public interface EnteringMessage {
      * @throws ReadValueException if error occurs reading the value
      * @see #getCheckpointStatus()
      */
-    void setCheckpointStatus(IObject checkpointStatus) throws ReadValueException;
+    void setCheckpointStatus(IObject checkpointStatus) throws ChangeValueException;
 }
