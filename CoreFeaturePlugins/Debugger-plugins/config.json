@@ -13,6 +13,7 @@
   "maps": [
     {
       "id": "execute_debugger_command",
+      "externalAccess": true,
       "steps": [
         {
           "target": "debugger",
