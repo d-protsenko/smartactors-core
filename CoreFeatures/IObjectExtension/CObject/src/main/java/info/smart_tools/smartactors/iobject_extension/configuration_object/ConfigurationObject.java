@@ -118,7 +118,10 @@ public class ConfigurationObject implements IObject {
                     name
             );
 
-            canonizedBody.put(name, canonicalValue);
+            // ConcurrentHashMap does not permit null-values
+            if (null != canonicalValue) {
+                canonizedBody.put(name, canonicalValue);
+            }
             return canonicalValue;
         } catch (Throwable e) {
             throw new ReadValueException("Can't read value for current field name");
