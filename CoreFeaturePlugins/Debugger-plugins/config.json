@@ -1,12 +1,17 @@
 {
   "featureName": "debugger-plugins",
-  "afterFeatures": ["debugger"],
+  "afterFeatures": ["debugger", "endpoint-plugins"],
 
   "objects": [
     {
       "kind": "actor",
       "dependency": "debugger actor",
       "name": "debugger"
+    },
+    {
+      "kind": "stateless_actor",
+      "dependency": "ResponseSenderActor",
+      "name": "respond"
     }
   ],
 
@@ -26,6 +31,10 @@
 
             "out_setCommandResult": "response/result"
           }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ],
       "exceptional": []

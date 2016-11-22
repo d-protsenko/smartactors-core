@@ -33,8 +33,8 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
                    ("{" +
                     "   'handler':'interrupt'," +
                     "   'wrapper': {" +
-                    "       'out_getSessionId':'context/sessionId'," +
-                    "       'out_getProcessor':'processor'" +
+                    "       'in_getSessionId':'context/sessionId'," +
+                    "       'in_getProcessor':'processor'" +
                     "   }" +
                     "}").replace('\'', '"');
 
@@ -62,7 +62,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
 
         this.wrapped = sequence;
 
-        debuggerArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), DEBUGGER_INTERRUPT_TARGET);
+        debuggerArguments = IOC.resolve(Keys.getOrAdd("configuration object"), DEBUGGER_INTERRUPT_TARGET);
 
         IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
 

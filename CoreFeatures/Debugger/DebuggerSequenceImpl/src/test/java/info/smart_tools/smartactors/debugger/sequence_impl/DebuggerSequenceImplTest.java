@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin.InitializeConfigurationObjectStrategies;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -45,6 +46,7 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
         load(PluginIOCKeys.class);
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
+        load(InitializeConfigurationObjectStrategies.class);
     }
 
     @Override
