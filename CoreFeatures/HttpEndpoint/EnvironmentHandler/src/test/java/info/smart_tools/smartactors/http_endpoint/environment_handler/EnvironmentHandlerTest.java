@@ -139,7 +139,7 @@ public class EnvironmentHandlerTest {
         );
         IObject environment = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
         Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv = new HashMap<>();
-        exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
+//        exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
         IMessageReceiver messageReceivers[] = new IMessageReceiver[1];
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
