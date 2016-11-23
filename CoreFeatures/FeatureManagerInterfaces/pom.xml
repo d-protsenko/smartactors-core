@@ -20,6 +20,7 @@
     <modules>
         <module>IFeatureManager</module>
         <module>IFeature</module>
+        <module>FeatureManagerPlugin</module>
     </modules>
 
     <repositories>

@@ -35,80 +35,32 @@ import java.util.stream.Stream;
 /**
  * Created by sevenbits on 11/15/16.
  */
-public class LoadFeatureTask implements ITask {
+public class UnzipFeatureTask implements ITask {
 
     private IFeatureManager featureManager;
     private IFeature<String, IFeatureState<String>> feature;
-    private IPluginLoaderVisitor<String> pluginLoaderVisitor;
-    private final IPluginCreator pluginCreator;
 
-    private final IConfigurationManager configurationManager;
-
-    public LoadFeatureTask(final IFeatureManager manager, final IFeature feature)
+    public UnzipFeatureTask(final IFeatureManager manager, final IFeature feature)
             throws ResolutionException {
 
         this.featureManager = manager;
         this.feature = feature;
-        this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
-        this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
-        configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
     }
 
     public void execute()
             throws TaskExecutionException {
         try {
-            System.out.println("Start loading feature - '" + feature.getName() + "'.");
-            String pattern = ".jar";
-            File file = Paths.get(((IPath) this.feature.getFeatureLocation()).getPath()).toFile();
-            Collection<IPath> jars = new ArrayList<>();
-            Stream.of(file.listFiles((item, string) ->  string.endsWith(pattern))).map(Path::new).forEach(jars::add);
+            System.out.println("Start unzipping feature - '" + feature.getName() + "'.");
 
-            IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
-            IAction<Class> classHandler = clz -> {
-                try {
-                    if (Modifier.isAbstract(clz.getModifiers())) {
-                        // Ignore abstract classes.
-                        return;
-                    }
 
-                    IPlugin plugin = pluginCreator.create(clz, bootstrap);
-                    plugin.load();
-                } catch (PluginCreationException | PluginException e) {
-                    throw new ActionExecuteException(e);
-                }
-            };
-
-            IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
-                    Keys.getOrAdd("plugin loader"),
-                    classHandler,
-                    pluginLoaderVisitor);
-            pluginLoader.loadPlugin(jars);
-
-            try {
-                bootstrap.start();
-            } catch (ProcessExecutionException e) {
-                try {
-                    bootstrap.revert();
-                } catch (RevertProcessExecutionException ee) {
-                    e.addSuppressed(ee);
-                }
-
-                throw e;
-            }
-
-            File configFile = file.listFiles((item, string) ->  string.equals("config.json"))[0];
-            String configString = new Scanner(configFile).useDelimiter("\\Z").next();
-            configurationManager.applyConfig(
-                    IOC.resolve(Keys.getOrAdd("configuration object"), configString)
-            );
 
             ((IFeatureState) this.feature.getStatus()).next();
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(true);
             ((IFeatureState) this.feature.getStatus()).setExecuting(false);
-            System.out.println("Feature - '" + feature.getName() + "' has been loaded successful.");
+            System.out.println("Feature - '" + feature.getName() + "' has been unzipped successful.");
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("Feature - '" + feature.getName() + "' has been loaded with exception :");
+            System.out.println("Unzipping - '" + feature.getName() + "was breaking with exception:");
             System.err.println(e);
         }
         try {
