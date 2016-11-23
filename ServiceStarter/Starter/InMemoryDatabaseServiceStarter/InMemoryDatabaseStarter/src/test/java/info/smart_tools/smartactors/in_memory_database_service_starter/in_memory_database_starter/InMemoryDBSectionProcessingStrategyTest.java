@@ -68,7 +68,7 @@ public class InMemoryDBSectionProcessingStrategyTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd(DSObject.class.getCanonicalName()), new SingletonStrategy(mockObject));
+        IOC.register(Keys.getOrAdd("IObjectByString"), new SingletonStrategy(mockObject));
         IOC.register(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(inMemoryDatabase));
 
     }
