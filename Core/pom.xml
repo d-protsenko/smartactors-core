@@ -42,6 +42,18 @@
             <artifactId>base.pool-guard</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.initialization-exception</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+             
+        <!-- Dump interface -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>dumpable-interfce.idumpable</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Security -->
         <dependency>

@@ -2,22 +2,28 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
-import org.junit.Before;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
@@ -25,25 +31,33 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Tests for {@link MessageProcessingSequence}.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({IOC.class})
-public class MessageProcessingSequenceTest {
+public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
+
+    @Override
+    protected void loadPlugins() throws Exception {
+        load(ScopedIOCPlugin.class);
+        load(PluginScopeProvider.class);
+        load(PluginIOCKeys.class);
+        load(PluginDSObject.class);
+        load(IFieldNamePlugin.class);
+    }
+
     private IReceiverChain mainChainMock;
     private IMessageReceiver[] messageReceiverMocks;
     private IObject[] receiverArgsMocks;
     private IObject contextMock;
-    private IKey fieldNameKey;
 
-    private IFieldName chainFieldName = mock(IFieldName.class);
-    private IFieldName afterActionFieldName = mock(IFieldName.class);
+    private IFieldName chainFieldName;
+    private IFieldName afterActionFieldName;
 
-    @Before
-    public void setUp()
+    private IResolveDependencyStrategy makeDumpStrategy;
+
+    @Override
+    public void registerMocks()
             throws Exception {
         mainChainMock = mock(IReceiverChain.class);
         messageReceiverMocks = new IMessageReceiver[10];
@@ -59,17 +73,11 @@ public class MessageProcessingSequenceTest {
 
         contextMock = mock(IObject.class);
 
-        mockStatic(IOC.class);
+        chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        afterActionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "after");
 
-        fieldNameKey = mock(IKey.class);
-        PowerMockito.when(IOC.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
-        PowerMockito.when(IOC.resolve(same(IOC.getKeyForKeyStorage()), eq(IFieldName.class.getCanonicalName()))).thenReturn((IKey) fieldNameKey);
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("causeLevel"))).thenReturn(mock(IFieldName.class));
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("causeStep"))).thenReturn(mock(IFieldName.class));
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchLevel"))).thenReturn(mock(IFieldName.class));
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("catchStep"))).thenReturn(mock(IFieldName.class));
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("chain"))).thenReturn(this.chainFieldName);
-        PowerMockito.when(IOC.resolve(same(fieldNameKey), eq("after"))).thenReturn(this.afterActionFieldName);
+        makeDumpStrategy = mock(IResolveDependencyStrategy.class);
+        IOC.register(Keys.getOrAdd("make dump"), makeDumpStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -272,10 +280,10 @@ public class MessageProcessingSequenceTest {
 
         messageProcessingSequence.catchException(exception, contextMock);
 
-        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "causeLevel")), eq(3));
-        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "causeStep")), eq(1));
-        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchLevel")), eq(1));
-        verify(contextMock).setValue(same(IOC.resolve(fieldNameKey, "catchStep")), eq(0));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeLevel")), eq(3));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeStep")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchLevel")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchStep")), eq(0));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -372,5 +380,70 @@ public class MessageProcessingSequenceTest {
         messageProcessingSequence.catchException(exception, contextMock);
 
         assertFalse(messageProcessingSequence.next());
+    }
+
+    @Test
+    public void Should_createDumpOfItsState()
+            throws Exception {
+        IObject options = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{}");
+
+        IObject dump1 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'chain':'1'}".replace('\'','"'));
+        IObject dump2 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'chain':'2'}".replace('\'','"'));
+        IObject dump3 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'chain':'3'}".replace('\'','"'));
+
+        IReceiverChain chain1 = mock(IReceiverChain.class);
+        IReceiverChain chain2 = mock(IReceiverChain.class);
+        IReceiverChain chain3 = mock(IReceiverChain.class);
+
+        when(chain1.getName()).thenReturn("chain1");
+        when(chain2.getName()).thenReturn("chain2");
+        when(chain3.getName()).thenReturn("chain3");
+
+        when(chain1.getExceptionalChains()).thenReturn(Collections.emptyList());
+        when(chain2.getExceptionalChains()).thenReturn(Collections.singletonList(chain3));
+        when(chain3.getExceptionalChains()).thenReturn(Collections.emptyList());
+
+        when(makeDumpStrategy.resolve(same(chain1), same(options))).thenReturn(dump1);
+        when(makeDumpStrategy.resolve(same(chain2), same(options))).thenReturn(dump2);
+        when(makeDumpStrategy.resolve(same(chain3), same(options))).thenReturn(dump3);
+
+        when(chain1.get(0)).thenReturn(messageReceiverMocks[0]);
+        when(chain1.get(1)).thenReturn(messageReceiverMocks[1]);
+
+        when(chain2.get(0)).thenReturn(messageReceiverMocks[0]);
+        when(chain2.get(1)).thenReturn(messageReceiverMocks[1]);
+
+        MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1);
+
+        sequence.next();
+        sequence.callChain(chain2);
+        sequence.next();
+
+        IObject dump = sequence.dump(options);
+
+        assertNotNull(dump);
+
+        IObject chainsDump = (IObject) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump"));
+
+        assertNotNull(chainsDump);
+
+        assertSame(dump1, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain1")));
+        assertSame(dump2, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain2")));
+        assertSame(dump3, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain3")));
+
+        Collection ss = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepsStack"));
+
+        assertNotNull(ss);
+        assertEquals(Arrays.asList(1,0), ss);
+
+        Collection cs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack"));
+
+        assertNotNull(cs);
+        assertEquals(Arrays.asList(chain1, chain2), cs);
+
+        assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth")));
     }
 }

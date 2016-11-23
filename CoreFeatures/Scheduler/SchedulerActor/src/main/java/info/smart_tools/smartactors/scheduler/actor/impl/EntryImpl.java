@@ -1,18 +1,19 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -28,6 +29,8 @@ import java.util.UUID;
  * Implementation of {@link ISchedulerEntry}.
  */
 public final class EntryImpl implements ISchedulerEntry {
+    private static final String DEFAULT_ACTION_KEY_NAME = "default scheduler action";
+
     private final ISchedulerEntryStorage storage;
     private final IObject state;
     private final String id;
@@ -36,10 +39,8 @@ public final class EntryImpl implements ISchedulerEntry {
     private ITimerTask timerTask;
     private final ITimer timer;
     private boolean isCancelled;
+    private final ISchedulerAction action;
     private final ITask task = this::executeTask;
-
-    private final IFieldName idFieldName;
-    private final IFieldName messageFieldName;
 
     /**
      * The constructor.
@@ -47,23 +48,25 @@ public final class EntryImpl implements ISchedulerEntry {
      * @param state       entry state object
      * @param strategy    scheduling strategy
      * @param storage     storage to save entry in
+     * @param action      the action that should be executed when this entry fires
      * @throws ResolutionException if fails to resolve any dependencies
      * @throws ReadValueException if error occurs reading values from state object
      * @throws InvalidArgumentException if error occurs reading values from state object
      */
-    public EntryImpl(
+    EntryImpl(
             final IObject state,
             final ISchedulingStrategy strategy,
-            final ISchedulerEntryStorage storage)
+            final ISchedulerEntryStorage storage,
+            final ISchedulerAction action)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
-        idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
 
         this.timer = IOC.resolve(Keys.getOrAdd("timer"));
 
         this.storage = storage;
         this.state = state;
         this.strategy = strategy;
+        this.action = action;
         this.lastScheduledTime = -1;
 
         this.timerTask = null;
@@ -85,25 +88,59 @@ public final class EntryImpl implements ISchedulerEntry {
      * @throws ChangeValueException if can not modify description to use it as entry state object
      * @throws InvalidArgumentException if invalid arguments were passed to some method
      * @throws SchedulingStrategyExecutionException if error occurs executing scheduling strategy
+     * @throws SchedulerActionInitializationException if error occurs initializing scheduler action associated with the entry
      */
     public static EntryImpl newEntry(final IObject args, final ISchedulerEntryStorage storage)
             throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException,
-            SchedulingStrategyExecutionException {
+            SchedulingStrategyExecutionException, SchedulerActionInitializationException {
         IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
+        IFieldName actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
+        IFieldName schedulingFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "scheduling");
 
-        ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd((String) args.getValue(strategyFieldName)));
+        IObject schedulingArguments = (IObject) args.getValue(schedulingFieldName);
+        IObject state = args;
 
+        if (null == schedulingArguments) {
+            schedulingArguments = args;
+        } else {
+            // If arguments contain "scheduling" field then object contained in that field will be used to initialize scheduling strategy
+            // and the new IObject will be created for entry state. The object contained in "scheduling" field will be read-only.
+            state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        }
+
+        // Resolve strategy and save it's key to entry state
+        String strategyKeyName = (String) schedulingArguments.getValue(strategyFieldName);
+        ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd(strategyKeyName));
+        state.setValue(strategyFieldName, strategyKeyName);
+
+        // Generate entry id
         String id = UUID.randomUUID().toString();
+        state.setValue(idFieldName, id);
 
-        args.setValue(idFieldName, id);
+        // Resolve action and save it's key to entry state
+        Object actionKeyName = args.getValue(actionFieldName);
 
+        if (null == actionKeyName) {
+            actionKeyName = DEFAULT_ACTION_KEY_NAME;
+        }
+
+        ISchedulerAction action = IOC.resolve(Keys.getOrAdd(actionKeyName.toString()));
+
+        state.setValue(actionFieldName, actionKeyName);
+
+        // Create the entry
         EntryImpl entry = new EntryImpl(
-                args,
+                state,
                 strategy,
-                storage);
+                storage,
+                action);
 
-        strategy.init(entry, args);
+        // Init action and then scheduling strategy. If action cannot be initialized the scheduling strategy will not be initialized and the
+        // entry will not be scheduled
+        action.init(entry, args);
+        strategy.init(entry, schedulingArguments);
+
         return entry;
     }
 
@@ -124,13 +161,23 @@ public final class EntryImpl implements ISchedulerEntry {
             throws ResolutionException, ReadValueException, InvalidArgumentException,
             SchedulingStrategyExecutionException {
         IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
+        IFieldName actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
 
         ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd((String) savedState.getValue(strategyFieldName)));
+
+        Object actionKey = savedState.getValue(actionFieldName);
+
+        if (null == actionKey) {
+            actionKey = DEFAULT_ACTION_KEY_NAME;
+        }
+
+        ISchedulerAction action = IOC.resolve(Keys.getOrAdd(actionKey.toString()));
 
         EntryImpl entry = new EntryImpl(
                 savedState,
                 strategy,
-                storage);
+                storage,
+                action);
 
         strategy.restore(entry);
         return entry;
@@ -138,9 +185,9 @@ public final class EntryImpl implements ISchedulerEntry {
 
     private void executeTask() throws TaskExecutionException {
         try {
-            MessageBus.send(makeMessageClone());
+            action.execute(this);
             strategy.postProcess(this);
-        } catch (Exception e) {
+        } catch (SchedulerActionExecutionException | SchedulingStrategyExecutionException e) {
             try {
                 strategy.processException(this, e);
             } catch (SchedulingStrategyExecutionException ee) {
@@ -198,12 +245,5 @@ public final class EntryImpl implements ISchedulerEntry {
     @Override
     public String getId() {
         return id;
-    }
-
-    private IObject makeMessageClone()
-            throws ResolutionException, ReadValueException, InvalidArgumentException, SerializeException {
-        IObject originalMessage = (IObject) state.getValue(messageFieldName);
-        String serialized = originalMessage.serialize();
-        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serialized);
     }
 }

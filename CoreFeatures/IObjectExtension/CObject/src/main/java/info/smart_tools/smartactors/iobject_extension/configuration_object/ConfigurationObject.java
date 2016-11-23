@@ -2,13 +2,17 @@ package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -23,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link @IObject}.
@@ -30,14 +35,35 @@ import java.util.Map;
  */
 public class ConfigurationObject implements IObject {
 
-    //private IObject source;
-    private Map<IFieldName, Object> body;
+    private final Map<IFieldName, Object> body;
+    private final Map<IFieldName, Object> canonizedBody;
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     static {
         OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         SimpleModule module = new SimpleModule("Nested IObject serialization module");
         module.addDeserializer(Object.class, new ObjectDeserializer());
+        module.addSerializer(new StdSerializer<IObject>(IObject.class) {
+            @Override
+            public void serialize(
+                    final IObject iObject,
+                    final JsonGenerator jsonGenerator,
+                    final SerializerProvider serializerProvider
+            )
+                    throws IOException {
+                try {
+                    jsonGenerator.writeRawValue((String) iObject.serialize());
+                } catch (SerializeException e) {
+                    throw new IOException("Could not serialize DSObject.");
+                }
+            }
+        });
         OBJECT_MAPPER.registerModule(module);
+    }
+
+    {
+        this.canonizedBody = new ConcurrentHashMap<>();
     }
 
     /**
@@ -64,8 +90,8 @@ public class ConfigurationObject implements IObject {
         if (null == objectEntries) {
             throw new InvalidArgumentException("Argument should not be null.");
         }
-        this.body = new HashMap<IFieldName, Object>(0);
-        this.body.putAll((HashMap<IFieldName, Object>) objectEntries);
+        this.body = new HashMap<>(0);
+        this.body.putAll(objectEntries);
     }
 
     /**
@@ -82,21 +108,25 @@ public class ConfigurationObject implements IObject {
             throw new InvalidArgumentException("Name parameter should not be null.");
         }
         try {
-            return IOC.resolve(
+            if (canonizedBody.containsKey(name)) {
+                return canonizedBody.get(name);
+            }
+
+            Object canonicalValue = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object"),
                     body.get(name),
                     name
             );
+
+            // ConcurrentHashMap does not permit null-values
+            if (null != canonicalValue) {
+                canonizedBody.put(name, canonicalValue);
+            }
+            return canonicalValue;
         } catch (Throwable e) {
             throw new ReadValueException("Can't read value for current field name");
         }
     }
-
-//    @Override
-//    public void setValue(final IFieldName name, final Object value)
-//            throws ChangeValueException, InvalidArgumentException {
-//        throw new ChangeValueException("Method not implemented.");
-//    }
 
     @Override
     public void setValue(final IFieldName name, final Object value)
@@ -105,6 +135,7 @@ public class ConfigurationObject implements IObject {
             throw new InvalidArgumentException("Name parameter should not be null.");
         }
         body.put(name, value);
+        canonizedBody.remove(name);
     }
 
     @Override
@@ -116,7 +147,17 @@ public class ConfigurationObject implements IObject {
     @Override
     public <T> T serialize()
             throws SerializeException {
-        throw new SerializeException("Method not implemented.");
+        try {
+            for (IFieldName fieldName : body.keySet()) {
+                if (!canonizedBody.containsKey(fieldName)) {
+                    getValue(fieldName);
+                }
+            }
+
+            return (T) OBJECT_MAPPER.writer().writeValueAsString(canonizedBody);
+        } catch (ReadValueException | InvalidArgumentException | JsonProcessingException e) {
+            throw new SerializeException(e);
+        }
     }
 
     @Override

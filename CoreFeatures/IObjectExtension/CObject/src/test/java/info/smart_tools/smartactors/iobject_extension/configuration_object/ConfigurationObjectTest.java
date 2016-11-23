@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ConfigurationObject}
@@ -287,14 +285,6 @@ public class ConfigurationObjectTest {
         fail();
     }
 
-    @Test (expected = SerializeException.class)
-    public void checkExceptionOnUseSerializeMethod()
-            throws Exception {
-        ConfigurationObject co = new ConfigurationObject(this.configString);
-        co.serialize();
-        fail();
-    }
-
     @Test
     public void checkNullOnTryToGetIterator()
             throws Exception {
@@ -328,5 +318,19 @@ public class ConfigurationObjectTest {
         Map entries = null;
         IObject object = new ConfigurationObject(entries);
         fail();
+    }
+
+    @Test
+    public void Should_serializeAsCanonizedObject()
+            throws Exception {
+        String source = "{'in_getX':'m/x'}".replace('\'','"');
+
+        IObject cObj = new ConfigurationObject(source);
+
+        String serialized = cObj.serialize();
+
+        assertTrue(
+                serialized.equals("{\"in_getX\":[{\"args\":[\"m/x\"],\"name\":\"wds_getter_strategy\"}]}") ||
+                serialized.equals("{\"in_getX\":[{\"name\":\"wds_getter_strategy\",\"args\":[\"m/x\"]}]}"));
     }
 }

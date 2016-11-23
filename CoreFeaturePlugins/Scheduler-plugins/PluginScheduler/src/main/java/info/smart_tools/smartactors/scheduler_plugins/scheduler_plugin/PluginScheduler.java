@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -12,9 +13,11 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
+import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 
 /**
  * Plugin that registers scheduler actor and related components.
@@ -27,6 +30,22 @@ public class PluginScheduler extends BootstrapPlugin {
      */
     public PluginScheduler(final IBootstrap bootstrap) {
         super(bootstrap);
+    }
+
+    /**
+     * Register default action to be executed by scheduler when entry fires.
+     *
+     * @throws ResolutionException if error occurs resolving key
+     * @throws RegistrationException if error occurs registering strategy
+     * @throws InvalidArgumentException if {@link ApplyFunctionToArgumentsStrategy} does not like our function
+     */
+    @Item("scheduler_default_action")
+    public void registerDefaultAction()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(
+                Keys.getOrAdd("default scheduler action"),
+                new SingletonStrategy(new DefaultSchedulerAction())
+        );
     }
 
     /**
@@ -74,7 +93,8 @@ public class PluginScheduler extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                return new EntryStorage((IPool) args[0], (String) args[1]);
+                ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
+                return new EntryStorage((IPool) args[0], (String) args[1], observer);
             } catch (ResolutionException e) {
                 throw new FunctionExecutionException(e);
             }

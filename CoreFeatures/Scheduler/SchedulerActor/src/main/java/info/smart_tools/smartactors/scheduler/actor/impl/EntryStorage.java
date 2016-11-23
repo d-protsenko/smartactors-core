@@ -12,12 +12,14 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
@@ -48,6 +50,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
     // True if all entries are downloaded from remote storage
     private boolean isInitialized = false;
 
+    private ISchedulerEntryStorageObserver observer;
+
     /**
      * The constructor.
      *
@@ -57,8 +61,22 @@ public class EntryStorage implements ISchedulerEntryStorage {
      */
     public EntryStorage(final IPool connectionPool, final String collectionName)
             throws ResolutionException {
+        this(connectionPool, collectionName, null);
+    }
+
+    /**
+     * The constructor.
+     *
+     * @param connectionPool    database connection pool
+     * @param collectionName    name of database collection to use
+     * @param observer          the observer that should be notified on events occurring within this storage
+     * @throws ResolutionException if fails to resolve any dependencies
+     */
+    public EntryStorage(final IPool connectionPool, final String collectionName, final ISchedulerEntryStorageObserver observer)
+            throws ResolutionException {
         this.connectionPool = connectionPool;
         this.collectionName = collectionName;
+        this.observer = (observer == null) ? NullEntryStorageObserver.INSTANCE : observer;
 
         filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
         gtFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$gt");
@@ -88,6 +106,12 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException {
         ISchedulerEntry oldEntry = localEntries.put(entry.getId(), entry);
 
+        try {
+            observer.onUpdateEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
+        }
+
         if (null != oldEntry && entry != oldEntry) {
             try {
                 oldEntry.cancel();
@@ -114,8 +138,12 @@ public class EntryStorage implements ISchedulerEntryStorage {
                     entry.getState());
 
             task.execute();
+
+            observer.onCancelEntry(entry);
         } catch (PoolGuardException | ResolutionException | TaskExecutionException e) {
             throw new EntryStorageAccessException("Error occurred deleting entry from database.", e);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
     }
 
@@ -173,6 +201,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
                             }
 
                             if (docs.length < downloadPageSize) {
+                                observer.onDownloadComplete();
                                 isInitialized = true;
                             } else {
                                 lastDownloadedId = docs[docs.length - 1].getValue(entryIdFieldName);
