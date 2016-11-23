@@ -47,6 +47,13 @@
             <artifactId>base.exception.initialization-exception</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+             
+        <!-- Dump interface -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>dumpable-interfce.idumpable</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Security -->
         <dependency>
@@ -105,14 +112,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- "make dump" strategy for IOC -->
-        <!-- TODO: Implement more generic serialization mechanism and replace by strategy that uses it -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>dumpable-plugins.make-dump</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

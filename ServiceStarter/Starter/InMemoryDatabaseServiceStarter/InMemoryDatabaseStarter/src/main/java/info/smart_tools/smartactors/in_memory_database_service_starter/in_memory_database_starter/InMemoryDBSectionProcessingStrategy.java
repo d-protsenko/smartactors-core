@@ -68,7 +68,7 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
                 dataBase.createCollection(collectionName);
                 List<String> documents = (List<String>) collection.getValue(documentsFieldName);
                 for (String document : documents) {
-                    dataBase.insert(IOC.resolve(Keys.getOrAdd(DSObject.class.getCanonicalName()), document), collectionName);
+                    dataBase.insert(IOC.resolve(Keys.getOrAdd("IObjectByString"), document), collectionName);
                 }
             }
         } catch (ReadValueException | InvalidArgumentException e) {
