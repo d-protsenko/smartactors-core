@@ -50,4 +50,23 @@ public class Feature implements IFeature<String, IFeatureState<String>> {
     public void setStatus(IFeatureState<String> status) {
         this.status = status;
     }
+
+    @Override
+    public void setName(String featureName) {
+        this.name = featureName;
+    }
+
+    @Override
+    public void setDependencies(Set<String> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public void setFeatureLocation(IPath location) {
+        this.featureLocation = location;
+    }
+
+    @Override
+    public <P> void setFeatureLocation(P location) {
+        this.featureLocation = (IPath) location;
+    }
 }

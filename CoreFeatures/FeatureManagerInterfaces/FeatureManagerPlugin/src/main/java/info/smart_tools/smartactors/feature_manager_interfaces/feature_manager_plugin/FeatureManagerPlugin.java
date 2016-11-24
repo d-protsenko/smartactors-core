@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeatu
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureState;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.LoadFeatureTask;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.UnzipFeatureTask;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -50,6 +51,17 @@ public class FeatureManagerPlugin extends BootstrapPlugin {
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return new LoadFeatureTask((IFeatureManager) args[0], (IFeature) args[1]);
+                    } catch (ResolutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+        );
+
+        IOC.register(
+                Keys.getOrAdd("unzip-feature"),
+                new ApplyFunctionToArgumentsStrategy(args -> {
+                    try {
+                        return new UnzipFeatureTask((IFeatureManager) args[0], (IFeature) args[1]);
                     } catch (ResolutionException e) {
                         throw new RuntimeException(e);
                     }

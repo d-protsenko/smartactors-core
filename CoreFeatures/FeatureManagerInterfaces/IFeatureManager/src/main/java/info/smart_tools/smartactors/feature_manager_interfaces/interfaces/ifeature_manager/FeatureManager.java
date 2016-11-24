@@ -52,6 +52,7 @@ public class FeatureManager implements IFeatureManager {
     @Override
     public void onCompleteFeatureOperation(IFeature feature)
             throws FeatureManagementException {
+
         if (((IFeatureState<String>)feature.getStatus()).completed()) {
             this.processingFeatures.remove(feature.getName());
             this.loadedFeatures.put(feature.getName(), feature);

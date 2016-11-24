@@ -16,4 +16,10 @@ public interface IFeature<T, S> {
     void setStatus(S status);
 
     <P> P getFeatureLocation();
+
+    void setName(T featureName);
+
+    void setDependencies(Set<T> dependencies);
+
+    <P> void setFeatureLocation(P location);
 }

@@ -45,7 +45,6 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
                     }
 
             ).collect(toSet());
-            featureManager.addFeatures(features);
             File[] fZipped = new File(this.path.getPath()).listFiles((item, string) ->  string.endsWith(".zip"));
             features.addAll(Arrays.stream(fZipped).map(m -> {
                         try {
@@ -56,6 +55,7 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
                     }
 
             ).collect(toSet()));
+            featureManager.addFeatures(features);
         } catch (FeatureManagementException e) {
 
         }
@@ -85,7 +85,7 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
 
     private IFeature createZippedFeature(File f)
             throws Exception {
-        return new Feature(f.getName(), null, null);
+        return new Feature(f.getPath(), null, null);
     }
 }
 
