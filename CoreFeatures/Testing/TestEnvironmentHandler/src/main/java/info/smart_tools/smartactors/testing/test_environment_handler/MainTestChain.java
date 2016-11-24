@@ -14,6 +14,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -124,5 +126,10 @@ public class MainTestChain implements IReceiverChain {
     @Override
     public IObject getChainDescription() {
         return null;
+    }
+
+    @Override
+    public Collection<IReceiverChain> getExceptionalChains() {
+        return Collections.emptyList();
     }
 }
