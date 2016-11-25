@@ -21,7 +21,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import java.util.List;
 
 /**
- * Initializes MessageBus using configuration.
+ * Initializes OnFeatureLoading using configuration.
  * <p>
  * Expects the following configuration format:
  * <p>
