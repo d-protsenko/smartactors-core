@@ -58,7 +58,9 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
         try {
             Object prevEntryId = entry.getState().getValue(prevCheckpointEntryIdFieldName);
 
-            receivedMessageEntries.remove(prevEntryId, entry);
+            if (prevEntryId != null) {
+                receivedMessageEntries.remove(prevEntryId, entry);
+            }
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new SchedulerEntryStorageObserverException("Error occurred updating received messages index.", e);
         }
