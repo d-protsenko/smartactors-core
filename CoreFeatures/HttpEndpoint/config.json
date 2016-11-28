@@ -24,8 +24,5 @@
       ],
       "exceptional": []
     }
-  ],
-  "client": {
-    "stackDepth": 5
-  }
+  ]
 }
