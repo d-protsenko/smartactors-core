@@ -48,8 +48,5 @@
       "maxContentLength": 4098,
       "stackDepth": 5
     }
-  ],
-  "client": {
-    "stackDepth": 5
-  }
+  ]
 }

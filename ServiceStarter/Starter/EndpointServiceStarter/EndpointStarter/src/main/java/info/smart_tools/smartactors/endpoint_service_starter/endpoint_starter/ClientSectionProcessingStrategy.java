@@ -57,6 +57,7 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
             clientObject.setValue(queueFieldName, queue);
             Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
             clientObject.setValue(stackDepthFieldName, stackDepth);
+            IOC.resolve(Keys.getOrAdd("initializeHttpClient"), stackDepth);
             IOC.register(Keys.getOrAdd("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);

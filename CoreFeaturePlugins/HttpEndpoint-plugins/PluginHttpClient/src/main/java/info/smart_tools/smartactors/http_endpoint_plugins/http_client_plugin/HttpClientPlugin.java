@@ -35,6 +35,7 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import io.netty.handler.codec.http.FullHttpRequest;
 
+import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -168,7 +169,17 @@ public class HttpClientPlugin implements IPlugin {
                                                     }
                                             )
                                     );
-                                    HttpClientInitializer.init();
+                                    IOC.register(Keys.getOrAdd("initializeHttpClient"), new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                Integer stackDepth = (Integer) args[0];
+                                                try {
+                                                    HttpClientInitializer.init(stackDepth);
+                                                }catch (Exception e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                                return 0;
+                                            }
+                                    ));
                                 } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
                                     e.printStackTrace();
                                     throw new RuntimeException(e);
