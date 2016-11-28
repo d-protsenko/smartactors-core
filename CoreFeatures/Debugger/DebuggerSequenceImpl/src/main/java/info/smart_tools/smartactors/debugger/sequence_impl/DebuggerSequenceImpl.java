@@ -136,6 +136,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
 
     @Override
     public void goTo(final int level, final int step) throws InvalidArgumentException {
+        isCompleted = false;
         wrapped.goTo(level, step);
     }
 

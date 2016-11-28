@@ -74,11 +74,12 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("getStepMode", args -> stepModeMaxDepth);
 
         //noinspection ThrowableResultOfMethodCallIgnored
-        commands.put("getException", args -> (isRunning() ? sequence.getException() : null));
+        commands.put("getException", args -> ((sequence == null) ? null : sequence.getException()));
         commands.put("getMessage", args -> message);
-        commands.put("getChainName", args -> mainChain.getName());
+        commands.put("getChainName", args -> ((mainChain == null) ? null : mainChain.getName()));
         commands.put("isRunning", args -> isRunning());
         commands.put("isPaused", args -> isPaused());
+        commands.put("isCompleted", args -> (sequence != null && sequence.isCompleted()));
         commands.put("getBreakOnException", args -> breakOnException);
         commands.put("getStackTrace", this::getStackTrace);
 
@@ -100,6 +101,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
         commands.put("setStackDepth", stopModeCommand(args -> stackDepth = ((Number) args).intValue()));
         commands.put("getStackDepth", args -> stackDepth);
+
+        commands.put("goTo", pauseModeCommand(this::goTo));
     }
 
     private void pauseProcessor() throws AsynchronousOperationException {
@@ -116,7 +119,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         try {
-            if (prePaused || sequence.getCurrentLevel() <= stepModeMaxDepth) {
+            if (prePaused || sequence.getCurrentLevel() <= stepModeMaxDepth || sequence.isCompleted()) {
                 pauseProcessor();
             } else
             //noinspection ThrowableResultOfMethodCallIgnored
@@ -176,6 +179,16 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         };
     }
 
+    private IDebuggerCommand pauseModeCommand(final IDebuggerCommand command) {
+        return args -> {
+            if (isPaused()) {
+                return command.execute(args);
+            } else {
+                throw new CommandExecutionException("Debugger is not paused now.");
+            }
+        };
+    }
+
     private Object startDebugging(final Object arg)
             throws CommandExecutionException {
         if (message == null || mainChain == null || isRunning() || isPaused()) {
@@ -210,6 +223,10 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             throws CommandExecutionException {
         if (!isPaused()) {
             throw new CommandExecutionException("Not paused now.");
+        }
+
+        if (sequence.isCompleted()) {
+            throw new CommandExecutionException("Sequence is already completed.");
         }
 
         try {
@@ -263,7 +280,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
                 try {
                     stepModeMaxDepth = Integer.parseInt(arg.toString());
                 } catch (NumberFormatException e) {
-                    throw new CommandExecutionException("Step mode should br \"none\", \"all\" (or null) or a number.");
+                    throw new CommandExecutionException("Step mode should be \"none\", \"all\" (or null) or a number.");
                 }
             }
         }
@@ -309,6 +326,29 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
             return "OK";
         } catch (ClassCastException | ResolutionException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
+            throw new CommandExecutionException(e);
+        }
+    }
+
+    private Object goTo(final Object arg)
+            throws CommandExecutionException {
+        try {
+            IObject args = (IObject) arg;
+
+            IFieldName levelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "level");
+            IFieldName stepFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "step");
+
+            int level = ((Number) args.getValue(levelFieldName)).intValue();
+            int step = ((Number) args.getValue(stepFieldName)).intValue();
+
+            try {
+                sequence.goTo(level, step);
+            } catch (InvalidArgumentException e) {
+                return e.getMessage();
+            }
+
+            return "OK";
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new CommandExecutionException(e);
         }
     }

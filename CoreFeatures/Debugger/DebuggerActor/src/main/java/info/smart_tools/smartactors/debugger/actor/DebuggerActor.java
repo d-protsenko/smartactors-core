@@ -71,28 +71,31 @@ public class DebuggerActor {
      * @throws ReadValueException if error occurs reading command name, session identifier or command arguments from message
      * @throws ChangeValueException if error occurs saving command result
      * @throws InvalidArgumentException if command name or argument is not valid
-     * @throws CommandExecutionException if error occurs processing a global command
      * @throws SessionNotFoundException if cannot find a session to execute command within
      */
     public void executeCommand(final CommandMessage message)
-            throws ReadValueException, ChangeValueException, CommandExecutionException, InvalidArgumentException,
+            throws ReadValueException, ChangeValueException, InvalidArgumentException,
                 SessionNotFoundException {
         debuggerAddress = message.getDebuggerAddress();
         String command = message.getCommand();
 
-        if (globalCommands.containsKey(command)) {
-            Object args = message.getCommandArguments();
+        try {
+            if (globalCommands.containsKey(command)) {
+                Object args = message.getCommandArguments();
 
-            if (null == args) {
-                args = message.getSessionId();
+                if (null == args) {
+                    args = message.getSessionId();
+                }
+
+                message.setCommandResult(globalCommands.get(command).execute(args));
+            } else {
+                String sessionId = message.getSessionId();
+                Object args = message.getCommandArguments();
+
+                message.setCommandResult(getSession(sessionId).executeCommand(command, args));
             }
-
-            message.setCommandResult(globalCommands.get(command).execute(args));
-        } else {
-            String sessionId = message.getSessionId();
-            Object args = message.getCommandArguments();
-
-            message.setCommandResult(getSession(sessionId).executeCommand(command, args));
+        } catch (CommandExecutionException e) {
+            message.setException(e);
         }
     }
 

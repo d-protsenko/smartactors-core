@@ -1,9 +1,12 @@
 package info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link NoExceptionHandleChainException}.
@@ -12,13 +15,16 @@ public class NoExceptionHandleChainExceptionTest {
     @Test
     public void Should_getConstructedAndStoreAttributes()
             throws Exception {
-        IReceiverChain[] receiverChainsStack = new IReceiverChain[0];
-        int[] stepsStack = new int[0];
+        IObject descMock = mock(IObject.class);
+        IReceiverChain[] receiverChainsStack = new IReceiverChain[]{mock(IReceiverChain.class)};
+        int[] stepsStack = new int[]{0};
         Throwable cause = new Throwable();
+        when(receiverChainsStack[0].getChainDescription()).thenReturn(descMock);
+
         NoExceptionHandleChainException exception = new NoExceptionHandleChainException(cause, receiverChainsStack, stepsStack);
 
-        assertSame(receiverChainsStack, exception.getChainsStack());
         assertSame(stepsStack, exception.getStepsStack());
+        assertArrayEquals(new IObject[] {descMock}, exception.getChainsStack());
         assertSame(cause, exception.getCause());
     }
 }

@@ -36,4 +36,10 @@ public interface CommandMessage {
      * @throws ReadValueException if any error occurs
      */
     Object getDebuggerAddress() throws ReadValueException;
+
+    /**
+     * @param e    the exception occurred executing the command
+     * @throws ChangeValueException if any error occurs
+     */
+    void setException(final Throwable e) throws ChangeValueException;
 }

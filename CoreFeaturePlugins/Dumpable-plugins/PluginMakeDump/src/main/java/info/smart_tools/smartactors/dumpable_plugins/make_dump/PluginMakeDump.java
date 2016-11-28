@@ -21,7 +21,7 @@ public class PluginMakeDump extends BootstrapPlugin {
      * The constructor.
      * @param bootstrap    the bootstrap
      */
-    protected PluginMakeDump(final IBootstrap bootstrap) {
+    public PluginMakeDump(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
