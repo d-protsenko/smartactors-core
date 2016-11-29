@@ -2,46 +2,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>message-processing-plugins</artifactId>
+        <artifactId>message-processing</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>message-processing-plugins.condition-chain-choice-strategy-plugin</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>message-processing.condition-chain-choice-strategy</artifactId>
 
     <dependencies>
-        <!-- Core interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
             <version>${core.version}</version>
         </dependency>
 
-        <!-- Base plugin class -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <artifactId>message-processing.chain-call-receiver</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Implementation to register -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing.condition-chain-choice-strategy</artifactId>
+            <artifactId>ioc.ioc</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
-
-        <!-- Strategy -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <artifactId>ioc.named-keys-storage</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

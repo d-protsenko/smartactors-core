@@ -32,6 +32,7 @@
         <module>ReceiverGenerator</module>
         <module>WrapperGenerator</module>
         <module>ConstantChainChoiceStrategy</module>
+        <module>ConditionChainChoiceStrategy</module>
     </modules>
 
     <repositories>

@@ -2,90 +2,31 @@ package info.smart_tools.smartactors.message_processing_plugins.condition_chain_
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
+import info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy.ConditionChainChoiceStrategy;
 
-public class PluginConditionChainChoiceStrategy implements IPlugin {
-    /** Local storage for instance of {@link IBootstrap}*/
-    private IBootstrap<IBootstrapItem<String>> bootstrap;
-
-    /**
-     * @param bootstrap Target bootstrap for adding strategy
-     * @throws InvalidArgumentException if any errors occurred
-     */
-    public PluginConditionChainChoiceStrategy(final IBootstrap<IBootstrapItem<String>> bootstrap)
-            throws InvalidArgumentException {
-        if (null == bootstrap) {
-            throw new InvalidArgumentException("Incoming argument should not be null.");
-        }
-        this.bootstrap = bootstrap;
+public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
+    public PluginConditionChainChoiceStrategy(IBootstrap bootstrap) {
+        super(bootstrap);
     }
 
-    @Override
-    public void load()
-            throws PluginException {
-        try {
-            IBootstrapItem<String> item = new BootstrapItem("ConditionChainChoiceStrategy");
-            item
-                    .after("IOC")
-                    .before("starter")
-                    .after("IFieldPlugin")
-                    .after("IFieldNamePlugin")
-                    .process(
-                            () -> {
-                                try {
-                                    IChainChoiceStrategy strategy = (a) -> {
-                                        try {
-                                            IFieldName conditionFN = IOC.resolve(
-                                                    IOC.resolve(
-                                                            IOC.getKeyForKeyStorage(),
-                                                            IFieldName.class.getCanonicalName()
-                                                    ), "chainCondition"
-                                            );
-
-                                            if ((Boolean) a.getMessage().getValue(conditionFN)) {
-                                                Object name = a.getSequence().getCurrentReceiverArguments().getValue(IOC.resolve(
-                                                        IOC.resolve(
-                                                                IOC.getKeyForKeyStorage(),
-                                                                IFieldName.class.getCanonicalName()
-                                                        ), "trueChain"
-                                                ));
-                                                return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name);
-                                            }
-
-                                            Object name = a.getSequence().getCurrentReceiverArguments().getValue(IOC.resolve(
-                                                    IOC.resolve(
-                                                            IOC.getKeyForKeyStorage(),
-                                                            IFieldName.class.getCanonicalName()
-                                                    ), "falseChain"
-                                            ));
-                                            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name);
-
-                                        } catch (Exception e) {
-                                            throw new RuntimeException("Could not execute condition chain choice strategy.");
-                                        }
-                                    };
-
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "condition chain choice strategy"),
-                                            new SingletonStrategy(strategy));
-                                } catch (Exception e) {
-                                    throw new RuntimeException(
-                                            "Could not create or register condition chain choice strategy.", e
-                                    );
-                                }
-                            }
-                    );
-            this.bootstrap.add(item);
-        } catch (Throwable e) {
-            throw new PluginException("Could not load 'ConditionChainChoiceStrategy plugin'", e);
-        }
+    /**
+     * Register condition chain choice strategy as a singleton.
+     *
+     * @throws ResolutionException if error occurs resoling key or dependencies of chain choice strategy
+     * @throws RegistrationException if error occurs registering the strategy
+     * @throws InvalidArgumentException if {@link SingletonStrategy} doesn't like our arguments
+     */
+    @BootstrapPlugin.Item("condition_chain_choice_strategy")
+    @BootstrapPlugin.After({"IOC", "IFieldNamePlugin"})
+    @BootstrapPlugin.Before({"ChainCallReceiver"})
+    public void item()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
     }
 }
