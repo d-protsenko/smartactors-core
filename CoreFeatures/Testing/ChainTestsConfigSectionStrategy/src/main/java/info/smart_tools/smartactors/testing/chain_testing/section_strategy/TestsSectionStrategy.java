@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
+import info.smart_tools.smartactors.testing.interfaces.itest_reporter.exception.TestReporterException;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
 
@@ -19,13 +21,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Strategy processing "tests" section of configuration.
- *
+ * <p>
  * Requires thread pool initialized and task dispatcher running to execute tests.
  */
 public class TestsSectionStrategy implements ISectionStrategy {
     private IFieldName name;
-//    private ITestRunner runner;
+    //    private ITestRunner runner;
     private IFieldName testRunnerName;
+    private IFieldName featureNameField;
+    private IFieldName testReportFormatField;
+    private IFieldName testReportPrinterField;
 
     /**
      * The constructor.
@@ -34,12 +39,18 @@ public class TestsSectionStrategy implements ISectionStrategy {
      */
     public TestsSectionStrategy()
             throws ResolutionException {
-        name = IOC.resolve(
+        this.name = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests"
         );
         this.testRunnerName = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "entryPoint"
         );
+        this.featureNameField = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "featureName");
+        this.testReportFormatField = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "reportFormat");
+        this.testReportPrinterField = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "reportPrinter");
     }
 
     @Override
@@ -54,8 +65,15 @@ public class TestsSectionStrategy implements ISectionStrategy {
             CyclicBarrier barrier = new CyclicBarrier(2);
             AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
+            ITestReporter testReporter = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), ITestReporter.class.getCanonicalName()),
+                    config.getValue(featureNameField),
+                    config.getValue(testReportFormatField),
+                    config.getValue(testReportPrinterField));
+
             for (IObject testDesc : tests) {
                 System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
+                testReporter.beforeTest(testDesc);
                 ITestRunner runner = IOC.resolve(
                         IOC.resolve(
                                 IOC.getKeyForKeyStorage(),
@@ -78,6 +96,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                     Thread.currentThread().interrupt();
                     return;
                 }
+                testReporter.afterTest(eRef.get());
 
                 if (null != eRef.get()) {
                     throw new ConfigurationProcessingException("Test failed.", eRef.get());
@@ -86,10 +105,13 @@ public class TestsSectionStrategy implements ISectionStrategy {
                 }
             }
             System.out.println("--------------------------------- Testing completed ---------------------------------");
+            testReporter.make();
         } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
         } catch (TestExecutionException e) {
             throw new ConfigurationProcessingException("Could not start test.", e);
+        } catch (TestReporterException e) {
+            throw new ConfigurationProcessingException("Could not make test report.", e);
         }
     }
 

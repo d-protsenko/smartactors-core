@@ -30,6 +30,13 @@
         <module>TestHttpEndpoint</module>
         <module>TestRunner</module>
         <module>ChainTestsConfigSectionStrategy</module>
+        <module>ITestReporter</module>
+        <module>ITestReportBuilder</module>
+        <module>ITestReportPrinter</module>
+        <module>TestReporter</module>
+        <module>TestReportConsolePrinter</module>
+        <module>TestReportTextBuilder</module>
+        <module>TestReportXmlBuilder</module>
     </modules>
 
     <repositories>
