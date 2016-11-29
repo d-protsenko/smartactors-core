@@ -115,13 +115,14 @@ public class MessageProcessorTest {
         messageProcessor.process(messageMock, contextMock);
 
         verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "config")), same(configurationMock));
+        verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "processor")), same(messageProcessor));
 
         messageProcessor.setConfig(configurationMock2);
 
         messageProcessor.process(messageMock, contextMock);
 
         verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "config")), same(configurationMock2));
-        verify(environmentMock).setValue(eq(IOC.resolve(KEY_FOR_FIELD_NAME, "processor")), same(messageProcessor));
+
     }
 
     @Test
