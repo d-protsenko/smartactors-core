@@ -220,6 +220,11 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.condition-chain-choice-strategy-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.handler-routing-receiver-creator-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
