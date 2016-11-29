@@ -114,6 +114,11 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
+    public IMessageProcessingSequence getRealSequence() {
+        return wrapped;
+    }
+
+    @Override
     public void reset() {
         wrapped.reset();
     }

@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
@@ -40,6 +41,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
     private IMessageProcessingSequence innerSequenceMock = mock(IMessageProcessingSequence.class);
     private IDebuggerSequence debuggerSequenceMock;
     private IMessageProcessor messageProcessorMock;
+    private IDebuggerBreakpointsStorage breakpointsStorageMock;
     private IResolveDependencyStrategy sequenceStrategyMock;
     private IResolveDependencyStrategy debuggerSequenceStrategyMock;
     private IResolveDependencyStrategy processorStrategyMock;
@@ -75,6 +77,8 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         debuggerSequenceMock = mock(IDebuggerSequence.class);
         messageProcessorMock = mock(IMessageProcessor.class);
 
+        breakpointsStorageMock = mock(IDebuggerBreakpointsStorage.class);
+
         sequenceStrategyMock = mock(IResolveDependencyStrategy.class);
         debuggerSequenceStrategyMock = mock(IResolveDependencyStrategy.class);
         processorStrategyMock = mock(IResolveDependencyStrategy.class);
@@ -93,6 +97,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), processorStrategyMock);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
         IOC.register(Keys.getOrAdd("make dump"), sequenceDumpStrategyMock);
+        IOC.register(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()), new SingletonStrategy(breakpointsStorageMock));
 
         IOC.register(Keys.getOrAdd("value_dependency"), new IResolveDependencyStrategy() {
             @Override

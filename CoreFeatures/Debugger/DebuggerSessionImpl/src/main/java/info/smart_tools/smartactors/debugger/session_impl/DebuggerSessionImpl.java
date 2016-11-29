@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.BreakpointStorageException;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -19,6 +21,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import java.util.Map;
  * Implementation of a debugger session.
  */
 public class DebuggerSessionImpl implements IDebuggerSession {
+
     private static final int DEFAULT_STACK_DEPTH = 5;
 
     private final IFieldName sessionIdFieldName;
@@ -50,6 +54,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     private int stepModeMaxDepth = Integer.MAX_VALUE;
 
+    private final IDebuggerBreakpointsStorage breakpointsStorage;
+
     /**
      * The constructor.
      *
@@ -61,6 +67,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             throws ResolutionException {
         this.id = id;
         this.debuggerAddress = debuggerAddress;
+
+        this.breakpointsStorage = IOC.resolve(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()));
 
         sessionIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sessionId");
 
@@ -103,6 +111,36 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("getStackDepth", args -> stackDepth);
 
         commands.put("goTo", pauseModeCommand(this::goTo));
+        commands.put("call", pauseModeCommand(this::call));
+
+        commands.put("listBreakpoints", args -> {
+            try {
+                return breakpointsStorage.listBreakpoints();
+            } catch (BreakpointStorageException e) {
+                throw new CommandExecutionException(e);
+            }
+        });
+
+        commands.put("setBreakpoint", args -> {
+            try {
+                return breakpointsStorage.addBreakpoint((IObject) args);
+            } catch (BreakpointStorageException e) {
+                throw new CommandExecutionException(e);
+            }
+        });
+
+        commands.put("modifyBreakpoint", args -> {
+            try {
+                IObject arg = (IObject) args;
+                String bpId = (String) arg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id"));
+
+                breakpointsStorage.modifyBreakpoint(bpId, arg);
+
+                return "OK";
+            } catch (ResolutionException | BreakpointStorageException | ReadValueException | InvalidArgumentException e) {
+                throw new CommandExecutionException(e);
+            }
+        });
     }
 
     private void pauseProcessor() throws AsynchronousOperationException {
@@ -119,7 +157,10 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         try {
-            if (prePaused || sequence.getCurrentLevel() <= stepModeMaxDepth || sequence.isCompleted()) {
+            if (prePaused
+                    || sequence.getCurrentLevel() <= stepModeMaxDepth
+                    || sequence.isCompleted()
+                    || breakpointsStorage.shouldBreakAt(sequence)) {
                 pauseProcessor();
             } else
             //noinspection ThrowableResultOfMethodCallIgnored
@@ -130,7 +171,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
                     pauseProcessor();
                 }
             }
-        } catch (AsynchronousOperationException e) {
+        } catch (AsynchronousOperationException | BreakpointStorageException e) {
             throw new InterruptProcessingException("Error occurred pausing processing of debuggable message.", e);
         }
     }
@@ -349,6 +390,24 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
             return "OK";
         } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+            throw new CommandExecutionException(e);
+        }
+    }
+
+    private Object call(final Object arg)
+            throws CommandExecutionException {
+        try {
+            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg));
+
+            sequence.callChain(chain);
+
+            return "OK";
+        } catch (NestedChainStackOverflowException e) {
+            return "STACK OVERFLOW";
+        } catch (ChainNotFoundException e) {
+            return "NO SUCH CHAIN";
+        } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }
     }

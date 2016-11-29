@@ -160,7 +160,7 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
         verify(session[0]).handleInterrupt(same(messageProcessorMock));
     }
 
-    @Test(expected = CommandExecutionException.class)
+    @Test
     public void Should_throwWhenSessionIsNotPresent()
             throws Exception {
         DebuggerActor actor = new DebuggerActor();
@@ -169,9 +169,11 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
         when(commandMessageMock.getCommandArguments()).thenReturn("non-exist");
 
         actor.executeCommand(commandMessageMock);
+
+        verify(commandMessageMock).setException(any());
     }
 
-    @Test(expected = CommandExecutionException.class)
+    @Test
     public void Should_throwWhenCannotResolveSession()
             throws Exception {
         DebuggerActor actor = new DebuggerActor();
@@ -181,5 +183,7 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
         when(commandMessageMock.getCommand()).thenReturn("newSession");
 
         actor.executeCommand(commandMessageMock);
+
+        verify(commandMessageMock).setException(any());
     }
 }

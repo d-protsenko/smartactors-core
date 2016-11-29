@@ -5,7 +5,7 @@ import argparse
 import urlparse
 import json
 
-#
+# Globals
 
 _BANNER='''
 SmartActors debugger client console.
@@ -21,7 +21,7 @@ _CONNECTION=None
 
 _LAST_SESSIONS_LIST=[]
 
-#
+# Initialization & command execution
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Connect to SmartActors debugger actor.')
@@ -31,6 +31,8 @@ def parse_arguments():
                         help='name of the chain to use to send command messages to debugger')
     parser.add_argument('--chain', '-c', default=None, type=str, metavar='chain', dest='debuggable_chain',
                         help='chain to start debugging')
+    parser.add_argument('--init', '-i', default=None, type=file, metavar='script', dest='init_script',
+                        help='script to execute before start of interactive debugging')
 
     args = parser.parse_args()
 
@@ -38,6 +40,10 @@ def parse_arguments():
     _CONFIG['server-path'] = args.url.path
     _CONFIG['command-chain'] = args.command_chain
     _CONFIG['debug-default-chain'] = args.debuggable_chain
+
+    if args.init_script is not None:
+        with args.init_script as f:
+            _CONFIG['init-script'] = compile(f.read(), f.name, 'exec')
 
 def open_connection():
     return httplib.HTTPConnection(_CONFIG['server-address'])
@@ -65,6 +71,10 @@ def execute_command(name, arg=None, session=True):
     return resp['result']
 
 def init_console_functions():
+    _CONSOLE_SCOPE['cmd'] = execute_command
+
+    _CONSOLE_SCOPE['session'] = lambda: _CURRENT_SESSION_ID
+
     _CONSOLE_SCOPE['newSession'] = cmd_new_session
     _CONSOLE_SCOPE['state'] = cmd_show_state
     _CONSOLE_SCOPE['sessions'] = cmd_list_sessions
@@ -81,6 +91,7 @@ def init_console_functions():
     _CONSOLE_SCOPE['setStackDepth'] = cmd_set_x('setStackDepth')
     _CONSOLE_SCOPE['setStepMode'] = cmd_set_x('stepMode')
     _CONSOLE_SCOPE['setBreakOnException'] = cmd_set_x('setBreakOnException')
+    _CONSOLE_SCOPE['call'] = cmd_set_x('call')
 
     _CONSOLE_SCOPE['start'] = cmd_do_x('start')
     _CONSOLE_SCOPE['stop'] = cmd_do_x('stop')
@@ -92,7 +103,11 @@ def init_console_functions():
     _CONSOLE_SCOPE['getStackTrace'] = cmd_get_x('getStackTrace')
     _CONSOLE_SCOPE['getException'] = cmd_get_x('getException')
 
-#
+    _CONSOLE_SCOPE['setBp'] = cmd_set_breakpoint
+    _CONSOLE_SCOPE['listBp'] = cmd_list_breakpoints
+    _CONSOLE_SCOPE['modBp'] = cmd_modify_breakpoint
+
+# Output formatting
 
 def exception_to_string(e):
     s = '{0}\nat {1}:{2}'.format(
@@ -111,7 +126,7 @@ def chain_step_to_string(s):
     else:
         return s['target']
 
-#
+# Commands
 
 def cmd_new_session():
     global _CURRENT_SESSION_ID
@@ -224,12 +239,45 @@ def cmd_stack_trace(options=None):
 def cmd_go_to(level, step):
     print execute_command('goTo', {'level': level, 'step': step})
 
-#
+def cmd_set_breakpoint(chain, step, enabled=True):
+    print execute_command('setBreakpoint', {
+        'chain': chain,
+        'step': int(step),
+        'enabled': enabled
+    })
 
-parse_arguments()
+def cmd_list_breakpoints():
+    lst = execute_command('listBreakpoints')
 
-_CONNECTION=open_connection()
+    for bp in lst:
+        print '{0}\t{1})\tstep#{3} @ {2}\t'.format(
+            '*' if bp['enabled'] else '-',
+            bp['id'],
+            bp['chain'],
+            bp['step']
+        ), chain_step_to_string(bp['args'])
 
-init_console_functions()
+def cmd_modify_breakpoint(bpId, enable=None):
+    args = {'id': bpId}
 
-code.InteractiveConsole(locals=_CONSOLE_SCOPE).interact(_BANNER)
+    if enable is not None: args['enabled'] = enable
+
+    print execute_command('modifyBreakpoint', args)
+
+# Entry point
+
+def launch_debugger():
+    global _CONNECTION
+
+    parse_arguments()
+
+    _CONNECTION=open_connection()
+
+    init_console_functions()
+
+    if 'init-script' in _CONFIG:
+        exec _CONFIG['init-script'] in _CONSOLE_SCOPE
+
+    code.InteractiveConsole(locals=_CONSOLE_SCOPE).interact(_BANNER)
+
+if __name__ == '__main__': launch_debugger()

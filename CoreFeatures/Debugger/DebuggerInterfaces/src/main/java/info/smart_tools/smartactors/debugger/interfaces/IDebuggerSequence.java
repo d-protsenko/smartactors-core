@@ -34,4 +34,11 @@ public interface IDebuggerSequence extends IMessageProcessingSequence {
      */
     // TODO: Exception when there is no exception occurred.
     boolean processException();
+
+    /**
+     * Get real sequence.
+     *
+     * @return the real sequence
+     */
+    IMessageProcessingSequence getRealSequence();
 }
