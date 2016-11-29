@@ -110,13 +110,13 @@ def init_console_functions():
 # Output formatting
 
 def exception_to_string(e):
-    s = '{0}\nat {1}:{2}'.format(
+    s = '{0}\n\tat {1}:{2}'.format(
         e['message'],
         e['stackTrace'][0]['className'],
         e['stackTrace'][0]['lineNumber'])
 
     if 'cause' in e and e['cause'] is not None:
-        s += '\ncaused by: ' + exception_to_string(e['cause'])
+        s += '\n\n\tcaused by: ' + exception_to_string(e['cause'])
 
     return s
 
@@ -221,6 +221,7 @@ def cmd_do_x(c):
 
 def cmd_stack_trace(options=None):
     trace = execute_command('getStackTrace', options or {})
+    breakpoints = execute_command('listBreakpoints')
 
     for level in range(len(trace['chainsStack'])):
         chain = trace['chainsStack'][level]
@@ -230,6 +231,11 @@ def cmd_stack_trace(options=None):
         print 'Level', level, '; chain:', chain
 
         for step in range(len(chainSteps)):
+            for bp in breakpoints:
+                if bp['chain'] == chain and bp['step'] == step:
+                    print '    ({1}{0})'.format(bp['id'], '*' if bp['enabled'] else '-')
+                    break
+
             marker = ''
             marker += '-' if step <= currentStep else ' '
             marker += '>' if step == currentStep else ' '
