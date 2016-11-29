@@ -22,6 +22,7 @@
         <module>DebuggerInterfaces</module>
         <module>DebuggerSequenceImpl</module>
         <module>DebuggerSessionImpl</module>
+        <module>DebuggerBreakpointsStorage</module>
     </modules>
 
     <repositories>

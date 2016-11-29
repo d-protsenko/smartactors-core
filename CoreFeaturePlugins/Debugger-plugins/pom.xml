@@ -21,6 +21,7 @@
         <module>PluginDebuggerActor</module>
         <module>PluginDebuggerSession</module>
         <module>PluginDebuggerSequence</module>
+        <module>PluginDebuggerBreakpointsStorage</module>
     </modules>
 
     <repositories>
