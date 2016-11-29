@@ -15,7 +15,7 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
 
     public ConditionChainChoiceStrategy() throws ResolutionException {
         chainConditionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainCondition");
-        trueChainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "falseChain");
+        trueChainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "trueChain");
         falseChainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "falseChain");
     }
 
