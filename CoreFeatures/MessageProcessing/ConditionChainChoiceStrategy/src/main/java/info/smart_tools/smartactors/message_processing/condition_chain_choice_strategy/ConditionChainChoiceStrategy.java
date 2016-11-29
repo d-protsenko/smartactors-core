@@ -8,11 +8,18 @@ import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChai
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
+/**
+ * {@link IChainChoiceStrategy Chain choice strategy} that returns chain id depending the chainCondition flag.
+ */
 public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
     private final IFieldName chainConditionFN;
     private final IFieldName trueChainFN;
     private final IFieldName falseChainFN;
 
+    /**
+     * Constructor
+     * @throws ResolutionException sometimes
+     */
     public ConditionChainChoiceStrategy() throws ResolutionException {
         chainConditionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainCondition");
         trueChainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "trueChain");
@@ -20,7 +27,7 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
     }
 
     @Override
-    public Object chooseChain(IMessageProcessor messageProcessor) throws ChainChoiceException {
+    public Object chooseChain(final IMessageProcessor messageProcessor) throws ChainChoiceException {
         try {
             if ((Boolean) messageProcessor.getMessage().getValue(chainConditionFN)) {
                 Object name = messageProcessor.getSequence().getCurrentReceiverArguments().getValue(trueChainFN);

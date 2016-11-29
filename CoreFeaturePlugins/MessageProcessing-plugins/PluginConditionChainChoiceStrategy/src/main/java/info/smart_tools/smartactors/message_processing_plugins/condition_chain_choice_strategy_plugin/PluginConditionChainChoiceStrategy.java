@@ -10,8 +10,16 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy.ConditionChainChoiceStrategy;
 
+/**
+ * Plugin that registers condition chain choice strategy.
+ */
 public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
-    public PluginConditionChainChoiceStrategy(IBootstrap bootstrap) {
+
+    /**
+     * Constructor
+     * @param bootstrap the bootstrap item
+     */
+    public PluginConditionChainChoiceStrategy(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
