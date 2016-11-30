@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.testing.test_report_xml_builder;
 import javax.xml.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,13 +11,13 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 final class TestSuiteModel {
     private String name;
-    private Long tests;
-    private Long skipped;
-    private Long errors;
-    private Long failures;
+    private Integer tests;
+    private Integer skipped;
+    private Integer errors;
+    private Integer failures;
     private Long timestamp;
     private Long time;
-    private List<TestCaseModel> testCaseModels;
+    private List<TestCaseModel> testCaseModels = new ArrayList<>();
 
     private final DateFormat format = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss");
 
@@ -26,27 +27,28 @@ final class TestSuiteModel {
     }
 
     @XmlAttribute(name = "tests")
-    public Long getTests() {
+    public Integer getTests() {
         return tests;
     }
 
     @XmlAttribute(name = "skipped")
-    public Long getSkipped() {
+    public Integer getSkipped() {
         return skipped;
     }
 
     @XmlAttribute(name = "errors")
-    public Long getErrors() {
+    public Integer getErrors() {
         return errors;
     }
 
     @XmlAttribute(name = "failures")
-    public Long getFailures() {
+    public Integer getFailures() {
         return failures;
     }
 
     @XmlAttribute(name = "timestamp")
     public String getTimestamp() {
+        if (timestamp == null) return null;
         return format.format(new Date(timestamp));
     }
 
@@ -64,15 +66,15 @@ final class TestSuiteModel {
         this.name = name;
     }
 
-    public void setTests(final Long tests) {
+    public void setTests(final Integer tests) {
         this.tests = tests;
     }
 
-    public void setSkipped(final Long skipped) {
+    public void setSkipped(final Integer skipped) {
         this.skipped = skipped;
     }
 
-    public void setErrors(final Long errors) {
+    public void setErrors(final Integer errors) {
         this.errors = errors;
     }
 
@@ -88,7 +90,7 @@ final class TestSuiteModel {
         this.testCaseModels = testCaseModels;
     }
 
-    public void setFailures(final Long failures) {
+    public void setFailures(final Integer failures) {
         this.failures = failures;
     }
 }
