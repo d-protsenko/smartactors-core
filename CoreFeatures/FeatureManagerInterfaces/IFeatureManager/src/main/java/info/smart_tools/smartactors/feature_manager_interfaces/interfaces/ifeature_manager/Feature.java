@@ -17,12 +17,23 @@ public class Feature implements IFeature<String, IFeatureState<String>> {
     private Set<String> dependencies;
     private IPath featureLocation;
     private IFeatureState<String> status;
+    private String groupId;
+    private String version;
 
     public Feature(String name, Set<String> dependencies, IPath location)
             throws ResolutionException {
         this.name = name;
         this.dependencies = dependencies;
         this.featureLocation = location;
+        this.status = IOC.resolve(Keys.getOrAdd("feature-state:initial-state"));
+    }
+
+    public Feature(String name, String groupId, String version, IPath featureLocation)
+            throws ResolutionException {
+        this.name = name;
+        this.groupId = groupId;
+        this.version = version;
+        this.featureLocation = featureLocation;
         this.status = IOC.resolve(Keys.getOrAdd("feature-state:initial-state"));
     }
 
@@ -61,12 +72,28 @@ public class Feature implements IFeature<String, IFeatureState<String>> {
         this.dependencies = dependencies;
     }
 
-    public void setFeatureLocation(IPath location) {
-        this.featureLocation = location;
-    }
-
     @Override
     public <P> void setFeatureLocation(P location) {
         this.featureLocation = (IPath) location;
+    }
+
+    @Override
+    public String getGroupId() {
+        return this.groupId;
+    }
+
+    @Override
+    public String getVersion() {
+        return this.version;
+    }
+
+    @Override
+    public <S1> void setGroupId(S1 groupId) {
+        this.groupId = (String) groupId;
+    }
+
+    @Override
+    public <S2> void setVersion(S2 version) {
+        this.version = (String) version;
     }
 }

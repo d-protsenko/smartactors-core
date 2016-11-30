@@ -13,6 +13,10 @@ public interface IFeature<T, S> {
 
     S getStatus();
 
+    <S1> S1 getGroupId();
+
+    <S2> S2 getVersion();
+
     void setStatus(S status);
 
     <P> P getFeatureLocation();
@@ -22,4 +26,8 @@ public interface IFeature<T, S> {
     void setDependencies(Set<T> dependencies);
 
     <P> void setFeatureLocation(P location);
+
+    <S1> void setGroupId(S1 groupId);
+
+    <S2> void setVersion(S2 version);
 }

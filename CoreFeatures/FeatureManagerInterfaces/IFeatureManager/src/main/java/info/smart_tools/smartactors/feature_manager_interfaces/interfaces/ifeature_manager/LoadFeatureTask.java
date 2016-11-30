@@ -104,13 +104,13 @@ public class LoadFeatureTask implements ITask {
 
             ((IFeatureState) this.feature.getStatus()).next();
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(true);
-            ((IFeatureState) this.feature.getStatus()).setExecuting(false);
-            System.out.println("Feature - '" + feature.getName() + "' has been loaded successful.");
+            System.out.println("OK -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("Feature - '" + feature.getName() + "' has been loaded with exception :");
+            System.out.println("FAILED ---------- Feature '" + feature.getName() + "' loading has been broken with exception :");
             System.err.println(e);
         }
+        ((IFeatureState) this.feature.getStatus()).setExecuting(false);
         try {
             this.featureManager.onCompleteFeatureOperation(this.feature);
         } catch (FeatureManagementException e) {

@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by sevenbits on 11/14/16.
  */
-// ToDo: need add thread safety logic
 public class FeatureManager implements IFeatureManager {
 
     private Map<Object, IFeature> loadedFeatures;
@@ -67,8 +66,6 @@ public class FeatureManager implements IFeatureManager {
 
     private void startLoading() throws FeatureManagementException {
         try {
-            Set<IFeature> failedFeatures = new HashSet<>();
-            Set<IFeature> completedFeatures = new HashSet<>();
             checkForDependencies();
             for (IFeature feature : this.processingFeatures.values()) {
                 IFeatureState<String> state = (IFeatureState<String>) feature.getStatus();

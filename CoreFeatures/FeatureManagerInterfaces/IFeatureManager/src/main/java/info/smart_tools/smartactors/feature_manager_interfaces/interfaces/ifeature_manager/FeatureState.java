@@ -31,7 +31,7 @@ public class FeatureState implements IFeatureState<String> {
     @Override
     public void next()
             throws Exception {
-        if (this.stateChain.length < this.currentState + 1) {
+        if (this.stateChain.length > this.currentState + 1) {
             ++this.currentState;
         } else {
             this.completed = true;

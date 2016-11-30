@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.feature_loading_system.plugin_creator.Plugin
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.DownloadFeatureTask;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureManager;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureManagerGlobal;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureState;
@@ -69,10 +70,19 @@ public class FeatureManagerPlugin extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.getOrAdd("feature-state:initial-state"),
+                Keys.getOrAdd("download-feature"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
-                    return new FeatureState(new String[]{"unzip-feature", "load-feature"});
-            })
+                    try {
+                        return new DownloadFeatureTask((IFeatureManager) args[0], (IFeature) args[1]);
+                    } catch (ResolutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+        );
+
+        IOC.register(
+                Keys.getOrAdd("feature-state:initial-state"),
+                new ApplyFunctionToArgumentsStrategy(args -> new FeatureState(new String[]{"download-feature", "unzip-feature", "load-feature"}))
         );
 
         IOC.register(Keys.getOrAdd("plugin creator"), new SingletonStrategy(new PluginCreator()));
