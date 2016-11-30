@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerAct
  */
 public class DefaultSchedulerAction implements ISchedulerAction {
     private final IFieldName messageFieldName;
+    private final IFieldName setEntryIdFieldName;
 
     /**
      * The constructor.
@@ -31,6 +32,7 @@ public class DefaultSchedulerAction implements ISchedulerAction {
     public DefaultSchedulerAction()
             throws ResolutionException {
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        setEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "setEntryId");
     }
 
     @Override
@@ -43,8 +45,14 @@ public class DefaultSchedulerAction implements ISchedulerAction {
                 throw new SchedulerActionInitializationException("\"message\" field of arguments should contain a message object", null);
             }
 
+            String entryIdFieldFN = (String) args.getValue(setEntryIdFieldName);
+
+            if (entryIdFieldFN != null && !entryIdFieldFN.isEmpty()) {
+                ((IObject) message).setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), entryIdFieldFN), entry.getId());
+            }
+
             entry.getState().setValue(messageFieldName, message);
-        } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException e) {
             throw new SchedulerActionInitializationException("Error occurred copying message from arguments to entry state.", e);
         }
     }
