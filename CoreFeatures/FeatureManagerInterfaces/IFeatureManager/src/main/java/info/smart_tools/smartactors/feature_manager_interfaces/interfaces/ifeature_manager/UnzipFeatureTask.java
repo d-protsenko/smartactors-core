@@ -12,6 +12,10 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
+import net.lingala.zip4j.progress.ProgressMonitor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -72,52 +77,21 @@ public class UnzipFeatureTask implements ITask {
     private void unzip(final File f)
             throws Exception {
         String destination = f.getPath().substring(0, f.getPath().lastIndexOf('/'));
-        FileInputStream fInput = null;
-        ZipInputStream zipInput = null;
-        ZipEntry entry;
         try {
-            fInput = new FileInputStream(f);
-            zipInput = new ZipInputStream(fInput);
-            entry = zipInput.getNextEntry();
-            while (entry != null) {
-                String entryName = entry.getName();
-                File file = new File(destination + File.separator + entryName);
-                if (entry.isDirectory()) {
-                    File newDir = new File(file.getAbsolutePath());
-                    if (!newDir.exists()) {
-                        boolean success = newDir.mkdirs();
-                        if (!success) {
-                            System.out.println("Problem with creating Folder");
-                        }
-                    }
-                } else {
-                    FileOutputStream fOutput = new FileOutputStream(file);
-                    int count = 0;
-                    while ((count = zipInput.read(BUFFER)) > 0) {
-                        fOutput.write(BUFFER, 0, count);
-                    }
-                    if (file.getName().equals("config.json")) {
-                        updateFeature(file);
-                    }
-                    fOutput.close();
-                }
-                zipInput.closeEntry();
-                entry = zipInput.getNextEntry();
-            }
-        } catch (IOException e) {
+            ZipFile zipFile = new ZipFile(f);
+            FileHeader configFileHeader = (FileHeader)  zipFile.getFileHeaders().stream().filter(
+                    fh -> ((FileHeader)fh).getFileName().endsWith("config.json")
+            ).findFirst().get();
+            File configFile = new File(destination + File.separator + configFileHeader.getFileName());
+
+            zipFile.extractAll(destination);
+//            ProgressMonitor monitor = zipFile.getProgressMonitor();
+//            while (monitor.getState() == ProgressMonitor.STATE_BUSY) {
+//            }
+            updateFeature(configFile);
+
+        } catch (ZipException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (null != zipInput) {
-                    zipInput.closeEntry();
-                    zipInput.close();
-                }
-                if (null != fInput) {
-                    fInput.close();
-                }
-            } catch (IOException e) {
-                System.err.println(e.toString());
-            }
         }
     }
 

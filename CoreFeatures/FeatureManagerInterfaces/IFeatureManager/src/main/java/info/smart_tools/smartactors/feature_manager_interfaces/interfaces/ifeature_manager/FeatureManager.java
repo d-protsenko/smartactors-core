@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -13,6 +14,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by sevenbits on 11/14/16.
@@ -23,17 +26,20 @@ public class FeatureManager implements IFeatureManager {
     private Map<Object, IFeature> failedFeatures;
     private Map<Object, IFeature> processingFeatures;
     private Map<Object, IFeature> frozenForDependencies;
+    private Map<IAction, Set<String>> onGroupLoadingAction;
 
     public FeatureManager() {
         this.loadedFeatures = new ConcurrentHashMap<>();
         this.failedFeatures = new ConcurrentHashMap<>();
         this.processingFeatures = new ConcurrentHashMap<>();
         this.frozenForDependencies = new ConcurrentHashMap<>();
+        this.onGroupLoadingAction = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void addFeatures(final Set<IFeature> features)
+    public void addFeatures(final Set<IFeature> features, final IAction onCurrentGroup)
             throws FeatureManagementException {
+        this.onGroupLoadingAction.put(onCurrentGroup, features.stream().map(a -> (String) a.getName()).collect(Collectors.toSet()));
         features.forEach(this::addFeature);
         this.startLoading();
     }
@@ -53,11 +59,13 @@ public class FeatureManager implements IFeatureManager {
             throws FeatureManagementException {
 
         if (((IFeatureState<String>)feature.getStatus()).completed()) {
+            this.onGroupLoadingAction.forEach((k, v) -> {v.remove(feature.getName());});
             this.processingFeatures.remove(feature.getName());
             this.loadedFeatures.put(feature.getName(), feature);
             this.removeLoadedDependency(feature);
         }
         if (!((IFeatureState<String>)feature.getStatus()).getLastSuccess()) {
+            this.onGroupLoadingAction.forEach((k, v) -> {v.remove(feature.getName());});
             this.processingFeatures.remove(feature.getName());
             this.failedFeatures.put(feature.getName(), feature);
         }
@@ -76,6 +84,7 @@ public class FeatureManager implements IFeatureManager {
                     queue.put(task);
                 }
             }
+            this.checkAndStartOnGroupCompletedActions();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ResolutionException e) {
@@ -147,5 +156,21 @@ public class FeatureManager implements IFeatureManager {
                 feature.getDependencies().remove(loadedFeature.getName());
             }
         }
+    }
+
+    private void checkAndStartOnGroupCompletedActions() {
+        Collection<IAction> actionsOfCompletedGroup = new HashSet<>();
+        this.onGroupLoadingAction.entrySet().stream().filter((el) -> el.getValue().isEmpty()).
+                forEach(el -> {
+                    actionsOfCompletedGroup.add(el.getKey());
+                    this.onGroupLoadingAction.remove(el.getKey());
+                });
+        actionsOfCompletedGroup.forEach(el -> {
+            try {
+                el.execute(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

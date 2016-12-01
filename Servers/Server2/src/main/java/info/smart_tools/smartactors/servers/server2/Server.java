@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.servers.server2;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
@@ -75,7 +76,7 @@ public class Server implements IServer {
 
             loadPluginsFrom(jars);
 
-            System.out.println("Stage 1 (server core) completed successful.");
+            System.out.println("Stage 1: server core has been loaded successful.");
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }
@@ -84,8 +85,18 @@ public class Server implements IServer {
     private void loadStage2()
             throws ServerExecutionException {
         IFeatureManager featureManager = FeatureManagerGlobal.get();
-        IFeatureTracker tracker = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("corefeatures"));
-        tracker.start();
+        IFeatureTracker tracker2 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("features"), (fm)-> {
+            if (fm.getFailedFeatures().isEmpty()) {
+                System.out.println("Stage 3: features has been loaded successful.");
+            }
+        });
+        IFeatureTracker tracker1 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("corefeatures"), (fm) -> {
+            if (fm.getFailedFeatures().isEmpty()) {
+                System.out.println("Stage 2: core features has been loaded successful.");
+                tracker2.start();
+            }
+        });
+        tracker1.start();
     }
 
     private List<IPath> listJarsIn(final File directory)

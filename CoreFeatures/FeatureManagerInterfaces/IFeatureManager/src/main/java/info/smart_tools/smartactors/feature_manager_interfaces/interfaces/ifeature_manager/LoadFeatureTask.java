@@ -107,7 +107,7 @@ public class LoadFeatureTask implements ITask {
             System.out.println("OK -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("FAILED ---------- Feature '" + feature.getName() + "' loading has been broken with exception :");
+            System.out.println("FAILED ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
             System.err.println(e);
         }
         ((IFeatureState) this.feature.getStatus()).setExecuting(false);

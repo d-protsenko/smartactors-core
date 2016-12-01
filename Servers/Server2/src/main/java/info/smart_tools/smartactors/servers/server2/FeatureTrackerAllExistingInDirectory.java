@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.servers.server2;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.Feature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureManager;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureManagerGlobal;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureRepository;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.IFeatureManager;
@@ -31,10 +33,14 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
 
     private IFeatureManager featureManager;
     private IPath path;
+    private IAction<IFeatureManager> onFeatureLoadCompleted;
 
-    public FeatureTrackerAllExistingInDirectory(IFeatureManager featureManager, IPath path) {
+    public FeatureTrackerAllExistingInDirectory(
+            final IFeatureManager featureManager, final IPath path, final IAction<IFeatureManager> onFeatureLoadCompleted
+    ) {
         this.featureManager = featureManager;
         this.path = path;
+        this.onFeatureLoadCompleted = onFeatureLoadCompleted;
     }
 
     @Override
@@ -67,7 +73,7 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
             ).forEach(i -> features.put((String) i.getName(), i));
 
 
-            featureManager.addFeatures(new HashSet<>(features.values()));
+            featureManager.addFeatures(new HashSet<>(features.values()), this.onFeatureLoadCompleted);
         } catch (Exception e) {
 
         }
