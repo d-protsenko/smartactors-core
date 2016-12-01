@@ -27,6 +27,9 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     private final IFieldName threadCountFieldName;
     private final IFieldName maxRunningThreadsFieldName;
     private final IFieldName maxExecutionDelayFieldName;
+    private final IFieldName defaultStackDepthFieldName;
+
+    private final int DEFAULT_STACK_DEPTH = 5;
 
     /**
      * The constructor.
@@ -39,6 +42,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
         this.threadCountFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "threadCount");
         this.maxRunningThreadsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxRunningThreads");
         this.maxExecutionDelayFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxExecutionDelay");
+        this.defaultStackDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "defaultStackDepth");
     }
 
     @Override
@@ -48,6 +52,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             int threadsCount = Integer.valueOf(String.valueOf(section.getValue(threadCountFieldName)));
             int maxRunningThreads = Integer.valueOf(String.valueOf(section.getValue(maxRunningThreadsFieldName)));
             int maxExecutionDelay = Integer.valueOf(String.valueOf(section.getValue(maxExecutionDelayFieldName)));
+            Integer defaultStackDepth = (Integer) section.getValue(this.defaultStackDepthFieldName);
 
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()), section);
 
@@ -58,6 +63,12 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             IOC.register(Keys.getOrAdd("task_dispatcher"), new SingletonStrategy(taskDispatcher));
             IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queue));
             IOC.register(Keys.getOrAdd("thread_pool"), new SingletonStrategy(threadPool));
+            IOC.register(
+                    Keys.getOrAdd("default_stack_depth"),
+                    new SingletonStrategy(
+                        null != defaultStackDepth ? this.defaultStackDepthFieldName : DEFAULT_STACK_DEPTH
+                    )
+            );
 
             taskDispatcher.start();
         } catch (InvalidArgumentException | ResolutionException | RegistrationException | ReadValueException e) {

@@ -35,20 +35,21 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
     private Map<Object, WDSObject> wrappedEnvironmentCache;
 
-    private IFieldName configFieldName;
-    private IFieldName messageFieldName;
-    private IFieldName contextFieldName;
-    private IFieldName responseFieldName;
-    private IFieldName sequenceFieldName;
-    private IFieldName argumentsFieldName;
-    private IFieldName wrapperFieldName;
+    private final IFieldName configFieldName;
+    private final IFieldName messageFieldName;
+    private final IFieldName contextFieldName;
+    private final IFieldName responseFieldName;
+    private final IFieldName sequenceFieldName;
+    private final IFieldName argumentsFieldName;
+    private final IFieldName wrapperFieldName;
+    private final IFieldName processorFieldName;
 
     private ITask finalTask;
 
     /**
      * True if processing was interrupted (using {@link #pauseProcess()}) during execution of last receiver.
      */
-    private boolean interrupted;
+    private int interrupted;
 
     /**
      * Depth of asynchronous operations. Any asynchronous operation (started by {@link #pauseProcess()}) may start another
@@ -100,7 +101,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         this.messageProcessingSequence = messageProcessingSequence;
         this.config = config;
 
-        this.interrupted = false;
+        this.interrupted = 0;
         this.asyncOpDepth = 0;
 
         this.environment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
@@ -114,6 +115,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
         wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
+        processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "processor");
 
         this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "final task"), this.environment);
     }
@@ -131,6 +133,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(responseFieldName, response);
         environment.setValue(messageFieldName, theMessage);
         environment.setValue(contextFieldName, theContext);
+        environment.setValue(processorFieldName, this);
+
         this.messageProcessingSequence.reset();
         enqueue();
     }
@@ -138,7 +142,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void pauseProcess() throws AsynchronousOperationException {
         // TODO: Check if called outside of receiver call after completion of all asynchronous operations
-        this.interrupted = true;
+        ++this.interrupted;
         ++this.asyncOpDepth;
     }
 
@@ -213,8 +217,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void execute() throws TaskExecutionException {
         try {
+            int initialInt = this.interrupted;
             try {
-                this.interrupted = false;
                 this.asyncOpDepth = 0;
                 this.asyncException = null;
                 this.environment.setValue(argumentsFieldName, messageProcessingSequence.getCurrentReceiverArguments());
@@ -226,7 +230,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
                 messageProcessingSequence.catchException(e, context);
             }
 
-            if (!interrupted) {
+            if (interrupted == initialInt) {
                 enqueueNext();
             }
         } catch (final Exception e1) {

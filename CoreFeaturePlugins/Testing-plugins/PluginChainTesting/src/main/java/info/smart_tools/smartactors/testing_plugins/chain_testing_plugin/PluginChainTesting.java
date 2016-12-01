@@ -130,7 +130,7 @@ public class PluginChainTesting implements IPlugin {
             IBootstrapItem<String> mainChainItem = new BootstrapItem("main_test_chain");
 
             mainChainItem
-                    .after("IOC")
+                    //.after("IOC")
                     .process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),

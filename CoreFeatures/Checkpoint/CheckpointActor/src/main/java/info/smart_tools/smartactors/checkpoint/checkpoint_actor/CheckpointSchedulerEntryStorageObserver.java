@@ -41,10 +41,12 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
         try {
             Object prevEntryId = entry.getState().getValue(prevCheckpointEntryIdFieldName);
 
-            ISchedulerEntry prev = receivedMessageEntries.put(prevEntryId.toString(), entry);
+            if (prevEntryId != null) {
+                ISchedulerEntry prev = receivedMessageEntries.put(prevEntryId.toString(), entry);
 
-            if (prev != null && prev != entry) {
-                prev.cancel();
+                if (prev != null && prev != entry) {
+                    prev.cancel();
+                }
             }
         } catch (ReadValueException | InvalidArgumentException | EntryStorageAccessException | EntryScheduleException e) {
             throw new SchedulerEntryStorageObserverException("Error occurred updating received messages index.", e);
@@ -56,7 +58,9 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
         try {
             Object prevEntryId = entry.getState().getValue(prevCheckpointEntryIdFieldName);
 
-            receivedMessageEntries.remove(prevEntryId, entry);
+            if (prevEntryId != null) {
+                receivedMessageEntries.remove(prevEntryId, entry);
+            }
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new SchedulerEntryStorageObserverException("Error occurred updating received messages index.", e);
         }

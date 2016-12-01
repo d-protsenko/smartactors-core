@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.messagebus_service_starter.messagebus_starter;
+package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.messagebus_service_starter.messagebus_starter.MessageBusSectionProcessingStrategy;
 
 /**
  *
@@ -31,27 +30,21 @@ public class StandardConfigSectionsPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            /* "messageBus" section */
-            IBootstrapItem<String> messageBusItem = new BootstrapItem("config_section:messageBus");
+            /* "onFeatureLoading" section */
+            IBootstrapItem<String> onFeatureLoadingItem = new BootstrapItem("config_section:onFeatureLoading");
 
-            messageBusItem
-//                    .after("config_sections:start")
-//                    .before("config_sections:done")
-//                    .after("config_section:maps")
-//                    .after("config_section:executor")
-//                    .after("IFieldNamePlugin")
-//                    .before("starter")
+            onFeatureLoadingItem
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
                                     IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            configurationManager.addSectionStrategy(new MessageBusSectionProcessingStrategy());
+                            configurationManager.addSectionStrategy(new OnFeatureLoadingSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }
                     });
-            bootstrap.add(messageBusItem);
+            bootstrap.add(onFeatureLoadingItem);
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
