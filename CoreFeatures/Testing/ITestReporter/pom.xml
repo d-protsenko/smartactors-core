@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>testing.interfaces.itest-reporter</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <!-- Core interfaces -->

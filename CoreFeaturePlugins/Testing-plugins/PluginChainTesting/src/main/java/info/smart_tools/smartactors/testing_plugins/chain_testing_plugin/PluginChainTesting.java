@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.testing_plugins.chain_testing_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
 import info.smart_tools.smartactors.testing.test_runner.ChainTestRunner;
 import info.smart_tools.smartactors.testing.test_runner.HttpEndpointTestRunner;
 import info.smart_tools.smartactors.testing.chain_testing.section_strategy.TestsSectionStrategy;
@@ -147,6 +148,12 @@ public class PluginChainTesting implements IPlugin {
                     });
 
             bootstrap.add(mainChainItem);
+
+            IBootstrapItem<String> reporterItem = new BootstrapItem("test_reporter");
+            reporterItem.process(() -> {
+                IOC.register(Keys.getOrAdd(ITestReporter.class.getCanonicalName()), new);
+            });
+            bootstrap.add(reporterItem);
 
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);

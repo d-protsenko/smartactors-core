@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestRepor
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.exception.TestReporterException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TestReporter implements ITestReporter {
@@ -25,6 +26,7 @@ public class TestReporter implements ITestReporter {
     private final ITestReportPrinter reportPrinter;
     private final ITestReportBuilder reportBuilder;
 
+    private final IFieldName timestampField;
     private final IFieldName testTimeField;
     private final IFieldName featureNameField;
     private final IFieldName testCasesField;
@@ -43,6 +45,7 @@ public class TestReporter implements ITestReporter {
         this.failureField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "failure");
         this.failuresCountField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "failures");
         this.testsCountField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests");
+        this.timestampField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "timestamp");
         this.testCases = new ArrayList<>();
     }
 
@@ -69,21 +72,27 @@ public class TestReporter implements ITestReporter {
     @Override
     public void make() throws TestReporterException {
         try {
-            int testsCount = testCases.size();
-            int failuresCount = 0;
-            for (IObject testCase : testCases) {
-                final Object failure = testCase.getValue(failureField);
-                if (failure != null) failuresCount++;
-            }
-            final IObject testSuite = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
-            testSuite.setValue(featureNameField, featureName);
-            testSuite.setValue(testCasesField, testCases);
-            testSuite.setValue(failuresCountField, failuresCount);
-            testSuite.setValue(testsCountField, testsCount);
+            final IObject testSuite = buildSuite();
             final String build = reportBuilder.build(testSuite);
             reportPrinter.print(build, featureName);
         } catch (ReadValueException | InvalidArgumentException | ChangeValueException | ResolutionException | TestReportPrinterException | TestReportBuilderException e) {
             throw new TestReporterException("Can't build report: " + e.getMessage(), e);
         }
+    }
+
+    private IObject buildSuite() throws ReadValueException, InvalidArgumentException, ChangeValueException, ResolutionException {
+        int testsCount = testCases.size();
+        int failuresCount = 0;
+        for (IObject testCase : testCases) {
+            final Object failure = testCase.getValue(failureField);
+            if (failure != null) failuresCount++;
+        }
+        final IObject testSuite = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+        testSuite.setValue(featureNameField, featureName);
+        testSuite.setValue(testCasesField, testCases);
+        testSuite.setValue(failuresCountField, failuresCount);
+        testSuite.setValue(testsCountField, testsCount);
+        testSuite.setValue(timestampField, new Date().getTime());
+        return testSuite;
     }
 }
