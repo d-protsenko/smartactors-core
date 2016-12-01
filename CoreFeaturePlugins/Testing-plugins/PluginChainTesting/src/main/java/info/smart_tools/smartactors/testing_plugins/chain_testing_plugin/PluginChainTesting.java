@@ -149,12 +149,6 @@ public class PluginChainTesting implements IPlugin {
 
             bootstrap.add(mainChainItem);
 
-            IBootstrapItem<String> reporterItem = new BootstrapItem("test_reporter");
-            reporterItem.process(() -> {
-                IOC.register(Keys.getOrAdd(ITestReporter.class.getCanonicalName()), new);
-            });
-            bootstrap.add(reporterItem);
-
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
