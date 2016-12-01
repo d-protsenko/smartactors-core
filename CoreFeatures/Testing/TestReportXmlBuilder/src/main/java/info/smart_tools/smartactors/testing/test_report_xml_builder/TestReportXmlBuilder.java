@@ -59,8 +59,8 @@ public class TestReportXmlBuilder implements ITestReportBuilder {
         suiteModel.setName(featureNameField.in(testSuite));
         suiteModel.setTests(testCountField.in(testSuite));
         suiteModel.setFailures(testFailuresCountField.in(testSuite));
-        suiteModel.setErrors(0L);
-        suiteModel.setSkipped(0L);
+        suiteModel.setErrors(0);
+        suiteModel.setSkipped(0);
         suiteModel.setTimestamp(timestampField.in(testSuite));
         suiteModel.setTime(testTimeField.in(testSuite));
         final List<IObject> testCases = testCasesField.in(testSuite);
