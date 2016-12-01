@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.messagebus_service_starter.messagebus_starter;
+package info.smart_tools.smartactors.message_bus_service_starter.message_bus_starter;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.messagebus_service_starter.messagebus_starter.MessageBusSectionProcessingStrategy;
 
 /**
  *

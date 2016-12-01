@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.messagebus_service_starter.messagebus_starter;
+package info.smart_tools.smartactors.message_bus_service_starter.message_bus_starter;
 
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
