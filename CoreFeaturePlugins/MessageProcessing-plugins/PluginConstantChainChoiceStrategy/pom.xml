@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>message-procesing-plugins.constant-chain-choice-strategy-plugin</artifactId>
+    <artifactId>message-processing-plugins.constant-chain-choice-strategy-plugin</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
