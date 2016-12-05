@@ -22,6 +22,7 @@
         <module>PluginChainTestingAssertions</module>
         <module>PluginTestCheckers</module>
         <module>PluginTestHttpEndpointAndEnvironment</module>
+        <module>PluginTestReporter</module>
     </modules>
 
     <repositories>

@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.testing.chain_testing.section_strategy;
 
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -16,6 +18,7 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import info.smart_tools.smartactors.testing_plugins.test_reporter_plugin.PluginTestReporter;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -41,6 +44,8 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         load(PluginIOCKeys.class);
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
+        load(IFieldPlugin.class);
+        load(PluginTestReporter.class);
     }
 
     @Override
