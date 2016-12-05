@@ -11,6 +11,12 @@ _BANNER='''
 SmartActors debugger client console.
 '''
 
+_IPYTHON_NOTICE='''
+For better experience install the ipython:
+
+# pip install ipython
+'''
+
 _CONSOLE_SCOPE={}
 
 _CONFIG={}
@@ -284,6 +290,11 @@ def launch_debugger():
     if 'init-script' in _CONFIG:
         exec _CONFIG['init-script'] in _CONSOLE_SCOPE
 
-    code.InteractiveConsole(locals=_CONSOLE_SCOPE).interact(_BANNER)
+    try:
+        import IPython
+        print _BANNER
+        IPython.start_ipython(user_ns=_CONSOLE_SCOPE)
+    except ImportError as e:
+        code.InteractiveConsole(locals=_CONSOLE_SCOPE).interact(_BANNER+_IPYTHON_NOTICE)
 
 if __name__ == '__main__': launch_debugger()
