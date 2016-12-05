@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.checkpoint_plugins.checkpoint_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -9,6 +11,7 @@ import info.smart_tools.smartactors.checkpoint.checkpoint_actor.CheckpointSchedu
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -59,5 +62,30 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("checkpoint scheduler action"),
                 new SingletonStrategy(new CheckpointSchedulerAction()));
+    }
+
+    /**
+     * Register default action to be executed for messages that has not reached next checkpoint until scheduling strategy completion.
+     *
+     * <p>
+     *     The default action registered just prints contents of the message to {@code stderr}.
+     * </p>
+     *
+     * @throws ResolutionException if error occurs resolving the key
+     * @throws RegistrationException if error occurs registering actor creation strategy
+     * @throws InvalidArgumentException i unexpected error occurs
+     */
+    @Item("checkpoint_failure_action_default")
+    @Before({"checkpoint_scheduler_action"})
+    public void registerDefaultFailureAction()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("checkpoint failure action"),
+                new SingletonStrategy((IAction<IObject>) msg -> {
+                    try {
+                        System.err.printf("Lost message: %s\n", msg.serialize());
+                    } catch (SerializeException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                }));
     }
 }
