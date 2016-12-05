@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>message-processing</artifactId>
+    <artifactId>on-feature-loading-service-starter</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -18,21 +18,7 @@
     </properties>
 
     <modules>
-        <module>ActorReceiver</module>
-        <module>ActorReceiverCreator</module>
-        <module>ChainCallReceiver</module>
-        <module>ChainStorage</module>
-        <module>ExceptionHandlingReceivers</module>
-        <module>HandlerRoutingReceiver</module>
-        <module>HandlerRoutingReceiverCreator</module>
-        <module>MapRouter</module>
-        <module>MessageProcessingSequence</module>
-        <module>MessageProcessor</module>
-        <module>ReceiverChain</module>
-        <module>ReceiverGenerator</module>
-        <module>WrapperGenerator</module>
-        <module>ConstantChainChoiceStrategy</module>
-        <module>ConditionChainChoiceStrategy</module>
+        <module>OnFeatureLoadingStarter</module>
     </modules>
 
     <repositories>

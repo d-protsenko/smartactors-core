@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>message-bus-service-starter</artifactId>
+        <artifactId>on-feature-loading-service-starter</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>message-bus-service-starter.messagebus-starter</artifactId>
+    <artifactId>on-feature-loading-service-starter.on-feature-loading-starter</artifactId>
 
     <dependencies>
         <dependency>
@@ -20,16 +20,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager.configuration-manager</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-bus.message-bus</artifactId>
-            <version>${core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-bus.message-bus-handler</artifactId>
             <version>${core.version}</version>
         </dependency>
         <dependency>
@@ -85,13 +75,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
-            <version>${core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ds-object</artifactId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -103,7 +87,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
+            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
+            <version>${core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
@@ -119,5 +109,8 @@
             <version>${core.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
+
+
 </project>

@@ -49,7 +49,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     /**
      * True if processing was interrupted (using {@link #pauseProcess()}) during execution of last receiver.
      */
-    private boolean interrupted;
+    private int interrupted;
 
     /**
      * Depth of asynchronous operations. Any asynchronous operation (started by {@link #pauseProcess()}) may start another
@@ -101,7 +101,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         this.messageProcessingSequence = messageProcessingSequence;
         this.config = config;
 
-        this.interrupted = false;
+        this.interrupted = 0;
         this.asyncOpDepth = 0;
 
         this.environment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
@@ -142,7 +142,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void pauseProcess() throws AsynchronousOperationException {
         // TODO: Check if called outside of receiver call after completion of all asynchronous operations
-        this.interrupted = true;
+        ++this.interrupted;
         ++this.asyncOpDepth;
     }
 
@@ -217,8 +217,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     @Override
     public void execute() throws TaskExecutionException {
         try {
+            int initialInt = this.interrupted;
             try {
-                this.interrupted = false;
                 this.asyncOpDepth = 0;
                 this.asyncException = null;
                 this.environment.setValue(argumentsFieldName, messageProcessingSequence.getCurrentReceiverArguments());
@@ -230,7 +230,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
                 messageProcessingSequence.catchException(e, context);
             }
 
-            if (!interrupted) {
+            if (interrupted == initialInt) {
                 enqueueNext();
             }
         } catch (final Exception e1) {
