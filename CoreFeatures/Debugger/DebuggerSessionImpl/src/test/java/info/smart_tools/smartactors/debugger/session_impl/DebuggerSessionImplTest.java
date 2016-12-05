@@ -321,4 +321,69 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
         verify(debuggerSequenceMock).stop();
     }
+
+    @Test
+    public void Should_listCreatedBreakpoints()
+            throws Exception {
+        Should_startDebugging();
+
+        c("listBreakpoints", null);
+
+        verify(breakpointsStorageMock).listBreakpoints();
+    }
+
+    @Test
+    public void Should_createBreakpoints()
+            throws Exception {
+        Should_startDebugging();
+
+        IObject arg = mock(IObject.class);
+
+        c("setBreakpoint", arg);
+
+        verify(breakpointsStorageMock).addBreakpoint(same(arg));
+    }
+
+    @Test
+    public void Should_modifyBreakpoints()
+            throws Exception {
+        Should_startDebugging();
+
+        IObject arg = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'id':'this-is-id'}".replace('\'','"'));
+
+        c("modifyBreakpoint", arg);
+
+        verify(breakpointsStorageMock).modifyBreakpoint(eq("this-is-id"), same(arg));
+    }
+
+    @Test
+    public void Should_goToGivenPositionOnGoToCommand()
+            throws Exception {
+        Should_startDebugging();
+        c("pause", null);
+        session.handleInterrupt(messageProcessorMock);
+
+        IObject arg = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'level':4,'step':42}".replace('\'','"'));
+
+        c("goTo", arg);
+
+        verify(debuggerSequenceMock).goTo(4, 42);
+    }
+
+    @Test
+    public void Should_callChainOnCallCommand()
+            throws Exception {
+        Should_startDebugging();
+        c("pause", null);
+        session.handleInterrupt(messageProcessorMock);
+
+        IReceiverChain chainMock = mock(IReceiverChain.class);
+        when(chainStorageMock.resolve(eq("chainName__id"))).thenReturn(chainMock);
+
+        c("call", "chainName");
+
+        verify(debuggerSequenceMock).callChain(chainMock);
+    }
 }
