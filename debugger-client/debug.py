@@ -106,7 +106,7 @@ def init_console_functions():
     _CONSOLE_SCOPE['processException'] = cmd_do_x('processException')
 
     _CONSOLE_SCOPE['getMessage'] = cmd_get_x('getMessage')
-    _CONSOLE_SCOPE['getStackTrace'] = cmd_get_x('getStackTrace')
+    _CONSOLE_SCOPE['getStackTrace'] = cmd_get_x('getStackTrace',{})
     _CONSOLE_SCOPE['getException'] = cmd_get_x('getException')
 
     _CONSOLE_SCOPE['setBp'] = cmd_set_breakpoint
@@ -210,9 +210,9 @@ def cmd_close_session():
 def cmd_set_message_field(fn, val, dep=None):
     print execute_command('setMessageField', {'name': fn, 'value': val, 'dependency': dep})
 
-def cmd_get_x(c):
+def cmd_get_x(c,a=None):
     def cmd():
-        return execute_command(c)
+        return execute_command(c,a)
     return cmd
 
 def cmd_set_x(c):
@@ -270,7 +270,7 @@ def cmd_list_breakpoints():
         ), chain_step_to_string(bp['args'])
 
 def cmd_modify_breakpoint(bpId, enable=None):
-    args = {'id': bpId}
+    args = {'id': str(bpId)}
 
     if enable is not None: args['enabled'] = enable
 
