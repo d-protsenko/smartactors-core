@@ -76,7 +76,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
      * @throws InvalidArgumentException i unexpected error occurs
      */
     @Item("checkpoint_failure_action_default")
-    @Before({"checkpoint_scheduler_action"})
+    @Before({"checkpoint_actor"})
     public void registerDefaultFailureAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("checkpoint failure action"),
