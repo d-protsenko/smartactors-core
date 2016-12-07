@@ -1,0 +1,149 @@
+{
+  "featureName": "feature-management",
+  "afterFeatures": [],
+  "objects": [
+    {
+      "kind": "actor",
+      "dependency": "FeatureManager",
+      "name": "feature-manager"
+    },
+    {
+      "kind": "stateless-actor",
+      "dependency": "DownloadFeatureActor",
+      "name": "download-feature-actor"
+    },
+    {
+      "kind": "stateless-actor",
+      "dependency": "UnzipFeatureActor",
+      "name": "unzip-feature-actor"
+    },
+    {
+      "kind": "stateless-actor",
+      "dependency": "LoadFeatureActor",
+      "name": "load-feature-actor"
+    },
+    {
+      "kind": "actor",
+      "dependency": "AllInDirectoryFeatureTracker",
+      "name": "all-in-directory-feature-tracker"
+    },
+    {
+      "name": "constant_chain_call_receiver",
+      "kind": "raw",
+      "dependency": "info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver",
+      "strategyDependency": "constant chain choice strategy"
+    }
+  ],
+  "maps": [
+    {
+      "id": "loadFeatures",
+      "steps": [
+        {
+          "target": "feature-manager",
+          "handler": "addFeatures",
+          "wrapper": {
+            "in_getFeatures": "message/features",
+            "in_getMessageProcessor": "processor",
+            "in_getScatterChainName": "const/chainOfScatteredFeatures"
+          }
+        },
+        {
+          "target": "feature-manager",
+          "handler": "getState",
+          "wrapper": {
+            "out_setLoadedFeatures": "message/loadedFeatures",
+            "out_setFailedFeatures": "message/failedFeatures",
+            "out_setProcessingFeatures": "message/processingFeatures",
+            "out_setFrozenFeatureProcesses": "message/frozenFeatureProcesses",
+            "out_setFrozenRequests": "message/frozenFeatureRequests"
+          }
+        }
+      ],
+      "exceptional": [
+      ]
+    },
+    {
+      "id": "chainOfScatteredFeatures",
+      "steps": [
+        {
+          "target": "download-feature-actor",
+          "handler": "download",
+          "wrapper": {
+            "in_getFeature": "message/feature"
+          }
+        },
+        {
+          "target": "unzip-feature-actor",
+          "handler": "unzip",
+          "wrapper": {
+            "in_getFeature": "message/feature",
+            "in_getLoadedFeatures": "message/loadedFeatures",
+            "in_getMessageProcessor": "processor",
+            "in_getFeatureProcess": "message/featureProcess"
+          }
+        },
+        {
+          "target": "load-feature-actor",
+          "handler": "load",
+          "wrapper": {
+            "in_getFeature": "message/feature"
+          }
+        },
+        {
+          "target": "feature-manager",
+          "handler": "onFeatureLoaded",
+          "wrapper": {
+            "in_getFeature": "message/feature"
+          }
+        }
+      ],
+      "exceptional": [
+      ]
+    },
+    {
+      "id": "addFeatureRepository",
+      "steps": [
+        {
+          "target": "feature-repository-actor",
+          "handler": "addFeatureRepository",
+          "wrapper": {
+            "in_getFeatureRepositories": "message/featureRepositories"
+          }
+        }
+      ],
+      "exceptional": [
+      ]
+    },
+    {
+      "id": "loadCoreFeaturesAndFeatures",
+      "steps": [
+        {
+          "target": "all-in-directory-feature-tracker",
+          "handler": "start",
+          "wrapper": {
+            "in_getPath": "const/corefeatures",
+            "out_setFeatures": "message/features"
+          }
+        },
+        {
+          "target": "constant_chain_call_receiver",
+          "chain": "loadFeatures"
+        },
+        {
+          "target": "all-in-directory-feature-tracker",
+          "handler": "start",
+          "wrapper": {
+            "in_getPath": "const/features",
+            "out_setFeatures": "message/features"
+          }
+        },
+        {
+          "target": "constant_chain_call_receiver",
+          "chain": "loadFeatures"
+        }
+      ],
+      "exceptional": [
+      ]
+    }
+  ]
+}
