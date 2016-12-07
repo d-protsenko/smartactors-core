@@ -53,7 +53,7 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
 
             Map<String, IFeature> features = new HashMap<>();
 
-            features.putAll(parseFeatureList(downloadList));
+            features.putAll(this.parseFeatureList(downloadList));
 
             Arrays.stream(f).map(m -> {
                         try {
@@ -123,20 +123,15 @@ public class FeatureTrackerAllExistingInDirectory implements IFeatureTracker {
         JSONObject jsonObject = (JSONObject) obj;
 
         JSONArray listOfRepositories = (JSONArray) jsonObject.get("repositories");
-        Iterator<JSONObject> itR = listOfRepositories.iterator();
-        while (itR.hasNext()) {
-            JSONObject repoJson = ((JSONObject)itR.next());
+        for (JSONObject listOfRepository : (Iterable<JSONObject>) listOfRepositories) {
+            JSONObject repoJson = (listOfRepository);
             FeatureRepository repo = new FeatureRepository(
                     (String) repoJson.get("repositoryId"), (String) repoJson.get("type"), (String) repoJson.get("url")
             );
             FeatureManagerGlobal.addRepository(repo);
         }
-
         JSONArray listOfFeatures = (JSONArray) jsonObject.get("features");
-        Iterator<JSONObject> itF = listOfFeatures.iterator();
-
-        while (itF.hasNext()) {
-            JSONObject featureJson = itF.next();
+        for (JSONObject featureJson : (Iterable<JSONObject>) listOfFeatures) {
             String name = (String) featureJson.get("name");
             features.put(name, new Feature(
                             (String) featureJson.get("name"),

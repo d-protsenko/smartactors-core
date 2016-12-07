@@ -34,6 +34,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -64,7 +65,7 @@ public class Server implements IServer {
     @Override
     public void start() throws ServerExecutionException {
         loadStage1();
-        loadStage2();
+//        loadStage2();
     }
 
     private void loadStage1()
@@ -76,28 +77,36 @@ public class Server implements IServer {
 
             loadPluginsFrom(jars);
 
-            System.out.println("Stage 1: server core has been loaded successful.");
+            System.out.println("\n\n[OK] Stage 1: server core has been loaded successful.\n\n");
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }
     }
 
-    private void loadStage2()
-            throws ServerExecutionException {
-        IFeatureManager featureManager = FeatureManagerGlobal.get();
-        IFeatureTracker tracker2 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("features"), (fm)-> {
-            if (fm.getFailedFeatures().isEmpty()) {
-                System.out.println("Stage 3: features has been loaded successful.");
-            }
-        });
-        IFeatureTracker tracker1 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("corefeatures"), (fm) -> {
-            if (fm.getFailedFeatures().isEmpty()) {
-                System.out.println("Stage 2: core features has been loaded successful.");
-                tracker2.start();
-            }
-        });
-        tracker1.start();
-    }
+//    private void loadStage2()
+//            throws ServerExecutionException {
+//        IFeatureManager featureManager = FeatureManagerGlobal.get();
+//        IFeatureTracker tracker2 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("features"), (fm)-> {
+//            if (fm.getFailedFeatures().isEmpty()) {
+//                System.out.println("\n\n[OK] Stage 3: features has been loaded successful.\n\n");
+//            } else {
+//                System.out.println("\n\n[FAILED] Stage 3: features loading has been failed.");
+//                System.out.println("Successful loaded features:" + fm.getLoadedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
+//                System.out.println("Not loaded features:" + fm.getFailedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
+//            }
+//        });
+//        IFeatureTracker tracker1 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("corefeatures"), (fm) -> {
+//            if (fm.getFailedFeatures().isEmpty()) {
+//                System.out.println("\n\n[OK] Stage 2: core features has been loaded successful.\n\n");
+//                tracker2.start();
+//            } else {
+//                System.out.println("\n\n[FAILED] Stage 2: features loading has been failed.");
+//                System.out.println("Successful loaded features:" + fm.getLoadedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
+//                System.out.println("Not loaded features:" + fm.getFailedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
+//            }
+//        });
+//        tracker1.start();
+//    }
 
     private List<IPath> listJarsIn(final File directory)
             throws IOException {

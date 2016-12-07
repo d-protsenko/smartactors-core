@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeat
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -15,19 +16,13 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
-import net.lingala.zip4j.progress.ProgressMonitor;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Created by sevenbits on 11/15/16.
@@ -35,9 +30,7 @@ import java.util.zip.ZipInputStream;
 public class UnzipFeatureTask implements ITask {
 
     private IFeatureManager featureManager;
-    private IFeature<String, IFeatureState<String>> feature;
-
-    static final byte[] BUFFER = new byte[2048];
+    private IFeature feature;
 
     private final IFieldName dependenciesFieldName;
 
@@ -53,24 +46,21 @@ public class UnzipFeatureTask implements ITask {
             throws TaskExecutionException {
         try {
             if (null == this.feature.getDependencies() && this.feature.getFeatureLocation().toString().endsWith(".zip")) {
-                System.out.println("Start unzipping feature - '" + feature.getName() + "'.");
+                System.out.println("[INFO] Start unzipping feature - '" + feature.getName() + "'.");
                 File f = new File(feature.getFeatureLocation().toString());
                 unzip(f);
-                System.out.println("OK -------------- Feature '" + this.feature.getName() + "' has been unzipped successful.");
+                System.out.println("[OK] -------------- Feature '" + this.feature.getName() + "' has been unzipped successful.");
             }
-
-            ((IFeatureState) this.feature.getStatus()).next();
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(true);
-            ((IFeatureState) this.feature.getStatus()).setExecuting(false);
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("FAILED ---------- Feature '" + this.feature.getName() + "' unzipping has been aborted with exception:");
-            System.err.println(e);
+            System.out.println("[FAILED] ---------- Feature '" + this.feature.getName() + "' unzipping has been aborted with exception:");
+            System.out.println(e);
         }
         try {
             this.featureManager.onCompleteFeatureOperation(this.feature);
         } catch (FeatureManagementException e) {
-            System.err.println(e);
+            System.out.println(e);
         }
     }
 
@@ -79,15 +69,10 @@ public class UnzipFeatureTask implements ITask {
         String destination = f.getPath().substring(0, f.getPath().lastIndexOf('/'));
         try {
             ZipFile zipFile = new ZipFile(f);
-            FileHeader configFileHeader = (FileHeader)  zipFile.getFileHeaders().stream().filter(
-                    fh -> ((FileHeader)fh).getFileName().endsWith("config.json")
-            ).findFirst().get();
-            File configFile = new File(destination + File.separator + configFileHeader.getFileName());
-
             zipFile.extractAll(destination);
-//            ProgressMonitor monitor = zipFile.getProgressMonitor();
-//            while (monitor.getState() == ProgressMonitor.STATE_BUSY) {
-//            }
+            List<FileHeader> headers = zipFile.getFileHeaders();
+            FileHeader configFileHeader = headers.stream().filter(fh -> fh.getFileName().endsWith("config.json")).findFirst().get();
+            File configFile = new File(destination + File.separator + configFileHeader.getFileName());
             updateFeature(configFile);
 
         } catch (ZipException e) {

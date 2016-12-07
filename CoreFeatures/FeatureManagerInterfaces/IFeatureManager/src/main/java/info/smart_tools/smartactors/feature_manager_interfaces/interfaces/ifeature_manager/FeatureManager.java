@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeat
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by sevenbits on 11/14/16.
@@ -27,6 +27,7 @@ public class FeatureManager implements IFeatureManager {
     private Map<Object, IFeature> processingFeatures;
     private Map<Object, IFeature> frozenForDependencies;
     private Map<IAction, Set<String>> onGroupLoadingAction;
+    private final Object lock;
 
     public FeatureManager() {
         this.loadedFeatures = new ConcurrentHashMap<>();
@@ -34,6 +35,7 @@ public class FeatureManager implements IFeatureManager {
         this.processingFeatures = new ConcurrentHashMap<>();
         this.frozenForDependencies = new ConcurrentHashMap<>();
         this.onGroupLoadingAction = new ConcurrentHashMap<>();
+        this.lock = new Object();
     }
 
     @Override
@@ -57,28 +59,36 @@ public class FeatureManager implements IFeatureManager {
     @Override
     public void onCompleteFeatureOperation(IFeature feature)
             throws FeatureManagementException {
-
-        if (((IFeatureState<String>)feature.getStatus()).completed()) {
-            this.onGroupLoadingAction.forEach((k, v) -> {v.remove(feature.getName());});
-            this.processingFeatures.remove(feature.getName());
-            this.loadedFeatures.put(feature.getName(), feature);
-            this.removeLoadedDependency(feature);
+        synchronized (this.lock) {
+            ((IFeatureState) feature.getStatus()).setExecuting(false);
+            ((IFeatureState) feature.getStatus()).next();
+            if (((IFeatureState) feature.getStatus()).completed()) {
+                this.onGroupLoadingAction.forEach((k, v) -> {
+                    v.remove(feature.getName());
+                });
+                this.processingFeatures.remove(feature.getName());
+                this.loadedFeatures.put(feature.getName(), feature);
+                this.removeLoadedDependency(feature);
+            }
+            if (!((IFeatureState) feature.getStatus()).isLastSuccess()) {
+                this.onGroupLoadingAction.forEach((k, v) -> {
+                    v.remove(feature.getName());
+                });
+                this.processingFeatures.remove(feature.getName());
+                this.failedFeatures.put(feature.getName(), feature);
+            }
+            this.startLoading();
+            this.checkUnresolved();
         }
-        if (!((IFeatureState<String>)feature.getStatus()).getLastSuccess()) {
-            this.onGroupLoadingAction.forEach((k, v) -> {v.remove(feature.getName());});
-            this.processingFeatures.remove(feature.getName());
-            this.failedFeatures.put(feature.getName(), feature);
-        }
-        this.startLoading();
     }
 
     private void startLoading() throws FeatureManagementException {
         try {
             checkForDependencies();
             for (IFeature feature : this.processingFeatures.values()) {
-                IFeatureState<String> state = (IFeatureState<String>) feature.getStatus();
-                if (!state.isExecuting() && state.getLastSuccess() && !state.completed()) {
-                    ((IFeatureState<String>) feature.getStatus()).setExecuting(true);
+                IFeatureState state = (IFeatureState) feature.getStatus();
+                if (!state.isExecuting() && state.isLastSuccess() && !state.completed()) {
+                    ((IFeatureState) feature.getStatus()).setExecuting(true);
                     ITask task = IOC.resolve(Keys.getOrAdd(state.getCurrent()), this, feature);
                     IQueue queue = IOC.resolve(Keys.getOrAdd("task_queue"));
                     queue.put(task);
@@ -88,7 +98,7 @@ public class FeatureManager implements IFeatureManager {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ResolutionException e) {
-            System.out.println("Could not resolve needed task.");
+            System.out.println("[ERROR] Could not resolve needed task.");
             throw new FeatureManagementException("Could not resolve needed task.", e);
         }
     }
@@ -172,5 +182,16 @@ public class FeatureManager implements IFeatureManager {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private void checkUnresolved() {
+        if (this.processingFeatures.isEmpty() && !this.frozenForDependencies.isEmpty()) {
+            System.out.println(
+                    "[WARNING] Some features " +
+                    this.frozenForDependencies.values().stream().map(a -> a.getName()).collect(Collectors.toList()) +
+                    " waiting for following dependencies: " +
+                    this.frozenForDependencies.values().stream().map(a -> a.getDependencies().toString()).collect(Collectors.toList())
+            );
+        }
     }
 }

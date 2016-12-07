@@ -1,21 +1,25 @@
 package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager;
 
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
+
 /**
  * Created by sevenbits on 11/15/16.
  */
-public class FeatureState implements IFeatureState<String> {
+public class FeatureState implements IFeatureState {
 
     private String[] stateChain;
     private int currentState;
     private boolean lastSuccess;
     private boolean isExecuting;
     private boolean completed;
+    private boolean deferred;
 
     public FeatureState(String[] stateChain) {
         this.stateChain = stateChain;
         this.isExecuting = false;
         this.lastSuccess = true;
         this.completed = false;
+        this.deferred = false;
     }
 
     public FeatureState(String[] stateChain, int currentState) {
@@ -29,8 +33,7 @@ public class FeatureState implements IFeatureState<String> {
     }
 
     @Override
-    public void next()
-            throws Exception {
+    public void next() {
         if (this.stateChain.length > this.currentState + 1) {
             ++this.currentState;
         } else {
@@ -39,7 +42,7 @@ public class FeatureState implements IFeatureState<String> {
     }
 
     @Override
-    public boolean getLastSuccess() {
+    public boolean isLastSuccess() {
         return this.lastSuccess;
     }
 
@@ -61,5 +64,15 @@ public class FeatureState implements IFeatureState<String> {
     @Override
     public boolean completed() {
         return this.completed;
+    }
+
+    @Override
+    public boolean isDeferred() {
+        return this.deferred;
+    }
+
+    @Override
+    public void setDeferred(boolean deferred) {
+        this.deferred = deferred;
     }
 }

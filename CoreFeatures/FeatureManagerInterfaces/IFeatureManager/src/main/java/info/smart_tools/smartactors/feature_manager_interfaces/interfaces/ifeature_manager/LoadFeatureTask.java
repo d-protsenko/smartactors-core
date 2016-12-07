@@ -17,6 +17,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_cr
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.exception.FeatureManagementException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -38,7 +39,7 @@ import java.util.stream.Stream;
 public class LoadFeatureTask implements ITask {
 
     private IFeatureManager featureManager;
-    private IFeature<String, IFeatureState<String>> feature;
+    private IFeature feature;
     private IPluginLoaderVisitor<String> pluginLoaderVisitor;
     private final IPluginCreator pluginCreator;
 
@@ -57,7 +58,7 @@ public class LoadFeatureTask implements ITask {
     public void execute()
             throws TaskExecutionException {
         try {
-            System.out.println("Start loading feature - '" + feature.getName() + "'.");
+            System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
             String pattern = ".jar";
             File file = Paths.get(((IPath) this.feature.getFeatureLocation()).getPath()).toFile();
             Collection<IPath> jars = new ArrayList<>();
@@ -101,20 +102,18 @@ public class LoadFeatureTask implements ITask {
             configurationManager.applyConfig(
                     IOC.resolve(Keys.getOrAdd("configuration object"), configString)
             );
-
-            ((IFeatureState) this.feature.getStatus()).next();
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(true);
-            System.out.println("OK -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
+            System.out.println("[OK] -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("FAILED ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
-            System.err.println(e);
+            System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
+            System.out.println(e);
         }
-        ((IFeatureState) this.feature.getStatus()).setExecuting(false);
+
         try {
             this.featureManager.onCompleteFeatureOperation(this.feature);
         } catch (FeatureManagementException e) {
-            System.err.println(e);
+            System.out.println(e);
         }
     }
 }

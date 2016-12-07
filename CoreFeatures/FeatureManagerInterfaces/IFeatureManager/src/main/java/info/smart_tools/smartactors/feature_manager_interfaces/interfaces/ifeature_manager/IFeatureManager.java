@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public interface IFeatureManager {
 
-    void addFeatures(Set<IFeature> features, IAction onCurrentGroup) throws FeatureManagementException;
+    void addFeatures(Set<IFeature> groupOfFeatures, IAction onCurrentGroupCompleted) throws FeatureManagementException;
 
     void onCompleteFeatureOperation(IFeature feature) throws FeatureManagementException;
 

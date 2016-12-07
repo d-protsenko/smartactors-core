@@ -1,11 +1,7 @@
-package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager;
+package info.smart_tools.smartactors.feature_management.feature;
 
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
-import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
-import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 
 import java.util.Set;
 
@@ -17,25 +13,23 @@ public class Feature implements IFeature {
     private String name;
     private Set<String> dependencies;
     private IPath featureLocation;
-    private IFeatureState status;
+    private boolean failed;
     private String groupId;
     private String version;
 
-    public Feature(String name, Set<String> dependencies, IPath location)
-            throws ResolutionException {
+    public Feature(String name, Set<String> dependencies, IPath location) {
         this.name = name;
         this.dependencies = dependencies;
         this.featureLocation = location;
-        this.status = IOC.resolve(Keys.getOrAdd("feature-state:initial-state"));
+        this.failed = false;
     }
 
-    public Feature(String name, String groupId, String version, IPath featureLocation)
-            throws ResolutionException {
+    public Feature(String name, String groupId, String version, IPath featureLocation) {
         this.name = name;
         this.groupId = groupId;
         this.version = version;
         this.featureLocation = featureLocation;
-        this.status = IOC.resolve(Keys.getOrAdd("feature-state:initial-state"));
+        this.failed = false;
     }
 
     @Override
@@ -54,13 +48,13 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public IFeatureState getStatus() {
-        return this.status;
+    public boolean isFailed() {
+        return this.failed;
     }
 
     @Override
-    public void setStatus(IFeatureState status) {
-        this.status = status;
+    public void setFailed(boolean failed) {
+        this.failed = failed;
     }
 
     @Override

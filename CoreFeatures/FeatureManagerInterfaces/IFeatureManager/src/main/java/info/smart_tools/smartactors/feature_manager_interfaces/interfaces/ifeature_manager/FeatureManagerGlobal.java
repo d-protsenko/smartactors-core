@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeat
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * Created by sevenbits on 11/21/16.
@@ -10,6 +11,7 @@ import java.util.Map;
 public class FeatureManagerGlobal {
     private static IFeatureManager featureManager;
     private static final Map<String, IFeatureRepository> repositoryStorage = new HashMap<>();
+/*    private static Queue queue;*/
 
     public static IFeatureManager get() {
         return featureManager;

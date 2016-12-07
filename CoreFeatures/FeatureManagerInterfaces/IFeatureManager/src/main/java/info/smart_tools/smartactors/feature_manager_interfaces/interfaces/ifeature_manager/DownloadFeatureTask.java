@@ -3,11 +3,9 @@ package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeat
 import com.jcabi.aether.Aether;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeature;
+import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature.IFeatureState;
 import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.exception.FeatureManagementException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import org.sonatype.aether.artifact.Artifact;
@@ -17,7 +15,6 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
 public class DownloadFeatureTask implements ITask {
 
     private IFeatureManager featureManager;
-    private IFeature<String, IFeatureState<String>> feature;
+    private IFeature feature;
 
     public DownloadFeatureTask(final IFeatureManager manager, final IFeature feature)
             throws ResolutionException {
@@ -41,23 +38,20 @@ public class DownloadFeatureTask implements ITask {
             throws TaskExecutionException {
         try {
             if (null == this.feature.getDependencies() && null != this.feature.getGroupId() && null != this.feature.getVersion()) {
-                System.out.println("Start downloading feature - '" + feature.getName() + "'.");
+                System.out.println("[INFO] Start downloading feature - '" + feature.getName() + "'.");
                 download();
-                System.out.println("OK -------------- Feature '" + this.feature.getName() + "' has been downloaded successful.");
+                System.out.println("[OK] -------------- Feature '" + this.feature.getName() + "' has been downloaded successful.");
             }
-
-            ((IFeatureState) this.feature.getStatus()).next();
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(true);
-            ((IFeatureState) this.feature.getStatus()).setExecuting(false);
         } catch (Throwable e) {
             ((IFeatureState) this.feature.getStatus()).setLastSuccess(false);
-            System.out.println("FAILED ---------- Feature '" + this.feature.getName() + "' downloading has been aborted with exception:");
-            System.err.println(e);
+            System.out.println("[FAILED] ---------- Feature '" + this.feature.getName() + "' downloading has been aborted with exception:");
+            System.out.println(e);
         }
         try {
             this.featureManager.onCompleteFeatureOperation(this.feature);
         } catch (FeatureManagementException e) {
-            System.err.println(e);
+            System.out.println(e);
         }
     }
 

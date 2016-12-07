@@ -1,33 +1,35 @@
 package info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature;
 
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+
 import java.util.Set;
 
 /**
  * Created by sevenbits on 11/14/16.
  */
-public interface IFeature<T, S> {
+public interface IFeature {
 
-    T getName();
+    String getName();
 
-    Set<T> getDependencies();
+    Set<String> getDependencies();
 
-    S getStatus();
+    IFeatureState getStatus();
 
-    <S1> S1 getGroupId();
+    String getGroupId();
 
-    <S2> S2 getVersion();
+    String getVersion();
 
-    void setStatus(S status);
+    void setStatus(IFeatureState status);
 
-    <P> P getFeatureLocation();
+    IPath getFeatureLocation();
 
-    void setName(T featureName);
+    void setName(String featureName);
 
-    void setDependencies(Set<T> dependencies);
+    void setDependencies(Set<String> dependencies);
 
-    <P> void setFeatureLocation(P location);
+    void setFeatureLocation(IPath location);
 
-    <S1> void setGroupId(S1 groupId);
+    void setGroupId(String groupId);
 
-    <S2> void setVersion(S2 version);
+    void setVersion(String version);
 }
