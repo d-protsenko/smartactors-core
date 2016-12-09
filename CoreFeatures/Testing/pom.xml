@@ -37,6 +37,7 @@
         <module>TestReportConsolePrinter</module>
         <module>TestReportTextBuilder</module>
         <module>TestReportXmlBuilder</module>
+        <module>TestReportFilePrinter</module>
     </modules>
 
     <repositories>
