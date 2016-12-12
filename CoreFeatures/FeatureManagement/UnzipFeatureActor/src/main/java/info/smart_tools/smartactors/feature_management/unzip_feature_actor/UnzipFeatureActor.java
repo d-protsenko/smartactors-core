@@ -49,12 +49,6 @@ public class UnzipFeatureActor {
                 File f = new File(feature.getFeatureLocation().toString());
                 File configFile = unzip0(f);
                 updateFeature(configFile, feature);
-                if (null != feature.getDependencies()) {
-                    IMessageProcessor mp = wrapper.getMessageProcessor();
-                    mp.pauseProcess();
-                    wrapper.getDeferredFeatures().add(feature);
-                    wrapper.getFeatureProcess().put(mp, feature);
-                }
                 System.out.println("[OK] -------------- Feature '" + feature.getName() + "' has been unzipped successful.");
             }
         } catch (Throwable e) {

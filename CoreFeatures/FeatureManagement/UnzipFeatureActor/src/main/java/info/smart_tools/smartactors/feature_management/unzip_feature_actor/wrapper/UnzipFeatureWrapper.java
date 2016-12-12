@@ -15,15 +15,4 @@ public interface UnzipFeatureWrapper {
     IFeature getFeature()
             throws ReadValueException;
 
-    Set<IFeature> getLoadedFeatures()
-            throws ReadValueException;
-
-    IMessageProcessor getMessageProcessor()
-            throws ReadValueException;
-
-    Set<IFeature> getDeferredFeatures()
-            throws ReadValueException;
-
-    Map<IMessageProcessor, IFeature> getFeatureProcess()
-            throws ReadValueException;
 }

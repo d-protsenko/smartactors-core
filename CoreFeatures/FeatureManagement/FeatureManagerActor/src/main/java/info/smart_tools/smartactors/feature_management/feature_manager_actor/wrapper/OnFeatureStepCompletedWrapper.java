@@ -4,20 +4,20 @@ import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeat
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by sevenbits on 12/5/16.
  */
-public interface AddFeatureWrapper {
+public interface OnFeatureStepCompletedWrapper {
 
-    Collection<IFeature> getFeatures()
+    IFeature getFeature()
             throws ReadValueException;
 
     IMessageProcessor getMessageProcessor()
             throws ReadValueException;
 
-    String getScatterChainName()
+    Map<IMessageProcessor, IFeature> getFeatureProcess()
             throws ReadValueException;
+
 }

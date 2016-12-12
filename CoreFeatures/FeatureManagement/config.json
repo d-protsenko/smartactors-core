@@ -8,17 +8,17 @@
       "name": "feature-manager"
     },
     {
-      "kind": "stateless-actor",
+      "kind": "stateless_actor",
       "dependency": "DownloadFeatureActor",
       "name": "download-feature-actor"
     },
     {
-      "kind": "stateless-actor",
+      "kind": "stateless_actor",
       "dependency": "UnzipFeatureActor",
       "name": "unzip-feature-actor"
     },
     {
-      "kind": "stateless-actor",
+      "kind": "stateless_actor",
       "dependency": "LoadFeatureActor",
       "name": "load-feature-actor"
     },
@@ -73,11 +73,26 @@
           }
         },
         {
+          "target": "feature-manager",
+          "handler": "onFeatureStepCompleted",
+          "wrapper": {
+            "in_getFeature": "message/feature",
+            "in_getMessageProcessor": "processor",
+            "in_getFeatureProcess": "message/featureProcess"
+          }
+        },
+        {
           "target": "unzip-feature-actor",
           "handler": "unzip",
           "wrapper": {
+            "in_getFeature": "message/feature"
+          }
+        },
+        {
+          "target": "feature-manager",
+          "handler": "onFeatureStepCompleted",
+          "wrapper": {
             "in_getFeature": "message/feature",
-            "in_getLoadedFeatures": "message/loadedFeatures",
             "in_getMessageProcessor": "processor",
             "in_getFeatureProcess": "message/featureProcess"
           }
@@ -101,25 +116,11 @@
       ]
     },
     {
-      "id": "addFeatureRepository",
-      "steps": [
-        {
-          "target": "feature-repository-actor",
-          "handler": "addFeatureRepository",
-          "wrapper": {
-            "in_getFeatureRepositories": "message/featureRepositories"
-          }
-        }
-      ],
-      "exceptional": [
-      ]
-    },
-    {
       "id": "loadCoreFeaturesAndFeatures",
       "steps": [
         {
           "target": "all-in-directory-feature-tracker",
-          "handler": "start",
+          "handler": "addFeatures",
           "wrapper": {
             "in_getPath": "const/corefeatures",
             "out_setFeatures": "message/features"
@@ -131,7 +132,7 @@
         },
         {
           "target": "all-in-directory-feature-tracker",
-          "handler": "start",
+          "handler": "addFeatures",
           "wrapper": {
             "in_getPath": "const/features",
             "out_setFeatures": "message/features"

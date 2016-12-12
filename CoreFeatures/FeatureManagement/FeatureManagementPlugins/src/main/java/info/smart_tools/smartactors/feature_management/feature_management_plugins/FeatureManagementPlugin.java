@@ -1,11 +1,16 @@
 package info.smart_tools.smartactors.feature_management.feature_management_plugins;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_management.all_in_direcory_feature_tracker.AllInDirectoryFeatureTracker;
 import info.smart_tools.smartactors.feature_management.download_feature_actor.DownloadFeatureActor;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.FeatureManagerActor;
@@ -40,6 +45,17 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
     @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "ConfigurationObject"})
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChainNotFoundException, ChangeValueException {
+
+        IOC.register(Keys.getOrAdd("plugin creator"), new SingletonStrategy(new PluginCreator()));
+        IOC.register(Keys.getOrAdd("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
+        IOC.register(Keys.getOrAdd("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return new PluginLoader(
+                        getClass().getClassLoader(), (IAction<Class>) args[0], (IPluginLoaderVisitor) args[1]);
+            } catch (InvalidArgumentException e) {
+                throw new RuntimeException(e);
+            }
+        }));
 
         IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(
                 new ArrayList<IObject>()

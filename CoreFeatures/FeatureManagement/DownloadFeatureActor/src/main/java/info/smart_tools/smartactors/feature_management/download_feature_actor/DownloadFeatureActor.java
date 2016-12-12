@@ -34,8 +34,8 @@ public class DownloadFeatureActor {
     public DownloadFeatureActor()
             throws ResolutionException {
         this.repositoryIdFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositoryId");
-        this.repositoryTypeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositoryType");
-        this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositoryUrl");
+        this.repositoryTypeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "type");
+        this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "url");
     }
 
     public void download(final DownloadFeatureWrapper wrapper)

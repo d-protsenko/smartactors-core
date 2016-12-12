@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.feature_management.feature_manager_actor.exc
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.OnFeatureLoadedWrapper;
+import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.OnFeatureStepCompletedWrapper;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
  * Created by sevenbits on 12/5/16.
  */
 public class FeatureManagerActor {
+
+    private final int DEFAULT_STACK_DEPTH = 5;
 
     private Map<IMessageProcessor, Set<IFeature>> mainProcesses;
     private Map<IMessageProcessor, IFeature> featureProcess;
@@ -66,7 +69,7 @@ public class FeatureManagerActor {
     public void addFeatures(final AddFeatureWrapper wrapper)
             throws FeatureManagementException {
         try {
-            Set<IFeature> features = wrapper.getFeatures();
+            Set<IFeature> features = new HashSet<>(wrapper.getFeatures());
             IMessageProcessor mp = wrapper.getMessageProcessor();
             mp.pauseProcess();
             this.mainProcesses.put(mp, features);
@@ -75,7 +78,7 @@ public class FeatureManagerActor {
             String scatterChainName = wrapper.getScatterChainName();
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), scatterChainName);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-            int stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+            int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
             for (IFeature feature : features) {
@@ -125,11 +128,12 @@ public class FeatureManagerActor {
 
             } else {
                 this.loadedFeatures.put(feature.getName(), feature);
-                checkAndRunConnectedFeatures(feature);
+                removeLoadedFeatureFromDependencies(feature);
+                checkAndRunConnectedFeatures();
             }
 
             this.mainProcesses.forEach((k, v) -> {
-                v.remove(feature.getName());
+                v.remove(feature);
             });
             Collection<IMessageProcessor> needContinueProcesses = new HashSet<>();
             this.mainProcesses.forEach((k, v) -> {
@@ -151,6 +155,27 @@ public class FeatureManagerActor {
         }
     }
 
+    public void onFeatureStepCompleted(final OnFeatureStepCompletedWrapper wrapper)
+            throws FeatureManagementException {
+        IFeature feature;
+        try {
+            feature = wrapper.getFeature();
+            checkAndRunConnectedFeatures();
+            for (IFeature loadedFeature : this.loadedFeatures.values()) {
+                if (null != feature.getDependencies()) {
+                    feature.getDependencies().remove(loadedFeature.getName());
+                }
+            }
+            if (null != feature.getDependencies() && !feature.getDependencies().isEmpty()) {
+                IMessageProcessor mp = wrapper.getMessageProcessor();
+                mp.pauseProcess();
+                wrapper.getFeatureProcess().put(mp, feature);
+            }
+        } catch (ReadValueException | AsynchronousOperationException e) {
+            throw new FeatureManagementException(e);
+        }
+    }
+
     public void getState(final FeatureManagerStateWrapper wrapper)
             throws FeatureManagementException {
         try {
@@ -164,12 +189,7 @@ public class FeatureManagerActor {
         }
     }
 
-    private void checkAndRunConnectedFeatures(final IFeature loadedFeature) {
-        for (IFeature feature : this.processingFeatures.values()) {
-            if (null != feature.getDependencies()) {
-                feature.getDependencies().remove(loadedFeature.getName());
-            }
-        }
+    private void checkAndRunConnectedFeatures() {
         Collection<IMessageProcessor> needContinueFeatures = new HashSet<>();
         this.featureProcess.forEach((k, v) -> {
             if (v.getDependencies().isEmpty()) {
@@ -184,6 +204,16 @@ public class FeatureManagerActor {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature)
+            throws FeatureManagementException {
+        for (IFeature feature : this.processingFeatures.values()) {
+            if (null != feature.getDependencies()) {
+                feature.getDependencies().remove(loadedFeature.getName());
+                System.out.println("[INFO] -------------- Remove dependency " + loadedFeature.getName() + " from " + feature.getName());
+            }
+        }
     }
 
     private void checkUnresolved() {

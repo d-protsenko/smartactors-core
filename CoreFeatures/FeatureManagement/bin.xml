@@ -14,6 +14,16 @@
             <binaries>
                 <outputDirectory>/</outputDirectory>
                 <unpack>false</unpack>
+                <dependencySets>
+                    <dependencySet>
+                        <unpack>false</unpack>
+                        <scope>runtime</scope>
+                        <outputDirectory>/</outputDirectory>
+                        <excludes>
+                            <exclude>info.smart_tools.smartactors:*</exclude>
+                        </excludes>
+                    </dependencySet>
+                </dependencySets>
             </binaries>
         </moduleSet>
     </moduleSets>
