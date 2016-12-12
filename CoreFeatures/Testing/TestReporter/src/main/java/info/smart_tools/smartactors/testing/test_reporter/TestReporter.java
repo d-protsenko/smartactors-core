@@ -7,10 +7,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_builder.ITestReportBuilder;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_builder.exception.TestReportBuilderException;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_printer.ITestReportPrinter;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_printer.exception.TestReportPrinterException;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.exception.TestReporterException;
 
@@ -23,9 +19,6 @@ public class TestReporter implements ITestReporter {
     private final List<IObject> testCases;
     private final String featureName;
 
-    private final ITestReportPrinter reportPrinter;
-    private final ITestReportBuilder reportBuilder;
-
     private final IFieldName timestampField;
     private final IFieldName testTimeField;
     private final IFieldName featureNameField;
@@ -35,10 +28,8 @@ public class TestReporter implements ITestReporter {
     private final IFieldName testsCountField;
 
 
-    public TestReporter(final String featureName, final ITestReportPrinter reportPrinter, final ITestReportBuilder reportBuilder) throws ResolutionException {
+    public TestReporter(final String featureName) throws ResolutionException {
         this.featureName = featureName;
-        this.reportPrinter = reportPrinter;
-        this.reportBuilder = reportBuilder;
         this.testTimeField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testTime");
         this.featureNameField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "featureName");
         this.testCasesField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testCases");
@@ -73,9 +64,12 @@ public class TestReporter implements ITestReporter {
     public void make() throws TestReporterException {
         try {
             final IObject testSuite = buildSuite();
-            final String build = reportBuilder.build(testSuite);
-            reportPrinter.print(build, featureName);
-        } catch (ReadValueException | InvalidArgumentException | ChangeValueException | ResolutionException | TestReportPrinterException | TestReportBuilderException e) {
+
+            // TODO: send to message bus
+//            final String build = reportBuilder.build(testSuite);
+//            reportPrinter.print(build, featureName);
+
+        } catch (ReadValueException | InvalidArgumentException | ChangeValueException | ResolutionException e) {
             throw new TestReporterException("Can't build report: " + e.getMessage(), e);
         }
     }

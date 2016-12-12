@@ -8,8 +8,6 @@ import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldName
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_builder.ITestReportBuilder;
-import info.smart_tools.smartactors.testing.interfaces.itest_report_printer.ITestReportPrinter;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
 import org.junit.Test;
 
@@ -28,9 +26,7 @@ public class TestReportTest extends PluginsLoadingTestBase {
 
     @Test
     public void Should_AddTestCases() throws Exception {
-        ITestReportPrinter printer = mock(ITestReportPrinter.class);
-        ITestReportBuilder builder = mock(ITestReportBuilder.class);
-        ITestReporter reporter = new TestReporter("TestReportTest", printer, builder);
+        ITestReporter reporter = new TestReporter("TestReportTest");
         IObject testInfo = buildTestInfo();
         reporter.beforeTest(testInfo);
         // SOME STUFF IN REAL CODE IS HERE

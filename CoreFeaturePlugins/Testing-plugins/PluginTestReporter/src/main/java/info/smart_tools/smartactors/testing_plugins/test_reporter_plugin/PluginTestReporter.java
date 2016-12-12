@@ -13,8 +13,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
-import info.smart_tools.smartactors.testing.test_report_console_printer.TestReportConsolePrinter;
-import info.smart_tools.smartactors.testing.test_report_text_builder.TestReportTextBuilder;
 import info.smart_tools.smartactors.testing.test_reporter.TestReporter;
 
 public class PluginTestReporter implements IPlugin {
@@ -34,7 +32,7 @@ public class PluginTestReporter implements IPlugin {
                     IOC.register(Keys.getOrAdd(ITestReporter.class.getCanonicalName()),
                             new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
-                                    return new TestReporter((String) args[0], new TestReportConsolePrinter(), new TestReportTextBuilder());
+                                    return new TestReporter((String) args[0]);
                                 } catch (ResolutionException e) {
                                     throw new RuntimeException(e);
                                 }

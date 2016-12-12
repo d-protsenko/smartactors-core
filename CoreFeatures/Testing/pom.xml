@@ -31,13 +31,11 @@
         <module>TestRunner</module>
         <module>ChainTestsConfigSectionStrategy</module>
         <module>ITestReporter</module>
-        <module>ITestReportBuilder</module>
-        <module>ITestReportPrinter</module>
         <module>TestReporter</module>
-        <module>TestReportConsolePrinter</module>
-        <module>TestReportTextBuilder</module>
-        <module>TestReportXmlBuilder</module>
-        <module>TestReportFilePrinter</module>
+        <module>TestReportConsolePrinterActor</module>
+        <module>TestReportTextBuilderActor</module>
+        <module>TestReportXmlBuilderActor</module>
+        <module>TestReportFilePrinterActor</module>
     </modules>
 
     <repositories>
