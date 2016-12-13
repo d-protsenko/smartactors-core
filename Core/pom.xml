@@ -215,7 +215,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-procesing-plugins.constant-chain-choice-strategy-plugin</artifactId>
+            <artifactId>message-processing-plugins.constant-chain-choice-strategy-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
