@@ -29,8 +29,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
     //    private ITestRunner runner;
     private IFieldName testRunnerName;
     private IFieldName featureNameField;
-    private IFieldName testReportFormatField;
-    private IFieldName testReportPrinterField;
+    private IFieldName testReporterChainName;
 
     /**
      * The constructor.
@@ -47,10 +46,8 @@ public class TestsSectionStrategy implements ISectionStrategy {
         );
         this.featureNameField = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "featureName");
-        this.testReportFormatField = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "reportFormat");
-        this.testReportPrinterField = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "reportPrinter");
+        this.testReporterChainName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testReporterChainName");
     }
 
     @Override
@@ -66,10 +63,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
             AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
             ITestReporter testReporter = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), ITestReporter.class.getCanonicalName()),
-                    config.getValue(featureNameField),
-                    config.getValue(testReportFormatField),
-                    config.getValue(testReportPrinterField));
+                    IOC.resolve(IOC.getKeyForKeyStorage(), ITestReporter.class.getCanonicalName()));
 
             for (IObject testDesc : tests) {
                 System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
@@ -105,7 +99,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                 }
             }
             System.out.println("--------------------------------- Testing completed ---------------------------------");
-            testReporter.make();
+            testReporter.make((String) config.getValue(featureNameField), config.getValue(testReporterChainName));
         } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
         } catch (TestExecutionException e) {

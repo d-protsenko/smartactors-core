@@ -6,14 +6,27 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
+import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class TestReportTest extends PluginsLoadingTestBase {
+    IMessageBusHandler handler = mock(IMessageBusHandler.class);
+
+    @Before
+    public void setUp() throws Exception {
+        ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
+    }
+
     @Override
     protected void loadPlugins() throws Exception {
         load(ScopedIOCPlugin.class);
@@ -26,7 +39,7 @@ public class TestReportTest extends PluginsLoadingTestBase {
 
     @Test
     public void Should_AddTestCases() throws Exception {
-        ITestReporter reporter = new TestReporter("TestReportTest");
+        ITestReporter reporter = new TestReporter();
         IObject testInfo = buildTestInfo();
         reporter.beforeTest(testInfo);
         // SOME STUFF IN REAL CODE IS HERE
@@ -36,7 +49,11 @@ public class TestReportTest extends PluginsLoadingTestBase {
         // SOME STUFF IN REAL CODE IS HERE
         reporter.afterTest(new Exception("It should fall"));
 
-        reporter.make();
+        reporter.make("TestReportTest", "reporterChainId");
+        ArgumentCaptor<IObject> message = ArgumentCaptor.forClass(IObject.class);
+        ArgumentCaptor<Object> chainName = ArgumentCaptor.forClass(Object.class);
+        verify(handler, times(1)).handle(message.capture(), chainName.capture());
+        assertEquals("reporterChainId", chainName.getValue());
     }
 
     private IObject buildTestInfo() {

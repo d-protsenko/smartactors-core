@@ -32,7 +32,7 @@ public class PluginTestReporter implements IPlugin {
                     IOC.register(Keys.getOrAdd(ITestReporter.class.getCanonicalName()),
                             new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
-                                    return new TestReporter((String) args[0]);
+                                    return new TestReporter();
                                 } catch (ResolutionException e) {
                                     throw new RuntimeException(e);
                                 }

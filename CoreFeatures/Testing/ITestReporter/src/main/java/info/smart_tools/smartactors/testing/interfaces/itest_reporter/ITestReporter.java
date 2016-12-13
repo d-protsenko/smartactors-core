@@ -28,5 +28,5 @@ public interface ITestReporter {
      *
      * @throws TestReporterException may be thrown on some error during building and sending report.
      */
-    void make() throws TestReporterException;
+    void make(final String name, final Object chainName) throws TestReporterException;
 }

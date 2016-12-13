@@ -7,6 +7,8 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
+import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
 import info.smart_tools.smartactors.testing.interfaces.itest_reporter.exception.TestReporterException;
 
@@ -17,7 +19,6 @@ import java.util.List;
 public class TestReporter implements ITestReporter {
     private Long startTime;
     private final List<IObject> testCases;
-    private final String featureName;
 
     private final IFieldName timestampField;
     private final IFieldName testTimeField;
@@ -28,8 +29,7 @@ public class TestReporter implements ITestReporter {
     private final IFieldName testsCountField;
 
 
-    public TestReporter(final String featureName) throws ResolutionException {
-        this.featureName = featureName;
+    public TestReporter() throws ResolutionException {
         this.testTimeField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testTime");
         this.featureNameField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "featureName");
         this.testCasesField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testCases");
@@ -61,20 +61,18 @@ public class TestReporter implements ITestReporter {
     }
 
     @Override
-    public void make() throws TestReporterException {
+    public void make(final String featureName, final Object chainName) throws TestReporterException {
         try {
-            final IObject testSuite = buildSuite();
-
-            // TODO: send to message bus
-//            final String build = reportBuilder.build(testSuite);
-//            reportPrinter.print(build, featureName);
-
+            final IObject testSuite = buildSuite(featureName);
+            MessageBus.send(testSuite, chainName);
         } catch (ReadValueException | InvalidArgumentException | ChangeValueException | ResolutionException e) {
             throw new TestReporterException("Can't build report: " + e.getMessage(), e);
+        } catch (SendingMessageException e) {
+            throw new TestReporterException("Can't send report to the chain " + chainName.toString() + ": " + e.getMessage(), e);
         }
     }
 
-    private IObject buildSuite() throws ReadValueException, InvalidArgumentException, ChangeValueException, ResolutionException {
+    private IObject buildSuite(final String featureName) throws ReadValueException, InvalidArgumentException, ChangeValueException, ResolutionException {
         int testsCount = testCases.size();
         int failuresCount = 0;
         for (IObject testCase : testCases) {
