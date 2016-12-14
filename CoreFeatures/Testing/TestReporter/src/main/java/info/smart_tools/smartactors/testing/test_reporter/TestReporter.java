@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.testing.test_reporter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This implementation build simple test suites and send them into MessageBus to a chain defined in a `test` section in a config.json file.
+ */
 public class TestReporter implements ITestReporter {
     private Long startTime;
     private final List<IObject> testCases;
@@ -27,6 +31,7 @@ public class TestReporter implements ITestReporter {
     private final IFieldName failureField;
     private final IFieldName failuresCountField;
     private final IFieldName testsCountField;
+    private final IField chainNameField;
 
 
     public TestReporter() throws ResolutionException {
@@ -37,13 +42,14 @@ public class TestReporter implements ITestReporter {
         this.failuresCountField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "failures");
         this.testsCountField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests");
         this.timestampField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "timestamp");
+        this.chainNameField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()), "reporterChainName");
         this.testCases = new ArrayList<>();
     }
 
     @Override
-    public void beforeTest(final IObject testInfo) {
+    public void beforeTest(final IObject testCaseInfo) {
         startTime = System.currentTimeMillis();
-        testCases.add(testInfo);
+        testCases.add(testCaseInfo);
     }
 
     @Override
@@ -61,7 +67,16 @@ public class TestReporter implements ITestReporter {
     }
 
     @Override
-    public void make(final String featureName, final Object chainName) throws TestReporterException {
+    public void make(final String featureName, final IObject testSuiteInfo) throws TestReporterException {
+        Object chainName;
+        try {
+            chainName = chainNameField.in(testSuiteInfo);
+        } catch (ReadValueException | InvalidArgumentException e) {
+            // It's normal behaviour. User didn't specify the chain for receiving test reports. Do nothing.
+            // TODO: write warning???
+            return;
+        }
+
         try {
             final IObject testSuite = buildSuite(featureName);
             MessageBus.send(testSuite, chainName);

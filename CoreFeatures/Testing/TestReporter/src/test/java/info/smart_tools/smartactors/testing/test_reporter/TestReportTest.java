@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.testing.test_reporter;
 
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
@@ -40,24 +41,32 @@ public class TestReportTest extends PluginsLoadingTestBase {
     @Test
     public void Should_AddTestCases() throws Exception {
         ITestReporter reporter = new TestReporter();
-        IObject testInfo = buildTestInfo();
-        reporter.beforeTest(testInfo);
+        IObject testCaseInfo = buildTestCaseInfo();
+        reporter.beforeTest(testCaseInfo);
         // SOME STUFF IN REAL CODE IS HERE
         reporter.afterTest(null);
         // NEXT TEST
-        reporter.beforeTest(testInfo);
+        reporter.beforeTest(testCaseInfo);
         // SOME STUFF IN REAL CODE IS HERE
         reporter.afterTest(new Exception("It should fall"));
 
-        reporter.make("TestReportTest", "reporterChainId");
+        IObject testInfo = buildTestInfo();
+
+        reporter.make("TestReportTest", testInfo);
         ArgumentCaptor<IObject> message = ArgumentCaptor.forClass(IObject.class);
         ArgumentCaptor<Object> chainName = ArgumentCaptor.forClass(Object.class);
         verify(handler, times(1)).handle(message.capture(), chainName.capture());
         assertEquals("reporterChainId", chainName.getValue());
     }
 
-    private IObject buildTestInfo() {
+    private IObject buildTestCaseInfo() {
+        IObject testCaseInfo = mock(IObject.class);
+        return testCaseInfo;
+    }
+
+    private IObject buildTestInfo() throws Exception {
         IObject testInfo = mock(IObject.class);
+        when(testInfo.getValue(new FieldName("reporterChainName"))).thenReturn("reporterChainId");
         return testInfo;
     }
 }

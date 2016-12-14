@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.testing.chain_testing.section_strategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -25,11 +26,11 @@ import java.util.concurrent.atomic.AtomicReference;
  * Requires thread pool initialized and task dispatcher running to execute tests.
  */
 public class TestsSectionStrategy implements ISectionStrategy {
-    private IFieldName name;
-    //    private ITestRunner runner;
-    private IFieldName testRunnerName;
-    private IFieldName featureNameField;
-    private IFieldName testReporterChainName;
+    private final IField testCasesSectionField;
+    private final IFieldName testRunnerName;
+    private final IFieldName featureNameField;
+    private final IFieldName testSectionField;
+    private final IFieldName testNameFieldName;
 
     /**
      * The constructor.
@@ -38,16 +39,19 @@ public class TestsSectionStrategy implements ISectionStrategy {
      */
     public TestsSectionStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests"
+        this.testCasesSectionField = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()), "tests"
+        );
+        this.testSectionField = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "test"
         );
         this.testRunnerName = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "entryPoint"
         );
         this.featureNameField = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "featureName");
-        this.testReporterChainName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testReporterChainName");
+        this.testNameFieldName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name");
     }
 
     @Override
@@ -55,20 +59,19 @@ public class TestsSectionStrategy implements ISectionStrategy {
             throws ConfigurationProcessingException {
         try {
             System.out.println("--------------------------------- Run testing ---------------------------------");
-            IFieldName testNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name"
-            );
-            List<IObject> tests = (List<IObject>) config.getValue(name);
-            CyclicBarrier barrier = new CyclicBarrier(2);
-            AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
-            ITestReporter testReporter = IOC.resolve(
+            final IObject testConfig = (IObject) config.getValue(testSectionField);
+            final List<IObject> tests = testCasesSectionField.in(testConfig);
+
+            final CyclicBarrier barrier = new CyclicBarrier(2);
+            final AtomicReference<Throwable> eRef = new AtomicReference<>(null);
+            final ITestReporter testReporter = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), ITestReporter.class.getCanonicalName()));
 
-            for (IObject testDesc : tests) {
+            for (final IObject testDesc : tests) {
                 System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
                 testReporter.beforeTest(testDesc);
-                ITestRunner runner = IOC.resolve(
+                final ITestRunner runner = IOC.resolve(
                         IOC.resolve(
                                 IOC.getKeyForKeyStorage(),
                                 ITestRunner.class.getCanonicalName() + "#" + testDesc.getValue(this.testRunnerName))
@@ -99,7 +102,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                 }
             }
             System.out.println("--------------------------------- Testing completed ---------------------------------");
-            testReporter.make((String) config.getValue(featureNameField), config.getValue(testReporterChainName));
+            testReporter.make((String) config.getValue(featureNameField), testConfig);
         } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
         } catch (TestExecutionException e) {
@@ -111,6 +114,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
 
     @Override
     public IFieldName getSectionName() {
-        return name;
+        return testSectionField;
     }
 }
