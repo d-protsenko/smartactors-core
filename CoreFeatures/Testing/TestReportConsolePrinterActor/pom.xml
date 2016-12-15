@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>testing.test-report-console-printer</artifactId>
+    <artifactId>testing.test-report-console-printer-actor</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->

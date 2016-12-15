@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.testing_plugins.test_reporter_plugin;
+package info.smart_tools.smartactors.testing_plugins.test_report_file_printer_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -12,31 +12,25 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.testing.interfaces.itest_reporter.ITestReporter;
-import info.smart_tools.smartactors.testing.test_reporter.TestReporter;
+import info.smart_tools.smartactors.testing.test_report_text_builder.TestReportTextBuilderActor;
 
-public class PluginTestReporter implements IPlugin {
-
+public class PluginTestReportTextBuilderActor implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    public PluginTestReporter(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public PluginTestReportTextBuilderActor(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = new BootstrapItem("TestReporter");
+            IBootstrapItem<String> item = new BootstrapItem("TestReportTextBuilderActor");
             item.process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd(ITestReporter.class.getCanonicalName()),
-                            new ApplyFunctionToArgumentsStrategy(args -> {
-                                try {
-                                    return new TestReporter();
-                                } catch (ResolutionException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }));
+                    IOC.register(
+                            Keys.getOrAdd(TestReportTextBuilderActor.class.getCanonicalName()),
+                            new ApplyFunctionToArgumentsStrategy(args -> new TestReportTextBuilderActor())
+                    );
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);
                 }

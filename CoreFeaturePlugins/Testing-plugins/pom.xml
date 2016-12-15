@@ -23,6 +23,10 @@
         <module>PluginTestCheckers</module>
         <module>PluginTestHttpEndpointAndEnvironment</module>
         <module>PluginTestReporter</module>
+        <module>PluginTestReportXmlBuilderActor</module>
+        <module>PluginTestReportTextBuilderActor</module>
+        <module>PluginTestReportConsolePrinterActor</module>
+        <module>PluginTestReportFilePrinterActor</module>
     </modules>
 
     <repositories>

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>testing.test-report-xml-builder</artifactId>
+    <artifactId>testing.test-report-xml-builder-actor</artifactId>
 
     <dependencies>
         <!-- Core interfaces -->
