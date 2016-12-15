@@ -201,74 +201,77 @@
     "routingChain": "SelectChain",
     "stackDepth": 5
   },
-  "tests": [{
-    "name": "test_1",
-    "entryPoint": "chain",
-    "environment": {
-      "message": {
-        "Field": "1",
-        "Reset": true
+  "test": {
+    "reporterChainName": "testReportChainId",
+    "tests": [{
+      "name": "test_1",
+      "entryPoint": "chain",
+      "environment": {
+        "message": {
+          "Field": "1",
+          "Reset": true
+        },
+        "context": {}
       },
-      "context": {}
-    },
-    "chainName": "testing_chain",
-    "assert": [{
-      "name": "result1",
-      "type": "equal",
-      "value": "response/TransformedField",
-      "to": "1_transformed"
+      "chainName": "testing_chain",
+      "assert": [{
+        "name": "result1",
+        "type": "equal",
+        "value": "response/TransformedField",
+        "to": "1_transformed"
+      }, {
+        "name": "result2",
+        "type": "equal",
+        "value": "response/CurrentState",
+        "to": 0
+      }]
     }, {
-      "name": "result2",
-      "type": "equal",
-      "value": "response/CurrentState",
-      "to": 0
-    }]
-  }, {
-    "name": "test_2",
-    "entryPoint": "chain",
-    "environment": {
-      "message": {
-        "Field": "1"
+      "name": "test_2",
+      "entryPoint": "chain",
+      "environment": {
+        "message": {
+          "Field": "1"
+        },
+        "context": {}
       },
-      "context": {}
-    },
-    "chainName": "testing_chain",
-    "intercept": {
-      "class": "info.smart_tools.smartactors.actors.exception.SampleException",
-      "target": "sample-actor"
-    }
-  }, {
-    "name": "test_3",
-    "entryPoint": "httpEndpoint",
-    "environment": {
-      "message": {
-        "messageMapId": "myChain",
-        "Field": "1",
-        "Reset": true
-      },
-      "context": {},
-      "request": {
-        "protocolVersion": "HTTP/1.1",
-        "keepAlive": true,
-        "headers": [{
-          "name": "name",
-          "value": "value"
-        }],
-        "method": "POST",
-        "uri": "/"
+      "chainName": "testing_chain",
+      "intercept": {
+        "class": "info.smart_tools.smartactors.actors.exception.SampleException",
+        "target": "sample-actor"
       }
-    },
-    "chainName": "SelectChain",
-    "assert": [{
-      "name": "result1",
-      "type": "equal",
-      "value": "response/TransformedField",
-      "to": "1_transformed"
     }, {
-      "name": "result2",
-      "type": "equal",
-      "value": "response/CurrentState",
-      "to": 0
+      "name": "test_3",
+      "entryPoint": "httpEndpoint",
+      "environment": {
+        "message": {
+          "messageMapId": "myChain",
+          "Field": "1",
+          "Reset": true
+        },
+        "context": {},
+        "request": {
+          "protocolVersion": "HTTP/1.1",
+          "keepAlive": true,
+          "headers": [{
+            "name": "name",
+            "value": "value"
+          }],
+          "method": "POST",
+          "uri": "/"
+        }
+      },
+      "chainName": "SelectChain",
+      "assert": [{
+        "name": "result1",
+        "type": "equal",
+        "value": "response/TransformedField",
+        "to": "1_transformed"
+      }, {
+        "name": "result2",
+        "type": "equal",
+        "value": "response/CurrentState",
+        "to": 0
+      }]
     }]
-  }]
+  }
 }
