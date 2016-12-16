@@ -241,7 +241,15 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
     private void refreshWrappedEnvironment()
             throws ReadValueException, InvalidArgumentException, ResolutionException {
-        Object wrapperConfig = messageProcessingSequence.getCurrentReceiverArguments().getValue(wrapperFieldName);
+        IObject args = messageProcessingSequence.getCurrentReceiverArguments();
+
+        // Since addition of chain modification that may add a receiver without arguments the receiver arguments may be null
+        if (null == args) {
+            this.wrappedEnvironment = null;
+            return;
+        }
+
+        Object wrapperConfig = args.getValue(wrapperFieldName);
 
         if (null == wrapperConfig) {
             this.wrappedEnvironment = null;
