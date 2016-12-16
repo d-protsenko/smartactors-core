@@ -1,21 +1,25 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
+import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,19 +27,31 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link ChainStorage}.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(IOC.class)
-public class ChainStorageTest {
+public class ChainStorageTest extends PluginsLoadingTestBase {
+    private IResolveDependencyStrategy receiverChainStrategyMock;
+
+    @Override
+    protected void loadPlugins() throws Exception {
+        load(ScopedIOCPlugin.class);
+        load(PluginScopeProvider.class);
+        load(PluginIOCKeys.class);
+        load(PluginDSObject.class);
+        load(IFieldNamePlugin.class);
+    }
+
+    @Override
+    protected void registerMocks() throws Exception {
+        receiverChainStrategyMock = mock(IResolveDependencyStrategy.class);
+
+        IOC.register(Keys.getOrAdd(IReceiverChain.class.getCanonicalName()), receiverChainStrategyMock);
+    }
+
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_chainsMapIsNull()
             throws Exception {
@@ -77,9 +93,6 @@ public class ChainStorageTest {
     @Test
     public void Should_resolveAndStoreChains()
             throws Exception {
-        mockStatic(IOC.class);
-
-        IKey keyStorageKey = mock(IKey.class);
         IKey receiverChainKey = mock(IKey.class);
 
         IRouter routerMock = mock(IRouter.class);
@@ -88,14 +101,9 @@ public class ChainStorageTest {
         Object chainId = mock(Object.class);
         IObject chainDesc = mock(IObject.class);
 
-        PowerMockito.when(IOC.getKeyForKeyStorage()).thenReturn(keyStorageKey);
-        PowerMockito.when(IOC.resolve(same(keyStorageKey), eq(IReceiverChain.class.getCanonicalName())))
-                .thenReturn(receiverChainKey);
-
         ChainStorage chainStorage = new ChainStorage(mapMock, routerMock);
 
-        PowerMockito
-                .when(IOC.resolve(same(receiverChainKey), same(chainId), same(chainDesc), same(chainStorage), same(routerMock)))
+        when(receiverChainStrategyMock.resolve(same(chainId), same(chainDesc), same(chainStorage), same(routerMock)))
                 .thenReturn(receiverChainMock);
 
         chainStorage.register(chainId, chainDesc);
@@ -104,8 +112,7 @@ public class ChainStorageTest {
         reset(mapMock);
 
         when(mapMock.put(chainId, receiverChainMock)).thenReturn(mock(IReceiverChain.class));
-        PowerMockito
-                .when(IOC.resolve(same(receiverChainKey), same(chainId), same(chainDesc), same(chainStorage), same(routerMock)))
+        when(receiverChainStrategyMock.resolve(same(chainId), same(chainDesc), same(chainStorage), same(routerMock)))
                 .thenReturn(receiverChainMock);
 
         chainStorage.register(chainId, chainDesc);
@@ -116,9 +123,7 @@ public class ChainStorageTest {
     @Test
     public void Should_wrapExceptionsThrownByIOC()
             throws Exception {
-        mockStatic(IOC.class);
-
-        ResolutionException resolutionException = mock(ResolutionException.class);
+        ResolveDependencyStrategyException resolutionException = mock(ResolveDependencyStrategyException.class);
         IRouter routerMock = mock(IRouter.class);
         Map mapMock = mock(Map.class);
         Object chainId = mock(Object.class);
@@ -126,13 +131,13 @@ public class ChainStorageTest {
 
         ChainStorage chainStorage = new ChainStorage(mapMock, routerMock);
 
-        PowerMockito.when(IOC.resolve(any(),any())).thenThrow(resolutionException);
+        when(receiverChainStrategyMock.resolve(any(), any(), any(), any())).thenThrow(resolutionException);
 
         try {
             chainStorage.register(chainId, chainDesc);
             fail();
         } catch (ChainCreationException e) {
-            assertSame(resolutionException, e.getCause());
+            assertSame(resolutionException, e.getCause().getCause());
         }
     }
 
@@ -150,5 +155,29 @@ public class ChainStorageTest {
         ChainStorage chainStorage = new ChainStorage(map, routerMock);
 
         assertEquals(new ArrayList<Object>(map.keySet()), chainStorage.enumerate());
+    }
+
+    @Test
+    public void Should_updateChain()
+            throws Exception {
+        IResolveDependencyStrategy modStrategy = mock(IResolveDependencyStrategy.class);
+        IObject modDesc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'modification':'some cool chain upgrade'}".replace('\'','"'));
+        IReceiverChain originalChain = mock(IReceiverChain.class);
+        IReceiverChain modifiedChain = mock(IReceiverChain.class);
+        Object chainId = new Object();
+
+        IOC.register(Keys.getOrAdd("some cool chain upgrade"), modStrategy);
+
+        Map mapMock = mock(Map.class);
+
+        when(mapMock.get(same(chainId))).thenReturn(originalChain);
+        when(modStrategy.resolve(same(originalChain), same(modDesc))).thenReturn(modifiedChain);
+
+        IChainStorage storage = new ChainStorage(mapMock, mock(IRouter.class));
+
+        storage.update(chainId, modDesc);
+
+        verify(mapMock).put(same(chainId), same(modifiedChain));
     }
 }

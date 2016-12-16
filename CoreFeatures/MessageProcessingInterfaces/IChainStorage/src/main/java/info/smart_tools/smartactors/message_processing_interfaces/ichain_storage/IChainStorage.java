@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing_interfaces.ichain_storage;
 
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -19,6 +20,16 @@ public interface IChainStorage {
      * @throws ChainCreationException if any error occurs
      */
     void register(Object chainId, IObject description) throws ChainCreationException;
+
+    /**
+     * Modify a chain and store the modified chain with the same identifier.
+     *
+     * @param chainId identifier of the chain to update
+     * @param modification description of the chain modification to perform
+     * @throws ChainNotFoundException if there is no chain with given identifier registered
+     * @throws ChainModificationException if error occurs modifying the chain
+     */
+    void update(Object chainId, IObject modification) throws ChainNotFoundException, ChainModificationException;
 
     /**
      * Find a chain associated with given identifier.
