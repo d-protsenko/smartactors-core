@@ -34,10 +34,17 @@ public class MessageBusContainer implements IMessageBusContainer {
 
     @Override
     public void send(final IObject message) throws SendingMessageException {
+        IMessageBusHandler handler;
+
         try {
-            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+            handler = (IMessageBusHandler) ScopeProvider
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not get MessageBusContainer with key: " + messageBusContainerKey + " from the current scope");
+        }
+
+        try {
             handler.handle(message);
         } catch (Throwable e) {
             throw new SendingMessageException("Could not send message.");
@@ -47,39 +54,60 @@ public class MessageBusContainer implements IMessageBusContainer {
     @Override
     public void send(final IObject message, final Object chainName)
             throws SendingMessageException {
+        IMessageBusHandler handler;
+
         try {
-            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+            handler = (IMessageBusHandler) ScopeProvider
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+        }
+
+        try {
             handler.handle(message, chainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message.");
+            throw new SendingMessageException("Could not send message to the chain " + chainName);
         }
     }
 
     @Override
     public void sendAndReply(final IObject message, final Object replyToChainName)
             throws SendingMessageException {
+        IMessageBusHandler handler;
+
         try {
-            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+            handler = (IMessageBusHandler) ScopeProvider
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+        }
+
+        try {
             handler.handleForReply(message, replyToChainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message.");
+            throw new SendingMessageException("Could not send message with a reply to chain " + replyToChainName);
         }
     }
 
     @Override
     public void sendAndReply(final IObject message, final Object chainName, final Object replyToChainName)
             throws SendingMessageException {
+        IMessageBusHandler handler;
+
         try {
-            IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider
+            handler = (IMessageBusHandler) ScopeProvider
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
+        } catch (Throwable e) {
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+        }
+
+        try {
             handler.handleForReply(message, chainName, replyToChainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message.");
+            throw new SendingMessageException("Could not send message to the chain " + chainName + " with a reply to chain " + replyToChainName);
         }
     }
 }
