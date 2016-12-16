@@ -32,6 +32,7 @@ public class TestReporter implements ITestReporter {
     private final IFieldName failuresCountField;
     private final IFieldName testsCountField;
     private final IField chainNameField;
+    private final IFieldName testSuiteFieldName;
 
 
     public TestReporter() throws ResolutionException {
@@ -43,6 +44,7 @@ public class TestReporter implements ITestReporter {
         this.testsCountField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests");
         this.timestampField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "timestamp");
         this.chainNameField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()), "reporterChainName");
+        this.testSuiteFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "testSuite");
         this.testCases = new ArrayList<>();
     }
 
@@ -58,9 +60,7 @@ public class TestReporter implements ITestReporter {
             long delay = System.currentTimeMillis() - startTime;
             final IObject currentTestCase = testCases.get(testCases.size() - 1);
             currentTestCase.setValue(testTimeField, delay);
-            final IObject failure = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
-            failure.setValue(failureField, throwable);
-            currentTestCase.setValue(failureField, failure);
+            currentTestCase.setValue(failureField, throwable);
         } catch (Exception e) {
             throw new TestReporterException(e.getMessage(), e);
         }
@@ -71,15 +71,24 @@ public class TestReporter implements ITestReporter {
         Object chainName;
         try {
             chainName = chainNameField.in(testSuiteInfo);
+            if (chainName == null) {
+                // It's normal behaviour. User didn't specify the chain for receiving test reports. Do nothing.
+                // TODO: write warning???
+                System.out.println(String.format("reporterChainName is not defined for feature %s", featureName));
+                return;
+            }
         } catch (ReadValueException | InvalidArgumentException e) {
             // It's normal behaviour. User didn't specify the chain for receiving test reports. Do nothing.
             // TODO: write warning???
+            System.out.println(String.format("reporterChainName is not defined for feature %s", featureName));
             return;
         }
 
         try {
-            final IObject testSuite = buildSuite(featureName);
-            MessageBus.send(testSuite, chainName);
+            final IObject message = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+            final IObject suite = buildSuite(featureName);
+            message.setValue(testSuiteFieldName, suite);
+            MessageBus.send(message, chainName);
         } catch (ReadValueException | InvalidArgumentException | ChangeValueException | ResolutionException e) {
             throw new TestReporterException("Can't build report: " + e.getMessage(), e);
         } catch (SendingMessageException e) {
@@ -90,9 +99,12 @@ public class TestReporter implements ITestReporter {
     private IObject buildSuite(final String featureName) throws ReadValueException, InvalidArgumentException, ChangeValueException, ResolutionException {
         int testsCount = testCases.size();
         int failuresCount = 0;
+        long totalTime = 0L;
         for (IObject testCase : testCases) {
             final Object failure = testCase.getValue(failureField);
             if (failure != null) failuresCount++;
+            final Long time = (Long)testCase.getValue(testTimeField);
+            if (time != null) totalTime += time;
         }
         final IObject testSuite = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
         testSuite.setValue(featureNameField, featureName);
@@ -100,6 +112,7 @@ public class TestReporter implements ITestReporter {
         testSuite.setValue(failuresCountField, failuresCount);
         testSuite.setValue(testsCountField, testsCount);
         testSuite.setValue(timestampField, new Date().getTime());
+        testSuite.setValue(testTimeField, totalTime);
         return testSuite;
     }
 }

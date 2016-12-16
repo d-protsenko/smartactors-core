@@ -28,8 +28,14 @@ public class PluginTestReportTextBuilderActor implements IPlugin {
             item.process(() -> {
                 try {
                     IOC.register(
-                            Keys.getOrAdd(TestReportTextBuilderActor.class.getCanonicalName()),
-                            new ApplyFunctionToArgumentsStrategy(args -> new TestReportTextBuilderActor())
+                            Keys.getOrAdd("TestReportTextBuilderActor"),
+                            new ApplyFunctionToArgumentsStrategy(args -> {
+                                try {
+                                    return new TestReportTextBuilderActor();
+                                } catch (ResolutionException e) {
+                                    throw new RuntimeException("Can't resolve TestReportTextBuilderActor: " + e.getMessage(), e);
+                                }
+                            })
                     );
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);

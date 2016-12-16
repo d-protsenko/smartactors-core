@@ -28,7 +28,7 @@ public class PluginTestReportXmlBuilderActor implements IPlugin {
             item.process(() -> {
                 try {
                     IOC.register(
-                            Keys.getOrAdd(TestReportXmlBuilderActor.class.getCanonicalName()),
+                            Keys.getOrAdd("TestReportXmlBuilderActor"),
                             new ApplyFunctionToArgumentsStrategy(args -> new TestReportXmlBuilderActor())
                     );
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {

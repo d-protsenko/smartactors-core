@@ -157,11 +157,14 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IObject td1 = mock(IObject.class);
         IObject td2 = mock(IObject.class);
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
+        IObject config = mock(IObject.class);
+        IObject testSection = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+        testSection.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
                 Arrays.asList(td1, td2));
 
         doThrow(TestExecutionException.class).when(testRunnerMock).runTest(same(td1), any());
+        when(config.getValue(new FieldName("test"))).thenReturn(testSection);
 
         new TestsSectionStrategy().onLoadConfig(config);
     }

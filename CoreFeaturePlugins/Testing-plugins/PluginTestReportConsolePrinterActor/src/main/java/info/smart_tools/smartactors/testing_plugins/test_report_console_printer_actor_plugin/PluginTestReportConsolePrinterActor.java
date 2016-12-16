@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.testing.test_report_console_printer.TestReportConsolePrinterActor;
 
 public class PluginTestReportConsolePrinterActor implements IPlugin {
+
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
     public PluginTestReportConsolePrinterActor(final IBootstrap<IBootstrapItem<String>> bootstrap) {
@@ -27,10 +28,14 @@ public class PluginTestReportConsolePrinterActor implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("TestReportConsolePrinterActor");
             item.process(() -> {
                 try {
-                    IOC.register(
-                            Keys.getOrAdd(TestReportConsolePrinterActor.class.getCanonicalName()),
-                            new ApplyFunctionToArgumentsStrategy(args -> new TestReportConsolePrinterActor())
-                    );
+                    IOC.register(Keys.getOrAdd("TestReportConsolePrinterActor"),
+                            new ApplyFunctionToArgumentsStrategy(args -> {
+                                try {
+                                    return new TestReportConsolePrinterActor();
+                                } catch (ResolutionException e) {
+                                    throw new RuntimeException("Can't resolve TestReportConsolePrinterActor: " + e.getMessage(), e);
+                                }
+                            }));
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);
                 }

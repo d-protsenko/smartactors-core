@@ -28,8 +28,14 @@ public class PluginTestReportFilePrinterActor implements IPlugin {
             item.process(() -> {
                 try {
                     IOC.register(
-                            Keys.getOrAdd(TestReportFilePrinterActor.class.getCanonicalName()),
-                            new ApplyFunctionToArgumentsStrategy(args -> new TestReportFilePrinterActor((String) args[0]))
+                            Keys.getOrAdd("TestReportFilePrinterActor"),
+                            new ApplyFunctionToArgumentsStrategy(args -> {
+                                try {
+                                    return new TestReportFilePrinterActor((String) args[0]);
+                                } catch (ResolutionException e) {
+                                    throw new RuntimeException("Can't resolve TestReportFilePrinterActor with args " + args[0] + ": " + e.getMessage(), e);
+                                }
+                            })
                     );
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                     throw new ActionExecuteException(e);

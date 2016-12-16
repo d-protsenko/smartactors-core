@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.testing.interfaces.itest_reporter.exception.
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -61,8 +62,14 @@ public class TestsSectionStrategy implements ISectionStrategy {
             System.out.println("--------------------------------- Run testing ---------------------------------");
 
             final IObject testConfig = (IObject) config.getValue(testSectionField);
-            final List<IObject> tests = testCasesSectionField.in(testConfig);
-
+            List<IObject> tests;
+            if (testConfig == null) {
+                // Test section isn't described in config.json.
+                // Skip test
+                tests = new ArrayList<>();
+            } else {
+                tests = testCasesSectionField.in(testConfig);
+            }
             final CyclicBarrier barrier = new CyclicBarrier(2);
             final AtomicReference<Throwable> eRef = new AtomicReference<>(null);
             final ITestReporter testReporter = IOC.resolve(
