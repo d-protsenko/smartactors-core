@@ -120,6 +120,7 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         when(td1.getValue(new FieldName("name"))).thenReturn("td1");
         when(testSection.getValue(new FieldName("tests"))).thenReturn(Arrays.asList(td1, td2));
         when(config.getValue(new FieldName("test"))).thenReturn(testSection);
+        when(config.getValue(new FieldName("featureName"))).thenReturn("TestsSectionStrategy");
 
         doAnswer(invocation -> {
             new Thread(() -> {

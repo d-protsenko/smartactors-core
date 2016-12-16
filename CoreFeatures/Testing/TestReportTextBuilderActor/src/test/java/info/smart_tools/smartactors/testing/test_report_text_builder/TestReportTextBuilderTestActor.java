@@ -55,7 +55,7 @@ public class TestReportTextBuilderTestActor extends PluginsLoadingTestBase {
     private TestSuiteWrapper buildTestSuite() throws Exception {
         IObject wrapper = mock(IObject.class);
         final List<IObject> testCases = buildTestCases();
-        when(wrapper.getValue(new FieldName("featureName"))).thenReturn("TestReportXmlBuilderActorTest");
+        when(wrapper.getValue(new FieldName("featureName"))).thenReturn("TestReportTextBuilderTestActor");
         when(wrapper.getValue(new FieldName("timestamp"))).thenReturn(new Date().getTime());
         when(wrapper.getValue(new FieldName("time"))).thenReturn(10L);
         when(wrapper.getValue(new FieldName("tests"))).thenReturn(2);
@@ -78,14 +78,14 @@ public class TestReportTextBuilderTestActor extends PluginsLoadingTestBase {
     private IObject buildSuccessfulTestCase() throws Exception {
         IObject testCase = mock(IObject.class);
         when(testCase.getValue(new FieldName("name"))).thenReturn("Should_BuildXML");
-        when(testCase.getValue(new FieldName("name"))).thenReturn(4L);
+        when(testCase.getValue(new FieldName("testTime"))).thenReturn(4L);
         return testCase;
     }
 
     private IObject buildFailedTestCase() throws Exception {
         IObject testCase = mock(IObject.class);
         when(testCase.getValue(new FieldName("name"))).thenReturn("Should_Fail");
-        when(testCase.getValue(new FieldName("time"))).thenReturn(6L);
+        when(testCase.getValue(new FieldName("testTime"))).thenReturn(6L);
         when(testCase.getValue(new FieldName("failure"))).thenReturn(new Exception("It's a failure"));
         return testCase;
     }

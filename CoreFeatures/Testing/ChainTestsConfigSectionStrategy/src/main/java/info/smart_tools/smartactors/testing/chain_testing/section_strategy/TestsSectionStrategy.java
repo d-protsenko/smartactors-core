@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -103,7 +104,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                 testReporter.afterTest(eRef.get());
 
                 if (null != eRef.get()) {
-                    throw new ConfigurationProcessingException("Test failed.", eRef.get());
+                    throw new ConfigurationProcessingException("Test '"+testDesc.getValue(testNameFieldName)+"' failed ", eRef.get());
                 } else {
                     System.out.println("Test '" + testDesc.getValue(testNameFieldName) + "' is successful.");
                 }
