@@ -86,6 +86,20 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         assertEquals("PT24H", entry.getState().getValue(interval));
 
         verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+        verify(entry).save();
+    }
+
+    @Test
+    public void Should_notSaveEntryIfSaveFlagIsSetToFalse()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+
+        strategy.init(entry,
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    "{'start':'3410-01-01T00:00:01','interval':'PT24H','save':false}".replace('\'','"')));
+
+        verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+        verify(entry, times(0)).save();
     }
 
     @Test
