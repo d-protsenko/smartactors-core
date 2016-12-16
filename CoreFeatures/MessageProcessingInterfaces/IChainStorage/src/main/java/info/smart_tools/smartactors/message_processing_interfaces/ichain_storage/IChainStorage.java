@@ -26,10 +26,12 @@ public interface IChainStorage {
      *
      * @param chainId identifier of the chain to update
      * @param modification description of the chain modification to perform
+     * @return identifier of the chain mutation
      * @throws ChainNotFoundException if there is no chain with given identifier registered
      * @throws ChainModificationException if error occurs modifying the chain
+     * TODO:: Add method cancelling chain modification (using returned mutation id)
      */
-    void update(Object chainId, IObject modification) throws ChainNotFoundException, ChainModificationException;
+    Object update(Object chainId, IObject modification) throws ChainNotFoundException, ChainModificationException;
 
     /**
      * Find a chain associated with given identifier.

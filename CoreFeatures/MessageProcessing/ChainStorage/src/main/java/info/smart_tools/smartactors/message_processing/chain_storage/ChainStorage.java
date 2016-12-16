@@ -95,7 +95,7 @@ public class ChainStorage implements IChainStorage {
     }
 
     @Override
-    public void update(final Object chainId, final IObject modification)
+    public Object update(final Object chainId, final IObject modification)
             throws ChainNotFoundException, ChainModificationException {
         synchronized (modificationLock) {
             IReceiverChain original = resolve(chainId);
@@ -113,5 +113,7 @@ public class ChainStorage implements IChainStorage {
                         e);
             }
         }
+
+        return null;
     }
 }
