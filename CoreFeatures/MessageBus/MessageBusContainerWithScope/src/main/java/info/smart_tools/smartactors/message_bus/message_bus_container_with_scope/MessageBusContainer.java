@@ -23,7 +23,7 @@ public class MessageBusContainer implements IMessageBusContainer {
         try {
             this.messageBusContainerKey = new Key(java.util.UUID.randomUUID().toString());
         } catch (Exception e) {
-            throw new RuntimeException("Initialization of Message bus container has been failed.");
+            throw new RuntimeException("Initialization of Message bus container has been failed.", e);
         }
     }
 
@@ -41,13 +41,13 @@ public class MessageBusContainer implements IMessageBusContainer {
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not get MessageBusContainer with key: " + messageBusContainerKey + " from the current scope");
+            throw new SendingMessageException("Could not get MessageBusContainer with key: " + messageBusContainerKey + " from the current scope", e);
         }
 
         try {
             handler.handle(message);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message.");
+            throw new SendingMessageException("Could not send message.", e);
         }
     }
 
@@ -61,13 +61,13 @@ public class MessageBusContainer implements IMessageBusContainer {
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope", e);
         }
 
         try {
             handler.handle(message, chainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message to the chain " + chainName);
+            throw new SendingMessageException("Could not send message to the chain " + chainName, e);
         }
     }
 
@@ -81,13 +81,13 @@ public class MessageBusContainer implements IMessageBusContainer {
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope", e);
         }
 
         try {
             handler.handleForReply(message, replyToChainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message with a reply to chain " + replyToChainName);
+            throw new SendingMessageException("Could not send message with a reply to chain " + replyToChainName, e);
         }
     }
 
@@ -101,13 +101,13 @@ public class MessageBusContainer implements IMessageBusContainer {
                     .getCurrentScope()
                     .getValue(messageBusContainerKey);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope");
+            throw new SendingMessageException("Could not get MessageBusContainer with a key: " + messageBusContainerKey + " from the current scope", e);
         }
 
         try {
             handler.handleForReply(message, chainName, replyToChainName);
         } catch (Throwable e) {
-            throw new SendingMessageException("Could not send message to the chain " + chainName + " with a reply to chain " + replyToChainName);
+            throw new SendingMessageException("Could not send message to the chain " + chainName + " with a reply to chain " + replyToChainName, e);
         }
     }
 }
