@@ -69,7 +69,7 @@ public class Container implements IContainer {
             IResolveDependencyStrategy strategy = storage.get(key);
             return (T) strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionException("Resolution of dependency failed: " + key, e);
+            throw new ResolutionException("Resolution of dependency failed for key " + key, e);
         }
     }
 
@@ -85,7 +85,7 @@ public class Container implements IContainer {
         try {
             storage.put(key, strategy);
         } catch (Exception e) {
-            throw new RegistrationException("Registration of dependency failed.", e);
+            throw new RegistrationException("Registration of dependency failed for key " + key, e);
         }
     }
 
@@ -101,7 +101,7 @@ public class Container implements IContainer {
         try {
             storage.remove(key);
         } catch (Exception e) {
-            throw new DeletionException("Deletion of dependency failed.", e);
+            throw new DeletionException("Deletion of dependency failed for key " + key, e);
         }
     }
 }

@@ -44,7 +44,7 @@ public class DSObject implements IObject {
 
                     jsonGenerator.writeRawValue((String) iObject.serialize());
                 } catch (SerializeException e) {
-                    throw new IOException("Could not serialize DSObject.");
+                    throw new IOException("Could not serialize DSObject.", e);
                 }
             }
         });
