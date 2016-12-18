@@ -55,6 +55,8 @@ public class MailingActor {
     private static Field authenticationMode_ActorParams_F;
     private static Field SSLProtocol_ActorParams_F;
     private static Field senderAddress_Context_F;
+    private static IField recipientF;
+    private static IField typeF;
 
 
     // Functions creating client transport, depending on server URI scheme
@@ -89,6 +91,8 @@ public class MailingActor {
             authenticationMode_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authenticationMode");
             SSLProtocol_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sslProtocol");
             senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
+            recipientF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "recipient");
+            typeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "type");
 
             mailingContext = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
@@ -148,7 +152,7 @@ public class MailingActor {
      */
     public void sendMailHandler(final MailingMessage message) {
         try {
-            List<String> recipients = message.getSendToMessage();
+            List<IObject> recipients = message.getSendToMessage();
             SMTPMessageAdaptor smtpMessage = new SMTPMessageAdaptor(SMTPMessageAdaptor.createMimeMessage());
 
             setMessageAttributes(
@@ -162,8 +166,13 @@ public class MailingActor {
                     message.getMessagePartsMessage()
             );
 
+            List<String> recipientList = new ArrayList<>();
+            for (IObject recipient : recipients) {
+                recipientList.add(recipientF.in(recipient));
+            }
+
             SMTPDeliveryEnvelope deliveryEnvelope = new SMTPDeliveryEnvelopeImpl(
-                    senderAddress_Context_F.in(mailingContext, String.class), recipients, smtpMessage);
+                    senderAddress_Context_F.in(mailingContext, String.class), recipientList, smtpMessage);
 
             // Bug fix: can't find handler of MIME type of data
             // in javax.mail.internet.MimeMultipart#writeTo(java.io.OutputStream).
@@ -183,12 +192,12 @@ public class MailingActor {
         }
     }
 
-    private void setMessageAttributes(final SMTPMessageAdaptor smtpMessage, final IObject attributes, final List<String> recipients)
+    private void setMessageAttributes(final SMTPMessageAdaptor smtpMessage, final IObject attributes, final List<IObject> recipients)
             throws Exception {
         smtpMessage.getMimeMessage().setFrom(
                 new InternetAddress(senderAddress_Context_F.in(mailingContext, String.class)));
-        for (String recipient : recipients) {
-            smtpMessage.getMimeMessage().addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+        for (IObject recipient : recipients) {
+            smtpMessage.getMimeMessage().addRecipient(typeF.in(recipient), new InternetAddress(recipientF.in(recipient)));
         }
 
         MessageAttributeSetters.applyAll(
