@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
 
 import static org.junit.Assert.*;
@@ -130,5 +131,54 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
 
         verify(entry, times(2)).scheduleNext(timeCaptor.capture());
         assertEquals(Duration.parse("PT72H").toMillis(), timeCaptor.getValue() - captured0);
+    }
+
+    @Test
+    public void Should_initializeEntryWithPeriodInterval()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+
+        strategy.init(entry,
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                        "{'start':'3410-01-01T00:00:01','interval':'P2M'}".replace('\'','"')));
+
+        // Happy new year to the people of 3410'th year (if you are alive) (if you still use smartactors)
+        assertEquals("3410-01-01T00:00:01", entry.getState().getValue(start));
+        assertEquals("P2M", entry.getState().getValue(interval));
+
+        verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+    }
+
+    @Test
+    public void Should_restoreAndPostProcessEntryWithPeriodInterval()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+        when(entry.getState()).thenReturn(
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                        "{'start':'1994-10-15T17:32:05','interval':'P2Y'}".replace('\'','"')));
+
+        strategy.restore(entry);
+
+        assertEquals("1994-10-15T17:32:05", entry.getState().getValue(start));
+        assertEquals("P2Y", entry.getState().getValue(interval));
+        ArgumentCaptor<Long> timeCaptor = ArgumentCaptor.forClass(long.class);
+        verify(entry).scheduleNext(timeCaptor.capture());
+        long captured0 = timeCaptor.getValue();
+
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plus(Period.parse("P2Y"));
+        long millis = end.atZone(ZoneOffset.UTC).toInstant().toEpochMilli() - start.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+
+        assertEquals(0,
+                (captured0 - LocalDateTime.parse("1994-10-15T17:32:05").atZone(ZoneOffset.UTC).toInstant().toEpochMilli())
+                        % millis);
+        assertTrue(System.currentTimeMillis() < captured0);
+
+        when(entry.getLastTime()).thenReturn(captured0);
+
+        strategy.postProcess(entry);
+
+        verify(entry, times(2)).scheduleNext(timeCaptor.capture());
+        assertEquals(millis, timeCaptor.getValue() - captured0);
     }
 }

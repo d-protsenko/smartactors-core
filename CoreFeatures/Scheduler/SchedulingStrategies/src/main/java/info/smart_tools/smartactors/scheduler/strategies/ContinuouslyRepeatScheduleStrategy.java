@@ -16,7 +16,10 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
 
 
 /**
@@ -35,16 +38,23 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
     private final IFieldName startFieldName;
     private final IFieldName intervalFieldName;
 
-    private long nextTime(final LocalDateTime startTime, final Duration period, final long now) {
+    private long nextTime(final LocalDateTime startTime, final TemporalAmount period, final long now) {
         long lStartTime = datetimeToMillis(startTime);
 
         if (lStartTime >= now) {
             return lStartTime;
         }
 
-        long lPeriod = period.toMillis();
-        long lNextTime = lStartTime + lPeriod * ((now - lStartTime) / lPeriod);
+        if (period instanceof Duration) {
+            long lPeriod = ((Duration) period).toMillis();
+            long lNextTime = lStartTime + lPeriod * ((now - lStartTime) / lPeriod);
+            return (lNextTime >= now) ? lNextTime : (lNextTime + lPeriod);
+        }
 
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plus(period);
+        long lPeriod = datetimeToMillis(end) - datetimeToMillis(start);
+        long lNextTime = lStartTime + lPeriod * ((now - lStartTime) / lPeriod);
         return (lNextTime >= now) ? lNextTime : (lNextTime + lPeriod);
     }
 
@@ -68,7 +78,7 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
         try {
             String start = (String) args.getValue(startFieldName);
             LocalDateTime startTime;
-            Duration interval = Duration.parse((String) args.getValue(intervalFieldName));
+            TemporalAmount interval = parseInterval((String) args.getValue(intervalFieldName));
             LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
             if (start == null) {
@@ -92,9 +102,16 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
     @Override
     public void postProcess(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
         try {
-            Duration interval = Duration.parse((String) entry.getState().getValue(intervalFieldName));
-
-            entry.scheduleNext(entry.getLastTime() + interval.toMillis());
+            TemporalAmount interval = parseInterval((String) entry.getState().getValue(intervalFieldName));
+            if (interval instanceof Duration) {
+                entry.scheduleNext(entry.getLastTime() + ((Duration) interval).toMillis());
+            }
+            if (interval instanceof Period) {
+                LocalDateTime start = LocalDateTime.now();
+                LocalDateTime end = start.plus(interval);
+                long millis = datetimeToMillis(end) - datetimeToMillis(start);
+                entry.scheduleNext(entry.getLastTime() + millis);
+            }
         } catch (ReadValueException | InvalidArgumentException | EntryScheduleException e) {
             throw new SchedulingStrategyExecutionException("Error occurred rescheduling scheduler entry.", e);
         }
@@ -103,7 +120,7 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
     @Override
     public void restore(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
         try {
-            Duration interval = Duration.parse((String) entry.getState().getValue(intervalFieldName));
+            TemporalAmount interval = parseInterval((String) entry.getState().getValue(intervalFieldName));
             LocalDateTime startTime = LocalDateTime.parse((String) entry.getState().getValue(startFieldName));
 
             long nextTime = nextTime(startTime, interval, System.currentTimeMillis());
@@ -121,5 +138,15 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
         } catch (EntryStorageAccessException | EntryScheduleException ee) {
             throw new SchedulingStrategyExecutionException("Error occurred cancelling failed scheduler entry.", ee);
         }
+    }
+
+    private TemporalAmount parseInterval(final String intervalString) {
+        TemporalAmount interval;
+        try {
+            interval = Duration.parse(intervalString);
+        } catch (DateTimeParseException e) {
+            interval = Period.parse(intervalString);
+        }
+        return interval;
     }
 }
