@@ -18,10 +18,7 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
+import java.time.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -155,30 +152,24 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
         when(entry.getState()).thenReturn(
                 IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                        "{'start':'1994-10-15T17:32:05','interval':'P2Y'}".replace('\'','"')));
+                        "{'start':'1994-10-15T17:32:05','interval':'P2M'}".replace('\'','"')));
 
         strategy.restore(entry);
 
         assertEquals("1994-10-15T17:32:05", entry.getState().getValue(start));
-        assertEquals("P2Y", entry.getState().getValue(interval));
+        assertEquals("P2M", entry.getState().getValue(interval));
         ArgumentCaptor<Long> timeCaptor = ArgumentCaptor.forClass(long.class);
         verify(entry).scheduleNext(timeCaptor.capture());
         long captured0 = timeCaptor.getValue();
 
-        LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plus(Period.parse("P2Y"));
-        long millis = end.atZone(ZoneOffset.UTC).toInstant().toEpochMilli() - start.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
-
-        assertEquals(0,
-                (captured0 - LocalDateTime.parse("1994-10-15T17:32:05").atZone(ZoneOffset.UTC).toInstant().toEpochMilli())
-                        % millis);
-        assertTrue(System.currentTimeMillis() < captured0);
+        assertEquals(LocalDateTime.ofInstant(Instant.ofEpochMilli(captured0), ZoneOffset.UTC).getDayOfMonth(), 15);
 
         when(entry.getLastTime()).thenReturn(captured0);
 
         strategy.postProcess(entry);
 
         verify(entry, times(2)).scheduleNext(timeCaptor.capture());
-        assertEquals(millis, timeCaptor.getValue() - captured0);
+        long nextInterval = LocalDateTime.ofInstant(Instant.ofEpochMilli(captured0), ZoneOffset.UTC).plus(Period.ofMonths(2)).atZone(ZoneOffset.UTC).toInstant().toEpochMilli() - captured0;
+        assertEquals(nextInterval, timeCaptor.getValue() - captured0);
     }
 }
