@@ -27,6 +27,8 @@
         <module>Feature</module>
         <module>AllInDirectoryFeatureTracker</module>
         <module>FeatureManagementPlugins</module>
+        <module>DirectoryWatcherActor</module>
+        <module>FeatureCreatorActor</module>
     </modules>
 
     <repositories>

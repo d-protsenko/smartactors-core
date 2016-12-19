@@ -12,11 +12,9 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -90,7 +88,7 @@ public class AllInDirectoryFeatureTracker {
             throw new Exception("File config.json not found in the folder :" + f.getPath());
         }
 
-        IObject jsonConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), new Scanner(f).useDelimiter("\\Z").next());
+        IObject jsonConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), new Scanner(jsonFile).useDelimiter("\\Z").next());
 
         String name = (String) jsonConfig.getValue(this.featureNameFN);
         Set<String> dependencies = new HashSet<>((List) jsonConfig.getValue(this.afterFeaturesFN));

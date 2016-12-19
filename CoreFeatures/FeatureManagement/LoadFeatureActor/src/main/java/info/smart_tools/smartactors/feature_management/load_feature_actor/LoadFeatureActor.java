@@ -96,11 +96,14 @@ public class LoadFeatureActor {
                 throw e;
             }
 
-            File configFile = file.listFiles((item, string) ->  string.equals("config.json"))[0];
-            String configString = new Scanner(configFile).useDelimiter("\\Z").next();
-            configurationManager.applyConfig(
-                    IOC.resolve(Keys.getOrAdd("configuration object"), configString)
-            );
+            File[] files = file.listFiles((item, string) ->  string.equals("config.json"));
+            if (null != files && files.length > 0) {
+                File configFile = files[0];
+                String configString = new Scanner(configFile).useDelimiter("\\Z").next();
+                configurationManager.applyConfig(
+                        IOC.resolve(Keys.getOrAdd("configuration object"), configString)
+                );
+            }
             System.out.println("[OK] -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
         } catch (Throwable e) {
             feature.setFailed(true);

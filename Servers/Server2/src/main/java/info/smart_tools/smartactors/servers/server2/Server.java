@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.servers.server2;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
@@ -16,8 +15,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_cr
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.FeatureManagerGlobal;
-import info.smart_tools.smartactors.feature_manager_interfaces.interfaces.ifeature_manager.IFeatureManager;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
@@ -34,7 +31,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -65,7 +61,6 @@ public class Server implements IServer {
     @Override
     public void start() throws ServerExecutionException {
         loadStage1();
-//        loadStage2();
     }
 
     private void loadStage1()
@@ -82,31 +77,6 @@ public class Server implements IServer {
             throw new ServerExecutionException(e);
         }
     }
-
-//    private void loadStage2()
-//            throws ServerExecutionException {
-//        IFeatureManager featureManager = FeatureManagerGlobal.get();
-//        IFeatureTracker tracker2 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("features"), (fm)-> {
-//            if (fm.getFailedFeatures().isEmpty()) {
-//                System.out.println("\n\n[OK] Stage 3: features has been loaded successful.\n\n");
-//            } else {
-//                System.out.println("\n\n[FAILED] Stage 3: features loading has been failed.");
-//                System.out.println("Successful loaded features:" + fm.getLoadedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
-//                System.out.println("Not loaded features:" + fm.getFailedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
-//            }
-//        });
-//        IFeatureTracker tracker1 = new FeatureTrackerAllExistingInDirectory(featureManager, new Path("corefeatures"), (fm) -> {
-//            if (fm.getFailedFeatures().isEmpty()) {
-//                System.out.println("\n\n[OK] Stage 2: core features has been loaded successful.\n\n");
-//                tracker2.start();
-//            } else {
-//                System.out.println("\n\n[FAILED] Stage 2: features loading has been failed.");
-//                System.out.println("Successful loaded features:" + fm.getLoadedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
-//                System.out.println("Not loaded features:" + fm.getFailedFeatures().stream().map(a -> a.getName()).collect(Collectors.toList()));
-//            }
-//        });
-//        tracker1.start();
-//    }
 
     private List<IPath> listJarsIn(final File directory)
             throws IOException {

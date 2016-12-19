@@ -43,6 +43,12 @@ public class DownloadFeatureActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
+            if (
+                    (new File(feature.getFeatureLocation() + File.separator +feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
+                    (new File(feature.getFeatureLocation() + File.separator +feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
+            ) {
+                return;
+            }
         } catch (ReadValueException e) {
             throw new DownloadFeatureException("Feature should not be null.");
         }

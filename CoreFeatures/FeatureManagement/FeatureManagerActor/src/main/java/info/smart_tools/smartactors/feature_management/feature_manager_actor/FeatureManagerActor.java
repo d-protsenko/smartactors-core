@@ -38,6 +38,7 @@ public class FeatureManagerActor {
     private final int DEFAULT_STACK_DEPTH = 5;
 
     private Map<IMessageProcessor, Set<IFeature>> mainProcesses;
+    private Map<IMessageProcessor, Set<IFeature>> mainProcessesForInfo;
     private Map<IMessageProcessor, IFeature> featureProcess;
 
     private Map<Object, IFeature> loadedFeatures;
@@ -53,6 +54,7 @@ public class FeatureManagerActor {
     public FeatureManagerActor()
             throws ResolutionException {
         this.mainProcesses = new ConcurrentHashMap<>();
+        this.mainProcessesForInfo = new ConcurrentHashMap<>();
         this.featureProcess = new ConcurrentHashMap<>();
 
         this.loadedFeatures = new ConcurrentHashMap<>();
@@ -70,9 +72,11 @@ public class FeatureManagerActor {
             throws FeatureManagementException {
         try {
             Set<IFeature> features = new HashSet<>(wrapper.getFeatures());
+            Set<IFeature> featuresForInfo = new HashSet<>(wrapper.getFeatures());
             IMessageProcessor mp = wrapper.getMessageProcessor();
             mp.pauseProcess();
             this.mainProcesses.put(mp, features);
+            this.mainProcessesForInfo.put(mp, featuresForInfo);
 
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             String scatterChainName = wrapper.getScatterChainName();
@@ -88,20 +92,20 @@ public class FeatureManagerActor {
                         null == this.loadedFeatures.get(featureName)
                 ) {
                     this.processingFeatures.put(feature.getName(), feature);
-                }
-                IMessageProcessingSequence processingSequence =
-                        IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, scatterChain);
-                IMessageProcessor messageProcessor =
-                        IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), queue, processingSequence);
+                    IMessageProcessingSequence processingSequence =
+                            IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, scatterChain);
+                    IMessageProcessor messageProcessor =
+                            IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), queue, processingSequence);
 
-                IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                message.setValue(this.loadedFeatureFN, this.loadedFeatures);
-                message.setValue(this.failedFeatureFN, this.failedFeatures);
-                message.setValue(this.processingFeatureFN, this.processingFeatures);
-                message.setValue(this.featureProcessFN, this.featureProcess);
-                message.setValue(this.featureFN, feature);
-                IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                messageProcessor.process(message, context);
+                    IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                    message.setValue(this.loadedFeatureFN, this.loadedFeatures);
+                    message.setValue(this.failedFeatureFN, this.failedFeatures);
+                    message.setValue(this.processingFeatureFN, this.processingFeatures);
+                    message.setValue(this.featureProcessFN, this.featureProcess);
+                    message.setValue(this.featureFN, feature);
+                    IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                    messageProcessor.process(message, context);
+                }
             }
 
         } catch (
@@ -145,10 +149,19 @@ public class FeatureManagerActor {
             needContinueProcesses.forEach((mp) -> {
                 try {
                     mp.continueProcess(null);
+                    System.out.println(
+                            "\n\n[INFO] Feature group has been loaded: " +
+                                    this.mainProcessesForInfo.get(mp).stream().map(
+                                            a -> "\n" + a.getName() + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
+                                    ).collect(Collectors.toList())
+                            + "\n\n"
+                    );
+                    this.mainProcessesForInfo.remove(mp);
                 } catch (AsynchronousOperationException e) {
                     throw new RuntimeException(e);
                 }
             });
+            checkUnresolved();
 
         } catch (ReadValueException e) {
             throw new FeatureManagementException("Feature should not be null.");
@@ -211,11 +224,28 @@ public class FeatureManagerActor {
         for (IFeature feature : this.processingFeatures.values()) {
             if (null != feature.getDependencies()) {
                 feature.getDependencies().remove(loadedFeature.getName());
-                System.out.println("[INFO] -------------- Remove dependency " + loadedFeature.getName() + " from " + feature.getName());
             }
         }
     }
 
     private void checkUnresolved() {
+//        for (IFeature feature : this.featureProcess.values()) {
+//            List<String> unresolvedDependencies = new ArrayList<>();
+//            for (String dependency : feature.getDependencies()) {
+//                if (!this.loadedFeatures.values().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(dependency) &&
+//                        !this.processingFeatures.values().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(dependency)
+//                ) {
+//                    unresolvedDependencies.add(dependency);
+//                }
+//            }
+//            if (!unresolvedDependencies.isEmpty()) {
+//                System.out.println(
+//                        "[WARNING] Feature " +
+//                                feature.getName() +
+//                                " has following unresolved dependencies: \n\t\t"
+//                                + unresolvedDependencies.toString() + "\n"
+//                );
+//            }
+//        }
     }
 }

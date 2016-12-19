@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.feature_management.feature_management_plugi
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -22,13 +21,9 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.feature_management.feature_creator_actor.FeaturesCreatorActor;
+import info.smart_tools.smartactors.feature_management.directory_watcher_actor.RuntimeDirectoryFeatureTracker;
 
 import java.util.ArrayList;
 
@@ -97,6 +92,22 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                 (args) -> {
                     try {
                         return new AllInDirectoryFeatureTracker();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
+        IOC.register(Keys.getOrAdd("DirectoryWatcherActor"), new ApplyFunctionToArgumentsStrategy(
+                (args) -> {
+                    try {
+                        return new RuntimeDirectoryFeatureTracker();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
+        IOC.register(Keys.getOrAdd("FeatureCreatorActor"), new ApplyFunctionToArgumentsStrategy(
+                (args) -> {
+                    try {
+                        return new FeaturesCreatorActor();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
