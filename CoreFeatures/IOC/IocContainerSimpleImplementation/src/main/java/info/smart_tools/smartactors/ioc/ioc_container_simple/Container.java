@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.ioc.ioc_container_simple;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Container implements IContainer {
 
-    private Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<IKey, IResolveDependencyStrategy>();
+    private final Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<>();
 
     private final IKey keyForKeyStorage;
 
@@ -38,6 +38,7 @@ public class Container implements IContainer {
 
     /**
      * Return specific instance of {@link IKey} for container ID
+     *
      * @return instance of {@link IKey}
      */
     @Override
@@ -47,6 +48,7 @@ public class Container implements IContainer {
 
     /**
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     *
      * @return instance of {@link IKey}
      */
     @Override
@@ -56,17 +58,22 @@ public class Container implements IContainer {
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args
-     * @param key instance of {@link IKey}
+     *
+     * @param key  instance of {@link IKey}
      * @param args needed parameters for resolve dependency
-     * @param <T> type of class for resolution
+     * @param <T>  type of class for resolution
      * @return instance of class with classId identifier
      * @throws ResolutionException if resolution is impossible because of any errors
      */
     @Override
-    public <T> T resolve(final IKey key, final Object ... args)
+    @SuppressWarnings("unchecked")
+    public <T> T resolve(final IKey key, final Object... args)
             throws ResolutionException {
+        if (key == null) throw new ResolutionException("Key can't be null");
+        IResolveDependencyStrategy strategy = storage.get(key);
+        if (strategy == null) throw new ResolutionException("Strategy for key " + key + " not found");
+
         try {
-            IResolveDependencyStrategy strategy = storage.get(key);
             return (T) strategy.resolve(args);
         } catch (Exception e) {
             throw new ResolutionException("Resolution of dependency failed for key " + key, e);
@@ -75,13 +82,17 @@ public class Container implements IContainer {
 
     /**
      * Register new dependency by instance of {@link IKey}
-     * @param key instance of {@link IKey}
+     *
+     * @param key      instance of {@link IKey}
      * @param strategy instance of {@link IResolveDependencyStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
     @Override
     public void register(final IKey key, final IResolveDependencyStrategy strategy)
             throws RegistrationException {
+        if (key == null) throw new RegistrationException("Key can't be null");
+        if (strategy == null) throw new RegistrationException("Strategy can't be null");
+
         try {
             storage.put(key, strategy);
         } catch (Exception e) {
@@ -90,14 +101,15 @@ public class Container implements IContainer {
     }
 
     /**
-     *
      * Remove dependency with given key
+     *
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
     @Override
     public void remove(final IKey key)
             throws DeletionException {
+        if (key == null) throw new DeletionException("Key can't be null");
         try {
             storage.remove(key);
         } catch (Exception e) {
