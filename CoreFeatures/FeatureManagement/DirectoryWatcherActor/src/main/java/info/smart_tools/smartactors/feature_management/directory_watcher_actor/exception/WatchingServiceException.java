@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception;
 
 
+/**
+ * Exception for {@link info.smart_tools.smartactors.feature_management.directory_watcher_actor.RuntimeDirectoryFeatureTracker}
+ */
 public class WatchingServiceException extends Exception {
     /**
      * Constructor with specific error message as argument

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by sevenbits on 12/6/16.
+ * Actor that downloads artifact from remote repository.
  */
 public class DownloadFeatureActor {
 
@@ -31,6 +31,10 @@ public class DownloadFeatureActor {
     private final IFieldName repositoryTypeFN;
     private final IFieldName repositoryUrlFN;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on IOC resolution
+     */
     public DownloadFeatureActor()
             throws ResolutionException {
         this.repositoryIdFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositoryId");
@@ -38,14 +42,19 @@ public class DownloadFeatureActor {
         this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "url");
     }
 
+    /**
+     * Download feature (artifact) from remote repository
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws DownloadFeatureException if any errors occurred on feature downloading
+     */
     public void download(final DownloadFeatureWrapper wrapper)
             throws DownloadFeatureException {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
             if (
-                    (new File(feature.getFeatureLocation() + File.separator +feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
-                    (new File(feature.getFeatureLocation() + File.separator +feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
+                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
+                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
             ) {
                 return;
             }
@@ -65,7 +74,7 @@ public class DownloadFeatureActor {
         }
     }
 
-    private void download0(IFeature feature) {
+    private void download0(final IFeature feature) {
         try {
             File local = new File("downloads/");
             //Collection<RemoteRepository> repositories = new ArrayList<>();
@@ -73,7 +82,7 @@ public class DownloadFeatureActor {
             List<IObject> repositories = IOC.resolve(Keys.getOrAdd("feature-repositories"));
 
             Collection<RemoteRepository> remotes = repositories.stream().map(
-                    a-> {
+                    a -> {
                         try {
                             return new RemoteRepository(
                                     (String) a.getValue(this.repositoryIdFN),
@@ -97,7 +106,7 @@ public class DownloadFeatureActor {
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = new File (feature.getFeatureLocation() + File.separator + fileName);
+            File location = new File(feature.getFeatureLocation() + File.separator + fileName);
             Files.copy(artifact.toPath(), location.toPath());
             feature.setFeatureLocation(new Path(location));
         } catch (Throwable e) {

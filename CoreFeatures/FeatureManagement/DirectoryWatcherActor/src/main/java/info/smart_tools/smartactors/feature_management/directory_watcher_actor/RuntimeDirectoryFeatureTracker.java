@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.WatchService;
 
 /**
- * Created by sevenbits on 12/12/16.
+ * Actor that listens creation new files in the specific directory and puts location of new file to the message
  */
 public class RuntimeDirectoryFeatureTracker {
 
@@ -44,10 +44,19 @@ public class RuntimeDirectoryFeatureTracker {
     private WatchService watchingService;
     private IScope scope;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on IOC resolution
+     */
     public RuntimeDirectoryFeatureTracker()
             throws ResolutionException {
     }
 
+    /**
+     * Stops directory watching service
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws WatchingServiceException if any errors occurred on stopping service
+     */
     public void stopService(final StopWatchingWrapper wrapper)
             throws WatchingServiceException {
         try {
@@ -57,6 +66,11 @@ public class RuntimeDirectoryFeatureTracker {
         }
     }
 
+    /**
+     * Starts directory watching service
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws WatchingServiceException if any errors occurred on watching directory
+     */
     public void startService(final StartWatchingWrapper wrapper)
             throws WatchingServiceException {
         try {
@@ -112,12 +126,12 @@ public class RuntimeDirectoryFeatureTracker {
         messageProcessor.process(message, context);
     }
 
-    private void startWatchingService(final IPath watchingDir)
+    private void startWatchingService(final IPath watchingDirectory)
             throws WatchingServiceException {
         try {
-            Path nioPath = Paths.get(watchingDir.getPath());
+            Path nioPath = Paths.get(watchingDirectory.getPath());
             this.watchingService = nioPath.getFileSystem().newWatchService();
-            Runnable task = new ListeningTask(this.watchingService, watchingDir, (a) -> {
+            Runnable task = new ListeningTask(this.watchingService, watchingDirectory, (a) -> {
                 try {
                     this.startExecutionChain(a);
                 } catch (Exception e) {

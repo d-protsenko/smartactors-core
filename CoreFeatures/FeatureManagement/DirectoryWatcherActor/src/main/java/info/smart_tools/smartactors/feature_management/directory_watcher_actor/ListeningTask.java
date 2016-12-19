@@ -15,13 +15,20 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 /**
- * Created by sevenbits on 12/13/16.
+ * The service for watching directory on new file creation
  */
 public class ListeningTask implements Runnable {
 
     private IAction<IPath> onCreationNewFile;
     private WatchService watchService;
 
+    /**
+     * Creates instance of {@link ListeningTask} by specific arguments
+     * @param watchService the watch service
+     * @param watchingDirectory the location of watching directory
+     * @param onNewFile the action that will be run on creation new file
+     * @throws InitializationException if any errors occurred on create instance of {@link ListeningTask}
+     */
     public ListeningTask(final WatchService watchService, final IPath watchingDirectory, final IAction<IPath> onNewFile)
             throws InitializationException {
         try {
@@ -37,7 +44,7 @@ public class ListeningTask implements Runnable {
     @Override
     public void run() {
         try (WatchService watcher = this.watchService) {
-            while(true) {
+            while (true) {
                 WatchKey key = watcher.take();
                 for (WatchEvent<?> event : key.pollEvents()) {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {

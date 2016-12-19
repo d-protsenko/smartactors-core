@@ -2,16 +2,17 @@ package info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrap
 
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by sevenbits on 12/5/16.
+ * Interface of wrapper for {@link info.smart_tools.smartactors.feature_management.unzip_feature_actor.UnzipFeatureActor}
  */
 public interface UnzipFeatureWrapper {
 
+    /**
+     * Gets feature from the message
+     * @return the instance of {@link IFeature}
+     * @throws ReadValueException if any errors occurred on wrapper reading
+     */
     IFeature getFeature()
             throws ReadValueException;
 

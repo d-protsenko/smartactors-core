@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.feature_management.feature_creator_actor.exception;
 
-
+/**
+ * Exception for {@link info.smart_tools.smartactors.feature_management.feature_creator_actor.FeaturesCreatorActor}
+ */
 public class FeatureCreationException extends Exception {
     /**
      * Constructor with specific error message as argument

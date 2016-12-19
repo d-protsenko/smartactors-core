@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.feature_management.unzip_feature_actor;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.exception.UnzipFeatureException;
@@ -11,30 +10,37 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Created by sevenbits on 12/6/16.
+ * Actor that unpack feature
  */
 public class UnzipFeatureActor {
 
     private final IFieldName dependenciesFieldName;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on resolution of IOC dependencies
+     */
     public UnzipFeatureActor()
             throws ResolutionException {
         this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeatures");
     }
 
+    /**
+     * Unpacks feature
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws UnzipFeatureException if any errors occurred on unpacking feature
+     */
     public void unzip(final UnzipFeatureWrapper wrapper)
             throws UnzipFeatureException {
         IFeature feature;
@@ -65,25 +71,20 @@ public class UnzipFeatureActor {
             zipFile.extractAll(destination);
             List<FileHeader> headers = zipFile.getFileHeaders();
             FileHeader configFileHeader = headers.stream().filter(fh -> fh.getFileName().endsWith("config.json")).findFirst().get();
-            File configFile = new File(destination + File.separator + configFileHeader.getFileName());
 
-            return configFile;
+            return new File(destination + File.separator + configFileHeader.getFileName());
         } catch (ZipException e) {
             throw new Exception(e);
         }
     }
 
     private void updateFeature(final File f, final IFeature feature)
-            throws IOException {
-        try {
-            String content = new Scanner(f).useDelimiter("\\Z").next();
-            IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), content);
-            List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
-            Set<String> dependenciesSet = new HashSet<>(dependencies);
-            feature.setDependencies(dependenciesSet);
-            feature.setFeatureLocation(new Path(f.getParent()));
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
-
-        }
+            throws Exception {
+        String content = new Scanner(f).useDelimiter("\\Z").next();
+        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), content);
+        List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
+        Set<String> dependenciesSet = new HashSet<>(dependencies);
+        feature.setDependencies(dependenciesSet);
+        feature.setFeatureLocation(new Path(f.getParent()));
     }
 }

@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeat
 import java.util.Set;
 
 /**
- * Created by sevenbits on 11/14/16.
+ * Implementation of {@link IFeature}
  */
 public class Feature implements IFeature {
 
@@ -17,14 +17,27 @@ public class Feature implements IFeature {
     private String groupId;
     private String version;
 
-    public Feature(String name, Set<String> dependencies, IPath location) {
+    /**
+     * Creates instance of {@link IFeature} by specific arguments
+     * @param name the feature name
+     * @param dependencies feature dependencies
+     * @param location the feature location
+     */
+    public Feature(final String name, final Set<String> dependencies, final IPath location) {
         this.name = name;
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
     }
 
-    public Feature(String name, String groupId, String version, IPath featureLocation) {
+    /**
+     * Creates instance of {@link IFeature} by specific arguments
+     * @param name the feature name
+     * @param groupId the feature group ID
+     * @param version the feature version
+     * @param featureLocation the feature location
+     */
+    public Feature(final String name, final String groupId, final String version, final IPath featureLocation) {
         this.name = name;
         this.groupId = groupId;
         this.version = version;
@@ -53,22 +66,22 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public void setFailed(boolean failed) {
+    public void setFailed(final boolean failed) {
         this.failed = failed;
     }
 
     @Override
-    public void setName(String featureName) {
+    public void setName(final String featureName) {
         this.name = featureName;
     }
 
     @Override
-    public void setDependencies(Set<String> dependencies) {
+    public void setDependencies(final Set<String> dependencies) {
         this.dependencies = dependencies;
     }
 
     @Override
-    public void setFeatureLocation(IPath location) {
+    public void setFeatureLocation(final IPath location) {
         this.featureLocation = (IPath) location;
     }
 
@@ -83,12 +96,12 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public void setGroupId(String groupId) {
+    public void setGroupId(final String groupId) {
         this.groupId = (String) groupId;
     }
 
     @Override
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = (String) version;
     }
 }

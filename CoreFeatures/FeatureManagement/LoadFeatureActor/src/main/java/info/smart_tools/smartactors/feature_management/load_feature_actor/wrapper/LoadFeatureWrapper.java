@@ -4,10 +4,15 @@ import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeat
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 /**
- * Created by sevenbits on 12/5/16.
+ * Interface of wrapper for {@link info.smart_tools.smartactors.feature_management.load_feature_actor.LoadFeatureActor}
  */
 public interface LoadFeatureWrapper {
 
+    /**
+     * Gets feature from the message
+     * @return the instance of {@link IFeature}
+     * @throws ReadValueException if any errors occurred on wrapper reading
+     */
     IFeature getFeature()
             throws ReadValueException;
 }

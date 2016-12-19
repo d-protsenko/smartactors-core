@@ -31,11 +31,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Created by sevenbits on 12/5/16.
+ * Actor that manages process of features downloading, unpacking and loading.
  */
 public class FeatureManagerActor {
 
-    private final int DEFAULT_STACK_DEPTH = 5;
+    private static final int DEFAULT_STACK_DEPTH = 5;
 
     private Map<IMessageProcessor, Set<IFeature>> mainProcesses;
     private Map<IMessageProcessor, Set<IFeature>> mainProcessesForInfo;
@@ -51,6 +51,10 @@ public class FeatureManagerActor {
     private final IFieldName featureProcessFN;
     private final IFieldName featureFN;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on resolution IOC dependencies
+     */
     public FeatureManagerActor()
             throws ResolutionException {
         this.mainProcesses = new ConcurrentHashMap<>();
@@ -68,6 +72,11 @@ public class FeatureManagerActor {
         this.featureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "feature");
     }
 
+    /**
+     * Adds features to the processing
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureManagementException if any errors occurred on feature processing
+     */
     public void addFeatures(final AddFeatureWrapper wrapper)
             throws FeatureManagementException {
         try {
@@ -120,6 +129,11 @@ public class FeatureManagerActor {
         }
     }
 
+    /**
+     * Ends feature processing
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureManagementException if any errors occurred on feature processing
+     */
     public void onFeatureLoaded(final OnFeatureLoadedWrapper wrapper)
             throws FeatureManagementException {
         IFeature feature;
@@ -168,6 +182,11 @@ public class FeatureManagerActor {
         }
     }
 
+    /**
+     * Ends step of feature processing
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureManagementException if any errors occurred on feature processing
+     */
     public void onFeatureStepCompleted(final OnFeatureStepCompletedWrapper wrapper)
             throws FeatureManagementException {
         IFeature feature;
@@ -189,6 +208,11 @@ public class FeatureManagerActor {
         }
     }
 
+    /**
+     * Gets state of added features
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureManagementException if any errors occurred on feature processing
+     */
     public void getState(final FeatureManagerStateWrapper wrapper)
             throws FeatureManagementException {
         try {

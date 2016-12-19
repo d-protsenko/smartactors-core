@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.feature_management.download_feature_actor.exception;
 
 
+/**
+ * Exception for {@link info.smart_tools.smartactors.feature_management.download_feature_actor.DownloadFeatureActor}
+ */
 public class DownloadFeatureException extends Exception {
     /**
      * Constructor with specific error message as argument

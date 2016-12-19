@@ -3,13 +3,16 @@ package info.smart_tools.smartactors.feature_management.download_feature_actor.w
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
-import java.util.Set;
-
 /**
- * Created by sevenbits on 12/5/16.
+ * Interface of wrapper for {@link info.smart_tools.smartactors.feature_management.download_feature_actor.DownloadFeatureActor}
  */
 public interface DownloadFeatureWrapper {
 
+    /**
+     * Returns instance of {@link IFeature}
+     * @return the instance of {@link IFeature}
+     * @throws ReadValueException if any errors occurred on wrapper reading
+     */
     IFeature getFeature()
             throws ReadValueException;
 }

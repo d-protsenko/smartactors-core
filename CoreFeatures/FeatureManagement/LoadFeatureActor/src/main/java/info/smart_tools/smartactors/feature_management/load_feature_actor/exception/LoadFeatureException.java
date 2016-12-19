@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.feature_management.load_feature_actor.exception;
 
-
+/**
+ * Exception for {@link info.smart_tools.smartactors.feature_management.load_feature_actor.LoadFeatureActor}
+ */
 public class LoadFeatureException extends Exception {
     /**
      * Constructor with specific error message as argument

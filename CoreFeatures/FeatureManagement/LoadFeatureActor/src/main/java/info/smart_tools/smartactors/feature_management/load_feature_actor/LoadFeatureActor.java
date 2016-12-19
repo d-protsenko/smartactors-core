@@ -33,7 +33,8 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 /**
- * Created by sevenbits on 12/7/16.
+ * Actor that loads feature classes to the classloader,
+ * runs feature plugins and executes feature config
  */
 public class LoadFeatureActor {
 
@@ -41,6 +42,10 @@ public class LoadFeatureActor {
     private final IPluginCreator pluginCreator;
     private final IConfigurationManager configurationManager;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on resolution IOC dependencies
+     */
     public LoadFeatureActor()
             throws ResolutionException {
         this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
@@ -48,6 +53,11 @@ public class LoadFeatureActor {
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
     }
 
+    /**
+     * Loads feature classes, executes feature plugins and executes feature config
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws LoadFeatureException if any errors occurred on loading feature
+     */
     public void load(final LoadFeatureWrapper wrapper)
             throws LoadFeatureException {
         IFeature feature;

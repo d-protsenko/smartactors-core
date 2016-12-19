@@ -28,14 +28,26 @@ import info.smart_tools.smartactors.feature_management.directory_watcher_actor.R
 import java.util.ArrayList;
 
 /**
- * Created by sevenbits on 12/7/16.
+ * Plugin registers needed strategies to the IOC
  */
 public class FeatureManagementPlugin extends BootstrapPlugin {
 
-    public FeatureManagementPlugin(IBootstrap bootstrap) {
+    /**
+     * Creates instance of {@link FeatureManagementPlugin} by specific arguments
+     * @param bootstrap the instance of {@link IBootstrap}
+     */
+    public FeatureManagementPlugin(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
+    /**
+     * Registers dependencies to the IOC
+     * @throws ResolutionException if any errors occurred on IOC resolution
+     * @throws RegistrationException if any errors occurred on registration dependency to the IOC
+     * @throws InvalidArgumentException if any errors occurred on creation objects
+     * @throws ChainNotFoundException if any errors occurred on looking for chain
+     * @throws ChangeValueException if any errors occurred on writing to the {@link IObject}
+     */
     @Item("feature_management")
     @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "ConfigurationObject"})
     public void register()

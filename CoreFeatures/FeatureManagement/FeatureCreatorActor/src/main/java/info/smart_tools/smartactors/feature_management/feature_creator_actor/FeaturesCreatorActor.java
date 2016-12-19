@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Created by sevenbits on 12/13/16.
+ * Actor that creates instance of {@link IFeature}
+ * by given feature location and by given other feature description.
  */
 public class FeaturesCreatorActor {
 
@@ -37,6 +38,10 @@ public class FeaturesCreatorActor {
     private final IFieldName featuresFN;
     private final IFieldName repositoriesFN;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on IOC resolution
+     */
     public FeaturesCreatorActor()
             throws ResolutionException {
         this.featuresFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "features");
@@ -48,6 +53,11 @@ public class FeaturesCreatorActor {
         this.featureLocationFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureLocation");
     }
 
+    /**
+     * Gathers feature descriptions and puts them to the message
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureCreationException if any errors occurred on gathering feature description and on message creation
+     */
     public void createMessageByFile(final CreateMessageWrapper wrapper)
             throws FeatureCreationException {
         try {
@@ -67,6 +77,11 @@ public class FeaturesCreatorActor {
         }
     }
 
+    /**
+     * Creates instance of {@link IFeature} by feature descriptions and puts them to the message
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureCreationException if any errors occurred on feature creation
+     */
     public void createFeaturesByMessage(final CreateFeaturesWrapper wrapper)
             throws FeatureCreationException {
         try {

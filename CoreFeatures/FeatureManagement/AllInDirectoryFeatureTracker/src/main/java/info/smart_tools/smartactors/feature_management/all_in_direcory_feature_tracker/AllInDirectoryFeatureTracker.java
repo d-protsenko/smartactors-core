@@ -21,7 +21,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Created by sevenbits on 12/7/16.
+ * Actor that scans specific directory,
+ * finds features descriptions (in zip archives or in specific json files),
+ * creates feature and puts them to the message
  */
 public class AllInDirectoryFeatureTracker {
 
@@ -33,6 +35,10 @@ public class AllInDirectoryFeatureTracker {
     private final IFieldName groupFN;
     private final IFieldName versionFN;
 
+    /**
+     * Default constructor
+     * @throws ResolutionException if any errors occurred on IOC resolution
+     */
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
         this.featureNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
@@ -45,6 +51,11 @@ public class AllInDirectoryFeatureTracker {
         this.versionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "version");
     }
 
+    /**
+     * Scans specific directory for features descriptions, creates features and puts them to the message for post processing
+     * @param wrapper the wrapped message for getting needed data and storing result
+     * @throws FeatureTrackerException if any errors occurred on feature creation
+     */
     public void addFeatures(final FeatureTrackerWrapper wrapper)
             throws FeatureTrackerException {
         try {
@@ -81,7 +92,7 @@ public class AllInDirectoryFeatureTracker {
         }
     }
 
-    private IFeature createFeature(File f)
+    private IFeature createFeature(final File f)
             throws Exception {
         File jsonFile = new File(f.getPath() + "/config.json");
         if (!jsonFile.exists()) {
@@ -96,18 +107,18 @@ public class AllInDirectoryFeatureTracker {
         return new Feature(name, dependencies, new Path(f.getPath()));
     }
 
-    private IFeature createZippedFeature(File f)
+    private IFeature createZippedFeature(final File f)
             throws Exception {
 
         return new Feature(parseNameOfZippedFeature(f), null, new Path(f.getPath()));
     }
 
-    private String parseNameOfZippedFeature(File f) {
+    private String parseNameOfZippedFeature(final File f) {
 
         return f.getName().split("-\\d\\.\\d\\.\\d-")[0];
     }
 
-    private Map<String, IFeature> parseFeatureList(File jsonFile)
+    private Map<String, IFeature> parseFeatureList(final File jsonFile)
             throws Exception {
         Map<String, IFeature> features = new HashMap<>();
         if (!jsonFile.exists()) {
