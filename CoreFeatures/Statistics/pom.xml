@@ -5,7 +5,7 @@
 <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>scope</artifactId>
+    <artifactId>statistics</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -18,12 +18,9 @@
     </properties>
 
     <modules>
-        <module>IScope</module>
-        <module>IScopeProviderContainer</module>
-        <module>RecursiveScope</module>
-        <module>ScopeGuard</module>
-        <module>ScopeProvider</module>
-        <module>ScopeProviderContainer</module>
+        <module>Sensors-interfaces</module>
+        <module>ScheduledQuerySensor</module>
+        <module>EmbeddedSensor</module>
     </modules>
 
     <repositories>
