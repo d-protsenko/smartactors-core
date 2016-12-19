@@ -69,9 +69,13 @@ public class Container implements IContainer {
     @SuppressWarnings("unchecked")
     public <T> T resolve(final IKey key, final Object... args)
             throws ResolutionException {
-        if (key == null) throw new ResolutionException("Key can't be null");
+        if (key == null) {
+            throw new ResolutionException("Key can't be null");
+        }
         IResolveDependencyStrategy strategy = storage.get(key);
-        if (strategy == null) throw new ResolutionException("Strategy for key " + key + " not found");
+        if (strategy == null) {
+            throw new ResolutionException("Strategy for key " + key + " not found");
+        }
 
         try {
             return (T) strategy.resolve(args);
@@ -90,8 +94,12 @@ public class Container implements IContainer {
     @Override
     public void register(final IKey key, final IResolveDependencyStrategy strategy)
             throws RegistrationException {
-        if (key == null) throw new RegistrationException("Key can't be null");
-        if (strategy == null) throw new RegistrationException("Strategy can't be null");
+        if (key == null) {
+            throw new RegistrationException("Key can't be null");
+        }
+        if (strategy == null) {
+            throw new RegistrationException("Strategy can't be null");
+        }
 
         try {
             storage.put(key, strategy);
@@ -109,7 +117,9 @@ public class Container implements IContainer {
     @Override
     public void remove(final IKey key)
             throws DeletionException {
-        if (key == null) throw new DeletionException("Key can't be null");
+        if (key == null) {
+            throw new DeletionException("Key can't be null");
+        }
         try {
             storage.remove(key);
         } catch (Exception e) {
