@@ -14,10 +14,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
 
@@ -51,15 +48,22 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
             return (lNextTime >= now) ? lNextTime : (lNextTime + lPeriod);
         }
 
-        LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plus(period);
-        long lPeriod = datetimeToMillis(end) - datetimeToMillis(start);
-        long lNextTime = lStartTime + lPeriod * ((now - lStartTime) / lPeriod);
-        return (lNextTime >= now) ? lNextTime : (lNextTime + lPeriod);
+        long lNextTime = 0;
+        LocalDateTime start = millisToDatetime(lStartTime);
+        while (lNextTime < now) {
+            start = start.plus(period);
+            lNextTime = datetimeToMillis(start);
+        }
+
+        return lNextTime;
     }
 
     private long datetimeToMillis(final LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+    }
+
+    private LocalDateTime millisToDatetime(final long millis) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
     }
 
     /**
@@ -107,10 +111,8 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
                 entry.scheduleNext(entry.getLastTime() + ((Duration) interval).toMillis());
             }
             if (interval instanceof Period) {
-                LocalDateTime start = LocalDateTime.now();
-                LocalDateTime end = start.plus(interval);
-                long millis = datetimeToMillis(end) - datetimeToMillis(start);
-                entry.scheduleNext(entry.getLastTime() + millis);
+                LocalDateTime end = millisToDatetime(entry.getLastTime()).plus(interval);
+                entry.scheduleNext(datetimeToMillis(end));
             }
         } catch (ReadValueException | InvalidArgumentException | EntryScheduleException e) {
             throw new SchedulingStrategyExecutionException("Error occurred rescheduling scheduler entry.", e);
