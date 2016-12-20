@@ -17,6 +17,7 @@ import net.lingala.zip4j.model.FileHeader;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -64,8 +65,12 @@ public class UnzipFeatureActor {
         }
     }
 
-    private File unzip0(final File f) throws Exception {
-        String destination = f.getPath().substring(0, f.getPath().lastIndexOf('/'));
+    private File unzip0(final File f)
+            throws Exception {
+        String destination = f.getPath();
+        if (f.getPath().lastIndexOf('/') >= 0) {
+            destination = f.getPath().substring(0, f.getPath().lastIndexOf('/'));
+        }
         try {
             ZipFile zipFile = new ZipFile(f);
             zipFile.extractAll(destination);
@@ -74,7 +79,9 @@ public class UnzipFeatureActor {
 
             return new File(destination + File.separator + configFileHeader.getFileName());
         } catch (ZipException e) {
-            throw new Exception(e);
+            throw new Exception("Unsupported feature format: broken archive.", e);
+        } catch (NoSuchElementException e) {
+            throw new Exception("Unsupported feature format: config.json not found or it's broken.", e);
         }
     }
 

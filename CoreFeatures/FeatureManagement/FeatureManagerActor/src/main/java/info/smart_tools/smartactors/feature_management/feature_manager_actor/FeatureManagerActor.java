@@ -253,23 +253,5 @@ public class FeatureManagerActor {
     }
 
     private void checkUnresolved() {
-//        for (IFeature feature : this.featureProcess.values()) {
-//            List<String> unresolvedDependencies = new ArrayList<>();
-//            for (String dependency : feature.getDependencies()) {
-//                if (!this.loadedFeatures.values().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(dependency) &&
-//                        !this.processingFeatures.values().stream().map(a -> a.getName()).collect(Collectors.toList()).contains(dependency)
-//                ) {
-//                    unresolvedDependencies.add(dependency);
-//                }
-//            }
-//            if (!unresolvedDependencies.isEmpty()) {
-//                System.out.println(
-//                        "[WARNING] Feature " +
-//                                feature.getName() +
-//                                " has following unresolved dependencies: \n\t\t"
-//                                + unresolvedDependencies.toString() + "\n"
-//                );
-//            }
-//        }
     }
 }
