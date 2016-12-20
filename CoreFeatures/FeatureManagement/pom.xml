@@ -20,7 +20,6 @@
     <modules>
         <module>FeatureManagerActor</module>
         <module>IFeature</module>
-        <module>IFeatureState</module>
         <module>DownloadFeatureActor</module>
         <module>UnzipFeatureActor</module>
         <module>LoadFeatureActor</module>

@@ -61,7 +61,7 @@ public class FeaturesCreatorActor {
     public void createMessageByFile(final CreateMessageWrapper wrapper)
             throws FeatureCreationException {
         try {
-            File file = new File(wrapper.getFileName());
+            File file = new File(wrapper.getObservedDirectory() + File.separator + wrapper.getFileName());
             if (file.exists() && !file.isDirectory()) {
                 if (file.getName().endsWith(".zip")) {
                     wrapper.setJsonFeaturesDescription(createJsonFeatureDescriptionByZip(file, wrapper.getObservedDirectory()));
@@ -103,14 +103,16 @@ public class FeaturesCreatorActor {
                                         name,
                                         (String) feature.getValue(this.groupFN),
                                         (String) feature.getValue(this.versionFN),
-                                        (IPath) feature.getValue(this.featureLocationFN)
+                                        //(IPath) feature.getValue(this.featureLocationFN)
+                                        new Path(wrapper.getFeatureDirectory())
                                 )
                         );
                     } else {
                         features.put(name, new Feature(
                                         name,
                                         null,
-                                        (IPath) feature.getValue(this.featureLocationFN)
+                                        //(IPath) feature.getValue(this.featureLocationFN)
+                                        new Path(wrapper.getFeatureDirectory())
                                 )
                         );
                     }

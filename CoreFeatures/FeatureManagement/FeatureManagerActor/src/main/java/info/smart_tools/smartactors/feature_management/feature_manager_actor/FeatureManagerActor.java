@@ -83,9 +83,6 @@ public class FeatureManagerActor {
             Set<IFeature> features = new HashSet<>(wrapper.getFeatures());
             Set<IFeature> featuresForInfo = new HashSet<>(wrapper.getFeatures());
             IMessageProcessor mp = wrapper.getMessageProcessor();
-            mp.pauseProcess();
-            this.mainProcesses.put(mp, features);
-            this.mainProcessesForInfo.put(mp, featuresForInfo);
 
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             String scatterChainName = wrapper.getScatterChainName();
@@ -94,6 +91,7 @@ public class FeatureManagerActor {
             int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
+            int count = 0;
             for (IFeature feature : features) {
                 Object featureName = feature.getName();
                 if (
@@ -114,7 +112,13 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                     messageProcessor.process(message, context);
+                    ++count;
                 }
+            }
+            if (count > 0) {
+                mp.pauseProcess();
+                this.mainProcesses.put(mp, features);
+                this.mainProcessesForInfo.put(mp, featuresForInfo);
             }
 
         } catch (
