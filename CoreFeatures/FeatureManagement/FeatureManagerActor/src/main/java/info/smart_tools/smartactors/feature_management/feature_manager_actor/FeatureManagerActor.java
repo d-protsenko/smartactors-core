@@ -103,7 +103,6 @@ public class FeatureManagerActor {
                             IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, scatterChain);
                     IMessageProcessor messageProcessor =
                             IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), queue, processingSequence);
-
                     IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                     message.setValue(this.loadedFeatureFN, this.loadedFeatures);
                     message.setValue(this.failedFeatureFN, this.failedFeatures);
@@ -120,7 +119,6 @@ public class FeatureManagerActor {
                 this.mainProcesses.put(mp, features);
                 this.mainProcessesForInfo.put(mp, featuresForInfo);
             }
-
         } catch (
                 ReadValueException |
                 ChangeValueException |
@@ -205,7 +203,8 @@ public class FeatureManagerActor {
             if (null != feature.getDependencies() && !feature.getDependencies().isEmpty()) {
                 IMessageProcessor mp = wrapper.getMessageProcessor();
                 mp.pauseProcess();
-                wrapper.getFeatureProcess().put(mp, feature);
+                //wrapper.getFeatureProcess().put(mp, feature);
+                this.featureProcess.put(mp, feature);
             }
         } catch (ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
