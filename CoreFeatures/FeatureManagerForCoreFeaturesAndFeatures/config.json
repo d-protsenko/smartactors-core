@@ -1,4 +1,0 @@
-{
-  "featureName": "feature-manager-for-corefeatures-and-features",
-  "afterFeatures": ["feature-manager-interfaces"]
-}
