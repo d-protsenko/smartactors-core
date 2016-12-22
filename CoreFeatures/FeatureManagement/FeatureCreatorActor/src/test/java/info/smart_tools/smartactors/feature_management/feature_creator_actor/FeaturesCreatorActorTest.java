@@ -175,11 +175,6 @@ public class FeaturesCreatorActorTest {
                         "      \"name\": \"feature1\",\n" +
                         "      \"group\": \"info.smart_tools.smartactors\",\n" +
                         "      \"version\": \"0.0.0\"\n" +
-                        "    },\n" +
-                        "    {\n" +
-                        "      \"name\": \"feature2\",\n" +
-                        "      \"group\": \"info.smart_tools.smartactors\",\n" +
-                        "      \"version\": \"0.0.1\"\n" +
                         "    }\n" +
                         "  ]\n" +
                         "}"
@@ -202,13 +197,10 @@ public class FeaturesCreatorActorTest {
             return null;
         }).when(wrapper).setFeatures(any());
         actor.createFeaturesByMessage(wrapper);
-        assertEquals(features.size(), 2);
+        assertEquals(features.size(), 1);
         assertEquals(((IFeature) features.toArray()[0]).getName(), "feature1");
         assertEquals(((IFeature) features.toArray()[0]).getGroupId(), "info.smart_tools.smartactors");
         assertEquals(((IFeature) features.toArray()[0]).getVersion(), "0.0.0");
-        assertEquals(((IFeature) features.toArray()[1]).getName(), "feature2");
-        assertEquals(((IFeature) features.toArray()[1]).getGroupId(), "info.smart_tools.smartactors");
-        assertEquals(((IFeature) features.toArray()[1]).getVersion(), "0.0.1");
     }
 
     @Test

@@ -60,25 +60,23 @@ public class Server implements IServer {
 
     @Override
     public void start() throws ServerExecutionException {
-        loadStage1();
+        loadCore();
     }
 
-    private void loadStage1()
+    private void loadCore()
             throws ServerExecutionException {
         try {
             File coreDir = new File("core");
-
-            List<IPath> jars = listJarsIn(coreDir);
-
-            loadPluginsFrom(jars);
-
+            List<IPath> jars = getListOfJars(coreDir);
+            loadPlugins(jars);
             System.out.println("\n\n[OK] Stage 1: server core has been loaded successful.\n\n");
+
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }
     }
 
-    private List<IPath> listJarsIn(final File directory)
+    private List<IPath> getListOfJars(final File directory)
             throws IOException {
         if (!directory.isDirectory()) {
             throw new IOException(MessageFormat.format("File ''{0}'' is not a directory.", directory.getAbsolutePath()));
@@ -94,7 +92,7 @@ public class Server implements IServer {
         return paths;
     }
 
-    private void loadPluginsFrom(final List<IPath> jars)
+    private void loadPlugins(final List<IPath> jars)
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
@@ -104,7 +102,6 @@ public class Server implements IServer {
                         if (Modifier.isAbstract(clz.getModifiers())) {
                             return;
                         }
-
                         IPlugin plugin = pluginCreator.create(clz, bootstrap);
                         plugin.load();
                     } catch (PluginCreationException | PluginException e) {
