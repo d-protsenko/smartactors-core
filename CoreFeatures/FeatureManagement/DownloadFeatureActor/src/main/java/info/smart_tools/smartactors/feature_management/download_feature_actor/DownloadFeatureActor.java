@@ -74,7 +74,8 @@ public class DownloadFeatureActor {
         }
     }
 
-    private void download0(final IFeature feature) {
+    private void download0(final IFeature feature)
+            throws Exception {
         try {
             File local = new File("downloads/");
             //Collection<RemoteRepository> repositories = new ArrayList<>();
@@ -110,7 +111,7 @@ public class DownloadFeatureActor {
             Files.copy(artifact.toPath(), location.toPath());
             feature.setFeatureLocation(new Path(location));
         } catch (Throwable e) {
-
+            throw new Exception(e);
         }
     }
 }
