@@ -96,6 +96,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         reset();
     }
 
+    private void uncheckedGoTo(final int level, final int step) {
+        this.stackIndex = level;
+        this.stepStack[level] = step - 1;
+    }
+
     @Override
     public void reset() {
         this.chainStack[0] = mainChain;
@@ -139,13 +144,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             throw new InvalidArgumentException("Invalid level value");
         }
 
-        this.stackIndex = level;
-        this.stepStack[level] = step - 1;
+        uncheckedGoTo(level, step);
     }
 
     @Override
     public void end() {
-        this.stackIndex = -1;
+        uncheckedGoTo(0, -1);
     }
 
     @Override

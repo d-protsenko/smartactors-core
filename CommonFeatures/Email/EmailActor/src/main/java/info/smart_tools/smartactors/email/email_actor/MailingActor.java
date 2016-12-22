@@ -67,6 +67,13 @@ public class MailingActor {
         put("lmtp", params -> NettyLMTPClientTransportFactory.createNio().createPlain());
     }};
 
+    private static Map<String, Message.RecipientType> recipientTypeMap
+            = new HashMap<String, Message.RecipientType>() {{
+        put("To", Message.RecipientType.TO);
+        put("Cc", Message.RecipientType.CC);
+        put("Bcc", Message.RecipientType.BCC);
+    }};
+
     /**
      * Constructor.
      *
@@ -197,7 +204,7 @@ public class MailingActor {
         smtpMessage.getMimeMessage().setFrom(
                 new InternetAddress(senderAddress_Context_F.in(mailingContext, String.class)));
         for (IObject recipient : recipients) {
-            smtpMessage.getMimeMessage().addRecipient(typeF.in(recipient), new InternetAddress(recipientF.in(recipient)));
+            smtpMessage.getMimeMessage().addRecipient(recipientTypeMap.get(typeF.in(recipient)), new InternetAddress(recipientF.in(recipient)));
         }
 
         MessageAttributeSetters.applyAll(
