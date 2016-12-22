@@ -32,6 +32,7 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,8 +40,11 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -189,15 +193,6 @@ public class FeatureManagerActorTest {
         verify(mpf2, times(1)).process(any(IObject.class), any(IObject.class));
         verify(mpf3, times(1)).process(any(IObject.class), any(IObject.class));
 
-        // check 'getState' method
-        FeatureManagerStateWrapper stateWrapper = mock(FeatureManagerStateWrapper.class);
-        actor.getState(stateWrapper);
-        verify(stateWrapper, times(1)).setLoadedFeatures(any());
-        verify(stateWrapper, times(1)).setFailedFeatures(any());
-        verify(stateWrapper, times(1)).setProcessingFeatures(any());
-        verify(stateWrapper, times(1)).setFrozenFeatureProcesses(any());
-        verify(stateWrapper, times(1)).setFrozenRequests(any());
-
         // check 'onFeatureStepCompleted' method
         Map<IMessageProcessor, IFeature> featureProcess = new HashMap<>();
         OnFeatureStepCompletedWrapper onFeatureStepCompletedWrapper = mock(OnFeatureStepCompletedWrapper.class);
@@ -236,6 +231,43 @@ public class FeatureManagerActorTest {
         verify(mpf1, times(1)).continueProcess(null);
         verify(mp1).continueProcess(null);
         verify(mp3).continueProcess(null);
+
+        // check 'getState' method
+        FeatureManagerStateWrapper stateWrapper = mock(FeatureManagerStateWrapper.class);
+        doAnswer(invocationOnMock -> {
+            Collection<IFeature> loadedFeatures = (Collection<IFeature>) invocationOnMock.getArguments()[0];
+            assertEquals(loadedFeatures.size(), 2);
+            assertTrue(loadedFeatures.contains(feature1));
+            assertTrue(loadedFeatures.contains(feature2));
+            return null;
+        }).when(stateWrapper).setLoadedFeatures(any());
+        doAnswer(invocationOnMock -> {
+            Collection<IFeature> failedFeatures = (Collection<IFeature>) invocationOnMock.getArguments()[0];
+            assertEquals(failedFeatures.size(), 1);
+            assertTrue(failedFeatures.contains(feature3));
+            return null;
+        }).when(stateWrapper).setFailedFeatures(any());
+        doAnswer(invocationOnMock -> {
+            Collection<IFeature> processingFeatures = (Collection<IFeature>) invocationOnMock.getArguments()[0];
+            assertEquals(processingFeatures.size(), 0);
+            return null;
+        }).when(stateWrapper).setProcessingFeatures(any());
+        doAnswer(invocationOnMock -> {
+            Map frozenRequests = (Map<IMessageProcessor, IFeature>) invocationOnMock.getArguments()[0];
+            assertTrue(frozenRequests.isEmpty());
+            return null;
+        }).when(stateWrapper).setFrozenRequests(any());
+        doAnswer(invocationOnMock -> {
+            Map frozenFeatures = (Map<IMessageProcessor, Set<IFeature>>) invocationOnMock.getArguments()[0];
+            assertTrue(frozenFeatures.isEmpty());
+            return null;
+        }).when(stateWrapper).setFrozenFeatureProcesses(any());
+        actor.getState(stateWrapper);
+        verify(stateWrapper, times(1)).setLoadedFeatures(any());
+        verify(stateWrapper, times(1)).setFailedFeatures(any());
+        verify(stateWrapper, times(1)).setProcessingFeatures(any());
+        verify(stateWrapper, times(1)).setFrozenFeatureProcesses(any());
+        verify(stateWrapper, times(1)).setFrozenRequests(any());
 
     }
 

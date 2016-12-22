@@ -111,8 +111,8 @@ public class FeaturesCreatorActor {
                         features.put(name, new Feature(
                                         name,
                                         null,
-                                        //(IPath) feature.getValue(this.featureLocationFN)
-                                        new Path(wrapper.getFeatureDirectory())
+                                        (IPath) feature.getValue(this.featureLocationFN)
+                                        //new Path(wrapper.getFeatureDirectory())
                                 )
                         );
                     }
@@ -134,7 +134,7 @@ public class FeaturesCreatorActor {
             featureDescription.setValue(this.nameFN, name);
             featureDescription.setValue(this.groupFN, null);
             featureDescription.setValue(this.versionFN, null);
-            featureDescription.setValue(this.featureLocationFN, new Path(observedDirectory + File.separator + file.getPath()));
+            featureDescription.setValue(this.featureLocationFN, new Path(file.getPath()));
             featuresDescription.add(featureDescription);
 
             return featuresDescription;
