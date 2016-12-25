@@ -15,6 +15,11 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interfaces.IEmbeddedSensorStrategy;
+import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interfaces.exceptions.EmbeddedSensorStrategyException;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITime;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
+import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,12 +32,18 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  */
 public class EmbeddedSensorReceiver implements IMessageReceiver {
+    private static final long DEFAULT_COMMIT_DELAY = 1000;
+
     private long observationStart;
     private long observationPeriod;
     private long maxPeriodItems;
     private IEmbeddedSensorStrategy<?> strategy;
     private final AtomicReference<ObservationPeriod<?>> currentPeriod = new AtomicReference<>();
     private Object statisticsChainId;
+
+    private final ITimer timer;
+    private final ITime systemTime;
+    private long commitDelay = DEFAULT_COMMIT_DELAY;
 
     private final IFieldName periodFieldName;
     private final IFieldName startFieldName;
@@ -56,7 +67,8 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         private final TState state;
         private final IEmbeddedSensorStrategy<TState> strategy;
 
-        ObservationPeriod(final long start, final long end, final long nItems, final IEmbeddedSensorStrategy<TState> strategy) {
+        ObservationPeriod(final long start, final long end, final long nItems, final IEmbeddedSensorStrategy<TState> strategy)
+                throws EmbeddedSensorStrategyException {
             this.periodStart = start;
             this.periodEnd = end;
             this.maxPeriodItems = nItems;
@@ -65,7 +77,8 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
             this.strategy = strategy;
         }
 
-        ObservationPeriod<TState> nextPeriod(final long inclTime) {
+        ObservationPeriod<TState> nextPeriod(final long inclTime)
+                throws EmbeddedSensorStrategyException {
             long duration = periodEnd - periodStart;
             // Skip some periods where we had no messages
             long skip = (inclTime - periodEnd) / duration;
@@ -85,7 +98,8 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
             return time > periodEnd;
         }
 
-        private Collection<? extends Number> extractData() {
+        private Collection<? extends Number> extractData()
+                throws EmbeddedSensorStrategyException, InvalidArgumentException {
             return strategy.extractPeriod(state);
         }
 
@@ -97,7 +111,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         }
 
         void recordProcessor(final IMessageProcessor mp, final long time)
-                throws SendingMessageException, ResolutionException, ChangeValueException, InvalidArgumentException {
+                throws TaskScheduleException, EmbeddedSensorStrategyException, InvalidArgumentException {
             if (isCountLimited() && !isStartedAt(time)) {
                 return;
             }
@@ -110,7 +124,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         }
 
         IObject fillInMessage()
-                throws ResolutionException, ChangeValueException, InvalidArgumentException {
+                throws ResolutionException, ChangeValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
             IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             message.setValue(periodStartFieldName, periodStart);
             message.setValue(periodEndFieldName, periodEnd);
@@ -125,10 +139,11 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
      * @param args    description of the sensor to create
      * @throws ResolutionException if error occurs resolving any dependencies
      * @throws ReadValueException if error occurs reading arguments object
-     * @throws InvalidArgumentException if something unexpected occurs
+     * @throws InvalidArgumentException if something unexpected occurs suddenly
+     * @throws EmbeddedSensorStrategyException if error occurs in sensor strategy while initializing first observation period
      */
     public EmbeddedSensorReceiver(final IObject args)
-            throws ResolutionException, ReadValueException, InvalidArgumentException {
+            throws ResolutionException, ReadValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
         periodFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "period");
         startFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "start");
         limitFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "limit");
@@ -138,11 +153,14 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         periodEndFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodEnd");
         dataFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "data");
 
+        timer = IOC.resolve(Keys.getOrAdd("timer"));
+        systemTime = IOC.resolve(Keys.getOrAdd("time"));
+
         observationPeriod = Duration.parse((String) args.getValue(periodFieldName)).toMillis();
 
         String start = (String) args.getValue(startFieldName);
         observationStart = (start == null)
-                ? System.currentTimeMillis()
+                ? systemTime.currentTimeMillis()
                 : LocalDateTime.parse(start).atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
 
         Number maxItems = (Number) args.getValue(limitFieldName);
@@ -155,15 +173,22 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
     }
 
     private void commitPeriod(final ObservationPeriod<?> period, final ObservationPeriod<?> nextPeriod)
-            throws SendingMessageException, ResolutionException, ChangeValueException, InvalidArgumentException {
+            throws TaskScheduleException {
         if (currentPeriod.compareAndSet(period, nextPeriod)) {
-            // TODO: Execute the following line with some delay to let all threads write out the data to the period
-            MessageBus.send(period.fillInMessage(), statisticsChainId);
+            // Message is created and sent with some delay to let all threads write data to the old period
+            timer.schedule(() -> {
+                try {
+                    MessageBus.send(period.fillInMessage(), statisticsChainId);
+                } catch (SendingMessageException | ResolutionException | InvalidArgumentException | ChangeValueException
+                        | EmbeddedSensorStrategyException e) {
+                    throw new TaskExecutionException(e);
+                }
+            }, systemTime.currentTimeMillis() + commitDelay);
         }
     }
 
     private ObservationPeriod<?> getCurrentPeriod(final long time)
-            throws SendingMessageException, ResolutionException, ChangeValueException, InvalidArgumentException {
+            throws TaskScheduleException, EmbeddedSensorStrategyException {
         while (true) {
             ObservationPeriod<?> period = currentPeriod.get();
 
@@ -180,9 +205,9 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
     public void receive(final IMessageProcessor processor)
             throws MessageReceiveException, AsynchronousOperationException {
         try {
-            final long cTime = System.currentTimeMillis();
+            final long cTime = systemTime.currentTimeMillis();
             getCurrentPeriod(cTime).recordProcessor(processor, cTime);
-        } catch (SendingMessageException | ResolutionException | ChangeValueException | InvalidArgumentException e) {
+        } catch (TaskScheduleException | EmbeddedSensorStrategyException | InvalidArgumentException e) {
             throw new MessageReceiveException(e);
         }
     }
