@@ -16,6 +16,8 @@ import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
 import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 
@@ -94,7 +96,15 @@ public class PluginScheduler extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
-                return new EntryStorage((IPool) args[0], (String) args[1], observer);
+                return new EntryStorage(new DatabaseRemoteStorage((IPool) args[0], (String) args[1]), observer);
+            } catch (ResolutionException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
+        IOC.register(Keys.getOrAdd("local only scheduler entry storage"), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                ISchedulerEntryStorageObserver observer = (args.length > 0) ? (ISchedulerEntryStorageObserver) args[0] : null;
+                return new EntryStorage(NullRemoteStorage.INSTANCE,  observer);
             } catch (ResolutionException e) {
                 throw new FunctionExecutionException(e);
             }

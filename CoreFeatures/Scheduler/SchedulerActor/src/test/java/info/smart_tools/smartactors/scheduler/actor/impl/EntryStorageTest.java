@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
@@ -38,6 +40,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy restoreEntryStrategy;
     private IObject[] saved;
     private ISchedulerEntry[] entries;
+    private IRemoteEntryStorage remoteEntryStorage;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -100,6 +103,8 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
                 task.execute();
             }
+
+            remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");
         }
 
         restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
@@ -127,7 +132,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_downloadAndRestoreEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         assertFalse(storage.downloadNextPage(2));
         assertFalse(storage.downloadNextPage(2));
@@ -141,7 +146,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_locallyStoreEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         storage.saveLocally(entries[0]);
         storage.saveLocally(entries[1]);
@@ -155,7 +160,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         when(entries[1].getId()).thenReturn("0");
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         storage.saveLocally(entries[0]);
         storage.saveLocally(entries[1]);
@@ -169,7 +174,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         storage.save(entries[saved.length]);
 
@@ -181,7 +186,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         assertTrue(storage.downloadNextPage(100));
         storage.saveLocally(entries[1]);
@@ -201,7 +206,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_enumerateAllEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         storage.saveLocally(entries[1]);
         storage.saveLocally(entries[2]);
