@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interface
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -20,7 +21,8 @@ public class TimeDeltaForLimitedCountStrategy implements IEmbeddedSensorStrategy
      * State of a single observation period. Implemented as thread-safe lock-free fixed size vector.
      */
     static final class PeriodState {
-        private final AtomicInteger allocatedCount, actualCount;
+        private final AtomicBoolean locked;
+        private volatile int count;
         private final Long[] data;
 
         /**
@@ -29,9 +31,21 @@ public class TimeDeltaForLimitedCountStrategy implements IEmbeddedSensorStrategy
          * @param maxCount    maximum count of measurements in period
          */
         PeriodState(final int maxCount) {
-            this.allocatedCount = new AtomicInteger(0);
-            this.actualCount = new AtomicInteger(0);
+            this.locked = new AtomicBoolean(false);
             this.data = new Long[maxCount];
+            this.count = 0;
+        }
+
+        private void lock() {
+            boolean done;
+
+            do {
+                done = locked.compareAndSet(false, true);
+            } while (!done);
+        }
+
+        private void unlock() {
+            locked.set(false);
         }
 
         /**
@@ -40,11 +54,20 @@ public class TimeDeltaForLimitedCountStrategy implements IEmbeddedSensorStrategy
          * @param delta    the value
          */
         void recordDelta(final long delta) {
-            int index = allocatedCount.getAndIncrement();
+            if (count >= data.length) {
+                return;
+            }
 
-            if (index < data.length) {
-                data[index] = delta;
-                actualCount.compareAndSet(index, index + 1);
+            lock();
+
+            try {
+                int index = count;
+                if (index < data.length) {
+                    data[index] = delta;
+                    count = index + 1;
+                }
+            } finally {
+                unlock();
             }
         }
 
@@ -54,8 +77,17 @@ public class TimeDeltaForLimitedCountStrategy implements IEmbeddedSensorStrategy
          * @return collection of all recorded measurements
          */
         Collection<Long> getData() {
-            int currentCount = actualCount.get();
-            return Arrays.asList((currentCount == data.length) ? data : Arrays.copyOf(data, currentCount));
+            int currentCount;
+
+            lock();
+
+            try {
+                currentCount = count;
+            } finally {
+                unlock();
+            }
+
+            return Arrays.asList((currentCount >= data.length) ? data : Arrays.copyOf(data, currentCount));
         }
     }
 
