@@ -5,6 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>server2</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Server</module>
+    </modules>
     <groupId>info.smart_tools.smartactors</groupId>
     <version>0.2.0-SNAPSHOT</version>
 
@@ -51,25 +55,6 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 
-
-
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>feature-manager-interfaces.interfaces.ifeature-manager</artifactId>-->
-            <!--<version>0.2.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-
-
-
-
-        <!-- Third party libs -->
-        <!--<dependency>-->
-            <!--<groupId>com.googlecode.json-simple</groupId>-->
-            <!--<artifactId>json-simple</artifactId>-->
-            <!--<version>1.1</version>-->
-        <!--</dependency>-->
-
-
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
@@ -91,26 +76,12 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <inherited>false</inherited>
                 <configuration>
-                    <finalName>server</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>info.smart_tools.smartactors.servers.server2.Server</mainClass>
-                        </manifest>
-                    </archive>
+                    <descriptor>bin.xml</descriptor>
+                    <finalName>${artifactId}-${pom.version}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -122,14 +93,14 @@
                 </goals>
                 <configuration>
                     <generatePom>false</generatePom>
-                    <file>${basedir}/target/server.jar</file>
+                    <file>${basedir}/target/${artifactId}-${version}.zip</file>
                     <url>http://archiva.smart-tools.info/repository/servers/</url>
                     <repositoryId>archiva.servers</repositoryId>
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>
                     <version>0.2.0-SNAPSHOT</version>
-                    <packaging>jar</packaging>
+                    <packaging>zip</packaging>
                 </configuration>
             </plugin>
         </plugins>

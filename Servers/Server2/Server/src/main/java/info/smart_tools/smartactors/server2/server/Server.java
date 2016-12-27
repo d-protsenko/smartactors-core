@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.servers.server2;
+package info.smart_tools.smartactors.server2.server;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -15,13 +15,13 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_cr
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
+import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
+import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
+import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
 
 import java.io.File;
 import java.io.IOException;
