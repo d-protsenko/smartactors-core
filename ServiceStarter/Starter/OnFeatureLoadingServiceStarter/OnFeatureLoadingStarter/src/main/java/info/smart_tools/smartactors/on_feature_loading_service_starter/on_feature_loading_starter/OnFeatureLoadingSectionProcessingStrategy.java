@@ -53,7 +53,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     private final IFieldName chainFieldName;
     private final IFieldName messagesFieldName;
 
-    private final Integer stackDepth;
+    private Integer stackDepth;
 
     /**
      * The constructor.
@@ -74,7 +74,11 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
                 "messages"
         );
-        this.stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+        try {
+            this.stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+        } catch (ResolutionException e) {
+            this.stackDepth = 5;
+        }
     }
 
     @Override

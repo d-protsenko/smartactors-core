@@ -34,7 +34,7 @@
         <module>PluginLoaderVisitorEmptyImplementation</module>
         <module>FilesystemTracker</module>
         <module>FeatureManager</module>
-        <module>PluginTestJar</module>
+        <!--<module>PluginTestJar</module>-->
     </modules>
 
     <repositories>

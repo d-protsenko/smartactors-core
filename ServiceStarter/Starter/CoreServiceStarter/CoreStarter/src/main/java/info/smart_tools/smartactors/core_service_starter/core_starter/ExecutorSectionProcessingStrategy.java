@@ -66,7 +66,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             IOC.register(
                     Keys.getOrAdd("default_stack_depth"),
                     new SingletonStrategy(
-                        null != defaultStackDepth ? this.defaultStackDepthFieldName : DEFAULT_STACK_DEPTH
+                        null != defaultStackDepth ? defaultStackDepth : DEFAULT_STACK_DEPTH
                     )
             );
 
