@@ -49,7 +49,8 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
      * @throws ChangeValueException if any errors occurred on writing to the {@link IObject}
      */
     @Item("feature_management")
-    @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "ConfigurationObject"})
+    @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "ConfigurationObject", "config_section:onFeatureLoading"})
+    @Before("read_initial_config")
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChainNotFoundException, ChangeValueException {
 

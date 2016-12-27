@@ -19,7 +19,7 @@
 
     <modules>
         <module>PluginIOCKeys</module>
-        <module>PluginIOCSimpleContainer</module>
+        <!--<module>PluginIOCSimpleContainer</module>-->
     </modules>
 
     <repositories>

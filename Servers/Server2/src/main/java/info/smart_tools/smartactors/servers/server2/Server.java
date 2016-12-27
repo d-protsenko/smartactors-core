@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,12 +55,13 @@ public class Server implements IServer {
     }
 
     @Override
-    public void initialize() throws ServerInitializeException {
-
+    public void initialize()
+            throws ServerInitializeException {
     }
 
     @Override
-    public void start() throws ServerExecutionException {
+    public void start()
+            throws ServerExecutionException {
         loadCore();
     }
 
@@ -67,10 +69,12 @@ public class Server implements IServer {
             throws ServerExecutionException {
         try {
             File coreDir = new File("core");
-            List<IPath> jars = getListOfJars(coreDir);
+            List<IPath> jars = new ArrayList<>();
+            for (File file : coreDir.listFiles()) {
+                jars.addAll(getListOfJars(file));
+            }
             loadPlugins(jars);
             System.out.println("\n\n[OK] Stage 1: server core has been loaded successful.\n\n");
-
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }
@@ -118,7 +122,6 @@ public class Server implements IServer {
             } catch (RevertProcessExecutionException ee) {
                 e.addSuppressed(ee);
             }
-
             throw e;
         }
     }

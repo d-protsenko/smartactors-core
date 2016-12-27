@@ -148,6 +148,7 @@ public class FeatureManagerActor {
 
             } else {
                 this.loadedFeatures.put(feature.getName(), feature);
+                this.failedFeatures.remove(feature.getName());
                 removeLoadedFeatureFromDependencies(feature);
                 checkAndRunConnectedFeatures();
             }
