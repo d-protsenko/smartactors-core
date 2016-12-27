@@ -54,10 +54,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
             CyclicBarrier barrier = new CyclicBarrier(2);
             AtomicReference<Throwable> eRef = new AtomicReference<>(null);
 
-
-            ITestReporter testReporter = IOC.resolve(..., config.getValue(new FieldName("featureName"), reportType, dfkgjhsd, sdfgsdfg);
-
-
             for (IObject testDesc : tests) {
                 System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
                 ITestRunner runner = IOC.resolve(
@@ -65,8 +61,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
                                 IOC.getKeyForKeyStorage(),
                                 ITestRunner.class.getCanonicalName() + "#" + testDesc.getValue(this.testRunnerName))
                 );
-
-                ITestReporter.beforeTest(testDesc);
                 runner.runTest(testDesc, err -> {
                     eRef.set(err);
                     try {
@@ -83,7 +77,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
                     Thread.currentThread().interrupt();
                     return;
                 }
-                ITestReporter.afterTest(eRef.get());
 
                 if (null != eRef.get()) {
                     throw new ConfigurationProcessingException("Test failed.", eRef.get());
@@ -91,7 +84,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
                     System.out.println("Test '" + testDesc.getValue(testNameFieldName) + "' is successful.");
                 }
             }
-            testReporter.buildReport();
             System.out.println("--------------------------------- Testing completed ---------------------------------");
         } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
             throw new ConfigurationProcessingException(e);
