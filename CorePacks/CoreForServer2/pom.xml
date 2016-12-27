@@ -61,12 +61,12 @@
             <version>0.2.0-SNAPSHOT</version>
             <type>zip</type>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>info.smart_tools.smartactors</groupId>-->
-            <!--<artifactId>feature-management</artifactId>-->
-            <!--<version>0.2.0-SNAPSHOT</version>-->
-            <!--<type>zip</type>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-management</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <type>zip</type>
+        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>field</artifactId>
