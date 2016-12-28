@@ -71,7 +71,6 @@ public class TestsSectionStrategy implements ISectionStrategy {
                         throw new ActionExecuteException(e);
                     }
                 });
-
                 try {
                     barrier.await();
                 } catch (InterruptedException e) {

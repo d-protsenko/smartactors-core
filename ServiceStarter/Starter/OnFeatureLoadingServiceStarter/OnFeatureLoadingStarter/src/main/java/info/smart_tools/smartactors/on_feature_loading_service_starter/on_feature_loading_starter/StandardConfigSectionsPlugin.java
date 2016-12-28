@@ -34,6 +34,9 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             IBootstrapItem<String> onFeatureLoadingItem = new BootstrapItem("config_section:onFeatureLoading");
 
             onFeatureLoadingItem
+                    .after("config_sections:done")
+//                    .before("config_sections:done")
+//                    .before("starter")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

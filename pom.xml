@@ -18,20 +18,15 @@
     </properties>
 
     <modules>
-        <module>ServerWithIoc</module>
         <module>ProofOfAssumption</module>
         <module>ScopeCreationEventHandler</module>
         <!-- database tasks modules -->
         <!-- /database tasks modules -->
         <module>examples</module>
-        <module>ServerWithPluginLoader</module>
         <module>PluginLoadScopeProvider</module>
-        <module>ServerWithIObject</module>
         <module>ToWrapperConverterStrategy</module>
         <module>ValidateFormDataActor</module>
-        <module>ServerWithConfiguration</module>
         <module>DependencyResolvingFeatureManager</module>
-        <module>ServerForIntern</module>
         <module>PluginValidationFormActor</module>
         <module>SampleDBActor</module>
         <module>PluginSampleDBActor</module>
