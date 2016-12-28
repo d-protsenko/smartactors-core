@@ -12,6 +12,13 @@ public class EmbeddedSensorHandle implements ISensorHandle {
     private final Object chainId;
     private final Object chainModificationId;
 
+    /**
+     * The constructor.
+     *
+     * @param chainStorage           the chain storage
+     * @param chainId                the chain identifier
+     * @param chainModificationId    identifier of chain modification embedding the sensor into the chain
+     */
     public EmbeddedSensorHandle(final IChainStorage chainStorage, final Object chainId, final Object chainModificationId) {
         this.chainStorage = chainStorage;
         this.chainId = chainId;

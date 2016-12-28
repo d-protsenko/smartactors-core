@@ -72,7 +72,7 @@ public class EmbeddedSensorObservationPeriod<TState> implements IEmbeddedSensorO
     }
 
     private boolean isStartedAt(final long time) {
-        return periodStart >= time;
+        return periodStart <= time;
     }
 
     @Override
