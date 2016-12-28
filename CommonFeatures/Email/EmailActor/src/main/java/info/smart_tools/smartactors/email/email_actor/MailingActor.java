@@ -192,15 +192,16 @@ public class MailingActor {
 
             Collection<FutureResult<Iterator<DeliveryRecipientStatus>>> cfr = deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope).get();
 
+            final SendFailureException exception = new SendFailureException();
             for (FutureResult<Iterator<DeliveryRecipientStatus>> fr : cfr) {
-                final SendFailureException exception = new SendFailureException();
                 if (!fr.isSuccess()) {
                     exception.addSuppressed(fr.getException());
                     fr.getResult().forEachRemaining(status -> exception.addEmail(status.getAddress()));
                 }
-                if (!exception.getEmails().isEmpty() || !(exception.getSuppressed().length == 0)) {
-                    throw exception;
-                }
+            }
+
+            if (!exception.getEmails().isEmpty() || !(exception.getSuppressed().length == 0)) {
+                throw exception;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
