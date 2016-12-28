@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -78,20 +77,10 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     public CompletableFuture<IClient<TRequest>> start() {
         Bootstrap bootstrap = bootstrapClient();
         NettyClient<TRequest> me = this;
-        ChannelFuture future = bootstrap.connect(serverUri.getHost(),
-                port).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(final ChannelFuture future) throws Exception {
-                if (!future.isSuccess()) {
-                    //TODO:: send message about connection failed
-                    System.out.println("Connection failed!!!");
-                    future.cause().printStackTrace();
-                }
-                me.channel = future.channel();
-            }
-        });
+        ChannelFuture future = bootstrap.connect(serverUri.getHost(), port);
         try {
             future.sync();
+            me.channel = future.channel();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
