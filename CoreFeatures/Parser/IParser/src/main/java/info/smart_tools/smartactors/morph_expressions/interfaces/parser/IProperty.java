@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.morph_expressions.interfaces.parser;
 
-import java.lang.reflect.InvocationTargetException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
+
 import java.util.Map;
 
 /**
@@ -20,8 +21,8 @@ public interface IProperty {
      * @param scope the container with necessary for property values.
      *              The Property can use a few or all values in the given scope.
      * @return a result of the property.
-     * @throws InvocationTargetException when errors occur during the function.
+     * @throws ExecutionException when errors occur during the function.
      */
-    Object apply(Map<String, Object> scope) throws InvocationTargetException;
+    Object apply(Map<String, Object> scope) throws ExecutionException;
 
 }

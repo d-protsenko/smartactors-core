@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.morph_expressions.parser;
 
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IFunction;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IProperty;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ParsingException;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
 import info.smart_tools.smartactors.morph_expressions.parser.exception.SyntaxException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -239,7 +239,7 @@ class RecursiveDescentParser {
         return (scope) -> {
             try {
                 return function.apply();
-            } catch (InvocationTargetException ex) {
+            } catch (ExecutionException ex) {
                 throw new RuleException(ex.getMessage(), ex);
             }
         };
@@ -253,7 +253,7 @@ class RecursiveDescentParser {
                     return property.apply(scope);
                 } catch (NullPointerException ex) {
                     throw new RuleException("Unhandled NullPointerException in the property:[" + lexeme + "]!", ex);
-                } catch (InvocationTargetException ex) {
+                } catch (ExecutionException ex) {
                     throw new RuleException(ex.getMessage(), ex);
                 } catch (Exception ex) {
                     throw new RuleException("Thrown unhandled exception " + ex.getClass() +
@@ -273,7 +273,7 @@ class RecursiveDescentParser {
                     args[i++] = node.eval(scope);
                 }
                 return operator.apply(args);
-            } catch (InvocationTargetException ex) {
+            } catch (ExecutionException ex) {
                 throw new RuleException(ex.getMessage(), ex);
             } catch (Exception ex) {
                 throw new RuleException("Thrown unhandled exception " + ex.getClass() +
@@ -294,7 +294,7 @@ class RecursiveDescentParser {
                     args[i++] = node.eval(scope);
                 }
                 return operator.apply(args);
-            } catch (InvocationTargetException ex) {
+            } catch (ExecutionException ex) {
                 throw new RuleException(ex.getMessage(), ex);
             } catch (Exception ex) {
                 throw new RuleException("Thrown unhandled exception " + ex.getClass() +

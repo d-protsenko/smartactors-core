@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.morph_expressions.interfaces.parser;
 
-import java.lang.reflect.InvocationTargetException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
+
 import java.util.Map;
 
 /**
@@ -19,8 +20,8 @@ public interface IFunction {
      *
      * @param args the arguments for function.
      * @return a result of the function.
-     * @throws InvocationTargetException when errors occur during the function.
+     * @throws ExecutionException when errors occur during the function.
      */
-    Object apply(Object... args) throws InvocationTargetException;
+    Object apply(Object... args) throws ExecutionException;
 
 }

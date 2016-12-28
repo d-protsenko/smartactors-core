@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.morph_expressions.parser;
 
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IFunction;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
 import info.smart_tools.smartactors.morph_expressions.parser.exception.TypeConversionException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +21,14 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) + 1.0;
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("--", args -> {
             try {
                 return convertToDouble(args[0]) - 1.0;
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("||", args -> convertToBool(args[0]) ? args[0] : args[1]);
@@ -40,7 +40,7 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) > convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put(">=", args -> {
@@ -50,7 +50,7 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) >= convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("<", args -> {
@@ -60,7 +60,7 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) < convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("<=", args -> {
@@ -70,7 +70,7 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) <= convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("==", args -> {
@@ -78,7 +78,7 @@ public class Operators {
                 try {
                     return convertToDouble(args[0]).equals(convertToDouble(args[1]));
                 } catch (TypeConversionException ex) {
-                    throw new InvocationTargetException(ex, ex.getMessage());
+                    throw new ExecutionException(ex.getMessage(), ex);
                 }
             }
             return args[0].equals(args[1]);
@@ -88,7 +88,7 @@ public class Operators {
                 try {
                     return !convertToDouble(args[0]).equals(convertToDouble(args[1]));
                 } catch (TypeConversionException ex) {
-                    throw new InvocationTargetException(ex, ex.getMessage());
+                    throw new ExecutionException(ex.getMessage(), ex);
                 }
             }
             return !args[0].equals(args[1]);
@@ -100,35 +100,35 @@ public class Operators {
             try {
                 return convertToDouble(args[0]) + convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("-", args -> {
             try {
                 return convertToDouble(args[0]) - convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("*", args -> {
             try {
                 return convertToDouble(args[0]) * convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("/", args -> {
             try {
                 return convertToDouble(args[0]) / convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
         put("%", args -> {
             try {
                 return convertToDouble(args[0]) % convertToDouble(args[1]);
             } catch (TypeConversionException ex) {
-                throw new InvocationTargetException(ex, ex.getMessage());
+                throw new ExecutionException(ex.getMessage(), ex);
             }
         });
     }};
