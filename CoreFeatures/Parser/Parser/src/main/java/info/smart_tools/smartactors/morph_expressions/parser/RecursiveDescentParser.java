@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IFunctio
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IProperty;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ParsingException;
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 import info.smart_tools.smartactors.morph_expressions.parser.exception.SyntaxException;
 
 import java.util.*;
@@ -240,7 +240,7 @@ class RecursiveDescentParser {
             try {
                 return function.apply();
             } catch (ExecutionException ex) {
-                throw new RuleException(ex.getMessage(), ex);
+                throw new EvaluatingExpressionException(ex.getMessage(), ex);
             }
         };
     }
@@ -252,11 +252,11 @@ class RecursiveDescentParser {
                 try {
                     return property.apply(scope);
                 } catch (NullPointerException ex) {
-                    throw new RuleException("Unhandled NullPointerException in the property:[" + lexeme + "]!", ex);
+                    throw new EvaluatingExpressionException("Unhandled NullPointerException in the property:[" + lexeme + "]!", ex);
                 } catch (ExecutionException ex) {
-                    throw new RuleException(ex.getMessage(), ex);
+                    throw new EvaluatingExpressionException(ex.getMessage(), ex);
                 } catch (Exception ex) {
-                    throw new RuleException("Thrown unhandled exception " + ex.getClass() +
+                    throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
                             "from the property: [" + lexeme + "]!");
                 }
             }
@@ -274,9 +274,9 @@ class RecursiveDescentParser {
                 }
                 return operator.apply(args);
             } catch (ExecutionException ex) {
-                throw new RuleException(ex.getMessage(), ex);
+                throw new EvaluatingExpressionException(ex.getMessage(), ex);
             } catch (Exception ex) {
-                throw new RuleException("Thrown unhandled exception " + ex.getClass() +
+                throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
                         "from the function: [" + operatorName + "]!");
             }
         };
@@ -287,7 +287,7 @@ class RecursiveDescentParser {
             try {
                 IFunction operator = Optional
                         .ofNullable(functions.get(functionKey))
-                        .orElseThrow(() -> new RuleException("Unregistered function: [" + functionKey + "]!"));
+                        .orElseThrow(() -> new EvaluatingExpressionException("Unregistered function: [" + functionKey + "]!"));
                 int i = 0;
                 Object[] args = new Object[nodes.size()];
                 for (IEvaluationNode node : nodes) {
@@ -295,9 +295,9 @@ class RecursiveDescentParser {
                 }
                 return operator.apply(args);
             } catch (ExecutionException ex) {
-                throw new RuleException(ex.getMessage(), ex);
+                throw new EvaluatingExpressionException(ex.getMessage(), ex);
             } catch (Exception ex) {
-                throw new RuleException("Thrown unhandled exception " + ex.getClass() +
+                throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
                         "from the function: [" + functionKey + "]!");
             }
         };
@@ -307,7 +307,7 @@ class RecursiveDescentParser {
         return tokens.isEmpty() ? null : tokens.getFirst();
     }
 
-    private Object seekProperty(final Map<String, Object> scope, String path) throws RuleException {
+    private Object seekProperty(final Map<String, Object> scope, String path) throws EvaluatingExpressionException {
         try {
             String[] parts = path.split("\\.");
             Map<String, Object> currentScope = scope;
@@ -321,11 +321,11 @@ class RecursiveDescentParser {
                     return value;
                 }
             }
-            throw new RuleException("Scope does not contain variable " + path + "!");
+            throw new EvaluatingExpressionException("Scope does not contain variable " + path + "!");
         } catch (ClassCastException ex) {
-            throw new RuleException("Scope and nested scopes must be a Map<String, Object> type!");
+            throw new EvaluatingExpressionException("Scope and nested scopes must be a Map<String, Object> type!");
         } catch (NullPointerException ex) {
-            throw new RuleException("Scope is undefined!");
+            throw new EvaluatingExpressionException("Scope is undefined!");
         }
     }
 

@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IFunctio
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IParser;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IProperty;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ParsingException;
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,13 +32,13 @@ public class ParserAndEvaluatorTest {
     // <smartforms>
     //--------------------------------------------------------------------------------------------------------------
     @Test
-    public void shouldParseAndEvalPredefinedConstant() throws ParsingException, RuleException {
+    public void shouldParseAndEvalPredefinedConstant() throws ParsingException, EvaluatingExpressionException {
         assertEquals(true, parser.parse(("true")).eval());
         assertEquals(false, parser.parse(("false")).eval());
     }
 
     @Test
-    public void shouldParseAndEvalValidNumbers() throws ParsingException, RuleException {
+    public void shouldParseAndEvalValidNumbers() throws ParsingException, EvaluatingExpressionException {
         assertEquals(0d, parser.parse("0").eval(), 0d);
         assertEquals(5d, parser.parse("5").eval(), 0d);
         assertEquals(5.4, parser.parse("5.4").eval(), 0d);
@@ -60,7 +60,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalString() throws ParsingException, RuleException {
+    public void shouldParseAndEvalString() throws ParsingException, EvaluatingExpressionException {
         assertEquals("string", parser.parse(("\"string\"")).eval());
         assertEquals("string", parser.parse(("\'string\'")).eval());
     }
@@ -86,7 +86,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalAdditionOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalAdditionOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(3d, parser.parse("1 + 2").eval(), 0d);
         assertEquals(7d, parser.parse("1 + 2 + 4").eval(), 0d);
         assertEquals(9d, parser.parse("1 + 2 * 4").eval(), 0d);
@@ -94,13 +94,13 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalIncreaseOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalIncreaseOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(3d, parser.parse("++2").eval(), 0d);
         assertEquals(4d, parser.parse("1 + ++2").eval(), 0d);
     }
 
     @Test
-    public void shouldParseAndEvalSubtractOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalSubtractOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(-1d, parser.parse("1 - 2").eval(), 0d);
         assertEquals(-1d, parser.parse("1 - 1 - 1").eval(), 0d);
         assertEquals(-7d, parser.parse("1 - 2 * 4").eval(), 0d);
@@ -108,47 +108,47 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalDecreaseOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalDecreaseOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(1d, parser.parse("--2").eval(), 0d);
         assertEquals(0d, parser.parse("1 - --2").eval(), 0d);
     }
 
     @Test
-    public void shouldParseAndEvalMultiplyOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalMultiplyOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(8d, parser.parse("4 * 2").eval(), 0d);
         assertEquals(8d, parser.parse("2 * 2 * 2").eval(), 0d);
         assertEquals(-4d, parser.parse("2 * -2").eval(), 0d);
     }
 
     @Test
-    public void shouldParseAndEvalDivideOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalDivideOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(2d, parser.parse("4 / 2").eval(), 0d);
         assertEquals(2d, parser.parse("8 / 2 / 2").eval(), 0d);
         assertEquals(-1d, parser.parse("2 / -2").eval(), 0d);
     }
 
     @Test
-    public void shouldModOperator() throws ParsingException, RuleException {
+    public void shouldModOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(2d, parser.parse("8 % 3").eval(), 0d);
         assertEquals(1d, parser.parse("5 % -2").eval(), 0d);
     }
 
     @Test
-    public void shouldParseAndEvalEqualOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalEqualOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(false, parser.parse("2 == 3").eval());
         assertEquals(true, parser.parse("2 == 2").eval());
         assertEquals(true, parser.parse("true == 2 > 1").eval());
     }
 
     @Test
-    public void shouldParseAndEvalNotEqualOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalNotEqualOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(false, parser.parse("2 != 2").eval());
         assertEquals(true, parser.parse("2 != 3").eval());
         assertEquals(true, parser.parse("true != 1 > 2").eval());
     }
 
     @Test
-    public void shouldParseAndEvalGreaterOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalGreaterOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(false, parser.parse("2 > 3").eval());
         assertEquals(false, parser.parse("2 > 2").eval());
         assertEquals(true, parser.parse("2 > 1").eval());
@@ -156,7 +156,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalGreaterOrEqualOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalGreaterOrEqualOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(false, parser.parse("2 >= 3").eval());
         assertEquals(true, parser.parse("2 >= 2").eval());
         assertEquals(true, parser.parse("2 >= 1").eval());
@@ -164,7 +164,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalLessOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalLessOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(true, parser.parse("2 < 3").eval());
         assertEquals(false, parser.parse("2 < 2").eval());
         assertEquals(false, parser.parse("2 < 1").eval());
@@ -172,7 +172,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalLessOrEqualOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalLessOrEqualOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(true, parser.parse("2 <= 3").eval());
         assertEquals(true, parser.parse("2 <= 2").eval());
         assertEquals(false, parser.parse("2 <= 1").eval());
@@ -180,7 +180,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalLogicalOrOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalLogicalOrOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(2d, parser.parse("2 || 3").eval(), 0d);
         assertEquals(2d, parser.parse("2 || 0").eval(), 0d);
         assertEquals(true, parser.parse("true || true").eval());
@@ -191,7 +191,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalLogicalAndOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalLogicalAndOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(3d, parser.parse("2 && 3").eval(), 0d);
         assertEquals(0d, parser.parse("2 && 0").eval(), 0d);
         assertEquals(true, parser.parse("true && true").eval());
@@ -202,7 +202,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalLogicalNotOperator() throws ParsingException, RuleException {
+    public void shouldParseAndEvalLogicalNotOperator() throws ParsingException, EvaluatingExpressionException {
         assertEquals(false, parser.parse("!1").eval());
         assertEquals(true, parser.parse("!0").eval());
         assertEquals(false, parser.parse("!!0").eval());
@@ -211,7 +211,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalParentheses() throws ParsingException, RuleException {
+    public void shouldParseAndEvalParentheses() throws ParsingException, EvaluatingExpressionException {
         assertEquals(1d, parser.parse("1 - (1 - 1)").eval(), 0d);
         assertEquals(6d, parser.parse("1 - ((2 - 3) - 4)").eval(), 0d);
         assertEquals(9d, parser.parse("3 * (2 + 1)").eval(), 0d);
@@ -229,7 +229,7 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalVariable() throws ParsingException, RuleException {
+    public void shouldParseAndEvalVariable() throws ParsingException, EvaluatingExpressionException {
         Map<String, Object> scope = new HashMap<String, Object>(1) {{
            put("x", 5d);
         }};
@@ -247,13 +247,13 @@ public class ParserAndEvaluatorTest {
         assertEquals(9d, parser.parse("x.y + z").eval(scope), 0d);
     }
 
-    @Test(expected = RuleException.class)
-    public void should_ThrowException_Reason_Variable_Is_Not_Defined() throws ParsingException, RuleException {
+    @Test(expected = EvaluatingExpressionException.class)
+    public void should_ThrowException_Reason_Variable_Is_Not_Defined() throws ParsingException, EvaluatingExpressionException {
         parser.parse(("x")).eval(Collections.emptyMap());
     }
 
     @Test
-    public void shouldParseAndEvalAndEvalComputedProperty() throws ParsingException, RuleException {
+    public void shouldParseAndEvalAndEvalComputedProperty() throws ParsingException, EvaluatingExpressionException {
         Map<String, Object> emptyScope = new HashMap<>(1);
         Map<String, Object> scope = new HashMap<String, Object>() {{
            put("x", 5);
@@ -264,15 +264,15 @@ public class ParserAndEvaluatorTest {
     }
 
     @Test
-    public void shouldParseAndEvalAndEvalFunctions() throws ParsingException, RuleException {
+    public void shouldParseAndEvalAndEvalFunctions() throws ParsingException, EvaluatingExpressionException {
         assertEquals("constant", parser.parse("constant()").eval());
         assertEquals(4d, parser.parse("sqr(2)").eval(), 0d);
         assertEquals(16d, parser.parse("sqr(sqr(2))").eval(), 0d);
         assertEquals(6d, parser.parse("sum(1, 2, 3)").eval(), 0d);
     }
 
-    @Test(expected = RuleException.class)
-    public void should_ThrowException_Reason_Function_Is_Not_Defined() throws ParsingException, RuleException {
+    @Test(expected = EvaluatingExpressionException.class)
+    public void should_ThrowException_Reason_Function_Is_Not_Defined() throws ParsingException, EvaluatingExpressionException {
         parser.parse("unregistered()").eval(Collections.emptyMap());
     }
 

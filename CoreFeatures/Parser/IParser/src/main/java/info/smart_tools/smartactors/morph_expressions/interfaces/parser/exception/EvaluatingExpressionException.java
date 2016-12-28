@@ -3,13 +3,13 @@ package info.smart_tools.smartactors.morph_expressions.interfaces.parser.excepti
 /**
  * Signal of evaluation by expression error.
  */
-public class RuleException extends Exception {
+public class EvaluatingExpressionException extends Exception {
     /**
      * Constructs a RuleException with a detail message.
      *
      * @param message the detail message.
      */
-    public RuleException(String message) {
+    public EvaluatingExpressionException(String message) {
         super(message);
     }
 
@@ -19,7 +19,7 @@ public class RuleException extends Exception {
      * @param message the detail message.
      * @param cause   the cause of the exception.
      */
-    public RuleException(String message, Throwable cause) {
+    public EvaluatingExpressionException(String message, Throwable cause) {
         super(message.isEmpty() ? cause.toString() : message, cause);
     }
 

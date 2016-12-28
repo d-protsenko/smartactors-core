@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.morph_expressions.parser;
 
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 
 import java.util.Map;
 
@@ -10,12 +10,12 @@ import java.util.Map;
 @FunctionalInterface
 interface IEvaluationNode {
     /**
-     * Evaluates the given scope used its part of syntax tree.
+     * Evaluates a parsed expression by the given scope used its part of syntax tree.
      *
      * @param scope the scope with values to be evaluated.
      * @return a result of evaluation of the given scope.
-     * @throws RuleException when errors occur during the evaluation.
+     * @throws EvaluatingExpressionException when errors occur during the evaluation.
      */
-    Object eval(Map<String, Object> scope) throws RuleException;
+    Object eval(Map<String, Object> scope) throws EvaluatingExpressionException;
 
 }

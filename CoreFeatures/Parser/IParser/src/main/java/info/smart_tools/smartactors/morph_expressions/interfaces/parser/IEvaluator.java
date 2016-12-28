@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.morph_expressions.interfaces.parser;
 
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 
 import java.util.Map;
 
@@ -13,19 +13,19 @@ public interface IEvaluator {
      *
      * @param <R> - a return result type.
      * @return the result of evaluation a some parsed expression.
-     * @throws RuleException when errors occur during the evaluation by rule.
+     * @throws EvaluatingExpressionException when errors occur during the evaluation by rule.
      */
-    <R> R eval() throws RuleException;
+    <R> R eval() throws EvaluatingExpressionException;
 
     /**
-     * Evaluates a some parsed expression using scope with specific properties.
+     * Evaluates a parsed expression using scope with specific properties.
      *
      * @param scope - a container with the specific properties
      *              for evaluation by rule the some parsed expression.
      * @param <R> - a return result type.
      * @return the result of evaluation a some parsed expression.
-     * @throws RuleException when errors occur during the evaluation by rule.
+     * @throws EvaluatingExpressionException when errors occur during the evaluation by rule.
      */
-    <R> R eval(Map<String, Object> scope) throws RuleException;
+    <R> R eval(Map<String, Object> scope) throws EvaluatingExpressionException;
 
 }

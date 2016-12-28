@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IParser;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IProperty;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IEvaluator;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ParsingException;
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.RuleException;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 import info.smart_tools.smartactors.morph_expressions.parser.exception.SyntaxException;
 
 import java.util.HashMap;
@@ -85,12 +85,12 @@ public class ExpressionParser implements IParser {
                 private IEvaluationNode root = ruleNode;
 
                 @Override
-                public <R> R eval() throws RuleException {
+                public <R> R eval() throws EvaluatingExpressionException {
                     return (R) root.eval(null);
                 }
 
                 @Override
-                public <R> R eval(final Map<String, Object> scope) throws RuleException {
+                public <R> R eval(final Map<String, Object> scope) throws EvaluatingExpressionException {
                     return (R) root.eval(scope);
                 }
 
