@@ -68,7 +68,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.OR)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processOperatorAnd(tokens))
             );
@@ -83,7 +82,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.AND)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processOperatorEquality(tokens))
             );
@@ -98,7 +96,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.EQUALITY)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processOperatorCondition(tokens))
             );
@@ -113,7 +110,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.CONDITION)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processOperatorAddSub(tokens))
             );
@@ -128,7 +124,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.ADD_SUB)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processOperatorMulDiv(tokens))
             );
@@ -143,7 +138,6 @@ class RecursiveDescentParser {
         while (TokenType.match(token, TokenType.MUL_DIV)) {
             tokens.pop();
             node = createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Arrays.asList(node, processUnaryOperator(tokens))
             );
@@ -161,7 +155,6 @@ class RecursiveDescentParser {
         if (TokenType.match(token, TokenType.ADD_SUB)) {
             tokens.pop();
             return createOperatorNode(
-                    token.getLexeme(),
                     signFunc.get(token.getLexeme()),
                     Collections.singletonList(processUnaryOperator(tokens))
             );
@@ -169,7 +162,6 @@ class RecursiveDescentParser {
         if (TokenType.match(token, TokenType.INC_DEC) || TokenType.match(token, TokenType.NEG)) {
             tokens.pop();
             return createOperatorNode(
-                    token.getLexeme(),
                     token.getFunction(),
                     Collections.singletonList(processUnaryOperator(tokens))
             );
@@ -251,20 +243,15 @@ class RecursiveDescentParser {
             if (property != null) {
                 try {
                     return property.apply(scope);
-                } catch (NullPointerException ex) {
-                    throw new EvaluatingExpressionException("Unhandled NullPointerException in the property:[" + lexeme + "]!", ex);
                 } catch (ExecutionException ex) {
                     throw new EvaluatingExpressionException(ex.getMessage(), ex);
-                } catch (Exception ex) {
-                    throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
-                            "from the property: [" + lexeme + "]!");
                 }
             }
             return seekProperty(scope, lexeme);
         };
     }
 
-    private IEvaluationNode createOperatorNode(String operatorName, IFunction operator, final List<IEvaluationNode> nodes) {
+    private IEvaluationNode createOperatorNode(IFunction operator, final List<IEvaluationNode> nodes) {
         return scope -> {
             try {
                 int i = 0;
@@ -275,9 +262,6 @@ class RecursiveDescentParser {
                 return operator.apply(args);
             } catch (ExecutionException ex) {
                 throw new EvaluatingExpressionException(ex.getMessage(), ex);
-            } catch (Exception ex) {
-                throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
-                        "from the function: [" + operatorName + "]!");
             }
         };
     }
@@ -287,7 +271,7 @@ class RecursiveDescentParser {
             try {
                 IFunction operator = Optional
                         .ofNullable(functions.get(functionKey))
-                        .orElseThrow(() -> new EvaluatingExpressionException("Unregistered function: [" + functionKey + "]!"));
+                        .orElseThrow(() -> new EvaluatingExpressionException("Unregistered function:[" + functionKey + "]!"));
                 int i = 0;
                 Object[] args = new Object[nodes.size()];
                 for (IEvaluationNode node : nodes) {
@@ -296,9 +280,6 @@ class RecursiveDescentParser {
                 return operator.apply(args);
             } catch (ExecutionException ex) {
                 throw new EvaluatingExpressionException(ex.getMessage(), ex);
-            } catch (Exception ex) {
-                throw new EvaluatingExpressionException("Thrown unhandled exception " + ex.getClass() +
-                        "from the function: [" + functionKey + "]!");
             }
         };
     }
