@@ -12,6 +12,11 @@ import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.Sen
 public class QuerySensorHandle implements ISensorHandle {
     private final ISchedulerEntry entry;
 
+    /**
+     * The constructor.
+     *
+     * @param entry    the scheduler entry that is associated with the sensor
+     */
     public QuerySensorHandle(final ISchedulerEntry entry) {
         this.entry = entry;
     }
