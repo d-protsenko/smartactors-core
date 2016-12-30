@@ -1,0 +1,4 @@
+{
+  "featureName": "statistics-plugins",
+  "afterFeatures": ["statistics", "scheduler-plugins"]
+}
