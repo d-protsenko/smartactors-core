@@ -149,7 +149,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void end() {
-        uncheckedGoTo(0, -1);
+        uncheckedGoTo(-1, -1);
     }
 
     @Override
