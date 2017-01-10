@@ -112,13 +112,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public boolean next() {
-        for (int i = stackIndex; i >= 0; --i) {
-            int step = ++stepStack[i];
-            currentReceiver = chainStack[i].get(step);
+        while (stackIndex >= 0) {
+            int step = ++stepStack[stackIndex];
+            currentReceiver = chainStack[stackIndex].get(step);
 
             if (null != currentReceiver) {
-                currentArguments = chainStack[i].getArguments(step);
-                stackIndex = i;
+                currentArguments = chainStack[stackIndex].getArguments(step);
                 return true;
             }
 
@@ -126,15 +125,15 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 this.isException = false;
                 try {
                     this.afterExceptionAction.execute(this);
-                    if (this.stackIndex < 0) {
-                        return false;
-                    }
                 } catch (Throwable e) {
                     return false;
                 }
             }
+
+            --stackIndex;
         }
 
+        stackIndex = 0;
         return false;
     }
 
@@ -149,7 +148,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void end() {
-        uncheckedGoTo(-1, -1);
+        uncheckedGoTo(0, -1);
     }
 
     @Override
