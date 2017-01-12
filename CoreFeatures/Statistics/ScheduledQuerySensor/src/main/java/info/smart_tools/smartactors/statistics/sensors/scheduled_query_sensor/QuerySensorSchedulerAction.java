@@ -27,6 +27,8 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
     private final IFieldName queryExecutorFieldName;
     private final IFieldName statisticsChainFieldName;
     private final IFieldName dataFieldName;
+    private final IFieldName periodStartFieldName;
+    private final IFieldName periodEndFieldName;
 
     /**
      * The constructor.
@@ -38,6 +40,8 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
         queryExecutorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queryExecutor");
         statisticsChainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statisticsChain");
         dataFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "data");
+        periodStartFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodStart");
+        periodEndFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodEnd");
     }
 
     @Override
@@ -61,10 +65,15 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
         try {
             Object queryExecutorDependency = entry.getState().getValue(queryExecutorFieldName);
             IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), queryExecutorDependency));
+
             Collection<? extends Number> data = queryExecutor.execute(entry);
+            Long time = entry.getLastTime();
 
             IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             message.setValue(dataFieldName, data);
+            message.setValue(periodStartFieldName, time);
+            message.setValue(periodEndFieldName, time);
+
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(statisticsChainFieldName));
             MessageBus.send(message, chainId);
         } catch (ReadValueException | InvalidArgumentException | QueryExecutionException | ResolutionException | ChangeValueException

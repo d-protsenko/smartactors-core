@@ -96,6 +96,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
                         "'statisticsChain':'the_statistics_chain'" +
                         "}").replace('\'','"'));
         when(schedulerEntryMock.getState()).thenReturn(state);
+        when(schedulerEntryMock.getLastTime()).thenReturn(100600L);
 
         new QuerySensorSchedulerAction().execute(schedulerEntryMock);
 
@@ -103,5 +104,9 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         verify(messageBusHandlerMock).handle(messageCaptor.capture(), eq("the_statistics_chain__0"));
 
         assertSame(dataMock, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "data")));
+        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                "periodStart")));
+        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                "periodEnd")));
     }
 }
