@@ -21,6 +21,7 @@
         <module>Sensors-interfaces</module>
         <module>ScheduledQuerySensor</module>
         <module>EmbeddedSensor</module>
+        <module>StatisticsManager</module>
     </modules>
 
     <repositories>
