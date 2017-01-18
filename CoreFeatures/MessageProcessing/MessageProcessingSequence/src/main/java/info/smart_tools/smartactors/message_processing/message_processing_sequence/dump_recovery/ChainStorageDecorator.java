@@ -49,6 +49,11 @@ public class ChainStorageDecorator implements IChainStorage {
     }
 
     @Override
+    public void rollback(final Object chainId, final Object modId) throws ChainNotFoundException, ChainModificationException {
+        throw new ChainModificationException("Not supported", null);
+    }
+
+    @Override
     public IReceiverChain resolve(final Object chainId) throws ChainNotFoundException {
         if (chainsCache.containsKey(chainId)) {
             return chainsCache.get(chainId);

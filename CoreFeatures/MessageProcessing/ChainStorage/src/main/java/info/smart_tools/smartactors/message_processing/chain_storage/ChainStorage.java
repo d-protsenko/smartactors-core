@@ -116,4 +116,9 @@ public class ChainStorage implements IChainStorage {
 
         return null;
     }
+
+    @Override
+    public void rollback(final Object chainId, final Object modId) throws ChainNotFoundException, ChainModificationException {
+        throw new UnsupportedOperationException();
+    }
 }

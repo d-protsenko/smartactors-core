@@ -29,9 +29,19 @@ public interface IChainStorage {
      * @return identifier of the chain mutation
      * @throws ChainNotFoundException if there is no chain with given identifier registered
      * @throws ChainModificationException if error occurs modifying the chain
-     * TODO:: Add method cancelling chain modification (using returned mutation id)
      */
     Object update(Object chainId, IObject modification) throws ChainNotFoundException, ChainModificationException;
+
+    /**
+     * Cancel modification performed by {@link #update(Object, IObject)} keeping all the rest applied (reapplying the ones applied after the
+     * cancelled one).
+     *
+     * @param chainId    identifier of the chain
+     * @param modId      identifier of the modification (as returned by {@link #update(Object, IObject)})
+     * @throws ChainNotFoundException if there is no chain with given identifier
+     * @throws ChainModificationException if error occurs re-applying modifications applied after the cancelled one
+     */
+    void rollback(Object chainId, Object modId) throws ChainNotFoundException, ChainModificationException;
 
     /**
      * Find a chain associated with given identifier.
