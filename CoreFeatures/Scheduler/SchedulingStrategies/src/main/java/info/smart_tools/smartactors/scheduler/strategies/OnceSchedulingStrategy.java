@@ -60,14 +60,14 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
 
             entry.getState().setValue(timeFieldName, time.toString());
 
-            entry.scheduleNext(datetimeToMillis(time));
-
             if (save) {
                 Boolean ntl = (Boolean) args.getValue(neverTooLateFieldName);
 
                 entry.getState().setValue(neverTooLateFieldName, ntl);
                 entry.save();
             }
+
+            entry.scheduleNext(datetimeToMillis(time));
         } catch (ReadValueException | InvalidArgumentException | EntryStorageAccessException | ChangeValueException
                 | EntryScheduleException e) {
             throw new SchedulingStrategyExecutionException("Error occurred initializing entry.", e);
