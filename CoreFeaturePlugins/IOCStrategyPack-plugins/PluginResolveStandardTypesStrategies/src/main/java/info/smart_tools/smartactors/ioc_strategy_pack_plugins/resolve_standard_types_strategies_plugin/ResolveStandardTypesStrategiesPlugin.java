@@ -14,6 +14,8 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy.ResolveByTypeStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.DoubleToBigDecimalResolveDependencyStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.FloatToBigDecimalResolveDependencyStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.IntegerToBigDecimalResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.StringToBigDecimalResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_character_strategies.StringToCharacterResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_date_strategies.StringToDateResolveDependencyStrategy;
@@ -130,7 +132,10 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                                     new StringToBigDecimalResolveDependencyStrategy());
                             bigDecimalStrategy.register(Double.class,
                                     new DoubleToBigDecimalResolveDependencyStrategy());
-
+                            bigDecimalStrategy.register(Float.class,
+                                    new FloatToBigDecimalResolveDependencyStrategy());
+                            bigDecimalStrategy.register(Integer.class,
+                                    new IntegerToBigDecimalResolveDependencyStrategy());
                             IOC.register(bigDecimalKey, bigDecimalStrategy);
 
                             // to LocalDateTime strategies
