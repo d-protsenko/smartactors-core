@@ -28,7 +28,24 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
+ * Statistics manager actor manages sensors (accessible through {@link ISensorHandle sensor handles}), data collectors (represented as
+ * actors) and links between them.
  *
+ * <p>
+ *     This actor holds lists of managed sensors and collectors identified by string identifiers.
+ *     Links are represented by steps in chain associated with the sensor, creation or deletion of links causes re-creation of the chain
+ *     (using {@link IConfigurationManager configuration manager}).
+ * </p>
+ *
+ * <p>
+ *     The sensors are created using a IOC strategy taking 2 arguments -- identifier of the chain where to send the data and {@link IObject}
+ *     containing sensor configuration.
+ * </p>
+ *
+ * <p>
+ *     For each data collector is created a chain (called "query chain") that has the only step configuration of which is passed on
+ *     collector creation. Such chains are meant to be used to query current state of data collector.
+ * </p>
  */
 public class StatisticsManagerActor {
     /** Interface for a single command */
@@ -78,10 +95,12 @@ public class StatisticsManagerActor {
     private class CollectorInfo {
         private final String objectName;
         private final IObject originalConfig;
+        private final String queryChainName;
 
-        CollectorInfo(final String objectName, final IObject originalConfig) {
+        CollectorInfo(final String objectName, final IObject originalConfig, final String queryChainName) {
             this.objectName = objectName;
             this.originalConfig = originalConfig;
+            this.queryChainName = queryChainName;
         }
 
         String getObjectName() {
@@ -90,6 +109,10 @@ public class StatisticsManagerActor {
 
         IObject getOriginalConfig() {
             return originalConfig;
+        }
+
+        String getQueryChainName() {
+            return queryChainName;
         }
     }
 
@@ -106,6 +129,7 @@ public class StatisticsManagerActor {
     private final IFieldName stepConfigFieldName;
     private final IFieldName objectNameFieldName;
     private final IFieldName targetFieldName;
+    private final IFieldName queryStepConfigFieldName;
 
     private final Map<String, SensorInfo> sensors;
     private final Map<String, CollectorInfo> collectors;
@@ -122,7 +146,7 @@ public class StatisticsManagerActor {
         invalidSensorChains.add(sensorId);
     }
 
-    private IObject createChainConfigFor(final String sensorId)
+    private IObject createChainConfigForSensor(final String sensorId)
             throws ResolutionException, ChangeValueException, InvalidArgumentException {
         IObject chainConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         chainConfig.setValue(chainIdFieldName, sensors.get(sensorId).getChainName());
@@ -147,7 +171,7 @@ public class StatisticsManagerActor {
         List<IObject> chainsSection = new ArrayList<>(invalidSensorChains.size());
 
         for (String id : invalidSensorChains) {
-            chainsSection.add(createChainConfigFor(id));
+            chainsSection.add(createChainConfigForSensor(id));
         }
 
         rootObject.setValue(chainsSectionFieldName, chainsSection);
@@ -159,14 +183,23 @@ public class StatisticsManagerActor {
         invalidSensorChains.clear();
     }
 
-    private void createCollectorObject(final String objectName, final IObject objectConfig)
+    private void createCollectorObject(final String objectName, final IObject objectConfig,
+                                       final String queryChainName, final IObject queryStepConfig)
             throws ChangeValueException, InvalidArgumentException, ConfigurationProcessingException, ResolutionException,
             SerializeException {
         objectConfig.setValue(objectNameFieldName, objectName);
+        queryStepConfig.setValue(targetFieldName, objectName);
+
+        IObject chainConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+        chainConfig.setValue(chainIdFieldName, queryChainName);
+        chainConfig.setValue(chainStepsFieldName, Collections.singletonList(queryStepConfig));
+        chainConfig.setValue(exceptionalFieldName, Collections.EMPTY_LIST);
 
         IObject rootConfigObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
         rootConfigObject.setValue(objectsSectionFieldName, Collections.singletonList(objectConfig));
+        rootConfigObject.setValue(chainsSectionFieldName, Collections.singletonList(chainConfig));
 
         IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
@@ -179,6 +212,10 @@ public class StatisticsManagerActor {
 
     private String generateCollectorObjectName(final String collectorId) {
         return MessageFormat.format("data-collector/{0}-{1}", collectorId, UUID.randomUUID().toString());
+    }
+
+    private String generateCollectorChainName(final String collectorId) {
+        return MessageFormat.format("data-collector-chain/{0}-{1}", collectorId, UUID.randomUUID().toString());
     }
 
     /**
@@ -201,6 +238,7 @@ public class StatisticsManagerActor {
         stepConfigFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepConfig");
         objectNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
         targetFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "target");
+        queryStepConfigFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queryStepConfig");
 
         sensors = new HashMap<>();
         collectors = new HashMap<>();
@@ -214,6 +252,7 @@ public class StatisticsManagerActor {
         commands.put("enumSensors", this::cmdEnumSensors);
         commands.put("createCollector", this::cmdCreateCollector);
         commands.put("enumCollectors", this::cmdEnumCollectors);
+        commands.put("getCollectorQueryChain", this::cmdGetCollectorQueryChain);
     }
 
     /**
@@ -239,12 +278,34 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Create a sensor.
+     *
+     * Input:
+     *
+     * <pre>
+     *     {
+     *         "id": " .. identifier of new sensor .. ",
+     *         "dependency": " .. IOC dependency for sensor creation .. ",
+     *         "args": {
+     *             .. sensor configuration ..
+     *         }
+     *     }
+     * </pre>
+     *
+     * Output:
+     *
+     * <pre>
+     *     "OK"
+     * </pre>
+     */
     private Object cmdCreateSensor(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
             IObject args = (IObject) arg;
 
             String id = (String) args.getValue(idFieldName);
+            String chainName = generateChainNameForSensor(id);
 
             if (sensors.containsKey(id)) {
                 throw new InvalidArgumentException(MessageFormat.format("Sensor named ''{0}'' already exist.", id));
@@ -252,6 +313,7 @@ public class StatisticsManagerActor {
 
             ISensorHandle handle = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), args.getValue(dependencyFieldName)),
+                    IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName),
                     args.getValue(argsFieldName)
             );
 
@@ -259,18 +321,39 @@ public class StatisticsManagerActor {
                     (String) args.getValue(dependencyFieldName),
                     (IObject) args.getValue(argsFieldName),
                     handle,
-                    generateChainNameForSensor(id)));
+                    chainName));
 
             invalidateChainFor(id);
             rebuildChains();
 
-            return id;
+            return "OK";
         } catch (ClassCastException | ReadValueException | InvalidArgumentException | ResolutionException | ChangeValueException
                 | ConfigurationProcessingException | SerializeException e) {
             throw new CommandExecutionException(e);
         }
     }
 
+    /**
+     * Create/update a link between sensor and collector.
+     *
+     * Input:
+     *
+     * <pre>
+     *     {
+     *         "sensor": " .. sensor id .. ",
+     *         "collector": " .. collector id .. ",
+     *         "stepConfig": {
+     *             .. configuration of the chain step, may include "wrapper" and "handler" and other specific fields ..
+     *         }
+     *     }
+     * </pre>
+     *
+     * Output:
+     *
+     * <pre>
+     *     "OK"
+     * </pre>
+     */
     private Object cmdLink(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
@@ -278,6 +361,14 @@ public class StatisticsManagerActor {
             String sensorId = (String) args.getValue(sensorFieldName);
             String collectorId = (String) args.getValue(collectorFieldName);
             IObject stepConf = (IObject) args.getValue(stepConfigFieldName);
+
+            if (!collectors.containsKey(collectorId)) {
+                throw new CommandExecutionException("No such collector");
+            }
+
+            if (!sensors.containsKey(sensorId)) {
+                throw new CommandExecutionException("No such sensor");
+            }
 
             stepConf.setValue(targetFieldName, collectors.get(collectorId).getObjectName());
 
@@ -293,12 +384,44 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Remove a link between a sensor and data collector.
+     *
+     * Input:
+     *
+     * <pre>
+     *     {
+     *         "sensor": " .. sensor id .. ",
+     *         "collector": " .. collector id .. "
+     *     }
+     * </pre>
+     *
+     * Output if link exists:
+     *
+     * <pre>
+     *     "OK"
+     * </pre>
+     *
+     * Output if link not exists:
+     *
+     * <pre>
+     *     "NOT EXIST"
+     * </pre>
+     */
     private Object cmdUnlink(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
             IObject args = (IObject) arg;
             String sensorId = (String) args.getValue(sensorFieldName);
             String collectorId = (String) args.getValue(collectorFieldName);
+
+            if (!collectors.containsKey(collectorId)) {
+                throw new CommandExecutionException("No such collector");
+            }
+
+            if (!sensors.containsKey(sensorId)) {
+                throw new CommandExecutionException("No such sensor");
+            }
 
             if (null == sensors.get(sensorId).getConnectedCollectors().remove(collectorId)) {
                 return "NOT EXIST";
@@ -314,6 +437,21 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Shutdown the sensor (using {@link ISensorHandle#shutdown() method of sensor handle}).
+     *
+     * Input:
+     *
+     * <pre>
+     *     " .. sensor id .. "
+     * </pre>
+     *
+     * Output:
+     *
+     * <pre>
+     *     "OK"
+     * </pre>
+     */
     private Object cmdShutdownSensor(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
@@ -335,6 +473,24 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Get list of all sensors.
+     *
+     * Output:
+     *
+     * <pre>
+     *     [
+     *         {
+     *             "id": " .. sensor id .. ",
+     *             "dependency": " .. IOC dependency the sensor was created with .. ",
+     *             "args": {
+     *                 .. the arguments the sensor was created with ..
+     *             }
+     *         },
+     *         .. for each sensor ..
+     *     ]
+     * </pre>
+     */
     private Object cmdEnumSensors(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
@@ -356,18 +512,47 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Create a data collector actor and query chain.
+     *
+     * Input:
+     *
+     * <pre>
+     *     {
+     *         "id": " .. collector id .. ",
+     *         "args": {
+     *             .. configuration of the collector actor itself (except "name" field) ..
+     *         },
+     *         "queryStepConfig": {
+     *             .. configuration of the chain step (except "target" field as it is generated here) ..
+     *         }
+     *     }
+     * </pre>
+     *
+     * Output:
+     *
+     * <pre>
+     *     "OK"
+     * </pre>
+     */
     private Object cmdCreateCollector(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
             IObject args = (IObject) arg;
             String collectorId = (String) args.getValue(idFieldName);
             IObject config = (IObject) args.getValue(argsFieldName);
+            IObject queryStepConfig = (IObject) args.getValue(queryStepConfigFieldName);
+
+            if (collectors.containsKey(collectorId)) {
+                throw new InvalidArgumentException(MessageFormat.format("Collector named ''{0}'' already exists.", collectorId));
+            }
 
             String name = generateCollectorObjectName(collectorId);
+            String chainName = generateCollectorChainName(collectorId);
 
-            createCollectorObject(name, config);
+            createCollectorObject(name, config, chainName, queryStepConfig);
 
-            collectors.put(collectorId, new CollectorInfo(name, config));
+            collectors.put(collectorId, new CollectorInfo(name, config, chainName));
 
             return "OK";
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | SerializeException
@@ -376,23 +561,64 @@ public class StatisticsManagerActor {
         }
     }
 
+    /**
+     * Get list of all collectors.
+     *
+     * Output:
+     *
+     * <pre>
+     *     [
+     *         {
+     *             "id": " .. identifier of the collector .. ",
+     *             "args": {
+     *                 .. the initial actor config ..
+     *             }
+     *         },
+     *         .. for each collector ..
+     *     ]
+     * </pre>
+     */
     private Object cmdEnumCollectors(final Object arg)
             throws CommandExecutionException, InvalidArgumentException {
         try {
             List<IObject> collectorsList = new ArrayList<>(collectors.size());
 
             for (Map.Entry<String, CollectorInfo> entry : collectors.entrySet()) {
-                IObject sensorView = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                IObject collectorView = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
-                sensorView.setValue(idFieldName, entry.getKey());
-                sensorView.setValue(argsFieldName, entry.getValue().getOriginalConfig());
+                collectorView.setValue(idFieldName, entry.getKey());
+                collectorView.setValue(argsFieldName, entry.getValue().getOriginalConfig());
 
-                collectorsList.add(sensorView);
+                collectorsList.add(collectorView);
             }
 
             return collectorsList;
         } catch (ChangeValueException | InvalidArgumentException | ResolutionException e) {
             throw new CommandExecutionException(e);
         }
+    }
+
+    /**
+     * Get name of the query chain created for a collector with given identifier.
+     *
+     * Input:
+     *
+     * <pre>
+     *     " .. collector id .."
+     * </pre>
+     *
+     * Output:
+     *
+     * <pre>
+     *     " .. chain name .. "
+     * </pre>
+     */
+    private Object cmdGetCollectorQueryChain(final Object arg)
+            throws CommandExecutionException, InvalidArgumentException {
+        if (!collectors.containsKey(String.valueOf(arg))) {
+            throw new CommandExecutionException(MessageFormat.format("There is no collector named ''{0}''", arg));
+        }
+
+        return collectors.get(String.valueOf(arg)).getQueryChainName();
     }
 }
