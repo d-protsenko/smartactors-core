@@ -53,8 +53,6 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     private final IFieldName chainFieldName;
     private final IFieldName messagesFieldName;
 
-    private Integer stackDepth;
-
     /**
      * The constructor.
      *
@@ -74,11 +72,6 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
                 "messages"
         );
-        try {
-            this.stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
-        } catch (ResolutionException e) {
-            this.stackDepth = 5;
-        }
     }
 
     @Override
@@ -90,6 +83,13 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
+            Integer stackDepth;
+            try {
+                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+            } catch (ResolutionException e) {
+                stackDepth = 5;
+            }
+
             for (IObject task : onFeatureLoadingConfig) {
                 String chainName = (String) task.getValue(this.chainFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
@@ -98,7 +98,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 for (IObject message : messages) {
                     IMessageProcessingSequence processingSequence = IOC.resolve(
                             IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
-                            this.stackDepth,
+                            stackDepth,
                             chain
                     );
                     IMessageProcessor messageProcessor = IOC.resolve(

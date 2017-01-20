@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.email.email_actor.email.MessageAttributeSett
 import info.smart_tools.smartactors.email.email_actor.email.MessagePartCreators;
 import info.smart_tools.smartactors.email.email_actor.email.SMTPMessageAdaptor;
 import info.smart_tools.smartactors.email.email_actor.exception.MailingActorException;
+import info.smart_tools.smartactors.email.email_actor.exception.SendFailureException;
 import info.smart_tools.smartactors.email.email_actor.wrapper.MailingMessage;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
@@ -191,8 +192,16 @@ public class MailingActor {
 
             Collection<FutureResult<Iterator<DeliveryRecipientStatus>>> cfr = deliveryAgent.deliver(serverHost, deliveryAgentConfig, deliveryEnvelope).get();
 
+            final SendFailureException exception = new SendFailureException();
             for (FutureResult<Iterator<DeliveryRecipientStatus>> fr : cfr) {
-                System.out.println(fr);
+                if (!fr.isSuccess()) {
+                    exception.addSuppressed(fr.getException());
+                    fr.getResult().forEachRemaining(status -> exception.addEmail(status.getAddress()));
+                }
+            }
+
+            if (!exception.getEmails().isEmpty() || !(exception.getSuppressed().length == 0)) {
+                throw exception;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
