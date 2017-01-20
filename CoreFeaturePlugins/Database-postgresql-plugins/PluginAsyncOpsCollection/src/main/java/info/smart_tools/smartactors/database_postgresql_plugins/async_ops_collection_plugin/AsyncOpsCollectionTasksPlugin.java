@@ -41,7 +41,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> item = new BootstrapItem("CachedCollectionTasksPlugin");
+            IBootstrapItem<String> item = new BootstrapItem("AsyncOpsCollectionTasksPlugin");
 
             item
 //                    .after("IOC")
@@ -118,7 +118,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                             );
 
                             IOC.register(
-                                    Keys.getOrAdd("db.cached_collection.delete"),
+                                    Keys.getOrAdd("db.async_ops_collection.delete"),
                                     //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
@@ -174,7 +174,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                     });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load CachedCollectionTasksPlugin plugin", e);
+            throw new PluginException("Can't load AsyncOpsCollectionTasksPlugin plugin", e);
         }
     }
 }
