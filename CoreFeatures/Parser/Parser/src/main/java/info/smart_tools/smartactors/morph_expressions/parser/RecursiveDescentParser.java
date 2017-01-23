@@ -271,7 +271,8 @@ class RecursiveDescentParser {
             try {
                 IFunction operator = Optional
                         .ofNullable(functions.get(functionKey))
-                        .orElseThrow(() -> new EvaluatingExpressionException("Unregistered function:[" + functionKey + "]!"));
+                        .orElseThrow(() ->
+                                new EvaluatingExpressionException("Unregistered function:[" + functionKey + "]!"));
                 int i = 0;
                 Object[] args = new Object[nodes.size()];
                 for (IEvaluationNode node : nodes) {
@@ -302,7 +303,8 @@ class RecursiveDescentParser {
                     return value;
                 }
             }
-            throw new EvaluatingExpressionException("Scope does not contain variable " + path + "!");
+            throw new EvaluatingExpressionException("Unknown identifier: [" + path + "]! " +
+                    "It's may be unregistered property or value that is missing in the scope.");
         } catch (ClassCastException ex) {
             throw new EvaluatingExpressionException("Scope and nested scopes must be a Map<String, Object> type!");
         } catch (NullPointerException ex) {
