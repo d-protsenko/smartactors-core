@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor;
 
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.ISensorHandle;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.SensorShutdownException;
 
@@ -27,6 +29,10 @@ public class EmbeddedSensorHandle implements ISensorHandle {
 
     @Override
     public void shutdown() throws SensorShutdownException {
-        throw new SensorShutdownException("Shutdown procedure is not implemented for embedded sensors.");
+        try {
+            chainStorage.rollback(chainId, chainModificationId);
+        } catch (ChainModificationException | ChainNotFoundException e) {
+            throw new SensorShutdownException(e);
+        }
     }
 }
