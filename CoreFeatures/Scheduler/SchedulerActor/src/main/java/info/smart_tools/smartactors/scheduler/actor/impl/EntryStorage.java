@@ -9,22 +9,22 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntrySchedul
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Implementation of {@link ISchedulerEntryStorage}.
  */
 public class EntryStorage implements ISchedulerEntryStorage {
-
-    private final ConcurrentHashMap<String, ISchedulerEntry> localEntries = new ConcurrentHashMap<>();
-
     private final IRemoteEntryStorage remoteEntryStorage;
     private final ISchedulerEntryStorageObserver observer;
 
-    private boolean isInitialDownloadComplete;
+    private final Map<String, ISchedulerEntry> activeEntries;
+    private final Map<String, ISchedulerEntry> strongSuspendEntries;
+    private final Map<String, WeakReference<ISchedulerEntry>> weakSuspendEntries;
 
     /**
      * The constructor.
@@ -48,7 +48,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws ResolutionException {
         this.remoteEntryStorage = remoteEntryStorage;
         this.observer = (observer == null) ? NullEntryStorageObserver.INSTANCE : observer;
-        this.isInitialDownloadComplete = false;
+
+        activeEntries = new HashMap<>();
+        strongSuspendEntries = new HashMap<>();
+        weakSuspendEntries = new WeakHashMap<>();
     }
 
     @Override
@@ -58,9 +61,13 @@ public class EntryStorage implements ISchedulerEntryStorage {
     }
 
     @Override
-    public void saveLocally(final ISchedulerEntry entry)
+    public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        ISchedulerEntry oldEntry = localEntries.put(entry.getId(), entry);
+        //TODO:: Lock (?)
+        ISchedulerEntry oldEntry = activeEntries.put(entry.getId(), entry);
+
+        strongSuspendEntries.remove(entry.getId(), entry);
+        weakSuspendEntries.remove(entry.getId(), entry);
 
         try {
             observer.onUpdateEntry(entry);
@@ -78,49 +85,71 @@ public class EntryStorage implements ISchedulerEntryStorage {
     }
 
     @Override
+    public void notifyInactive(final ISchedulerEntry entry, final boolean keepReference) throws EntryStorageAccessException {
+        //TODO:: Lock (?)
+        activeEntries.remove(entry.getId(), entry);
+
+        if (keepReference) {
+            strongSuspendEntries.put(entry.getId(), entry);
+        } else {
+            weakSuspendEntries.put(entry.getId(), new WeakReference<>(entry));
+        }
+    }
+
+    @Override
     public void delete(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
+        //TODO:: Lock (?)
         try {
-            localEntries.remove(entry.getId(), entry);
+            activeEntries.remove(entry.getId(), entry);
+            strongSuspendEntries.remove(entry.getId(), entry);
+            weakSuspendEntries.remove(entry.getId(), entry);
+
             remoteEntryStorage.deleteEntry(entry);
             observer.onCancelEntry(entry);
         } catch (SchedulerEntryStorageObserverException e) {
             throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
-
     }
 
     @Override
     public List<ISchedulerEntry> listLocalEntries()
             throws EntryStorageAccessException {
-        return new ArrayList<>(localEntries.values());
+        // TODO::
+        return null;
     }
 
     @Override
     public ISchedulerEntry getEntry(final String id)
             throws EntryStorageAccessException {
-        ISchedulerEntry entry = localEntries.get(id);
+        //TODO:: Lock (?)
 
-        if (null == entry) {
-            throw new EntryStorageAccessException(MessageFormat.format("Cannot find entry with id=''{0}''.", id));
+        if (weakSuspendEntries.containsKey(id)) {
+            ISchedulerEntry e = weakSuspendEntries.get(id).get();
+
+            if (null == e) {
+                weakSuspendEntries.remove(id);
+            } else {
+                return e;
+            }
         }
 
-        return entry;
+        if (activeEntries.containsKey(id)) {
+            return activeEntries.get(id);
+        }
+
+        if (strongSuspendEntries.containsKey(id)) {
+            return strongSuspendEntries.get(id);
+        }
+
+        //TODO:: Query from DB
+        return null;
     }
 
     @Override
     public boolean downloadNextPage(final int preferSize)
             throws EntryStorageAccessException {
         boolean complete = remoteEntryStorage.downloadNextPage(preferSize, this);
-
-        if (complete && !isInitialDownloadComplete) {
-            isInitialDownloadComplete = true;
-            try {
-                observer.onDownloadComplete();
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying storage observer on download completion.", e);
-            }
-        }
 
         return complete;
     }

@@ -68,7 +68,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         assertEquals("trust-methis-isa-guid", entry.getId());
         assertEquals(-1L, entry.getLastTime());
@@ -81,7 +81,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.save();
 
@@ -94,7 +94,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(100500);
 
@@ -113,7 +113,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(300500);
 
@@ -130,7 +130,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid', 'message':{'this is':'the message'}}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(0);
 

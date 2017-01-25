@@ -148,9 +148,9 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
-        storage.saveLocally(entries[0]);
-        storage.saveLocally(entries[1]);
-        storage.saveLocally(entries[2]);
+        storage.notifyActive(entries[0]);
+        storage.notifyActive(entries[1]);
+        storage.notifyActive(entries[2]);
 
         assertSame(entries[1], storage.getEntry("1"));
     }
@@ -162,8 +162,8 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
-        storage.saveLocally(entries[0]);
-        storage.saveLocally(entries[1]);
+        storage.notifyActive(entries[0]);
+        storage.notifyActive(entries[1]);
 
         verify(entries[0]).cancel();
         assertSame(entries[1], storage.getEntry("0"));
@@ -189,7 +189,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
         assertTrue(storage.downloadNextPage(100));
-        storage.saveLocally(entries[1]);
+        storage.notifyActive(entries[1]);
 
         assertEquals(entries[1], storage.getEntry("1"));
 
@@ -208,8 +208,8 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
-        storage.saveLocally(entries[1]);
-        storage.saveLocally(entries[2]);
+        storage.notifyActive(entries[1]);
+        storage.notifyActive(entries[2]);
 
         assertEquals(new HashSet<>(Arrays.asList(entries[1], entries[2])), new HashSet<>(storage.listLocalEntries()));
     }
