@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.http_client_initializer;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -19,6 +20,8 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskSched
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Strategy initializer for {@link HttpClient}
@@ -27,6 +30,8 @@ public class HttpClientInitializer {
     public static void init() throws InvalidArgumentException, ResolutionException, RegistrationException {
         IFieldName uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
         IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "timeout");
+
+        Lock timerTaskLock = new ReentrantLock();
 
         Map<Object, ITimerTask> timerTasks = new HashMap<>();
         IOC.register(Keys.getOrAdd("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
@@ -39,10 +44,13 @@ public class HttpClientInitializer {
                             try {
                                 ITask task = () -> {
                                     try {
+                                        try {
+                                            IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), message.getValue(uuidFieldName));
+                                        } catch (ResolutionException e) {
+                                            return;
+                                        }
+
                                         MessageBus.send(message, chainName);
-                                        ITimerTask timerTask = timerTasks.get(message.getValue(uuidFieldName));
-                                        timerTask.cancel();
-                                        timerTasks.remove(message.getValue(uuidFieldName));
                                     } catch (ReadValueException | InvalidArgumentException | SendingMessageException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -56,7 +64,12 @@ public class HttpClientInitializer {
                                                         )
                                                 )
                                         );
-                                timerTasks.put(message.getValue(uuidFieldName), timerTask);
+                                timerTaskLock.lock();
+                                try {
+                                    timerTasks.put(message.getValue(uuidFieldName), timerTask);
+                                } finally {
+                                    timerTaskLock.unlock();
+                                }
                                 return timerTask;
                             } catch (ResolutionException | TaskScheduleException | ReadValueException e) {
                                 throw new RuntimeException(e);
@@ -68,9 +81,18 @@ public class HttpClientInitializer {
         IOC.register(Keys.getOrAdd("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object uuid = args[0];
-                            ITimerTask timerTask = timerTasks.get(uuid);
+                            ITimerTask timerTask;
+                            timerTaskLock.lock();
+                            try {
+                                timerTask = timerTasks.get(uuid);
+                                if (timerTask != null)
+                                    timerTasks.remove(uuid);
+                            } finally {
+                                timerTaskLock.unlock();
+                            }
+                            if(timerTask==null)
+                                throw new FunctionExecutionException("Can't find timer");
                             timerTask.cancel();
-                            timerTasks.remove(uuid);
                             return null;
                         }
                 )

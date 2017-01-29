@@ -93,7 +93,12 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) throws ResponseHandlerException {
         try {
             ScopeProvider.setCurrentScope(currentScope);
-            IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
+            try {
+                IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
+            } catch (ResolutionException e) {
+                // Timeout
+                return;
+            }
             isReceived = true;
             FullHttpResponse responseCopy = response.copy();
             ITask task = () -> {
@@ -116,7 +121,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 }
             };
             taskQueue.put(task);
-        } catch (ScopeProviderException | InterruptedException | ResolutionException e) {
+        } catch (ScopeProviderException | InterruptedException e) {
             throw new ResponseHandlerException(e);
         }
 
