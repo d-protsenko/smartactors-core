@@ -66,10 +66,10 @@ public class HttpClientInitializer {
                                                     )
                                             );
                                     timerTasks.put(message.getValue(uuidFieldName), timerTask);
+                                    return timerTask;
                                 } finally {
                                     timerTaskLock.unlock();
                                 }
-                                return timerTask;
                             } catch (ResolutionException | TaskScheduleException | ReadValueException e) {
                                 throw new RuntimeException(e);
                             }
