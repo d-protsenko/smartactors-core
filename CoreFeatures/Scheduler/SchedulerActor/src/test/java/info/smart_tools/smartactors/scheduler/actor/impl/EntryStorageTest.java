@@ -71,19 +71,19 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
             saved = new IObject[] {
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy1','entryId':'1'}".replace('\'', '"')),
+                            "{'strategy':'strategy1','entryId':'0'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy2','entryId':'2'}".replace('\'', '"')),
+                            "{'strategy':'strategy2','entryId':'1'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy3','entryId':'3'}".replace('\'', '"')),
+                            "{'strategy':'strategy3','entryId':'2'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy4','entryId':'4'}".replace('\'', '"')),
+                            "{'strategy':'strategy4','entryId':'3'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy5','entryId':'5'}".replace('\'', '"')),
+                            "{'strategy':'strategy5','entryId':'4'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy6','entryId':'6'}".replace('\'', '"')),
+                            "{'strategy':'strategy6','entryId':'5'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy7','entryId':'7'}".replace('\'', '"')),
+                            "{'strategy':'strategy7','entryId':'6'}".replace('\'', '"')),
             };
 
             entries = new ISchedulerEntry[saved.length + 2];
