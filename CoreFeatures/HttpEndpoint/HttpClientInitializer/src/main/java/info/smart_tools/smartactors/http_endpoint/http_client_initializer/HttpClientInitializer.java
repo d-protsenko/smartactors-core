@@ -49,23 +49,22 @@ public class HttpClientInitializer {
                                         } catch (ResolutionException e) {
                                             return;
                                         }
-
                                         MessageBus.send(message, chainName);
                                     } catch (ReadValueException | InvalidArgumentException | SendingMessageException e) {
                                         throw new RuntimeException(e);
                                     }
                                 };
                                 timer = IOC.resolve(Keys.getOrAdd("timer"));
-                                ITimerTask timerTask =
-                                        timer.schedule(task,
-                                                System.currentTimeMillis() + Long.valueOf(
-                                                        String.valueOf(
-                                                                message.getValue(timeFieldName)
-                                                        )
-                                                )
-                                        );
                                 timerTaskLock.lock();
                                 try {
+                                    ITimerTask timerTask =
+                                            timer.schedule(task,
+                                                    System.currentTimeMillis() + Long.valueOf(
+                                                            String.valueOf(
+                                                                    message.getValue(timeFieldName)
+                                                            )
+                                                    )
+                                            );
                                     timerTasks.put(message.getValue(uuidFieldName), timerTask);
                                 } finally {
                                     timerTaskLock.unlock();
@@ -81,18 +80,16 @@ public class HttpClientInitializer {
         IOC.register(Keys.getOrAdd("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object uuid = args[0];
-                            ITimerTask timerTask;
                             timerTaskLock.lock();
                             try {
-                                timerTask = timerTasks.get(uuid);
-                                if (timerTask != null)
-                                    timerTasks.remove(uuid);
+                                ITimerTask timerTask = timerTasks.remove(uuid);
+                                if (null == timerTask) {
+                                    throw new FunctionExecutionException("Can't find timer");
+                                }
+                                timerTask.cancel();
                             } finally {
                                 timerTaskLock.unlock();
                             }
-                            if(timerTask==null)
-                                throw new FunctionExecutionException("Can't find timer");
-                            timerTask.cancel();
                             return null;
                         }
                 )
