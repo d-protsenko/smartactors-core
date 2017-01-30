@@ -212,6 +212,7 @@ public final class EntryImpl implements ISchedulerEntry {
     @Override
     public void save() throws EntryStorageAccessException {
         storage.save(this);
+        this.isSavedRemotely = true;
     }
 
     @Override

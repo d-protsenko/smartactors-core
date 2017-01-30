@@ -65,23 +65,4 @@ public interface ISchedulerEntryStorage {
      * @throws EntryStorageAccessException if there is no entry with given identifier
      */
     ISchedulerEntry getEntry(String id) throws EntryStorageAccessException;
-
-    /**
-     * Download next page of entries from remote storage.
-     *
-     * <p>
-     * This method should be called continuously (until returns {@code true}) before any other method may be used safely. It will download
-     * entries saved in remote storage (database) page by page.
-     * </p>
-     *
-     * <p>
-     * May be called from different threads (but from not more than one at time).
-     * </p>
-     *
-     * @param preferSize preferred size of page {@code 0} or negative number is for default size
-     * @return {@code true} if there is no more entries to download
-     * @throws EntryStorageAccessException if any error occurs
-     */
-    @Deprecated
-    boolean downloadNextPage(int preferSize) throws EntryStorageAccessException;
 }

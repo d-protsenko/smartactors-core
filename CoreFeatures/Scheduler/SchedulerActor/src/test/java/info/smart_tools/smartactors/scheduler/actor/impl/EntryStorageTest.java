@@ -130,20 +130,6 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     }
 
     @Test
-    public void Should_downloadAndRestoreEntries()
-            throws Exception {
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
-
-        assertFalse(storage.downloadNextPage(2));
-        assertFalse(storage.downloadNextPage(2));
-        assertFalse(storage.downloadNextPage(2));
-        assertTrue(storage.downloadNextPage(2));
-        assertTrue(storage.downloadNextPage(2));
-
-        verify(restoreEntryStrategy, times(saved.length)).resolve(any(), same(storage));
-    }
-
-    @Test
     public void Should_locallyStoreEntries()
             throws Exception {
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
@@ -188,7 +174,6 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         EntryStorage storage = new EntryStorage(remoteEntryStorage);
 
-        assertTrue(storage.downloadNextPage(100));
         storage.notifyActive(entries[1]);
 
         assertEquals(entries[1], storage.getEntry("1"));
@@ -196,7 +181,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         storage.delete(entries[1]);
 
         try {
-            storage.getEntry("1");
+            assertNull(storage.getEntry("1"));
             fail();
         } catch (EntryStorageAccessException e) {}
 

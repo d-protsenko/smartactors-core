@@ -69,7 +69,6 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         when(storageStrategy.resolve(same(pool), eq("the_collection_name")))
                 .thenReturn(storage)
                 .thenThrow(ResolveDependencyStrategyException.class);
-        when(storage.downloadNextPage(anyInt())).thenReturn(true);
 
         IOC.register(Keys.getOrAdd("the connection options dependency"), new SingletonStrategy(connectionOptions));
         IOC.register(Keys.getOrAdd("the connection pool dependency"), poolStrategy);
@@ -98,25 +97,6 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         taskQueueMock = mock(IQueue.class);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
-    }
-
-    @Test
-    public void Should_downloadEntriesOnStartup()
-            throws Exception {
-        doAnswer(invocation -> {
-            invocation.getArgumentAt(0, ITask.class).execute();
-            return null;
-        }).when(taskQueueMock).put(any());
-
-        when(storage.downloadNextPage(anyInt()))
-                .thenReturn(false)
-                .thenReturn(false)
-                .thenReturn(false)
-                .thenReturn(true);
-
-        assertNotNull(new SchedulerActor(args));
-
-        verify(storage, times(4)).downloadNextPage(anyInt());
     }
 
     @Test
