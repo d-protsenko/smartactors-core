@@ -39,6 +39,9 @@ public class EntryStorageRefresher {
 
     private final IFieldName entryIdFN;
 
+    private final ITask downloadTask = this::doDownloadIteration;
+    private final ITask localRefreshTask = this::doRefreshLocalStorage;
+
     /**
      * The constructor.
      *
@@ -57,6 +60,7 @@ public class EntryStorageRefresher {
      * @throws TaskScheduleException if error occurs scheduling first execution
      * @throws InvalidArgumentException if {@code entryStorage} or {@code remoteEntryStorage} are {@code null}
      * @throws InvalidArgumentException if interval values do not satisfy requirements described above
+     * @throws InvalidArgumentException if {@code pageSize} is not a positive value
      */
     public EntryStorageRefresher(final EntryStorage entryStorage,
                                  final IRemoteEntryStorage remoteEntryStorage,
@@ -65,6 +69,28 @@ public class EntryStorageRefresher {
                                  final long refreshSuspendInterval,
                                  final int pageSize)
             throws ResolutionException, TaskScheduleException, InvalidArgumentException {
+        if (null == entryStorage) {
+            throw new InvalidArgumentException("Entry storage should not be null.");
+        }
+
+        if (null == remoteEntryStorage) {
+            throw new InvalidArgumentException("Remote entry storage should not be null.");
+        }
+
+        if (!(
+                (0 < refreshRepeatInterval) &&
+                (refreshRepeatInterval <= refreshAwakeInterval) &&
+                (refreshAwakeInterval < refreshSuspendInterval)
+        )) {
+            throw new InvalidArgumentException(String.format(
+                    "Invalid interval values: RRI = %d, RAI = %d, RSI = %d; should be: 0 < RRI <= RAI < RSI.",
+                    refreshRepeatInterval, refreshAwakeInterval, refreshSuspendInterval));
+        }
+
+        if (pageSize <= 0) {
+            throw new InvalidArgumentException("Invalid page size.");
+        }
+
         this.entryStorage = entryStorage;
         this.remoteEntryStorage = remoteEntryStorage;
 
@@ -87,7 +113,7 @@ public class EntryStorageRefresher {
     private void startRefresh() throws TaskExecutionException {
         try {
             lastDownloadedState = null;
-            taskQueue.put(this::doDownloadIteration);
+            taskQueue.put(downloadTask);
         } catch (InterruptedException e) {
             throw new TaskExecutionException("Unexpected interrupt while refreshing scheduler entry storage.", e);
         }
@@ -116,7 +142,7 @@ public class EntryStorageRefresher {
 
                 cont = !entries.isEmpty();
             } finally {
-                taskQueue.put(cont ? this::doDownloadIteration : this::doRefreshLocalStorage);
+                taskQueue.put(cont ? downloadTask : localRefreshTask);
             }
         } catch (Exception e) {
             throw new TaskExecutionException(e);
