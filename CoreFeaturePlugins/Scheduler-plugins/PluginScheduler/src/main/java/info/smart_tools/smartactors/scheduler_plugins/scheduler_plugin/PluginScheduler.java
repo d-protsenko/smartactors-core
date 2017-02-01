@@ -85,6 +85,37 @@ public class PluginScheduler extends BootstrapPlugin {
         );
     }
 
+    private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 60; // 60 seconds
+    private static final long DEFAULT_REFRESH_PAGE_SIZE = 1000 * 60;
+
+    /**
+     * Register default refresh parameters resolution strategies.
+     *
+     * <p>
+     * By-default constant refresh intervals and page size are set but the strategies may be replaced.
+     * </p>
+     *
+     * @throws ResolutionException if error occurs resolving a key
+     * @throws RegistrationException if error occurs registering a strategy
+     * @throws InvalidArgumentException if {@link SingletonStrategy} does not accept default values
+     */
+    @Item("scheduler_storage_refresh_parameters:default")
+    public void registerDefaultRefreshIntervals()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        // RRI = 60 sec
+        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rri"),
+                new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL));
+        // RAI = 90 sec
+        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rai"),
+                new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL + DEFAULT_BASE_REFRESH_INTERVAL / 2));
+        // RSI = 120 sec
+        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rsi"),
+                new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL * 2));
+
+        IOC.register(Keys.getOrAdd("scheduler storage refresh page size"),
+                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE));
+    }
+
     /**
      * Register scheduler entry storage creation strategy.
      *
@@ -93,7 +124,7 @@ public class PluginScheduler extends BootstrapPlugin {
      * @throws InvalidArgumentException if {@link ApplyFunctionToArgumentsStrategy} does not like our function
      */
     @Item("scheduler_entry_storage")
-    @After({"scheduler_entry_strategies"})
+    @After({"scheduler_entry_strategies", "scheduler_storage_refresh_parameters:default"})
     public void registerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
@@ -101,8 +132,11 @@ public class PluginScheduler extends BootstrapPlugin {
                 ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
                 IRemoteEntryStorage remoteEntryStorage = new DatabaseRemoteStorage((IPool) args[0], (String) args[1]);
                 EntryStorage storage = new EntryStorage(remoteEntryStorage, observer);
-                long bri = 1000L * 60L;
-                new EntryStorageRefresher(storage, remoteEntryStorage, bri, bri, bri * 2, 50);
+                long rrInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rri"), args);
+                long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
+                long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
+                int refreshPageSize = IOC.resolve(Keys.getOrAdd("scheduler storage refresh page size"), args);
+                new EntryStorageRefresher(storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
                 return storage;
             } catch (ResolutionException | TaskScheduleException e) {
                 throw new FunctionExecutionException(e);
