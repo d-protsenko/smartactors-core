@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.core.https_endpoint.https_client.HttpsClient;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
@@ -16,8 +17,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
+import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
@@ -37,6 +38,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Created by sevenbits on 15.10.16.
@@ -63,8 +65,8 @@ public class HttpsClientPlugin implements IPlugin {
 //                    .after("IOC")
 //                    .after("message_processor")
 //                    .after("message_processing_sequence")
-                    .after("response")
-                    .after("response_content_strategy")
+//                    .after("response")
+//                    .after("response_content_strategy")
 //                    .after("FieldNamePlugin")
 //                    .before("starter")
                     .process(
@@ -99,11 +101,23 @@ public class HttpsClientPlugin implements IPlugin {
                                                         try {
                                                             IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
                                                             IObject request = (IObject) args[0];
+                                                            Object cameRequest = args[1];
+                                                            List<IObject> headers = (List<IObject>) args[2];
+                                                            List<IObject> cookies = (List<IObject>) args[3];
+                                                            IChannelHandler channel = (IChannelHandler) args[4];
+                                                            IObject response = (IObject) args[5];
+                                                            IObject config = (IObject) args[6];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
                                                                     request.getValue(startChainNameFieldName),
                                                                     request,
+                                                                    cameRequest,
+                                                                    headers,
+                                                                    cookies,
+                                                                    channel,
+                                                                    response,
+                                                                    config,
                                                                     ScopeProvider.getCurrentScope()
                                                             );
                                                             return responseHandler;
@@ -148,10 +162,22 @@ public class HttpsClientPlugin implements IPlugin {
                                     IOC.register(Keys.getOrAdd("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
+                                                        Object cameRequest = args[1];
+                                                        List<IObject> headers = (List<IObject>) args[2];
+                                                        List<IObject> cookies = (List<IObject>) args[3];
+                                                        IChannelHandler channel = (IChannelHandler) args[4];
+                                                        IObject response = (IObject) args[5];
+                                                        IObject config = (IObject) args[6];
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
-                                                                    request
+                                                                    request,
+                                                                    cameRequest,
+                                                                    headers,
+                                                                    cookies,
+                                                                    channel,
+                                                                    response,
+                                                                    config
                                                             );
                                                             HttpsClient client =
                                                                     new HttpsClient(

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
@@ -26,7 +27,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handler for http response
@@ -36,6 +37,14 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private int stackDepth;
     private IReceiverChain receiverChain;
     private IObject request;
+    private Object cameRequest;
+    private List<IObject> headers;
+    private List<IObject> cookies;
+    private IChannelHandler channel;
+    private IObject response;
+    private IObject config;
+    private IFieldName channelFieldName;
+    private IFieldName configFieldName;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
     private IFieldName httpResponseStatusCodeFieldName;
@@ -43,6 +52,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName headersFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName requestFieldName;
+    private IFieldName cameRequestFieldName;
     private IFieldName messageMapIdFieldName;
     private IFieldName uuidFieldName;
     private Object messageMapId;
@@ -52,13 +62,15 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
 
     /**
      * Constructor
-     *
-     * @param taskQueue     main queue of the {@link ITask}
+     *  @param taskQueue     main queue of the {@link ITask}
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
      * @param receiverChain chain, that should receive message
+     * @param cameRequest
      */
     public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object receiverChain,
-                               final IObject request, final IScope scope) throws ResponseHandlerException {
+                               final IObject request, Object cameRequest, final List<IObject> headers, final List<IObject> cookies,
+                               final IChannelHandler channel, final IObject response, final IObject config,
+                               final IScope scope) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
 
@@ -77,9 +89,18 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
             requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendRequest");
+            cameRequestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
             uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
+            channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+            configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             this.request = request;
+            this.cameRequest = cameRequest;
+            this.headers = headers;
+            this.cookies = cookies;
+            this.channel = channel;
+            this.response = response;
+            this.config = config;
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
@@ -133,13 +154,17 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             IObject message = deserializeStrategy.deserialize(response);
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
-            context.setValue(cookiesFieldName, new ArrayList<IObject>());
-            context.setValue(headersFieldName, new ArrayList<IObject>());
+            context.setValue(cookiesFieldName, cookies);
+            context.setValue(headersFieldName, headers);
             context.setValue(responseFieldName, response);
+            context.setValue(cameRequestFieldName, cameRequest);
             context.setValue(httpResponseStatusCodeFieldName, response.status().code());
             context.setValue(requestFieldName, this.request);
+            context.setValue(channelFieldName, this.channel);
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
+            environment.setValue(responseFieldName, this.response);
+            environment.setValue(configFieldName, this.config);
             return environment;
         } catch (ResolutionException | DeserializationException | ChangeValueException | InvalidArgumentException e) {
             throw new ResponseHandlerException(e);
