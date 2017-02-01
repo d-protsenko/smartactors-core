@@ -16,10 +16,13 @@ import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
 import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
+import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 /**
  * Plugin that registers scheduler actor and related components.
@@ -96,8 +99,12 @@ public class PluginScheduler extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
-                return new EntryStorage(new DatabaseRemoteStorage((IPool) args[0], (String) args[1]), observer);
-            } catch (ResolutionException e) {
+                IRemoteEntryStorage remoteEntryStorage = new DatabaseRemoteStorage((IPool) args[0], (String) args[1]);
+                EntryStorage storage = new EntryStorage(remoteEntryStorage, observer);
+                long bri = 1000L * 60L;
+                new EntryStorageRefresher(storage, remoteEntryStorage, bri, bri, bri * 2, 50);
+                return storage;
+            } catch (ResolutionException | TaskScheduleException e) {
                 throw new FunctionExecutionException(e);
             }
         }));

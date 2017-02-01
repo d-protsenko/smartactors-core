@@ -29,6 +29,7 @@ public class EntryStorageRefresher {
     private final IQueue<ITask> taskQueue;
     private final ITimerTask timerTask;
 
+    private int pageSize;
     private long refreshRepeatInterval;
     private long refreshAwakeInterval;
     private long refreshSuspendInterval;
@@ -51,6 +52,7 @@ public class EntryStorageRefresher {
      * @param refreshRepeatInterval     interval between refresher executions in milliseconds
      * @param refreshAwakeInterval      time (in milliseconds after current execution start) to awake entries scheduled until
      * @param refreshSuspendInterval    time (in milliseconds after current execution start) to suspend entries scheduled after
+     * @param pageSize                  size of pages downloaded from remote storage
      * @throws ResolutionException if error occurs resolving any dependency
      * @throws TaskScheduleException if error occurs scheduling first execution
      * @throws InvalidArgumentException if {@code entryStorage} or {@code remoteEntryStorage} are {@code null}
@@ -60,7 +62,8 @@ public class EntryStorageRefresher {
                                  final IRemoteEntryStorage remoteEntryStorage,
                                  final long refreshRepeatInterval,
                                  final long refreshAwakeInterval,
-                                 final long refreshSuspendInterval)
+                                 final long refreshSuspendInterval,
+                                 final int pageSize)
             throws ResolutionException, TaskScheduleException, InvalidArgumentException {
         this.entryStorage = entryStorage;
         this.remoteEntryStorage = remoteEntryStorage;
@@ -68,6 +71,8 @@ public class EntryStorageRefresher {
         this.refreshRepeatInterval = refreshRepeatInterval;
         this.refreshAwakeInterval = refreshAwakeInterval;
         this.refreshSuspendInterval = refreshSuspendInterval;
+
+        this.pageSize = pageSize;
 
         this.taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
@@ -92,7 +97,7 @@ public class EntryStorageRefresher {
         try {
             boolean cont = true;
             try {
-                List<IObject> entries = remoteEntryStorage.downloadEntries(refreshStart + refreshRepeatInterval, lastDownloadedState);
+                List<IObject> entries = remoteEntryStorage.downloadEntries(refreshStart + refreshRepeatInterval, lastDownloadedState, pageSize);
 
                 for (IObject entryState : entries) {
                     String id = (String) entryState.getValue(entryIdFN);

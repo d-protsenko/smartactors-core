@@ -195,7 +195,74 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         storage.notifyActive(entries[1]);
         storage.notifyActive(entries[2]);
+        storage.notifyActive(entries[3]);
+        storage.notifyActive(entries[4]);
 
-        assertEquals(new HashSet<>(Arrays.asList(entries[1], entries[2])), new HashSet<>(storage.listLocalEntries()));
+        storage.notifyInactive(entries[3], true);
+        storage.notifyInactive(entries[4], false);
+
+        assertEquals(new HashSet<>(Arrays.asList(entries[1], entries[2], entries[3])), new HashSet<>(storage.listLocalEntries()));
+    }
+
+    @Test
+    public void Should_refreshEntryActivity()
+            throws Exception {
+        when(entries[0].getLastTime()).thenReturn(0L);
+        when(entries[1].getLastTime()).thenReturn(100L);
+        when(entries[2].getLastTime()).thenReturn(200L);
+        when(entries[3].getLastTime()).thenReturn(300L);
+        when(entries[4].getLastTime()).thenReturn(400L);
+        when(entries[5].getLastTime()).thenReturn(500L);
+        when(entries[6].getLastTime()).thenReturn(600L);
+
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+
+        storage.notifyActive(entries[0]);
+        storage.notifyInactive(entries[1], true);
+        storage.notifyActive(entries[2]);
+        storage.notifyInactive(entries[3], true);
+        storage.notifyActive(entries[4]);
+        storage.notifyInactive(entries[5], true);
+        storage.notifyInactive(entries[6], false);
+
+        storage.refresh(150L, 350L);
+
+        verify(entries[0], times(0)).awake();
+        verify(entries[0], times(0)).suspend();
+
+        verify(entries[1], times(1)).awake();
+        verify(entries[1], times(0)).suspend();
+
+        verify(entries[2], times(0)).awake();
+        verify(entries[2], times(0)).suspend();
+
+        verify(entries[3], times(0)).awake();
+        verify(entries[3], times(0)).suspend();
+
+        verify(entries[4], times(0)).awake();
+        verify(entries[4], times(1)).suspend();
+
+        verify(entries[5], times(0)).awake();
+        verify(entries[5], times(0)).suspend();
+
+        verify(entries[6], times(0)).awake();
+        verify(entries[6], times(0)).suspend();
+        verify(entries[6], times(0)).getLastTime();
+    }
+
+    @Test
+    public void Should_restoreRemoteEntryWhenItIsRequired()
+            throws Exception {
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+
+        assertSame(entries[0], storage.getEntry("0"));
+    }
+
+    @Test(expected = EntryStorageAccessException.class)
+    public void Should_throwWhenRequiredEntryIsNotFoundInBothRemoteAndLocalStorage()
+            throws Exception {
+        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+
+        assertNull(storage.getEntry("666"));
     }
 }

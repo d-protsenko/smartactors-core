@@ -32,14 +32,13 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
     private final IPool connectionPool;
     private final String collectionName;
 
-    // Size of download page
-    private int downloadPageSize = DEFAULT_PAGE_SIZE;
-
     private final IFieldName filterFieldName;
     private final IFieldName gtFieldName;
     private final IFieldName ltFieldName;
     private final IFieldName eqFieldName;
     private final IFieldName entryIdFieldName;
+    private final IFieldName pageFieldName;
+    private final IFieldName sizeFieldName;
     private final IFieldName documentIdFieldName;
     private final IFieldName lastScheduledTimeFieldName;
 
@@ -63,20 +62,24 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
         ltFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$lt");
         eqFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$eq");
         entryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
+        pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
+        sizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
         documentIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID");
         lastScheduledTimeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "__last_sched_time_");
 
         entriesQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 String.format(("{" +
-                        "'filter':{'entryId':{},'__last_sched_time_':{}}," +
+                        "'filter':{'entryId':{'$isNull':false},'__last_sched_time_':{}}," +
                         "'page':{'size':%s,'number':1}," +
                         "'sort':[{'entryId':'asc'}]" +
-                        "}").replace('\'', '"'), downloadPageSize));
+                        "}").replace('\'', '"'), DEFAULT_PAGE_SIZE));
     }
 
     @Override
     public void saveEntry(final ISchedulerEntry entry) throws EntryStorageAccessException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
+            entry.getState().setValue(lastScheduledTimeFieldName, entry.getLastTime());
+
             Object connection = guard.getObject();
 
             ITask task = IOC.resolve(
@@ -86,7 +89,7 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
                     entry.getState());
 
             task.execute();
-        } catch (ResolutionException | PoolGuardException | TaskExecutionException e) {
+        } catch (ResolutionException | PoolGuardException | TaskExecutionException | ChangeValueException | InvalidArgumentException e) {
             throw new EntryStorageAccessException("Error occurred saving scheduler entry to database.", e);
         }
     }
@@ -141,15 +144,18 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
 
             return res[0];
         } catch (PoolGuardException | ResolutionException | ChangeValueException | InvalidArgumentException | TaskExecutionException e) {
-            throw new EntryStorageAccessException("Error occurred downloading page of scheduler entries.", e);
+            throw new EntryStorageAccessException("Error occurred downloading saved scheduler entry state.", e);
         }
     }
 
     @Override
-    public List<IObject> downloadEntries(final long untilTime, final IObject lastSkip) throws EntryStorageAccessException {
+    public List<IObject> downloadEntries(final long untilTime, final IObject lastSkip, final int pageSize) throws EntryStorageAccessException {
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             Object connection = guard.getObject();
+
+            IObject page = (IObject) entriesQuery.getValue(pageFieldName);
+            page.setValue(sizeFieldName, pageSize);
 
             // This method will be called from at most one thread at time so it should be safe to re-use the query object and result field
             IObject filter = (IObject) entriesQuery.getValue(filterFieldName);

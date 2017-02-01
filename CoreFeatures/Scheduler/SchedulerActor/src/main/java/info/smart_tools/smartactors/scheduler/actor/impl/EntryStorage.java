@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorage
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
 
 import java.lang.ref.WeakReference;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,8 +132,13 @@ public class EntryStorage implements ISchedulerEntryStorage {
     @Override
     public List<ISchedulerEntry> listLocalEntries()
             throws EntryStorageAccessException {
-        // TODO::
-        return null;
+        synchronized (localStorageLock) {
+            List<ISchedulerEntry> localEntries = new ArrayList<>(activeEntries.size() + strongSuspendEntries.size());
+            localEntries.addAll(activeEntries.values());
+            localEntries.addAll(strongSuspendEntries.values());
+            // TODO:: Enumerate remote entries (?)
+            return localEntries;
+        }
     }
 
     @Override
@@ -147,11 +151,6 @@ public class EntryStorage implements ISchedulerEntryStorage {
         }
 
         IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
-
-        if (null == savedEntryState) {
-            throw new EntryStorageAccessException(MessageFormat.format(
-                    "Scheduler entry with identifier ''{0}'' is not found in both local and remote storage.", id));
-        }
 
         try {
             return IOC.resolve(Keys.getOrAdd("restore scheduler entry"), savedEntryState, this);
@@ -181,7 +180,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
             // map we are iterating over)
             refreshList.clear();
             for (ISchedulerEntry suspendedEntry : strongSuspendEntries.values()) {
-                if (suspendedEntry.getLastTime() > suspendAfter) {
+                if (suspendedEntry.getLastTime() < awakeUntil) {
                     refreshList.add(suspendedEntry);
                 }
             }
@@ -192,7 +191,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             refreshList.clear();
             for (ISchedulerEntry activeEntry : activeEntries.values()) {
-                if (activeEntry.getLastTime() < awakeUntil) {
+                if (activeEntry.getLastTime() > suspendAfter) {
                     refreshList.add(activeEntry);
                 }
             }
