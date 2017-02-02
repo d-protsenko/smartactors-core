@@ -105,12 +105,6 @@ public class HttpClientPlugin implements IPlugin {
                                                         try {
                                                             IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
                                                             IObject request = (IObject) args[0];
-                                                            Object cameRequest = args[1];
-                                                            List<IObject> headers = (List<IObject>) args[1];
-                                                            List<IObject> cookies = (List<IObject>) args[2];
-                                                            IChannelHandler channel = (IChannelHandler) args[3];
-                                                            IObject response = (IObject) args[4];
-                                                            IObject config = (IObject) args[5];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
@@ -159,22 +153,10 @@ public class HttpClientPlugin implements IPlugin {
                                     IOC.register(Keys.getOrAdd("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
-                                                        Object cameRequest = args[1];
-                                                        List<IObject> headers = (List<IObject>) args[2];
-                                                        List<IObject> cookies = (List<IObject>) args[3];
-                                                        IChannelHandler channel = (IChannelHandler) args[4];
-                                                        IObject response = (IObject) args[5];
-                                                        IObject config = (IObject) args[6];
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
-                                                                    request,
-                                                                    cameRequest,
-                                                                    headers,
-                                                                    cookies,
-                                                                    channel,
-                                                                    response,
-                                                                    config
+                                                                    request
                                                             );
                                                             HttpClient client =
                                                                     new HttpClient(
