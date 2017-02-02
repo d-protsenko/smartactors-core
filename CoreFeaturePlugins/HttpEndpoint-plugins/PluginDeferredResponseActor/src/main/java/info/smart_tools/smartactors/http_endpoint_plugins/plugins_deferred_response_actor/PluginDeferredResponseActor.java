@@ -30,7 +30,7 @@ public class PluginDeferredResponseActor extends BootstrapPlugin {
     @Item("plugin-deferred-response-actor")
     public void registerDeferredResponseActor() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IOC.register(
-                Keys.getOrAdd(DeferredResponseActor.class.getCanonicalName()),
+                Keys.getOrAdd(DeferredResponseActor.class.getSimpleName()),
                 new ApplyFunctionToArgumentsStrategy(
                         args -> new DeferredResponseActor()
                 ));
