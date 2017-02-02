@@ -101,23 +101,11 @@ public class HttpsClientPlugin implements IPlugin {
                                                         try {
                                                             IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
                                                             IObject request = (IObject) args[0];
-                                                            Object cameRequest = args[1];
-                                                            List<IObject> headers = (List<IObject>) args[2];
-                                                            List<IObject> cookies = (List<IObject>) args[3];
-                                                            IChannelHandler channel = (IChannelHandler) args[4];
-                                                            IObject response = (IObject) args[5];
-                                                            IObject config = (IObject) args[6];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
                                                                     request.getValue(startChainNameFieldName),
                                                                     request,
-                                                                    cameRequest,
-                                                                    headers,
-                                                                    cookies,
-                                                                    channel,
-                                                                    response,
-                                                                    config,
                                                                     ScopeProvider.getCurrentScope()
                                                             );
                                                             return responseHandler;
@@ -162,22 +150,10 @@ public class HttpsClientPlugin implements IPlugin {
                                     IOC.register(Keys.getOrAdd("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
-                                                        Object cameRequest = args[1];
-                                                        List<IObject> headers = (List<IObject>) args[2];
-                                                        List<IObject> cookies = (List<IObject>) args[3];
-                                                        IChannelHandler channel = (IChannelHandler) args[4];
-                                                        IObject response = (IObject) args[5];
-                                                        IObject config = (IObject) args[6];
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
                                                                     Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
-                                                                    request,
-                                                                    cameRequest,
-                                                                    headers,
-                                                                    cookies,
-                                                                    channel,
-                                                                    response,
-                                                                    config
+                                                                    request
                                                             );
                                                             HttpsClient client =
                                                                     new HttpsClient(
