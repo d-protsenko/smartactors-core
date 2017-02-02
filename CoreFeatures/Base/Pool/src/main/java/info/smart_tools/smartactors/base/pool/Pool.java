@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.base.pool;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
@@ -99,6 +100,15 @@ public class Pool implements IPool {
      * @param action action to execute when the resource becomes available
      */
     public void onAvailable(final IPoorAction action) {
-        this.taskQueue.add(action);
+        try {
+            if (freeItemsCounter.getAndDecrement() > 0) {
+                freeItemsCounter.getAndIncrement();
+                action.execute();
+                return;
+            }
+            this.taskQueue.add(action);
+        } catch (ActionExecuteException e) {
+            throw new RuntimeException("Failed to execute PoorAction", e);
+        }
     }
 }
