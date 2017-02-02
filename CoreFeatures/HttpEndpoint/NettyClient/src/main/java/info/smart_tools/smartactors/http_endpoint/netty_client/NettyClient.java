@@ -78,7 +78,6 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     @Override
     public CompletableFuture<IClient<TRequest>> start() {
         Bootstrap bootstrap = bootstrapClient();
-        NettyClient<TRequest> me = this;
         this.channelFuture = bootstrap.connect(serverUri.getHost(),
                 port).addListener(new ChannelFutureListener() {
             @Override
@@ -88,11 +87,10 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
                     System.out.println("Connection failed!!!");
                     future.cause().printStackTrace();
                 }
-                me.channel = future.channel();
             }
         });
         try {
-            this.channelFuture.sync();
+            this.channel = this.channelFuture.sync().channel();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -107,13 +105,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      * @return a future object which can be used to wait a request transmission
      */
     public CompletableFuture<Void> send(final TRequest request) {
-        try {
-            this.channelFuture.sync();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return CompletableNettyFuture.from(channel.writeAndFlush(request));
-
     }
 
     @Override
