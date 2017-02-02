@@ -33,6 +33,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     private Channel channel;
     protected URI serverUri;
     private Class<? extends Channel> channelClass;
+    private ChannelFuture channelFuture;
     private IResponseHandler inboundHandler;
     private IClientConfig clientConfig;
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLIS = 5000;
@@ -78,7 +79,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     public CompletableFuture<IClient<TRequest>> start() {
         Bootstrap bootstrap = bootstrapClient();
         NettyClient<TRequest> me = this;
-        ChannelFuture future = bootstrap.connect(serverUri.getHost(),
+        this.channelFuture = bootstrap.connect(serverUri.getHost(),
                 port).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(final ChannelFuture future) throws Exception {
@@ -91,11 +92,11 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
             }
         });
         try {
-            future.sync();
+            this.channelFuture.sync();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return wrapToCompletableFuture(future);
+        return wrapToCompletableFuture(this.channelFuture);
     }
 
     /**
@@ -106,6 +107,11 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      * @return a future object which can be used to wait a request transmission
      */
     public CompletableFuture<Void> send(final TRequest request) {
+        try {
+            this.channelFuture.sync();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return CompletableNettyFuture.from(channel.writeAndFlush(request));
 
     }
