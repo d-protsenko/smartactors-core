@@ -81,12 +81,13 @@ public class Pool implements IPool {
     public void put(final Object item) throws PoolPutException {
         try {
             if (maxItemsCount >= freeItemsCounter.get()) {
-                if (!taskQueue.isEmpty()) {
-                    taskQueue.poll().execute();
-                }
-
                 freeItems.add(item);
                 freeItemsCounter.getAndIncrement();
+
+                IPoorAction task = taskQueue.poll();
+                if (task != null) {
+                    task.execute();
+                }
             }
         } catch (Exception e) {
             throw new PoolPutException("Error was occurred", e);
