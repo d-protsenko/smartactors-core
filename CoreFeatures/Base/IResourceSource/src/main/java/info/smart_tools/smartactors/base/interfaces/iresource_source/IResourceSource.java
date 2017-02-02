@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.message_processing_interfaces.iresource_source;
+package info.smart_tools.smartactors.base.interfaces.iresource_source;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 

@@ -101,6 +101,4 @@ public class SslEngineProvider implements ISslEngineProvider {
         engine.setUseClientMode(true);
         return engine;
     }
-
-
 }
