@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.message_processing_interfaces.iresource_source.exceptions;
+package info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.message_processing_interfaces.iresource_source.IResourceSource;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

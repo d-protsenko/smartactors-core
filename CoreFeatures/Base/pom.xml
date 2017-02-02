@@ -32,6 +32,7 @@
         <module>PoolGuard</module>
         <module>SingletonStrategy</module>
         <module>InitializationException</module>
+        <module>IResourceSource</module>
     </modules>
 
     <repositories>

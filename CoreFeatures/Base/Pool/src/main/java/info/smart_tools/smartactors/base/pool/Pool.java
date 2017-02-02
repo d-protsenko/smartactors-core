@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
-import info.smart_tools.smartactors.message_processing_interfaces.iresource_source.exceptions.OutOfResourceException;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;

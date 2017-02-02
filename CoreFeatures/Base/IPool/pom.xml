@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.iresource-source</artifactId>
+            <artifactId>base.interfaces.iresource-source</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 

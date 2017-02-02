@@ -25,7 +25,6 @@
         <module>IRoutedObjectCreator</module>
         <module>IRouter</module>
         <module>IWrapperGenerator</module>
-        <module>IResourceSource</module>
     </modules>
 
     <repositories>
