@@ -186,7 +186,7 @@ public class HttpClientPlugin implements IPlugin {
 
     private void registerFieldNames() throws ResolutionException {
         this.uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
-        this.startChainNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "startChain");
+        this.startChainNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
         this.queueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queue");
         this.stackDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
         this.exceptionalMessageMapId = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptionalMessageMapId");
