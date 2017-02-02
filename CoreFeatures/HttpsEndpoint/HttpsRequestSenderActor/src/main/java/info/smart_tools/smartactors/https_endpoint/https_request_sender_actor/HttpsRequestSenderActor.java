@@ -22,14 +22,6 @@ import java.util.List;
 public class HttpsRequestSenderActor {
 
     private IFieldName uriFieldName;
-    private IFieldName contextFieldName;
-    private IFieldName headersFieldName;
-    private IFieldName cookiesFieldName;
-    private IFieldName channelFieldName;
-    private IFieldName httpResponseIsSentFieldName;
-    private IFieldName responseFieldName;
-    private IFieldName configFieldName;
-    private IFieldName requestFieldName;
 
     /**
      * Constructor for actor
@@ -37,14 +29,6 @@ public class HttpsRequestSenderActor {
     public HttpsRequestSenderActor() {
         try {
             uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
-            contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
-            headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
-            cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
-            channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
-            httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
-            responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
-            configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -59,31 +43,22 @@ public class HttpsRequestSenderActor {
     public void sendRequest(final HttpsRequestSenderActorWrapper wrapper)
             throws HttpsRequestSenderActorException {
         try {
-            IObjectWrapper objectWrapper = (IObjectWrapper) wrapper;
-            IObject context = objectWrapper.getEnvironmentIObject(contextFieldName);
-            Object cameRequest = context.getValue(requestFieldName);
-            List<IObject> headers = (List<IObject>) context.getValue(headersFieldName);
-            List<IObject> cookies = (List<IObject>) context.getValue(cookiesFieldName);
-            IChannelHandler channel = (IChannelHandler) context.getValue(channelFieldName);
-            IObject response = objectWrapper.getEnvironmentIObject(responseFieldName);
-            IObject config = objectWrapper.getEnvironmentIObject(configFieldName);
-            context.setValue(httpResponseIsSentFieldName,true);
             IObject request = wrapper.getRequest();
             if (request.getValue(uriFieldName).toString().startsWith("https:")) {
                 uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
                 if (request.getValue(uriFieldName) != null) {
-                    IClient client = IOC.resolve(Keys.getOrAdd("getHttpsClient"), request, cameRequest, headers, cookies, channel, response, config);
+                    IClient client = IOC.resolve(Keys.getOrAdd("getHttpsClient"), request);
                     IOC.resolve(Keys.getOrAdd("sendHttpsRequest"), client, request);
                 }
             }
             if (request.getValue(uriFieldName).toString().startsWith("http:")) {
                 uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
                 if (request.getValue(uriFieldName) != null) {
-                    IClient client = IOC.resolve(Keys.getOrAdd("getHttpClient"), request, cameRequest, headers, cookies, channel, response, config);
+                    IClient client = IOC.resolve(Keys.getOrAdd("getHttpClient"), request);
                     IOC.resolve(Keys.getOrAdd("sendHttpRequest"), client, request);
                 }
             }
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException | ChangeValueException e) {
+        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
             throw new HttpsRequestSenderActorException(e);
         }
     }

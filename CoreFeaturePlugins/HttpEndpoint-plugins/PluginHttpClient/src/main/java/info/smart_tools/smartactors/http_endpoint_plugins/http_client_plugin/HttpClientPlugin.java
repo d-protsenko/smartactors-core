@@ -116,12 +116,6 @@ public class HttpClientPlugin implements IPlugin {
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
                                                                     request.getValue(startChainNameFieldName),
                                                                     request,
-                                                                    cameRequest,
-                                                                    headers,
-                                                                    cookies,
-                                                                    channel,
-                                                                    response,
-                                                                    config,
                                                                     ScopeProvider.getCurrentScope()
                                                             );
                                                             return responseHandler;

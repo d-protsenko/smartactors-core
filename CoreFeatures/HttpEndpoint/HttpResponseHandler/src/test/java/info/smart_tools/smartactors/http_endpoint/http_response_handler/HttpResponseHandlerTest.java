@@ -128,12 +128,6 @@ public class HttpResponseHandlerTest {
                         chainStorage
                 )
         );
-        List<IObject> headers = mock(List.class);
-        List<IObject> cookies = mock(List.class);
-        IChannelHandler channel = mock(IChannelHandler.class);
-        IObject response = mock(IObject.class);
-        IObject config = mock(IObject.class);
-        Object cameRequest = mock(Object.class);
         this.responseHandler = new HttpResponseHandler(taskQueue,
                 5,
                 receiverChain,
@@ -144,11 +138,6 @@ public class HttpResponseHandlerTest {
                         "\"method\": \"POST\", " +
                         "\"uri\": \"https://foo.bar\"" +
                         "}"),
-                cameRequest, headers,
-                cookies,
-                channel,
-                response,
-                config,
                 ScopeProvider.getCurrentScope()
         );
     }
