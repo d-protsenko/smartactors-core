@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.base.pool;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
 import org.junit.Test;
 import java.util.function.Supplier;
@@ -71,5 +72,17 @@ public class PoolTest {
         pool.put(item);
         pool.take();
         verify(createFunc, times(1)).get();
+    }
+
+    @Test
+    public void Should_executePoorActionWhenItemReturns() throws Exception {
+        Supplier<Object> createFunc = mock(Supplier.class);
+        when(createFunc.get()).thenReturn(new Object());
+        Pool pool = new Pool(1, createFunc);
+        IPoorAction pAction = mock(IPoorAction.class);
+        pool.onAvailable(pAction);
+        Object item = pool.take();
+        pool.put(item);
+        verify(pAction).execute();
     }
 }
