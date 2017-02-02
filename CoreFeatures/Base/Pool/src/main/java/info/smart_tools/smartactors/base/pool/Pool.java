@@ -101,8 +101,7 @@ public class Pool implements IPool {
      */
     public void onAvailable(final IPoorAction action) {
         try {
-            if (freeItemsCounter.getAndDecrement() > 0) {
-                freeItemsCounter.getAndIncrement();
+            if (freeItemsCounter.get() > 0) {
                 action.execute();
                 return;
             }

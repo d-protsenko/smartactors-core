@@ -85,4 +85,14 @@ public class PoolTest {
         pool.put(item);
         verify(pAction).execute();
     }
+
+    @Test
+    public void Should_executePoorActionWhenFreeItemsAreExists() throws Exception {
+        Supplier<Object> createFunc = mock(Supplier.class);
+        when(createFunc.get()).thenReturn(new Object());
+        Pool pool = new Pool(1, createFunc);
+        IPoorAction pAction = mock(IPoorAction.class);
+        pool.onAvailable(pAction);
+        verify(pAction).execute();
+    }
 }
