@@ -18,12 +18,23 @@ import java.util.Map;
  */
 public class DeferredResponseActor {
 
+    /**
+     * Storage deferred responses
+     */
     private final Map<Object, IDeferredResponse> responses;
 
+    /**
+     * Constructor for initial storage deferred responses
+     */
     public DeferredResponseActor() {
         responses = new HashMap<>();
     }
 
+    /**
+     * Deferred response
+     * @param wrapper the wrapper
+     * @throws DeferredResponseActorException if any error occurred
+     */
     public void deferredResponse(final DeferredResponseWrapper wrapper) throws DeferredResponseActorException {
         try {
             responses.put(wrapper.getDeferredResponseID(), IOC.resolve(Keys.getOrAdd(IDeferredResponse.class.getCanonicalName()),wrapper));
@@ -32,6 +43,11 @@ public class DeferredResponseActor {
         }
     }
 
+    /**
+     * Restore response
+     * @param wrapper the wrapper
+     * @throws DeferredResponseActorException if any error occurred
+     */
     public void restoreResponse(final DeferredResponseWrapper wrapper) throws DeferredResponseActorException {
         try {
             IDeferredResponse deferredResponse = responses.remove(wrapper.getDeferredResponseID());

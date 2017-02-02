@@ -5,15 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>http-endpoint-plugins</artifactId>
+        <artifactId>http-endpoint</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>http-endpoint-plugins.deferred-response-actor-plugin</artifactId>
+    <artifactId>http-endpoint.deferred-response</artifactId>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <artifactId>http-endpoint.ideferred_response</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint.interfaces.ichannel-handler</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -27,19 +32,9 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>http-endpoint.deferred-response-actor</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>http-endpoint.deferred-response</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.2.Final</version>
         </dependency>
     </dependencies>
 

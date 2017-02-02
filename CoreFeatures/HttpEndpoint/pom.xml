@@ -54,6 +54,7 @@
         <module>DeserializeStrategyPostFormUrlencoded</module>
         <module>DeferredResponseActor</module>
         <module>IDeferredResponse</module>
+        <module>DeferredResponse</module>
     </modules>
 
     <repositories>
