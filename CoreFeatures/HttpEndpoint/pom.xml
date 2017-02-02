@@ -52,6 +52,8 @@
         <module>PluginHttpRequestSenderActor</module>
         <module>HttpRequestMaker</module>
         <module>DeserializeStrategyPostFormUrlencoded</module>
+        <module>DeferredResponseActor</module>
+        <module>IDeferredResponse</module>
     </modules>
 
     <repositories>
