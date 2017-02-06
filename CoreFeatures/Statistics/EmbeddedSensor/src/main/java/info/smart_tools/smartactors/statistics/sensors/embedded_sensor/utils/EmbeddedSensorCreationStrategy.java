@@ -28,7 +28,7 @@ import java.util.List;
  *         "embed": [
  *             {
  *                 "step": 0,
- *                 "dependency": "timestamp save receiver"      // Save time at step 0
+ *                 "dependency": "save timestamp receiver"      // Save time at step 0
  *             },
  *             {
  *                 "step": 10,
