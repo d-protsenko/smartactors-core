@@ -33,6 +33,7 @@
         <module>PluginStandardObjectCreators</module>
         <module>PluginConstantChainChoiceStrategy</module>
         <module>PluginConditionChainChoiceStrategy</module>
+        <module>PluginExceptionHandlingReceivers</module>
     </modules>
 
     <repositories>
