@@ -241,7 +241,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         List<IObject> steps = (List<IObject>) map.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "steps"));
 
-        assertEquals(1, steps.size());
+        assertEquals(2, steps.size());
         assertEquals("d", steps.get(0).getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "c")));
         assertEquals(objectId, steps.get(0).getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "target")));
     }

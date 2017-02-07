@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.statistics.statistics_manager.StatisticsManagerActor;
 
 /**
@@ -38,6 +42,35 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
             try {
                 return new StatisticsManagerActor();
             } catch (ResolutionException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
+    }
+
+    /**
+     * Dummy tatistics collector that prints everything it receives to stdout.
+     *
+     * @throws ResolutionException if error occurs resolving the key
+     * @throws RegistrationException if error occurs registering the strategy
+     * @throws InvalidArgumentException if strategy does not accept the function
+     */
+    @Item("test_statistics_collector")
+    public void registerTestStatisticsCollector()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IOC.register(Keys.getOrAdd("test statistics collector"), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return new IMessageReceiver() {
+                    @Override
+                    public void receive(final IMessageProcessor processor) throws MessageReceiveException, AsynchronousOperationException {
+                        try {
+                            String txt = processor.getMessage().serialize();
+                            System.out.printf("Collector message: %s\n", txt);
+                        } catch (Exception e) {
+                            throw new MessageReceiveException(e);
+                        }
+                    }
+                };
+            } catch (Exception e) {
                 throw new FunctionExecutionException(e);
             }
         }));

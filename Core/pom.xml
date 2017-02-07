@@ -273,6 +273,11 @@
             <artifactId>message-processing-plugins.wrapper-generator-plugin</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.chain-modifications-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- CoreStarter -->
         <dependency>

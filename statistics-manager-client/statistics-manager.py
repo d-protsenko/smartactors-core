@@ -60,7 +60,8 @@ def send_request(message, chain):
     body = json.dumps(message)
 
     _CONNECTION.request('POST', _CONFIG['server-path'], body=body, headers={"Content-type": "application/json"})
-    resp = json.loads(_CONNECTION.getresponse().read())
+    resp = _CONNECTION.getresponse().read()
+    resp = json.loads(resp)
 
     if 'exception' in resp:
         raise Exception(exception_to_string(resp['exception']))
@@ -88,6 +89,7 @@ def init_console_functions():
 
     _CONSOLE_SCOPE['link'] = cmd_link
     _CONSOLE_SCOPE['unlink'] = cmd_unlink
+    _CONSOLE_SCOPE['enumLinks'] = cmd_enum_links
 
     _CONSOLE_SCOPE['query'] = cmd_query
 
@@ -118,10 +120,9 @@ def cmd_shutdown_sensor(sensor_id):
     return execute_command('shutdownSensor', sensor_id)
 
 def cmd_create_collector(collector_id, template_name, **kwargs):
-    dependency, args, query_step_config = _COLLECTOR_TEMPLATES[template_name](**kwargs)
+    args, query_step_config = _COLLECTOR_TEMPLATES[template_name](**kwargs)
     return execute_command('createCollector', {
         'id': collector_id,
-        'dependency': dependency,
         'args': args,
         'queryStepConfig': query_step_config
     })
@@ -148,6 +149,9 @@ def cmd_enum_collectors():
 def cmd_query(collector_id, message=None):
     q_chain = execute_command('getCollectorQueryChain', collector_id)
     return send_request(message, q_chain)
+
+def cmd_enum_links():
+    return execute_command('enumLinks')
 
 # Entry point
 

@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.QuerySensorCreationStrategy;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.QuerySensorSchedulerAction;
 
@@ -49,8 +50,9 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @After({"scheduler_entry_storage"})
     public void createSchedulerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
+        ISchedulerEntryStorage entryStorage = IOC.resolve(Keys.getOrAdd("local only scheduler entry storage"));
         IOC.register(Keys.getOrAdd("query sensors scheduler storage"),
-                new SingletonStrategy(IOC.resolve(Keys.getOrAdd("local only scheduler entry storage"))));
+                new SingletonStrategy(entryStorage));
     }
 
     /**

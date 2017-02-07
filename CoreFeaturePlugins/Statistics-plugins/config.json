@@ -1,12 +1,17 @@
 {
   "featureName": "statistics-plugins",
-  "afterFeatures": ["statistics", "scheduler-plugins"],
+  "afterFeatures": ["statistics", "scheduler-plugins", "http-endpoint-plugins"],
 
   "objects": [
     {
       "name": "default_statistics_manager",
       "kind": "actor",
       "dependency": "statistics manager actor"
+    },
+    {
+      "kind": "stateless_actor",
+      "dependency": "ResponseSenderActor",
+      "name": "respond"
     }
   ],
 
@@ -14,6 +19,7 @@
     {
       "id": "execute_statistics_manager_command",
       "externalAccess": true,
+      "exceptional": [],
       "steps": [
         {
           "target": "default_statistics_manager",
@@ -25,6 +31,10 @@
             "out_setCommandResult": "response/result",
             "out_setException": "response/exception"
           }
+        },
+        {
+          "target": "respond",
+          "handler": "sendResponse"
         }
       ]
     }

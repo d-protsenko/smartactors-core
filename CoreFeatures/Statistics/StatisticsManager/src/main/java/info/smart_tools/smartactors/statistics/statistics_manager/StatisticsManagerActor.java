@@ -19,9 +19,11 @@ import info.smart_tools.smartactors.statistics.statistics_manager.wrappers.Stati
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -120,6 +122,7 @@ public class StatisticsManagerActor {
     private final IFieldName objectsSectionFieldName;
     private final IFieldName chainIdFieldName;
     private final IFieldName exceptionalFieldName;
+    private final IFieldName externalAccessFieldName;
     private final IFieldName chainStepsFieldName;
     private final IFieldName dependencyFieldName;
     private final IFieldName argsFieldName;
@@ -187,14 +190,21 @@ public class StatisticsManagerActor {
                                        final String queryChainName, final IObject queryStepConfig)
             throws ChangeValueException, InvalidArgumentException, ConfigurationProcessingException, ResolutionException,
             SerializeException {
+        IObject responseStepConfigObject = IOC.resolve(Keys.getOrAdd("configuration object"),
+                ("{\n" +
+                        "\"target\": \"respond\",\n" +
+                        "\"handler\": \"sendResponse\"\n" +
+                 "}"));
+
         objectConfig.setValue(objectNameFieldName, objectName);
         queryStepConfig.setValue(targetFieldName, objectName);
 
         IObject chainConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
         chainConfig.setValue(chainIdFieldName, queryChainName);
-        chainConfig.setValue(chainStepsFieldName, Collections.singletonList(queryStepConfig));
+        chainConfig.setValue(chainStepsFieldName, Arrays.asList(queryStepConfig, responseStepConfigObject));
         chainConfig.setValue(exceptionalFieldName, Collections.EMPTY_LIST);
+        chainConfig.setValue(externalAccessFieldName, Boolean.TRUE);
 
         IObject rootConfigObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
 
@@ -229,6 +239,7 @@ public class StatisticsManagerActor {
         objectsSectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "objects");
         chainIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
         exceptionalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptional");
+        externalAccessFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "externalAccess");
         chainStepsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "steps");
         dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
         argsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "args");
@@ -249,6 +260,7 @@ public class StatisticsManagerActor {
         commands.put("shutdownSensor", this::cmdShutdownSensor);
         commands.put("link", this::cmdLink);
         commands.put("unlink", this::cmdUnlink);
+        commands.put("enumLinks", this::cmdEnumLinks);
         commands.put("enumSensors", this::cmdEnumSensors);
         commands.put("createCollector", this::cmdCreateCollector);
         commands.put("enumCollectors", this::cmdEnumCollectors);
@@ -620,5 +632,44 @@ public class StatisticsManagerActor {
         }
 
         return collectors.get(String.valueOf(arg)).getQueryChainName();
+    }
+
+    /**
+     * Get list of present links between sensors and collectors.
+     *
+     * Output:
+     *
+     * <pre>
+     *     [
+     *       {
+     *           "sensor": " .. sensor id .. ",
+     *           "collector": " .. collector id .. ",
+     *           "args": { .. collector step configuration .. }
+     *       },
+     *       .. for each link ..
+     *     ]
+     * </pre>
+     */
+    private Object cmdEnumLinks(final Object arg)
+            throws CommandExecutionException, InvalidArgumentException {
+        List<IObject> linkViews = new LinkedList<>();
+
+        try {
+            for (Map.Entry<String, SensorInfo> sensorEntry : sensors.entrySet()) {
+                for (Map.Entry<String, IObject> collectorLinkEntry : sensorEntry.getValue().getConnectedCollectors().entrySet()) {
+                    IObject linkView = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                    linkView.setValue(sensorFieldName, sensorEntry.getKey());
+                    linkView.setValue(collectorFieldName, collectorLinkEntry.getKey());
+                    linkView.setValue(argsFieldName, collectorLinkEntry.getValue());
+
+                    linkViews.add(linkView);
+                }
+            }
+        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+            throw new CommandExecutionException(e);
+        }
+
+        return linkViews;
     }
 }

@@ -30,6 +30,27 @@ def time_delta_limited_count(
         }
     }
 
+def message_count(
+        chain,
+        step,
+        period,
+        **kwargs
+):
+    return 'create embedded sensor', {
+        'embed': [
+            {
+                'step': step,
+                'dependency': 'embedded sensor receiver'
+            }
+        ],
+        'chain': chain,
+        'args': {
+            'period': period,
+            'strategy': 'embedded sensor count strategy'
+        }
+    }
+
 TEMPLATES = {
-    'time_delta_limited_count': time_delta_limited_count
+    'time_delta_limited_count': time_delta_limited_count,
+    'message_count': message_count
 }
