@@ -83,13 +83,16 @@ def init_console_functions():
     _CONSOLE_SCOPE['createSensor'] = cmd_create_sensor
     _CONSOLE_SCOPE['shutdownSensor'] = cmd_shutdown_sensor
     _CONSOLE_SCOPE['enumSensors'] = cmd_enum_sensors
+    _CONSOLE_SCOPE['showSensors'] = cmd_show_sensors
 
     _CONSOLE_SCOPE['createCollector'] = cmd_create_collector
     _CONSOLE_SCOPE['enumCollectors'] = cmd_enum_collectors
+    _CONSOLE_SCOPE['showCollectors'] = cmd_show_collectors
 
     _CONSOLE_SCOPE['link'] = cmd_link
     _CONSOLE_SCOPE['unlink'] = cmd_unlink
     _CONSOLE_SCOPE['enumLinks'] = cmd_enum_links
+    _CONSOLE_SCOPE['showLinks'] = cmd_show_links
 
     _CONSOLE_SCOPE['query'] = cmd_query
 
@@ -110,41 +113,59 @@ def exception_to_string(e):
 
 def cmd_create_sensor(sensor_id, template_name, **kwargs):
     dependency, args = _SENSOR_TEMPLATES[template_name](**kwargs)
-    return execute_command('createSensor', {
+    return str(execute_command('createSensor', {
         'id': sensor_id,
         'dependency': dependency,
         'args': args
-    })
+    }))
 
 def cmd_shutdown_sensor(sensor_id):
-    return execute_command('shutdownSensor', sensor_id)
+    return str(execute_command('shutdownSensor', sensor_id))
 
 def cmd_create_collector(collector_id, template_name, **kwargs):
     args, query_step_config = _COLLECTOR_TEMPLATES[template_name](**kwargs)
-    return execute_command('createCollector', {
+    return str(execute_command('createCollector', {
         'id': collector_id,
         'args': args,
         'queryStepConfig': query_step_config
-    })
+    }))
 
 def cmd_link(sensor_id, collector_id, step_args=None):
-    return execute_command('link', {
+    return str(execute_command('link', {
         'sensor': sensor_id,
         'collector': collector_id,
         'stepConfig': step_args or {}
-    })
+    }))
 
 def cmd_unlink(sensor_id, collector_id):
-    return execute_command('unlink', {
+    return str(execute_command('unlink', {
         'sensor': sensor_id,
         'collector': collector_id
-    })
+    }))
 
 def cmd_enum_sensors():
     return execute_command('enumSensors', None)
 
+def cmd_show_sensors():
+    sensors = cmd_enum_sensors()
+
+    print '{0} sensor(s)'.format(len(sensors))
+
+    for sensor in sensors:
+        print '{id:20}) created by "{dependency}"'.format(**sensor)
+        print '\t{args}'.format(**sensor)
+
 def cmd_enum_collectors():
     return execute_command('enumCollectors', None)
+
+def cmd_show_collectors():
+    collectors = cmd_enum_collectors()
+
+    print '{0} collector(s)'.format(len(collectors))
+
+    for collector in collectors:
+        print '{id:20})'.format(**collector)
+        print '\t{args}'.format(**collector)
 
 def cmd_query(collector_id, message=None):
     q_chain = execute_command('getCollectorQueryChain', collector_id)
@@ -152,6 +173,17 @@ def cmd_query(collector_id, message=None):
 
 def cmd_enum_links():
     return execute_command('enumLinks')
+
+def cmd_show_links(show_config=False):
+    links = cmd_enum_links()
+
+    print '{0} link(s)'.format(len(links))
+
+    for link in links:
+        print '{0:20} -> {1:20}'.format(link['sensor'], link['collector'])
+        if show_config is not False:
+            print 'Step config:'
+            print link['args']
 
 # Entry point
 
