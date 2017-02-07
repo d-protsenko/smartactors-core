@@ -54,14 +54,10 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            /* "objects" section */
             IBootstrapItem<String> item = new BootstrapItem("PluginOutOfResourcesExceptionHandlingMap");
 
             item
-                    .after("config_sections:start")
-                    .before("config_sections:done")
-                    .after("router")
-                    .after("IFieldNamePlugin")
+                    .after("config_sections:done")
                     .before("starter")
                     .process(() -> {
                         try {

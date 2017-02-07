@@ -176,6 +176,11 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                     }
                                             )
                                     );
+                                    final String outOfResourcesExceptionTemplate = ("{" +
+                                                "'class': 'info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException'," +
+                                                "'chain': 'tryToTakeResourceMap'" +
+                                            "}")
+                                            .replace('"', '\'');
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "configuration object canonical maps strategy"
@@ -198,6 +203,11 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                                     if (null == innerObject.getValue(new FieldName("externalAccess"))) {
                                                                         innerObject.setValue(new FieldName("externalAccess"), false);
                                                                     }
+                                                                    List exceptionalList = (List) innerObject.getValue(new FieldName("exceptional"));
+                                                                    exceptionalList.add(0, IOC.resolve(
+                                                                            IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
+                                                                            outOfResourcesExceptionTemplate
+                                                                    ));
                                                                 }
                                                             }
                                                             return obj;
