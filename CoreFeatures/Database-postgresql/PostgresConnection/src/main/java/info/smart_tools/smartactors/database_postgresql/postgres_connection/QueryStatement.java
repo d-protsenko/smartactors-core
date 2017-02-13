@@ -53,8 +53,28 @@ public class QueryStatement implements IPreparedQuery {
 
         int index = 1;
 
+        SQLQueryParameters statementParameters = new SQLQueryParameters() {
+            @Override
+            public void setString(final int index, final String val)
+                    throws SQLException {
+                stmt.setString(index, val);
+            }
+
+            @Override
+            public void setObject(final int index, final Object val)
+                    throws SQLException {
+                stmt.setObject(index, val);
+            }
+
+            @Override
+            public void setInt(final int index, final int val)
+                    throws SQLException {
+                stmt.setInt(index, val);
+            }
+        };
+
         for (SQLQueryParameterSetter setter : this.parameterSetters) {
-            index = setter.setParameters(stmt, index);
+            index = setter.setParameters(statementParameters, index);
         }
 
         return stmt;

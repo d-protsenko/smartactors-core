@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
 
@@ -56,7 +58,7 @@ public class QueryStatementTest {
         int index = 1;
 
         for (SQLQueryParameterSetter setter : parameterSetters) {
-            when(setter.setParameters(preparedStatement, index)).thenReturn(index);
+            when(setter.setParameters(any(), eq(index))).thenReturn(index);
         }
 
         assertTrue(testQueryStatement.compile(connection) == preparedStatement);
@@ -64,7 +66,7 @@ public class QueryStatementTest {
         verify(connection).prepareStatement(bodyWriterStringPresent);
 
         for (SQLQueryParameterSetter setter : parameterSetters) {
-            verify(setter).setParameters(preparedStatement, index);
+            verify(setter).setParameters(any(), eq(index));
         }
     }
 }

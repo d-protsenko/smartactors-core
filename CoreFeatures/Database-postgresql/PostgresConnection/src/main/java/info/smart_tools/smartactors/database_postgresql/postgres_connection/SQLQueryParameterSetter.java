@@ -16,5 +16,5 @@ public interface SQLQueryParameterSetter {
      * @return index of next parameter to be set
      * @throws SQLException throw when can't handle statement
      */
-    int setParameters(PreparedStatement statement, int firstIndex) throws SQLException;
+    int setParameters(SQLQueryParameters statement, int firstIndex) throws SQLException;
 }

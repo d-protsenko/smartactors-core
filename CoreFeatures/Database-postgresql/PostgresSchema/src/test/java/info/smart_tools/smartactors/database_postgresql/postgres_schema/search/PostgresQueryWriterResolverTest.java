@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.SQLQueryParameters;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -34,6 +35,14 @@ public class PostgresQueryWriterResolverTest {
     private List<Object> parameters;
     private PreparedStatement statement;
 
+    private final Answer paramSetter = invocation -> {
+        Object[] args = invocation.getArguments();
+        int index = (int) args[0];
+        Object param = args[1];
+        parameters.add(param);
+        return null;
+    };
+
     @Before
     public void setUp() throws SQLException {
         resolver = new PostgresQueryWriterResolver();
@@ -52,13 +61,6 @@ public class PostgresQueryWriterResolverTest {
 
         parameters = new ArrayList<>();
         statement = mock(PreparedStatement.class);
-        Answer paramSetter = invocation -> {
-            Object[] args = invocation.getArguments();
-            int index = (int) args[0];
-            Object param = args[1];
-            parameters.add(param);
-            return null;
-        };
         doAnswer(paramSetter).when(statement).setInt(anyInt(), anyInt());
         doAnswer(paramSetter).when(statement).setString(anyInt(), anyString());
         doAnswer(paramSetter).when(statement).setObject(anyInt(), any());
@@ -70,9 +72,15 @@ public class PostgresQueryWriterResolverTest {
         resolver.resolve(null).write(query, resolver, null, filter);
         assertEquals(expectedBody, body.toString());
 
+        SQLQueryParameters sqlParameters = mock(SQLQueryParameters.class);
+
+        doAnswer(paramSetter).when(sqlParameters).setInt(anyInt(), anyInt());
+        doAnswer(paramSetter).when(sqlParameters).setObject(anyInt(), any());
+        doAnswer(paramSetter).when(sqlParameters).setString(anyInt(), any());
+
         int index = 1;
         for (SQLQueryParameterSetter setter : setters) {
-            index = setter.setParameters(statement, index);
+            index = setter.setParameters(sqlParameters, index);
         }
         assertArrayEquals(expectedParameters, parameters.toArray());
     }

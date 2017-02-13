@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.SQLQueryParameterSetter;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.SQLQueryParameters;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class PagingWriterTest {
         assertEquals("LIMIT(?)OFFSET(?)", body.toString());
         verify(query, times(1)).pushParameterSetter(any());
         for (SQLQueryParameterSetter setter : setters) {
-            PreparedStatement statement = mock(PreparedStatement.class);
+            SQLQueryParameters statement = mock(SQLQueryParameters.class);
             int finalIndex = setter.setParameters(statement, 1);
             assertEquals(3, finalIndex);
             verify(statement).setInt(eq(1), eq(8));
