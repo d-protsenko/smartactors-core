@@ -1,0 +1,4 @@
+{
+  "featureName": "database-psql-async-plugins",
+  "afterFeatures": ["database-psql-plugins", "database-postgresql", "database-postgresql-async", "database-plugins"]
+}
