@@ -26,10 +26,10 @@ public class ScatterGatherActor {
     private IMessageProcessor messageProcessor;
 
 
-    public ScatterGatherActor(String actorName) throws ResolutionException {
-        this.actorName = actorName;
+    public ScatterGatherActor(String strategyDependency) throws ResolutionException {
+        this.actorName = strategyDependency;
         this.scatterGatherInfo = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        strategy = IOC.resolve(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), actorName);
+        strategy = IOC.resolve(Keys.getOrAdd(strategyDependency));
     }
 
     public void scatter(ScatterWrapper wrapper) throws ScatterGatherActorException {

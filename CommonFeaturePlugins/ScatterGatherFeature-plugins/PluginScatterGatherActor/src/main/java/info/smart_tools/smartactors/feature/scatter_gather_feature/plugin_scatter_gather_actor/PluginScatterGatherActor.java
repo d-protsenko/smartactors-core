@@ -23,7 +23,7 @@ public class PluginScatterGatherActor extends BootstrapPlugin {
 
     @Item("register_scatter_gather_actor")
     public void registerScatterGatherActor() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IFieldName actorName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
+        IFieldName actorName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategyDependency");
         IOC.register(Keys.getOrAdd("ScatterGatherActor"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {

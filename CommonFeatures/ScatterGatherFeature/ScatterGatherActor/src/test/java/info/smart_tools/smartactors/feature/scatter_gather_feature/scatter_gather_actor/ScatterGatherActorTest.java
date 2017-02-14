@@ -78,7 +78,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         IObject scatterObject3 = mock(IObject.class);
         List<IObject> scatterCollection = Arrays.asList(scatterObject1, scatterObject2, scatterObject3);
         when(scatterWrapper.getCollection()).thenReturn(scatterCollection);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         verify(messageBusHandler).handle(scatterObject1, chainName);
@@ -100,7 +100,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         IObject scatterObject3 = mock(IObject.class);
         List<IObject> scatterCollection = Arrays.asList(scatterObject1, scatterObject2, scatterObject3);
         when(scatterWrapper.getCollection()).thenReturn(scatterCollection);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         verify(strategy, times(scatterCollection.size())).onMessageSendFail(any(IMessageProcessor.class), any(IObject.class));
@@ -119,7 +119,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         IObject scatterObject3 = mock(IObject.class);
         List<IObject> scatterCollection = Arrays.asList(scatterObject1, scatterObject2, scatterObject3);
         when(scatterWrapper.getCollection()).thenReturn(scatterCollection);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         verify(strategy, times(scatterCollection.size())).onMessageSent(eq(messageProcessor), any(IObject.class));
@@ -138,7 +138,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         IObject scatterObject3 = mock(IObject.class);
         List<IObject> scatterCollection = Arrays.asList(scatterObject1, scatterObject2, scatterObject3);
         when(scatterWrapper.getCollection()).thenReturn(scatterCollection);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         verify(strategy, times(1)).beforeScatter(eq(messageProcessor), any(IObject.class));
@@ -157,7 +157,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         IObject scatterObject3 = mock(IObject.class);
         List<IObject> scatterCollection = Arrays.asList(scatterObject1, scatterObject2, scatterObject3);
         when(scatterWrapper.getCollection()).thenReturn(scatterCollection);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         verify(strategy, times(1)).afterScatter(eq(messageProcessor), any(IObject.class));
@@ -179,7 +179,7 @@ public class ScatterGatherActorTest extends PluginsLoadingTestBase {
         when(strategy.chainChoose(any())).thenReturn(chainName);
         IObject resultIObject = mock(IObject.class);
         when(gatherWrapper.getResult()).thenReturn(resultIObject);
-        IOC.register(Keys.getOrAdd(IScatterGatherStrategy.class.getCanonicalName()), new SingletonStrategy(strategy));
+        IOC.register(Keys.getOrAdd("name"), new SingletonStrategy(strategy));
         ScatterGatherActor actor = new ScatterGatherActor("name");
         actor.scatter(scatterWrapper);
         actor.gather(gatherWrapper);
