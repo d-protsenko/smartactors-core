@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryListMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
@@ -41,6 +42,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private ISchedulerEntryStorage storage;
     private IObject args;
     private AddEntryQueryMessage addEntryQueryMessage;
+    private AddEntryQueryListMessage addListEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
     private IResolveDependencyStrategy newEntryStrategy;
@@ -85,6 +87,9 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         addEntryQueryMessage = mock(AddEntryQueryMessage.class);
         when(addEntryQueryMessage.getEntryArguments()).thenReturn(mock(IObject.class));
 
+        addListEntryQueryMessage = mock(AddEntryQueryListMessage.class);
+        when(addListEntryQueryMessage.getEntryArgumentsList()).thenReturn(Collections.singletonList(mock(IObject.class)));
+
         deleteEntryQueryMessage = mock(DeleteEntryQueryMessage.class);
         when(deleteEntryQueryMessage.getEntryId()).thenReturn("entry-to-delete-id");
 
@@ -127,6 +132,16 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         actor.addEntry(addEntryQueryMessage);
 
         verify(newEntryStrategy).resolve(same(addEntryQueryMessage.getEntryArguments()), same(storage));
+    }
+
+    @Test
+    public void Should_createListOfNewEntry()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        actor.addEntryList(addListEntryQueryMessage);
+
+        verify(newEntryStrategy).resolve(same(addListEntryQueryMessage.getEntryArgumentsList().get(0)), same(storage));
     }
 
     @Test
