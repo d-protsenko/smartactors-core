@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryListMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
@@ -89,6 +90,14 @@ public class SchedulerActor {
     public void addEntry(final AddEntryQueryMessage message)
             throws ResolutionException, ReadValueException {
         IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), storage);
+    }
+
+    public void addEntryList(final AddEntryQueryListMessage message)
+            throws ResolutionException, ReadValueException {
+        for (IObject entry : message.getEntryArgumentsList()) {
+            IOC.resolve(Keys.getOrAdd("new scheduler entry"), entry, storage);
+        }
+
     }
 
     /**
