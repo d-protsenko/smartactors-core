@@ -32,7 +32,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
             "]," +
             "'maps': [" +
                 "{" +
-                    "'id': 'tryToTakeResourceMap'" +
+                    "'id': 'tryToTakeResourceMap'," +
                     "'steps': [" +
                         "{" +
                             "'target': 'retryingToTakeResourceExceptionHandler'" +
