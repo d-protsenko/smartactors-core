@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 
 /**
@@ -27,11 +28,11 @@ public abstract class ExceptionHandlingReceiver implements IMessageReceiver {
      * @throws ResolutionException if fails to resolve any dependencies
      */
     protected ExceptionHandlingReceiver() throws ResolutionException {
-        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "causeLevel");
-        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "causeStep");
-        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchLevel");
-        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchStep");
-        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exception");
+        causeLevelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeLevel");
+        causeStepFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeStep");
+        catchLevelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchLevel");
+        catchStepFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchStep");
+        exceptionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exception");
     }
 
     /**
