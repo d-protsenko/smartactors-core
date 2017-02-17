@@ -25,8 +25,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
             "'objects': [" +
                 "{" +
                     "'kind': 'raw'," +
-                    "'dependency': 'info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver'," +
-                    "'strategyDependency': 'RetryingToTakeResourceExceptionHandler'," +
+                    "'dependency': 'RetryingToTakeResourceExceptionHandler'," +
                     "'name': 'retryingToTakeResourceExceptionHandler'" +
                 "}" +
             "]," +
@@ -58,7 +57,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
 
             item
                     .after("config_sections:done")
-                    .before("starter")
+                    .after("PluginRetryingToTakeResourceExceptionHandler")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

@@ -31,7 +31,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
      * @throws InvalidArgumentException if {@link SingletonStrategy} doesn't like our arguments
      */
     @BootstrapPlugin.Item("PluginRetryingToTakeResourceExceptionHandler")
-    @BootstrapPlugin.After({"IOC"})
+    @BootstrapPlugin.After({"IOC", "IFieldNamePlugin"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("RetryingToTakeResourceExceptionHandler"),

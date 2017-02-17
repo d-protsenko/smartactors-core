@@ -178,9 +178,10 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                     );
                                     final String outOfResourcesExceptionTemplate = ("{" +
                                                 "'class': 'info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException'," +
-                                                "'chain': 'tryToTakeResourceMap'" +
+                                                "'chain': 'tryToTakeResourceMap'," +
+                                                "'after': 'break'" +
                                             "}")
-                                            .replace('"', '\'');
+                                            .replace('\'', '"');
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "configuration object canonical maps strategy"
