@@ -40,7 +40,7 @@ public class AsyncQueryStatement extends QueryStatement {
             throws Exception {
         StringBuffer buf = bodyWriter.getBuffer();
 
-        int nParams = AsyncQueryUtils.reformatBuffer(buf);
+        int nParams = AsyncQueryUtils.countParams(buf);
 
         Object[] params = new Object[nParams];
 
@@ -66,6 +66,8 @@ public class AsyncQueryStatement extends QueryStatement {
         for (SQLQueryParameterSetter setter : queryParameterSetters) {
             idx = setter.setParameters(parameters, idx);
         }
+
+        AsyncQueryUtils.reformatBuffer(buf, params);
 
         return db.querySet(buf.toString(), params);
     }

@@ -13,8 +13,21 @@ public class AsyncQueryUtilsTest {
             throws Exception {
         StringBuffer buffer;
 
+        Object a1 = new Object();
+        Object[] args = new Object[] {a1, 345};
+
         buffer = new StringBuffer("SELECT x from y where z ?? ? LIMIT ?;");
-        assertEquals(2, AsyncQueryUtils.reformatBuffer(buffer));
-        assertEquals("SELECT x from y where z ? $1 LIMIT $2;", buffer.toString());
+        assertEquals(2, AsyncQueryUtils.reformatBuffer(buffer, args));
+        assertEquals("SELECT x from y where z ? $1::text LIMIT $2::numeric;", buffer.toString());
+        assertEquals(a1.toString(), args[0]);
+    }
+
+    @Test
+    public void Should_countParameterPlaceholders()
+            throws Exception {
+        StringBuffer buffer;
+
+        buffer = new StringBuffer("SELECT x from y where z ?? ? LIMIT ?;");
+        assertEquals(2, AsyncQueryUtils.countParams(buffer));
     }
 }
