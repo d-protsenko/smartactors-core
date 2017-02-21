@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 /**
  *
  */
-public interface InsertMessage {
+public interface ModificationMessage {
     IMessageProcessor getProcessor() throws ReadValueException;
 
     String getCollectionName() throws ReadValueException;

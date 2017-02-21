@@ -6,7 +6,7 @@ import com.github.pgasync.ResultSet;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.impl.AsyncQueryStatement;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.impl.JSONBDataConverter;
-import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.wrappers.InsertMessage;
+import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.wrappers.ModificationMessage;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.wrappers.SearchMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
@@ -104,6 +104,19 @@ public class AsyncQueryActor {
         }
     }
 
+    private static void subscribeOnResultSet(
+            final Observable<ResultSet> o,
+            final IMessageProcessor mp) throws Exception {
+        subscribeOnResultSet(
+                o, mp, set -> {
+                    try {
+                        mp.continueProcess(null);
+                    } catch (AsynchronousOperationException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
     private static final int TEST_MAGIC_VALUE = 42;
 
     private void testConnection()
@@ -157,7 +170,7 @@ public class AsyncQueryActor {
      * @param message the message
      * @throws Exception if any error occurs
      */
-    public void insert(final InsertMessage message)
+    public void insert(final ModificationMessage message)
             throws Exception {
         AsyncQueryStatement statement = new AsyncQueryStatement();
         IObject document = message.getDocument();
@@ -183,16 +196,7 @@ public class AsyncQueryActor {
 
         mp.pauseProcess();
 
-        subscribeOnResultSet(
-                resObservable,
-                mp,
-                set -> {
-                    try {
-                        mp.continueProcess(null);
-                    } catch (AsynchronousOperationException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        subscribeOnResultSet(resObservable, mp);
     }
 
     /**
@@ -206,7 +210,7 @@ public class AsyncQueryActor {
             throws Exception {
         AsyncQueryStatement statement = new AsyncQueryStatement();
 
-        PostgresSchema.search(statement, CollectionName.fromString(message.getCollectionName()), message.getQuery());
+        PostgresSchema.search(statement, CollectionName.fromString(message.getCollectionName()), (IObject) message.getQuery());
 
         Observable<ResultSet> resObservable = statement.execute(db);
 
@@ -243,7 +247,7 @@ public class AsyncQueryActor {
             throws Exception {
         AsyncQueryStatement statement = new AsyncQueryStatement();
 
-        PostgresSchema.count(statement, CollectionName.fromString(message.getCollectionName()), message.getQuery());
+        PostgresSchema.count(statement, CollectionName.fromString(message.getCollectionName()), (IObject) message.getQuery());
 
         Observable<ResultSet> resObservable = statement.execute(db);
 
@@ -269,6 +273,131 @@ public class AsyncQueryActor {
                         }
 
                         throw new RuntimeException(e);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Update a document.
+     *
+     * @param message    the message
+     * @throws Exception if any error occurs
+     */
+    public void update(final ModificationMessage message)
+            throws Exception {
+        AsyncQueryStatement statement = new AsyncQueryStatement();
+
+        PostgresSchema.update(statement, CollectionName.fromString(message.getCollectionName()));
+
+        String serializedDoc = message.getDocument().serialize();
+        IFieldName idFieldName = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                String.format(PostgresSchema.ID_FIELD_PATTERN, message.getCollectionName()));
+        Object docId = message.getDocument().getValue(idFieldName);
+
+        statement.pushParameterSetter((stmt, firstIndex) -> {
+            stmt.setString(firstIndex++, serializedDoc);
+            stmt.setObject(firstIndex++, docId);
+            return firstIndex;
+        });
+
+        Observable<ResultSet> resObservable = statement.execute(db);
+
+        IMessageProcessor mp = message.getProcessor();
+
+        mp.pauseProcess();
+
+        subscribeOnResultSet(resObservable, mp);
+    }
+
+    /**
+     * Delete the document.
+     *
+     * @param message    the message
+     * @throws Exception if any error occurs
+     */
+    public void delete(final ModificationMessage message)
+            throws Exception {
+        AsyncQueryStatement statement = new AsyncQueryStatement();
+
+        PostgresSchema.delete(statement, CollectionName.fromString(message.getCollectionName()));
+
+        IFieldName idFieldName = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                String.format(PostgresSchema.ID_FIELD_PATTERN, message.getCollectionName()));
+        Object docId = message.getDocument().getValue(idFieldName);
+
+        statement.pushParameterSetter((stmt, firstIndex) -> {
+            stmt.setObject(firstIndex++, docId);
+            return firstIndex;
+        });
+
+        Observable<ResultSet> resObservable = statement.execute(db);
+
+        IMessageProcessor mp = message.getProcessor();
+
+        mp.pauseProcess();
+
+        subscribeOnResultSet(resObservable, mp);
+    }
+
+    /**
+     * Update or insert the document.
+     *
+     * @param message    the message
+     * @throws Exception if any error occurs
+     */
+    public void upsert(final ModificationMessage message)
+            throws Exception {
+        IFieldName idFieldName = IOC.resolve(
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                String.format(PostgresSchema.ID_FIELD_PATTERN, message.getCollectionName()));
+        if (null == message.getDocument().getValue(idFieldName)) {
+            insert(message);
+        } else {
+            update(message);
+        }
+    }
+
+    /**
+     * Get document by it's identifier.
+     *
+     * @param message    the message
+     * @throws Exception if any error occurs
+     */
+    public void getById(final SearchMessage message)
+            throws Exception {
+        AsyncQueryStatement statement = new AsyncQueryStatement();
+        Object id = message.getQuery();
+
+        PostgresSchema.getById(statement, CollectionName.fromString(message.getCollectionName()));
+
+        statement.pushParameterSetter((params, firstIndex) -> {
+            params.setObject(firstIndex++, id);
+            return firstIndex;
+        });
+
+        Observable<ResultSet> resObservable = statement.execute(db);
+
+        IMessageProcessor mp = message.getProcessor();
+
+        mp.pauseProcess();
+
+        subscribeOnResultSet(
+                resObservable,
+                mp,
+                set -> {
+                    try {
+                        taskQueue.put(new ResultSetDeserializationTask(set, mp, message));
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+
+                        try {
+                            mp.continueProcess(e);
+                        } catch (AsynchronousOperationException ee) {
+                            throw new RuntimeException(ee);
+                        }
                     }
                 }
         );
