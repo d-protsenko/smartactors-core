@@ -1,10 +1,12 @@
 package info.smart_tools.smartactors.feature.scatter_gather_feature.scatter_gather_actor;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature.scatter_gather_feature.iscatter_gather_strategy.IScatterGatherStrategy;
 import info.smart_tools.smartactors.feature.scatter_gather_feature.iscatter_gather_strategy.exception.IScatterGatherStrategyException;
 import info.smart_tools.smartactors.feature.scatter_gather_feature.scatter_gather_actor.exception.ScatterGatherActorException;
 import info.smart_tools.smartactors.feature.scatter_gather_feature.scatter_gather_actor.wrapper.GatherWrapper;
 import info.smart_tools.smartactors.feature.scatter_gather_feature.scatter_gather_actor.wrapper.ScatterWrapper;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -20,27 +22,29 @@ import java.util.Collection;
  * Actor, that realize scatter-gather pattern
  */
 public class ScatterGatherActor {
-    private final String actorName;
     private final IScatterGatherStrategy strategy;
     private IObject scatterGatherInfo;
     private IMessageProcessor messageProcessor;
 
 
-    public ScatterGatherActor(String strategyDependency) throws ResolutionException {
-        this.actorName = strategyDependency;
+    public ScatterGatherActor(IObject args) throws ResolutionException, ReadValueException, InvalidArgumentException {
+        IFieldName strategyDependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategyDependency");
+        String strategyDependency = (String) args.getValue(strategyDependencyFieldName);
         this.scatterGatherInfo = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         strategy = IOC.resolve(Keys.getOrAdd(strategyDependency));
     }
 
     public void scatter(ScatterWrapper wrapper) throws ScatterGatherActorException {
         try {
-            Collection<IObject> scatterCollection = wrapper.getCollection();
+            Collection<Object> scatterCollection = wrapper.getCollection();
             messageProcessor = wrapper.getMessageProcessor();
             strategy.beforeScatter(messageProcessor, scatterGatherInfo);
-            for (IObject object : scatterCollection) {
+            for (Object object : scatterCollection) {
                 try {
                     Object chainName = strategy.chainChoose(object);
-                    MessageBus.send(object, chainName);
+                    Object replyChainName = strategy.chooseReplyChain(object);
+                    IObject sendingObject = strategy.formIObjectToSentFromObject(object);
+                    MessageBus.sendAndReply(sendingObject, chainName, replyChainName);
                     strategy.onMessageSent(messageProcessor, scatterGatherInfo);
                 } catch (SendingMessageException e) {
                     strategy.onMessageSendFail(messageProcessor, scatterGatherInfo);

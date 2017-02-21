@@ -23,7 +23,7 @@ public interface IScatterGatherStrategy {
      * @param object {@link IObject} that will send on chain
      * @throws IScatterGatherStrategyException
      */
-    Object chainChoose(IObject object) throws IScatterGatherStrategyException;
+    Object chainChoose(Object object) throws IScatterGatherStrategyException;
 
     /**
      * Strategy method that calls on message sent failed
@@ -32,8 +32,6 @@ public interface IScatterGatherStrategy {
      * @param scatterGatherInfo {@link IObject} with information about current state of scatter-gather
      */
     void onMessageSendFail(IMessageProcessor messageProcessor, IObject scatterGatherInfo) throws IScatterGatherStrategyException;
-
-    ;
 
     /**
      * Strategy method that calls after every thread starts
@@ -58,4 +56,19 @@ public interface IScatterGatherStrategy {
      * @param scatterGatherInfo {@link IObject} with information about current state of scatter-gather
      */
     void onGather(IMessageProcessor messageProcessor, IObject result, IObject scatterGatherInfo) throws IScatterGatherStrategyException;
+
+    /**
+     * Strategy method for form IObject, that will be send to chain
+     * @param object Object from scatter collection
+     * @return {@link IObject} formed from object, that will be send
+     */
+    IObject formIObjectToSentFromObject(Object object) throws IScatterGatherStrategyException;
+
+    /**
+     * Strategy method for choosing chain, that will be call after main chain ends
+     * @param object Object from scatter collection
+     * @return Object chain name
+     * @throws IScatterGatherStrategyException
+     */
+    Object chooseReplyChain(Object object) throws IScatterGatherStrategyException;
 }

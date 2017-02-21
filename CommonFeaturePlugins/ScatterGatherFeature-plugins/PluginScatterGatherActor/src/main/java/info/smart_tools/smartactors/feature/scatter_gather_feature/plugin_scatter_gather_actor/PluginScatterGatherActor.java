@@ -28,7 +28,7 @@ public class PluginScatterGatherActor extends BootstrapPlugin {
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
-                                return new ScatterGatherActor((String) ((IObject) args[0]).getValue(actorName));
+                                return new ScatterGatherActor(((IObject) args[0]));
                             } catch (ResolutionException | ReadValueException e) {
                                 throw new RuntimeException(e);
                             }

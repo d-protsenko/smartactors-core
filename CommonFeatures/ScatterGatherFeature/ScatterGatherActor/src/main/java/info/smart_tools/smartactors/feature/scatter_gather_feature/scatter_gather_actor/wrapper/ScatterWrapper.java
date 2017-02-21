@@ -10,7 +10,7 @@ import java.util.Collection;
  * Created by sevenbits on 07.02.17.
  */
 public interface ScatterWrapper {
-    Collection<IObject> getCollection() throws ReadValueException;
+    Collection<Object> getCollection() throws ReadValueException;
 
     IMessageProcessor getMessageProcessor() throws ReadValueException;
 }
