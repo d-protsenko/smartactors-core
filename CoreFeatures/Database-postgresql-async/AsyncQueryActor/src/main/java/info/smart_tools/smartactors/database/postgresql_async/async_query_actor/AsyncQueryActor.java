@@ -1,11 +1,9 @@
 package info.smart_tools.smartactors.database.postgresql_async.async_query_actor;
 
-import com.github.pgasync.ConnectionPoolBuilder;
 import com.github.pgasync.Db;
 import com.github.pgasync.ResultSet;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.impl.AsyncQueryStatement;
-import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.impl.JSONBDataConverter;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.wrappers.ModificationMessage;
 import info.smart_tools.smartactors.database.postgresql_async.async_query_actor.wrappers.SearchMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
@@ -24,7 +22,6 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import rx.Observable;
 import rx.functions.Action1;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,32 +132,13 @@ public class AsyncQueryActor {
     }
 
     /**
-     * @param uri      database URI: pgsql:///user:password@host/database
-     * @param poolSize size of connection pool
+     * @param db    asynchronous connection pool instance
      * @throws Exception if any error occurs. Really. I cannot know what may throw the 3-rd party library this actor uses.
      */
-    // TODO: Use ConnectionOptions
-    public AsyncQueryActor(final URI uri, final int poolSize)
+    public AsyncQueryActor(final Db db)
             throws Exception {
-        String[] userInfo = uri.getUserInfo().split(":");
-
-        ConnectionPoolBuilder builder = new ConnectionPoolBuilder()
-                .hostname(uri.getHost())
-                .port(uri.getPort())
-                .database(uri.getPath().substring(1)) // skip "^/"
-                .username(userInfo[0])
-                .poolSize(poolSize);
-
-        if (userInfo.length > 1) {
-            builder = builder.password(userInfo[1]);
-        }
-
-        builder = builder.dataConverter(JSONBDataConverter.INSTANCE);
-
-        db = builder.build();
-
+        this.db = db;
         testConnection();
-
         taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
     }
 
@@ -200,7 +178,7 @@ public class AsyncQueryActor {
     }
 
     /**
-     * Search for douments.
+     * Search for documents.
      *
      * @see PostgresSchema#search(QueryStatement, CollectionName, IObject)
      * @param message the message
