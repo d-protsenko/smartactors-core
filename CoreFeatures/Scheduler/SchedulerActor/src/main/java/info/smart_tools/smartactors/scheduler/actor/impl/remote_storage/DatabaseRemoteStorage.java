@@ -64,7 +64,7 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
         entryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
         pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
         sizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
-        documentIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID");
+        documentIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName.toLowerCase() + "ID");
         lastScheduledTimeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "__last_sched_time_");
 
         entriesQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),

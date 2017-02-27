@@ -86,7 +86,7 @@ public class PluginScheduler extends BootstrapPlugin {
     }
 
     private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 60; // 60 seconds
-    private static final long DEFAULT_REFRESH_PAGE_SIZE = 1000 * 60;
+    private static final long DEFAULT_REFRESH_PAGE_SIZE = 100;
 
     /**
      * Register default refresh parameters resolution strategies.
@@ -135,7 +135,7 @@ public class PluginScheduler extends BootstrapPlugin {
                 long rrInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rri"), args);
                 long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
                 long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
-                int refreshPageSize = IOC.resolve(Keys.getOrAdd("scheduler storage refresh page size"), args);
+                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh page size"), args).intValue();
                 new EntryStorageRefresher(storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
                 return storage;
             } catch (ResolutionException | TaskScheduleException e) {

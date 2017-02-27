@@ -131,5 +131,29 @@
             <version>0.2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql-plugins.connection-options-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql-plugins.postgres-connection-pool-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>timer-plugins.timer-plugin</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
