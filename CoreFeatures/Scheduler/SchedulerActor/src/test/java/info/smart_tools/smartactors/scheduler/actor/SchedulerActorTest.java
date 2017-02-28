@@ -4,10 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryListMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -42,6 +39,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private ISchedulerEntryStorage storage;
     private IObject args;
     private AddEntryQueryMessage addEntryQueryMessage;
+    private SetEntryIdMessage addEntryWithSettingIdMessage;
     private AddEntryQueryListMessage addListEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
@@ -87,6 +85,9 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         addEntryQueryMessage = mock(AddEntryQueryMessage.class);
         when(addEntryQueryMessage.getEntryArguments()).thenReturn(mock(IObject.class));
 
+        addEntryWithSettingIdMessage = mock(SetEntryIdMessage.class);
+        when(addEntryWithSettingIdMessage.getEntryArguments()).thenReturn(mock(IObject.class));
+
         addListEntryQueryMessage = mock(AddEntryQueryListMessage.class);
         when(addListEntryQueryMessage.getEntryArgumentsList()).thenReturn(Collections.singletonList(mock(IObject.class)));
 
@@ -95,11 +96,13 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         listEntriesQueryMessage = mock(ListEntriesQueryMessage.class);
 
-        newEntryStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
-
         entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(mock(IObject.class));
+        when(entryMock.getId()).thenReturn("id");
+
+        newEntryStrategy = mock(IResolveDependencyStrategy.class);
+        when(newEntryStrategy.resolve(any(), any())).thenReturn(entryMock);
+        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
 
         taskQueueMock = mock(IQueue.class);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
@@ -132,6 +135,17 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         actor.addEntry(addEntryQueryMessage);
 
         verify(newEntryStrategy).resolve(same(addEntryQueryMessage.getEntryArguments()), same(storage));
+    }
+
+    @Test
+    public void Should_createEntryAndSetIdToMessage()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        actor.addEntryWithSettingId(addEntryWithSettingIdMessage);
+
+        verify(newEntryStrategy).resolve(same(addEntryWithSettingIdMessage.getEntryArguments()), same(storage));
+        verify(addEntryWithSettingIdMessage).setEntryId(eq("id"));
     }
 
     @Test
