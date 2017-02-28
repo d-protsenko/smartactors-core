@@ -30,7 +30,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
     private final Map<String, ISchedulerEntry> strongSuspendEntries;
     private final Map<String, WeakReference<ISchedulerEntry>> weakSuspendEntries;
 
-    private final List<ISchedulerEntry> refreshList;
+    private final List<ISchedulerEntry> refreshAwakeList;
+    private final List<ISchedulerEntry> refreshSuspendList;
 
     private final Object localStorageLock;
 
@@ -61,7 +62,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
         strongSuspendEntries = new HashMap<>();
         weakSuspendEntries = new WeakHashMap<>();
 
-        refreshList = new ArrayList<>();
+        refreshAwakeList = new ArrayList<>();
+        refreshSuspendList = new ArrayList<>();
 
         localStorageLock = new Object();
     }
@@ -117,11 +119,12 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException {
         synchronized (localStorageLock) {
             try {
+                remoteEntryStorage.deleteEntry(entry);
+
                 activeEntries.remove(entry.getId(), entry);
                 strongSuspendEntries.remove(entry.getId(), entry);
                 weakSuspendEntries.remove(entry.getId(), entry);
 
-                remoteEntryStorage.deleteEntry(entry);
                 observer.onCancelEntry(entry);
             } catch (SchedulerEntryStorageObserverException e) {
                 throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
@@ -178,25 +181,30 @@ public class EntryStorage implements ISchedulerEntryStorage {
         synchronized (localStorageLock) {
             // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
             // map we are iterating over)
-            refreshList.clear();
+            refreshAwakeList.clear();
+            refreshSuspendList.clear();
+
             for (ISchedulerEntry suspendedEntry : strongSuspendEntries.values()) {
                 if (suspendedEntry.getLastTime() < awakeUntil) {
-                    refreshList.add(suspendedEntry);
+                    refreshAwakeList.add(suspendedEntry);
                 }
             }
 
-            for (ISchedulerEntry entry : refreshList) {
+            for (ISchedulerEntry activeEntry : activeEntries.values()) {
+                if (activeEntry.getLastTime() > suspendAfter) {
+                    refreshSuspendList.add(activeEntry);
+                } else if (activeEntry.getLastTime() < awakeUntil && !activeEntry.isAwake()) {
+                    // Awake entries loaded by refresher and "zombie" entries -- cancelled but remaining in list of active (they should
+                    // delete themselves)
+                    refreshAwakeList.add(activeEntry);
+                }
+            }
+
+            for (ISchedulerEntry entry : refreshAwakeList) {
                 entry.awake();
             }
 
-            refreshList.clear();
-            for (ISchedulerEntry activeEntry : activeEntries.values()) {
-                if (activeEntry.getLastTime() > suspendAfter) {
-                    refreshList.add(activeEntry);
-                }
-            }
-
-            for (ISchedulerEntry entry : refreshList) {
+            for (ISchedulerEntry entry : refreshSuspendList) {
                 entry.suspend();
             }
         }
@@ -230,5 +238,9 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             return null;
         }
+    }
+
+    public Object getLocalStorageLock() {
+        return localStorageLock;
     }
 }

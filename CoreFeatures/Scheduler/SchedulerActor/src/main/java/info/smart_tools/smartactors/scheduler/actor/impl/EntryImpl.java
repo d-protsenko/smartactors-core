@@ -72,7 +72,7 @@ public final class EntryImpl implements ISchedulerEntry {
         this.strategy = strategy;
         this.action = action;
         this.isSavedRemotely = isSavedRemotely;
-        this.lastScheduledTime = -1;
+        this.lastScheduledTime = Long.MAX_VALUE;
 
         this.timerTask = new AtomicReference<>(null);
         this.isCancelled = false;
@@ -236,6 +236,12 @@ public final class EntryImpl implements ISchedulerEntry {
             ITimerTask tt = timerTask.get();
 
             if (null == tt) {
+                if (isCancelled) {
+                    // This entry is a "zombie"
+                    storage.delete(this);
+                    return;
+                }
+
                 tt = this.timerTask.getAndSet(timer.schedule(this.task, time));
 
                 if (null != tt) {
@@ -247,6 +253,7 @@ public final class EntryImpl implements ISchedulerEntry {
 
             lastScheduledTime = time;
 
+            // Will create "zombie" if this entry was cancelled after timerTask.get() call
             storage.notifyActive(this);
         } catch (TaskScheduleException | EntryStorageAccessException e) {
             throw new EntryScheduleException("Could not reschedule entry.", e);
@@ -278,5 +285,10 @@ public final class EntryImpl implements ISchedulerEntry {
         if (null == timerTask.get()) {
             scheduleNext(getLastTime());
         }
+    }
+
+    @Override
+    public boolean isAwake() {
+        return !isCancelled && timerTask.get() != null;
     }
 }

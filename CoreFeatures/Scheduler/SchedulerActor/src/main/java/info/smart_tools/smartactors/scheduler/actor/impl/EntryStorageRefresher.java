@@ -134,7 +134,7 @@ public class EntryStorageRefresher {
                         ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
                         remoteEntryStorage.weakSaveEntry(newEntry);
                     } else {
-                        localEntry.awake();
+                        entryStorage.notifyActive(localEntry);
                     }
 
                     lastDownloadedState = entryState;

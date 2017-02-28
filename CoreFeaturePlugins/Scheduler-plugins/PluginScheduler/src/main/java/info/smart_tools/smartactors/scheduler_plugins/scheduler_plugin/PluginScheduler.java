@@ -85,7 +85,7 @@ public class PluginScheduler extends BootstrapPlugin {
         );
     }
 
-    private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 60; // 60 seconds
+    private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 10; // 10 seconds
     private static final long DEFAULT_REFRESH_PAGE_SIZE = 100;
 
     /**
@@ -102,13 +102,13 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("scheduler_storage_refresh_parameters:default")
     public void registerDefaultRefreshIntervals()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        // RRI = 60 sec
+        // RRI = BASE_INTERVAL sec
         IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rri"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL));
-        // RAI = 90 sec
+        // RAI = 1.5 * BASE_INTERVAL sec
         IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rai"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL + DEFAULT_BASE_REFRESH_INTERVAL / 2));
-        // RSI = 120 sec
+        // RSI = 2 * BASE_INTERVAL sec
         IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rsi"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL * 2));
 

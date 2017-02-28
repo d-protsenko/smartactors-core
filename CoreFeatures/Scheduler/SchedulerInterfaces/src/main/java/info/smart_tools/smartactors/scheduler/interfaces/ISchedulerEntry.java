@@ -97,4 +97,11 @@ public interface ISchedulerEntry {
      * @throws EntryScheduleException if error occurs creating a timer task
      */
     void awake() throws EntryStorageAccessException, EntryScheduleException;
+
+    /**
+     * Check if this entry is active.
+     *
+     * @return {@code true} if the entry is active
+     */
+    boolean isAwake();
 }

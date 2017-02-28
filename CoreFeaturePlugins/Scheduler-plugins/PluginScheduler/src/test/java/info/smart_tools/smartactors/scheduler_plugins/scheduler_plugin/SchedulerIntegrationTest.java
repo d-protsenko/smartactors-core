@@ -55,6 +55,7 @@ import static org.junit.Assert.*;
 public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
     private static long SCHEDULE_MAX = 100000;
     private static long SCHEDULE_INITIAL = 10000;
+    private static int NEW_ENTRIES_PER_ENTRY = 3;
 
     private class CountSchedulerAction implements ISchedulerAction {
         @Override
@@ -70,7 +71,10 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
         public void execute(ISchedulerEntry entry) throws SchedulerActionExecutionException {
             try {
                 notifyExecuted(entry.getState().getValue(markerFieldName));
-                scheduleOne();
+
+                for (int i = 0; i < NEW_ENTRIES_PER_ENTRY; i++) {
+                    scheduleOne();
+                }
             } catch (Exception e) {
                 throw new SchedulerActionExecutionException("Error executing test action", e);
             }
@@ -137,7 +141,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
             return;
         }
 
-        long delay = 2000 + (idx % 11) * 25000;
+        long delay = 2000 + (idx % 11) * 2000;
         Object marker = UUID.randomUUID().toString();
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC).plus(delay, ChronoUnit.MILLIS);
 
@@ -147,7 +151,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
                         "   'action': 'count scheduler action'," +
                         "   '_marker':'%s'," +
                         "   'save':true," +
-                        "   'neverTooLate':false," +
+                        "   'neverTooLate':true," +
                         "   'time':'%s'" +
                         "}", marker, time.toString())
                         .replace('\'','"'));
@@ -245,16 +249,32 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
 
         synchronized (conpletionLock) {
             while (!isCompleted) {
-                conpletionLock.wait();
+                conpletionLock.wait(100);
             }
+        }
+
+        long endTime = System.currentTimeMillis();
+
+        for (ISchedulerEntry entry : storage.listLocalEntries()) {
+            System.out.println(MessageFormat.format("(1) Zombie entry {0} scheduled in {1} ms after end.",
+                    entry.getState().getValue(markerFieldName),
+                    entry.getLastTime() - endTime));
+        }
+
+        Thread.sleep(1000 * 30);
+
+        for (ISchedulerEntry entry : storage.listLocalEntries()) {
+            System.out.println(MessageFormat.format("(2) Zombie entry {0} scheduled in {1} ms after end.",
+                    entry.getState().getValue(markerFieldName),
+                    entry.getLastTime() - endTime));
         }
 
         assertEquals(0, sMap.size());
 
-        System.err.println(duplicateMarkers);
-        assertEquals(0, duplicateMarkers.size());
-
         List<ISchedulerEntry> entries = storage.listLocalEntries();
         assertEquals(0, entries.size());
+
+        System.err.println(duplicateMarkers);
+        assertEquals(0, duplicateMarkers.size());
     }
 }
