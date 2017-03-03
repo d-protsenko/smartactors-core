@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>info.smart_tools.smartactors</groupId>
+    <artifactId>core-features</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>CoreFeatures/IObject</module>
+        <module>CoreFeatures/DumpableInterface</module>
+        <module>CoreFeatures/HttpEndpoint</module>
+        <module>CoreFeatures/Field</module>
+        <module>CoreFeatures/Base</module>
+        <module>CoreFeatures/Checkpoint</module>
+        <module>CoreFeatures/Database-postgresql</module>
+        <module>CoreFeatures/IObjectExtension</module>
+        <module>CoreFeatures/ConfigurationManager</module>
+        <module>CoreFeatures/Database</module>
+        <module>CoreFeatures/Endpoint</module>
+        <module>CoreFeatures/Parser</module>
+        <module>CoreFeatures/Timer</module>
+        <module>CoreFeatures/FeatureLoadingSystem</module>
+        <module>CoreFeatures/Scope</module>
+        <module>CoreFeatures/FeatureManagement</module>
+        <module>CoreFeatures/Task</module>
+        <module>CoreFeatures/IOC</module>
+        <module>CoreFeatures/MessageProcessing</module>
+        <module>CoreFeatures/HttpsEndpoint</module>
+        <module>CoreFeatures/IOCStrategyPack</module>
+        <module>CoreFeatures/MessageProcessingInterfaces</module>
+        <module>CoreFeatures/Security</module>
+        <module>CoreFeatures/Testing</module>
+        <module>CoreFeatures/UtilityTools</module>
+        <module>CoreFeatures/MessageBus</module>
+        <module>CoreFeatures/FeatureLoader</module>
+        <module>CoreFeatures/Database-in-memory</module>
+        <module>CoreFeatures/Scheduler</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <!--<version>3.0.0</version>-->
+                    <inherited>true</inherited>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>bin</descriptorRef>
+                        </descriptorRefs>
+                    </configuration>
+                </plugin>
+            </plugins>
+
+        </pluginManagement>
+    </build>
+
+</project>

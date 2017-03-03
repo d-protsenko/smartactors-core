@@ -1,4 +1,0 @@
-{
-  "featureName": "database-psql-plugins",
-  "afterFeatures": ["database-postgresql", "database-plugins"]
-}

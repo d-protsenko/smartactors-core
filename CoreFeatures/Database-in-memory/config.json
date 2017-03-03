@@ -1,4 +1,1 @@
-{
-  "featureName": "database-in-memory",
-  "afterFeatures": ["database", "in-memory-database-starter"]
-}
+{"featureName":"info.smart_tools.smartactors:database-in-memory","afterFeatures":["info.smart_tools.smartactors:database","info.smart_tools.smartactors:in-memory-database-starter"]}

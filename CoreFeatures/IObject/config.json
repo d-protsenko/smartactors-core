@@ -1,4 +1,4 @@
 {
-  "featureName": "iobject",
-  "afterFeatures": ["base"]
+  "featureName":"info.smart_tools.smartactors:iobject",
+  "afterFeatures":["info.smart_tools.smartactors:base"]
 }
