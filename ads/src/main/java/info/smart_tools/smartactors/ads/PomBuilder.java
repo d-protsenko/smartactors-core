@@ -153,7 +153,7 @@ public class PomBuilder {
             throws Exception {
         for(Dependency dependency : dependencies) {
             if (dependency.getVersion().equals("${core.version}")) {
-                dependency.setVersion("0.2.0-SNAPSHOT");
+                dependency.setVersion("0.3.1");
             }
         }
     }
