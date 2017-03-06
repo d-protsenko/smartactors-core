@@ -34,6 +34,7 @@ import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
 import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 import info.smart_tools.smartactors.timer_plugins.timer_plugin.PluginTimer;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.MessageFormat;
@@ -53,9 +54,13 @@ import static org.junit.Assert.*;
  *
  */
 public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
-    private static long SCHEDULE_MAX = 100000;
+    private static long SCHEDULE_MAX = 1000000;
     private static long SCHEDULE_INITIAL = 10000;
-    private static int NEW_ENTRIES_PER_ENTRY = 3;
+    private static int NEW_ENTRIES_PER_ENTRY = 1;
+
+    private static long DELAY_BASE = 2000;
+    private static long DELAY_MOD = 5;
+    private static long DELAY_K = 5000;
 
     private class CountSchedulerAction implements ISchedulerAction {
         @Override
@@ -141,7 +146,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
             return;
         }
 
-        long delay = 2000 + (idx % 11) * 2000;
+        long delay = DELAY_BASE + (idx % DELAY_MOD) * DELAY_K;
         Object marker = UUID.randomUUID().toString();
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC).plus(delay, ChronoUnit.MILLIS);
 
@@ -199,6 +204,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
     }
 
     @Test
+    @Ignore("very slow")
     public void testSchedulerIntegration()
             throws Exception {
         Object connectionOptions = new ConnectionOptions() {
@@ -261,7 +267,9 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
                     entry.getLastTime() - endTime));
         }
 
-        Thread.sleep(1000 * 30);
+        for (int i = 0; i < 30 && storage.listLocalEntries().size() != 0; i++) {
+            Thread.sleep(1000);
+        }
 
         for (ISchedulerEntry entry : storage.listLocalEntries()) {
             System.out.println(MessageFormat.format("(2) Zombie entry {0} scheduled in {1} ms after end.",

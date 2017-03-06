@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
@@ -15,6 +16,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEnt
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -32,18 +34,13 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private final List<ISchedulerEntry> refreshAwakeList;
     private final List<ISchedulerEntry> refreshSuspendList;
+    private final HashSet<String>[] recentlyDeletedIdSets;
+    private int refreshIterationCounter;
 
     private final Object localStorageLock;
 
-    /**
-     * The constructor.
-     *
-     * @param remoteEntryStorage remote storage to use
-     * @throws ResolutionException if fails to resolve any dependencies
-     */
-    public EntryStorage(final IRemoteEntryStorage remoteEntryStorage)
-            throws ResolutionException {
-        this(remoteEntryStorage, null);
+    private boolean isEntryCancelledRecently(final String id) {
+        return recentlyDeletedIdSets[0].contains(id) || recentlyDeletedIdSets[1].contains(id);
     }
 
     /**
@@ -64,6 +61,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
         refreshAwakeList = new ArrayList<>();
         refreshSuspendList = new ArrayList<>();
+        recentlyDeletedIdSets = new HashSet[] {new HashSet<>(), new HashSet<>()};
+        refreshIterationCounter = 0;
 
         localStorageLock = new Object();
     }
@@ -77,11 +76,22 @@ public class EntryStorage implements ISchedulerEntryStorage {
     @Override
     public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        synchronized (localStorageLock) {
-            ISchedulerEntry oldEntry = activeEntries.put(entry.getId(), entry);
+        final String entryId = entry.getId();
 
-            strongSuspendEntries.remove(entry.getId(), entry);
-            weakSuspendEntries.remove(entry.getId(), entry);
+        synchronized (localStorageLock) {
+            if (isEntryCancelledRecently(entryId)) {
+                try {
+                    entry.cancel();
+                    return;
+                } catch (EntryScheduleException e) {
+                    throw new EntryStorageAccessException("Error occurred cancelling duplicate entry.", e);
+                }
+            }
+
+            ISchedulerEntry oldEntry = activeEntries.put(entryId, entry);
+
+            strongSuspendEntries.remove(entryId, entry);
+            weakSuspendEntries.remove(entryId, entry);
 
             try {
                 observer.onUpdateEntry(entry);
@@ -119,7 +129,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException {
         synchronized (localStorageLock) {
             try {
-                remoteEntryStorage.deleteEntry(entry);
+                recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
                 activeEntries.remove(entry.getId(), entry);
                 strongSuspendEntries.remove(entry.getId(), entry);
@@ -130,6 +140,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
                 throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
             }
         }
+
+        // It's safe to delete entry from database outside of critical section as we remember that
+        // the entry was cancelled and will not let it get re-created.
+        remoteEntryStorage.deleteEntry(entry);
     }
 
     @Override
@@ -147,18 +161,20 @@ public class EntryStorage implements ISchedulerEntryStorage {
     @Override
     public ISchedulerEntry getEntry(final String id)
             throws EntryStorageAccessException {
-        ISchedulerEntry localEntry = getLocalEntry(id);
-
-        if (null != localEntry) {
-            return localEntry;
-        }
-
-        IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
-
         try {
+            ISchedulerEntry localEntry = getLocalEntry(id);
+
+            if (null != localEntry) {
+                return localEntry;
+            }
+
+            IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
+
             return IOC.resolve(Keys.getOrAdd("restore scheduler entry"), savedEntryState, this);
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
+        } catch (CancelledLocalEntryRequestException e) {
+            throw new EntryStorageAccessException("The entry was not found as it was cancelled recently.");
         }
     }
 
@@ -207,6 +223,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
             for (ISchedulerEntry entry : refreshSuspendList) {
                 entry.suspend();
             }
+
+            recentlyDeletedIdSets[(refreshIterationCounter + 1) & 1].clear();
+
+            ++refreshIterationCounter;
         }
     }
 
@@ -215,9 +235,14 @@ public class EntryStorage implements ISchedulerEntryStorage {
      *
      * @param id    identifier of the entry
      * @return the entry or {@code null} if there is no entry with given identifier in local storage
+     * @throws CancelledLocalEntryRequestException if the required entry was cancelled recently
      */
-    public ISchedulerEntry getLocalEntry(final String id) {
+    public ISchedulerEntry getLocalEntry(final String id) throws CancelledLocalEntryRequestException {
         synchronized (localStorageLock) {
+            if (isEntryCancelledRecently(id)) {
+                throw new CancelledLocalEntryRequestException();
+            }
+
             if (weakSuspendEntries.containsKey(id)) {
                 ISchedulerEntry e = weakSuspendEntries.get(id).get();
 
@@ -238,9 +263,5 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             return null;
         }
-    }
-
-    public Object getLocalStorageLock() {
-        return localStorageLock;
     }
 }

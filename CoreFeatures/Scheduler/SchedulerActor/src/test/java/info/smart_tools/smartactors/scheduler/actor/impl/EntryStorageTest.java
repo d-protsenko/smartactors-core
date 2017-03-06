@@ -29,7 +29,6 @@ import java.util.HashSet;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
@@ -92,6 +91,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
                 entries[i] = mock(ISchedulerEntry.class);
                 when(entries[i].getId()).thenReturn(String.valueOf(i));
                 when(entries[i].getState()).thenReturn(i < saved.length ? saved[i] : mock(IObject.class));
+                when(entries[i].isAwake()).thenReturn(true);
             }
 
             for (IObject obj : saved) {
@@ -132,7 +132,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_locallyStoreEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.notifyActive(entries[0]);
         storage.notifyActive(entries[1]);
@@ -146,7 +146,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         when(entries[1].getId()).thenReturn("0");
 
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.notifyActive(entries[0]);
         storage.notifyActive(entries[1]);
@@ -160,7 +160,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.save(entries[saved.length]);
 
@@ -172,7 +172,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.notifyActive(entries[1]);
 
@@ -191,7 +191,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_enumerateAllEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.notifyActive(entries[1]);
         storage.notifyActive(entries[2]);
@@ -214,9 +214,13 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         when(entries[4].getLastTime()).thenReturn(400L);
         when(entries[5].getLastTime()).thenReturn(500L);
         when(entries[6].getLastTime()).thenReturn(600L);
+        when(entries[7].getLastTime()).thenReturn(0L);
 
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        when(entries[7].isAwake()).thenReturn(false);
 
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
+
+        storage.notifyActive(entries[7]);
         storage.notifyActive(entries[0]);
         storage.notifyInactive(entries[1], true);
         storage.notifyActive(entries[2]);
@@ -226,6 +230,9 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         storage.notifyInactive(entries[6], false);
 
         storage.refresh(150L, 350L);
+
+        verify(entries[7], times(1)).awake();
+        verify(entries[7], times(0)).suspend();
 
         verify(entries[0], times(0)).awake();
         verify(entries[0], times(0)).suspend();
@@ -253,7 +260,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_restoreRemoteEntryWhenItIsRequired()
             throws Exception {
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         assertSame(entries[0], storage.getEntry("0"));
     }
@@ -261,7 +268,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test(expected = EntryStorageAccessException.class)
     public void Should_throwWhenRequiredEntryIsNotFoundInBothRemoteAndLocalStorage()
             throws Exception {
-        EntryStorage storage = new EntryStorage(remoteEntryStorage);
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         assertNull(storage.getEntry("666"));
     }

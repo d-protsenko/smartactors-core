@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
@@ -128,13 +129,17 @@ public class EntryStorageRefresher {
                 for (IObject entryState : entries) {
                     String id = (String) entryState.getValue(entryIdFN);
 
-                    ISchedulerEntry localEntry = entryStorage.getLocalEntry(id);
+                    try {
+                        ISchedulerEntry localEntry = entryStorage.getLocalEntry(id);
 
-                    if (null == localEntry) {
-                        ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
-                        remoteEntryStorage.weakSaveEntry(newEntry);
-                    } else {
-                        entryStorage.notifyActive(localEntry);
+                        if (null == localEntry) {
+                            ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
+                            remoteEntryStorage.weakSaveEntry(newEntry);
+                        } else {
+                            entryStorage.notifyActive(localEntry);
+                        }
+                    } catch (CancelledLocalEntryRequestException e) {
+                        continue;
                     }
 
                     lastDownloadedState = entryState;

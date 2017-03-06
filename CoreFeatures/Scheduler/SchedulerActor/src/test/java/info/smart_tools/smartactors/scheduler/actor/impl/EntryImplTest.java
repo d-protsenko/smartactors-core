@@ -73,7 +73,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         assertEquals("trust-methis-isa-guid", entry.getId());
-        assertEquals(-1L, entry.getLastTime());
+        assertEquals(Long.MAX_VALUE, entry.getLastTime());
         assertSame(state, entry.getState());
     }
 
