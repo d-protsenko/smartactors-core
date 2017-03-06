@@ -1,4 +1,4 @@
 {
-  "featureName": "message-processing",
-  "afterFeatures": ["base", "utility-tools", "iobject", "ioc", "task", "iobject-extension", "message-processing-interfaces"]
+  "featureName":"info.smart_tools.smartactors:message-processing",
+  "afterFeatures":["info.smart_tools.smartactors:base","info.smart_tools.smartactors:utility-tools","info.smart_tools.smartactors:iobject","info.smart_tools.smartactors:ioc","info.smart_tools.smartactors:task","info.smart_tools.smartactors:iobject-extension","info.smart_tools.smartactors:message-processing-interfaces"]
 }

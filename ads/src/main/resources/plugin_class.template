@@ -1,0 +1,42 @@
+package ${package};
+
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+
+public class ${plugin.name} implements IPlugin {
+
+    private IBootstrap<IBootstrapItem<String>> bootstrap;
+
+    public ${plugin.name}(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+        this.bootstrap = bootstrap;
+    }
+
+    @Override
+    public void load()
+            throws PluginException {
+//        try {
+//            IBootstrapItem<String> bootstrapItem = new BootstrapItem();
+//
+//            bootstrapItem
+//                    .after("")
+//                    .before("")
+//                    .process(
+//                            () -> {
+//                                try {
+//
+//                                } catch () {
+//                                    throw new ;
+//                                }
+//                            }
+//                    );
+//            bootstrap.add(bootstrapItem);
+//
+//        } catch (InvalidArgumentException e) {
+//            throw new PluginException(e);
+//        }
+    }
+}

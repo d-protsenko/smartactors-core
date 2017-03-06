@@ -22,6 +22,10 @@ hs_err_pid*
 targer/
 **/target/
 
+#Zip
+
+**/*.zip
+
 #Logs
 
 **/*.log

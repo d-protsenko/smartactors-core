@@ -1,31 +1,5 @@
 {
-  "featureName": "http-endpoint",
-  "afterFeatures": [
-    "endpoint", "message-bus"
-  ],
-  "objects": [
-    {
-      "kind": "stateless_actor",
-      "dependency": "HttpRequestSenderActor",
-      "name": "request-sender"
-    }
-  ],
-  "maps": [
-    {
-      "id": "sendRequest",
-      "steps": [
-        {
-          "target": "request-sender",
-          "handler": "sendRequest",
-          "wrapper": {
-            "in_getRequest": "message/request"
-          }
-        }
-      ],
-      "exceptional": []
-    }
-  ],
-  "client": {
-    "stackDepth": 5
-  }
+  "featureName":"info.smart_tools.smartactors:http-endpoint",
+  "afterFeatures":["info.smart_tools.smartactors:endpoint","info.smart_tools.smartactors:message-bus"],
+  "objects":[{"name":"request-sender","dependency":"HttpRequestSenderActor","kind":"stateless_actor"}],"maps":[{"id":"sendRequest","steps":[{"handler":"sendRequest","wrapper":{"in_getRequest":"message/request"},"target":"request-sender"}],"exceptional":[]}],"client":{"stackDepth":5}
 }

@@ -1,4 +1,1 @@
-{
-  "featureName": "feature-loading-system",
-  "afterFeatures": ["base"]
-}
+{"featureName":"info.smart_tools.smartactors:feature-loading-system","afterFeatures":["info.smart_tools.smartactors:base"]}
