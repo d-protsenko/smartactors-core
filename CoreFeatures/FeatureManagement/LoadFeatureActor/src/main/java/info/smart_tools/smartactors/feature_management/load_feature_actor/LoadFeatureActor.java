@@ -19,6 +19,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.exception.LoadFeatureException;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.wrapper.LoadFeatureWrapper;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -29,7 +31,10 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -38,9 +43,13 @@ import java.util.stream.Stream;
  */
 public class LoadFeatureActor {
 
+    private static final String CONFIG_FILE = "config.json";
+
     private IPluginLoaderVisitor<String> pluginLoaderVisitor;
     private final IPluginCreator pluginCreator;
     private final IConfigurationManager configurationManager;
+
+    private final IFieldName featureNameFN;
 
     /**
      * Default constructor
@@ -51,6 +60,7 @@ public class LoadFeatureActor {
         this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        this.featureNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
     }
 
     /**
@@ -70,6 +80,8 @@ public class LoadFeatureActor {
             System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
             String pattern = ".jar";
             File file = Paths.get(((IPath) feature.getFeatureLocation()).getPath()).toFile();
+            File configJson = Paths.get(file.getPath(), CONFIG_FILE).toFile();
+            this.updateFeature(configJson, feature);
             Collection<IPath> jars = new ArrayList<>();
             Stream.of(file.listFiles((item, string) ->  string.endsWith(pattern))).map(Path::new).forEach(jars::add);
 
@@ -119,6 +131,16 @@ public class LoadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
             System.out.println(e);
+        }
+    }
+
+    private void updateFeature(final File f, final IFeature feature)
+            throws Exception {
+        if (f.exists()) {
+            String content = new Scanner(f).useDelimiter("\\Z").next();
+            IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), content);
+            String featureName = (String) config.getValue(this.featureNameFN);
+            feature.setName(featureName);
         }
     }
 }
