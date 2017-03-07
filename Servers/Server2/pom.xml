@@ -10,7 +10,7 @@
         <module>Server</module>
     </modules>
     <groupId>info.smart_tools.smartactors</groupId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.1</version>
 
     <repositories>
         <repository>
@@ -27,32 +27,32 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>server-developing-tools.interfaces.iserver</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.path</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.plugin-loader-from-jar</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.plugin-loader-visitor-empty-implementation</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.plugin-creator</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.3.1</version>
         </dependency>
 
         <!-- Tests -->
@@ -99,7 +99,7 @@
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>
-                    <version>0.2.0-SNAPSHOT</version>
+                    <version>0.3.1</version>
                     <packaging>zip</packaging>
                 </configuration>
             </plugin>
