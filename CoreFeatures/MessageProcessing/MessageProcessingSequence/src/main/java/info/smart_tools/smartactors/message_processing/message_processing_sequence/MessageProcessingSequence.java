@@ -282,7 +282,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             dump.setValue(stepsStackFieldName,
                     Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
             dump.setValue(chainsStackFieldName,
-                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).collect(Collectors.toList()));
+                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
 
             Object skipChains = options.getValue(skipChainsFieldName);
             Object excludeExceptional = options.getValue(excludeExceptionalFieldName);
