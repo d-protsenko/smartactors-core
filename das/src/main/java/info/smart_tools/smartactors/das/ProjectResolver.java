@@ -16,7 +16,7 @@ public class ProjectResolver {
         Path projectPath = Paths.get("");
         Path path = Paths.get("", PROJECT_META_DATA_FILE);
         if (path.toFile().exists()) {
-            this.project = new Project(ProjectInformation.load(path.toFile()), projectPath);
+            this.project = new Project(JsonFile.load(path.toFile()), projectPath);
 
             return this.project;
         }
@@ -24,7 +24,7 @@ public class ProjectResolver {
         projectPath = Paths.get(Paths.get("").toAbsolutePath().getParent().toString());
         path = Paths.get(Paths.get("").toAbsolutePath().getParent().toString(), PROJECT_META_DATA_FILE);
         if (path.toFile().exists()) {
-            this.project = new Project(ProjectInformation.load(path.toFile()), projectPath);
+            this.project = new Project(JsonFile.load(path.toFile()), projectPath);
 
             Path featurePath = Paths.get("").toAbsolutePath();
 //            Path projectPath = Paths.get(featurePath.toAbsolutePath().toString());

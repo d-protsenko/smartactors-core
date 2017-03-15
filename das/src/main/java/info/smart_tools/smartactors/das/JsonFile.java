@@ -11,22 +11,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class ProjectInformation {
+public class JsonFile {
 
     public static IObject load(final File file) {
-        IObject info = null;
+        IObject data = null;
         try (Scanner scanner = new Scanner(file)) {
-            info = new DSObject(scanner.useDelimiter("\\Z").next());
+            data = new DSObject(scanner.useDelimiter("\\Z").next());
             scanner.close();
         } catch (IOException e) {
-            System.out.println("Could not read project meta data: ");
+            System.out.println("Could not read file: ");
             System.err.println(e);
         } catch (InvalidArgumentException e) {
-            System.out.println("Could not parse project meta data: ");
+            System.out.println("Could not parse file data: ");
             System.err.println(e);
         }
 
-        return info;
+        return data;
     }
 
     public static void save(final File file, final IObject info) {
@@ -36,10 +36,10 @@ public class ProjectInformation {
             writer = new BufferedWriter(new FileWriter(file));
             writer.write(s);
         } catch (SerializeException e) {
-            System.out.println("Could not serialize project meta data: ");
+            System.out.println("Could not serialize data: ");
             System.err.println(e);
         } catch (IOException e) {
-            System.out.println("Could not save project meta data: ");
+            System.out.println("Could not save data to the file: ");
             System.err.println(e);
         } finally {
             try {

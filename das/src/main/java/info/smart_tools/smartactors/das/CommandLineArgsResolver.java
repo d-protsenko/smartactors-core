@@ -17,7 +17,7 @@ public class CommandLineArgsResolver {
                 .choices(
                         "make", "deploy", "import", "cp", "cf", "ca", "cpl", "afr",
                         "ufr", "aar", "uar", "aplr", "uplr", "aofcur",
-                        "aoacur", "aoplcur", "ufv", "uav", "uplv"
+                        "aoacur", "aoplcur", "ufv", "uav", "uplv", "cs", "dc"
                 )
                 .help("a commands (\n" +
                         "\t make - compile actors/plugins and aggregate them to feature zip files\n" +
@@ -53,6 +53,9 @@ public class CommandLineArgsResolver {
         parser.addArgument("-rid", "--repository_id").help("the repository id");
         parser.addArgument("-rurl", "--repository_url").help("the repository url");
         parser.addArgument("-path", "--path").help("the path");
+        parser.addArgument("-sn", "--server_name").help("the name of directory for server (default - 'server')");
+        parser.addArgument("-sl", "--source_location").help("the location of source file");
+        parser.addArgument("-aid", "--artifact_id").help("the artifact id");
 //        parser.addArgument("make")
 //                .help("make current project/feature/actor. Will be run follows maven command: mvn clean package");
 //        parser.addArgument("deploy")
@@ -188,8 +191,8 @@ public class CommandLineArgsResolver {
         String repositoryId = null;
         repositoryId = ns.getString("repository_id");
         if (null == repositoryId) {
-            System.out.println("Could not resolve argument: -repository_id | -r_id | -rid | -id.");
-            throw new Exception("Could not resolve argument: -repository_id | -r_id | -rid | -id.");
+            System.out.println("Could not resolve argument: -repository_id | -rid.");
+            throw new Exception("Could not resolve argument: -repository_id | -rid.");
         }
 
         return repositoryId;
@@ -205,8 +208,8 @@ public class CommandLineArgsResolver {
         String repositoryUrl = null;
         repositoryUrl = ns.getString("repository_url");
         if (null == repositoryUrl) {
-            System.out.println("Could not resolve argument: -repository_url | -r_url | -rurl | -url.");
-            throw new Exception("Could not resolve argument: -repository_url | -r_url | -rurl | -url.");
+            System.out.println("Could not resolve argument: -repository_url | -rurl.");
+            throw new Exception("Could not resolve argument: -repository_url | -rurl.");
         }
 
         return repositoryUrl;
@@ -215,6 +218,57 @@ public class CommandLineArgsResolver {
     public boolean isUploadRepositoryUrl() {
         String repositoryUrl = ns.getString("repository_url");
         return !(null == repositoryUrl || repositoryUrl.isEmpty());
+    }
+
+    public String getServerDirectory()
+            throws Exception {
+        String serverDirectory = null;
+        serverDirectory = ns.getString("server_name");
+        if (null == serverDirectory) {
+            System.out.println("Could not resolve argument: -server_name | -sn.");
+            throw new Exception("Could not resolve argument: -server_name | -sn.");
+        }
+
+        return serverDirectory;
+    }
+
+    public boolean isServerName() {
+        String serverDirectory = ns.getString("server_name");
+        return !(null == serverDirectory || serverDirectory.isEmpty());
+    }
+
+    public String getSourceLocation()
+            throws Exception {
+        String sourceLocation = null;
+        sourceLocation = ns.getString("source_location");
+        if (null == sourceLocation) {
+            System.out.println("Could not resolve argument: -source_location | -sl.");
+            throw new Exception("Could not resolve argument: -source_location | -sl.");
+        }
+
+        return sourceLocation;
+    }
+
+    public boolean isSourceLocation() {
+        String sourceLocation = ns.getString("source_location");
+        return !(null == sourceLocation || sourceLocation.isEmpty());
+    }
+
+    public String getArtifactId()
+            throws Exception {
+        String artifactId = null;
+        artifactId = ns.getString("artifact_id");
+        if (null == artifactId) {
+            System.out.println("Could not resolve argument: -artifact_id | -aid.");
+            throw new Exception("Could not resolve argument: -artifact_id | -aid.");
+        }
+
+        return artifactId;
+    }
+
+    public boolean isArtifactId() {
+        String artifactId = ns.getString("artifact_id");
+        return !(null == artifactId || artifactId.isEmpty());
     }
 
     public String getPath()
