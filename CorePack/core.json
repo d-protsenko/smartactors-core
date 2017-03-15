@@ -1,4 +1,11 @@
 {
+  "repositories": [
+    {
+      "repositoryId": "archiva.smartactors-features",
+      "type": "default",
+      "url": "http://archiva.smart-tools.info/repositry/smartactors-features/"
+    }
+  ],
   "features": [
     {
       "group": "info.smart_tools.smartactors",

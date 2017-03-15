@@ -106,6 +106,12 @@ public class Das {
         commands.put("update_plugin_version", new UpdatePluginVersion());
         commands.put("uplv", new UpdatePluginVersion());
 
+        commands.put("cs", new CreateServer());
+        commands.put("create_server", new CreateServer());
+
+        commands.put("dc", new DownloadCore());
+        commands.put("download_core", new DownloadCore());
+
         return commands;
     }
 }
