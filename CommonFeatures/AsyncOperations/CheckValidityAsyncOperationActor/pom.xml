@@ -61,7 +61,7 @@
                             </goals>
                             <inherited>false</inherited>
                             <configuration>
-                                <generatePom>false</generatePom>
+                                <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
                                 <url>http://archiva.smart-tools.info/repository/common-actors/</url>
                                 <repositoryId>archiva.common-actors</repositoryId>
@@ -69,6 +69,7 @@
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
                                 <packaging>jar</packaging>
+                                <description>This package contains ...</description>
                             </configuration>
                         </execution>
                     </executions>

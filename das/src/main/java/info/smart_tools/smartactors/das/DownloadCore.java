@@ -104,7 +104,7 @@ public class DownloadCore implements IAction {
         Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>(){{add(remoteRepository);}};
 
         List<Artifact> artifacts = new Aether(repositories, Paths.get(
-                destination.getAbsolutePath().toString(), "/downloads"
+                destination.getAbsolutePath().toString(), "downloads"
         ).toFile()).resolve(
                 new DefaultArtifact(
                         groupId,
@@ -120,7 +120,7 @@ public class DownloadCore implements IAction {
         IObject repositoriesAndFeatures = JsonFile.load(artifact);
         FileUtils.deleteDirectory(
                 Paths.get(
-                        destination.getAbsolutePath().toString(), "/downloads"
+                        destination.getAbsolutePath().toString(), "downloads"
                 ).toFile()
         );
 
@@ -152,33 +152,28 @@ public class DownloadCore implements IAction {
             }
         }).collect(Collectors.toList());
         List<Artifact> artifacts = new ArrayList<>();
-        Aether aether = new Aether(repositories, Paths.get(
-                path.toFile().getAbsolutePath().toString(), "/downloads"
-        ).toFile());
-        featuresParams.forEach(p -> {
-            try {
-                artifacts.addAll(
-                        aether.resolve(
-                                new DefaultArtifact(
-                                        (String) p.getValue(new FieldName("group")),
-                                        (String) p.getValue(new FieldName("name")),
-                                                "",
-                                                "zip",
-                                        (String) p.getValue(new FieldName("version"))
-                                ),
-                                "runtime"
-                        )
-                );
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        for (IObject param : featuresParams) {
+            artifacts.addAll(
+                    new Aether(repositories, Paths.get(
+                            path.toFile().getAbsolutePath().toString(), "downloads"
+                    ).toFile()).resolve(
+                            new DefaultArtifact(
+                                    (String) param.getValue(new FieldName("group")),
+                                    (String) param.getValue(new FieldName("name")),
+                                    "",
+                                    "zip",
+                                    (String) param.getValue(new FieldName("version"))
+                            ),
+                            "runtime"
+                    )
+            );
+        }
         artifacts.forEach(a -> {
                         try {
                             File f = a.getFile();
                             if (null != f && f.exists()) {
                                 ZipFile zipFile = new ZipFile(f);
-                                zipFile.extractAll(Paths.get(path.toFile().getAbsolutePath().toString(), "core").toString());
+                                zipFile.extractAll(Paths.get(path.toFile().getAbsolutePath().toString(), defDirectoryName).toString());
                             }
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -187,7 +182,7 @@ public class DownloadCore implements IAction {
         );
         FileUtils.deleteDirectory(
                 Paths.get(
-                        path.toFile().getAbsolutePath().toString(), "/downloads"
+                        path.toFile().getAbsolutePath().toString(), "downloads"
                 ).toFile()
         );
     }
