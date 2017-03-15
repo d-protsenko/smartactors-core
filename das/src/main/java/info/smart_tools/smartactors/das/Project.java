@@ -268,7 +268,7 @@ public class Project {
             throws Exception {
         Path projectMetaDataFile = Paths.get(this.getPath().toString(), PROJECT_METADATA_FILENAME);
         try {
-            ProjectInformation.save(projectMetaDataFile.toFile(), this.asIObject());
+            JsonFile.save(projectMetaDataFile.toFile(), this.asIObject());
         } catch (InvalidArgumentException | ChangeValueException e) {
             System.out.println("Could not generate project meta data: ");
             System.err.println(e);
