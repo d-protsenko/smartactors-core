@@ -174,7 +174,7 @@
                             </goals>
                             <inherited>false</inherited>
                             <configuration>
-                                <generatePom>false</generatePom>
+                                <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
                                 <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
                                 <repositoryId>archiva.smartactors-modules</repositoryId>
@@ -182,6 +182,7 @@
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
                                 <packaging>jar</packaging>
+                                <description>This package contains ...</description>
                             </configuration>
                         </execution>
                     </executions>
