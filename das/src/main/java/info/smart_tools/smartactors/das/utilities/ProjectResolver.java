@@ -1,5 +1,8 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.utilities;
 
+
+import info.smart_tools.smartactors.das.models.Feature;
+import info.smart_tools.smartactors.das.models.Project;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +30,6 @@ public class ProjectResolver {
             this.project = new Project(JsonFile.load(path.toFile()), projectPath);
 
             Path featurePath = Paths.get("").toAbsolutePath();
-//            Path projectPath = Paths.get(featurePath.toAbsolutePath().toString());
             String featureName = featurePath.relativize(projectPath).toString();
             this.currentFeature = this.project.getFeatures().stream()
                     .filter(f -> f.getName().equals(featureName))
