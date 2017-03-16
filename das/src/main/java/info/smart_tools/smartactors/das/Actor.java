@@ -41,8 +41,8 @@ public class Actor {
     private static final String DEPLOY_REPOSITORY_ID_TOKEN = "${upload.repository.id}";
     private static final String DEPLOY_REPOSITORY_URL_TOKEN = "${upload.repository.url}";
 
-    private static final String SRC_MAIN_JAVA = "scr/main/java";
-    private static final String SRC_TEST_JAVA = "scr/test/java";
+    private static final String SRC_MAIN_JAVA = "src/main/java";
+    private static final String SRC_TEST_JAVA = "src/test/java";
 
     private static final String CLASS_FILE_EXTENSION = ".java";
     private static final String TEMPLATE_FILE_EXTENSION = ".template";
