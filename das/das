@@ -9,5 +9,5 @@ then
     echo "deploy project components"
     mvn -Dmaven.test.skip=true -DdeployOnly=true deploy
 else
-    java -D -jar ~/bin/das-0.3.1-jar-with-dependencies.jar $@
+    java -D -jar ~/bin/das.jar $@
 fi
