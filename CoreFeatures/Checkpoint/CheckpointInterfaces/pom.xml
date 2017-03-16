@@ -5,20 +5,20 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>checkpoint</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>checkpoint.interfaces</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.message-processing</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
     <build>

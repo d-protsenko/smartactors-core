@@ -5,50 +5,50 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>scope-plugins</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>scope-plugins.subscribe-scope-provider-on-scope-creation-plugin</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope.scope-provider</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.strategy-container</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

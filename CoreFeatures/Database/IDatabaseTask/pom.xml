@@ -5,30 +5,30 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>database.interfaces.idatabase-task</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database.database-storage</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.itask</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database.interfaces.istorage-connection</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
     <build>

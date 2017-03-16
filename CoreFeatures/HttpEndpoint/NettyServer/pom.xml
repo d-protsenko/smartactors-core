@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>http-endpoint</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>http-endpoint.netty-server</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.iasync-service</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -35,13 +35,13 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.message-processing</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.imessage-mapper</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -71,36 +71,36 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.itask</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.iqueue</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.completable-netty-future</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.netty-client</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope.scope-provider</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.iresponse-sender</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -5,80 +5,80 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>feature-loader</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>feature-loader.feature-loader</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loader.interfaces.ifeature-loader</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc-container</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin-loader</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin-loader-visitor</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.plugin-loader-from-jar</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.plugin-loader-visitor-empty-implementation</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager.configuration-manager</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.path</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.iqueue</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.itask</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loader.interfaces.ifilesystem-facade</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

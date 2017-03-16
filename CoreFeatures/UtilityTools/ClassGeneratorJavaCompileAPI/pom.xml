@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>utility-tools</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>utility-tools.class-generator-with-java-compile-api</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>utility-tools.interfaces.iclass-generator</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

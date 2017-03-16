@@ -5,55 +5,55 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>testing</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>testing.test-environment-handler</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.ienvironment-handler</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.message-processing</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.ichain-storage</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.itask</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.iqueue</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.irouter</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>testing.interfaces.itest-runner</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>testing.interfaces.iassertion</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>testing.interfaces.iresult-checker</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -70,55 +70,55 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>helpers.plugins-loading-test-base</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scope-provider-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.fieldname-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

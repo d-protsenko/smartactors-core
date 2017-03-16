@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>timer</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>timer.interfaces.itimer</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.interfaces.itask</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
     <build>

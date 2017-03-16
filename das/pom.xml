@@ -4,20 +4,20 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>das</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 
     <dependencies>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaction</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ds-object</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>

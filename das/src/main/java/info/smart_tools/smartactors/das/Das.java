@@ -32,7 +32,7 @@ public class Das {
         Map<String, IAction> commands = initCommands();
 
         System.out.println("Distributed Actor System. Design, assembly and deploy tools.");
-        System.out.println("Version 0.3.1.");
+        System.out.println("Version 0.3.2.");
 
         if (args.length == 0) {
             return;

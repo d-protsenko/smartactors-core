@@ -5,30 +5,30 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>https-endpoint</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>https-endpoint.https-endpoint</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>https-endpoint.https-server</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.ienvironment-handler</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.endpoint-channel-inbound-handler</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.http-request-handler</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
     <build>

@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>morph-expressions</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>morph-expressions.parser</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>morph-expressions.interfaces.parser</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

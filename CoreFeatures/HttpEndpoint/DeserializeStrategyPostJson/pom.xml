@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>http-endpoint</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
     <artifactId>http-endpoint.deserialize-strategy-post-json</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -23,12 +23,12 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.ideserialize-strategy</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.imessage-mapper</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ds-object</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
