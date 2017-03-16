@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.utilities;
 
 import java.io.BufferedWriter;
 import java.io.File;

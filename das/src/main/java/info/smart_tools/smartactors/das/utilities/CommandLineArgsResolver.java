@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.utilities;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;

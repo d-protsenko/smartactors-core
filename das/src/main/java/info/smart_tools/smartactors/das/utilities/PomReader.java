@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.utilities;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;

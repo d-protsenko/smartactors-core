@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.utilities;
 
 import java.io.File;
 
@@ -11,8 +11,6 @@ public class ParameterResolver {
 
     public static String getArtifactId(final String str) {
 
-//        String result = Dictionary.getArtifactIdByDirectoryName(str);
-//        System.out.println("ArtifactId: " + (null != result ? result : str.trim().replaceAll("(([^.I])([A-Z]))", "$2-$3").toLowerCase()));
         return str.trim().replaceAll("(([^.I])([A-Z]))", "$2-$3").toLowerCase();
     }
 

@@ -1,8 +1,14 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.commands;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.ProjectResolver;
+import info.smart_tools.smartactors.das.models.Feature;
+import info.smart_tools.smartactors.das.models.Plugin;
+import info.smart_tools.smartactors.das.models.Project;
+import info.smart_tools.smartactors.das.models.UploadRepository;
 
 import java.util.List;
 

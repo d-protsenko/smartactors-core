@@ -50,6 +50,11 @@
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
             <version>0.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <version>0.3.1</version>
+        </dependency>
 
         <!-- Components of info.smart_tools.smartactors.iobject -->
         <dependency>

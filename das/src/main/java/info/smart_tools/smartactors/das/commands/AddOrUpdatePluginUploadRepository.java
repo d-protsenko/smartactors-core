@@ -1,18 +1,24 @@
-package info.smart_tools.smartactors.das;
+package info.smart_tools.smartactors.das.commands;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.ProjectResolver;
+import info.smart_tools.smartactors.das.models.Feature;
+import info.smart_tools.smartactors.das.models.Plugin;
+import info.smart_tools.smartactors.das.models.Project;
+import info.smart_tools.smartactors.das.models.UploadRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddOrUpdateActorUploadRepository implements IAction {
+public class AddOrUpdatePluginUploadRepository implements IAction {
 
     @Override
     public void execute(Object o)
             throws ActionExecuteException, InvalidArgumentException {
-        System.out.println("Adding/updating repository to the actor ...");
+        System.out.println("Adding/updating repository to the plugin ...");
 
         try {
             String[] args = (String[]) o;
@@ -34,7 +40,7 @@ public class AddOrUpdateActorUploadRepository implements IAction {
             if (null == featureName || featureName.toLowerCase().equals("all")) {
                 features = project.getFeatures();
             }
-            String actorName = clar.getActorName();
+            String pluginName = clar.getPluginName();
 
 
             String repId = clar.getUploadRepositoryId();
@@ -42,20 +48,19 @@ public class AddOrUpdateActorUploadRepository implements IAction {
 
             for(Feature f : features) {
                 System.out.println("Feature - " + f.getName() + " ...");
-                List<Actor> actors = new ArrayList<>();
-                System.out.println("Actor name " + actorName);
-                if (null == actorName || actorName.toLowerCase().equals("all")) {
-                    actors.addAll(f.getActors());
+                List<Plugin> plugins = new ArrayList<>();
+                if (null == pluginName || pluginName.toLowerCase().equals("all")) {
+                    plugins.addAll(f.getPlugins());
                 } else {
-                    Actor a = f.getActors().stream()
-                            .filter(ac -> ac.getRawName().equals(actorName)).findFirst().orElse(null);
-                    if (null != a) {
-                        actors.add(a);
+                    Plugin p = f.getPlugins().stream()
+                            .filter(pl -> pl.getRawName().equals(pluginName)).findFirst().orElse(null);
+                    if (null != p) {
+                        plugins.add(p);
                     }
                 }
-                for (Actor a : actors) {
-                    System.out.println("Actor - " + a.getRawName() + " ...");
-                    forOneActor(a, repId, repUrl);
+                for (Plugin p : plugins) {
+                    System.out.println("Plugin - " + p.getRawName() + " ...");
+                    forOnePlugin(p, repId, repUrl);
                     System.out.println("... processed.");
                 }
             }
@@ -72,13 +77,13 @@ public class AddOrUpdateActorUploadRepository implements IAction {
         System.out.println("Repository has been added/updated successful.");
     }
 
-    private void forOneActor(final Actor actor, final String repId, final String repUrl)
+    private void forOnePlugin(final Plugin plugin, final String repId, final String repUrl)
             throws Exception {
-        // Addition or update actor repository to pom file
-        actor.addOrUpdateUploadRepositoryToPom(repId, repUrl);
+        // Addition or update plugin repository to pom file
+        plugin.addOrUpdateUploadRepositoryToPom(repId, repUrl);
 
-        // Addition or update actor repository to meta data
-        actor.addOrUpdateUploadRepository(new UploadRepository(repId, repUrl));
+        // Addition or update plugin repository to meta data
+        plugin.addOrUpdateUploadRepository(new UploadRepository(repId, repUrl));
 
     }
 }
