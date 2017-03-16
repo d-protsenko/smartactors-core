@@ -4,14 +4,14 @@ Installation:
    > mvn clean package
 - make directory
    > ~/bin
-- copy to this directory the 'das' file and the compiled jar file - 'das-0.3.1-jar-with-dependencies.jar'
+- copy to this directory the 'das' file and the compiled jar file - 'das.jar'
 - add 'bin' directory to the PATH:
    > export $PATH=$PATH:~/bin/
 - in any directory run 'das':
    > das
    and result should be like a:
    > Distributed Actor System. Design, assembly and deploy tools.
-   > Version 0.3.1.
+   > Version 0.3.2.
 
 
 Convention:

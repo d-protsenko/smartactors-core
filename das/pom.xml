@@ -4,20 +4,20 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>das</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 
     <dependencies>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaction</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ds-object</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
@@ -97,6 +97,8 @@
                             <mainClass>info.smart_tools.smartactors.das.Das</mainClass>
                         </manifest>
                     </archive>
+                    <finalName>das</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
@@ -104,6 +106,31 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <dataSet>
+                                <data>
+                                    <src>${project.build.directory}/das.jar</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/das</prefix>
+                                    </mapper>
+                                </data>
+                            </dataSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

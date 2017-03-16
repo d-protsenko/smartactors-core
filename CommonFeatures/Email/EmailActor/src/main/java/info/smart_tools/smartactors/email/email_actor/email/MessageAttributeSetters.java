@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class MessageAttributeSetters {
             try {
                 message.getMimeMessage().setFrom(
                         new InternetAddress(String.format("%s<%s>",
-                                String.valueOf(value),
+                                new String(String.valueOf(value).getBytes(), Charset.forName("ISO-8859-1")),
                                 senderAddress_Context_F.in(context))));
             } catch (Exception e) {
                 throw new RuntimeException("Failed to initialize static block", e);
