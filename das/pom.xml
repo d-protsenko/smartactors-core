@@ -13,6 +13,26 @@
             <artifactId>base.interfaces.iaction</artifactId>
             <version>0.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.iobject</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.field-name</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.ifield-name</artifactId>
+            <version>0.3.2</version>
+        </dependency>
 
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -129,10 +149,38 @@
                                         <prefix>/usr/share/das</prefix>
                                     </mapper>
                                 </data>
+                                <data>
+                                    <src>das</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <filemode>0755</filemode>
+                                        <prefix>/usr/bin</prefix>
+                                    </mapper>
+                                </data>
                             </dataSet>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <goals>
+                    <goal>deploy-file</goal>
+                </goals>
+                <configuration>
+                    <generatePom>true</generatePom>
+                    <file>${project.build.directory}/das_${project.version}_all.deb</file>
+                    <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
+                    <repositoryId>archiva.server-dev-tools</repositoryId>
+                    <groupId>info.smart_tools.smartactors</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <packaging>deb</packaging>
+                    <description>The Distributed Actor System. Design, assembly and deploy tools. Version - ${project.version}</description>
+                </configuration>
             </plugin>
         </plugins>
     </build>
