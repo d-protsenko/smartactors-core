@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Project;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
 
 public class CreateProject implements IAction {
 
@@ -29,6 +31,10 @@ public class CreateProject implements IAction {
             project.makePomFile();
 
             project.saveMetaDataFile();
+        } catch (InvalidCommandLineArgumentException | ProjectCreationException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Project creation has been failed.");
             System.err.println(e);

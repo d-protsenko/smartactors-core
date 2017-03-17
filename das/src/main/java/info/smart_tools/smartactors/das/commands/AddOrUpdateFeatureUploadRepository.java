@@ -8,6 +8,8 @@ import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,10 @@ public class AddOrUpdateFeatureUploadRepository implements IAction {
             // Save project meta data file
             project.saveMetaDataFile();
 
+        } catch (InvalidCommandLineArgumentException | ProjectResolutionException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Addition/update repository has been failed.");
             System.err.println(e);

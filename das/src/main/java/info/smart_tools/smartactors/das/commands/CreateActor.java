@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.das.models.Actor;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
 
 import java.util.List;
 
@@ -87,7 +89,10 @@ public class CreateActor implements IAction {
 
             // Save project meta data file
             actor.getOwnerFeature().getOwnerProject().saveMetaDataFile();
+        } catch (InvalidCommandLineArgumentException | ProjectResolutionException e) {
+            System.out.println(e.getMessage());
 
+            return;
         } catch (Exception e) {
             System.out.println("Actor creation has been failed.");
             System.err.println(e);

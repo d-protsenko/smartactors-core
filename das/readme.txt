@@ -119,7 +119,7 @@ create server:
         g    - info.smart_tools.smartactors
         v    - RELEASE
         path - current directory
-        an   - server
+        sn   - server
         rid  - archiva.servers
         rurl - http://archiva.smart-tools.info/repository/servers/
 
@@ -134,7 +134,7 @@ download server core:
         rurl - http://archiva.smart-tools.info/repository/smartactors-features/
         path - current directory
 download specific core:
-    > das dc -path ServerLocation -cl coreListFileLocation
+    > das dc -path ServerLocation -sl coreListFileLocation
         coreList file must looks like as follows:
         {
             "repositories": [{

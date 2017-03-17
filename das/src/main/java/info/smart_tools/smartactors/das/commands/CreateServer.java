@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import net.lingala.zip4j.core.ZipFile;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.aether.artifact.Artifact;
@@ -94,9 +95,14 @@ public class CreateServer implements IAction {
                             destination.getAbsolutePath().toString(), "/downloads"
                     ).toFile()
             );
+        } catch (InvalidCommandLineArgumentException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (ZipException e) {
-            System.out.println("Could not extract zip archive.");
-            System.err.println(e);
+            System.out.println("Could not extract zip archive: " + e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Server creation has been failed.");
             System.err.println(e);

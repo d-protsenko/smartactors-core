@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.das.utilities;
 
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -68,24 +69,27 @@ public class CommandLineArgsResolver {
     }
 
     public String getProjectName()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String projectName = null;
         projectName = ns.getString("project_name");
         if (null == projectName) {
-            System.out.println("Could not resolve argument: -pn | -project_name.");
-            throw new Exception("Could not resolve argument: -pn | -project_name.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -pn | -project_name.");
         }
 
         return projectName;
     }
 
+    public boolean isProjectName() {
+        String project = ns.getString("project_name");
+        return !(null == project || project.isEmpty());
+    }
+
     public String getCommand()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String command = null;
         command = ns.getString("command");
         if (null == command) {
-            System.out.println("Could not resolve argument: -c | -command.");
-            throw new Exception("Could not resolve argument: -c | -command.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: command.");
         }
 
         return command;
@@ -96,18 +100,13 @@ public class CommandLineArgsResolver {
         return !(null == command || command.isEmpty());
     }
 
-    public boolean isProjectName() {
-        String project = ns.getString("project_name");
-        return !(null == project || project.isEmpty());
-    }
 
     public String getFeatureName()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String featureName = null;
         featureName = ns.getString("feature_name");
         if (null == featureName) {
-            System.out.println("Could not resolve argument: -fn | -feature_name.");
-            throw new Exception("Could not resolve argument: -fn | -feature_name.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -fn | -feature_name.");
         }
         return featureName;
     }
@@ -118,12 +117,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getActorName()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String actorName = null;
         actorName = ns.getString("actor_name");
         if (null == actorName) {
-            System.out.println("Could not resolve argument: -an | -actor_name.");
-            throw new Exception("Could not resolve argument: -an | -actor_name.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -an | -actor_name.");
         }
 
         return actorName;
@@ -136,12 +134,11 @@ public class CommandLineArgsResolver {
 
 
     public String getPluginName()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String pluginName = null;
         pluginName = ns.getString("plugin_name");
         if (null == pluginName) {
-            System.out.println("Could not resolve argument: -pln | -plugin_name.");
-            throw new Exception("Could not resolve argument: -pln | -plugin_name.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -pln | -plugin_name.");
         }
 
         return pluginName;
@@ -153,12 +150,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getGroupId()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String groupId = null;
         groupId = ns.getString("group_id");
         if (null == groupId) {
-            System.out.println("Could not resolve argument: -group_id | -g.");
-            throw new Exception("Could not resolve argument: -group_id | -g.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -g | -group_id.");
         }
 
         return groupId;
@@ -170,12 +166,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getVersion()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String version = null;
         version = ns.getString("version");
         if (null == version) {
-            System.out.println("Could not resolve argument: -version | -v.");
-            throw new Exception("Could not resolve argument: -version | -v.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -v | -version.");
         }
 
         return version;
@@ -187,12 +182,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getUploadRepositoryId()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String repositoryId = null;
         repositoryId = ns.getString("repository_id");
         if (null == repositoryId) {
-            System.out.println("Could not resolve argument: -repository_id | -rid.");
-            throw new Exception("Could not resolve argument: -repository_id | -rid.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -rid | -repository_id.");
         }
 
         return repositoryId;
@@ -204,12 +198,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getUploadRepositoryUrl()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String repositoryUrl = null;
         repositoryUrl = ns.getString("repository_url");
         if (null == repositoryUrl) {
-            System.out.println("Could not resolve argument: -repository_url | -rurl.");
-            throw new Exception("Could not resolve argument: -repository_url | -rurl.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -rurl | -repository_url.");
         }
 
         return repositoryUrl;
@@ -221,12 +214,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getServerDirectory()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String serverDirectory = null;
         serverDirectory = ns.getString("server_name");
         if (null == serverDirectory) {
-            System.out.println("Could not resolve argument: -server_name | -sn.");
-            throw new Exception("Could not resolve argument: -server_name | -sn.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -sn | -server_name.");
         }
 
         return serverDirectory;
@@ -238,12 +230,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getSourceLocation()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String sourceLocation = null;
         sourceLocation = ns.getString("source_location");
         if (null == sourceLocation) {
-            System.out.println("Could not resolve argument: -source_location | -sl.");
-            throw new Exception("Could not resolve argument: -source_location | -sl.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -sl | -source_location.");
         }
 
         return sourceLocation;
@@ -255,12 +246,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getArtifactId()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String artifactId = null;
         artifactId = ns.getString("artifact_id");
         if (null == artifactId) {
-            System.out.println("Could not resolve argument: -artifact_id | -aid.");
-            throw new Exception("Could not resolve argument: -artifact_id | -aid.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -aid | -artifact_id.");
         }
 
         return artifactId;
@@ -272,12 +262,11 @@ public class CommandLineArgsResolver {
     }
 
     public String getPath()
-            throws Exception {
+            throws InvalidCommandLineArgumentException {
         String path = null;
         path = ns.getString("path");
         if (null == path) {
-            System.out.println("Could not resolve argument: -path.");
-            throw new Exception("Could not resolve argument: -path.");
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -path.");
         }
 
         return path;

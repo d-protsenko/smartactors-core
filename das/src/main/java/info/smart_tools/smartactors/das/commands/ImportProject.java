@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Actor;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -77,6 +79,10 @@ public class ImportProject implements IAction {
             }
 
             project.saveMetaDataFile();
+        } catch (InvalidCommandLineArgumentException | ProjectCreationException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Project import has been failed.");
             System.err.println(e);
