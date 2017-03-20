@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +23,9 @@ public class UpdateFeatureVersion implements IAction {
         System.out.println("Updating feature version ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
-
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String newVersion = clar.getVersion();
             Feature feature = null;
             String featureName = clar.getFeatureName();

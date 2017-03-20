@@ -11,6 +11,8 @@ import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,10 @@ public class AddOrUpdateActorUploadRepository implements IAction {
         System.out.println("Adding/updating repository to the actor ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
             Feature feature = null;
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String featureName = clar.getFeatureName();
             List<Feature> features = new ArrayList<>();
             if (null != featureName) {

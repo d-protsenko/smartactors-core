@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
 import net.lingala.zip4j.core.ZipFile;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.aether.artifact.Artifact;
@@ -33,10 +34,9 @@ public class CreateServer implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Creating server ...");
-        String[] args = (String[]) o;
+        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) o;
 
         try {
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String groupId = defGroupId;
             String artifactId = defArtifactId;
             String version = defVersion;

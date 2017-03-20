@@ -11,6 +11,8 @@ import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -33,11 +35,9 @@ public class ImportProject implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Importing project ...");
-        String[] args = (String[]) o;
-
         try {
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
-
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             String path = clar.getPath();
             String projectName = clar.getProjectName();
             String groupId = null;
@@ -62,7 +62,6 @@ public class ImportProject implements IAction {
                 version = "0.0.1-SNAPSHOT";
             }
 
-            ProjectResolver pr = new ProjectResolver();
             Project project = pr.createProject(projectName, groupId, version);
 
             project.makeProjectDirectory();
@@ -123,7 +122,12 @@ public class ImportProject implements IAction {
         }
 
         // create feature
-        Feature feature = new Feature(name, artifactId, groupId, version, project);
+        Feature feature;
+        if (null != artifactId) {
+            feature = new Feature(name, artifactId, groupId, version, project);
+        } else {
+            feature = new Feature(name, groupId, version, project);
+        }
 
         // Addition the feature pom.xml file
         feature.makePomFile();
@@ -145,8 +149,15 @@ public class ImportProject implements IAction {
         File[] modules = new File(feature.getPath().toString()).listFiles(File::isDirectory);
         if (null != modules && modules.length > 0) {
             for(File module : modules) {
-                if (!module.getName().equals(feature.getFeatureDistributionModuleName())) {
+                System.out.print("module location: " + Paths.get(module.getName(), POM_NAME));
+                if (
+                        !module.getName().equals(feature.getFeatureDistributionModuleName()) &&
+                        Paths.get(feature.getPath().toString(), module.getName(), POM_NAME).toFile().exists()
+                ) {
+                    System.out.println(" - processed.");
                     createFeatureModule(module, feature);
+                } else {
+                    System.out.println(" - skipped.");
                 }
             }
         }

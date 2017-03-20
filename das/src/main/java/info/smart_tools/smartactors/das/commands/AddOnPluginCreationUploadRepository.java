@@ -9,6 +9,8 @@ import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 public class AddOnPluginCreationUploadRepository implements IAction {
 
@@ -18,11 +20,10 @@ public class AddOnPluginCreationUploadRepository implements IAction {
         System.out.println("Adding/updating on feature creation upload repository ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver)  ((Object[])o)[1];
             Project project = pr.resolveProject();
 
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String id = clar.getUploadRepositoryId();
             String url = clar.getUploadRepositoryUrl();
             project.addOrUpdatePluginUploadRepository(new UploadRepository(id, url));

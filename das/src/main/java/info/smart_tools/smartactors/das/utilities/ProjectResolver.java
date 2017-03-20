@@ -5,11 +5,12 @@ import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ProjectResolver {
+public class ProjectResolver implements IProjectResolver {
 
     private Project project = null;
     private Feature currentFeature = null;

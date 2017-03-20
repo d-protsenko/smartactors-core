@@ -1,13 +1,14 @@
 package info.smart_tools.smartactors.das.utilities;
 
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.internal.HelpScreenException;
 
-public class CommandLineArgsResolver {
+public class CommandLineArgsResolver implements ICommandLineArgsResolver {
 
     private static ArgumentParser parser = ArgumentParsers.newArgumentParser("das");
 
@@ -281,7 +282,7 @@ public class CommandLineArgsResolver {
         return this.ns == null;
     }
 
-    public static void printHelp() {
+    public void printHelp() {
         parser.printHelp();
     }
 }

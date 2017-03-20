@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import net.lingala.zip4j.core.ZipFile;
@@ -37,10 +38,9 @@ public class DownloadCore implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Download server core ...");
-        String[] args = (String[]) o;
+        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) o;
 
         try {
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String groupId = defGroupId;
             String artifactId = defArtifactId;
             String version = defVersion;

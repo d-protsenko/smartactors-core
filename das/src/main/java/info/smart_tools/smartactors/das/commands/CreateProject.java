@@ -8,6 +8,8 @@ import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 public class CreateProject implements IAction {
 
@@ -15,14 +17,12 @@ public class CreateProject implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Creating project ...");
-        String[] args = (String[]) o;
-
         try {
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             String name = clar.getProjectName();
             String group = clar.getGroupId();
             String version = clar.getVersion();
-            ProjectResolver pr = new ProjectResolver();
 
             Project project = pr.createProject(name, group, version);
 
