@@ -163,6 +163,14 @@
                                         <prefix>/usr/bin</prefix>
                                     </mapper>
                                 </data>
+                                <data>
+                                    <src>resources/</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/das/resources/</prefix>
+                                    </mapper>
+                                </data>
                             </dataSet>
                         </configuration>
                     </execution>
