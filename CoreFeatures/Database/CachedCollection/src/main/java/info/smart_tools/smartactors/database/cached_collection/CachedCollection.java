@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.database.cached_collection;
 
+import info.smart_tools.smartactors.database.cached_collection.exception.ClearCachedMapException;
 import info.smart_tools.smartactors.database.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.UpsertCacheItemException;
@@ -223,6 +224,19 @@ public class CachedCollection implements ICachedCollection {
             throw new UpsertCacheItemException("Can't add or update cached object.", e);
         } catch (ResolutionException e) {
             throw new UpsertCacheItemException("Can't resolve cached object.", e);
+        }
+    }
+
+    /**
+     * Deletes all objects from cache map.
+     * @throws DeleteCacheItemException
+     */
+    @Override
+    public void clearMap() throws ClearCachedMapException {
+        try {
+            map.clear();
+        }  catch (Exception e) {
+            throw new ClearCachedMapException("Can't clear cached map.", e);
         }
     }
 }
