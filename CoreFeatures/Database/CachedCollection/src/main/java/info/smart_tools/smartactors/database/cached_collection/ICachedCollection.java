@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.database.cached_collection;
 
+import info.smart_tools.smartactors.database.cached_collection.exception.ClearCachedMapException;
 import info.smart_tools.smartactors.database.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.UpsertCacheItemException;
@@ -37,4 +38,10 @@ public interface ICachedCollection {
      * @throws UpsertCacheItemException Throw when collection can't update/insert objects in query
      */
     void upsert(IObject query) throws UpsertCacheItemException;
+
+    /**
+     * Deletes all objects from cache map.
+     * @throws DeleteCacheItemException
+     */
+    void clearCache() throws ClearCachedMapException;
 }

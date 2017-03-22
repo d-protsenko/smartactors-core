@@ -59,7 +59,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .after("config_sections:done")
                     .after("iobject")
                     .after("PluginRetryingToTakeResourceExceptionHandler")
-                    .befor("read_initial_config")
+                    .before("read_initial_config")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
