@@ -204,11 +204,13 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                                     if (null == innerObject.getValue(new FieldName("externalAccess"))) {
                                                                         innerObject.setValue(new FieldName("externalAccess"), false);
                                                                     }
-                                                                    List exceptionalList = (List) innerObject.getValue(new FieldName("exceptional"));
-                                                                    exceptionalList.add(0, IOC.resolve(
-                                                                            IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
-                                                                            outOfResourcesExceptionTemplate
-                                                                    ));
+                                                                    if (!innerObject.getValue(new FieldName("id")).equals("tryToTakeResourceMap")) {
+                                                                        List exceptionalList = (List) innerObject.getValue(new FieldName("exceptional"));
+                                                                        exceptionalList.add(0, IOC.resolve(
+                                                                                IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
+                                                                                outOfResourcesExceptionTemplate
+                                                                        ));
+                                                                    }
                                                                 }
                                                             }
                                                             return obj;
