@@ -221,6 +221,43 @@ public class CachedCollectionTest {
         verify(readTask).execute();
     }
 
+    @Test
+    public void ShouldClearCache() throws Exception {
+
+        IObject readQuery = mock(IObject.class);
+        IKey keyIObject = mock(IKey.class);
+        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(keyIObject);
+        when(IOC.resolve(keyIObject)).thenReturn(readQuery);
+
+        final IObject searchResult = mock(IObject.class);
+
+        IDatabaseTask readTask = mock(IDatabaseTask.class);
+        IKey keyTask = mock(IKey.class);
+        when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
+        final IAction[] callback = {mock(IAction.class)};
+        doAnswer(invocation -> {
+            callback[0] = (IAction) invocation.getArguments()[5];
+            return readTask;
+        }).when(IOC.class);
+        IOC.resolve(eq(keyTask), any(), eq(collectionName), any(), any(), any(IAction.class));
+        doAnswer(invocation -> {
+            callback[0].execute(new IObject[] {searchResult});
+            return null;
+        }).when(readTask).execute();
+
+        when(searchResultField.in(readQuery)).thenReturn(Collections.singletonList(searchResult));
+
+        collection.getItems("key");
+        collection.getItems("key");
+
+        verify(readTask, times(1)).execute();
+
+        collection.clearCache();
+        collection.getItems("key");
+
+        verify(readTask, times(2)).execute();
+    }
+
     @Test(expected = GetCacheItemException.class)
     public void ShouldThrowGetItemException_When_NestedTaskIsNull() throws Exception {
 
