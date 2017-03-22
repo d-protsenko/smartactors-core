@@ -176,12 +176,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                     }
                                             )
                                     );
-                                    final String outOfResourcesExceptionTemplate = ("{" +
-                                                "'class': 'info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException'," +
-                                                "'chain': 'tryToTakeResourceMap'," +
-                                                "'after': 'break'" +
-                                            "}")
-                                            .replace('\'', '"');
+
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyStorage(), "configuration object canonical maps strategy"
@@ -206,10 +201,12 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                                     }
                                                                     if (!innerObject.getValue(new FieldName("id")).equals("tryToTakeResourceMap")) {
                                                                         List exceptionalList = (List) innerObject.getValue(new FieldName("exceptional"));
-                                                                        exceptionalList.add(0, IOC.resolve(
-                                                                                IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
-                                                                                outOfResourcesExceptionTemplate
-                                                                        ));
+
+                                                                        IObject outOfResourcesExceptionObj = new ConfigurationObject();
+                                                                        outOfResourcesExceptionObj.setValue(new FieldName("class"), "info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException");
+                                                                        outOfResourcesExceptionObj.setValue(new FieldName("chain"), "tryToTakeResourceMap");
+                                                                        outOfResourcesExceptionObj.setValue(new FieldName("after"), "break");
+                                                                        exceptionalList.add(0, outOfResourcesExceptionObj);
                                                                     }
                                                                 }
                                                             }

@@ -9,10 +9,15 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+
+import java.util.Collections;
 
 /**
  * Plugin for adding map for handling OutOfResourcesException
@@ -20,33 +25,11 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    private String template =
-        ("{" +
-            "'objects': [" +
-                "{" +
-                    "'kind': 'raw'," +
-                    "'dependency': 'RetryingToTakeResourceExceptionHandler'," +
-                    "'name': 'retryingToTakeResourceExceptionHandler'" +
-                "}" +
-            "]," +
-            "'maps': [" +
-                "{" +
-                    "'id': 'tryToTakeResourceMap'," +
-                    "'steps': [" +
-                        "{" +
-                            "'target': 'retryingToTakeResourceExceptionHandler'" +
-                        "}" +
-                    "]," +
-                    "'exceptional': []" +
-                "}" +
-            "]" +
-        "}").replace('\'', '"');
-
     /**
      * The constructor.
      * @param bootstrap the bootstrap
      */
-    public PluginOutOfResourcesExceptionHandlingMap(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public PluginOutOfResourcesExceptionHandlingMap(final IBootstrap<IBootstrapItem<String>> bootstrap) throws Exception {
         this.bootstrap = bootstrap;
     }
 
@@ -65,9 +48,27 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             IConfigurationManager configurationManager =
                                     IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            IObject configSection = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), template);
-                            configurationManager.applyConfig(configSection);
-                        } catch (ResolutionException | InvalidArgumentException | ConfigurationProcessingException e) {
+                            IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+                            IObject templateObj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+
+                            IObject object = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            object.setValue(IOC.resolve(fieldNameKey, "kind"), "raw");
+                            object.setValue(IOC.resolve(fieldNameKey, "dependency"), "RetryingToTakeResourceExceptionHandler");
+                            object.setValue(IOC.resolve(fieldNameKey, "name"), "retryingToTakeResourceExceptionHandler");
+                            templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), Collections.singletonList(object));
+
+                            IObject map = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            map.setValue(IOC.resolve(fieldNameKey, "id"), "tryToTakeResourceMap");
+
+                            IObject step = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            step.setValue(IOC.resolve(fieldNameKey, "target"), "retryingToTakeResourceExceptionHandler");
+                            map.setValue(IOC.resolve(fieldNameKey, "steps"), Collections.singletonList(step));
+
+                            map.setValue(IOC.resolve(fieldNameKey, "exceptional"), Collections.emptyList());
+                            templateObj.setValue(IOC.resolve(fieldNameKey, "maps"), Collections.singletonList(map));
+
+                            configurationManager.applyConfig(templateObj);
+                        } catch (ResolutionException | InvalidArgumentException | ChangeValueException | ConfigurationProcessingException e) {
                             throw new ActionExecuteException(e);
                         }
                     });
