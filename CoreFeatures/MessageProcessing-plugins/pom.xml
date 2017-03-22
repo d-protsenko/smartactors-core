@@ -28,6 +28,7 @@
         <module>PluginStarter</module>
         <module>PluginStandardObjectCreators</module>
         <module>PluginConditionChainChoiceStrategy</module>
+        <module>NullResponseStrategyPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>
     <build>
