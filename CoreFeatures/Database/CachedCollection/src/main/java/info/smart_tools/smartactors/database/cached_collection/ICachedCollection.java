@@ -43,5 +43,5 @@ public interface ICachedCollection {
      * Deletes all objects from cache map.
      * @throws DeleteCacheItemException
      */
-    void clearMap() throws ClearCachedMapException;
+    void clearCache() throws ClearCachedMapException;
 }

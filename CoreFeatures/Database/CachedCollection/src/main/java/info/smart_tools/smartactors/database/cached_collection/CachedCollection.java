@@ -232,7 +232,7 @@ public class CachedCollection implements ICachedCollection {
      * @throws DeleteCacheItemException
      */
     @Override
-    public void clearMap() throws ClearCachedMapException {
+    public void clearCache() throws ClearCachedMapException {
         try {
             map.clear();
         }  catch (Exception e) {
