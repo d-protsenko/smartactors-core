@@ -37,7 +37,7 @@ class Scope implements IScope {
             try {
                 return parent.getValue(key);
             } catch (NullPointerException e) {
-                throw new ScopeException("Value not found", e);
+                throw new ScopeException("Value not found for key " + key, e);
             }
         }
         return value;
@@ -54,7 +54,7 @@ class Scope implements IScope {
         try {
             storage.put(key, value);
         } catch (Exception e) {
-            throw new ScopeException("Error was occurred", e);
+            throw new ScopeException("Error was occurred while setting value by key " + key, e);
         }
     }
 
@@ -68,7 +68,7 @@ class Scope implements IScope {
         try {
             storage.remove(key);
         } catch (Exception e) {
-            throw new ScopeException("Error was occurred", e);
+            throw new ScopeException("Error was occurred while deleting by key " + key, e);
         }
     }
 }
