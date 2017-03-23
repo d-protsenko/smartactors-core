@@ -25,21 +25,18 @@
     },
     {
       "name": "cp",
-      "pn" : "NewProject",
+      "pn" : "MyProject",
       "v": "0.0.1-SNAPSHOT",
-      "g": "my.project"
+      "g": "com.my-project"
     },
     {
-      "name": "cf",
-      "fn" : "NewFeature"
+      "name": "cf"
     },
     {
-      "name": "ca",
-      "an" : "NewActor"
+      "name": "ca"
     },
     {
-      "name": "cpl",
-      "pln" : "NewActor"
+      "name": "cpl"
     },
     {
       "name": "afr",

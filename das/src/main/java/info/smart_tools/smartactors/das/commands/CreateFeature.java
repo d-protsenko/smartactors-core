@@ -27,17 +27,13 @@ public class CreateFeature implements IAction {
             IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
             String name = clar.getFeatureName();
-            String groupId = null;
+            String groupId = project.getGroupId();
             if (clar.isGroupId()) {
                 groupId = clar.getGroupId();
-            } else {
-                groupId = project.getGroupId();
             }
-            String version = null;
+            String version = project.getVersion();;
             if (clar.isVersion()) {
                 version = clar.getVersion();
-            } else {
-                version = project.getVersion();
             }
 
             Feature feature = new Feature(name, groupId, version, project);

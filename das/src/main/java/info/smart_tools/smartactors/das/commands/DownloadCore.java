@@ -38,7 +38,7 @@ public class DownloadCore implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Download server core ...");
-        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) o;
+        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
 
         try {
             String groupId = defGroupId;

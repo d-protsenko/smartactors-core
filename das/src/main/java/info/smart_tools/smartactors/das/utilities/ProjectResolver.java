@@ -48,10 +48,10 @@ public class ProjectResolver implements IProjectResolver {
         }
     }
 
-    public Project createProject(final String name, final String groupId, final String version)
+    public Project createProject(final String name, final String groupId, final String version, final Path path)
             throws ProjectCreationException {
         try {
-            this.project = new Project(name, groupId, version, Paths.get(""));
+            this.project = new Project(name, groupId, version, path);
 
             return this.project;
         } catch (Exception e) {

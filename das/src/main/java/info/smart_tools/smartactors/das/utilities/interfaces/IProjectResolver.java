@@ -15,7 +15,7 @@ public interface IProjectResolver {
     Project resolveProject()
             throws ProjectResolutionException;
 
-    Project createProject(final String name, final String groupId, final String version)
+    Project createProject(final String name, final String groupId, final String version, final Path path)
             throws ProjectCreationException;
 
     Feature getCurrentFeature();

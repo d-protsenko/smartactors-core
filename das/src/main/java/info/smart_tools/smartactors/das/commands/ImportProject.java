@@ -38,18 +38,23 @@ public class ImportProject implements IAction {
         try {
             ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
             IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
-            String path = clar.getPath();
             String projectName = clar.getProjectName();
             String groupId = null;
             String version = null;
+            Path path = Paths.get("");
+            if (clar.isPath()) {
+                path = Paths.get(clar.getPath());
+            }
             if (clar.isGroupId()) {
                 groupId = clar.getGroupId();
             }
             if (clar.isVersion()) {
                 version = clar.getVersion();
             }
-
-            Path sourcePath = Paths.get(path);
+            Path sourcePath = Paths.get("");
+            if (clar.isSourceLocation()) {
+                sourcePath = Paths.get(clar.getSourceLocation());
+            }
             if (null == sourcePath || !sourcePath.toFile().exists()) {
                 System.out.println("Could not find project source by given path.");
                 throw new Exception("Could not find project source by given path.");
@@ -62,7 +67,7 @@ public class ImportProject implements IAction {
                 version = "0.0.1-SNAPSHOT";
             }
 
-            Project project = pr.createProject(projectName, groupId, version);
+            Project project = pr.createProject(projectName, groupId, version, path);
 
             project.makeProjectDirectory();
 

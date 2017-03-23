@@ -30,7 +30,7 @@ help:
 
 
 project import:
-    > das import -path CurrentProjectDirectory -pn NewProjectName -g projectGroupId -v ProjectVersion
+    > das import -sl CurrentProjectDirectory -path NewProjectLocation -pn NewProjectName -g projectGroupId -v ProjectVersion
 
 
 new project creation:
