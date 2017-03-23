@@ -1,0 +1,4 @@
+{
+  "featureName":"info.smart_tools.smartactors:https-endpoint-plugins",
+  "afterFeatures":["info.smart_tools.smartactors:https-endpoint"]
+}

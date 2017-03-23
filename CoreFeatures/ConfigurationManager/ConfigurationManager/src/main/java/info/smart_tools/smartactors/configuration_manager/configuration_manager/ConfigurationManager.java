@@ -53,7 +53,7 @@ public class ConfigurationManager implements IConfigurationManager {
             } catch (ReadValueException e) {
                 throw new ConfigurationProcessingException(
                         MessageFormat.format("Could not read section ''{0}'' from given configuration object.",
-                                sectionStrategy.getSectionName()));
+                                sectionStrategy.getSectionName()), e);
             }
         }
     }

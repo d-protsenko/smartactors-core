@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * "uuid": "some_uuid",
  * "uri": "http://uri.for.request/something",
  * "method": "POST",
- * "timeout": 100, after this timeout to "exceptionalMessageMapId" will send message with full request
+ * "timeout": 100, after this timeout to "exceptionalMessageMapId" will be sent message with full request
  * "exceptionalMessageMapId": "SelectChain",
  * "messageMapId": "sendRequest", start chain for response
  * "content": {

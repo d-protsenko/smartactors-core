@@ -2,11 +2,12 @@ package info.smart_tools.smartactors.base.interfaces.ipool;
 
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 
 /**
  * Pool interface
  */
-public interface IPool {
+public interface IPool extends IResourceSource {
     /**
      * Get an item from the pool
      * @return found object

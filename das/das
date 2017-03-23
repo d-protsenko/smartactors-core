@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" = "make" ]
+then
+    echo "make project"
+    mvn clean package
+elif [ "$1" = "deploy" ]
+then
+    echo "deploy project components"
+    mvn -Dmaven.test.skip=true -DdeployOnly=true deploy
+else
+    java -D -jar ~/bin/das.jar $@
+fi
