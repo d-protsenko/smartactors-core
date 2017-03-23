@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,8 +40,7 @@ public class ExceptionHandlingReceiverTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(IOC.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyForKeyStore);
-        when(IOC.resolve(same(keyForKeyStore), eq(IFieldName.class.toString()))).thenReturn(keyForFieldName);
+        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(keyForFieldName);
 
         when(IOC.resolve(same(keyForFieldName), eq("causeLevel"))).thenReturn(causeLevelFieldName);
         when(IOC.resolve(same(keyForFieldName), eq("causeStep"))).thenReturn(causeStepFieldName);

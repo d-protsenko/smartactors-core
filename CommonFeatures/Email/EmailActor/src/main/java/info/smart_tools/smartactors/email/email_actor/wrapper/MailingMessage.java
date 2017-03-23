@@ -14,7 +14,7 @@ public interface MailingMessage {
      * @return list
      * @throws ReadValueException when something happends
      */
-    List<String> getSendToMessage() throws ReadValueException;
+    List<IObject> getSendToMessage() throws ReadValueException;
 
     /**
      * getter

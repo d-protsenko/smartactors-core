@@ -1,4 +1,0 @@
-{
-  "featureName": "async-operations-plugin",
-  "afterFeatures": ["async-operations", "database-psql-plugins"]
-}

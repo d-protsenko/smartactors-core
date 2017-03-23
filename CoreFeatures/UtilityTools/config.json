@@ -1,4 +1,4 @@
 {
-  "featureName": "utility-tools",
-  "afterFeatures": ["base"]
+  "featureName":"info.smart_tools.smartactors:utility-tool",
+  "afterFeatures":["info.smart_tools.smartactors:base"]
 }

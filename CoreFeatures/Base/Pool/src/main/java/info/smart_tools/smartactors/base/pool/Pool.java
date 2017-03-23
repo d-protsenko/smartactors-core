@@ -1,10 +1,15 @@
 package info.smart_tools.smartactors.base.pool;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -16,6 +21,7 @@ public class Pool implements IPool {
     private Integer maxItemsCount;
     private final ArrayBlockingQueue<Object> freeItems;
     private AtomicInteger freeItemsCounter = new AtomicInteger();
+    private ConcurrentLinkedQueue<IPoorAction> taskQueue = new ConcurrentLinkedQueue<>();
 
     /**
      * Local function for creation new instances of items
@@ -48,7 +54,11 @@ public class Pool implements IPool {
     public Object take() throws PoolTakeException {
         if (freeItemsCounter.getAndDecrement() <= 0) {
             freeItemsCounter.getAndIncrement();
-            throw new PoolTakeException("Reached limit of items for this pool.");
+            try {
+                throw new PoolTakeException("Reached limit of items for this pool.", new OutOfResourceException(this));
+            } catch (InvalidArgumentException ex) {
+                throw new PoolTakeException("Reached limit of items for this pool.", ex);
+            }
         }
 
         try {
@@ -74,9 +84,30 @@ public class Pool implements IPool {
             if (maxItemsCount >= freeItemsCounter.get()) {
                 freeItems.add(item);
                 freeItemsCounter.getAndIncrement();
+
+                IPoorAction task = taskQueue.poll();
+                if (task != null) {
+                    task.execute();
+                }
             }
         } catch (Exception e) {
             throw new PoolPutException("Error was occurred", e);
+        }
+    }
+
+    /**
+     * Add action for executing when the resource becomes available
+     * @param action action to execute when the resource becomes available
+     */
+    public void onAvailable(final IPoorAction action) {
+        try {
+            if (freeItemsCounter.get() > 0) {
+                action.execute();
+                return;
+            }
+            this.taskQueue.add(action);
+        } catch (ActionExecuteException e) {
+            throw new RuntimeException("Failed to execute PoorAction", e);
         }
     }
 }
