@@ -20,15 +20,15 @@ public class EndpointResponseStrategy implements IResponseStrategy {
         try {
             // Most of this code is copy-pasted from old ResponseSenderActor.
             IFieldName responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
-            IObject responseIObject = (IObject) environment.getValue(responseFieldName);
-
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
             IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
             IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
-
             IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
-            IChannelHandler channelHandler = (IChannelHandler)
-                    ((IObject) environment.getValue(contextFieldName)).getValue(channelFieldName);
+
+            IObject responseIObject = (IObject) environment.getValue(responseFieldName);
+            IObject contextIObject = (IObject) environment.getValue(contextFieldName);
+
+            IChannelHandler channelHandler = (IChannelHandler) contextIObject.getValue(channelFieldName);
 
             IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
             IResponseContentStrategy contentStrategy =
@@ -37,9 +37,9 @@ public class EndpointResponseStrategy implements IResponseStrategy {
 
             IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
                     IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
-                    ((IObject) environment.getValue(contextFieldName)).getValue(endpointName));
+                    contextIObject.getValue(endpointName));
             sender.send(response, environment, channelHandler);
-            ((IObject) environment.getValue(contextFieldName)).setValue(httpResponseIsSentFieldName, true);
+            contextIObject.setValue(httpResponseIsSentFieldName, true);
         } catch (Exception e) {
             throw new ResponseException(e);
         }
