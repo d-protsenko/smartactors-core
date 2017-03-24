@@ -31,6 +31,7 @@
         <module>ClientActor</module>
         <module>IResponseContentStrategy</module>
         <module>EndpointDistribution</module>
+        <module>EndpointResponseStrategy</module>
     </modules>
     <build>
         <pluginManagement>

@@ -29,6 +29,7 @@
         <module>PluginStandardObjectCreators</module>
         <module>PluginConditionChainChoiceStrategy</module>
         <module>NullResponseStrategyPlugin</module>
+        <module>ResponseSenderReceiverPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>
     <build>
