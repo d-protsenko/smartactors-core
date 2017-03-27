@@ -20,6 +20,7 @@
         <module>IRouter</module>
         <module>IWrapperGenerator</module>
         <module>MessageProcessingInterfacesDistribution</module>
+        <module>ObjectCreationInterfaces</module>
     </modules>
     <build>
         <pluginManagement>
