@@ -48,7 +48,7 @@ public class DSObjectWithRecursiveIObject implements IObject {
 
                     jsonGenerator.writeRawValue((String) iObject.serialize());
                 } catch (SerializeException e) {
-                    throw new IOException("Could not serialize DSObjectWithRecursiveIObject.");
+                    throw new IOException("Could not serialize DSObjectWithRecursiveIObject.", e);
                 }
             }
         });
@@ -158,7 +158,7 @@ public class DSObjectWithRecursiveIObject implements IObject {
 
 /**
  * Custom deserializer.
- * Cast all nested json objects to {@link IObject.
+ * Cast all nested json objects to {@link IObject}.
  */
 class ObjectDeserializer extends UntypedObjectDeserializer {
 
