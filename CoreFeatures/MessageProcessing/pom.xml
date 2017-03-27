@@ -28,6 +28,7 @@
         <module>ConditionChainChoiceStrategy</module>
         <module>ReceiverChain</module>
         <module>MessageProcessingDistribution</module>
+        <module>ObjectCreationStrategies</module>
     </modules>
     <build>
         <pluginManagement>
