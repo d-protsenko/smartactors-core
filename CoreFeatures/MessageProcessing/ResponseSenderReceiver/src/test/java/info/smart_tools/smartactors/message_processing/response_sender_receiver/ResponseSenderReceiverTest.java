@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing.response_sender_receiver;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -45,6 +46,10 @@ public class ResponseSenderReceiverTest extends PluginsLoadingTestBase {
         ctxMock = mock(IObject.class);
         responseStrategyMock = mock(IResponseStrategy.class);
 
+        IOC.register(Keys.getOrAdd("send response action"), new SingletonStrategy(new ResponseSenderAction()));
+
+        when(envMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context")))
+                .thenReturn(ctxMock);
         when(messageProcessorMock.getContext()).thenReturn(ctxMock);
         when(messageProcessorMock.getEnvironment()).thenReturn(envMock);
         when(ctxMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy")))
