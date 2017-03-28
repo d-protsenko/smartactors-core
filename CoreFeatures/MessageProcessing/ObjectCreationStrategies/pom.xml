@@ -92,5 +92,25 @@
             <artifactId>message-processing-interfaces.irouter</artifactId>
             <version>0.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing.actor-receiver</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing.handler-routing-receiver</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.iwrapper-generator</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.ireceiver-generator</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
 </project>
