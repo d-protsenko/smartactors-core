@@ -3,7 +3,8 @@ package info.smart_tools.smartactors.message_processing.object_creation_strategi
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_processing.actor_receiver.ActorReceiver;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
@@ -41,7 +42,8 @@ public class PerReceiverActorSynchronizationReceiverCreator extends BasicInterme
         }
 
         try {
-            getListener().acceptItem(itemId, new ActorReceiver(receiverItem));
+            IMessageReceiver synchronizedReceiver = IOC.resolve(Keys.getOrAdd("create actor synchronization receiver"), receiverItem);
+            getListener().acceptItem(itemId, synchronizedReceiver);
         } catch (ResolutionException e) {
             throw new ReceiverObjectListenerException(e);
         }

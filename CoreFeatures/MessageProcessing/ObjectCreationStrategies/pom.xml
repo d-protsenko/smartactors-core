@@ -112,5 +112,11 @@
             <artifactId>message-processing-interfaces.ireceiver-generator</artifactId>
             <version>0.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <version>0.3.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

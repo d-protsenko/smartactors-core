@@ -3,7 +3,8 @@ package info.smart_tools.smartactors.message_processing.object_creation_strategi
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_processing.handler_routing_receiver.HandlerRoutingReceiver;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
@@ -34,7 +35,6 @@ public class HandlerRouterReceiverCreator extends BasicIntermediateReceiverObjec
 
         handlersMap = new HashMap<>();
     }
-
 
     @Override
     public Collection<Object> enumIdentifiers(IObject config, IObject context)
@@ -70,7 +70,7 @@ public class HandlerRouterReceiverCreator extends BasicIntermediateReceiverObjec
     public void endItems()
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException {
         try {
-            IMessageReceiver resultingReceiver = new HandlerRoutingReceiver(handlersMap);
+            IMessageReceiver resultingReceiver = IOC.resolve(Keys.getOrAdd("create handler router receiver"), handlersMap);
 
             getListener().acceptItem(null, resultingReceiver);
             getListener().endItems();

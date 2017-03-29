@@ -69,7 +69,8 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     @Item("basic_object_creators")
     @After({
-            "invoker_receiver_creation_strategy" // required for UserObjectMethodInvokerReceiverCreator
+            "basic_receiver_strategies",            // for HandlerRouterReceiverCreator and PerReceiverActorSynchronizationReceiverCreator
+            "invoker_receiver_creation_strategy"    // required for UserObjectMethodInvokerReceiverCreator
     })
     public void registerCreators()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
