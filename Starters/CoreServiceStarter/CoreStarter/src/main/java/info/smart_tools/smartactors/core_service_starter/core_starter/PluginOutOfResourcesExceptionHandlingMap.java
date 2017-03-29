@@ -49,18 +49,18 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                                     IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
                             IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-                            IObject templateObj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IObject templateObj = IOC.resolve(Keys.getOrAdd("configuration object"));
 
-                            IObject object = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IObject object = IOC.resolve(Keys.getOrAdd("configuration object"));
                             object.setValue(IOC.resolve(fieldNameKey, "kind"), "raw");
                             object.setValue(IOC.resolve(fieldNameKey, "dependency"), "RetryingToTakeResourceExceptionHandler");
                             object.setValue(IOC.resolve(fieldNameKey, "name"), "retryingToTakeResourceExceptionHandler");
                             templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), Collections.singletonList(object));
 
-                            IObject map = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IObject map = IOC.resolve(Keys.getOrAdd("configuration object"));
                             map.setValue(IOC.resolve(fieldNameKey, "id"), "tryToTakeResourceMap");
 
-                            IObject step = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IObject step = IOC.resolve(Keys.getOrAdd("configuration object"));
                             step.setValue(IOC.resolve(fieldNameKey, "target"), "retryingToTakeResourceExceptionHandler");
                             map.setValue(IOC.resolve(fieldNameKey, "steps"), Collections.singletonList(step));
 
