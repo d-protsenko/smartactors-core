@@ -49,7 +49,7 @@ public class UserObjectMethodInvokerReceiverCreator extends BasicIntermediateRec
         }
 
         try {
-            for (Method method : item.getClass().getMethods()) {
+            for (Method method : item.getClass().getDeclaredMethods()) {
                 if (method.isSynthetic() || !Modifier.isPublic(method.getModifiers())) {
                     continue;
                 }

@@ -50,8 +50,7 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
             Object wrapperResolutionStrategyDependency = invokerConfig.getValue(wrapperResolutionStrategyDependencyFieldName);
 
             if (null == wrapperResolutionStrategyDependency) {
-                wrapperResolutionStrategyDependency = IOC.resolve(Keys.getOrAdd(
-                        "default wrapper resolution strategy dependency for invoker receiver"));
+                wrapperResolutionStrategyDependency = "default wrapper resolution strategy dependency for invoker receiver";
             }
 
             IResolveDependencyStrategy wrapperResolutionStrategy = IOC.resolve(
