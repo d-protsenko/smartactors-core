@@ -7,6 +7,9 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -69,6 +72,11 @@ public class MessageProcessor implements ITask, IMessageProcessor {
      * @see IMessageProcessingSequence#catchException
      */
     private Throwable asyncException;
+
+    /**
+     * A throwable representing the last received but not processed signal.
+     */
+    private Signal signalException;
 
     private final IQueue<ITask> taskQueue;
     private final IMessageProcessingSequence messageProcessingSequence;
@@ -163,16 +171,35 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         }
 
         if (asOp == 0) {
-            if (null != asyncException) {
-                try {
+            try {
+                if (null != asyncException) {
                     messageProcessingSequence.catchException(asyncException, context);
-                } catch (Exception e1) {
-                    throw new AsynchronousOperationException(
-                            "Exception occurred while processing exceptional completion of operation.", e1);
                 }
+
+                enqueueNext();
+            } catch (Exception e1) {
+                throw new AsynchronousOperationException(
+                        "Exception occurred while processing exceptional completion of operation.", e1);
+            }
+        }
+    }
+
+    @Override
+    public void signal(final String signalName) throws InvalidArgumentException {
+        if (null == signalName) {
+            throw new InvalidArgumentException("Signal name should not be null.");
+        }
+
+        try {
+            Object signal = IOC.resolve(Keys.getOrAdd(signalName));
+
+            if (!(signal instanceof Signal)) {
+                throw new InvalidArgumentException("Resolved signal is not a signal.");
             }
 
-            enqueueNext();
+            this.signalException = (Signal) signal;
+        } catch (ResolutionException e) {
+            throw new InvalidArgumentException("Could not resolve a signal throwable.", e);
         }
     }
 
@@ -255,7 +282,9 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         }
     }
 
-    private void enqueueNext() {
+    private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException, ChangeValueException, ReadValueException {
+        checkSignal();
+
         if (messageProcessingSequence.next()) {
             enqueue();
         } else {
@@ -268,6 +297,21 @@ public class MessageProcessor implements ITask, IMessageProcessor {
             taskQueue.put(this);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private void checkSignal()
+            throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException, ReadValueException {
+        Throwable signal = this.signalException;
+
+        if (null != signal) {
+            try {
+                messageProcessingSequence.catchException(signal, context);
+            } catch (NoExceptionHandleChainException e) {
+                messageProcessingSequence.end();
+            }
+
+            this.signalException = null;
         }
     }
 
