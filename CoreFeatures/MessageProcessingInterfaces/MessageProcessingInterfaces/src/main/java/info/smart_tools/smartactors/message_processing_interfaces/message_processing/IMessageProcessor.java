@@ -42,16 +42,31 @@ public interface IMessageProcessor {
     IMessageProcessingSequence getSequence();
 
     /**
-     * Returns the message environment object. The environment object should contain at least the following fields:
+     * Returns the raw message environment object or current environment object set by {@link #pushEnvironment(IObject)}.
+     *
+     * The raw environment object contains at least the following fields:
      * - "message" - the message itself (as instance of {@link IObject})
      * - "context" - the {@link IObject} containing non-serializable objects related to processing of the message
      * - "response" - the {@link IObject} containing fields that will be sent as a response to the processed message
      * - "sequence" - the {@link IMessageProcessingSequence} instance associated with the message
      * - "arguments" - the arguments {@link IObject} passed from {@link IReceiverChain}
+     * - "config" - global configuration object
+     * - "processor" - this message processor itself
      *
      * @return the environment object
      */
     IObject getEnvironment();
+
+    /**
+     * Set current environment object.
+     *
+     * The object passed to this method will be returned by any call of {@link #getEnvironment()} until execution of next step starts or
+     * {@code #pushEnvironment(IObject)} is called again.
+     *
+     * @param newEnvironment    new current environment object
+     * @throws InvalidArgumentException if {@code newEnvironment} is {@code null}
+     */
+    void pushEnvironment(IObject newEnvironment) throws InvalidArgumentException;
 
     /**
      * Set a global configuration object to use for processing of next message.
