@@ -27,6 +27,7 @@
         <module>MapRouter</module>
         <module>ConditionChainChoiceStrategy</module>
         <module>ReceiverChain</module>
+        <module>Signals</module>
         <module>MessageProcessingDistribution</module>
     </modules>
     <build>
