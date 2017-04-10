@@ -27,6 +27,7 @@
         <module>MapRouter</module>
         <module>ConditionChainChoiceStrategy</module>
         <module>ReceiverChain</module>
+        <module>WrapperCreatorReceiverDecorator</module>
         <module>MessageProcessingDistribution</module>
         <module>ObjectCreationStrategies</module>
     </modules>

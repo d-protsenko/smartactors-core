@@ -1,10 +1,15 @@
 package info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObjectFieldSet;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -16,6 +21,9 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
+
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Plugin registers into IOC strategy for creation new instance of
@@ -44,15 +52,43 @@ public class PluginWDSObject implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(WDSObject.class.getCanonicalName()),
-                                    new CreateNewInstanceStrategy(args -> {
-                                        IObject config = (IObject) args[0];
-
+                                    Keys.getOrAdd("thread safe wrapper configuration"),
+                                    new ApplyFunctionToArgumentsStrategy(args -> {
                                         try {
-                                            return new WDSObject(config);
+                                            return new WDSObjectFieldSet(
+                                                    (IObject) args[0], new ConcurrentHashMap<>(), new ConcurrentHashMap<>());
+                                        } catch (Exception e) {
+                                            throw new FunctionExecutionException(e);
+                                        }
+                                    })
+                            );
+                            IOC.register(
+                                    Keys.getOrAdd("non thread safe wrapper configuration"),
+                                    new ApplyFunctionToArgumentsStrategy(args -> {
+                                        try {
+                                            return new WDSObjectFieldSet(
+                                                    (IObject) args[0], new HashMap<>(), new HashMap<>());
+                                        } catch (Exception e) {
+                                            throw new FunctionExecutionException(e);
+                                        }
+                                    })
+                            );
+                            IOC.register(
+                                    Keys.getOrAdd(WDSObject.class.getCanonicalName()),
+                                    new ApplyFunctionToArgumentsStrategy(args -> {
+                                        try {
+                                            if (args[0] instanceof IObject) {
+                                                return new WDSObject((IObject) args[0]);
+                                            }
+
+                                            if (args[0] instanceof WDSObjectFieldSet) {
+                                                return new WDSObject((WDSObjectFieldSet) args[0]);
+                                            }
                                         } catch (InvalidArgumentException e) {
                                             throw new RuntimeException(e);
                                         }
+
+                                        throw new FunctionExecutionException("Unexpected argument types for WDSObject creation strategy.");
                                     }));
                             IOC.register(
                                     Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
