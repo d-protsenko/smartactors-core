@@ -38,6 +38,11 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
+        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+    }
+
+    private void registerCreatorType(final String typeName, final CreatorConstructor constructor, final IObject namedFilterConfig)
+            throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
         String dependencyName = "filter creator#" + typeName;
         IOC.register(
                 Keys.getOrAdd(dependencyName),
@@ -54,17 +59,17 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 })
         );
 
-        IObject namedFilterConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        if (null != namedFilterConfig) {
+            namedFilterConfig.setValue(
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
+                    dependencyName
+            );
 
-        namedFilterConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
-                dependencyName
-        );
-
-        IOC.register(
-                Keys.getOrAdd("named filter config#" + typeName),
-                new SingletonStrategy(namedFilterConfig)
-        );
+            IOC.register(
+                    Keys.getOrAdd("named filter config#" + typeName),
+                    new SingletonStrategy(namedFilterConfig)
+            );
+        }
     }
 
     @Item("basic_object_creators")
@@ -91,5 +96,9 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         registerCreatorType(
                 "set address from name",
                 SetAddressFromObjectNameReceiverCreator::new);
+        registerCreatorType(
+                "decorate receiver",
+                GenericDecoratorReceiverObjectCreator::new,
+                null);
     }
 }
