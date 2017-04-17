@@ -3,9 +3,8 @@ package info.smart_tools.smartactors.das.commands;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.PomReader;
-import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Actor;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
@@ -13,7 +12,6 @@ import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineAr
 import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
 import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.apache.maven.model.Dependency;
@@ -24,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ImportProject implements IAction {
 
@@ -174,16 +171,17 @@ public class ImportProject implements IAction {
 
     private IObject readConfigFile(final File file)
             throws Exception {
-        try (Scanner scanner = new Scanner(file)) {
-            String text = scanner.useDelimiter("\\A").next();
-            scanner.close();
-
-            return new DSObject(text);
-        } catch (Exception e) {
-            System.out.println("Could not read json file:");
-            System.err.println(e);
-        }
-        return null;
+//        try (Scanner scanner = new Scanner(file)) {
+//            String text = scanner.useDelimiter("\\A").next();
+//            scanner.close();
+//
+//            return new DSObject(text);
+//        } catch (Exception e) {
+//            System.out.println("Could not read json file:");
+//            System.err.println(e);
+//        }
+//        return null;
+        return JsonFile.load(file);
     }
 
     private void createFeatureModule(final File directory, final Feature feature)
