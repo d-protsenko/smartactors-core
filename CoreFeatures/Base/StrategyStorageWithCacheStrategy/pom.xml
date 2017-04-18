@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>base</artifactId>
         <version>0.3.2</version>
     </parent>
-
     <artifactId>base.strategy.strategy-storage-with-cache-strategy</artifactId>
     <version>0.3.2</version>
-
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -32,8 +30,6 @@
             <artifactId>base.interfaces.iaction</artifactId>
             <version>0.3.2</version>
         </dependency>
-
-        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -53,12 +49,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -67,9 +61,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <inherited>false</inherited>
                     <version>2.8.2</version>
                     <executions>
                         <execution>
@@ -77,6 +69,7 @@
                             <phase>none</phase>
                         </execution>
                     </executions>
+                    <inherited>false</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>
