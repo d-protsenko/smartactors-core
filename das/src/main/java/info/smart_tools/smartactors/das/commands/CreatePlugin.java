@@ -9,6 +9,10 @@ import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Plugin;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.util.List;
 
@@ -20,10 +24,9 @@ public class CreatePlugin implements IAction {
         System.out.println("Creating plugin ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String name = clar.getPluginName();
             String version = null;
             Feature feature = null;
@@ -76,6 +79,10 @@ public class CreatePlugin implements IAction {
             // Save project meta data file
             plugin.getOwnerFeature().getOwnerProject().saveMetaDataFile();
 
+        } catch (InvalidCommandLineArgumentException | ProjectResolutionException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Plugin creation has been failed.");
             System.err.println(e);
