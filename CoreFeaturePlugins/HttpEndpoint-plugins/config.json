@@ -1,4 +1,0 @@
-{
-  "featureName": "http-endpoint-plugins",
-  "afterFeatures": ["http-endpoint"]
-}

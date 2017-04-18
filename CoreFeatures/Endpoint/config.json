@@ -1,4 +1,1 @@
-{
-  "featureName": "endpoint",
-  "afterFeatures": ["endpoint-service-starter"]
-}
+{"featureName":"info.smart_tools.smartactors:endpoint","afterFeatures":["info.smart_tools.smartactors:endpoint-service-starter"]}

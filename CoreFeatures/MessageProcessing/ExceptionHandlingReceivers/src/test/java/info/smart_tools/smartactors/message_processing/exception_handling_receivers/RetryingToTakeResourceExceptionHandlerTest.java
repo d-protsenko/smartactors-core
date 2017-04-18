@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.message_processing.exception_handling_recei
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.message_processing_interfaces.iresource_source.IResourceSource;
-import info.smart_tools.smartactors.message_processing_interfaces.iresource_source.exceptions.OutOfResourceException;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
+import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;

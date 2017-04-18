@@ -16,6 +16,8 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.util.ByteArrayDataSource;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ public class MessagePartCreators {
     private static Field partMime_Part_F;
     private static Field sourcePath_FilePart_F;
     private static Field attachmentName_FilePart_F;
+    private static IField sourceF;
 
     public static void addAllPartsTo(final SMTPMessageAdaptor smtpMessage, final IObject context, final List<IObject> parts) throws Exception {
         for (IObject part : parts) {
@@ -55,6 +58,7 @@ public class MessagePartCreators {
             partMime_Part_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "mime");
             sourcePath_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sourceFile");
             attachmentName_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "attachmentName");
+            sourceF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "source");
         } catch (ResolutionException e) {
             throw new RuntimeException("Failed to initialize fields", e);
         }
@@ -83,6 +87,25 @@ public class MessagePartCreators {
                 smtpMessage.addPart(part);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to set file to mail", e);
+            }
+        });
+        add("bytes-array", (smtpMessage, context, partDescription) -> {
+            try {
+                MimeBodyPart part = new MimeBodyPart();
+
+                DataSource dataSource = new ByteArrayDataSource(
+                        sourceF.in(partDescription) instanceof String ?
+                                Base64.getDecoder().decode((String) sourceF.in(partDescription)) :
+                                (byte[]) sourceF.in(partDescription),
+                        partMime_Part_F.in(partDescription)
+                );
+
+                part.setDataHandler(new DataHandler(dataSource));
+                part.setFileName(
+                        attachmentName_FilePart_F.in(partDescription));
+                smtpMessage.addPart(part);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to set file from byte array to mail", e);
             }
         });
     }

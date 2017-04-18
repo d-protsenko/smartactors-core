@@ -2,9 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
@@ -89,6 +87,34 @@ public class SchedulerActor {
     public void addEntry(final AddEntryQueryMessage message)
             throws ResolutionException, ReadValueException {
         IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), storage);
+    }
+
+    /**
+     * Create new entry.
+     *
+     * @param message    the message
+     * @throws ResolutionException if error occurs resolving new entry
+     * @throws ReadValueException if error occurs reading value from message
+     * @throws ChangeValueException if error occurs setting value from message
+     */
+    public void addEntryWithSettingId(final SetEntryIdMessage message)
+            throws ResolutionException, ReadValueException, ChangeValueException {
+        ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), storage);
+        message.setEntryId(entry.getId());
+    }
+
+    /**
+     * Create list of new entries.
+     *
+     * @param message    the message
+     * @throws ResolutionException if error occurs resolving new entry
+     * @throws ReadValueException if error occurs reading value from message
+     */
+    public void addEntryList(final AddEntryQueryListMessage message)
+            throws ResolutionException, ReadValueException {
+        for (IObject entry : message.getEntryArgumentsList()) {
+            IOC.resolve(Keys.getOrAdd("new scheduler entry"), entry, storage);
+        }
     }
 
     /**

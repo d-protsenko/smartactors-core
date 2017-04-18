@@ -105,7 +105,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
             IFieldName finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
             IFieldName httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseStatusCode");
             IFieldName accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
             IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
