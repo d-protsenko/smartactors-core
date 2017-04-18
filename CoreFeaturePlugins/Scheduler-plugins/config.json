@@ -1,4 +1,0 @@
-{
-  "featureName": "scheduler-plugins",
-  "afterFeatures": ["scheduler", "timer-plugins"]
-}

@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 
 /**
- * This handler should be set in chin handling {@link OutOfResourceException}. Waits for the resource to become available
+ * This handler should be set in chain handling {@link OutOfResourceException}. Waits for the resource to become available
  * and restarts execution of handler thrown exception.
  */
 public class RetryingToTakeResourceExceptionHandler extends ExceptionHandlingReceiver {

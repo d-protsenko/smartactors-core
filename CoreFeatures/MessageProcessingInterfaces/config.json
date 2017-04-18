@@ -1,4 +1,4 @@
 {
-  "featureName": "message-processing-interfaces",
-  "afterFeatures": ["base", "iobject", "ioc"]
+  "featureName":"info.smart_tools.smartactors:message-processing-interfaces",
+  "afterFeatures":["info.smart_tools.smartactors:base","info.smart_tools.smartactors:iobject","info.smart_tools.smartactors:ioc"]
 }

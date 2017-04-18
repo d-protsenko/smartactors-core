@@ -71,6 +71,8 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
                 sequence.goTo(level++, pos + 1);
             }
 
+            sequence.next();
+
             return (T) sequence;
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | ClassCastException | ChainNotFoundException
                 | NestedChainStackOverflowException e) {

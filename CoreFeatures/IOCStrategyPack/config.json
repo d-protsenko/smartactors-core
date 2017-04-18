@@ -1,4 +1,4 @@
 {
-  "featureName": "ioc-strategy-pack",
-  "afterFeatures": ["base", "iobject", "ioc"]
+  "featureName":"info.smart_tools.smartactors:ioc-strategy-pack",
+  "afterFeatures":["info.smart_tools.smartactors:base","info.smart_tools.smartactors:iobject","info.smart_tools.smartactors:ioc"]
 }

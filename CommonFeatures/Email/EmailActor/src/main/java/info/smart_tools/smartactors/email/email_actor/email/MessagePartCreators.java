@@ -17,6 +17,7 @@ import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,9 @@ public class MessagePartCreators {
                 MimeBodyPart part = new MimeBodyPart();
 
                 DataSource dataSource = new ByteArrayDataSource(
-                        (byte[]) sourceF.in(partDescription),
+                        sourceF.in(partDescription) instanceof String ?
+                                Base64.getDecoder().decode((String) sourceF.in(partDescription)) :
+                                (byte[]) sourceF.in(partDescription),
                         partMime_Part_F.in(partDescription)
                 );
 

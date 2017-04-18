@@ -1,4 +1,1 @@
-{
-  "featureName": "database",
-  "afterFeatures": []
-}
+{"featureName":"info.smart_tools.smartactors:database","afterFeatures":[]}

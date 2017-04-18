@@ -105,22 +105,25 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             Object key =  processor.getEnvironment().getValue(fieldNameForKeyName);
             IMessageReceiver receiver = router.route(key);
             if (null == receiver) {
-                lock.lock();
-                receiver = router.route(key);
-                if (null == receiver) {
-                    String kindValue = (String) subSectionNew.getValue(this.kindFieldName);
-                    IRoutedObjectCreator objectCreator = IOC.resolve(
-                            IOC.resolve(
-                                    IOC.getKeyForKeyStorage(),
-                                    IRoutedObjectCreator.class.getCanonicalName() + "#" + kindValue
-                            )
-                    );
-                    subSectionNew.setValue(this.nameFieldName, key);
-                    objectCreator.createObject(this.router, subSectionNew);
-                    // TODO: bad solution, need refactoring. Change interface of IRoutedObjectCreator
-                    receiver = this.router.route(key);
+                this.lock.lock();
+                try {
+                    receiver = router.route(key);
+                    if (null == receiver) {
+                        String kindValue = (String) subSectionNew.getValue(this.kindFieldName);
+                        IRoutedObjectCreator objectCreator = IOC.resolve(
+                                IOC.resolve(
+                                        IOC.getKeyForKeyStorage(),
+                                        IRoutedObjectCreator.class.getCanonicalName() + "#" + kindValue
+                                )
+                        );
+                        subSectionNew.setValue(this.nameFieldName, key);
+                        objectCreator.createObject(this.router, subSectionNew);
+                        // TODO: bad solution, need refactoring. Change interface of IRoutedObjectCreator
+                        receiver = this.router.route(key);
+                    }
+                } finally {
+                    this.lock.unlock();
                 }
-                lock.unlock();
             }
             receiver.receive(processor);
         } catch (Throwable e) {

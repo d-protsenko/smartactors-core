@@ -1,4 +1,4 @@
 {
-  "featureName": "security",
-  "afterFeatures": ["base"]
+  "featureName":"info.smart_tools.smartactors:security",
+  "afterFeatures":["info.smart_tools.smartactors:base"]
 }

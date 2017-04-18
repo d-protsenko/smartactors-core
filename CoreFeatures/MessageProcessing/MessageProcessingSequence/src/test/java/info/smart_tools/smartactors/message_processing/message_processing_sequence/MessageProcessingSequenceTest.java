@@ -445,7 +445,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         Collection cs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack"));
 
         assertNotNull(cs);
-        assertEquals(Arrays.asList(chain1, chain2), cs);
+        assertEquals(Arrays.asList("chain1", "chain2"), cs);
 
         assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth")));
     }
