@@ -1,21 +1,21 @@
 package info.smart_tools.smartactors.async_operations.create_async_operation;
 
-import info.smart_tools.smartactors.async_operations.create_async_operation.wrapper.CreateAsyncOperationMessage;
 import info.smart_tools.smartactors.async_operations.create_async_operation.exception.CreateAsyncOperationActorException;
+import info.smart_tools.smartactors.async_operations.create_async_operation.wrapper.CreateAsyncOperationMessage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -69,7 +69,7 @@ public class CreateAsyncOperationActor {
 
             List<String> availableTokens = message.getOperationTokens();
             if (availableTokens == null) {
-                message.setOperationTokens(Collections.singletonList(token));
+                message.setOperationTokens(Arrays.asList(token));
             } else {
                 availableTokens.add(token);
                 message.setOperationTokens(availableTokens);

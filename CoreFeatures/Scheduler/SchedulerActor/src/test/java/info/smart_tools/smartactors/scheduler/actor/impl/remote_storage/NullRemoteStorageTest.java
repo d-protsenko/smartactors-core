@@ -25,7 +25,6 @@ public class NullRemoteStorageTest {
         ISchedulerEntry entry = mock(ISchedulerEntry.class);
         ISchedulerEntryStorage storage = mock(ISchedulerEntryStorage.class);
 
-        assertTrue(NullRemoteStorage.INSTANCE.downloadNextPage(666, storage));
         NullRemoteStorage.INSTANCE.deleteEntry(entry);
 
         verifyNoMoreInteractions(entry, storage);

@@ -135,7 +135,6 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         environment.setValue(contextFieldName, theContext);
         environment.setValue(processorFieldName, this);
 
-        this.messageProcessingSequence.reset();
         enqueue();
     }
 
@@ -287,6 +286,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
             Thread.currentThread().interrupt();
         }
 
+        this.messageProcessingSequence.reset();
         // TODO: Return message, context, response and {@code this} to the pool
     }
 }

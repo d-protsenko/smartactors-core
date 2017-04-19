@@ -83,10 +83,6 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("the connection pool"), new SingletonStrategy(connectionPool));
 
         storageMock = mock(ISchedulerEntryStorage.class);
-        when(storageMock.downloadNextPage(anyInt()))
-                .thenReturn(false)
-                .thenReturn(false)
-                .thenReturn(true);
         IOC.register(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
@@ -127,21 +123,6 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
-    }
-
-    @Test
-    public void Should_asynchronouslyDownloadEntriesOnStartup()
-            throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                ("{" +
-                        "'connectionOptionsDependency':'the connection options'," +
-                        "'connectionPoolDependency':'the connection pool'," +
-                        "'collectionName':'" + collectionName + "'" +
-                        "}").replace('\'','"'));
-
-        assertNotNull(new CheckpointActor(args));
-
-        verify(storageMock, times(3)).downloadNextPage(anyInt());
     }
 
     @Test

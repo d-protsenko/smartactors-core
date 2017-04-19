@@ -121,5 +121,4 @@ public class IndexCreators {
             body.write("));\n");
         }
     }
-
 }

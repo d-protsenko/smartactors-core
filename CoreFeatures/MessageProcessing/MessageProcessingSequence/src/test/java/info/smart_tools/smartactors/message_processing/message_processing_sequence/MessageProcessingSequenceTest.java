@@ -356,6 +356,9 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
         IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+
+        messageProcessingSequence.callChain(mainChainMock);
+
         messageProcessingSequence.catchException(exception, contextMock);
 
         assertFalse(messageProcessingSequence.next());
@@ -442,7 +445,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         Collection cs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack"));
 
         assertNotNull(cs);
-        assertEquals(Arrays.asList(chain1, chain2), cs);
+        assertEquals(Arrays.asList("chain1", "chain2"), cs);
 
         assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth")));
     }

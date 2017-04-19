@@ -4,9 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -41,6 +39,8 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private ISchedulerEntryStorage storage;
     private IObject args;
     private AddEntryQueryMessage addEntryQueryMessage;
+    private SetEntryIdMessage addEntryWithSettingIdMessage;
+    private AddEntryQueryListMessage addListEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
     private IResolveDependencyStrategy newEntryStrategy;
@@ -69,7 +69,6 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         when(storageStrategy.resolve(same(pool), eq("the_collection_name")))
                 .thenReturn(storage)
                 .thenThrow(ResolveDependencyStrategyException.class);
-        when(storage.downloadNextPage(anyInt())).thenReturn(true);
 
         IOC.register(Keys.getOrAdd("the connection options dependency"), new SingletonStrategy(connectionOptions));
         IOC.register(Keys.getOrAdd("the connection pool dependency"), poolStrategy);
@@ -85,38 +84,27 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         addEntryQueryMessage = mock(AddEntryQueryMessage.class);
         when(addEntryQueryMessage.getEntryArguments()).thenReturn(mock(IObject.class));
 
+        addEntryWithSettingIdMessage = mock(SetEntryIdMessage.class);
+        when(addEntryWithSettingIdMessage.getEntryArguments()).thenReturn(mock(IObject.class));
+
+        addListEntryQueryMessage = mock(AddEntryQueryListMessage.class);
+        when(addListEntryQueryMessage.getEntryArgumentsList()).thenReturn(Collections.singletonList(mock(IObject.class)));
+
         deleteEntryQueryMessage = mock(DeleteEntryQueryMessage.class);
         when(deleteEntryQueryMessage.getEntryId()).thenReturn("entry-to-delete-id");
 
         listEntriesQueryMessage = mock(ListEntriesQueryMessage.class);
 
-        newEntryStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
-
         entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(mock(IObject.class));
+        when(entryMock.getId()).thenReturn("id");
+
+        newEntryStrategy = mock(IResolveDependencyStrategy.class);
+        when(newEntryStrategy.resolve(any(), any())).thenReturn(entryMock);
+        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
 
         taskQueueMock = mock(IQueue.class);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
-    }
-
-    @Test
-    public void Should_downloadEntriesOnStartup()
-            throws Exception {
-        doAnswer(invocation -> {
-            invocation.getArgumentAt(0, ITask.class).execute();
-            return null;
-        }).when(taskQueueMock).put(any());
-
-        when(storage.downloadNextPage(anyInt()))
-                .thenReturn(false)
-                .thenReturn(false)
-                .thenReturn(false)
-                .thenReturn(true);
-
-        assertNotNull(new SchedulerActor(args));
-
-        verify(storage, times(4)).downloadNextPage(anyInt());
     }
 
     @Test
@@ -127,6 +115,27 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         actor.addEntry(addEntryQueryMessage);
 
         verify(newEntryStrategy).resolve(same(addEntryQueryMessage.getEntryArguments()), same(storage));
+    }
+
+    @Test
+    public void Should_createEntryAndSetIdToMessage()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        actor.addEntryWithSettingId(addEntryWithSettingIdMessage);
+
+        verify(newEntryStrategy).resolve(same(addEntryWithSettingIdMessage.getEntryArguments()), same(storage));
+        verify(addEntryWithSettingIdMessage).setEntryId(eq("id"));
+    }
+
+    @Test
+    public void Should_createListOfNewEntry()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        actor.addEntryList(addListEntryQueryMessage);
+
+        verify(newEntryStrategy).resolve(same(addListEntryQueryMessage.getEntryArgumentsList().get(0)), same(storage));
     }
 
     @Test

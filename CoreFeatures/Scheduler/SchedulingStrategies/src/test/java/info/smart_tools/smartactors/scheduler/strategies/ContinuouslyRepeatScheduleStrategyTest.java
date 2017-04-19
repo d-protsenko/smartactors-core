@@ -18,9 +18,7 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -144,5 +142,48 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
 
         verify(entry, times(2)).scheduleNext(timeCaptor.capture());
         assertEquals(Duration.parse("PT72H").toMillis(), timeCaptor.getValue() - captured0);
+    }
+
+    @Test
+    public void Should_initializeEntryWithPeriodInterval()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+
+        strategy.init(entry,
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                        "{'start':'3410-01-01T00:00:01','interval':'P2M'}".replace('\'','"')));
+
+        // Happy new year to the people of 3410'th year (if you are alive) (if you still use smartactors)
+        assertEquals("3410-01-01T00:00:01", entry.getState().getValue(start));
+        assertEquals("P2M", entry.getState().getValue(interval));
+
+        verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+    }
+
+    @Test
+    public void Should_restoreAndPostProcessEntryWithPeriodInterval()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+        when(entry.getState()).thenReturn(
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                        "{'start':'1994-10-15T17:32:05','interval':'P2M'}".replace('\'','"')));
+
+        strategy.restore(entry);
+
+        assertEquals("1994-10-15T17:32:05", entry.getState().getValue(start));
+        assertEquals("P2M", entry.getState().getValue(interval));
+        ArgumentCaptor<Long> timeCaptor = ArgumentCaptor.forClass(long.class);
+        verify(entry).scheduleNext(timeCaptor.capture());
+        long captured0 = timeCaptor.getValue();
+
+        assertEquals(LocalDateTime.ofInstant(Instant.ofEpochMilli(captured0), ZoneOffset.UTC).getDayOfMonth(), 15);
+
+        when(entry.getLastTime()).thenReturn(captured0);
+
+        strategy.postProcess(entry);
+
+        verify(entry, times(2)).scheduleNext(timeCaptor.capture());
+        long nextInterval = LocalDateTime.ofInstant(Instant.ofEpochMilli(captured0), ZoneOffset.UTC).plus(Period.ofMonths(2)).atZone(ZoneOffset.UTC).toInstant().toEpochMilli() - captured0;
+        assertEquals(nextInterval, timeCaptor.getValue() - captured0);
     }
 }

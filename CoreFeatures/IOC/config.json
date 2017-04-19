@@ -1,4 +1,4 @@
 {
-  "featureName": "ioc",
-  "afterFeatures": ["base", "scope"]
+  "featureName":"info.smart_tools.smartactors:ioc",
+  "afterFeatures":["info.smart_tools.smartactors:base","info.smart_tools.smartactors:scope"]
 }
