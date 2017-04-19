@@ -1054,6 +1054,14 @@
   "version" : "0.3.2"
 }, {
   "actors" : [ {
+  "artifactId" : "endpoint.response_strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointResponseStrategy",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "endpoint.interfaces.iresponse-handler",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -1291,7 +1299,12 @@
   "uploadRepositoryId" : "archiva.smartactors-features",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
-  "plugins" : [ ],
+  "plugins" : [ {
+  "artifactId" : "endpoint-response-strategy-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "EndpointResponseStrategyPlugin",
+  "version" : "0.3.2"
+} ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-plugins",
   "rawName" : "Endpoint-plugins",
@@ -1966,12 +1979,28 @@
   "version" : "0.3.2"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing.null-response-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NullResponseStrategy",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "message-processing.wrapper-generator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "WrapperGenerator",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "message-processing.response-sender-receiver",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ResponseSenderReceiver",
   "version" : "0.3.2"
 }, {
   "artifactId" : "message-processing.message-processing-sequence",
@@ -2317,6 +2346,14 @@
   "rawName" : "MessageProcessingInterfaces",
   "version" : "0.3.2"
 }, {
+  "artifactId" : "message-processing-interfaces.iresponse-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IResponseStrategy",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "message-processing-interfaces.irouter",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2621,6 +2658,14 @@
   "version" : "0.3.2"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing-plugins.response-sender-receiver-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ResponseSenderReceiverPlugin",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "message-processing-plugins.receiver-generator-plugin",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2753,7 +2798,17 @@
   "uploadRepositoryId" : "archiva.smartactors-features",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
-  "plugins" : [ ],
+  "plugins" : [ {
+  "artifactId" : "null-response-strategy-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "NullResponseStrategyPlugin",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "response-sender-receiver-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ResponseSenderReceiverPlugin",
+  "version" : "0.3.2"
+} ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "message-processing-plugins",
   "rawName" : "MessageProcessing-plugins",

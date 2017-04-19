@@ -35,7 +35,8 @@ public final class MessageBus {
     }
 
     /**
-     * Send message to the chain call receiver
+     * Send message to the default chain.
+     *
      * @param message the sending message
      * @throws SendingMessageException if sending of message has been failed
      */
@@ -45,7 +46,8 @@ public final class MessageBus {
     }
 
     /**
-     * Send message to the specific chain
+     * Send message to the specific chain.
+     *
      * @param message the message for send
      * @param chainName the name of specific chain
      * @throws SendingMessageException if message sending has been failed
@@ -56,7 +58,7 @@ public final class MessageBus {
     }
 
     /**
-     * Send message to the chain call receiver  and send processed message to the specific chain
+     * Send message to the default chain sending response to the other chain.
      * @param message the message for send
      * @param replyToChainName the name of specific chain to reply to
      * @throws SendingMessageException if message sending has been failed
@@ -67,7 +69,8 @@ public final class MessageBus {
     }
 
     /**
-     * Send message to the specific chain and reply processed message to other chain
+     * Send message to the specific chain sending response to the other chain.
+     *
      * @param message the message for send
      * @param chainName the name of specific chain to send to
      * @param replyToChainName the name of specific chain to reply to
