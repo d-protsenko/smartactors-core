@@ -2114,6 +2114,14 @@
 } ],
   "rawName" : "ReceiverChain",
   "version" : "0.3.2"
+}, {
+  "artifactId" : "message-processing.chain-modifications",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ChainModifications",
+  "version" : "0.3.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -2808,6 +2816,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "ResponseSenderReceiverPlugin",
   "version" : "0.3.2"
+}, {
+  "artifactId" : "chain-modification-strategies-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ChainModificationStrategiesPlugin",
+  "version" : "0.3.2"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "message-processing-plugins",
@@ -3062,6 +3075,57 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "iobject-plugins",
   "rawName" : "IObject-plugins",
+  "version" : "0.3.2"
+}, {
+  "actors" : [ {
+  "artifactId" : "scheduled-query-sensor",
+  "uploadRepositories" : [ ],
+  "rawName" : "ScheduledQuerySensor",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "sensors-interfaces",
+  "uploadRepositories" : [ ],
+  "rawName" : "Sensors-interfaces",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "statistics-manager",
+  "uploadRepositories" : [ ],
+  "rawName" : "StatisticsManager",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "embedded-sensor",
+  "uploadRepositories" : [ ],
+  "rawName" : "EmbeddedSensor",
+  "version" : "0.3.2"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "statistics",
+  "rawName" : "Statistics",
+  "version" : "0.3.2"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "plugin-embedded-sensor-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "PluginEmbeddedSensorPlugin",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "plugin-query-sensor-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "PluginQuerySensorPlugin",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "plugin-statistics-manager-actor-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "PluginStatisticsManagerActorPlugin",
+  "version" : "0.3.2"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "statistics-plugins",
+  "rawName" : "Statistics-plugins",
   "version" : "0.3.2"
 } ],
   "on-actor-creation-upload-repositories" : [ ],

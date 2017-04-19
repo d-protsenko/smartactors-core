@@ -30,6 +30,7 @@
         <module>PluginConditionChainChoiceStrategy</module>
         <module>NullResponseStrategyPlugin</module>
         <module>ResponseSenderReceiverPlugin</module>
+        <module>ChainModificationStrategiesPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>
     <build>

@@ -70,6 +70,8 @@
         <module>Checkpoint</module>
         <module>Checkpoint-plugins</module>
         <module>Parser</module>
+        <module>Statistics</module>
+        <module>Statistics-plugins</module>
     </modules>
 
     <build>

@@ -29,11 +29,13 @@ import java.time.temporal.TemporalAmount;
  * <ul>
  *     <li>{@code "start"} - date and time (ISO 8601) when the entry should/could be executed first time</li>
  *     <li>{@code "interval"} - interval in ISO-8601 format (e.g. {@code "PT8H10M42.36S"})</li>
+ *     <li>{@code "save"} - (optional, defaults to {@code true}) {@code true} if the entry should be saved in remote storage</li>
  * </ul>
  */
 public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
     private final IFieldName startFieldName;
     private final IFieldName intervalFieldName;
+    private final IFieldName saveFieldName;
 
     private long nextTime(final LocalDateTime startTime, final TemporalAmount period, final long now) {
         long lStartTime = datetimeToMillis(startTime);
@@ -75,6 +77,7 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
             throws ResolutionException {
         startFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "start");
         intervalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "interval");
+        saveFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "save");
     }
 
     @Override
@@ -94,7 +97,9 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
             entry.getState().setValue(startFieldName, startTime.toString());
             entry.getState().setValue(intervalFieldName, interval.toString());
 
-            entry.save();
+            if (args.getValue(saveFieldName) == null || (Boolean) args.getValue(saveFieldName)) {
+                entry.save();
+            }
 
             entry.scheduleNext(nextTime(startTime, interval, datetimeToMillis(now)));
         } catch (ReadValueException | InvalidArgumentException | EntryScheduleException | EntryStorageAccessException
