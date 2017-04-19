@@ -15,11 +15,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>EmbeddedSesor</module>
+        <module>EmbeddedSensor</module>
         <module>ScheduledQuerySensor</module>
         <module>Sensors-interfaces</module>
         <module>StatisticsManager</module>
-        <module>EmbeddedSensor</module>
         <module>StatisticsDistribution</module>
     </modules>
 

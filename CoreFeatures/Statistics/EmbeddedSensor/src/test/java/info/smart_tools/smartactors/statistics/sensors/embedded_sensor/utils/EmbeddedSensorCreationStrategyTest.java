@@ -15,13 +15,13 @@ import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing_plugins.chain_modifications_plugin.ChainModificationsPlugin;
+import info.smart_tools.smartactors.message_processing_plugins.chain_modification_strategies_plugin.ChainModificationStrategiesPlugin;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.ISensorHandle;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -43,7 +43,7 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
         load(PluginIOCKeys.class);
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
-        load(ChainModificationsPlugin.class);
+        load(ChainModificationStrategiesPlugin.class);
     }
 
     @Override

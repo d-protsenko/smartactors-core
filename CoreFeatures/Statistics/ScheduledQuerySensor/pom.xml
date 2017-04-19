@@ -66,6 +66,36 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>scheduler.interfaces</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>statistics.sensors-interfaces</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-bus.message-bus</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.ipool</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.pool-guard</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.itask</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
 
     <build>
