@@ -2808,6 +2808,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "ResponseSenderReceiverPlugin",
   "version" : "0.3.2"
+}, {
+  "artifactId" : "chain-modification-strategies-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ChainModificationStrategiesPlugin",
+  "version" : "0.3.2"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "message-processing-plugins",
