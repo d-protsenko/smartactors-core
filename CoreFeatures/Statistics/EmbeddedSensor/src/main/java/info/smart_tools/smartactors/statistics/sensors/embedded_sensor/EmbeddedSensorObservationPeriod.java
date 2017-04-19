@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Default implementation of {@link
- * info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interfaces.IEmbeddedSensorObservationPeriod}.
+ * IEmbeddedSensorObservationPeriod}.
  *
  * @param <TState> type of strategy's period data
  */
