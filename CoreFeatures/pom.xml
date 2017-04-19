@@ -8,12 +8,12 @@
 
     <packaging>pom</packaging>
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>smartactors-modules</id>-->
-            <!--<url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
+    <repositories>
+        <repository>
+            <id>smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>Base</module>

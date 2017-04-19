@@ -3,13 +3,15 @@ package info.smart_tools.smartactors.das.commands;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.PomReader;
-import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Actor;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectCreationException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.apache.maven.model.Dependency;
@@ -20,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ImportProject implements IAction {
 
@@ -31,23 +32,26 @@ public class ImportProject implements IAction {
     public void execute(final Object o)
             throws ActionExecuteException, InvalidArgumentException {
         System.out.println("Importing project ...");
-        String[] args = (String[]) o;
-
         try {
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
-
-            String path = clar.getPath();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             String projectName = clar.getProjectName();
             String groupId = null;
             String version = null;
+            Path path = Paths.get("");
+            if (clar.isPath()) {
+                path = Paths.get(clar.getPath());
+            }
             if (clar.isGroupId()) {
                 groupId = clar.getGroupId();
             }
             if (clar.isVersion()) {
                 version = clar.getVersion();
             }
-
-            Path sourcePath = Paths.get(path);
+            Path sourcePath = Paths.get("");
+            if (clar.isSourceLocation()) {
+                sourcePath = Paths.get(clar.getSourceLocation());
+            }
             if (null == sourcePath || !sourcePath.toFile().exists()) {
                 System.out.println("Could not find project source by given path.");
                 throw new Exception("Could not find project source by given path.");
@@ -60,8 +64,7 @@ public class ImportProject implements IAction {
                 version = "0.0.1-SNAPSHOT";
             }
 
-            ProjectResolver pr = new ProjectResolver();
-            Project project = pr.createProject(projectName, groupId, version);
+            Project project = pr.createProject(projectName, groupId, version, path);
 
             project.makeProjectDirectory();
 
@@ -77,6 +80,10 @@ public class ImportProject implements IAction {
             }
 
             project.saveMetaDataFile();
+        } catch (InvalidCommandLineArgumentException | ProjectCreationException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Project import has been failed.");
             System.err.println(e);
@@ -117,7 +124,12 @@ public class ImportProject implements IAction {
         }
 
         // create feature
-        Feature feature = new Feature(name, artifactId, groupId, version, project);
+        Feature feature;
+        if (null != artifactId) {
+            feature = new Feature(name, artifactId, groupId, version, project);
+        } else {
+            feature = new Feature(name, groupId, version, project);
+        }
 
         // Addition the feature pom.xml file
         feature.makePomFile();
@@ -139,8 +151,15 @@ public class ImportProject implements IAction {
         File[] modules = new File(feature.getPath().toString()).listFiles(File::isDirectory);
         if (null != modules && modules.length > 0) {
             for(File module : modules) {
-                if (!module.getName().equals(feature.getFeatureDistributionModuleName())) {
+                System.out.print("module location: " + Paths.get(module.getName(), POM_NAME));
+                if (
+                        !module.getName().equals(feature.getFeatureDistributionModuleName()) &&
+                        Paths.get(feature.getPath().toString(), module.getName(), POM_NAME).toFile().exists()
+                ) {
+                    System.out.println(" - processed.");
                     createFeatureModule(module, feature);
+                } else {
+                    System.out.println(" - skipped.");
                 }
             }
         }
@@ -152,16 +171,17 @@ public class ImportProject implements IAction {
 
     private IObject readConfigFile(final File file)
             throws Exception {
-        try (Scanner scanner = new Scanner(file)) {
-            String text = scanner.useDelimiter("\\A").next();
-            scanner.close();
-
-            return new DSObject(text);
-        } catch (Exception e) {
-            System.out.println("Could not read json file:");
-            System.err.println(e);
-        }
-        return null;
+//        try (Scanner scanner = new Scanner(file)) {
+//            String text = scanner.useDelimiter("\\A").next();
+//            scanner.close();
+//
+//            return new DSObject(text);
+//        } catch (Exception e) {
+//            System.out.println("Could not read json file:");
+//            System.err.println(e);
+//        }
+//        return null;
+        return JsonFile.load(file);
     }
 
     private void createFeatureModule(final File directory, final Feature feature)

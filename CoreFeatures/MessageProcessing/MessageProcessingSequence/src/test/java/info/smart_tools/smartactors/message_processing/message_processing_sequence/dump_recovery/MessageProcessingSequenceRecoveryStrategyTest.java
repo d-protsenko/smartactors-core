@@ -91,13 +91,16 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
                 same(routerMock)
         )).thenReturn(chainA);
         when(chainA.get(0)).thenReturn(mock(IMessageReceiver.class));
+        when(chainA.get(1)).thenReturn(mock(IMessageReceiver.class));
+        when(chainA.get(2)).thenReturn(mock(IMessageReceiver.class));
+        when(chainA.get(3)).thenReturn(mock(IMessageReceiver.class));
 
         IMessageProcessingSequence sequence = new MessageProcessingSequenceRecoveryStrategy().resolve(seqDump);
 
         assertNotNull(sequence);
 
         assertEquals(2, sequence.getCurrentLevel());
-        assertEquals(2, sequence.getStepAtLevel(2));
+        assertEquals(3, sequence.getStepAtLevel(2));
         assertEquals(4, sequence.getStepAtLevel(1));
         assertEquals(1, sequence.getStepAtLevel(0));
 

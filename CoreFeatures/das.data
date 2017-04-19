@@ -688,6 +688,21 @@
 } ],
   "rawName" : "IPool",
   "version" : "0.3.2"
+}, {
+  "artifactId" : "strategy.strategy-storage-strategy",
+  "uploadRepositories" : [ ],
+  "rawName" : "Strategy.StrategyStorageStrategy",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "interfaces.icacheable",
+  "uploadRepositories" : [ ],
+  "rawName" : "Interfaces.ICacheable",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "strategy.strategy-storage-with-cache-strategy",
+  "uploadRepositories" : [ ],
+  "rawName" : "Strategy.StrategyStorageWithCacheStrategy",
+  "version" : "0.3.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",

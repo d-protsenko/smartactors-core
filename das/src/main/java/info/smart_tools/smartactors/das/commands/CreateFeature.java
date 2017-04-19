@@ -8,6 +8,10 @@ import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
 import info.smart_tools.smartactors.das.models.UploadRepository;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.util.List;
 
@@ -19,22 +23,17 @@ public class CreateFeature implements IAction {
         System.out.println("Creating feature ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String name = clar.getFeatureName();
-            String groupId = null;
+            String groupId = project.getGroupId();
             if (clar.isGroupId()) {
                 groupId = clar.getGroupId();
-            } else {
-                groupId = project.getGroupId();
             }
-            String version = null;
+            String version = project.getVersion();;
             if (clar.isVersion()) {
                 version = clar.getVersion();
-            } else {
-                version = project.getVersion();
             }
 
             Feature feature = new Feature(name, groupId, version, project);
@@ -68,6 +67,10 @@ public class CreateFeature implements IAction {
             feature.getOwnerProject().saveMetaDataFile();
 
 
+        } catch (InvalidCommandLineArgumentException | ProjectResolutionException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             throw new ActionExecuteException("Could not create instance of Feature.", e);
         }

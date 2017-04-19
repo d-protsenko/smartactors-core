@@ -21,7 +21,7 @@ public class ${plugin.name} extends BootstrapPlugin {
 //    @After("")
 //    @Before("")
 //    public void doSomeThing()
-//        throws ResolutionException, RegistrationException, InvalidArgumentException {
+//            throws ResolutionException, RegistrationException, InvalidArgumentException {
 //
 //    }
 }

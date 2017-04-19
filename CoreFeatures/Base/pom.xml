@@ -27,6 +27,9 @@
         <module>IResourceSource</module>
         <module>IResolveDependencyStrategy</module>
         <module>IPool</module>
+        <module>StrategyStorageStrategy</module>
+        <module>ICacheable</module>
+        <module>StrategyStorageWithCacheStrategy</module>
         <module>BaseDistribution</module>
     </modules>
     <build>
