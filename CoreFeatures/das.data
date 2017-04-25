@@ -731,6 +731,14 @@
   "rawName" : "CheckpointActor",
   "version" : "0.3.2"
 }, {
+  "artifactId" : "checkpoint.checkpoint.failure-action",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "FailureAction",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "checkpoint.interfaces",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -1937,7 +1945,12 @@
   "uploadRepositoryId" : "archiva.smartactors-features",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
-  "plugins" : [ ],
+  "plugins" : [ {
+  "artifactId" : "checkpoint-failure-actions-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "CheckpointFailureActionsPlugin",
+  "version" : "0.3.2"
+} ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "checkpoint-plugins",
   "rawName" : "Checkpoint-plugins",
