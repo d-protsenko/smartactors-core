@@ -44,6 +44,7 @@ public class CheckpointActor {
     private final IFieldName actionFieldName;
     private final IFieldName recoverFieldName;
     private final IFieldName completedFieldName;
+    private final IFieldName gotFeedbckFieldName;
     private final IFieldName processorFieldName;
 
     /**
@@ -67,6 +68,7 @@ public class CheckpointActor {
         actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
+        gotFeedbckFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "gotFeedback");
         processorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor");
 
         String connectionOptionsDependency = (String) args.getValue(
@@ -176,6 +178,7 @@ public class CheckpointActor {
 
             entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
 
+            entry.getState().setValue(gotFeedbckFieldName, true);
             entry.getState().setValue(completedFieldName, true);
         } catch (EntryStorageAccessException ignore) {
             // There is no entry with required identifier. OK

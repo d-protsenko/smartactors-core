@@ -15,6 +15,7 @@
         <module>CheckpointSchedulingStrategiesPlugin</module>
         <module>CheckpointRecoverStrategiesPlugin</module>
         <module>CheckpointActorPlugin</module>
+        <module>CheckpointFailureActionsPlugin</module>
         <module>Checkpoint-pluginsDistribution</module>
     </modules>
     <build>
