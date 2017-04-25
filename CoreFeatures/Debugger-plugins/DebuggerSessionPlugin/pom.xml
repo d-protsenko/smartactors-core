@@ -113,6 +113,11 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>debugger.debugger-session-impl</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
 
     <build>

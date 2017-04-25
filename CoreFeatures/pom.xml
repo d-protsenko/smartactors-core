@@ -72,6 +72,8 @@
         <module>Parser</module>
         <module>Statistics</module>
         <module>Statistics-plugins</module>
+        <module>Debugger</module>
+        <module>Debugger-plugins</module>
     </modules>
 
     <build>

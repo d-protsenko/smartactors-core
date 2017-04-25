@@ -113,6 +113,16 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-interfaces.message-processing</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>debugger.debugger-sequence-impl</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
 
     <build>
