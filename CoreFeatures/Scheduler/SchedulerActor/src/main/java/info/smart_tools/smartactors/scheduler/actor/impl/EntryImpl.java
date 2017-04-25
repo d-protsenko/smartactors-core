@@ -24,6 +24,7 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implementation of {@link ISchedulerEntry}.
@@ -36,19 +37,21 @@ public final class EntryImpl implements ISchedulerEntry {
     private final String id;
     private final ISchedulingStrategy strategy;
     private long lastScheduledTime;
-    private ITimerTask timerTask;
+    private final AtomicReference<ITimerTask> timerTask;
     private final ITimer timer;
     private boolean isCancelled;
+    private boolean isSavedRemotely;
     private final ISchedulerAction action;
     private final ITask task = this::executeTask;
 
     /**
      * The constructor.
      *
-     * @param state       entry state object
-     * @param strategy    scheduling strategy
-     * @param storage     storage to save entry in
-     * @param action      the action that should be executed when this entry fires
+     * @param state              entry state object
+     * @param strategy           scheduling strategy
+     * @param storage            storage to save entry in
+     * @param action             the action that should be executed when this entry fires
+     * @param isSavedRemotely    if the entry is saved in remote storage (as it was restored from it)
      * @throws ResolutionException if fails to resolve any dependencies
      * @throws ReadValueException if error occurs reading values from state object
      * @throws InvalidArgumentException if error occurs reading values from state object
@@ -57,7 +60,8 @@ public final class EntryImpl implements ISchedulerEntry {
             final IObject state,
             final ISchedulingStrategy strategy,
             final ISchedulerEntryStorage storage,
-            final ISchedulerAction action)
+            final ISchedulerAction action,
+            final boolean isSavedRemotely)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
         IFieldName idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
 
@@ -67,9 +71,10 @@ public final class EntryImpl implements ISchedulerEntry {
         this.state = state;
         this.strategy = strategy;
         this.action = action;
-        this.lastScheduledTime = -1;
+        this.isSavedRemotely = isSavedRemotely;
+        this.lastScheduledTime = Long.MAX_VALUE;
 
-        this.timerTask = null;
+        this.timerTask = new AtomicReference<>(null);
         this.isCancelled = false;
 
         this.id = (String) state.getValue(idFieldName);
@@ -134,7 +139,8 @@ public final class EntryImpl implements ISchedulerEntry {
                 state,
                 strategy,
                 storage,
-                action);
+                action,
+                false);
 
         // Init action and then scheduling strategy. If action cannot be initialized the scheduling strategy will not be initialized and the
         // entry will not be scheduled
@@ -177,7 +183,8 @@ public final class EntryImpl implements ISchedulerEntry {
                 savedState,
                 strategy,
                 storage,
-                action);
+                action,
+                true);
 
         strategy.restore(entry);
         return entry;
@@ -205,14 +212,17 @@ public final class EntryImpl implements ISchedulerEntry {
     @Override
     public void save() throws EntryStorageAccessException {
         storage.save(this);
+        this.isSavedRemotely = true;
     }
 
     @Override
     public void cancel() throws EntryStorageAccessException {
         if (!isCancelled) {
             this.isCancelled = true;
-            if (this.timerTask != null) {
-                this.timerTask.cancel();
+            ITimerTask tt = timerTask.getAndSet(null);
+
+            if (null != tt) {
+                tt.cancel();
             }
 
             storage.delete(this);
@@ -223,15 +233,28 @@ public final class EntryImpl implements ISchedulerEntry {
     public void scheduleNext(final long time)
             throws EntryScheduleException {
         try {
-            if (this.timerTask == null) {
-                this.timerTask = timer.schedule(task, time);
+            ITimerTask tt = timerTask.get();
+
+            if (null == tt) {
+                if (isCancelled) {
+                    // This entry is a "zombie"
+                    storage.delete(this);
+                    return;
+                }
+
+                tt = this.timerTask.getAndSet(timer.schedule(this.task, time));
+
+                if (null != tt) {
+                    tt.cancel();
+                }
             } else {
-                timerTask.reschedule(time);
+                tt.reschedule(time);
             }
 
             lastScheduledTime = time;
 
-            storage.saveLocally(this);
+            // Will create "zombie" if this entry was cancelled after timerTask.get() call
+            storage.notifyActive(this);
         } catch (TaskScheduleException | EntryStorageAccessException e) {
             throw new EntryScheduleException("Could not reschedule entry.", e);
         }
@@ -245,5 +268,27 @@ public final class EntryImpl implements ISchedulerEntry {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void suspend() throws EntryStorageAccessException {
+        ITimerTask tt = timerTask.getAndSet(null);
+
+        if (null != tt) {
+            tt.cancel();
+            storage.notifyInactive(this, !isSavedRemotely);
+        }
+    }
+
+    @Override
+    public void awake() throws EntryStorageAccessException, EntryScheduleException {
+        if (null == timerTask.get()) {
+            scheduleNext(getLastTime());
+        }
+    }
+
+    @Override
+    public boolean isAwake() {
+        return !isCancelled && timerTask.get() != null;
     }
 }

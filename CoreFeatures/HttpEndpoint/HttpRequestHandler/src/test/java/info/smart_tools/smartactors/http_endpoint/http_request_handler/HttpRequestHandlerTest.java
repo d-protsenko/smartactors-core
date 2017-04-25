@@ -116,6 +116,8 @@ public class HttpRequestHandlerTest {
                         }
                 )
         );
+
+        IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new Object()));
     }
 
     @Test

@@ -2,9 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
@@ -16,9 +14,13 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
 import java.util.stream.Collectors;
 
@@ -27,27 +29,6 @@ import java.util.stream.Collectors;
  */
 public class SchedulerActor {
     private final ISchedulerEntryStorage storage;
-
-    private final IQueue<ITask> taskQueue;
-
-    /**
-     * Task downloading entries from remote storage.
-     */
-    private class DownloadEntriesTask implements ITask {
-
-        @Override
-        public void execute() throws TaskExecutionException {
-            try {
-                if (!storage.downloadNextPage(0)) {
-                    taskQueue.put(DownloadEntriesTask.this);
-                }
-            } catch (EntryStorageAccessException e) {
-                throw new TaskExecutionException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
 
     /**
      * The constructor.
@@ -68,15 +49,11 @@ public class SchedulerActor {
         String collectionName = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
 
-        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
-
         Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
         IPool connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);
         storage = IOC.resolve(Keys.getOrAdd(ISchedulerEntryStorage.class.getCanonicalName()),
                 connectionPool,
                 collectionName);
-
-        taskQueue.put(new DownloadEntriesTask());
     }
 
     /**
@@ -89,6 +66,34 @@ public class SchedulerActor {
     public void addEntry(final AddEntryQueryMessage message)
             throws ResolutionException, ReadValueException {
         IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), storage);
+    }
+
+    /**
+     * Create new entry.
+     *
+     * @param message    the message
+     * @throws ResolutionException if error occurs resolving new entry
+     * @throws ReadValueException if error occurs reading value from message
+     * @throws ChangeValueException if error occurs setting value from message
+     */
+    public void addEntryWithSettingId(final SetEntryIdMessage message)
+            throws ResolutionException, ReadValueException, ChangeValueException {
+        ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), storage);
+        message.setEntryId(entry.getId());
+    }
+
+    /**
+     * Create list of new entries.
+     *
+     * @param message    the message
+     * @throws ResolutionException if error occurs resolving new entry
+     * @throws ReadValueException if error occurs reading value from message
+     */
+    public void addEntryList(final AddEntryQueryListMessage message)
+            throws ResolutionException, ReadValueException {
+        for (IObject entry : message.getEntryArgumentsList()) {
+            IOC.resolve(Keys.getOrAdd("new scheduler entry"), entry, storage);
+        }
     }
 
     /**

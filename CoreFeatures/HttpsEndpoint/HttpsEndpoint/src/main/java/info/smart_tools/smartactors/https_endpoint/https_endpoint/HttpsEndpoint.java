@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.endpoint.endpoint_channel_inbound_handler.En
 import info.smart_tools.smartactors.http_endpoint.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.https_endpoint.https_server.HttpsServer;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
@@ -26,11 +27,12 @@ public class HttpsEndpoint extends HttpsServer {
      * @param name               name of the endpoint
      * @param receiverChain      chain, that should receive {@link MessageProcessor}
      * @param sslContextProvider provider for ssl context
+     * @throws ResolutionException if error occurs resolving ny dependencies
      */
     public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
                          final IEnvironmentHandler handler, final String name, final IReceiverChain receiverChain,
                          final ISslEngineProvider sslContextProvider
-    ) {
+    ) throws ResolutionException {
         super(port, new EndpointChannelInboundHandler<>(
                         new HttpRequestHandler(scope, handler, receiverChain, name),
                         FullHttpRequest.class),

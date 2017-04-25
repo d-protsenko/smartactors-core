@@ -14,13 +14,17 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Actor for sending response to client
+ *
+ * @deprecated
  */
+@Deprecated
 public class ResponseSenderActor {
 
     /**
      * Constructor for actor
      */
     public ResponseSenderActor() {
+        System.out.println("WARNING: \"ResponseSenderActor\" is deprecated. Use \"response sender receiver\" instead.");
     }
 
     /**
@@ -44,7 +48,7 @@ public class ResponseSenderActor {
             //Create and fill full environment
             IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
             IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
             IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
             IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
             IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");

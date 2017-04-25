@@ -96,6 +96,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         reset();
     }
 
+    private void uncheckedGoTo(final int level, final int step) {
+        this.stackIndex = level;
+        this.stepStack[level] = step - 1;
+    }
+
     @Override
     public void reset() {
         this.chainStack[0] = mainChain;
@@ -107,13 +112,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public boolean next() {
-        for (int i = stackIndex; i >= 0; --i) {
-            int step = ++stepStack[i];
-            currentReceiver = chainStack[i].get(step);
+        while (stackIndex >= 0) {
+            int step = ++stepStack[stackIndex];
+            currentReceiver = chainStack[stackIndex].get(step);
 
             if (null != currentReceiver) {
-                currentArguments = chainStack[i].getArguments(step);
-                stackIndex = i;
+                currentArguments = chainStack[stackIndex].getArguments(step);
                 return true;
             }
 
@@ -121,15 +125,15 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 this.isException = false;
                 try {
                     this.afterExceptionAction.execute(this);
-                    if (this.stackIndex < 0) {
-                        return false;
-                    }
                 } catch (Throwable e) {
                     return false;
                 }
             }
+
+            --stackIndex;
         }
 
+        stackIndex = 0;
         return false;
     }
 
@@ -139,13 +143,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             throw new InvalidArgumentException("Invalid level value");
         }
 
-        this.stackIndex = level;
-        this.stepStack[level] = step - 1;
+        uncheckedGoTo(level, step);
     }
 
     @Override
     public void end() {
-        this.stackIndex = -1;
+        uncheckedGoTo(0, -1);
     }
 
     @Override
@@ -279,7 +282,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             dump.setValue(stepsStackFieldName,
                     Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
             dump.setValue(chainsStackFieldName,
-                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).collect(Collectors.toList()));
+                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
 
             Object skipChains = options.getValue(skipChainsFieldName);
             Object excludeExceptional = options.getValue(excludeExceptionalFieldName);

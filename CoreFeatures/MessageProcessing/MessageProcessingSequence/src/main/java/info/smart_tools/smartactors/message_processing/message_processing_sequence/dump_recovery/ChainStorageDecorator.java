@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -40,6 +41,16 @@ public class ChainStorageDecorator implements IChainStorage {
     @Override
     public void register(final Object chainId, final IObject description) throws ChainCreationException {
         throw new ChainCreationException("Not supported", null);
+    }
+
+    @Override
+    public Object update(final Object chainId, final IObject modification) throws ChainNotFoundException, ChainModificationException {
+        throw new ChainModificationException("Not supported", null);
+    }
+
+    @Override
+    public void rollback(final Object chainId, final Object modId) throws ChainNotFoundException, ChainModificationException {
+        throw new ChainModificationException("Not supported", null);
     }
 
     @Override
