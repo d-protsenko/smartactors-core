@@ -48,7 +48,7 @@ public class WDSObject implements IObject, IObjectWrapper {
             try {
                 field = new WDSObjectField((List<IObject>) this.wrapperConfig.getValue(name));
             } catch (Throwable e) {
-                throw new ReadValueException("Can't read configuration for current field name");
+                throw new ReadValueException("Can't read configuration for current field name " + name);
             }
             inFields.put(name, field);
         }
@@ -70,7 +70,7 @@ public class WDSObject implements IObject, IObjectWrapper {
                     fields[i] = new WDSObjectField(((List<List<IObject>>) config).get(i));
                 }
             } catch (Throwable e) {
-                throw new ChangeValueException("Can't read configuration for current field name");
+                throw new ChangeValueException("Can't read configuration for current field name " + name);
             }
             outFields.put(name, fields);
         }
@@ -110,7 +110,7 @@ public class WDSObject implements IObject, IObjectWrapper {
         try {
             return (IObject) this.initIObject.getValue(fieldName);
         } catch (Throwable e) {
-            throw new InvalidArgumentException("Could not read data from environment.", e);
+            throw new InvalidArgumentException("Could not read data from environment with field name " + fieldName, e);
         }
     }
 }

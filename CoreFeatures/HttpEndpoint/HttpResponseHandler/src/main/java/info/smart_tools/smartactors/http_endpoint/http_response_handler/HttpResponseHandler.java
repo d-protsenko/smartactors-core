@@ -35,13 +35,14 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IQueue<ITask> taskQueue;
     private int stackDepth;
     private IReceiverChain receiverChain;
-
+    private IObject request;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
     private IFieldName httpResponseStatusCodeFieldName;
     private IFieldName responseFieldName;
     private IFieldName headersFieldName;
     private IFieldName cookiesFieldName;
+    private IFieldName requestFieldName;
     private IFieldName messageMapIdFieldName;
     private IFieldName uuidFieldName;
     private Object messageMapId;
@@ -75,8 +76,10 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
+            requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendRequest");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
             uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
+            this.request = request;
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
@@ -129,6 +132,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             context.setValue(headersFieldName, new ArrayList<IObject>());
             context.setValue(responseFieldName, response);
             context.setValue(httpResponseStatusCodeFieldName, response.status().code());
+            context.setValue(requestFieldName, this.request);
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
             return environment;

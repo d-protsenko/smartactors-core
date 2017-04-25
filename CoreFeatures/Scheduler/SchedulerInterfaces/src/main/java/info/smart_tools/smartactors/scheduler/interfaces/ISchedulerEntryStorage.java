@@ -14,15 +14,25 @@ public interface ISchedulerEntryStorage {
      * @param entry    the entry to save
      * @throws EntryStorageAccessException if error occurs accessing remote storage
      */
-    void save(final ISchedulerEntry entry) throws EntryStorageAccessException;
+    void save(ISchedulerEntry entry) throws EntryStorageAccessException;
 
     /**
-     * Save the entry to local storage.
+     * Notify the storage that the entry is active now.
      *
      * @param entry    the entry to save
      * @throws EntryStorageAccessException if error occurs
      */
-    void saveLocally(final ISchedulerEntry entry) throws EntryStorageAccessException;
+    void notifyActive(ISchedulerEntry entry) throws EntryStorageAccessException;
+
+    /**
+     * Notify the storage that the entry is not active now.
+     *
+     * @param entry            the entry
+     * @param keepReference    {@code true} if the storage should keep a strong reference to the entry and awake it when necessary (when the
+     *                                     entry is not saved in remote storage)
+     * @throws EntryStorageAccessException if error occurs
+     */
+    void notifyInactive(ISchedulerEntry entry, boolean keepReference) throws EntryStorageAccessException;
 
     /**
      * Delete the given entry from both local and remote storage.
@@ -37,7 +47,7 @@ public interface ISchedulerEntryStorage {
      * @param entry    the entry
      * @throws EntryStorageAccessException if error occurs accessing remote storage
      */
-    void delete(final ISchedulerEntry entry) throws EntryStorageAccessException;
+    void delete(ISchedulerEntry entry) throws EntryStorageAccessException;
 
     /**
      * Get list of all locally saved entries.
@@ -54,23 +64,5 @@ public interface ISchedulerEntryStorage {
      * @return the entry saved with given identifier
      * @throws EntryStorageAccessException if there is no entry with given identifier
      */
-    ISchedulerEntry getEntry(final String id) throws EntryStorageAccessException;
-
-    /**
-     * Download next page of entries from remote storage.
-     *
-     * <p>
-     * This method should be called continuously (until returns {@code true}) before any other method may be used safely. It will download
-     * entries saved in remote storage (database) page by page.
-     * </p>
-     *
-     * <p>
-     * May be called from different threads (but from not more than one at time).
-     * </p>
-     *
-     * @param preferSize preferred size of page {@code 0} or negative number is for default size
-     * @return {@code true} if there is no more entries to download
-     * @throws EntryStorageAccessException if any error occurs
-     */
-    boolean downloadNextPage(final int preferSize) throws EntryStorageAccessException;
+    ISchedulerEntry getEntry(String id) throws EntryStorageAccessException;
 }

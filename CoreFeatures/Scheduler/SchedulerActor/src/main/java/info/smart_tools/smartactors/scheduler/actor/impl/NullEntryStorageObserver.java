@@ -21,11 +21,6 @@ public class NullEntryStorageObserver implements ISchedulerEntryStorageObserver 
 
     }
 
-    @Override
-    public void onDownloadComplete() throws SchedulerEntryStorageObserverException {
-
-    }
-
     /** Single instance of {@link NullEntryStorageObserver} */
     public static final ISchedulerEntryStorageObserver INSTANCE = new NullEntryStorageObserver();
 }

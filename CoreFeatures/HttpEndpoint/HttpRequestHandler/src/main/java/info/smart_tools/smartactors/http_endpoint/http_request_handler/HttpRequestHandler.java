@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Endpoint handler for HTTP requests.
@@ -50,6 +51,19 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     private static final int INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
     private static final int NOT_FOUND_ERROR_STATUS_CODE = 404;
 
+    private final IFieldName messageFieldName;
+    private final IFieldName contextFieldName;
+    private final IFieldName finalActionsFieldName;
+    private final IFieldName httpResponseIsSentFieldName;
+    private final IFieldName httpResponseStatusCodeFieldName;
+    private final IFieldName accessForbiddenFieldName;
+    private final IFieldName requestFieldName;
+    private final IFieldName channelFieldName;
+    private final IFieldName headersFieldName;
+    private final IFieldName cookiesFieldName;
+    private final IFieldName endpointName;
+    private final IFieldName responseStrategyName;
+
     /**
      * Constructor for HttpRequestHandler
      *
@@ -60,9 +74,22 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      */
     public HttpRequestHandler(
             final IScope scope, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
-            final String name) {
+            final String name) throws ResolutionException {
         super(receiver, environmentHandler, scope, name);
         this.name = name;
+
+        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+        finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
+        httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
+        httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseStatusCode");
+        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
+        requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
+        channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+        headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
+        cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
+        endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
+        responseStrategyName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy");
     }
 
     @Override
@@ -102,17 +129,6 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             }
 
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
-            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            IFieldName finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseIsSent");
-            IFieldName httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseStatusCode");
-            IFieldName accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
-            IFieldName requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
-            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
-            IFieldName headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
-            IFieldName cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
-            IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
 
             IChannelHandler channelHandler = IOC.resolve(Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName()), ctx);
             //create context of the MP
@@ -122,6 +138,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             context.setValue(headersFieldName, new ArrayList<IObject>());
             context.setValue(requestFieldName, request);
             context.setValue(endpointName, name);
+            context.setValue(responseStrategyName, IOC.resolve(Keys.getOrAdd("endpoint response strategy")));
 
             context.setValue(httpResponseIsSentFieldName, false);
             IAction<IObject> httpFinalAction = new IAction<IObject>() {
@@ -157,9 +174,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                     }
                 }
             };
-            context.setValue(finalActionsFieldName, new ArrayList<IAction>() {{
-                add(httpFinalAction);
-            }});
+
+            // Do not replace asList by singletonList !!!
+            context.setValue(finalActionsFieldName, Arrays.asList(httpFinalAction));
 
             //create environment
             environment.setValue(messageFieldName, message);
@@ -197,5 +214,4 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         return response;
     }
-
 }

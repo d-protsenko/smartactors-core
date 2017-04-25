@@ -36,6 +36,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     private EntryStorage storage;
     private ITimer timer;
     private ITimerTask timerTask;
+    private ITimerTask timerTask2;
     private ISchedulerAction action;
 
     @Override
@@ -54,6 +55,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         storage = mock(EntryStorage.class);
         timer = mock(ITimer.class);
         timerTask = mock(ITimerTask.class);
+        timerTask2 = mock(ITimerTask.class);
         action = new DefaultSchedulerAction();
 
         when(timer.schedule(any(), anyLong())).thenReturn(timerTask).thenThrow(AssertionError.class);
@@ -68,10 +70,10 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         assertEquals("trust-methis-isa-guid", entry.getId());
-        assertEquals(-1L, entry.getLastTime());
+        assertEquals(Long.MAX_VALUE, entry.getLastTime());
         assertSame(state, entry.getState());
     }
 
@@ -81,7 +83,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.save();
 
@@ -94,7 +96,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(100500);
 
@@ -113,7 +115,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(300500);
 
@@ -130,7 +132,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid', 'message':{'this is':'the message'}}".replace('\'','"'));
 
-        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action);
+        ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
 
         entry.scheduleNext(0);
 
@@ -193,5 +195,59 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         verify(strategy).init(
                 same(entry),
                 same((IObject) args.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "scheduling"))));
+    }
+
+    @Test
+    public void Should_suspendEntryIdempotent()
+            throws Exception {
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        entry.scheduleNext(100);
+
+        reset(storage, timerTask);
+
+        entry.suspend();
+
+        verify(storage).notifyInactive(entry, false);
+        verify(timerTask).cancel();
+
+        entry.suspend();
+
+        verifyNoMoreInteractions(storage, timerTask);
+    }
+
+    @Test
+    public void Should_awakeEntry()
+            throws Exception {
+        when(timer.schedule(any(), anyLong()))
+                .thenReturn(timerTask)
+                .thenReturn(timerTask2)
+                .thenThrow(AssertionError.class);
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        entry.scheduleNext(100);
+
+        entry.suspend();
+
+        reset(storage, timer);
+
+        entry.awake();
+
+        verify(storage).notifyActive(entry);
+        verify(timer).schedule(any(), eq(100L));
+
+        entry.suspend();
+
+        verifyNoMoreInteractions(storage, timer);
     }
 }

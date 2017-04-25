@@ -1,4 +1,1 @@
-{
-  "featureName": "configuration-manager",
-  "afterFeatures": ["base", "iobject"]
-}
+{"featureName":"info.smart_tools.smartactors:configuration-manager","afterFeatures":["info.smart_tools.smartactors:base","info.smart_tools.smartactors:iobject"]}

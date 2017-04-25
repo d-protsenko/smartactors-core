@@ -356,6 +356,9 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
         IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+
+        messageProcessingSequence.callChain(mainChainMock);
+
         messageProcessingSequence.catchException(exception, contextMock);
 
         assertFalse(messageProcessingSequence.next());
