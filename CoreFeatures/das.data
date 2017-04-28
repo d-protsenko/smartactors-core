@@ -3201,6 +3201,42 @@
   "artifactId" : "debugger-plugins",
   "rawName" : "Debugger-plugins",
   "version" : "0.3.2"
+}, {
+  "actors" : [ {
+  "artifactId" : "responsibility-management-interfaces",
+  "uploadRepositories" : [ ],
+  "rawName" : "ResponsibilityManagementInterfaces",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "communication-channel-interfaces",
+  "uploadRepositories" : [ ],
+  "rawName" : "CommunicationChannelInterfaces",
+  "version" : "0.3.2"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "clustering-interfaces",
+  "rawName" : "ClusteringInterfaces",
+  "version" : "0.3.2"
+}, {
+  "actors" : [ {
+  "artifactId" : "jgroups-communication-channel",
+  "uploadRepositories" : [ ],
+  "rawName" : "JGroupsCommunicationChannel",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "responsibility-management-implementation",
+  "uploadRepositories" : [ ],
+  "rawName" : "ResponsibilityManagementImplementation",
+  "version" : "0.3.2"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "clustering",
+  "rawName" : "Clustering",
+  "version" : "0.3.2"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
   "on-feature-creation-upload-repositories" : [ ],
