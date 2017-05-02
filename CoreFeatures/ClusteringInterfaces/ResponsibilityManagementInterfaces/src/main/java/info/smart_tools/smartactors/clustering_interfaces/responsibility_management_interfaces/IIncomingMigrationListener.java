@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.clustering_interfaces.responsibility_management_interfaces;
 
+import info.smart_tools.smartactors.clustering_interfaces.responsibility_management_interfaces.exceptions.MigrationListenerException;
+import info.smart_tools.smartactors.clustering_interfaces.responsibility_management_interfaces.exceptions.MigrationRejectException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
@@ -8,27 +10,31 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 public interface IIncomingMigrationListener {
     /**
      * Called before the first migration data message.
+     *
+     * @throws MigrationListenerException if any error occurs
+     * @throws MigrationRejectException if listener rejects migration
      */
-    // TODO:: Exceptions
-    void onDataStart();
+    void onDataStart() throws MigrationListenerException, MigrationRejectException;
 
     /**
      * Called when migration data message is received.
      *
-     * @param data
+     * @param data    data received from object the responsibility is migrating from
+     * @throws MigrationListenerException if any error occurs
      */
-    // TODO:: Exceptions
-    void onDataReceived(IObject data);
+    void onDataReceived(IObject data) throws MigrationListenerException;
 
     /**
      * Called when there is no more migration data messages.
+     *
+     * @throws MigrationListenerException if any error occurs
      */
-    // TODO:: Exceptions
-    void onDataEnd();
+    void onDataEnd() throws MigrationListenerException;
 
     /**
      * Called when migration fails on source side.
+     *
+     * @throws MigrationListenerException if any error occurs
      */
-    // TODO:: Exceptions
-    void onFailure();
+    void onFailure() throws MigrationListenerException;
 }

@@ -16,22 +16,22 @@ public interface ICommunicationChannel {
     /**
      * Get identifier of current node.
      *
-     * @return
+     * @return identifier of this node
      */
     INodeId getThisNodeId();
 
     /**
      * Get snapshot of list of all available nodes.
      *
-     * @return
+     * @return list of cluster node identifiers
      */
     Collection<INodeId> getNodeList();
 
     /**
      * Add a callback to be called when message of given type is received.
      *
-     * @param messageType
-     * @param listener
+     * @param messageType    type of a message
+     * @param listener       the callback to call when a message received
      * @throws InvalidArgumentException if {@code messageType} is not valid message type
      * @throws InvalidStateException if there already is a listener for messages of given type
      */
@@ -41,18 +41,19 @@ public interface ICommunicationChannel {
     /**
      * Send a unicast message to specified node.
      *
-     * @param dst
-     * @param type
-     * @param message
+     * @param dst        identifier of cluster node that should receive the message
+     * @param type       message type identifier
+     * @param message    message content
      * @throws ClusterMessageSendException if any error occurs sending the message
+     * @throws InvalidArgumentException if {@code dst} is not valid node identifier
      */
-    void sendUnicast(INodeId dst, Object type, IObject message) throws ClusterMessageSendException;
+    void sendUnicast(INodeId dst, Object type, IObject message) throws ClusterMessageSendException, InvalidArgumentException;
 
     /**
      * Send a broadcast message to all available nodes.
      *
-     * @param type
-     * @param message
+     * @param type       message type identifier
+     * @param message    message content
      * @throws ClusterMessageSendException if any error occurs sending the message
      */
     void sendBroadcast(Object type, IObject message) throws ClusterMessageSendException;
@@ -60,9 +61,9 @@ public interface ICommunicationChannel {
     /**
      * Add a callback to be called when cluster topology (set of available nodes) changes.
      *
-     * @param listener
+     * @param listener    callback to call when cluster topology changes
      * @throws InvalidArgumentException if {@code listener} is {@code null}
      */
-    void addTopologyChangeListener(IAction<Void> listener)
+    void addTopologyChangeListener(IAction<ICommunicationChannel> listener)
             throws InvalidArgumentException;
 }

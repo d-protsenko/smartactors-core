@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.clustering_interfaces.responsibility_management_interfaces;
 
 import info.smart_tools.smartactors.clustering_interfaces.communication_channel_interfaces.INodeId;
+import info.smart_tools.smartactors.clustering_interfaces.responsibility_management_interfaces.exceptions.MigrationRejectException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
@@ -24,11 +25,13 @@ public interface IResponsible {
      * @param responsibility
      * @param fromNode
      * @param migrationArgs
+     * @throws MigrationRejectException
      * @return
      */
     // TODO:: Exceptions
     IIncomingMigrationListener onIncommingMigrationRequest(
-            IResponsibility responsibility, INodeId fromNode, IObject migrationArgs);
+            IResponsibility responsibility, INodeId fromNode, IObject migrationArgs)
+                throws MigrationRejectException;
 
     /**
      * Called when migration of the responsibility from this object is required.
@@ -37,8 +40,10 @@ public interface IResponsible {
      * @param toNode
      * @param migrationArgs
      * @param listener
+     * @throws MigrationRejectException
      */
     // TODO:: Exceptions
     void onOutgoingMigrationRequest(
-            IResponsibility responsibility, INodeId toNode, IObject  migrationArgs, IOutgoingMigrationListener listener);
+            IResponsibility responsibility, INodeId toNode, IObject  migrationArgs, IOutgoingMigrationListener listener)
+                throws MigrationRejectException;
 }

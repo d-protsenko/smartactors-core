@@ -53,6 +53,20 @@
             <version>0.3.2</version>
         </dependency>
 
+        <!-- Interfaces -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>clustering-interfaces.communication-channel-interfaces</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+
+        <!-- JGroups -->
+        <dependency>
+            <groupId>org.jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <version>3.0.11.Final</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
@@ -65,6 +79,16 @@
             <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.iqueue</artifactId>
+            <version>0.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.itask</artifactId>
+            <version>0.3.2</version>
         </dependency>
     </dependencies>
 

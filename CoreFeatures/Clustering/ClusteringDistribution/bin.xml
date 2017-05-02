@@ -20,11 +20,12 @@
                         <unpack>false</unpack>
                         <scope>runtime</scope>
                         <outputDirectory>/</outputDirectory>
-                        <excludes>
-                            <exclude>*:*</exclude>
-                        </excludes>
-                        <!--<includes>-->
-                        <!--</includes>-->
+                        <!--<excludes>-->
+                            <!--<exclude>*:*</exclude>-->
+                        <!--</excludes>-->
+                        <includes>
+                            <include>org.jgroups:jgroups</include>
+                        </includes>
                     </dependencySet>
                 </dependencySets>
                 <outputDirectory>/</outputDirectory>
