@@ -100,7 +100,7 @@ public class FeaturesCreatorActorTest {
             throws Exception {
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateMessageWrapper wrapper = mock(CreateMessageWrapper.class);
-        when(wrapper.getFileName()).thenReturn("test-feature-0.3.2-archive.zip");
+        when(wrapper.getFileName()).thenReturn("test-feature-0.0.1-archive.zip");
         when(wrapper.getObservedDirectory()).thenReturn("target/test-classes/");
 
         doAnswer(invocationOnMock -> {
@@ -109,7 +109,7 @@ public class FeaturesCreatorActorTest {
                 assertEquals(featureDescription.getValue(new FieldName("name")), "test-feature");
                 assertEquals(
                         featureDescription.getValue(new FieldName("featureLocation")),
-                        new Path("target/test-classes/test-feature-0.3.2-archive.zip")
+                        new Path("target/test-classes/test-feature-0.0.1-archive.zip")
                 );
             } catch (Throwable e) {
                 throw new RuntimeException(e);
@@ -214,7 +214,7 @@ public class FeaturesCreatorActorTest {
         IObject json = new DSObject(
                 "{\"features\": [{\"name\":\"test-feature\",\"version\":null,\"group\":null}]}"
         );
-        ((List<IObject>) json.getValue(new FieldName("features"))).get(0).setValue(new FieldName("featureLocation"), new Path("target/test-classes/test-feature-0.3.2-archive.zip"));
+        ((List<IObject>) json.getValue(new FieldName("features"))).get(0).setValue(new FieldName("featureLocation"), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
         when(wrapper.getFeaturesDescription()).thenReturn(
                 (List<IObject>) json.getValue(new FieldName("features"))
         );
@@ -234,6 +234,6 @@ public class FeaturesCreatorActorTest {
         assertEquals(((IFeature) features.toArray()[0]).getName(), "test-feature");
         assertEquals(((IFeature) features.toArray()[0]).getGroupId(), null);
         assertEquals(((IFeature) features.toArray()[0]).getVersion(), null);
-        assertEquals(((IFeature) features.toArray()[0]).getFeatureLocation(), new Path("target/test-classes/test-feature-0.3.2-archive.zip"));
+        assertEquals(((IFeature) features.toArray()[0]).getFeatureLocation(), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
     }
 }

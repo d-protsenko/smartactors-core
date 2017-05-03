@@ -3207,5 +3207,5 @@
   "on-plugin-creation-upload-repositories" : [ ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "CoreFeatures",
-  "version" : "0.3.2"
+  "version" : "0.3.3"
 }
