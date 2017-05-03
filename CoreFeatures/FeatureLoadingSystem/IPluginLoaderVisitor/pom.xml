@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>feature-loading-system</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>feature-loading-system.interfaces.iplugin-loader-visitor</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <build>
         <pluginManagement>
             <plugins>
