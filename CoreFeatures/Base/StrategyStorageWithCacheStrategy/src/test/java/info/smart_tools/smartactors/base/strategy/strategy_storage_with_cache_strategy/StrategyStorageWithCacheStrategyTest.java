@@ -119,7 +119,7 @@ public class StrategyStorageWithCacheStrategyTest {
     }
 
     @Test (expected = ResolveDependencyStrategyException.class)
-    public void checkRemove()
+    public void checkOnRemove()
             throws Exception {
         IFunction argToKey = arg -> arg.getClass();
         IBiFunction findValueByArgument = (map, arg) -> {
