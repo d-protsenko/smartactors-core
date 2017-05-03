@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.*;
  */
 public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
     private IRecoverStrategy recoverStrategy;
+    private IAction failureAction;
     private ISchedulerEntry entryMock;
     private IObject entryState;
     private String entryId;
@@ -53,6 +55,9 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         recoverStrategy = mock(IRecoverStrategy.class);
         IOC.register(Keys.getOrAdd("the recover strategy"), new SingletonStrategy(recoverStrategy));
+
+        failureAction = mock(IAction.class);
+        IOC.register(Keys.getOrAdd("checkpoint failure action"), new SingletonStrategy(failureAction));
 
         entryMock = mock(ISchedulerEntry.class);
         entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
@@ -145,6 +150,27 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
                         "'responsibleCheckpointId':'rCP'," +
                         "'prevCheckpointId':'prCP'," +
                         "'prevCheckpointEntryId':'pcpEi'," +
+                        "'completed':true," +
+                        "'gotFeedback':true}").replace('\'','"'));
+
+        when(entryMock.getState()).thenReturn(entryState);
+
+        CheckpointSchedulerAction action = new CheckpointSchedulerAction();
+
+        action.execute(entryMock);
+
+        verify(messageBusHandlerMock, never()).handle(any(), any());
+    }
+
+    @Test
+    public void Should_notExecuteFailureActionIfEntryIsMarkedAsCompletedButGotNoFeedback()
+            throws Exception {
+        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{'recoverStrategy':'the recover strategy'," +
+                        "'message':{'a':'1'}," +
+                        "'responsibleCheckpointId':'rCP'," +
+                        "'prevCheckpointId':'prCP'," +
+                        "'prevCheckpointEntryId':'pcpEi'," +
                         "'completed':true}").replace('\'','"'));
 
         when(entryMock.getState()).thenReturn(entryState);
@@ -154,5 +180,6 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
         action.execute(entryMock);
 
         verify(messageBusHandlerMock, never()).handle(any(), any());
+        verify(failureAction).execute(same(entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message"))));
     }
 }

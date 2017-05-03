@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
@@ -27,7 +29,6 @@ import java.util.HashSet;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,6 +39,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy restoreEntryStrategy;
     private IObject[] saved;
     private ISchedulerEntry[] entries;
+    private IRemoteEntryStorage remoteEntryStorage;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -68,19 +70,19 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
             saved = new IObject[] {
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy1','entryId':'1'}".replace('\'', '"')),
+                            "{'strategy':'strategy1','entryId':'0'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy2','entryId':'2'}".replace('\'', '"')),
+                            "{'strategy':'strategy2','entryId':'1'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy3','entryId':'3'}".replace('\'', '"')),
+                            "{'strategy':'strategy3','entryId':'2'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy4','entryId':'4'}".replace('\'', '"')),
+                            "{'strategy':'strategy4','entryId':'3'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy5','entryId':'5'}".replace('\'', '"')),
+                            "{'strategy':'strategy5','entryId':'4'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy6','entryId':'6'}".replace('\'', '"')),
+                            "{'strategy':'strategy6','entryId':'5'}".replace('\'', '"')),
                     IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                            "{'strategy':'strategy7','entryId':'7'}".replace('\'', '"')),
+                            "{'strategy':'strategy7','entryId':'6'}".replace('\'', '"')),
             };
 
             entries = new ISchedulerEntry[saved.length + 2];
@@ -89,6 +91,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
                 entries[i] = mock(ISchedulerEntry.class);
                 when(entries[i].getId()).thenReturn(String.valueOf(i));
                 when(entries[i].getState()).thenReturn(i < saved.length ? saved[i] : mock(IObject.class));
+                when(entries[i].isAwake()).thenReturn(true);
             }
 
             for (IObject obj : saved) {
@@ -100,6 +103,8 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
                 task.execute();
             }
+
+            remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");
         }
 
         restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
@@ -125,27 +130,13 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     }
 
     @Test
-    public void Should_downloadAndRestoreEntries()
-            throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
-
-        assertFalse(storage.downloadNextPage(2));
-        assertFalse(storage.downloadNextPage(2));
-        assertFalse(storage.downloadNextPage(2));
-        assertTrue(storage.downloadNextPage(2));
-        assertTrue(storage.downloadNextPage(2));
-
-        verify(restoreEntryStrategy, times(saved.length)).resolve(any(), same(storage));
-    }
-
-    @Test
     public void Should_locallyStoreEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
-        storage.saveLocally(entries[0]);
-        storage.saveLocally(entries[1]);
-        storage.saveLocally(entries[2]);
+        storage.notifyActive(entries[0]);
+        storage.notifyActive(entries[1]);
+        storage.notifyActive(entries[2]);
 
         assertSame(entries[1], storage.getEntry("1"));
     }
@@ -155,10 +146,10 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         when(entries[1].getId()).thenReturn("0");
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
-        storage.saveLocally(entries[0]);
-        storage.saveLocally(entries[1]);
+        storage.notifyActive(entries[0]);
+        storage.notifyActive(entries[1]);
 
         verify(entries[0]).cancel();
         assertSame(entries[1], storage.getEntry("0"));
@@ -169,7 +160,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
         storage.save(entries[saved.length]);
 
@@ -181,17 +172,16 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         int iCnt = countDBEntries();
 
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
-        assertTrue(storage.downloadNextPage(100));
-        storage.saveLocally(entries[1]);
+        storage.notifyActive(entries[1]);
 
         assertEquals(entries[1], storage.getEntry("1"));
 
         storage.delete(entries[1]);
 
         try {
-            storage.getEntry("1");
+            assertNull(storage.getEntry("1"));
             fail();
         } catch (EntryStorageAccessException e) {}
 
@@ -201,11 +191,85 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     @Test
     public void Should_enumerateAllEntries()
             throws Exception {
-        EntryStorage storage = new EntryStorage(connectionPool, "scheduler_collection");
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
 
-        storage.saveLocally(entries[1]);
-        storage.saveLocally(entries[2]);
+        storage.notifyActive(entries[1]);
+        storage.notifyActive(entries[2]);
+        storage.notifyActive(entries[3]);
+        storage.notifyActive(entries[4]);
 
-        assertEquals(new HashSet<>(Arrays.asList(entries[1], entries[2])), new HashSet<>(storage.listLocalEntries()));
+        storage.notifyInactive(entries[3], true);
+        storage.notifyInactive(entries[4], false);
+
+        assertEquals(new HashSet<>(Arrays.asList(entries[1], entries[2], entries[3])), new HashSet<>(storage.listLocalEntries()));
+    }
+
+    @Test
+    public void Should_refreshEntryActivity()
+            throws Exception {
+        when(entries[0].getLastTime()).thenReturn(0L);
+        when(entries[1].getLastTime()).thenReturn(100L);
+        when(entries[2].getLastTime()).thenReturn(200L);
+        when(entries[3].getLastTime()).thenReturn(300L);
+        when(entries[4].getLastTime()).thenReturn(400L);
+        when(entries[5].getLastTime()).thenReturn(500L);
+        when(entries[6].getLastTime()).thenReturn(600L);
+        when(entries[7].getLastTime()).thenReturn(0L);
+
+        when(entries[7].isAwake()).thenReturn(false);
+
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
+
+        storage.notifyActive(entries[7]);
+        storage.notifyActive(entries[0]);
+        storage.notifyInactive(entries[1], true);
+        storage.notifyActive(entries[2]);
+        storage.notifyInactive(entries[3], true);
+        storage.notifyActive(entries[4]);
+        storage.notifyInactive(entries[5], true);
+        storage.notifyInactive(entries[6], false);
+
+        storage.refresh(150L, 350L);
+
+        verify(entries[7], times(1)).awake();
+        verify(entries[7], times(0)).suspend();
+
+        verify(entries[0], times(0)).awake();
+        verify(entries[0], times(0)).suspend();
+
+        verify(entries[1], times(1)).awake();
+        verify(entries[1], times(0)).suspend();
+
+        verify(entries[2], times(0)).awake();
+        verify(entries[2], times(0)).suspend();
+
+        verify(entries[3], times(0)).awake();
+        verify(entries[3], times(0)).suspend();
+
+        verify(entries[4], times(0)).awake();
+        verify(entries[4], times(1)).suspend();
+
+        verify(entries[5], times(0)).awake();
+        verify(entries[5], times(0)).suspend();
+
+        verify(entries[6], times(0)).awake();
+        verify(entries[6], times(0)).suspend();
+        verify(entries[6], times(0)).getLastTime();
+    }
+
+    @Test
+    public void Should_restoreRemoteEntryWhenItIsRequired()
+            throws Exception {
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
+
+        assertSame(entries[0], storage.getEntry("0"));
+    }
+
+    @Test(expected = EntryStorageAccessException.class)
+    public void Should_throwWhenRequiredEntryIsNotFoundInBothRemoteAndLocalStorage()
+            throws Exception {
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
+
+        assertNull(storage.getEntry("666"));
     }
 }

@@ -176,6 +176,17 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
 
                             IOC.register(listKey, listStrategy);
 
+                            //to int strategies
+                            IKey intKey = Keys.getOrAdd(int.class.getCanonicalName() + "convert");
+                            ResolveByTypeStrategy intStrategy = new ResolveByTypeStrategy();
+
+                            integerStrategy.register(String.class,
+                                    new StringToIntResolveDependencyStrategy());
+                            integerStrategy.register(Double.class,
+                                    new DoubleToIntResolveDependencyStrategy());
+
+                            IOC.register(intKey, intStrategy);
+
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't get ResolveStandardTypesStrategies key", e);
                         } catch (RegistrationException e) {

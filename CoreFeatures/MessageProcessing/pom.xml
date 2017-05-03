@@ -26,8 +26,11 @@
         <module>ChainCallReceiver</module>
         <module>MapRouter</module>
         <module>ConditionChainChoiceStrategy</module>
+        <module>ChainModifications</module>
         <module>ReceiverChain</module>
         <module>MessageProcessingDistribution</module>
+        <module>NullResponseStrategy</module>
+        <module>ResponseSenderReceiver</module>
     </modules>
     <build>
         <pluginManagement>

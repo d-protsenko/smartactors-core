@@ -45,6 +45,11 @@
             <artifactId>endpoint.actor.response-sender</artifactId>
             <version>0.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

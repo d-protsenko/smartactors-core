@@ -17,9 +17,6 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 /**
  * Checkpoint actor.
@@ -33,7 +30,6 @@ public class CheckpointActor {
     private static final String CHECKPOINT_ACTION = "checkpoint scheduler action";
     private static final long COMPLETE_ENTRY_RESCHEDULE_DELAY = 1000;
 
-    private final IQueue<ITask> taskQueue;
     private final ISchedulerEntryStorage storage;
     private final Object feedbackChainId;
 
@@ -48,27 +44,8 @@ public class CheckpointActor {
     private final IFieldName actionFieldName;
     private final IFieldName recoverFieldName;
     private final IFieldName completedFieldName;
+    private final IFieldName gotFeedbckFieldName;
     private final IFieldName processorFieldName;
-
-    /**
-     * Task downloading entries from remote storage.
-     */
-    private class DownloadEntriesTask implements ITask {
-
-        @Override
-        public void execute() throws TaskExecutionException {
-            try {
-                if (!storage.downloadNextPage(0)) {
-                    taskQueue.put(DownloadEntriesTask.this);
-                }
-            } catch (EntryStorageAccessException e) {
-                // TODO: Handle
-                throw new TaskExecutionException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
 
     /**
      * The constructor.
@@ -91,6 +68,7 @@ public class CheckpointActor {
         actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
         recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
+        gotFeedbckFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "gotFeedback");
         processorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor");
 
         String connectionOptionsDependency = (String) args.getValue(
@@ -100,8 +78,6 @@ public class CheckpointActor {
         String collectionName = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
 
-        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
-
         storageObserver = new CheckpointSchedulerEntryStorageObserver();
 
         Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
@@ -110,9 +86,6 @@ public class CheckpointActor {
                 connectionPool,
                 collectionName,
                 storageObserver);
-
-        // Start downloading entries from remote storage ...
-        taskQueue.put(new DownloadEntriesTask());
 
         //
         feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
@@ -205,6 +178,7 @@ public class CheckpointActor {
 
             entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
 
+            entry.getState().setValue(gotFeedbckFieldName, true);
             entry.getState().setValue(completedFieldName, true);
         } catch (EntryStorageAccessException ignore) {
             // There is no entry with required identifier. OK

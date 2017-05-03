@@ -69,37 +69,21 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject messageBusObject = (IObject) config.getValue(name);
+
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
+            Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
+
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
                     IChainStorage.class.getCanonicalName()));
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
             IReceiverChain chain = chainStorage.resolve(mapId);
-            IAction<IObject> finalAction = new IAction<IObject>() {
-                @Override
-                public void execute(final IObject environment) throws ActionExecuteException, InvalidArgumentException {
-                    try {
-                        IFieldName messageFieldName = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                "message"
-                        );
-                        IFieldName contextFieldName = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                "context"
-                        );
-                        IFieldName replyToFieldName = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
-                                "messageBusReplyTo"
-                        );
-                        IObject context = (IObject) environment.getValue(contextFieldName);
-                        MessageBus.send((IObject) environment.getValue(messageFieldName), context.getValue(replyToFieldName));
-                    } catch (ResolutionException | ReadValueException | SendingMessageException e) {
-                        throw new ActionExecuteException(e);
-                    }
-                }
-            };
+
+            IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));
+
             IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain, finalAction);
+
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
