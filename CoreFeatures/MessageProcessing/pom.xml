@@ -28,9 +28,9 @@
         <module>ConditionChainChoiceStrategy</module>
         <module>ChainModifications</module>
         <module>ReceiverChain</module>
-        <module>MessageProcessingDistribution</module>
         <module>NullResponseStrategy</module>
         <module>ResponseSenderReceiver</module>
+        <module>MessageProcessingDistribution</module>
     </modules>
     <build>
         <pluginManagement>

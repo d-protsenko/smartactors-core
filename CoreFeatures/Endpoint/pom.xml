@@ -30,8 +30,8 @@
         <module>IClient</module>
         <module>ClientActor</module>
         <module>IResponseContentStrategy</module>
-        <module>EndpointDistribution</module>
         <module>EndpointResponseStrategy</module>
+        <module>EndpointDistribution</module>
     </modules>
     <build>
         <pluginManagement>

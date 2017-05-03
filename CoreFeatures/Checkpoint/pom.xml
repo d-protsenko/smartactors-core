@@ -16,8 +16,8 @@
         <module>CheckpointActor</module>
         <module>CheckpointInterfaces</module>
         <module>CheckpointRecoverStrategies</module>
-        <module>CheckpointDistribution</module>
         <module>FailureAction</module>
+        <module>CheckpointDistribution</module>
     </modules>
     <build>
         <pluginManagement>

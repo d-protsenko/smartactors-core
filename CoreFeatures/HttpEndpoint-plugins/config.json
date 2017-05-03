@@ -1,4 +1,4 @@
 {
   "featureName":"info.smart_tools.smartactors:http-endpoint-plugins",
-  "afterFeatures":["info.smart_tools.smartactors:http-endpoint"]
+  "afterFeatures":["info.smart_tools.smartactors:http-endpoint", "info.smart_tools.smartactors:http-endpoint-plugins"]
 }
