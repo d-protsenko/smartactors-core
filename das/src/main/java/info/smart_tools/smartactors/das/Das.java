@@ -35,7 +35,7 @@ public class Das {
         Map<String, IAction> commands = initCommands();
 
         System.out.println("Distributed Actor System. Design, assembly and deploy tools.");
-        System.out.println("Version 0.3.2.");
+        System.out.println("Version 0.3.3.");
 
         if (args.length == 0) {
             return;
