@@ -78,7 +78,8 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.servers</id>
+                            <!--<id>archiva.servers</id>-->
+                            <!--<id>default-deploy</id>-->
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -86,7 +87,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.zip</file>
+                                <file>${project.basedir}/project-distribution/${project.artifactId}-${project.version}-archive.zip</file>
                                 <url>http://archiva.smart-tools.info/repository/servers/</url>
                                 <repositoryId>archiva.servers</repositoryId>
                                 <groupId>${project.groupId}</groupId>

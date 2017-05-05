@@ -1,5 +1,9 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_strategies_plugin;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -10,7 +14,6 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy.ResolveByTypeStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolveDependencyStrategy;
 import org.junit.Before;
@@ -28,7 +31,7 @@ import java.util.Map;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 
-@PrepareForTest({IOC.class, Keys.class, ResolveByTypeStrategy.class, ResolveIObjectByTypeStrategiesPlugin.class})
+@PrepareForTest({IOC.class, Keys.class, ResolveIObjectByTypeStrategiesPlugin.class})
 @RunWith(PowerMockRunner.class)
 public class ResolveIObjectByTypeStrategiesPluginTest {
 
@@ -67,8 +70,8 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         IKey strategyKey = PowerMockito.mock(IKey.class);
         PowerMockito.when(Keys.getOrAdd(IObject.class.getCanonicalName() + "convert")).thenReturn(strategyKey);
 
-        ResolveByTypeStrategy strategy = PowerMockito.mock(ResolveByTypeStrategy.class);
-        PowerMockito.whenNew(ResolveByTypeStrategy.class).withNoArguments().thenReturn(strategy);
+        StrategyStorageWithCacheStrategy strategy = PowerMockito.mock(StrategyStorageWithCacheStrategy.class);
+        PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(Matchers.any(IFunction.class), Matchers.any(IBiFunction.class)).thenReturn(strategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
