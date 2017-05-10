@@ -28,7 +28,8 @@ public class EntryStorageRefresher {
     private final IRemoteEntryStorage remoteEntryStorage;
 
     private final IQueue<ITask> taskQueue;
-    private final ITimerTask timerTask;
+    private ITimerTask timerTask;
+    private ITimer timer;
 
     private int pageSize;
     private long refreshRepeatInterval;
@@ -105,9 +106,12 @@ public class EntryStorageRefresher {
 
         this.entryIdFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
 
+        timer = IOC.resolve(Keys.getOrAdd("timer"));
+    }
+
+    public void start() throws TaskScheduleException {
         this.refreshStart = System.currentTimeMillis();
 
-        ITimer timer = IOC.resolve(Keys.getOrAdd("timer"));
         this.timerTask = timer.schedule(this::startRefresh, refreshStart);
     }
 

@@ -130,7 +130,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     @Test
     public void Should_refreshLocalStorageStatePeriodically()
             throws Exception {
-        new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100);
+        new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100).start();
 
         verify(timerMock).schedule(taskArgumentCaptor.capture(), timeArgumentCaptor.capture());
 

@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 
 /**
  *
@@ -60,6 +61,9 @@ public class PluginFeatureLoader extends BootstrapPlugin {
                 throw new RuntimeException(e);
             }
         }));
+
+        IOC.register(Keys.getOrAdd("feature group load completion task queue"),
+                new SingletonStrategy(IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()))));
 
         IFeatureLoader featureLoader = new FeatureLoader();
         GlobalFeatureLoader.set(featureLoader);

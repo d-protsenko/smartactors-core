@@ -22,6 +22,9 @@ import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteE
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 /**
@@ -136,9 +139,23 @@ public class PluginScheduler extends BootstrapPlugin {
                 long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
                 long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
                 int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh page size"), args).intValue();
-                new EntryStorageRefresher(storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
+                EntryStorageRefresher refresher = new EntryStorageRefresher(
+                        storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
+
+                IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getOrAdd("feature group load completion task queue"));
+                featureLoadCompletionQueue.put(() -> {
+                    try {
+                        refresher.start();
+                    } catch (TaskScheduleException e) {
+                        throw new TaskExecutionException(e);
+                    }
+                });
+
                 return storage;
             } catch (ResolutionException | TaskScheduleException e) {
+                throw new FunctionExecutionException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new FunctionExecutionException(e);
             }
         }));
