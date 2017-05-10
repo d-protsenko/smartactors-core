@@ -5,85 +5,85 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-in-memory-plugins</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>database-in-memory-plugins.in-memory-db-tasks-plugin</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ifield</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-upsert-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-get-by-id-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-select-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-create-collection-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-delete-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-count-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-in-memory.in-memory-db-insert-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -100,25 +100,25 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.strategy-container</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.resolve-by-name-ioc-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.create-new-instance-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>field.field</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

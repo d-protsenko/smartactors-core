@@ -11,7 +11,11 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Strategy for resolving by type
+ *
+ * @deprecated use {@link info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy} instead.
+ *
  */
+@Deprecated
 public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
     /**
      * Specific strategies for resolve

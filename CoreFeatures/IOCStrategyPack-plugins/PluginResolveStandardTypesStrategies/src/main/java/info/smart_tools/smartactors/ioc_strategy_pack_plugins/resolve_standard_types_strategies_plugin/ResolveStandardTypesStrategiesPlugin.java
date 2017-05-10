@@ -1,7 +1,13 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -12,7 +18,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy.ResolveByTypeStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.DoubleToBigDecimalResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.FloatToBigDecimalResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_bigdecimal.IntegerToBigDecimalResolveDependencyStrategy;
@@ -45,6 +50,7 @@ import info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_str
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Plugin.
@@ -71,125 +77,147 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
+                            IFunction argToKey = arg -> arg.getClass();
+                            IBiFunction findValueByArgument = (map, arg) -> {
+                                IResolveDependencyStrategy strategy = null;
+                                for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
+                                    if (entry.getKey().isInstance(arg)) {
+                                        strategy = entry.getValue();
+
+                                        break;
+                                    }
+                                }
+                                return strategy;
+                            };
+
+
                             // to String strategies
                             IKey stringKey = Keys.getOrAdd(String.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy stringStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy stringStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy stringStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            stringStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(String.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            stringStrategy.register(Object.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(Object.class,
                                     new ObjectToStringResolveDependencyStrategy());
-                            stringStrategy.register(int.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(int.class,
                                     new IntToStringResolveDependencyStrategy());
-                            stringStrategy.register(long.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(long.class,
                                     new LongToStringResolveDependencyStrategy());
-                            stringStrategy.register(float.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(float.class,
                                     new FloatToStringResolveDependencyStrategy());
-                            stringStrategy.register(double.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(double.class,
                                     new DoubleToStringResolveDependencyStrategy());
-                            stringStrategy.register(boolean.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(boolean.class,
                                     new BooleanToStringResolveDependencyStrategy());
-                            stringStrategy.register(byte.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(byte.class,
                                     new ByteToStringResolveDependencyStrategy());
-                            stringStrategy.register(short.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(short.class,
                                     new ShortToStringResolveDependencyStrategy());
-                            stringStrategy.register(char.class,
+                            ((IAdditionDependencyStrategy)stringStrategy).register(char.class,
                                     new CharToStringResolveDependencyStrategy());
 
                             IOC.register(stringKey, stringStrategy);
 
                             // to Character strategies
                             IKey characterKey = Keys.getOrAdd(Character.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy characterStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy characterStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy characterStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            characterStrategy.register(Character.class,
+                            ((IAdditionDependencyStrategy) characterStrategy).register(Character.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            characterStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy) characterStrategy).register(String.class,
                                 new StringToCharacterResolveDependencyStrategy());
 
                             IOC.register(characterKey, characterStrategy);
 
                             // to boolean strategies
                             IKey booleanKey = Keys.getOrAdd(boolean.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy booleanStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy booleanStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy booleanStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            booleanStrategy.register(boolean.class,
+                            ((IAdditionDependencyStrategy) booleanStrategy).register(boolean.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            booleanStrategy.register(Boolean.class,
+                            ((IAdditionDependencyStrategy) booleanStrategy).register(Boolean.class,
                                 new BooleanToPrimitiveResolveDependencyStrategy());
 
                             IOC.register(booleanKey, booleanStrategy);
 
                             // to Integer strategies
                             IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy integerStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy integerStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy integerStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            integerStrategy.register(Integer.class,
+                            ((IAdditionDependencyStrategy) integerStrategy).register(Integer.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            integerStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy) integerStrategy).register(String.class,
                                     new StringToIntResolveDependencyStrategy());
-                            integerStrategy.register(Double.class,
+                            ((IAdditionDependencyStrategy) integerStrategy).register(Double.class,
                                     new DoubleToIntResolveDependencyStrategy());
 
                             IOC.register(integerKey, integerStrategy);
 
                             // to BigDecimal strategies
                             IKey bigDecimalKey = Keys.getOrAdd(BigDecimal.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy bigDecimalStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy bigDecimalStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy bigDecimalStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            bigDecimalStrategy.register(BigDecimal.class,
+                            ((IAdditionDependencyStrategy) bigDecimalStrategy).register(BigDecimal.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            bigDecimalStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy) bigDecimalStrategy).register(String.class,
                                     new StringToBigDecimalResolveDependencyStrategy());
-                            bigDecimalStrategy.register(Double.class,
+                            ((IAdditionDependencyStrategy) bigDecimalStrategy).register(Double.class,
                                     new DoubleToBigDecimalResolveDependencyStrategy());
-                            bigDecimalStrategy.register(Float.class,
+                            ((IAdditionDependencyStrategy) bigDecimalStrategy).register(Float.class,
                                     new FloatToBigDecimalResolveDependencyStrategy());
-                            bigDecimalStrategy.register(Integer.class,
+                            ((IAdditionDependencyStrategy) bigDecimalStrategy).register(Integer.class,
                                     new IntegerToBigDecimalResolveDependencyStrategy());
                             IOC.register(bigDecimalKey, bigDecimalStrategy);
 
                             // to LocalDateTime strategies
                             IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy localDateTimeStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy localDateTimeStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy localDateTimeStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            localDateTimeStrategy.register(LocalDateTime.class,
+                            ((IAdditionDependencyStrategy) localDateTimeStrategy).register(LocalDateTime.class,
                                     new ClassToClassResolveDependencyStrategy());
-                            localDateTimeStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy) localDateTimeStrategy).register(String.class,
                                     new StringToDateResolveDependencyStrategy());
 
                             IOC.register(localDateTimeKey, localDateTimeStrategy);
 
                             // to list strategies
                             IKey listKey = Keys.getOrAdd(List.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy listStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy listStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy listStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            listStrategy.register(boolean[].class, new BooleanArrayToListResolveDependencyStrategy());
-                            listStrategy.register(byte[].class, new ByteArrayToListResolveDependencyStrategy());
-                            listStrategy.register(char[].class, new CharArrayToListResolveDependencyStrategy());
-                            listStrategy.register(double[].class, new DoubleArrayToListResolveDependencyStrategy());
-                            listStrategy.register(float[].class, new FloatArrayToListResolveDependencyStrategy());
-                            listStrategy.register(int[].class, new IntArrayToListResolveDependencyStrategy());
-                            listStrategy.register(long[].class, new LongArrayToListResolveDependencyStrategy());
-                            listStrategy.register(Object[].class, new ObjectArrayToListResolveDependencyStrategy());
-                            listStrategy.register(short[].class, new ShortArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(boolean[].class, new BooleanArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(byte[].class, new ByteArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(char[].class, new CharArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(double[].class, new DoubleArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(float[].class, new FloatArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(int[].class, new IntArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(long[].class, new LongArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(Object[].class, new ObjectArrayToListResolveDependencyStrategy());
+                            ((IAdditionDependencyStrategy) listStrategy).register(short[].class, new ShortArrayToListResolveDependencyStrategy());
 
                             IOC.register(listKey, listStrategy);
 
                             //to int strategies
                             IKey intKey = Keys.getOrAdd(int.class.getCanonicalName() + "convert");
-                            ResolveByTypeStrategy intStrategy = new ResolveByTypeStrategy();
+//                            ResolveByTypeStrategy intStrategy = new ResolveByTypeStrategy();
+                            IResolveDependencyStrategy intStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
 
-                            integerStrategy.register(String.class,
+                            ((IAdditionDependencyStrategy) intStrategy).register(String.class,
                                     new StringToIntResolveDependencyStrategy());
-                            integerStrategy.register(Double.class,
+                            ((IAdditionDependencyStrategy) intStrategy).register(Double.class,
                                     new DoubleToIntResolveDependencyStrategy());
 
                             IOC.register(intKey, intStrategy);
 
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't get ResolveStandardTypesStrategies key", e);
-                        } catch (RegistrationException e) {
+                        } catch (RegistrationException | AdditionDependencyStrategyException e) {
                             throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't register new strategy", e);
                         }
                     });

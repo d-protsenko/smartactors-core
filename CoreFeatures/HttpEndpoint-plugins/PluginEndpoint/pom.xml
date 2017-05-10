@@ -5,80 +5,80 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>http-endpoint-plugins</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>http-endpoint-plugins.endpoint-plugin</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.resolve-by-type-and-name-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.ideserialize-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint.interfaces.iresponse-sender</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.interfaces.icookies-extractor</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.interfaces.iheaders-extractor</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>http-endpoint.interfaces.iresponse-status-extractor</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.create-new-instance-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -96,19 +96,19 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.strategy-container</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.resolve-by-name-ioc-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.field-name</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

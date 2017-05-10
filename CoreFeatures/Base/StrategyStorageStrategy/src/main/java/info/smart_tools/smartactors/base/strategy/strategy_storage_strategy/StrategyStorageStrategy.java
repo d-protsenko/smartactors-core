@@ -1,7 +1,11 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -17,18 +21,24 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IAdd
      * Strategy storage
      */
     private ConcurrentMap<Object, IResolveDependencyStrategy> strategyStorage;
+    private IFunction argToKeyFunction;
+    private IBiFunction findValueByArgumentFunction;
+
 
     /**
-     * Default constructor
+     * @param argToKeyFunction the function that transforms argument to a map key
+     * @param findValueByArgumentFunction the function that finds value by given argument in the given map
      */
-    public StrategyStorageStrategy() {
+    public StrategyStorageStrategy(final IFunction argToKeyFunction, final IBiFunction findValueByArgumentFunction) {
         this.strategyStorage = new ConcurrentHashMap<>();
+        this.argToKeyFunction = argToKeyFunction;
+        this.findValueByArgumentFunction = findValueByArgumentFunction;
     }
 
     @Override
     public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
         try {
-            IResolveDependencyStrategy strategy = this.strategyStorage.get(args[0]);
+            IResolveDependencyStrategy strategy = (IResolveDependencyStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
 
             return null == strategy ? null : strategy.resolve(args);
         } catch (Exception e) {
@@ -37,14 +47,22 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IAdd
     }
 
     @Override
-    public void register(Object key, IResolveDependencyStrategy value)
+    public void register(Object arg, IResolveDependencyStrategy value)
             throws AdditionDependencyStrategyException {
-        this.strategyStorage.put(key, value);
+        try {
+            this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);
+        } catch (InvalidArgumentException | FunctionExecutionException e) {
+            throw new AdditionDependencyStrategyException(e);
+        }
     }
 
     @Override
-    public void remove(Object key)
+    public void remove(Object arg)
             throws AdditionDependencyStrategyException {
-        this.strategyStorage.remove(key);
+        try {
+            this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
+        } catch (FunctionExecutionException | InvalidArgumentException e) {
+            throw new AdditionDependencyStrategyException(e);
+        }
     }
 }

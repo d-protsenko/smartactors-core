@@ -5,80 +5,80 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-postgresql-plugins</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ifield</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-upsert-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-getbyid-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-search-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-create-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.uuid-nextid-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-delete-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-insert-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-count-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -95,37 +95,37 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>field-plugins.field-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

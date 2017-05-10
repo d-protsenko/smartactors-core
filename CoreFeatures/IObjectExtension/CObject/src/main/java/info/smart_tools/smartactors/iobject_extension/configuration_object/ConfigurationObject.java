@@ -114,8 +114,8 @@ public class ConfigurationObject implements IObject {
 
             Object canonicalValue = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object"),
-                    body.get(name),
-                    name
+                    name,
+                    body.get(name)
             );
 
             // ConcurrentHashMap does not permit null-values

@@ -5,45 +5,45 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-postgresql</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>database-postgresql.postgres-upsert-task</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database.interfaces.idatabase-task</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database.database-storage</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-connection</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-schema</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -60,43 +60,43 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.uuid-nextid-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

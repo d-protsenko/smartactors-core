@@ -1,5 +1,11 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_strategies_plugin;
 
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -13,7 +19,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy.ResolveByTypeStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolveDependencyStrategy;
 
@@ -47,14 +52,28 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
+                        IFunction argToKey = arg -> arg.getClass();
+                        IBiFunction findValueByArgument = (map, arg) -> {
+                            IResolveDependencyStrategy strategy = null;
+                            for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
+                                if (entry.getKey().isInstance(arg)) {
+                                    strategy = entry.getValue();
+
+                                    break;
+                                }
+                            }
+                            return strategy;
+                        };
+
                         IKey typeStrategy = Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
-                        ResolveByTypeStrategy resolveStrategy = new ResolveByTypeStrategy();
-                        resolveStrategy.register(Map.class, new MapToIObjectResolveDependencyStrategy());
-                        resolveStrategy.register(String.class, new StringToIObjectResolveDependencyStrategy());
+//                        ResolveByTypeStrategy resolveStrategy = new ResolveByTypeStrategy();
+                        IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
+                        ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
+                        ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
                     } catch (ResolutionException e) {
                         throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't get ResolveIObjectByTypeStrategies key", e);
-                    } catch (RegistrationException e) {
+                    } catch (RegistrationException | AdditionDependencyStrategyException e) {
                         throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't register new strategy", e);
                     }
                 });

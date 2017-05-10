@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>feature-loading-system</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaction</artifactId>
-            <version>0.3.2</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

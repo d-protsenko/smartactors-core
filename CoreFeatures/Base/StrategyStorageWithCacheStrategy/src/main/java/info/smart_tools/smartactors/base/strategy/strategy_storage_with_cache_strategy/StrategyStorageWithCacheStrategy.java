@@ -55,7 +55,7 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
             strategy = (IResolveDependencyStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
             this.cacheStrategiesMap.put(key, strategy);
 
-            return strategy.resolve(args[0]);
+            return null == strategy ? null : strategy.resolve(args[0]);
         } catch (Throwable e) {
             throw new ResolveDependencyStrategyException(e);
         }

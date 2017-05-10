@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>checkpoint-plugins</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>CheckpointSchedulingStrategiesPlugin</module>
