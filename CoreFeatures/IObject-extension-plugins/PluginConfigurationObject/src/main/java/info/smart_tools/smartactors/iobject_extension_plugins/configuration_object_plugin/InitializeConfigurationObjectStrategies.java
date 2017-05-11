@@ -1,25 +1,24 @@
 package info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -348,87 +347,6 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                             }
                                     );
 
-//                                    final String checkpointWrapperConfig = ("{" +
-//                                            "'in_getProcessor':'processor'," +
-//                                            "'in_getMessage':'message'," +
-//                                            "'in_getCheckpointId':'arguments/id'," +
-//                                            "'in_getSchedulingConfiguration':'arguments/scheduling'," +
-//                                            "'in_getRecoverConfiguration':'arguments/recover'," +
-//                                            "'in_getCheckpointStatus':'message/checkpointStatus'," +
-//                                            "'out_setCheckpointStatus':'message/checkpointStatus'" +
-//                                            "}")
-//                                            .replace('"', '\'');
-//                                    IOC.register(
-//                                            IOC.resolve(
-//                                                    IOC.getKeyForKeyStorage(), "checkpoint step"
-//                                            ),
-//                                            new ApplyFunctionToArgumentsStrategy(
-//                                                    a -> {
-//                                                        try {
-//                                                            IObject checkpointConfig = (IObject) a[0];
-//
-//                                                            IFieldName targetFieldName = new FieldName("target");
-//                                                            IFieldName handlerFieldName = new FieldName("handler");
-//                                                            IFieldName wrapperFieldName = new FieldName("wrapper");
-//
-//                                                            checkpointConfig.setValue(targetFieldName, "checkpoint");
-//                                                            checkpointConfig.setValue(handlerFieldName, "enter");
-//
-//                                                            checkpointConfig.setValue(wrapperFieldName, IOC.resolve(
-//                                                                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
-//                                                                    checkpointWrapperConfig
-//                                                            ));
-//
-//                                                            return checkpointConfig;
-//                                                        } catch (Throwable e) {
-//                                                            throw new RuntimeException(e);
-//                                                        }
-//                                                    }
-//                                            )
-//                                    );
-//                                    IOC.register(
-//                                            IOC.resolve(
-//                                                    IOC.getKeyForKeyStorage(), "configuration object maps strategy"
-//                                            ),
-//                                            new ApplyFunctionToArgumentsStrategy(
-//                                                    (a) -> {
-//                                                        try {
-//                                                            IFieldName checkpointFieldName = new FieldName("checkpoint");
-//                                                            IFieldName stepsFieldName = new FieldName("steps");
-//                                                            IFieldName targetFieldName = new FieldName("target");
-//
-//                                                            if (a[0] instanceof List) {
-//                                                                List<IObject> mapDescriptions = (List<IObject>) a[0];
-//
-//                                                                for (IObject mapDesc : mapDescriptions) {
-//                                                                    Object cpDesc = mapDesc.getValue(checkpointFieldName);
-//                                                                    List<IObject> stepsDec = (List<IObject>) mapDesc.getValue(stepsFieldName);
-//
-//                                                                    if (null != cpDesc) {
-//                                                                        IObject cpStep = IOC.resolve(
-//                                                                                IOC.resolve(
-//                                                                                        IOC.getKeyForKeyStorage(),
-//                                                                                        "checkpoint step"
-//                                                                                ),
-//                                                                                cpDesc
-//                                                                        );
-//
-//                                                                        if (stepsDec.isEmpty() ||
-//                                                                                !stepsDec.get(stepsDec.size() - 1).getValue(targetFieldName)
-//                                                                                        .equals(cpStep.getValue(targetFieldName))) {
-//                                                                            stepsDec.add(cpStep);
-//                                                                        }
-//                                                                    }
-//                                                                }
-//                                                            }
-//
-//                                                            return a[0];
-//                                                        } catch (Throwable e) {
-//                                                            throw new RuntimeException(e);
-//                                                        }
-//                                                    }
-//                                            )
-//                                    );
                                     IBiFunction findValueByArgument = (map, arg) -> {
                                         char[] symbols = arg.toString().toCharArray();
                                         String defaultKey = "default";
@@ -485,6 +403,10 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
 //                                            )
                                             strategy
                                     );
+
+                                    IOC.register(
+                                            IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object strategy"),
+                                            new SingletonStrategy(strategy));
                                 } catch (Exception e) {
                                     throw new ActionExecuteException(
                                             "Could not create or register some strategies for ConfigurationObject.",
