@@ -29,6 +29,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -63,6 +66,12 @@ public class FeatureManagerActorTest {
     private IResolveDependencyStrategy getChainIDByNameStrategy = mock(IResolveDependencyStrategy.class);
     private IResolveDependencyStrategy getSequence = mock(IResolveDependencyStrategy.class);
     private IResolveDependencyStrategy getProcessor = mock(IResolveDependencyStrategy.class);
+
+    private IQueue afterFeaturesCallbackQueue1 = mock(IQueue.class);
+    private IQueue afterFeaturesCallbackQueue2 = mock(IQueue.class);
+    private IQueue afterFeaturesCallbackQueue3 = mock(IQueue.class);
+
+    private IResolveDependencyStrategy afterFeaturesCallbackStrategy = mock(IResolveDependencyStrategy.class);
 
     @Before
     public void init()
@@ -125,6 +134,7 @@ public class FeatureManagerActorTest {
         IOC.register(
                 Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), this.getProcessor
         );
+        IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
     }
 
     @Test
@@ -171,6 +181,17 @@ public class FeatureManagerActorTest {
         IMessageProcessor mpf2 = mock(IMessageProcessor.class);
         IMessageProcessor mpf3 = mock(IMessageProcessor.class);
         when(this.getProcessor.resolve(this.queue, sequence)).thenReturn(mpf1).thenReturn(mpf2).thenReturn(mpf3);
+
+        when(this.afterFeaturesCallbackStrategy.resolve())
+                .thenReturn(this.afterFeaturesCallbackQueue1)
+                .thenReturn(this.afterFeaturesCallbackQueue2)
+                .thenReturn(this.afterFeaturesCallbackQueue3);
+        ITask task21 = mock(ITask.class);
+        ITask task22 = mock(ITask.class);
+        ITask task11 = mock(ITask.class);
+
+        when(this.afterFeaturesCallbackQueue2.tryTake()).thenReturn(task21).thenReturn(task22).thenReturn(null);
+        when(this.afterFeaturesCallbackQueue1.tryTake()).thenReturn(task11).thenReturn(null);
 
         // check addition two new features
         actor.addFeatures(wrapper);
@@ -221,6 +242,10 @@ public class FeatureManagerActorTest {
                 .thenReturn(feature2)
                 .thenReturn(feature1)
                 .thenReturn(feature3);
+        when(onFeatureLoadedWrapper.getAfterFeaturesCallbackQueue())
+                .thenReturn(this.afterFeaturesCallbackQueue2)
+                .thenReturn(this.afterFeaturesCallbackQueue1)
+                .thenReturn(this.afterFeaturesCallbackQueue3);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);
@@ -231,6 +256,10 @@ public class FeatureManagerActorTest {
         verify(mpf1, times(1)).continueProcess(null);
         verify(mp1).continueProcess(null);
         verify(mp3).continueProcess(null);
+
+        verify(task21, times(1)).execute();
+        verify(task22, times(1)).execute();
+        verify(task11, times(1)).execute();
 
         // check 'getState' method
         FeatureManagerStateWrapper stateWrapper = mock(FeatureManagerStateWrapper.class);
