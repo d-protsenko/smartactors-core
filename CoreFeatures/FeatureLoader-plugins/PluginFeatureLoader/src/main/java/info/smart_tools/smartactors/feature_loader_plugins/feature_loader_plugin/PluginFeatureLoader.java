@@ -15,6 +15,9 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -41,9 +44,9 @@ public class PluginFeatureLoader extends BootstrapPlugin {
      * @throws InvalidArgumentException if some of called methods throws
      */
     @Item("feature_loader")
-    @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "filesystem_facade", "ConfigurationObject"})
+    @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "filesystem_facade", "ConfigurationObject", "queue", "iobject"})
     public void registerFeatureLoader()
-            throws ResolutionException, RegistrationException, InvalidArgumentException {
+            throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
         IOC.register(Keys.getOrAdd(FeatureStatusImpl.class.getCanonicalName()), new CreateNewInstanceStrategy(args -> {
             try {
                 return new FeatureStatusImpl((String) args[0], (IBiAction) args[1]);
@@ -62,8 +65,12 @@ public class PluginFeatureLoader extends BootstrapPlugin {
             }
         }));
 
+        IFieldName sizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queueSize");
+        IObject sizeObj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        sizeObj.setValue(sizeFN, 10);
+        IQueue queue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()), sizeObj);
         IOC.register(Keys.getOrAdd("feature group load completion task queue"),
-                new SingletonStrategy(IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()))));
+                new SingletonStrategy(queue));
 
         IFeatureLoader featureLoader = new FeatureLoader();
         GlobalFeatureLoader.set(featureLoader);

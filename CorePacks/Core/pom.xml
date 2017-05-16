@@ -6,23 +6,23 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.2.0-SNAPSHOT</core.version>
-        <feature.version>0.2.0-SNAPSHOT</feature.version>
+        <core.version>0.3.2</core.version>
+        <feature.version>0.3.1-SNAPSHOT</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>archiva.smartactors-modules</id>
             <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
         </repository>
-    </repositories>
+    </repositories>-->
 
     <dependencies>
 
@@ -30,270 +30,280 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.ipool</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.pool</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.pool-guard</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.initialization-exception</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
              
         <!-- Dump interface -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>dumpable-interfce.idumpable</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>dumpable-interface.idumpable</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>dumpable-plugins.make-dump</artifactId>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- Security -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>security-plugins.password-encoder-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- Scope -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scope-provider-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.subscribe-scope-provider-on-scope-creation-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- ConfigurationManager-->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager-plugins.configuration-manager-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager-plugins.read-config-file-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- IObject -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.fieldname-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- IOC -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- Field -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>field-plugins.field-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>field-plugins.nested-field-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- IOCStrategyPack -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack-plugins.resolve-iobject-strategies-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack-plugins.resolve-standard-types-strategies-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack-plugins.datetime-formatter-strategy-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.resolve-by-composite-name-ioc-with-lambda-strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.resolve-by-type-and-name-strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.uuid-nextid-strategy</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- Task -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task-plugins.blocking-queue.blocking-queue-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- FeatureLoader -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loader-plugins.feature-loader-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loader-plugins.filesystem-facade-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!--&lt;!&ndash; Database &ndash;&gt;-->
         <!--<dependency>-->
             <!--<groupId>info.smart_tools.smartactors</groupId>-->
             <!--<artifactId>database-plugins.collection-name-plugin</artifactId>-->
-            <!--<version>0.2.0-SNAPSHOT</version>-->
+            <!--<version>${core.version}</version>-->
         <!--</dependency>-->
 
         <!--IObject-extension -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-extension-plugins.configuration-object-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-extension-plugins.wds-object-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- MessageProcessing -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.actor-receiver-creator-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.chain-call-receiver-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.chain-choice-strategy-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.constant-chain-choice-strategy-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.condition-chain-choice-strategy-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.handler-routing-receiver-creator-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.map-router-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.message-processor-and-sequence-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.messaging-identifiers-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.immutable-receiver-chain-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.receiver-chains-storage-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.receiver-generator-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.standard-object-creators-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.starter-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.wrapper-generator-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.exception-handling-receiver-plugins</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing.exception-handling-receivers</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-plugins.chain-modifications-plugin</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <artifactId>message-processing-interfaces.iresponse-strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.chain-modification-strategies-plugin</artifactId>
+            <version>0.3.2</version>
         </dependency>
 
         <!-- CoreStarter -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>core-service-starter.core-starter</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>${core.version}</version>
         </dependency>
     </dependencies>
 

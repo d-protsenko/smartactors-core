@@ -62,5 +62,4 @@ public class HttpRequestSenderActor {
             throw new HttpRequestSenderActorException(e);
         }
     }
-
 }

@@ -16,6 +16,7 @@
         <module>CheckpointRecoverStrategiesPlugin</module>
         <module>CheckpointActorPlugin</module>
         <module>CheckpointFailureActionsPlugin</module>
+        <module>CheckpointConfigCanonizationStrategyPlugin</module>
         <module>Checkpoint-pluginsDistribution</module>
     </modules>
     <build>
