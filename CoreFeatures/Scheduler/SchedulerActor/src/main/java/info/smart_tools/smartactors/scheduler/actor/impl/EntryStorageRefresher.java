@@ -126,6 +126,7 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
     public void start() throws ServiceStartupException, IllegalServiceStateException {
         startAfter(time.currentTimeMillis());
     }
+
     @Override
     public void stop() throws ServiceStopException, IllegalServiceStateException {
         stateLock.lock();
