@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.scheduler_plugins.scheduler_plugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -146,7 +148,7 @@ public class PluginScheduler extends BootstrapPlugin {
                 featureLoadCompletionQueue.put(() -> {
                     try {
                         refresher.start();
-                    } catch (TaskScheduleException e) {
+                    } catch (ServiceStartupException | IllegalServiceStateException e) {
                         throw new TaskExecutionException(e);
                     }
                 });

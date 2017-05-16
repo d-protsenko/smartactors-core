@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.timer.interfaces.itimer.ITime;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.*;
 public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     private IQueue<ITask> taskQueueMock;
     private ITimer timerMock;
+    private ITime timeMock;
     private ITimerTask timerTaskMock;
     private EntryStorage storageMock;
     private IRemoteEntryStorage remoteStorageMock;
@@ -59,6 +61,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         taskQueueMock = mock(IQueue.class);
         timerMock = mock(ITimer.class);
+        timeMock = mock(ITime.class);
         timerTaskMock = mock(ITimerTask.class);
         storageMock = mock(EntryStorage.class);
         remoteStorageMock = mock(IRemoteEntryStorage.class);
@@ -79,6 +82,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
         }
 
         IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
         IOC.register(Keys.getOrAdd("restore scheduler entry"), restoreEntryStrategy);
     }
@@ -130,20 +134,18 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     @Test
     public void Should_refreshLocalStorageStatePeriodically()
             throws Exception {
+        when(timeMock.currentTimeMillis()).thenReturn(1337L);
+
         new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100).start();
 
-        verify(timerMock).schedule(taskArgumentCaptor.capture(), timeArgumentCaptor.capture());
+        verify(timerMock).schedule(taskArgumentCaptor.capture(), eq(1337L));
 
-        long initTime = timeArgumentCaptor.getValue();
         ITask initTask = taskArgumentCaptor.getValue();
-
-        assertTrue(initTime <= System.currentTimeMillis());
-        assertTrue((System.currentTimeMillis() - initTime) < 1000);
 
         initTask.execute();
 
-        when(remoteStorageMock.downloadEntries(initTime + 1000, null, 100)).thenReturn(Arrays.asList(states));
-        when(remoteStorageMock.downloadEntries(initTime + 1000, states[states.length - 1], 100)).thenReturn(Collections.emptyList());
+        when(remoteStorageMock.downloadEntries(1337L + 1000, null, 100)).thenReturn(Arrays.asList(states));
+        when(remoteStorageMock.downloadEntries(1337L + 1000, states[states.length - 1], 100)).thenReturn(Collections.emptyList());
 
         for (int i = 1; i < entries.length; i++) {
             when(storageMock.getLocalEntry(eq(String.format("entry-%010d", i)))).thenReturn(entries[i]);
@@ -161,7 +163,27 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
 
         assertNotSame(downloadTask, executeEnqueuedTask());
 
-        verify(storageMock).refresh(initTime + 1001, initTime + 1500);
-        verify(timerTaskMock).reschedule(initTime + 1000);
+        verify(storageMock).refresh(1337L + 1001, 1337L + 1500);
+        verify(timerTaskMock).reschedule(1337L + 1000);
+    }
+
+    @Test
+    public void Should_stopRefreshing()
+            throws Exception {
+        when(timeMock.currentTimeMillis()).thenReturn(1337L);
+
+        EntryStorageRefresher refresher = new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100);
+        refresher.startAfter(1338);
+        refresher.stopAfter(1449);
+
+        verify(timerMock).schedule(taskArgumentCaptor.capture(), eq(1338L));
+        taskArgumentCaptor.getValue().execute();
+        taskArgumentCaptor.getAllValues().clear();
+
+        executeEnqueuedTask();
+
+        verify(remoteStorageMock).downloadEntries(eq(1449L), any(), anyInt());
+
+        executeEnqueuedTask();
     }
 }

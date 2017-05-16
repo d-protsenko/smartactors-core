@@ -703,6 +703,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "Strategy.StrategyStorageWithCacheStrategy",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "isynchronous-service",
+  "uploadRepositories" : [ ],
+  "rawName" : "ISynchronousService",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
