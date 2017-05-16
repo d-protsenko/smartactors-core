@@ -82,7 +82,8 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("checkpoint failure action"),
                 new SingletonStrategy((IAction<IObject>) msg -> {
                     try {
-                        System.err.printf("Lost message: %s\n", msg.serialize());
+                        String msgString = msg.serialize();
+                        System.err.printf("Lost message: %s\n", msgString);
                     } catch (SerializeException e) {
                         throw new ActionExecuteException(e);
                     }

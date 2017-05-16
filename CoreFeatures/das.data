@@ -1950,6 +1950,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "CheckpointFailureActionsPlugin",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "checkpoint-config-canonization-strategy-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "CheckpointConfigCanonizationStrategyPlugin",
+  "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "checkpoint-plugins",

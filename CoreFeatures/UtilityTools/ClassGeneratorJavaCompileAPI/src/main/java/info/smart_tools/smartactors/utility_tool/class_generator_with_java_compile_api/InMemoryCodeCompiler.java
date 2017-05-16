@@ -46,7 +46,7 @@ class InMemoryCodeCompiler {
      * @return compiled class
      * @throws Exception if any errors occurred
      */
-    Class<?> compile(
+    synchronized Class<?> compile(
             final String className,
             final String sourceCodeInText
     )
