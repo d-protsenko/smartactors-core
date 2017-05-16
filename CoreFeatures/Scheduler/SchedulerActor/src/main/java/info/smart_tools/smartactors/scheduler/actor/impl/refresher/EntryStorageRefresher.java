@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.scheduler.actor.impl;
+package info.smart_tools.smartactors.scheduler.actor.impl.refresher;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;

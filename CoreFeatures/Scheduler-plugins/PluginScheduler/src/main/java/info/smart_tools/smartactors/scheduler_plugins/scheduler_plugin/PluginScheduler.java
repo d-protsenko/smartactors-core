@@ -18,7 +18,7 @@ import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
 import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
-import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorageRefresher;
+import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
