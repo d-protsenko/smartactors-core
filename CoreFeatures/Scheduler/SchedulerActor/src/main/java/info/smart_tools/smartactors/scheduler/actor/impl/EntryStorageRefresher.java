@@ -112,7 +112,8 @@ public class EntryStorageRefresher {
     public void start() throws TaskScheduleException {
         this.refreshStart = System.currentTimeMillis();
 
-        this.timerTask = timer.schedule(this::startRefresh, refreshStart);
+        //TODO :: fix
+        this.timerTask = timer.schedule(this::startRefresh, refreshStart+1000);
     }
 
     private void startRefresh() throws TaskExecutionException {

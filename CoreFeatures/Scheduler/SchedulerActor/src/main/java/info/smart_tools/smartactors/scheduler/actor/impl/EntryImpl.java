@@ -282,7 +282,8 @@ public final class EntryImpl implements ISchedulerEntry {
 
     @Override
     public void awake() throws EntryStorageAccessException, EntryScheduleException {
-        if (null == timerTask.get()) {
+        long lastTime = getLastTime();
+        if (null == timerTask.get() && lastTime != Long.MAX_VALUE) {
             scheduleNext(getLastTime());
         }
     }
