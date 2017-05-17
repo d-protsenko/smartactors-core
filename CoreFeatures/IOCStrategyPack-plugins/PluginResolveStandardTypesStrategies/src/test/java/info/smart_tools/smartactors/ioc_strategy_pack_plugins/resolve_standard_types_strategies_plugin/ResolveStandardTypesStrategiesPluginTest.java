@@ -91,19 +91,14 @@ public class ResolveStandardTypesStrategiesPluginTest {
         Keys.getOrAdd(List.class.getCanonicalName() + "convert");
 
         verifyStatic();
-//        IOC.register(eq(stringConvertKey), any(ResolveByTypeStrategy.class));
         IOC.register(eq(stringConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-//        IOC.register(eq(integerConvertKey), any(ResolveByTypeStrategy.class));
         IOC.register(eq(integerConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-//        IOC.register(eq(bigDecimalConvertKey), any(ResolveByTypeStrategy.class));
         IOC.register(eq(bigDecimalConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-//        IOC.register(eq(localDateTimeConvertKey), any(ResolveByTypeStrategy.class));
         IOC.register(eq(localDateTimeConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-//        IOC.register(eq(listConvertKey), any(ResolveByTypeStrategy.class));
         IOC.register(eq(listConvertKey), any(IResolveDependencyStrategy.class));
     }
 

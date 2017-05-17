@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.iobject_extension_plugins.configuration_obj
 
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.iobject_extension.configuration_object.CObjectStrategy;
 import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
@@ -481,6 +482,12 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
 //                                                    }
 //                                            )
                                             strategy
+                                    );
+                                    IOC.register(
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyStorage(), "expandable_strategy#resolve key for configuration object"
+                                            ),
+                                            new SingletonStrategy(strategy)
                                     );
                                 } catch (Exception e) {
                                     throw new ActionExecuteException(
