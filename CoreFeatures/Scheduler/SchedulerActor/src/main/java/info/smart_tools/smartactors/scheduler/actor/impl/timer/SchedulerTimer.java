@@ -19,8 +19,8 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskSched
  * Service that provides a timer that can be started and stopped.
  */
 public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
-    private long myStartTime;
-    private long myStopTime;
+    private volatile long myStartTime;
+    private volatile long myStopTime;
     private final ITime sysTime;
     private final ITimer underlyingTimer;
 
@@ -44,11 +44,15 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
         @Override
         public void reschedule(final long time) throws TaskScheduleException {
             if (!isTimeAcceptable(time)) {
+                if (null != underlyingTimerTask) {
+                    underlyingTimerTask.cancel();
+                }
+
                 return;
             }
 
             if (null == underlyingTimerTask) {
-                underlyingTimerTask = underlyingTimer.schedule(underlyingTask, time);
+                underlyingTimerTask = underlyingTimer.schedule(this, time);
             } else {
                 underlyingTimerTask.reschedule(time);
             }
