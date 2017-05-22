@@ -62,8 +62,8 @@ public class StrategyStorageWithCacheStrategyTest {
         IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IAdditionDependencyStrategy)cachedStrategy).register(1, intToString);
-        ((IAdditionDependencyStrategy)cachedStrategy).register(1f, floatToString);
+        ((IAdditionDependencyStrategy)cachedStrategy).register(Integer.class, intToString);
+        ((IAdditionDependencyStrategy)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(1);
         assertEquals("1", result);
@@ -101,7 +101,7 @@ public class StrategyStorageWithCacheStrategyTest {
         IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IAdditionDependencyStrategy)cachedStrategy).register(1f, floatToString);
+        ((IAdditionDependencyStrategy)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(1f);
         assertEquals("1.0", result);
@@ -111,7 +111,7 @@ public class StrategyStorageWithCacheStrategyTest {
         assertEquals("2.0", result);
         assertEquals((int) count.get("count"), 1);
 
-        ((ICacheable) cachedStrategy).dropCacheFor(2f);
+        ((ICacheable) cachedStrategy).dropCacheFor(Float.class);
         count.put("count", 0);
         result = cachedStrategy.resolve(2f);
         assertEquals("2.0", result);
@@ -138,12 +138,12 @@ public class StrategyStorageWithCacheStrategyTest {
         IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IAdditionDependencyStrategy)cachedStrategy).register(1f, floatToString);
+        ((IAdditionDependencyStrategy)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(2f);
         assertEquals("2.0", result);
 
-        ((IAdditionDependencyStrategy) cachedStrategy).remove(2f);
+        ((IAdditionDependencyStrategy) cachedStrategy).remove(Float.class);
         cachedStrategy.resolve(2f);
         fail();
     }
@@ -152,20 +152,20 @@ public class StrategyStorageWithCacheStrategyTest {
     public void checkExceptionOnDropCache()
             throws Exception {
         IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((ICacheable) cachedStrategy).dropCacheFor(2f);
+        ((ICacheable) cachedStrategy).dropCacheFor(null);
     }
 
     @Test (expected = AdditionDependencyStrategyException.class)
     public void checkExceptionOnRegister()
             throws Exception {
         IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((IAdditionDependencyStrategy) cachedStrategy).register(2f, null);
+        ((IAdditionDependencyStrategy) cachedStrategy).register(null, null);
     }
 
     @Test (expected = AdditionDependencyStrategyException.class)
     public void checkExceptionOnRemove()
             throws Exception {
         IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((IAdditionDependencyStrategy) cachedStrategy).remove(2f);
+        ((IAdditionDependencyStrategy) cachedStrategy).remove(null);
     }
 }

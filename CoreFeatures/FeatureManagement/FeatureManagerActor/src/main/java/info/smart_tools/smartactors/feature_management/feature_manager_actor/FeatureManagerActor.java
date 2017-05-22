@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -22,6 +23,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,6 +52,7 @@ public class FeatureManagerActor {
     private final IFieldName processingFeatureFN;
     private final IFieldName featureProcessFN;
     private final IFieldName featureFN;
+    private final IFieldName afterFeaturesCallbackQueueFN;
 
     /**
      * Default constructor
@@ -70,6 +73,7 @@ public class FeatureManagerActor {
         this.processingFeatureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processingFeatures");
         this.featureProcessFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureProcess");
         this.featureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "feature");
+        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeaturesCallbackQueue");
     }
 
     /**
@@ -91,6 +95,10 @@ public class FeatureManagerActor {
             int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
+
+            IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
+
+
             int count = 0;
             for (IFeature feature : features) {
                 Object featureName = feature.getName();
@@ -109,6 +117,7 @@ public class FeatureManagerActor {
                     message.setValue(this.processingFeatureFN, this.processingFeatures);
                     message.setValue(this.featureProcessFN, this.featureProcess);
                     message.setValue(this.featureFN, feature);
+                    message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
                     messageProcessor.process(message, context);
                     ++count;
@@ -165,6 +174,17 @@ public class FeatureManagerActor {
             });
             needContinueProcesses.forEach((mp) -> {
                 try {
+
+                    IQueue<ITask> afterFeatureCallbackQueue = wrapper.getAfterFeaturesCallbackQueue();
+                    ITask task;
+                    while (null != (task = afterFeatureCallbackQueue.tryTake())) {
+                        try {
+                            task.execute();
+                        } catch (TaskExecutionException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    }
+
                     mp.continueProcess(null);
                     System.out.println(
                             "\n\n[INFO] Feature group has been loaded: " +
@@ -174,7 +194,7 @@ public class FeatureManagerActor {
                             + "\n\n"
                     );
                     this.mainProcessesForInfo.remove(mp);
-                } catch (AsynchronousOperationException e) {
+                } catch (AsynchronousOperationException | ReadValueException | ActionExecuteException e) {
                     throw new RuntimeException(e);
                 }
             });

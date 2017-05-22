@@ -22,6 +22,7 @@
         <module>UnzipFeatureActor</module>
         <module>LoadFeatureActor</module>
         <module>FeatureManagerActor</module>
+        <module>AfterFeaturesCallbackStorage</module>
         <module>FeatureManagementDistribution</module>
     </modules>
     <build>
