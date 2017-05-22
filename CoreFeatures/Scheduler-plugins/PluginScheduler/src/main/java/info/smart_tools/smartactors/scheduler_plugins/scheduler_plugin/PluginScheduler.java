@@ -201,7 +201,7 @@ public class PluginScheduler extends BootstrapPlugin {
                 Object systemTimer = IOC.resolve(Keys.getOrAdd("timer"));
                 IDelayedSynchronousService timerService = IOC.resolve(Keys.getOrAdd("new timer service"), systemTimer);
 
-                EntryStorage storage = new EntryStorage(remoteEntryStorage, observer);
+                EntryStorage storage = new EntryStorage(remoteEntryStorage, observer, (ITimer) timerService);
 
                 IDelayedSynchronousService refresher = IOC.resolve(
                         Keys.getOrAdd("scheduler entry storage refresher"),
