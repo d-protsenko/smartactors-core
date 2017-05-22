@@ -280,7 +280,7 @@ public final class EntryImpl implements ISchedulerEntry {
     public void awake() throws EntryStorageAccessException, EntryScheduleException {
         long lastTime = getLastTime();
         if (null == timerTask.get() && lastTime != Long.MAX_VALUE) {
-            scheduleNext(getLastTime());
+            scheduleNext(lastTime);
         }
     }
 

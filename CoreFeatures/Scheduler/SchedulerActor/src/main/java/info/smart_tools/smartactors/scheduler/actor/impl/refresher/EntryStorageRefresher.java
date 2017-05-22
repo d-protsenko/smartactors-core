@@ -72,7 +72,6 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
      * @param refreshSuspendInterval    time (in milliseconds after current execution start) to suspend entries scheduled after
      * @param pageSize                  size of pages downloaded from remote storage
      * @throws ResolutionException if error occurs resolving any dependency
-     * @throws TaskScheduleException if error occurs scheduling first execution
      * @throws InvalidArgumentException if {@code entryStorage} or {@code remoteEntryStorage} are {@code null}
      * @throws InvalidArgumentException if interval values do not satisfy requirements described above
      * @throws InvalidArgumentException if {@code pageSize} is not a positive value
@@ -83,7 +82,7 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
                                  final long refreshAwakeInterval,
                                  final long refreshSuspendInterval,
                                  final int pageSize)
-            throws ResolutionException, TaskScheduleException, InvalidArgumentException {
+            throws ResolutionException, InvalidArgumentException {
         if (null == entryStorage) {
             throw new InvalidArgumentException("Entry storage should not be null.");
         }
