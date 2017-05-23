@@ -4,16 +4,16 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-features</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
 
     <packaging>pom</packaging>
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>smartactors-modules</id>-->
-            <!--<url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
+    <repositories>
+        <repository>
+            <id>smartactors-modules</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>Base</module>
@@ -70,6 +70,10 @@
         <module>Checkpoint</module>
         <module>Checkpoint-plugins</module>
         <module>Parser</module>
+        <module>Statistics</module>
+        <module>Statistics-plugins</module>
+        <module>Debugger</module>
+        <module>Debugger-plugins</module>
     </modules>
 
     <build>

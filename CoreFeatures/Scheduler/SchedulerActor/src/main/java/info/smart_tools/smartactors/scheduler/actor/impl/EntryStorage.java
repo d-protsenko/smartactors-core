@@ -1,122 +1,125 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
-import java.text.MessageFormat;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Implementation of {@link ISchedulerEntryStorage}.
  */
 public class EntryStorage implements ISchedulerEntryStorage {
-    private static final int DEFAULT_PAGE_SIZE = 100;
+    private final IRemoteEntryStorage remoteEntryStorage;
+    private final ISchedulerEntryStorageObserver observer;
 
-    private final ConcurrentHashMap<String, ISchedulerEntry> localEntries = new ConcurrentHashMap<>();
+    private final Map<String, ISchedulerEntry> activeEntries;
+    private final Map<String, ISchedulerEntry> strongSuspendEntries;
+    private final Map<String, WeakReference<ISchedulerEntry>> weakSuspendEntries;
 
-    private final IPool connectionPool;
-    private final String collectionName;
+    private final List<ISchedulerEntry> refreshAwakeList;
+    private final List<ISchedulerEntry> refreshSuspendList;
+    private final HashSet<String>[] recentlyDeletedIdSets;
+    private int refreshIterationCounter;
 
-    private final IFieldName filterFieldName;
-    private final IFieldName gtFieldName;
-    private final IFieldName entryIdFieldName;
+    private final Object localStorageLock;
 
-    // Size of download page
-    private int downloadPageSize = DEFAULT_PAGE_SIZE;
-    //
-    private Object lastDownloadedId = null;
-    // True if all entries are downloaded from remote storage
-    private boolean isInitialized = false;
-
-    private ISchedulerEntryStorageObserver observer;
-
-    /**
-     * The constructor.
-     *
-     * @param connectionPool    database connection pool
-     * @param collectionName    name of database collection to use
-     * @throws ResolutionException if fails to resolve any dependencies
-     */
-    public EntryStorage(final IPool connectionPool, final String collectionName)
-            throws ResolutionException {
-        this(connectionPool, collectionName, null);
+    private boolean isEntryCancelledRecently(final String id) {
+        return recentlyDeletedIdSets[0].contains(id) || recentlyDeletedIdSets[1].contains(id);
     }
 
     /**
      * The constructor.
      *
-     * @param connectionPool    database connection pool
-     * @param collectionName    name of database collection to use
-     * @param observer          the observer that should be notified on events occurring within this storage
+     * @param remoteEntryStorage    remote storage to use
+     * @param observer              the observer that should be notified on events occurring within this storage
      * @throws ResolutionException if fails to resolve any dependencies
      */
-    public EntryStorage(final IPool connectionPool, final String collectionName, final ISchedulerEntryStorageObserver observer)
+    public EntryStorage(final IRemoteEntryStorage remoteEntryStorage, final ISchedulerEntryStorageObserver observer)
             throws ResolutionException {
-        this.connectionPool = connectionPool;
-        this.collectionName = collectionName;
+        this.remoteEntryStorage = remoteEntryStorage;
         this.observer = (observer == null) ? NullEntryStorageObserver.INSTANCE : observer;
 
-        filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
-        gtFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$gt");
-        entryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
+        activeEntries = new HashMap<>();
+        strongSuspendEntries = new HashMap<>();
+        weakSuspendEntries = new WeakHashMap<>();
+
+        refreshAwakeList = new ArrayList<>();
+        refreshSuspendList = new ArrayList<>();
+        recentlyDeletedIdSets = new HashSet[] {new HashSet<>(), new HashSet<>()};
+        refreshIterationCounter = 0;
+
+        localStorageLock = new Object();
     }
 
     @Override
     public void save(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        try (IPoolGuard guard = new PoolGuard(connectionPool)) {
-            Object connection = guard.getObject();
-
-            ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.upsert"),
-                    connection,
-                    collectionName,
-                    entry.getState());
-
-            task.execute();
-        } catch (ResolutionException | PoolGuardException | TaskExecutionException e) {
-            throw new EntryStorageAccessException("Error occurred saving scheduler entry to database.", e);
-        }
+        remoteEntryStorage.saveEntry(entry);
     }
 
     @Override
-    public void saveLocally(final ISchedulerEntry entry)
+    public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        ISchedulerEntry oldEntry = localEntries.put(entry.getId(), entry);
+        final String entryId = entry.getId();
 
-        try {
-            observer.onUpdateEntry(entry);
-        } catch (SchedulerEntryStorageObserverException e) {
-            throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
+        synchronized (localStorageLock) {
+            if (isEntryCancelledRecently(entryId)) {
+                try {
+                    entry.cancel();
+                    return;
+                } catch (EntryScheduleException e) {
+                    throw new EntryStorageAccessException("Error occurred cancelling duplicate entry.", e);
+                }
+            }
+
+            ISchedulerEntry oldEntry = activeEntries.put(entryId, entry);
+
+            strongSuspendEntries.remove(entryId, entry);
+            weakSuspendEntries.remove(entryId, entry);
+
+            try {
+                observer.onUpdateEntry(entry);
+            } catch (SchedulerEntryStorageObserverException e) {
+                throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
+            }
+
+            if (null != oldEntry && entry != oldEntry) {
+                try {
+                    oldEntry.cancel();
+                } catch (EntryScheduleException e) {
+                    throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
+                }
+            }
         }
 
-        if (null != oldEntry && entry != oldEntry) {
-            try {
-                oldEntry.cancel();
-            } catch (EntryScheduleException e) {
-                throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
+        remoteEntryStorage.weakSaveEntry(entry);
+    }
+
+    @Override
+    public void notifyInactive(final ISchedulerEntry entry, final boolean keepReference) throws EntryStorageAccessException {
+        synchronized (localStorageLock) {
+            activeEntries.remove(entry.getId(), entry);
+
+            if (keepReference) {
+                strongSuspendEntries.put(entry.getId(), entry);
+            } else {
+                weakSuspendEntries.put(entry.getId(), new WeakReference<>(entry));
             }
         }
     }
@@ -124,100 +127,141 @@ public class EntryStorage implements ISchedulerEntryStorage {
     @Override
     public void delete(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        try (IPoolGuard guard = new PoolGuard(connectionPool)) {
-            if (entry == localEntries.get(entry.getId())) {
-                localEntries.remove(entry.getId());
+        synchronized (localStorageLock) {
+            try {
+                recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
+
+                activeEntries.remove(entry.getId(), entry);
+                strongSuspendEntries.remove(entry.getId(), entry);
+                weakSuspendEntries.remove(entry.getId(), entry);
+
+                observer.onCancelEntry(entry);
+            } catch (SchedulerEntryStorageObserverException e) {
+                throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
             }
-
-            Object connection = guard.getObject();
-
-            ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.delete"),
-                    connection,
-                    collectionName,
-                    entry.getState());
-
-            task.execute();
-
-            observer.onCancelEntry(entry);
-        } catch (PoolGuardException | ResolutionException | TaskExecutionException e) {
-            throw new EntryStorageAccessException("Error occurred deleting entry from database.", e);
-        } catch (SchedulerEntryStorageObserverException e) {
-            throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
+
+        // It's safe to delete entry from database outside of critical section as we remember that
+        // the entry was cancelled and will not let it get re-created.
+        remoteEntryStorage.deleteEntry(entry);
     }
 
     @Override
     public List<ISchedulerEntry> listLocalEntries()
             throws EntryStorageAccessException {
-        return new ArrayList<>(localEntries.values());
+        synchronized (localStorageLock) {
+            List<ISchedulerEntry> localEntries = new ArrayList<>(activeEntries.size() + strongSuspendEntries.size());
+            localEntries.addAll(activeEntries.values());
+            localEntries.addAll(strongSuspendEntries.values());
+            // TODO:: Enumerate remote entries (?)
+            return localEntries;
+        }
     }
 
     @Override
     public ISchedulerEntry getEntry(final String id)
             throws EntryStorageAccessException {
-        ISchedulerEntry entry = localEntries.get(id);
+        try {
+            ISchedulerEntry localEntry = getLocalEntry(id);
 
-        if (null == entry) {
-            throw new EntryStorageAccessException(MessageFormat.format("Cannot find entry with id=''{0}''.", id));
-        }
-
-        return entry;
-    }
-
-    @Override
-    public boolean downloadNextPage(final int preferSize)
-            throws EntryStorageAccessException {
-        if (isInitialized) {
-            return true;
-        }
-
-        if (preferSize > 0 && lastDownloadedId == null) {
-            downloadPageSize = preferSize;
-        }
-
-        try (IPoolGuard guard = new PoolGuard(connectionPool)) {
-            Object connection = guard.getObject();
-
-            IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
-                    String.format("{'filter':{},'page':{'size':%s,'number':%s},'sort':[{'entryId':'asc'}]}"
-                            .replace('\'', '"'), downloadPageSize, 1));
-
-            if (lastDownloadedId != null) {
-                IObject entryIdFilter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                entryIdFilter.setValue(gtFieldName, lastDownloadedId);
-                ((IObject) query.getValue(filterFieldName)).setValue(entryIdFieldName, entryIdFilter);
+            if (null != localEntry) {
+                return localEntry;
             }
 
-            ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
-                    connection,
-                    collectionName,
-                    query,
-                    (IAction<IObject[]>) docs -> {
-                        try {
-                            for (IObject obj : docs) {
-                                IOC.resolve(Keys.getOrAdd("restore scheduler entry"), obj, this);
-                            }
+            IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
 
-                            if (docs.length < downloadPageSize) {
-                                observer.onDownloadComplete();
-                                isInitialized = true;
-                            } else {
-                                lastDownloadedId = docs[docs.length - 1].getValue(entryIdFieldName);
-                            }
-                        } catch (Exception e) {
-                            throw new ActionExecuteException(e);
-                        }
-                    }
-            );
-
-            task.execute();
-        } catch (PoolGuardException | ResolutionException | TaskExecutionException | ReadValueException | ChangeValueException
-                | InvalidArgumentException e) {
-            throw new EntryStorageAccessException("Error occurred downloading page of scheduler entries.", e);
+            return IOC.resolve(Keys.getOrAdd("restore scheduler entry"), savedEntryState, this);
+        } catch (ResolutionException e) {
+            throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
+        } catch (CancelledLocalEntryRequestException e) {
+            throw new EntryStorageAccessException("The entry was not found as it was cancelled recently.");
         }
+    }
 
-        return isInitialized;
+    /**
+     * Suspend active entries that are scheduled on too late time and awake suspended entries scheduled for not-so late time.
+     *
+     * <pre>
+     *     | . . . . . . . . . . . . . . | . . . . . . . . . . . . . . | . . . . . . . . . (time) >
+     *     |now                          |awakeUntil                   |suspendAfter
+     *     | (awake everything here)     | (do nothing)                | (suspend everything here)
+     * </pre>
+     *
+     * @param awakeUntil      the time entries scheduled until should be awaken
+     * @param suspendAfter    the time entries scheduled after should be suspended
+     * @throws EntryStorageAccessException if error occurs accessing entry storage while awakening/suspending some entry
+     * @throws EntryScheduleException if error occurs rescheduling some entry to awake it
+     */
+    public void refresh(final long awakeUntil, final long suspendAfter)
+            throws EntryStorageAccessException, EntryScheduleException {
+        synchronized (localStorageLock) {
+            // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
+            // map we are iterating over)
+            refreshAwakeList.clear();
+            refreshSuspendList.clear();
+
+            for (ISchedulerEntry suspendedEntry : strongSuspendEntries.values()) {
+                if (suspendedEntry.getLastTime() < awakeUntil) {
+                    refreshAwakeList.add(suspendedEntry);
+                }
+            }
+
+            for (ISchedulerEntry activeEntry : activeEntries.values()) {
+                if (activeEntry.getLastTime() > suspendAfter) {
+                    refreshSuspendList.add(activeEntry);
+                } else if (activeEntry.getLastTime() < awakeUntil && !activeEntry.isAwake()) {
+                    // Awake entries loaded by refresher and "zombie" entries -- cancelled but remaining in list of active (they should
+                    // delete themselves)
+                    refreshAwakeList.add(activeEntry);
+                }
+            }
+
+            for (ISchedulerEntry entry : refreshAwakeList) {
+                entry.awake();
+            }
+
+            for (ISchedulerEntry entry : refreshSuspendList) {
+                entry.suspend();
+            }
+
+            recentlyDeletedIdSets[(refreshIterationCounter + 1) & 1].clear();
+
+            ++refreshIterationCounter;
+        }
+    }
+
+    /**
+     * Get entry saved locally (active or suspended).
+     *
+     * @param id    identifier of the entry
+     * @return the entry or {@code null} if there is no entry with given identifier in local storage
+     * @throws CancelledLocalEntryRequestException if the required entry was cancelled recently
+     */
+    public ISchedulerEntry getLocalEntry(final String id) throws CancelledLocalEntryRequestException {
+        synchronized (localStorageLock) {
+            if (isEntryCancelledRecently(id)) {
+                throw new CancelledLocalEntryRequestException();
+            }
+
+            if (weakSuspendEntries.containsKey(id)) {
+                ISchedulerEntry e = weakSuspendEntries.get(id).get();
+
+                if (null == e) {
+                    weakSuspendEntries.remove(id);
+                } else {
+                    return e;
+                }
+            }
+
+            if (activeEntries.containsKey(id)) {
+                return activeEntries.get(id);
+            }
+
+            if (strongSuspendEntries.containsKey(id)) {
+                return strongSuspendEntries.get(id);
+            }
+
+            return null;
+        }
     }
 }

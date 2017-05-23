@@ -8,6 +8,10 @@ import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Plugin;
 import info.smart_tools.smartactors.das.models.Project;
+import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
+import info.smart_tools.smartactors.das.utilities.exception.ProjectResolutionException;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +24,9 @@ public class UpdatePluginVersion implements IAction {
         System.out.println("Updating plugin version ...");
 
         try {
-            String[] args = (String[]) o;
-            ProjectResolver pr = new ProjectResolver();
+            ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+            IProjectResolver pr = (IProjectResolver) ((Object[])o)[1];
             Project project = pr.resolveProject();
-
-            CommandLineArgsResolver clar = new CommandLineArgsResolver(args);
             String newVersion = clar.getVersion();
             Feature feature = null;
             String featureName = clar.getFeatureName();
@@ -66,6 +68,10 @@ public class UpdatePluginVersion implements IAction {
             // Save project meta data file
             project.saveMetaDataFile();
 
+        } catch (InvalidCommandLineArgumentException | ProjectResolutionException e) {
+            System.out.println(e.getMessage());
+
+            return;
         } catch (Exception e) {
             System.out.println("Update plugin version has been failed.");
             System.err.println(e);

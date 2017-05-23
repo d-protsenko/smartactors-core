@@ -66,11 +66,6 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
         }
     }
 
-    @Override
-    public void onDownloadComplete() throws SchedulerEntryStorageObserverException {
-
-    }
-
     /**
      * Get present entry of current checkpoint by id of entry of previous checkpoint.
      * @param prevCpEntryId    identifier of entry of previous checkpoint

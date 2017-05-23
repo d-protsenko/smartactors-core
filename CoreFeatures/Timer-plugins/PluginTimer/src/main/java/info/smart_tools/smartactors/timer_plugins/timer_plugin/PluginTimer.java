@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.timer.timer.SystemTimeImpl;
 import info.smart_tools.smartactors.timer.timer.TimerImpl;
 
 import java.util.Timer;
@@ -37,12 +38,22 @@ public class PluginTimer implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("timer");
 
-            item
-//                    .after("IOC")
-                    .process(() -> {
+            item.process(() -> {
                         try {
                             IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(
                                     new TimerImpl(new Timer("Smart actors system timer", true))));
+                        } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    });
+
+            bootstrap.add(item);
+
+            item = new BootstrapItem("time");
+
+            item.process(() -> {
+                        try {
+                            IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(new SystemTimeImpl()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }

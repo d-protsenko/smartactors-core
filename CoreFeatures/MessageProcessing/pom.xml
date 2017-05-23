@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>message-processing</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>WrapperGenerator</module>
@@ -26,9 +26,12 @@
         <module>ChainCallReceiver</module>
         <module>MapRouter</module>
         <module>ConditionChainChoiceStrategy</module>
+        <module>ChainModifications</module>
         <module>ReceiverChain</module>
-        <module>MessageProcessingDistribution</module>
+        <module>NullResponseStrategy</module>
+        <module>ResponseSenderReceiver</module>
         <module>ObjectCreationStrategies</module>
+        <module>MessageProcessingDistribution</module>
     </modules>
     <build>
         <pluginManagement>

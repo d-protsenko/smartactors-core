@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -10,7 +11,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy.ResolveByTypeStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,15 +91,15 @@ public class ResolveStandardTypesStrategiesPluginTest {
         Keys.getOrAdd(List.class.getCanonicalName() + "convert");
 
         verifyStatic();
-        IOC.register(eq(stringConvertKey), any(ResolveByTypeStrategy.class));
+        IOC.register(eq(stringConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-        IOC.register(eq(integerConvertKey), any(ResolveByTypeStrategy.class));
+        IOC.register(eq(integerConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-        IOC.register(eq(bigDecimalConvertKey), any(ResolveByTypeStrategy.class));
+        IOC.register(eq(bigDecimalConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-        IOC.register(eq(localDateTimeConvertKey), any(ResolveByTypeStrategy.class));
+        IOC.register(eq(localDateTimeConvertKey), any(IResolveDependencyStrategy.class));
         verifyStatic();
-        IOC.register(eq(listConvertKey), any(ResolveByTypeStrategy.class));
+        IOC.register(eq(listConvertKey), any(IResolveDependencyStrategy.class));
     }
 
     @Test(expected = PluginException.class)

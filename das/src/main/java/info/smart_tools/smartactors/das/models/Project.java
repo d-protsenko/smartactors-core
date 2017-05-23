@@ -283,7 +283,7 @@ public class Project {
 
     public void makeProjectDirectory()
             throws Exception {
-        Path projectPath = Paths.get("", this.name).toAbsolutePath();
+        Path projectPath = this.getPath().toAbsolutePath();
         if (!Files.exists(projectPath)) {
             try {
                 Files.createDirectories(projectPath);
@@ -299,7 +299,7 @@ public class Project {
 
     public void makePomFile()
             throws Exception {
-        Path projectPomFile = Paths.get("", this.name, POM_NAME);
+        Path projectPomFile = Paths.get(this.getPath().toString(), POM_NAME);
         try {
             final String groupId = this.groupId;
             final String name = this.getArtifactId();

@@ -46,6 +46,7 @@ public class PluginReadConfigFile implements IPlugin {
                     .after("ConfigurationObject")
                     .after("message_processor")
                     .after("message_processing_sequence")
+                    .after("after exception actions")
                     .process(() -> {
                         try {
                             String fileName = System.getenv().getOrDefault("SM_CONFIG_FILE", "configuration.json");

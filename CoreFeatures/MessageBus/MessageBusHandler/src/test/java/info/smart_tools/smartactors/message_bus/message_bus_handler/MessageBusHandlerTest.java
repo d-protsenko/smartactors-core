@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.message_bus.message_bus_handler;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
@@ -9,6 +11,7 @@ import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -30,6 +33,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,6 +47,8 @@ public class MessageBusHandlerTest {
     private IStrategyContainer container = new StrategyContainer();
     private IQueue queue = mock(IQueue.class);
     private IReceiverChain chain = mock(IReceiverChain.class);
+    private IResponseStrategy nullResponseStrategy;
+    private IResponseStrategy mbResponseStrategy;
 
     @Before
     public void init()
@@ -76,6 +82,12 @@ public class MessageBusHandlerTest {
                         }
                 )
         );
+
+        nullResponseStrategy = mock(IResponseStrategy.class);
+        mbResponseStrategy = mock(IResponseStrategy.class);
+
+        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(nullResponseStrategy));
+        IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
     }
 
     @Test
@@ -137,6 +149,7 @@ public class MessageBusHandlerTest {
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
         handler.handle(message);
+        verify(context, times(1)).setValue(eq(new FieldName("responseStrategy")), same(nullResponseStrategy));
         verify(sequenceStrategy, times(1)).resolve(1, this.chain);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
@@ -266,6 +279,7 @@ public class MessageBusHandlerTest {
         verify(processor, times(1)).process(message, context);
         verify(context, times(1)).setValue(eq(new FieldName("finalActions")), any(List.class));
         verify(context, times(1)).setValue(new FieldName("messageBusReplyTo"), replyToChainName);
+        verify(context, times(1)).setValue(eq(new FieldName("responseStrategy")), same(mbResponseStrategy));
     }
 
     @Test (expected = MessageBusHandlerException.class)

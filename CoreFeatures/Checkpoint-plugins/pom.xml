@@ -5,16 +5,18 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>checkpoint-plugins</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>CheckpointSchedulingStrategiesPlugin</module>
         <module>CheckpointRecoverStrategiesPlugin</module>
         <module>CheckpointActorPlugin</module>
+        <module>CheckpointFailureActionsPlugin</module>
+        <module>CheckpointConfigCanonizationStrategyPlugin</module>
         <module>Checkpoint-pluginsDistribution</module>
     </modules>
     <build>

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.das.utilities;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,12 +11,19 @@ import java.util.Scanner;
 
 public class FileBuilder {
 
+    private static final String RESOURCE_DIR = "resources";
+
     public static void createFileByTemplateWithReplace(
             final File sourceTemplate, final File target, final Map<String, String> tags
     ) {
         BufferedWriter writer = null;
-        InputStream templateStream = ClassLoader.getSystemClassLoader().getResourceAsStream(sourceTemplate.getName());
-        if (null == templateStream) {
+        InputStream templateStream;
+        try {
+            templateStream = new FileInputStream(
+                    FileBuilder.GetExecutionPath() +
+                    File.separator + RESOURCE_DIR + File.separator + sourceTemplate.getName()
+            );
+        } catch (IOException e) {
             System.out.println("Could not open template file");
 
             return;
@@ -51,13 +59,17 @@ public class FileBuilder {
             final File source, final String beforeString, final File template, final Map<String, String> tags
     ) {
         BufferedWriter writer = null;
-        InputStream templateStream = ClassLoader.getSystemClassLoader().getResourceAsStream(template.getName());
-        if (null == templateStream) {
+        InputStream templateStream;
+        try {
+            templateStream = new FileInputStream(
+                    FileBuilder.GetExecutionPath() +
+                            File.separator + RESOURCE_DIR + File.separator + template.getName()
+            );
+        } catch (IOException e) {
             System.out.println("Could not open template file");
 
             return;
         }
-
         StringBuilder insertingSection = new StringBuilder("") ;
         try (Scanner scanner = new Scanner(templateStream)) {
             while (scanner.hasNextLine()) {
@@ -109,5 +121,12 @@ public class FileBuilder {
                 System.err.println(e);
             }
         }
+    }
+
+    private static String GetExecutionPath(){
+        String absolutePath = FileBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+
+        return absolutePath;
     }
 }
