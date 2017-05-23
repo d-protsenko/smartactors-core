@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>endpoint</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>endpoint.response</artifactId>
     <version>0.3.2</version>

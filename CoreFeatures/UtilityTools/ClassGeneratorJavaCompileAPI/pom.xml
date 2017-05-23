@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>utility-tools</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <artifactId>utility-tools.class-generator-with-java-compile-api</artifactId>
     <version>0.3.2</version>
