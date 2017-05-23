@@ -2146,6 +2146,11 @@
   "rawName" : "ReceiverChain",
   "version" : "0.3.3"
 }, {
+  "artifactId" : "wrapper-creator-receiver-decorator",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecorator",
+  "version" : "0.3.3"
+}, {
   "artifactId" : "message-processing.chain-modifications",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2850,6 +2855,11 @@
   "uploadRepositories":[],
   "rawName":"ObjectCreationStrategiesPlugin",
   "version":"0.3.2"
+}, {
+  "artifactId" : "wrapper-creator-receiver-decorator-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecoratorPlugin",
+  "version" : "0.3.2"
 }, {
   "artifactId" : "null-response-strategy-plugin",
   "uploadRepositories" : [ ],
