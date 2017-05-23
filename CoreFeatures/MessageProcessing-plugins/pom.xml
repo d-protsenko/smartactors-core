@@ -32,6 +32,7 @@
         <module>NullResponseStrategyPlugin</module>
         <module>ResponseSenderReceiverPlugin</module>
         <module>ChainModificationStrategiesPlugin</module>
+        <module>WrapperCreatorReceiverDecoratorPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>
     <build>
