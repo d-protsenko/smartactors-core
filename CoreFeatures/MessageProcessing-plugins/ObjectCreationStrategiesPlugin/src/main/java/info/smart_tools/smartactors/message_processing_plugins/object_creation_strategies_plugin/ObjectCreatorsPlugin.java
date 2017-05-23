@@ -16,6 +16,8 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.*;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 
+import java.util.Arrays;
+
 /**
  * Registers strategies for creation of {@link IReceiverObjectCreator object creators} and default configuration objects for named filter
  * types.
@@ -26,7 +28,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
      *
      * @param bootstrap the bootstrap
      */
-    public ObjectCreatorsPlugin(IBootstrap bootstrap) {
+    public ObjectCreatorsPlugin(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
@@ -91,5 +93,36 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         registerCreatorType(
                 "set address from name",
                 SetAddressFromObjectNameReceiverCreator::new);
+    }
+
+    @Item("basic_object_kinds")
+    public void registerKinds()
+            throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IOC.register(
+                Keys.getOrAdd("object kind filter sequence#raw"),
+                new SingletonStrategy(Arrays.asList(
+                        "top-level object",
+                        "set address from name"
+                ))
+        );
+        IOC.register(
+                Keys.getOrAdd("object kind filter sequence#stateless_actor"),
+                new SingletonStrategy(Arrays.asList(
+                        "top-level object",
+                        "method invokers",
+                        "handler router receiver",
+                        "set address from name"
+                ))
+        );
+        IOC.register(
+                Keys.getOrAdd("object kind filter sequence#actor"),
+                new SingletonStrategy(Arrays.asList(
+                        "top-level object",
+                        "method invokers",
+                        "handler router receiver",
+                        "per-receiver actor sync",
+                        "set address from name"
+                ))
+        );
     }
 }
