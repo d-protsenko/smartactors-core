@@ -53,13 +53,22 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
             if (request.getValue(contentFieldName) == null) {
                 httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
             } else {
-                IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()));
-                byte[] content = messageMapper.serialize((IObject) request.getValue(contentFieldName));
-                httpRequest = new DefaultFullHttpRequest(
-                        HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)
-                );
-                httpRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpRequest.content().readableBytes());
-                httpRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+                if (request.getValue(contentFieldName) instanceof String) {
+                    byte[] content = ((String) request.getValue(contentFieldName)).getBytes();
+                    httpRequest = new DefaultFullHttpRequest(
+                            HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)
+                    );
+                    httpRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpRequest.content().readableBytes());
+                    httpRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/x-www-form-urlencoded");
+                } else {
+                    IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()));
+                    byte[] content = messageMapper.serialize((IObject) request.getValue(contentFieldName));
+                    httpRequest = new DefaultFullHttpRequest(
+                            HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)
+                    );
+                    httpRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpRequest.content().readableBytes());
+                    httpRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+                }
             }
             httpRequest.headers().set(HttpHeaders.Names.HOST, uri.getHost());
             httpRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);

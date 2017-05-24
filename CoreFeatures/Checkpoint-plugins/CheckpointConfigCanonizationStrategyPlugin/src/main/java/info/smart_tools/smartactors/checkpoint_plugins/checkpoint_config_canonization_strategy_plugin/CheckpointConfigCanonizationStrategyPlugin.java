@@ -61,43 +61,11 @@ public class CheckpointConfigCanonizationStrategyPlugin extends BootstrapPlugin 
             }
         }));
 
-        IAdditionDependencyStrategy ads = IOC.resolve(Keys.getOrAdd("resolve key for configuration object strategy"));
+        IAdditionDependencyStrategy ads = IOC.resolve(Keys.getOrAdd("expandable_strategy#resolve key for configuration object"));
 
         ads.register("maps", new ApplyFunctionToArgumentsStrategy(args -> {
                 try {
                     Object obj = args[1];
-
-                    // TODO:: Remove the following copy-paste
-                    // TODO:: Remove the following copy-paste
-                    // TODO:: Remove the following copy-paste
-                    if (obj instanceof List) {
-                        for (IObject innerObject : (List<IObject>) obj) {
-                            if (null == innerObject.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "externalAccess"))) {
-                                innerObject.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "externalAccess"), false);
-                            }
-                            if (!innerObject.getValue(
-                                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id"))
-                                    .equals("tryToTakeResourceMap")) {
-                                List exceptionalList = (List) innerObject.getValue(
-                                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptional"));
-
-                                IObject outOfResourcesExceptionObj = IOC.resolve(Keys.getOrAdd("configuration object"));
-                                outOfResourcesExceptionObj.setValue(
-                                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "class"),
-                                        "info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException");
-                                outOfResourcesExceptionObj.setValue(
-                                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain"),
-                                        "tryToTakeResourceMap");
-                                outOfResourcesExceptionObj.setValue(
-                                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "after"),
-                                        "break");
-                                exceptionalList.add(0, outOfResourcesExceptionObj);
-                            }
-                        }
-                    }
-                    // Until here
-                    // Until here
-                    // Until here
 
                     if (obj instanceof List) {
                         for (IObject innerObject : (List<IObject>) obj) {
