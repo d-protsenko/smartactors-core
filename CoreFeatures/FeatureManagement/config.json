@@ -110,14 +110,16 @@
         {
           "handler":"load",
           "wrapper":{
-            "in_getFeature":"message/feature"
+            "in_getFeature":"message/feature",
+            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
           },
           "target":"load-feature-actor"
         },
         {
           "handler":"onFeatureLoaded",
           "wrapper":{
-            "in_getFeature":"message/feature"
+            "in_getFeature":"message/feature",
+            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
           },
           "target":"feature-manager"
         }

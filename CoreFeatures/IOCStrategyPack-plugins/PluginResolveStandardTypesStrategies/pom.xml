@@ -45,6 +45,11 @@
             <artifactId>base.strategy.strategy-storage-with-cache-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
