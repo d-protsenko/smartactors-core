@@ -84,6 +84,7 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
             } catch (ChangeValueException e) {
                 fail("Failed to change value in IObject", e);
             } catch (InvalidArgumentException | ResolutionException e) {
+                System.err.println(new java.util.Date());
                 e.printStackTrace();
             }
         });
@@ -125,8 +126,10 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
             } catch (ReadValueException e) {
                 throw new AssertionError("Failed to read value from IObject");
             } catch (InvalidArgumentException e) {
+                System.err.println(new java.util.Date());
                 e.printStackTrace();
             } catch (ResolutionException e) {
+                System.err.println(new java.util.Date());
                 e.printStackTrace();
             }
             if (result != null) {

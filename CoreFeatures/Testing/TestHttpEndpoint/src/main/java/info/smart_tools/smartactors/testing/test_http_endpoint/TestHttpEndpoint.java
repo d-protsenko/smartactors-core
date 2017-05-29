@@ -120,6 +120,7 @@ public class TestHttpEndpoint implements IAsyncService {
                     Thread.sleep(timeInterval);
                 } catch (Throwable e) {
                     //System.out.println();
+                    System.err.println(new java.util.Date());
                     e.printStackTrace();
                 }
             }

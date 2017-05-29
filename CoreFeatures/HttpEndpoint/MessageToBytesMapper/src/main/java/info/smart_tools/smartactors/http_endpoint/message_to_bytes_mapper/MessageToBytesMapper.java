@@ -37,6 +37,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
             String serializedMessage = message.serialize();
             return serializedMessage.getBytes(Charsets.UTF_8);
         } catch (SerializeException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
         return null;

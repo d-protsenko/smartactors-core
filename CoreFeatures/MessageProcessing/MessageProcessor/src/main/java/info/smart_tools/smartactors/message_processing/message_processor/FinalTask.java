@@ -59,6 +59,7 @@ public class FinalTask implements ITask {
                 try {
                     action.execute(this.env);
                 } catch (ActionExecuteException e) {
+                    System.err.println(new java.util.Date());
                     e.printStackTrace();
                 }
             }

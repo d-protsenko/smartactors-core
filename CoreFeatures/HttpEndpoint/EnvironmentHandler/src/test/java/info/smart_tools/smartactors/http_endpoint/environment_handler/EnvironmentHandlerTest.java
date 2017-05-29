@@ -154,6 +154,7 @@ public class EnvironmentHandlerTest {
                     (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")),
                     (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context")));
         } catch (ReadValueException | ChangeValueException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
 

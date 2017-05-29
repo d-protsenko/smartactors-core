@@ -127,12 +127,14 @@ public class FeatureStatusImpl implements IFeatureStatus {
                     try {
                         runCallbacks();
                     } catch (ActionExecuteException e) {
+                        System.err.println(new java.util.Date());
                         e.printStackTrace();
                     }
                 }
             });
         } catch (Throwable e) {
             error = e;
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
     }

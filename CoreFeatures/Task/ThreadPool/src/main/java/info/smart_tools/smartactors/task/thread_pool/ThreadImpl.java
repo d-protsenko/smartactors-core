@@ -39,6 +39,7 @@ class ThreadImpl {
                     setTaskRef.get().execute();
                 } catch (TaskExecutionException | ScopeProviderException e) {
                     // TODO: Handle
+                    System.err.println(new java.util.Date());
                     e.printStackTrace();
                 }
 

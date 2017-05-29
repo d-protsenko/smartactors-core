@@ -6,12 +6,12 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.3</version>
 
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.3.2</core.version>
+        <core.version>0.3.3</core.version>
         <feature.version>0.3.1-SNAPSHOT</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -296,7 +296,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.chain-modification-strategies-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>${core.version}</version>
         </dependency>
 
         <!-- CoreStarter -->

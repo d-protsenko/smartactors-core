@@ -118,6 +118,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
         } catch (ChangeValueException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
     }

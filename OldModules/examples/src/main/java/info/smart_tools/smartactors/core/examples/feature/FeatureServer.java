@@ -74,6 +74,7 @@ public class FeatureServer implements IServer {
             // is called when a tracking error appeared
             jarFilesTracker.addErrorHandler((e) -> {
                 System.out.println("Failed to track files: " + e);
+                System.err.println(new java.util.Date());
                 e.printStackTrace();
                 notifyInitWaiter();
                 throw new RuntimeException(e);

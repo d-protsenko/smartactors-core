@@ -66,6 +66,7 @@ public class HttpsEndpointPluginTest {
                             try {
                                 return new FieldName((String) args[0]);
                             } catch (InvalidArgumentException e) {
+                                System.err.println(new java.util.Date());
                                 e.printStackTrace();
                             }
                             return null;

@@ -23,6 +23,7 @@ public class HttpsRequestSenderActor {
         try {
             uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
         } catch (ResolutionException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
     }

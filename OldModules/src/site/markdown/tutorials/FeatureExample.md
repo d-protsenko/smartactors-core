@@ -37,6 +37,7 @@ If any handler for new files failed, the error handler can be called.
 
     jarFilesTracker.addErrorHandler((e) -> {
         System.out.println("Failed to track files: " + e);
+        System.err.println(new java.util.Date()); 
         e.printStackTrace();
     });
 

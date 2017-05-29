@@ -98,11 +98,13 @@ public class ServerWithFeatures implements IServer {
                 }
 
                 System.err.println(MessageFormat.format("Stage {0} failed with exception:", stageTitle));
+                System.err.println(new java.util.Date());
                 err.printStackTrace(System.err);
                 System.exit(1);
             });
         } catch (FeatureLoadException | ActionExecuteException e) {
             System.err.println(MessageFormat.format("Could not start stage {0} because of exception:", stageTitle));
+            System.err.println(new java.util.Date());
             e.printStackTrace(System.err);
             System.exit(1);
         }

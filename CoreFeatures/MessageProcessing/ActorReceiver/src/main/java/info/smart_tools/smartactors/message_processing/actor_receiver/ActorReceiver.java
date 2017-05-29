@@ -119,6 +119,7 @@ public class ActorReceiver implements IMessageReceiver {
         // TODO: Handle exception.
         // The exception cannot be rethrown as it is not caused by error in processing of current message but by error in processing of
         // another one.
+        System.err.println(new java.util.Date());
         e.printStackTrace();
     }
 }

@@ -115,6 +115,7 @@ public class MainTestChain implements IReceiverChain {
                 completionCallback.execute(exception);
             }
         } catch (ActionExecuteException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
 

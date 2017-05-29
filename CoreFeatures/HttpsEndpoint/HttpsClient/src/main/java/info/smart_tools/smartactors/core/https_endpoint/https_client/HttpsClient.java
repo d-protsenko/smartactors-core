@@ -38,6 +38,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
         try {
             sslEngineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()));
         } catch (ResolutionException e) {
+            System.err.println(new java.util.Date());
             e.printStackTrace();
         }
     }

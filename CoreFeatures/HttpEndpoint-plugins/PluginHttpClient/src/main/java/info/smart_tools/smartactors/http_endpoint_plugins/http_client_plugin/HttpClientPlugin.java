@@ -170,6 +170,7 @@ public class HttpClientPlugin implements IPlugin {
                                     );
                                     HttpClientInitializer.init();
                                 } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
+                                    System.err.println(new java.util.Date());
                                     e.printStackTrace();
                                     throw new RuntimeException(e);
                                 }
