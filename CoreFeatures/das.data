@@ -703,6 +703,16 @@
   "uploadRepositories" : [ ],
   "rawName" : "Strategy.StrategyStorageWithCacheStrategy",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "iup-counter",
+  "uploadRepositories" : [ ],
+  "rawName" : "IUpCounter",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "up-counter",
+  "uploadRepositories" : [ ],
+  "rawName" : "UpCounter",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
