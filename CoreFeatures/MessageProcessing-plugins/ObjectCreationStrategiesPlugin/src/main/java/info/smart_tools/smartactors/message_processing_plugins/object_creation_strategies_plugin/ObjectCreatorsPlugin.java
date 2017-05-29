@@ -106,7 +106,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         tsWrapperCreatorConfig.setValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
-                "decorate receiver");
+                "filter creator#decorate receiver");
         tsWrapperCreatorConfig.setValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency"),
                 "thread safe wrapper creator receiver decorator");
@@ -119,7 +119,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
         ntsWrapperCreatorConfig.setValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
-                "decorate receiver");
+                "filter creator#decorate receiver");
         ntsWrapperCreatorConfig.setValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency"),
                 "non thread safe wrapper creator receiver decorator");
