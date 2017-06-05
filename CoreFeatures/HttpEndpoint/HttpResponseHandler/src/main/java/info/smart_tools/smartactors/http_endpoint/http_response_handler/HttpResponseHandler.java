@@ -43,9 +43,11 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName headersFieldName;
     private IFieldName cookiesFieldName;
     private IFieldName requestFieldName;
+    private IFieldName exceptionalMessageMapIdFieldName;
     private IFieldName messageMapIdFieldName;
     private IFieldName uuidFieldName;
     private Object messageMapId;
+    private Object exceptionalMessageMapId;
     private Object uuid;
     private boolean isReceived;
     private IScope currentScope;
@@ -77,9 +79,11 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
             cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
             requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendRequest");
+            exceptionalMessageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptionalMessageMapId");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
             uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
             this.request = request;
+            this.exceptionalMessageMapId = request.getValue(exceptionalMessageMapIdFieldName);
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
@@ -107,7 +111,6 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                     messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
                     IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
                     IObject message = (IObject) environment.getValue(messageFieldName);
-                    message.setValue(messageMapIdFieldName, messageMapId);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
                 } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
@@ -125,7 +128,14 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {
         try {
             IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd("httpResponseResolver"), response);
-            IObject message = deserializeStrategy.deserialize(response);
+            IObject message;
+            try {
+                message = deserializeStrategy.deserialize(response);
+                message.setValue(messageMapIdFieldName, messageMapId);
+            } catch (Exception e ) {
+                message = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+                message.setValue(messageMapIdFieldName, exceptionalMessageMapId);
+            }
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             context.setValue(cookiesFieldName, new ArrayList<IObject>());
@@ -136,7 +146,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             environment.setValue(messageFieldName, message);
             environment.setValue(contextFieldName, context);
             return environment;
-        } catch (ResolutionException | DeserializationException | ChangeValueException | InvalidArgumentException e) {
+        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
             throw new ResponseHandlerException(e);
         }
     }
