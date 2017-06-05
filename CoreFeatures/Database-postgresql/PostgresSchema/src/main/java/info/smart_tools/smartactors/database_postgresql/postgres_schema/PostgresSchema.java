@@ -79,6 +79,35 @@ public final class PostgresSchema {
     }
 
     /**
+     * Fills the statement body with the CREATE TABLE IF NOT EXISTS sentence and CREATE INDEX sentences
+     * to create the desired collection and it's indexes.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void createIfNotExists(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            CreateClauses.writeFunctions(body);
+            body.write("CREATE TABLE IF NOT EXISTS ");
+            body.write(collection.toString());
+            body.write(" (");
+            body.write(DOCUMENT_COLUMN);
+            body.write(" jsonb NOT NULL");
+            CreateClauses.writeFullTextColumn(body, options);
+            body.write(");\n");
+            CreateClauses.writePrimaryKeyIfNotExists(body, collection);
+            if (options != null) {
+                IndexCreators.writeIndexes(body, collection, options);
+            }
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create if not exists body", e);
+        }
+    }
+
+    /**
      * Returns the path to ID property of the document in the specified collection.
      * @param collection name of the collection
      * @return path to field like "collectionID"

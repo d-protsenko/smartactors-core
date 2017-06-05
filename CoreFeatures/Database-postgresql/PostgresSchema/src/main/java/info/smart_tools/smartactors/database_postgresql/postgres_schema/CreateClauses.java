@@ -69,6 +69,35 @@ final class CreateClauses {
     }
 
     /**
+     * Writes the primary key definition if not exists.
+     * @param body body of SQL query to write
+     * @param collection name of the collection/table
+     * @throws IOException if write to body is not possible
+     * @throws QueryBuildException if there is a syntax error
+     */
+    static void writePrimaryKeyIfNotExists(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
+        String collectionName = collection.toString();
+        FieldPath idPath = PostgresSchema.getIdFieldPath(collection);
+        body.write(String.format(
+                "do\n" +
+                        "$$\n" +
+                        "begin\n" +
+                        "if not exists (\n" +
+                        "select indexname\n" +
+                        "    from pg_indexes\n" +
+                        "    where tablename = '%1$s'\n" +
+                        "        and indexname = '%1$s_pkey'\n" +
+                        ")\n" +
+                        "then\n" +
+                        "    CREATE UNIQUE INDEX %1$s_pkey ON %1$s USING BTREE ((%2$s));\n" +
+                        "end if;\n" +
+                        "end \n" +
+                        "$$;",
+                collectionName, idPath.toSQL())
+        );
+    }
+
+    /**
      * Writes definition of full text column, i.e. ", fulltext tsvector".
      * @param body SQL query body to write
      * @param options collection create options to check for fulltext index
