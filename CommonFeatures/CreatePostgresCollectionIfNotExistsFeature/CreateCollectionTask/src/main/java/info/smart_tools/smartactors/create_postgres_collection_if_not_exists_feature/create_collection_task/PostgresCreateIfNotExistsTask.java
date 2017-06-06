@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_create_if_not_exists_task;
+package info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_task;
 
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.database.interfaces.istorage_connection.ISto
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
-import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -19,7 +18,7 @@ import java.sql.PreparedStatement;
 /**
  * The database task which is create documents collection if not already exists in Postgres database.
  */
-public class PostgresCreateIfNotExistsTask implements IDatabaseTask {
+public final class PostgresCreateIfNotExistsTask implements IDatabaseTask {
     /**
      * Connection to the database.
      */
@@ -39,6 +38,7 @@ public class PostgresCreateIfNotExistsTask implements IDatabaseTask {
 
     /**
      * Creates the task
+     *
      * @param connection the database connection
      */
     public PostgresCreateIfNotExistsTask(final IStorageConnection connection) {
@@ -52,7 +52,7 @@ public class PostgresCreateIfNotExistsTask implements IDatabaseTask {
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();
-            PostgresSchema.createIfNotExists(preparedQuery, collection, options);
+            CreateTableIfNotExistsSchema.createIfNotExists(preparedQuery, collection, options);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }

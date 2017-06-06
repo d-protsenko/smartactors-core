@@ -186,34 +186,6 @@ public class PostgresSchemaTest {
     }
 
     @Test
-    public void testCreateIfNotExists() throws QueryBuildException {
-        PostgresSchema.createIfNotExists(statement, collection, null);
-        assertEquals(
-                "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
-                        "BEGIN RETURN source::text::timestamptz; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
-                        "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
-                        "BEGIN RETURN to_json(source)::jsonb; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
-                        "CREATE TABLE IF NOT EXISTS test_collection (document jsonb NOT NULL);\n" +
-                        "do\n" +
-                        "$$\n" +
-                        "begin\n" +
-                        "if not exists (\n" +
-                        "select indexname\n" +
-                        "    from pg_indexes\n" +
-                        "    where tablename = 'test_collection'\n" +
-                        "        and indexname = 'test_collection_pkey'\n" +
-                        ")\n" +
-                        "then\n" +
-                        "    CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
-                        "end if;\n" +
-                        "end \n" +
-                        "$$;",
-                body.toString());
-    }
-
-    @Test
     public void testDelete() throws QueryBuildException {
         PostgresSchema.delete(statement, collection);
         assertEquals("DELETE FROM test_collection " +

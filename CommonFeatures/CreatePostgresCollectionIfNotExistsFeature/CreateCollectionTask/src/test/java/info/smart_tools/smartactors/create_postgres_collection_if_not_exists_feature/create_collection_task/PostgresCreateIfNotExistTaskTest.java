@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_create_if_not_exists_task;
+package info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_task;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;

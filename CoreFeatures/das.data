@@ -830,14 +830,6 @@
   "rawName" : "PostgresCreateCollectionTask",
   "version" : "0.3.3"
 }, {
-  "artifactId" : "database-postgresql.postgres-create-if-not-exists-task",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "PostgresCreateCollectionIfNotExistsTask",
-  "version" : "0.3.3"
-}, {
   "artifactId" : "database-postgresql.postgres-upsert-task",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
