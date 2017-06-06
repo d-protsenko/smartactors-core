@@ -3,7 +3,7 @@
 if [ "$1" = "make" ]
 then
     echo "make project"
-    mvn clean package
+    mvn clean install package
 elif [ "$1" = "deploy" ]
 then
     echo "deploy project components"

@@ -32,6 +32,7 @@
         <module>StrategyStorageWithCacheStrategy</module>
         <module>IUpCounter</module>
         <module>UpCounter</module>
+        <module>ISynchronousService</module>
         <module>BaseDistribution</module>
     </modules>
     <build>

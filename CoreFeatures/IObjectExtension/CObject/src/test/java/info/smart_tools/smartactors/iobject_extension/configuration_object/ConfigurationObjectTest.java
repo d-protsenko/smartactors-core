@@ -1,15 +1,12 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -21,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,21 +132,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IBiFunction findValueByArgument = (map, arg) -> {
-            char[] symbols = arg.toString().toCharArray();
-            String defaultKey = "default";
-            IResolveDependencyStrategy strategy = null;
-            StringBuilder key = new StringBuilder();
-            for (char c : symbols) {
-                key.append(c);
-                strategy = ((Map<String, IResolveDependencyStrategy>)map).get(key.toString());
-                if (null != strategy) {
-                    break;
-                }
-            }
-            return null != strategy ? strategy : ((Map<String, IResolveDependencyStrategy>)map).get(defaultKey);
-        };
-        IResolveDependencyStrategy strategy = new StrategyStorageStrategy((a) -> a, findValueByArgument);
+        IResolveDependencyStrategy strategy = new CObjectStrategy();
         ((IAdditionDependencyStrategy) strategy).register("in_", inStrategy);
         ((IAdditionDependencyStrategy) strategy).register("out_", outStrategy);
         ((IAdditionDependencyStrategy) strategy).register("default", defaultStrategy);

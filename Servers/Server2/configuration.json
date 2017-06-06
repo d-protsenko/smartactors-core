@@ -44,171 +44,175 @@
   ],
   "maps": [
     {
-      "id": "loadFeatures",
-      "steps": [
+      "id":"loadFeatures",
+      "steps":[
         {
-          "target": "feature-manager",
-          "handler": "addFeatures",
-          "wrapper": {
-            "in_getFeatures": "message/features",
-            "in_getMessageProcessor": "processor",
-            "in_getScatterChainName": "const/chainOfScatteredFeatures"
-          }
+          "handler":"addFeatures",
+          "wrapper":{
+            "in_getScatterChainName":"const/chainOfScatteredFeatures",
+            "in_getMessageProcessor":"processor",
+            "in_getFeatures":"message/features"
+          },
+          "target":"feature-manager"
         },
         {
-          "target": "feature-manager",
-          "handler": "getState",
-          "wrapper": {
-            "out_setLoadedFeatures": "message/loadedFeatures",
-            "out_setFailedFeatures": "message/failedFeatures",
-            "out_setProcessingFeatures": "message/processingFeatures",
-            "out_setFrozenFeatureProcesses": "message/frozenFeatureProcesses",
-            "out_setFrozenRequests": "message/frozenFeatureRequests"
-          }
+          "handler":"getState",
+          "wrapper":{
+            "out_setFrozenRequests":"message/frozenFeatureRequests",
+            "out_setLoadedFeatures":"message/loadedFeatures",
+            "out_setFailedFeatures":"message/failedFeatures",
+            "out_setProcessingFeatures":"message/processingFeatures",
+            "out_setFrozenFeatureProcesses":"message/frozenFeatureProcesses"
+          },
+          "target":"feature-manager"
         }
       ],
-      "exceptional": []
-    },
-    {
-      "id": "chainOfScatteredFeatures",
-      "steps": [
-        {
-          "target": "download-feature-actor",
-          "handler": "download",
-          "wrapper": {
-            "in_getFeature": "message/feature"
-          }
-        },
-        {
-          "target": "feature-manager",
-          "handler": "onFeatureStepCompleted",
-          "wrapper": {
-            "in_getFeature": "message/feature",
-            "in_getMessageProcessor": "processor",
-            "in_getFeatureProcess": "message/featureProcess"
-          }
-        },
-        {
-          "target": "unzip-feature-actor",
-          "handler": "unzip",
-          "wrapper": {
-            "in_getFeature": "message/feature"
-          }
-        },
-        {
-          "target": "feature-manager",
-          "handler": "onFeatureStepCompleted",
-          "wrapper": {
-            "in_getFeature": "message/feature",
-            "in_getMessageProcessor": "processor",
-            "in_getFeatureProcess": "message/featureProcess"
-          }
-        },
-        {
-          "target": "load-feature-actor",
-          "handler": "load",
-          "wrapper": {
-            "in_getFeature": "message/feature"
-          }
-        },
-        {
-          "target": "feature-manager",
-          "handler": "onFeatureLoaded",
-          "wrapper": {
-            "in_getFeature": "message/feature"
-          }
-        }
-      ],
-      "exceptional": []
-    },
-    {
-      "id": "loadCoreFeaturesAndFeatures",
-      "steps": [
-        {
-          "target": "all-in-directory-feature-tracker",
-          "handler": "addFeatures",
-          "wrapper": {
-            "in_getPath": "const/corefeatures",
-            "out_setFeatures": "message/features"
-          }
-        },
-        {
-          "target": "constant_chain_call_receiver",
-          "chain": "loadFeatures"
-        },
-        {
-          "target": "all-in-directory-feature-tracker",
-          "handler": "addFeatures",
-          "wrapper": {
-            "in_getPath": "const/features",
-            "out_setFeatures": "message/features"
-          }
-        },
-        {
-          "target": "constant_chain_call_receiver",
-          "chain": "loadFeatures"
-        }
-      ],
-      "exceptional": []
-    },
-    {
-      "id": "createFeatures",
-      "steps": [
-        {
-          "target": "features-creator",
-          "handler": "createFeaturesByMessage",
-          "wrapper": {
-            "in_getFeaturesDescription": "message/featuresDescription",
-            "in_getRepositoriesDescription": "message/repositoriesDescription",
-            "in_getFeatureDirectory": "const/features",
-            "out_setFeatures": "message/features"
-          }
-        },
-        {
-          "target": "constant_chain_call_receiver",
-          "chain": "loadFeatures"
-        }
-      ],
-      "exceptional": [
+      "exceptional":[
       ]
     },
     {
-      "id": "onNewFile",
-      "steps": [
+      "id":"chainOfScatteredFeatures",
+      "steps":[
         {
-          "target": "features-creator",
-          "handler": "createMessageByFile",
-          "wrapper": {
-            "in_getFileName": "message/fileName",
-            "in_getObservedDirectory": "message/observedDirectory",
-            "out_setJsonFeaturesDescription": "message/featuresDescription",
-            "out_setJsonRepositoriesDescription": "message/repositoriesDescription"
-          }
+          "handler":"download",
+          "wrapper":{
+            "in_getFeature":"message/feature"
+          },
+          "target":"download-feature-actor"
         },
         {
-          "target": "constant_chain_call_receiver",
-          "chain": "createFeatures"
+          "handler":"onFeatureStepCompleted",
+          "wrapper":{
+            "in_getFeature":"message/feature",
+            "in_getMessageProcessor":"processor",
+            "in_getFeatureProcess":"message/featureProcess"
+          },
+          "target":"feature-manager"
+        },
+        {
+          "handler":"unzip",
+          "wrapper":{
+            "in_getFeature":"message/feature"
+          },
+          "target":"unzip-feature-actor"
+        },
+        {
+          "handler":"onFeatureStepCompleted",
+          "wrapper":{
+            "in_getFeature":"message/feature",
+            "in_getMessageProcessor":"processor",
+            "in_getFeatureProcess":"message/featureProcess"
+          },
+          "target":"feature-manager"
+        },
+        {
+          "handler":"load",
+          "wrapper":{
+            "in_getFeature":"message/feature",
+            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
+          },
+          "target":"load-feature-actor"
+        },
+        {
+          "handler":"onFeatureLoaded",
+          "wrapper":{
+            "in_getFeature":"message/feature",
+            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
+          },
+          "target":"feature-manager"
         }
       ],
-      "exceptional": [
+      "exceptional":[
       ]
     },
     {
-      "id": "runDirectoryWatcher",
-      "steps": [
+      "id":"loadCoreFeaturesAndFeatures",
+      "steps":[
         {
-          "target": "directory-watcher",
-          "handler": "startService",
-          "wrapper": {
-            "in_getObservedDirectory": "message/observedDirectory",
-            "in_getExecutionChain": "message/executionChain",
-            "in_getFileNameFieldName": "message/fileNameFieldName",
-            "in_getObservedDirectoryFieldName": "message/observedDirectoryFieldName"
-          }
+          "handler":"addFeatures",
+          "wrapper":{
+            "out_setFeatures":"message/features",
+            "in_getPath":"const/corefeatures"
+          },
+          "target":"all-in-directory-feature-tracker"
+        },
+        {
+          "chain":"loadFeatures",
+          "target":"constant_chain_call_receiver"
+        },
+        {
+          "handler":"addFeatures",
+          "wrapper":{
+            "out_setFeatures":"message/features",
+            "in_getPath":"const/features"
+          },
+          "target":"all-in-directory-feature-tracker"
+        },
+        {
+          "chain":"loadFeatures",
+          "target":"constant_chain_call_receiver"
         }
       ],
-      "exceptional": [
+      "exceptional":[
       ]
+    },
+    {
+      "id":"createFeatures",
+      "steps":[
+        {
+          "handler":"createFeaturesByMessage",
+          "wrapper":{
+            "in_getFeaturesDescription":"message/featuresDescription",
+            "out_setFeatures":"message/features",
+            "in_getRepositoriesDescription":"message/repositoriesDescription",
+            "in_getFeatureDirectory":"const/features"
+          },
+          "target":"features-creator"
+        },
+        {
+          "chain":"loadFeatures",
+          "target":"constant_chain_call_receiver"
+        }
+      ],
+      "exceptional":[
+      ]
+    },
+    {
+      "id":"onNewFile",
+      "steps":[
+        {
+          "handler":"createMessageByFile",
+          "wrapper":{
+            "in_getFileName":"message/fileName",
+            "in_getObservedDirectory":"message/observedDirectory",
+            "out_setJsonRepositoriesDescription":"message/repositoriesDescription",
+            "out_setJsonFeaturesDescription":"message/featuresDescription"
+          },
+          "target":"features-creator"
+        },
+        {
+          "chain":"createFeatures",
+          "target":"constant_chain_call_receiver"
+        }
+      ],
+      "exceptional":[
+      ]
+    },
+    {
+      "id":"runDirectoryWatcher",
+      "steps":[
+        {
+          "handler":"startService",
+          "wrapper":{
+            "in_getExecutionChain":"message/executionChain",
+            "in_getObservedDirectory":"message/observedDirectory",
+            "in_getObservedDirectoryFieldName":"message/observedDirectoryFieldName",
+            "in_getFileNameFieldName":"message/fileNameFieldName"
+          },
+          "target":"directory-watcher"
+        }
+      ],
+      "exceptional":[]
     }
   ],
   "onFeatureLoading": [

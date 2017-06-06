@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -66,14 +67,15 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                         };
 
                         IKey typeStrategy = Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
-//                        ResolveByTypeStrategy resolveStrategy = new ResolveByTypeStrategy();
+                        IKey expandableTypeStrategy = Keys.getOrAdd("expandable_strategy#" + IObject.class.getCanonicalName());
                         IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                         ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
                         ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
+                        IOC.register(expandableTypeStrategy, new SingletonStrategy(resolveStrategy));
                     } catch (ResolutionException e) {
                         throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't get ResolveIObjectByTypeStrategies key", e);
-                    } catch (RegistrationException | AdditionDependencyStrategyException e) {
+                    } catch (RegistrationException | AdditionDependencyStrategyException | InvalidArgumentException e) {
                         throw new ActionExecuteException("ResolveIObjectByTypeStrategies plugin can't load: can't register new strategy", e);
                     }
                 });

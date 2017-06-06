@@ -21,6 +21,13 @@
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -50,18 +57,18 @@
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.strategy-storage-strategy</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>-->
+            <!--<version>[0.0.1, 1.0.0)</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>info.smart_tools.smartactors</groupId>-->
+            <!--<artifactId>base.strategy.strategy-storage-strategy</artifactId>-->
+            <!--<version>[0.0.1, 1.0.0)</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
     </dependencies>
     <build>
         <pluginManagement>

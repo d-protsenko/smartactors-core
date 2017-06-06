@@ -62,23 +62,23 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
     }
 
     @Override
-    public void register(Object arg, IResolveDependencyStrategy value)
+    public void register(Object key, IResolveDependencyStrategy value)
             throws AdditionDependencyStrategyException {
         try {
-            this.dropCacheFor(arg);
-            this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);
-        } catch (DropCacheException | FunctionExecutionException | InvalidArgumentException e) {
+            this.dropCacheFor(key);
+            this.strategyStorage.put(key, value);
+        } catch (DropCacheException e) {
             throw new AdditionDependencyStrategyException(e);
         }
     }
 
     @Override
-    public void remove(Object arg)
+    public void remove(Object key)
             throws AdditionDependencyStrategyException {
         try {
-            this.dropCacheFor(arg);
-            this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
-        } catch (DropCacheException | FunctionExecutionException | InvalidArgumentException e) {
+            this.dropCacheFor(key);
+            this.strategyStorage.remove(key);
+        } catch (DropCacheException e) {
             throw new AdditionDependencyStrategyException(e);
         }
     }
@@ -90,10 +90,10 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
     }
 
     @Override
-    public void dropCacheFor(final Object arg)
+    public void dropCacheFor(final Object key)
             throws DropCacheException {
         try {
-            this.cacheStrategiesMap.remove(this.argToKeyFunction.execute(arg));
+            this.cacheStrategiesMap.remove(key);
         } catch (Throwable e) {
             throw new DropCacheException(e);
         }

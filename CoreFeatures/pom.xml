@@ -75,6 +75,8 @@
         <module>Debugger</module>
         <module>Debugger-plugins</module>
         <module>Shutdown-plugins</module>
+        <module>SchedulerAutoStartup</module>
+        <module>CheckpointAutoStartup</module>
     </modules>
 
     <build>
