@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.Writer;
 
 public final class CreateIndexIfNotExistsSchema {
+    private CreateIndexIfNotExistsSchema() {
+    }
+
     /**
      * Writes the primary key definition if not exists.
      *

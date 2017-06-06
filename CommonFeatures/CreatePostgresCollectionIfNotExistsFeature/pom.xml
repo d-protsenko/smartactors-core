@@ -16,6 +16,7 @@
 
     <modules>
         <module>CreateCollectionTask</module>
+        <module>CreateCollectionPlugin</module>
         <module>CreatePostgresCollectionIfNotExistsFeatureDistribution</module>
     </modules>
 

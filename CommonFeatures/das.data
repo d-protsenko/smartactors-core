@@ -131,7 +131,12 @@
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
-  "plugins" : [ ],
+  "plugins" : [ {
+  "artifactId" : "create-collection-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "CreateCollectionPlugin",
+  "version" : "0.3.3"
+} ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "create-postgres-collection-if-not-exists-feature",
   "rawName" : "CreatePostgresCollectionIfNotExistsFeature",

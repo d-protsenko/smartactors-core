@@ -15,6 +15,9 @@ public final class CreateTableIfNotExistsSchema {
      */
     public static final String DOCUMENT_COLUMN = "document";
 
+    private CreateTableIfNotExistsSchema() {
+    }
+
 
     /**
      * Fills the statement body with the CREATE TABLE IF NOT EXISTS sentence and CREATE INDEX sentences
