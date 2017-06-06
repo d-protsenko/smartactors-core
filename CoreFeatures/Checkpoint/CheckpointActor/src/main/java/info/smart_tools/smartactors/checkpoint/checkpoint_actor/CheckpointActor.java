@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
+import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
+import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.EnteringMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.FeedbackMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.StartStopMessage;
@@ -61,9 +63,11 @@ public class CheckpointActor {
      * @throws ReadValueException if error occurs reading actor description
      * @throws InvalidArgumentException if some methods do not accept our arguments
      * @throws ActionExecuteException if error occurs executing scheduler service activation action
+     * @throws UpCounterCallbackExecutionException if the system is shutting down and error occurs executing any callback
      */
     public CheckpointActor(final IObject args)
-            throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecuteException {
+            throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecuteException,
+                   UpCounterCallbackExecutionException {
         //
         responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
         checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
@@ -99,6 +103,17 @@ public class CheckpointActor {
 
         //
         feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
+
+        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        upCounter.onShutdownRequest(mode -> {
+            try {
+                service.stop();
+            } catch (IllegalServiceStateException ignore) {
+                // Service is stopped, OK
+            } catch (ServiceStopException e) {
+                throw new ActionExecuteException(e);
+            }
+        });
     }
 
     /**
