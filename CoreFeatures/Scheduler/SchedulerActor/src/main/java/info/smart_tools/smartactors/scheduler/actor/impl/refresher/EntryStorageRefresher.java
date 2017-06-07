@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousServ
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -212,8 +213,10 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
                         ISchedulerEntry localEntry = entryStorage.getLocalEntry(id);
 
                         if (null == localEntry) {
-                            ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
-                            remoteEntryStorage.weakSaveEntry(newEntry);
+                            if (entryStorage.getFilter().testRestore(entryState)) {
+                                ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
+                                remoteEntryStorage.weakSaveEntry(newEntry);
+                            }
                         } else {
                             entryStorage.notifyActive(localEntry);
                         }
@@ -245,7 +248,8 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
                     stop();
                 }
             }
-        } catch (EntryStorageAccessException | EntryScheduleException | TaskScheduleException | ServiceStopException e) {
+        } catch (EntryStorageAccessException | EntryScheduleException | TaskScheduleException | ServiceStopException
+                | SchedulerEntryFilterException e) {
             throw new TaskExecutionException(e);
         } catch (IllegalServiceStateException ignore) {
             // Refresher is already stopped manually, before timeout;

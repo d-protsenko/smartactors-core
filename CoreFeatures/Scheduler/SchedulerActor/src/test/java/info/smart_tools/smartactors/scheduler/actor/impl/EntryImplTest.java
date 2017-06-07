@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -38,6 +39,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     private ITimerTask timerTask;
     private ITimerTask timerTask2;
     private ISchedulerAction action;
+    private ISchedulerEntryFilter filter;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -57,6 +59,10 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         timerTask = mock(ITimerTask.class);
         timerTask2 = mock(ITimerTask.class);
         action = new DefaultSchedulerAction();
+        filter = mock(ISchedulerEntryFilter.class);
+
+        when(filter.testExec(any())).thenReturn(true);
+        when(storage.getFilter()).thenReturn(filter);
 
         when(storage.getTimer()).thenReturn(timer);
         when(timer.schedule(any(), anyLong())).thenReturn(timerTask).thenThrow(AssertionError.class);

@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -45,6 +46,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy restoreEntryStrategy;
     private ArgumentCaptor<ITask> taskArgumentCaptor;
     private ArgumentCaptor<Long> timeArgumentCaptor;
+    private ISchedulerEntryFilter filterMock;
 
     private ISchedulerEntry entries[];
     private IObject states[];
@@ -67,6 +69,10 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
         storageMock = mock(EntryStorage.class);
         remoteStorageMock = mock(IRemoteEntryStorage.class);
         restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
+        filterMock = mock(ISchedulerEntryFilter.class);
+
+        when(filterMock.testRestore(any())).thenReturn(true);
+        when(storageMock.getFilter()).thenReturn(filterMock);
 
         taskArgumentCaptor = ArgumentCaptor.forClass(ITask.class);
         timeArgumentCaptor = ArgumentCaptor.forClass(long.class);

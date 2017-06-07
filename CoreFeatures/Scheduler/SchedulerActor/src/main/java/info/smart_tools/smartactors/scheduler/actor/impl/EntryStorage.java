@@ -1,16 +1,20 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
+import info.smart_tools.smartactors.scheduler.actor.impl.filter.AllPassEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
@@ -39,6 +43,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
     private final List<ISchedulerEntry> refreshSuspendList;
     private final HashSet<String>[] recentlyDeletedIdSets;
     private int refreshIterationCounter;
+
+    private ISchedulerEntryFilter filter = AllPassEntryFilter.INSTANCE;
 
     private final Object localStorageLock;
 
@@ -200,6 +206,20 @@ public class EntryStorage implements ISchedulerEntryStorage {
         return this.timer;
     }
 
+    @Override
+    public ISchedulerEntryFilter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public void setFilter(final ISchedulerEntryFilter filter) throws InvalidArgumentException {
+        if (null == filter) {
+            throw new InvalidArgumentException("Filter should not be null.");
+        }
+
+        this.filter = filter;
+    }
+
     /**
      * Suspend active entries that are scheduled on too late time and awake suspended entries scheduled for not-so late time.
      *
@@ -213,9 +233,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
      * @param suspendAfter    the time entries scheduled after should be suspended
      * @throws EntryStorageAccessException if error occurs accessing entry storage while awakening/suspending some entry
      * @throws EntryScheduleException if error occurs rescheduling some entry to awake it
+     * @throws SchedulerEntryFilterException if error occurs interacting {@link ISchedulerEntryFilter entry filter}
      */
     public void refresh(final long awakeUntil, final long suspendAfter)
-            throws EntryStorageAccessException, EntryScheduleException {
+            throws EntryStorageAccessException, EntryScheduleException, SchedulerEntryFilterException {
         synchronized (localStorageLock) {
             // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
             // map we are iterating over)
@@ -239,7 +260,9 @@ public class EntryStorage implements ISchedulerEntryStorage {
             }
 
             for (ISchedulerEntry entry : refreshAwakeList) {
-                entry.awake();
+                if (filter.testAwake(entry)) {
+                    entry.awake();
+                }
             }
 
             for (ISchedulerEntry entry : refreshSuspendList) {
