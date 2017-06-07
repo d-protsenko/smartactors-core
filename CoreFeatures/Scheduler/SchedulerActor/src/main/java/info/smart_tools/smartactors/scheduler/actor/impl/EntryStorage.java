@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of {@link ISchedulerEntryStorage}.
@@ -46,7 +48,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private ISchedulerEntryFilter filter = AllPassEntryFilter.INSTANCE;
 
-    private final Object localStorageLock;
+    private final Lock localStorageLock;
+    private final Object refreshLock;
 
     private boolean isEntryCancelledRecently(final String id) {
         return recentlyDeletedIdSets[0].contains(id) || recentlyDeletedIdSets[1].contains(id);
@@ -75,7 +78,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
         recentlyDeletedIdSets = new HashSet[] {new HashSet<>(), new HashSet<>()};
         refreshIterationCounter = 0;
 
-        localStorageLock = new Object();
+        localStorageLock = new ReentrantLock();
+        refreshLock = new Object();
     }
 
     /**
@@ -101,7 +105,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException {
         final String entryId = entry.getId();
 
-        synchronized (localStorageLock) {
+        localStorageLock.lock();
+        try {
             if (isEntryCancelledRecently(entryId)) {
                 try {
                     entry.cancel();
@@ -129,6 +134,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
                     throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
                 }
             }
+        } finally {
+            localStorageLock.unlock();
         }
 
         remoteEntryStorage.weakSaveEntry(entry);
@@ -136,7 +143,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     @Override
     public void notifyInactive(final ISchedulerEntry entry, final boolean keepReference) throws EntryStorageAccessException {
-        synchronized (localStorageLock) {
+        localStorageLock.lock();
+        try {
             activeEntries.remove(entry.getId(), entry);
 
             if (keepReference) {
@@ -144,13 +152,16 @@ public class EntryStorage implements ISchedulerEntryStorage {
             } else {
                 weakSuspendEntries.put(entry.getId(), new WeakReference<>(entry));
             }
+        } finally {
+            localStorageLock.unlock();
         }
     }
 
     @Override
     public void delete(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
-        synchronized (localStorageLock) {
+        localStorageLock.lock();
+        try {
             try {
                 recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
@@ -162,6 +173,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
             } catch (SchedulerEntryStorageObserverException e) {
                 throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
             }
+        } finally {
+            localStorageLock.unlock();
         }
 
         // It's safe to delete entry from database outside of critical section as we remember that
@@ -172,12 +185,15 @@ public class EntryStorage implements ISchedulerEntryStorage {
     @Override
     public List<ISchedulerEntry> listLocalEntries()
             throws EntryStorageAccessException {
-        synchronized (localStorageLock) {
+        localStorageLock.lock();
+        try {
             List<ISchedulerEntry> localEntries = new ArrayList<>(activeEntries.size() + strongSuspendEntries.size());
             localEntries.addAll(activeEntries.values());
             localEntries.addAll(strongSuspendEntries.values());
             // TODO:: Enumerate remote entries (?)
             return localEntries;
+        } finally {
+            localStorageLock.unlock();
         }
     }
 
@@ -237,26 +253,31 @@ public class EntryStorage implements ISchedulerEntryStorage {
      */
     public void refresh(final long awakeUntil, final long suspendAfter)
             throws EntryStorageAccessException, EntryScheduleException, SchedulerEntryFilterException {
-        synchronized (localStorageLock) {
-            // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
-            // map we are iterating over)
-            refreshAwakeList.clear();
-            refreshSuspendList.clear();
+        synchronized (refreshLock) {
+            localStorageLock.lock();
+            try {
+                // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
+                // map we are iterating over)
+                refreshAwakeList.clear();
+                refreshSuspendList.clear();
 
-            for (ISchedulerEntry suspendedEntry : strongSuspendEntries.values()) {
-                if (suspendedEntry.getLastTime() < awakeUntil) {
-                    refreshAwakeList.add(suspendedEntry);
+                for (ISchedulerEntry suspendedEntry : strongSuspendEntries.values()) {
+                    if (suspendedEntry.getLastTime() < awakeUntil) {
+                        refreshAwakeList.add(suspendedEntry);
+                    }
                 }
-            }
 
-            for (ISchedulerEntry activeEntry : activeEntries.values()) {
-                if (activeEntry.getLastTime() > suspendAfter) {
-                    refreshSuspendList.add(activeEntry);
-                } else if (activeEntry.getLastTime() < awakeUntil && !activeEntry.isAwake()) {
-                    // Awake entries loaded by refresher and "zombie" entries -- cancelled but remaining in list of active (they should
-                    // delete themselves)
-                    refreshAwakeList.add(activeEntry);
+                for (ISchedulerEntry activeEntry : activeEntries.values()) {
+                    if (activeEntry.getLastTime() > suspendAfter) {
+                        refreshSuspendList.add(activeEntry);
+                    } else if (activeEntry.getLastTime() < awakeUntil && !activeEntry.isAwake()) {
+                        // Awake entries loaded by refresher and "zombie" entries -- cancelled but remaining in list of active (they should
+                        // delete themselves)
+                        refreshAwakeList.add(activeEntry);
+                    }
                 }
+            } finally {
+                localStorageLock.unlock();
             }
 
             for (ISchedulerEntry entry : refreshAwakeList) {
@@ -283,7 +304,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
      * @throws CancelledLocalEntryRequestException if the required entry was cancelled recently
      */
     public ISchedulerEntry getLocalEntry(final String id) throws CancelledLocalEntryRequestException {
-        synchronized (localStorageLock) {
+        localStorageLock.lock();
+        try {
             if (isEntryCancelledRecently(id)) {
                 throw new CancelledLocalEntryRequestException();
             }
@@ -307,6 +329,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
             }
 
             return null;
+        } finally {
+            localStorageLock.unlock();
         }
     }
 }

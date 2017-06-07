@@ -1,14 +1,17 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.scheduler.actor.impl.filter.AllPassEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tasks_plugin.PluginInMemoryDBTasks;
@@ -283,5 +286,26 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
     public void Should_storeTimer()
             throws Exception {
         assertSame(timerMock, new EntryStorage(remoteEntryStorage, null).getTimer());
+    }
+
+    @Test
+    public void Should_storeFilterReference()
+            throws Exception {
+        EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
+
+        assertTrue(storage.getFilter() instanceof AllPassEntryFilter);
+
+        ISchedulerEntryFilter filterMock = mock(ISchedulerEntryFilter.class);
+
+        storage.setFilter(filterMock);
+
+        assertSame(filterMock, storage.getFilter());
+
+        try {
+            storage.setFilter(null);
+            fail();
+        } catch (InvalidArgumentException ignore) { }
+
+        assertSame(filterMock, storage.getFilter());
     }
 }
