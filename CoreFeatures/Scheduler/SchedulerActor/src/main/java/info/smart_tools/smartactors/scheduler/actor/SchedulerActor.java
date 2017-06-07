@@ -23,6 +23,7 @@ import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMes
 import info.smart_tools.smartactors.scheduler.actor.wrappers.SetEntryIdMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.StartStopMessage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
@@ -76,9 +77,9 @@ public class SchedulerActor {
                 throw new ActionExecuteException(e);
             }
         });
-        upCounter.onShutdownRequest(mode -> {
-            // TODO:: Make service execute only tasks marked to be executed in pre-shutdown state
-        });
+        // Execute only entries with "preShutdownExec" flag after shutdown request received
+        ISchedulerEntryFilter preShutdownModeFilter = IOC.resolve(Keys.getOrAdd("pre shutdown mode entry filter"));
+        upCounter.onShutdownRequest(mode -> service.getEntryStorage().setFilter(preShutdownModeFilter));
     }
 
     /**

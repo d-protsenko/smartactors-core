@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -55,6 +56,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy newEntryStrategy;
     private ISchedulerEntry entryMock;
     private IQueue taskQueueMock;
+    private ISchedulerEntryFilter preShutdownModeEntryFilterMock;
 
     private IUpCounter upCounterMock;
 
@@ -126,6 +128,9 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         upCounterMock = mock(IUpCounter.class);
         IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(upCounterMock));
+
+        preShutdownModeEntryFilterMock = mock(ISchedulerEntryFilter.class);
+        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
     }
 
     @Test
@@ -242,6 +247,8 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
 
-        // TODO:: Implement callback and test it
+        callbackCaptor.getValue().execute(null);
+
+        verify(storage).setFilter(same(preShutdownModeEntryFilterMock));
     }
 }
