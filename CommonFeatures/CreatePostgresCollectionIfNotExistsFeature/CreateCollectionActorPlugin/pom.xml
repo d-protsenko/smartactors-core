@@ -8,13 +8,13 @@
         <version>0.3.3</version>
     </parent>
 
-    <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-plugin</artifactId>
+    <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-actor-plugin</artifactId>
     <version>0.3.3</version>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-task</artifactId>
+            <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-actor</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <!-- Components of info.smart_tools.smartactors.base -->
@@ -75,12 +75,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ifield</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
@@ -155,7 +149,18 @@
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-plugin</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.strategy-container</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

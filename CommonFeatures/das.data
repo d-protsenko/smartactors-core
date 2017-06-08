@@ -129,12 +129,22 @@
   "uploadRepositories" : [ ],
   "rawName" : "PostgresCreateCollectionIfNotExistsTask",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "create-collection-actor",
+  "uploadRepositories" : [ ],
+  "rawName" : "CreateCollectionActor",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ {
   "artifactId" : "create-collection-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "create-collection-actor-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "CreateCollectionActorPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",

@@ -1,0 +1,41 @@
+package info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_actor_plugin;
+
+import info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_actor.CreateCollectionActor;
+import info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_actor.exception.CreateCollectionActorException;
+import info.smart_tools.smartactors.create_postgres_collection_if_not_exists_feature.create_collection_plugin.CreateCollectionPlugin;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+
+public class CreateCollectionActorPluginTest {
+    @Before
+    public void setUp() throws Exception {
+        Bootstrap bootstrap = new Bootstrap();
+        new PluginIOCSimpleContainer(bootstrap).load();
+        new PluginIOCKeys(bootstrap).load();
+        new IFieldNamePlugin(bootstrap).load();
+        new IFieldPlugin(bootstrap).load();
+        new PluginDSObject(bootstrap).load();
+        new TestConnectionOptionsPlugin(bootstrap).load();
+        new TestPostgresConnectionPoolPlugin(bootstrap).load();
+        new CreateCollectionPlugin(bootstrap).load();
+        new CreateCollectionActorPlugin(bootstrap).load();
+        bootstrap.start();
+    }
+
+    @Test
+    public void testCreateTaskInitializedWithoutOptions() throws ResolutionException, CreateCollectionActorException {
+        Object actor = IOC.resolve(Keys.getOrAdd("CreateCollectionIfNotExistsActor"));
+        assertTrue(actor instanceof CreateCollectionActor);
+    }
+}

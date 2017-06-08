@@ -8,21 +8,16 @@
         <version>0.3.3</version>
     </parent>
 
-    <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-plugin</artifactId>
+    <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-actor</artifactId>
     <version>0.3.3</version>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>create-postgres-collection-if-not-exists-feature.create-collection-task</artifactId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <!-- Components of info.smart_tools.smartactors.base -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
@@ -45,29 +40,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaction</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.feature-loading-system -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
+            <artifactId>base.interfaces.ipool</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
+            <artifactId>base.pool-guard</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <artifactId>task.interfaces.itask</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
@@ -78,18 +61,7 @@
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ifield</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-
         <!-- Components of info.smart_tools.smartactors.ioc -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.iioccontainer</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
@@ -98,11 +70,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.ikey</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
@@ -115,47 +82,10 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc-plugins.ioc-simple-container-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>field-plugins.field-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
