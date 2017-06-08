@@ -12,5 +12,21 @@
       "dependency": "CreateCollectionIfNotExistsActor",
       "name": "CreateCollectionIfNotExists"
     }
+  ],
+  "maps": [
+    {
+      "id": "createCollections",
+      "externalAccess": false,
+      "steps": [
+        {
+          "target": "CreateCollectionIfNotExists",
+          "handler": "createTable",
+          "wrapper": {
+            "in_getCollectionName": "message/collectionName"
+          }
+        }
+      ],
+      "exceptional": []
+    }
   ]
 }
