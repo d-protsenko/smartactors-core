@@ -7,32 +7,26 @@ This feature has custom
 - `IDatabaseTask` to create collection if not exists
 - `Actor` to create collection by a name.
 
-To utilize this feature you can create a chain with the `CreateCollectionActor` inside.
+To utilize this feature you can just add `onFeatureLoading` section in your feature, where a message will be sent to create a collection. 
 
 Example:
 
 ```json
 {
-  "featureName": "create-tables",
+  "featureName": "com.my-project:create-collections",
   "afterFeatures": [
-    "create-table-plugin"
+    "info.smart_tools.smartactors:create-postgres-collection-if-not-exists-feature"
   ],
-  "maps": [
+  "onFeatureLoading": [
     {
-      "externalAccess": false,
-      "id": "CreateTables.InnerServerChain",
-      "steps": [
-        {
-          "target": "CreateCollectionIfNotExists",
-          "handler": "createTable",
-          "wrapper": {
-            "in_getCollectionName": "const/$collection_name"
-          }
-        }
+      "chain": "createCollections",
+      "messages": [
+        {"collectionName": "example_collection"}
       ]
     }
   ]
 }
+
 ```
 
 ## IOC Keys
