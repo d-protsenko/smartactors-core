@@ -32,7 +32,7 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
     }
 
     @Item("CreatePostgresCollectionIfNotExistsPlugin")
-    @After({"IOC", "IFieldNamePlugin"})
+    @After({})
     @Before("")
     public void registerCreateIfNotExistsTask() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
