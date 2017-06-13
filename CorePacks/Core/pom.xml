@@ -323,6 +323,21 @@
             <artifactId>message-processing-plugins.response-sender-receiver-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.message-bus-response-strategy-plugin</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing.null-response-strategy</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.null-response-strategy-plugin</artifactId>
+            <version>${core.version}</version>
+        </dependency>
 
         <!--shutdown-->
         <dependency>
