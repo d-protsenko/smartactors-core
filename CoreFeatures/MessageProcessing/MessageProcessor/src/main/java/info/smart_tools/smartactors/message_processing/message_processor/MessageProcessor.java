@@ -1,12 +1,18 @@
 package info.smart_tools.smartactors.message_processing.message_processor;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
+import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
+import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -16,6 +22,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -43,6 +51,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private final IFieldName argumentsFieldName;
     private final IFieldName wrapperFieldName;
     private final IFieldName processorFieldName;
+
+    private final IFieldName finalActionsFieldName;
 
     private ITask finalTask;
 
@@ -72,6 +82,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
     private final IQueue<ITask> taskQueue;
     private final IMessageProcessingSequence messageProcessingSequence;
+
+    private IUpCounter upCounter;
 
     /**
      * The constructor.
@@ -116,24 +128,49 @@ public class MessageProcessor implements ITask, IMessageProcessor {
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "arguments");
         wrapperFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper");
         processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "processor");
+        finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
 
         this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "final task"), this.environment);
+
+        this.upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
     }
 
     @Override
     public void process(final IObject theMessage, final IObject theContext)
-            throws InvalidArgumentException, ResolutionException, ChangeValueException {
+            throws InvalidArgumentException, MessageProcessorProcessException {
         // TODO: Ensure that there is no process in progress
         this.message = theMessage;
         this.context = theContext;
-        this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
 
-        environment.setValue(configFieldName, config);
-        environment.setValue(sequenceFieldName, messageProcessingSequence);
-        environment.setValue(responseFieldName, response);
-        environment.setValue(messageFieldName, theMessage);
-        environment.setValue(contextFieldName, theContext);
-        environment.setValue(processorFieldName, this);
+        try {
+            this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+
+            environment.setValue(configFieldName, config);
+            environment.setValue(sequenceFieldName, messageProcessingSequence);
+            environment.setValue(responseFieldName, response);
+            environment.setValue(messageFieldName, theMessage);
+            environment.setValue(contextFieldName, theContext);
+            environment.setValue(processorFieldName, this);
+
+            List finalActionsList = (List) context.getValue(finalActionsFieldName);
+
+            if (null == finalActionsList) {
+                finalActionsList = new ArrayList(1);
+                context.setValue(finalActionsFieldName, finalActionsList);
+            }
+
+            finalActionsList.add((IAction<IObject>) env -> {
+                try {
+                    upCounter.down();
+                } catch (UpCounterCallbackExecutionException | IllegalUpCounterState e) {
+                    throw new ActionExecuteException(e);
+                }
+            });
+
+            upCounter.up();
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | IllegalUpCounterState e) {
+            throw new MessageProcessorProcessException(e);
+        }
 
         enqueue();
     }
