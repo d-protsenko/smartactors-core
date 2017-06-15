@@ -227,12 +227,17 @@ public class HttpsEndpointPlugin implements IPlugin {
 
                                 IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-                                return new HttpsEndpoint((Integer) configuration.getValue(portFieldName),
+                                HttpsEndpoint endpoint = new HttpsEndpoint(
+                                        (Integer) configuration.getValue(portFieldName),
                                         (Integer) configuration.getValue(maxContentLengthFieldName),
                                         ScopeProvider.getCurrentScope(), environmentHandler,
                                         (String) configuration.getValue(endpointNameFieldName),
                                         (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                         sslContextProvider, upCounter);
+
+                                upCounter.onShutdownComplete(endpoint::stop);
+
+                                return endpoint;
                             } catch (ReadValueException | ScopeProviderException | ResolutionException | InvalidArgumentException
                                     | UpCounterCallbackExecutionException e) {
                                 throw new RuntimeException(e);
