@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>system-actors-pack.shutdown-actor</artifactId>
-    <version>[0.0.1, 1.0.0)</version>
+    <version>0.3.3</version>
 
     <dependencies>
         <!-- Components of info.smart_tools.smartactors.base -->

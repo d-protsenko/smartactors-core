@@ -104,7 +104,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
         upCounter.onShutdownRequest(mode -> {
-            System.out.printf("Got shutdown request with mode=\"%s\"", mode);
+            System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);
         });
 
         upCounter.onShutdownComplete(() -> {
