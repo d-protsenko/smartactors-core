@@ -7,6 +7,8 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
+import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
+import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -21,6 +23,7 @@ import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMes
 import info.smart_tools.smartactors.scheduler.actor.wrappers.SetEntryIdMessage;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.StartStopMessage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
@@ -42,9 +45,11 @@ public class SchedulerActor {
      * @throws EntryStorageAccessException if fails to download entries saved in database
      * @throws InvalidArgumentException if it occurs
      * @throws ActionExecuteException if error occurs executing service activation action
+     * @throws UpCounterCallbackExecutionException if the system is shutting down and error occurs executing any callback
      */
     public SchedulerActor(final IObject args)
-            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecuteException {
+            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecuteException,
+                   UpCounterCallbackExecutionException {
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
@@ -61,6 +66,20 @@ public class SchedulerActor {
         IAction<ISchedulerService> activationAction = IOC.resolve(
                 Keys.getOrAdd("scheduler service activation action for scheduler actor"));
         activationAction.execute(service);
+
+        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        upCounter.onShutdownComplete(() -> {
+            try {
+                service.stop();
+            } catch (IllegalServiceStateException ignore) {
+                // Service is already stopped, OK
+            } catch (ServiceStopException e) {
+                throw new ActionExecuteException(e);
+            }
+        });
+        // Execute only entries with "preShutdownExec" flag after shutdown request received
+        ISchedulerEntryFilter preShutdownModeFilter = IOC.resolve(Keys.getOrAdd("pre shutdown mode entry filter"));
+        upCounter.onShutdownRequest(mode -> service.getEntryStorage().setFilter(preShutdownModeFilter));
     }
 
     /**

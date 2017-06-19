@@ -5,11 +5,6 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -17,6 +12,12 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
@@ -188,9 +189,13 @@ public final class EntryImpl implements ISchedulerEntry {
 
     private void executeTask() throws TaskExecutionException {
         try {
+            if (!storage.getFilter().testExec(this)) {
+                return;
+            }
+
             action.execute(this);
             strategy.postProcess(this);
-        } catch (SchedulerActionExecutionException | SchedulingStrategyExecutionException e) {
+        } catch (SchedulerActionExecutionException | SchedulingStrategyExecutionException | SchedulerEntryFilterException e) {
             try {
                 strategy.processException(this, e);
             } catch (SchedulingStrategyExecutionException ee) {

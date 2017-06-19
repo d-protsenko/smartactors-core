@@ -1,8 +1,12 @@
 package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
+import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.EnteringMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.FeedbackMessage;
@@ -65,6 +69,8 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
     private IMessageProcessor messageProcessorMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
+
+    private IUpCounter upCounterMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -135,6 +141,9 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
+
+        upCounterMock = mock(IUpCounter.class);
+        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(upCounterMock));
     }
 
     @Test
@@ -369,5 +378,34 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         verify(entryMock[0]).getState();
         verifyNoMoreInteractions(entryMock[0]);
+    }
+
+    @Test
+    public void Should_registerUpCounterCallback()
+            throws Exception {
+        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                ("{" +
+                        "'connectionOptionsDependency':'the connection options'," +
+                        "'connectionPoolDependency':'the connection pool'," +
+                        "'collectionName':'" + collectionName + "'" +
+                        "}").replace('\'','"'));
+
+        CheckpointActor actor = new CheckpointActor(args);
+
+        ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
+
+        verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
+
+        callbackCaptor.getValue().execute(null);
+        verify(serviceMock).stop();
+
+        doThrow(ServiceStopException.class).when(serviceMock).stop();
+        try {
+            callbackCaptor.getValue().execute(null);
+            fail();
+        } catch (ActionExecuteException ignore) { }
+
+        doThrow(IllegalServiceStateException.class).when(serviceMock).stop();
+        callbackCaptor.getValue().execute(null);
     }
 }

@@ -38,7 +38,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
 
         @Override
         public boolean cancel() {
-            return underlyingTimerTask.cancel();
+            return null != underlyingTimerTask && underlyingTimerTask.cancel();
         }
 
         @Override

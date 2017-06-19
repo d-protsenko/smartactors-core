@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
 import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.filter.SchedulerPreShutdownModeEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
@@ -237,6 +238,21 @@ public class PluginScheduler extends BootstrapPlugin {
     }
 
     /**
+     * Register {@link info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter entry filter} for pre-shutdown scheduler
+     * mode.
+     *
+     * @throws ResolutionException if error occurs resolving key or dependencies of a filter
+     * @throws RegistrationException if error occurs registering strategy
+     * @throws InvalidArgumentException if {@link SingletonStrategy} does not like our function
+     */
+    @Item("scheduler_pre_shutdown_mode_entry_filter")
+    public void registerPreShutdownModeEntryFilter()
+            throws ResolutionException, InvalidArgumentException, RegistrationException {
+        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"),
+                new SingletonStrategy(new SchedulerPreShutdownModeEntryFilter()));
+    }
+
+    /**
      * Register scheduler actor creation strategy.
      *
      * @throws ResolutionException if error occurs resolving key
@@ -248,6 +264,7 @@ public class PluginScheduler extends BootstrapPlugin {
         "scheduler_service",
         "scheduler_entry_strategies",
         "default_scheduler_actor_service_activation_action",
+        "scheduler_pre_shutdown_mode_entry_filter",
     })
     public void registerActor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {

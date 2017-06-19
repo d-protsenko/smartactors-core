@@ -1,9 +1,14 @@
 package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
+import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -15,6 +20,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -28,6 +34,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
@@ -49,6 +56,9 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private IResolveDependencyStrategy newEntryStrategy;
     private ISchedulerEntry entryMock;
     private IQueue taskQueueMock;
+    private ISchedulerEntryFilter preShutdownModeEntryFilterMock;
+
+    private IUpCounter upCounterMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -115,6 +125,12 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         taskQueueMock = mock(IQueue.class);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
+
+        upCounterMock = mock(IUpCounter.class);
+        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(upCounterMock));
+
+        preShutdownModeEntryFilterMock = mock(ISchedulerEntryFilter.class);
+        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
     }
 
     @Test
@@ -198,5 +214,41 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         assertEquals(1, captor.getValue().size());
         assertSame(entryMock.getState(), captor.getValue().get(0));
+    }
+
+    @Test
+    public void Should_registerUpCounterShutdownCompletionCallback()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        ArgumentCaptor<IPoorAction> callbackCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+
+        verify(upCounterMock).onShutdownComplete(callbackCaptor.capture());
+
+        callbackCaptor.getValue().execute();
+        verify(service).stop();
+
+        doThrow(ServiceStopException.class).when(service).stop();
+        try {
+            callbackCaptor.getValue().execute();
+            fail();
+        } catch (ActionExecuteException ignore) { }
+
+        doThrow(IllegalServiceStateException.class).when(service).stop();
+        callbackCaptor.getValue().execute();
+    }
+
+    @Test
+    public void Should_registerUpCounterShutdownRequestCallback()
+            throws Exception {
+        SchedulerActor actor = new SchedulerActor(args);
+
+        ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
+
+        verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
+
+        callbackCaptor.getValue().execute(null);
+
+        verify(storage).setFilter(same(preShutdownModeEntryFilterMock));
     }
 }

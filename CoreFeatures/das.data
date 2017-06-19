@@ -704,6 +704,16 @@
   "rawName" : "Strategy.StrategyStorageWithCacheStrategy",
   "version" : "0.3.3"
 }, {
+  "artifactId" : "iup-counter",
+  "uploadRepositories" : [ ],
+  "rawName" : "IUpCounter",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "up-counter",
+  "uploadRepositories" : [ ],
+  "rawName" : "UpCounter",
+  "version" : "0.3.3"
+}, {
   "artifactId" : "isynchronous-service",
   "uploadRepositories" : [ ],
   "rawName" : "ISynchronousService",
@@ -3241,6 +3251,24 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "checkpoint-auto-startup",
   "rawName" : "CheckpointAutoStartup",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "root-up-counter-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "RootUpCounterPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "on-shutown-request-configuration-section-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "OnShutownRequestConfigurationSectionPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "shutdown-plugins",
+  "rawName" : "Shutdown-plugins",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
