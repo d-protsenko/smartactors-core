@@ -114,7 +114,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                     IObject message = (IObject) environment.getValue(messageFieldName);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
-                } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
+                } catch (ReadValueException | InvalidArgumentException | ResponseHandlerException |
                         ResolutionException | MessageProcessorProcessException e) {
                     throw new TaskExecutionException(e);
                 }
