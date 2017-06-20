@@ -14,7 +14,7 @@ public class FieldName implements IFieldName {
     /**
      * Pattern with valid symbols for {@code FieldName}
      */
-    private static final Pattern VALID_SYMBOLS = Pattern.compile("[\\wа-яА-ЯёЁ\\-\\+=\\|№!@#\\$%\\^&\\*:/\\.,«» \\{\\}\\(\\)\\[\\]]+");
+    private static final Pattern VALID_SYMBOLS = Pattern.compile("[\\wа-яА-ЯёЁ\\-\\+=\\|№!@#\\$%\\^&\\*:/\\.,«»\" \\{\\}\\(\\)\\[\\]]+");
 
     private String name;
 

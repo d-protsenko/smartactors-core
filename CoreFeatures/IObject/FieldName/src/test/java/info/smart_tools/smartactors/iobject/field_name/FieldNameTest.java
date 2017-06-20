@@ -42,6 +42,14 @@ public class FieldNameTest {
         assertEquals(name, fieldName.toString());
     }
 
+    @Test
+    public void checkToStringWithComma()
+            throws Exception {
+        String name = "\"";
+        IFieldName fieldName = new FieldName(name);
+        assertEquals(name, fieldName.toString());
+    }
+
     @Test (expected = InvalidArgumentException.class)
     public void checkNullArgument()
             throws Exception {
