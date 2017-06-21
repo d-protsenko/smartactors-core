@@ -16,6 +16,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.IShutdownAwareTask;
+import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.exceptions.ShutdownAwareTaskNotificationException;
+import info.smart_tools.smartactors.task.imanaged_task.IManagedTask;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -36,7 +39,7 @@ import java.util.WeakHashMap;
  * @see IMessageProcessingSequence
  * @see ITask
  */
-public class MessageProcessor implements ITask, IMessageProcessor {
+public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask, IShutdownAwareTask {
     private IObject config;
     private IObject context;
     private IObject message;
@@ -92,6 +95,7 @@ public class MessageProcessor implements ITask, IMessageProcessor {
     private final IMessageProcessingSequence messageProcessingSequence;
 
     private IUpCounter upCounter;
+    private boolean notifiedOnShutdown = false;
 
     /**
      * The constructor.
@@ -176,6 +180,8 @@ public class MessageProcessor implements ITask, IMessageProcessor {
             });
 
             upCounter.up();
+
+            notifiedOnShutdown = false;
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | IllegalUpCounterState e) {
             throw new MessageProcessorProcessException(e);
         }
@@ -369,5 +375,27 @@ public class MessageProcessor implements ITask, IMessageProcessor {
 
         this.messageProcessingSequence.reset();
         // TODO: Return message, context, response and {@code this} to the pool
+    }
+
+    @Override
+    public <T> T getAs(final Class<T> clazz) throws InvalidArgumentException {
+        if (!clazz.isInstance(this)) {
+            throw new InvalidArgumentException("Cannot represent message processor as " + clazz.getCanonicalName());
+        }
+
+        return (T) this;
+    }
+
+    @Override
+    public void notifyShuttingDown() throws ShutdownAwareTaskNotificationException {
+        if (!notifiedOnShutdown) {
+            notifiedOnShutdown = true;
+
+            try {
+                signal("shutdown signal");
+            } catch (InvalidArgumentException e) {
+                throw new ShutdownAwareTaskNotificationException(e);
+            }
+        }
     }
 }

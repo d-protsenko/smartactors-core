@@ -96,6 +96,16 @@
             <artifactId>base.iup-counter</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.imanaged-task</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>shutdown.ishutdown-aware-task</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
