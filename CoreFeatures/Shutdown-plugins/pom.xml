@@ -17,6 +17,7 @@
     <modules>
         <module>RootUpCounterPlugin</module>
         <module>OnShutownRequestConfigurationSectionPlugin</module>
+        <module>ShutdownTaskProcessingStrategiesPlugin</module>
         <module>Shutdown-pluginsDistribution</module>
     </modules>
 

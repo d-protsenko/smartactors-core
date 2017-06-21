@@ -32,6 +32,7 @@
         <module>MessageBusResponseStrategyPlugin</module>
         <module>ResponseSenderReceiverPlugin</module>
         <module>ChainModificationStrategiesPlugin</module>
+        <module>MessageProcessorShutdownPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>
     <build>
