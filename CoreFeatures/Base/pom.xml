@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>base</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>IAdditionDependencyStrategy</module>
@@ -27,6 +27,9 @@
         <module>IResourceSource</module>
         <module>IResolveDependencyStrategy</module>
         <module>IPool</module>
+        <module>StrategyStorageStrategy</module>
+        <module>ICacheable</module>
+        <module>StrategyStorageWithCacheStrategy</module>
         <module>BaseDistribution</module>
     </modules>
     <build>

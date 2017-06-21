@@ -22,11 +22,4 @@ public interface ISchedulerEntryStorageObserver {
      * @throws SchedulerEntryStorageObserverException if any error occurs
      */
     void onCancelEntry(ISchedulerEntry entry) throws SchedulerEntryStorageObserverException;
-
-    /**
-     * Called by {@link ISchedulerEntryStorage entry storage} when it finishes downloading entries from remote storage.
-     *
-     * @throws SchedulerEntryStorageObserverException if any error occurs
-     */
-    void onDownloadComplete() throws SchedulerEntryStorageObserverException;
 }

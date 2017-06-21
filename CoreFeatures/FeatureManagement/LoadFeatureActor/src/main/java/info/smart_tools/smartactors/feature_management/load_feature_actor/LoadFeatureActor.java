@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_cr
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_creator.exception.PluginCreationException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_management.after_features_callback_storage.AfterFeaturesCallbackStorage;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.exception.LoadFeatureException;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.wrapper.LoadFeatureWrapper;
@@ -50,6 +51,7 @@ public class LoadFeatureActor {
     private final IConfigurationManager configurationManager;
 
     private final IFieldName featureNameFN;
+    private final IFieldName afterFeaturesCallbackQueueFN;
 
     /**
      * Default constructor
@@ -61,6 +63,7 @@ public class LoadFeatureActor {
         this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
         this.featureNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
+        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeaturesCallbackQueue");
     }
 
     /**
@@ -107,6 +110,9 @@ public class LoadFeatureActor {
             pluginLoader.loadPlugin(jars);
 
             try {
+
+                AfterFeaturesCallbackStorage.setLocalCallbackQueue(wrapper.getAfterFeaturesCallbackQueue());
+
                 bootstrap.start();
             } catch (ProcessExecutionException e) {
                 try {

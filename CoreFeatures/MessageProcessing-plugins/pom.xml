@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>message-processing-plugins</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>PluginReceiverGenerator</module>
@@ -28,6 +28,9 @@
         <module>PluginStarter</module>
         <module>PluginStandardObjectCreators</module>
         <module>PluginConditionChainChoiceStrategy</module>
+        <module>NullResponseStrategyPlugin</module>
+        <module>ResponseSenderReceiverPlugin</module>
+        <module>ChainModificationStrategiesPlugin</module>
         <module>SignalsPlugin</module>
         <module>MessageProcessing-pluginsDistribution</module>
     </modules>

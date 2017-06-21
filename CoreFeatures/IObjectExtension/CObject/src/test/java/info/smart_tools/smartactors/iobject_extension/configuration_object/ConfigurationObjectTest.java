@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -17,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,119 +66,81 @@ public class ConfigurationObjectTest {
                         }
                 )
         );
-        IOC.register(
-                IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "configuration object default strategy"
-                ),
-                new ApplyFunctionToArgumentsStrategy(
-                        (a) -> {
-                            try {
-                                return a[0];
-                            } catch (Throwable e) {
-                                throw new RuntimeException(
-                                        "Error in configuration 'default' rule.", e
-                                );
-                            }
-                        }
-                )
+        IResolveDependencyStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
+                (a) -> {
+                    try {
+                        return a[1];
+                    } catch (Throwable e) {
+                        throw new RuntimeException(
+                                "Error in configuration 'default' rule.", e
+                        );
+                    }
+                }
         );
-        IOC.register(
-                IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "configuration object in_ strategy"
-                ),
-                new ApplyFunctionToArgumentsStrategy(
-                        (a) -> {
-                            try {
-                                Object obj = a[0];
-                                if (obj instanceof String) {
-                                    IObject innerObject = new ConfigurationObject();
-                                    innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
-                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }} );
+        IResolveDependencyStrategy inStrategy = new ApplyFunctionToArgumentsStrategy(
+                (a) -> {
+                    try {
+                        Object obj = a[1];
+                        if (obj instanceof String) {
+                            IObject innerObject = new ConfigurationObject();
+                            innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
+                            innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }});
 
-                                    return new ArrayList<IObject>() {{ add(innerObject); }};
-                                }
-                                return obj;
-                            } catch (Throwable e) {
-                                throw new RuntimeException(
-                                        "Error in configuration 'wrapper' rule.", e
-                                );
-                            }
+                            return new ArrayList<IObject>() {{ add(innerObject); }};
                         }
-                )
+                        return obj;
+                    } catch (Throwable e) {
+                        throw new RuntimeException(
+                                "Error in configuration 'wrapper' rule.", e
+                        );
+                    }
+                }
         );
-        IOC.register(
-                IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "configuration object out_ strategy"
-                ),
-                new ApplyFunctionToArgumentsStrategy(
-                        (a) -> {
-                            try {
-                                Object obj = a[0];
-                                if (obj instanceof String) {
-                                    IObject innerObject = new ConfigurationObject();
-                                    innerObject.setValue(new FieldName("name"), "wds_target_strategy");
-                                    innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }} );
+        IResolveDependencyStrategy outStrategy = new ApplyFunctionToArgumentsStrategy(
+                (a) -> {
+                    try {
+                        Object obj = a[1];
+                        if (obj instanceof String) {
+                            IObject innerObject = new ConfigurationObject();
+                            innerObject.setValue(new FieldName("name"), "wds_target_strategy");
+                            innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }});
 
-                                    return new ArrayList<List<IObject>>() {{
-                                        add(new ArrayList<IObject>() {{  add(innerObject); }});
-                                    }};
-                                }
-                                if (obj instanceof List) {
-                                    for (Object o : (List) obj) {
-                                        if (o instanceof List) {
-                                            for (Object innerObject : (List) o) {
-                                                if (((IObject) innerObject).getValue(new FieldName("name")).equals("target")) {
-                                                    ((IObject) innerObject).setValue(new FieldName("name"), "wds_target_strategy");
-                                                    ((IObject) innerObject).setValue(new FieldName("args"), new ArrayList<String>() {{
-                                                                add("local/value");
-                                                                add((String) ((List) ((IObject) innerObject)
-                                                                        .getValue(new FieldName("args"))).get(0));
-                                                            }}
-                                                    );
-                                                }
-                                            }
+                            return new ArrayList<List<IObject>>() {{
+                                add(new ArrayList<IObject>() {{  add(innerObject); }});
+                            }};
+                        }
+                        if (obj instanceof List) {
+                            for (Object o : (List) obj) {
+                                if (o instanceof List) {
+                                    for (Object innerObject : (List) o) {
+                                        if (((IObject) innerObject).getValue(new FieldName("name")).equals("target")) {
+                                            ((IObject) innerObject).setValue(new FieldName("name"), "wds_target_strategy");
+                                            ((IObject) innerObject).setValue(new FieldName("args"), new ArrayList<String>() {{
+                                                        add("local/value");
+                                                        add((String) ((List) ((IObject) innerObject)
+                                                                .getValue(new FieldName("args"))).get(0));
+                                                    }}
+                                            );
                                         }
                                     }
                                 }
-                                return obj;
-                            } catch (Throwable e) {
-                                throw new RuntimeException("Error in configuration 'wrapper' rule.", e);
                             }
                         }
-                )
+                        return obj;
+                    } catch (Throwable e) {
+                        throw new RuntimeException("Error in configuration 'wrapper' rule.", e);
+                    }
+                }
         );
+        IResolveDependencyStrategy strategy = new CObjectStrategy();
+        ((IAdditionDependencyStrategy) strategy).register("in_", inStrategy);
+        ((IAdditionDependencyStrategy) strategy).register("out_", outStrategy);
+        ((IAdditionDependencyStrategy) strategy).register("default", defaultStrategy);
         IOC.register(
                 IOC.resolve(
                         IOC.getKeyForKeyStorage(), "resolve key for configuration object"
                 ),
-                new ApplyFunctionToArgumentsStrategy(
-                        (a) -> {
-                            try {
-                                Map<String, String> keys = new HashMap<String, String>() {{
-                                    put("in_", "configuration object in_ strategy");
-                                    put("out_", "configuration object out_ strategy");
-                                }};
-                                char[] symbols = a[1].toString().toCharArray();
-                                String resolvedKey = "configuration object default strategy";
-                                StringBuilder key = new StringBuilder();
-                                for (char c : symbols) {
-                                    key.append(c);
-                                    if (null != keys.get(key.toString())) {
-                                        resolvedKey = keys.get(key.toString());
-                                        break;
-                                    }
-                                }
-                                return IOC.resolve(
-                                        IOC.resolve(IOC.getKeyForKeyStorage(), resolvedKey),
-                                        a[0]
-                                );
-                            } catch (Throwable e) {
-                                throw new RuntimeException(
-                                        "Configuration object key resolution failed."
-                                );
-                            }
-                        }
-                )
+                strategy
         );
         this.configString = "{\n" +
                 "  \"wrapper\": {\n" +

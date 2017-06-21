@@ -5,8 +5,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorage
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
- * Interface of a scheduler entry. A entry consists of a message and a {@link ISchedulingStrategy scheduling strategy} that defines when to
- * send the message.
+ * Interface of a scheduler entry.
  *
  * <p>
  *     When stored in database a entry is represented by a object like the following:
@@ -22,6 +21,10 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
  *         . . .                                                     // Fields specific for scheduling strategy
  *     }
  * </pre>
+ *
+ * <p>
+ *     A entry is <em>active</em> when there is a scheduled timer task associated with it.
+ * </p>
  */
 public interface ISchedulerEntry {
     /**
@@ -65,7 +68,7 @@ public interface ISchedulerEntry {
      * @param time    time (in milliseconds since epoch) to schedule this entry on
      * @throws EntryScheduleException if error occurs scheduling entry
      */
-    void scheduleNext(final long time) throws EntryScheduleException;
+    void scheduleNext(long time) throws EntryScheduleException;
 
     /**
      * Get the last time this entry was scheduled on. Returns {@code -1} if the entry is just created or restored from state saved in
@@ -79,4 +82,26 @@ public interface ISchedulerEntry {
      * @return identifier of this entry
      */
     String getId();
+
+    /**
+     * Deactivate this entry (but keep it in memory if there are other references to it or it is not saved in remote storage).
+     *
+     * @throws EntryStorageAccessException if any error occurs
+     */
+    void suspend() throws EntryStorageAccessException;
+
+    /**
+     * Activate the entry if it is not active.
+     *
+     * @throws EntryStorageAccessException if error occurs accessing entry storage
+     * @throws EntryScheduleException if error occurs creating a timer task
+     */
+    void awake() throws EntryStorageAccessException, EntryScheduleException;
+
+    /**
+     * Check if this entry is active.
+     *
+     * @return {@code true} if the entry is active
+     */
+    boolean isAwake();
 }

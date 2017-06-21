@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Exception thrown by {@link
@@ -13,7 +15,7 @@ import java.text.MessageFormat;
  * exceptional chain for occurred exception.
  */
 public class NoExceptionHandleChainException extends Exception {
-    private final IReceiverChain[] chainsStack;
+    private final IObject[] chainsStack;
     private final int[] stepsStack;
 
     /**
@@ -30,11 +32,16 @@ public class NoExceptionHandleChainException extends Exception {
                         (chainsStack.length != 0) ? chainsStack[chainsStack.length - 1].getName() : "<none>"),
                 cause);
 
-        this.chainsStack = chainsStack;
+        this.chainsStack = new IObject[chainsStack.length];
+
+        for (int i = 0; i < chainsStack.length; i++) {
+            this.chainsStack[i] = chainsStack[i].getChainDescription();
+        }
+
         this.stepsStack = stepsStack;
     }
 
-    public IReceiverChain[] getChainsStack() {
+    public IObject[] getChainsStack() {
         return chainsStack;
     }
 

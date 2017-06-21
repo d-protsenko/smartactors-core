@@ -14,13 +14,17 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Actor for sending response to client
+ *
+ * @deprecated
  */
+@Deprecated
 public class ResponseSenderActor {
 
     /**
      * Constructor for actor
      */
     public ResponseSenderActor() {
+        System.out.println("WARNING: \"ResponseSenderActor\" is deprecated. Use \"response sender receiver\" instead.");
     }
 
     /**

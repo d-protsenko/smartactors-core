@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.netty_client;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClient;
 import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClientConfig;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.IRequestSender;
+import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.completable_netty_future.CompletableNettyFuture;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -20,6 +21,7 @@ import io.netty.util.concurrent.Future;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Base class for a client to netty server.
@@ -46,10 +48,11 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
      *
      * @param serverUri      URI of the server
      * @param channelClass   class of the channel
-     * @param inboundHandler
+     * @param inboundHandler response handler
+     * @throws RequestSenderException if process of client's start has been completed exceptionally
      */
-    public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass,
-                       final IResponseHandler inboundHandler) {
+    public NettyClient(final URI serverUri, final Class<? extends Channel> channelClass, final IResponseHandler inboundHandler)
+            throws RequestSenderException {
         this.serverUri = serverUri;
         this.channelClass = channelClass;
         this.inboundHandler = inboundHandler;
@@ -57,7 +60,12 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
         if (port == -1) {
             this.port = serverUri.getScheme().equals("http") ? DEFAULT_HTTP_PORT : DEFAULT_HTTPS_PORT;
         }
-        start();
+        CompletableFuture future = start();
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RequestSenderException("Error during start client", e);
+        }
     }
 
     public NettyClient(final Class<? extends Channel> channelClass, final IClientConfig clientConfig) {
@@ -78,23 +86,16 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
     public CompletableFuture<IClient<TRequest>> start() {
         Bootstrap bootstrap = bootstrapClient();
         NettyClient<TRequest> me = this;
-        ChannelFuture future = bootstrap.connect(serverUri.getHost(),
-                port).addListener(new ChannelFutureListener() {
+        ChannelFuture future = bootstrap.connect(serverUri.getHost(), port).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(final ChannelFuture future) throws Exception {
                 if (!future.isSuccess()) {
                     //TODO:: send message about connection failed
                     System.out.println("Connection failed!!!");
-                    future.cause().printStackTrace();
                 }
                 me.channel = future.channel();
             }
         });
-        try {
-            future.sync();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return wrapToCompletableFuture(future);
     }
 

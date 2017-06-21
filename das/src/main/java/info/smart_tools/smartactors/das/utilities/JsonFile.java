@@ -1,7 +1,10 @@
 package info.smart_tools.smartactors.das.utilities;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 
@@ -9,6 +12,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Scanner;
 
 public class JsonFile {
@@ -32,7 +37,14 @@ public class JsonFile {
     public static void save(final File file, final IObject info) {
         BufferedWriter writer = null;
         try {
+
+            Field f = info.getClass().getDeclaredField("OBJECT_MAPPER"); //NoSuchFieldException
+            f.setAccessible(true);
+            ObjectMapper objectMapper = (ObjectMapper) f.get(info);
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
             String s = ((DSObject) info).serialize();
+
             writer = new BufferedWriter(new FileWriter(file));
             writer.write(s);
         } catch (SerializeException e) {
@@ -41,6 +53,10 @@ public class JsonFile {
         } catch (IOException e) {
             System.out.println("Could not save data to the file: ");
             System.err.println(e);
+        } catch (NoSuchFieldException e) {
+
+        } catch (IllegalAccessException e) {
+
         } finally {
             try {
                 if(writer != null) {

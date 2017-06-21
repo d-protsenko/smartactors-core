@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -52,6 +53,10 @@ public class MessageBusSectionProcessingStrategyTest {
     private Object mapId;
     private IChainStorage chainStorage;
     private IReceiverChain receiverChain;
+    private IAction responseAction;
+
+    private IResponseStrategy nullResponseStrategy;
+    private IResponseStrategy mbResponseStrategy;
 
     @Before
     public void setUp()
@@ -105,7 +110,14 @@ public class MessageBusSectionProcessingStrategyTest {
         IOC.register(chainStorageKey,
                 new SingletonStrategy(chainStorage));
 
+        responseAction = mock(IAction.class);
+        IOC.register(Keys.getOrAdd("send response action"), new SingletonStrategy(responseAction));
 
+        nullResponseStrategy = mock(IResponseStrategy.class);
+        mbResponseStrategy = mock(IResponseStrategy.class);
+
+        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(nullResponseStrategy));
+        IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
     }
 
     @Test
@@ -172,6 +184,6 @@ public class MessageBusSectionProcessingStrategyTest {
         env.setValue(new FieldName("message"), messageForReply);
         env.setValue(new FieldName("context"), resultContext);
         action.execute(env);
-        verify(processor, times(1)).process(eq(messageForReply), any(IObject.class));
+        verify(responseAction, times(1)).execute(env);
     }
 }

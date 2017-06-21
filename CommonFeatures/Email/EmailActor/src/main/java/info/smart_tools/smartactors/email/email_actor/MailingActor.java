@@ -113,11 +113,14 @@ public class MailingActor {
 
             deliveryAgent = createAgent(params);
 
-            Authentication authentication = new AuthenticationImpl(
-                    userName_ActorParams_F.in(params, String.class),
-                    password_ActorParams_F.in(params, String.class),
-                    Authentication.AuthMode.valueOf(authenticationMode_ActorParams_F.in(params, String.class)));
-            deliveryAgentConfig.setAuthentication(authentication);
+            String authenticationMode = authenticationMode_ActorParams_F.in(params, String.class);
+            if (!authenticationMode.equals("None")) {
+                Authentication authentication = new AuthenticationImpl(
+                        userName_ActorParams_F.in(params, String.class),
+                        password_ActorParams_F.in(params, String.class),
+                        Authentication.AuthMode.valueOf(authenticationMode));
+                deliveryAgentConfig.setAuthentication(authentication);
+            }
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new MailingActorException("Params object is not correct", e);
         } catch (URISyntaxException e) {

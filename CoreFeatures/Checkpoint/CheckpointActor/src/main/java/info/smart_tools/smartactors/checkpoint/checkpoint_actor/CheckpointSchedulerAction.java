@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
@@ -26,6 +28,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
     private final IFieldName recoverStrategyFieldName;
     private final IFieldName messageFieldName;
     private final IFieldName completedFieldName;
+    private final IFieldName gotFeedbackFieldName;
 
     private final IFieldName responsibleCheckpointIdFieldName;
     private final IFieldName prevCheckpointEntryIdFieldName;
@@ -44,6 +47,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
         recoverStrategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recoverStrategy");
         messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
         completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
+        gotFeedbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "gotFeedback");
 
         responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
         prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
@@ -90,6 +94,15 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             // should be no more re-sent.
             // The entry will still be kept in both remote and local storage to avoid duplication of the message until it will be deleted.
             if (null != entry.getState().getValue(completedFieldName)) {
+                // Checkpoint actor writes non-null value into "gotFeedback" field of the entry state when it gets a feedback from next
+                // checkpoint.
+                // If there was no feedback (the message did not reach next checkpoint before it ran out of re-send trials) then we should
+                // execute a "failure action" that will handle the "lost" message.
+                if (null == entry.getState().getValue(gotFeedbackFieldName)) {
+                    IAction<IObject> failureAction = IOC.resolve(Keys.getOrAdd("checkpoint failure action"));
+
+                    failureAction.execute((IObject) entry.getState().getValue(messageFieldName));
+                }
                 return;
             }
 
@@ -99,7 +112,8 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             ));
 
             recoverStrategy.reSend(entry.getState());
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException e) {
+        } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
+                | ActionExecuteException e) {
             throw new SchedulerActionExecutionException("Error occurred executing checkpoint action.", e);
         }
     }

@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.das.utilities;
 
+import info.smart_tools.smartactors.das.utilities.exception.PomReadingException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -11,7 +12,7 @@ import java.util.List;
 public class PomReader {
 
     public static String getGroupId(final File target)
-            throws Exception {
+            throws PomReadingException {
         Model model = null;
         FileReader reader = null;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -21,13 +22,12 @@ public class PomReader {
             reader.close();
             return model.getGroupId();
         } catch (Throwable e) {
-            System.out.println("Could not read the pom file.");
-            throw new Exception("Could not read the pom file.");
+            throw new PomReadingException("Could not read the pom file. Could not read 'group id': " + e.getMessage());
         }
     }
 
     public static String getVersion(final File target)
-            throws Exception {
+            throws PomReadingException {
         Model model = null;
         FileReader reader = null;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -37,13 +37,12 @@ public class PomReader {
             reader.close();
             return model.getVersion();
         } catch (Throwable e) {
-            System.out.println("Could not read the pom file.");
-            throw new Exception("Could not read the pom file.");
+            throw new PomReadingException("Could not read the pom file. Could not read 'version': " + e.getMessage());
         }
     }
 
     public static String getArtifactId(final File target)
-            throws Exception {
+            throws PomReadingException {
         Model model = null;
         FileReader reader = null;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -53,13 +52,12 @@ public class PomReader {
             reader.close();
             return model.getArtifactId();
         } catch (Throwable e) {
-            System.out.println("Could not read the pom file.");
-            throw new Exception("Could not read the pom file.");
+            throw new PomReadingException("Could not read the pom file. Could not read 'artifact id': " + e.getMessage());
         }
     }
 
     public static List<String> getModules(final File target)
-            throws Exception {
+            throws PomReadingException {
         Model model = null;
         FileReader reader = null;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -69,13 +67,12 @@ public class PomReader {
             reader.close();
             return model.getModules();
         } catch (Throwable e) {
-            System.out.println("Could not read the pom file.");
-            throw new Exception("Could not read the pom file.");
+            throw new PomReadingException("Could not read the pom file. Could not read 'modules': " + e.getMessage());
         }
     }
 
     public static List<Dependency> getDependencies(final File target)
-            throws Exception {
+            throws PomReadingException {
         Model model = null;
         FileReader reader = null;
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
@@ -85,8 +82,7 @@ public class PomReader {
             reader.close();
             return model.getDependencies();
         } catch (Throwable e) {
-            System.out.println("Could not read the pom file.");
-            throw new Exception("Could not read the pom file.");
+            throw new PomReadingException("Could not read the pom file. Could not read 'dependencies': " + e.getMessage());
         }
     }
 

@@ -18,6 +18,9 @@ import info.smart_tools.smartactors.das.commands.UpdateActorVersion;
 import info.smart_tools.smartactors.das.commands.UpdateFeatureVersion;
 import info.smart_tools.smartactors.das.commands.UpdatePluginVersion;
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.ProjectResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
+import info.smart_tools.smartactors.das.utilities.interfaces.IProjectResolver;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.internal.HelpScreenException;
 
@@ -32,12 +35,12 @@ public class Das {
         Map<String, IAction> commands = initCommands();
 
         System.out.println("Distributed Actor System. Design, assembly and deploy tools.");
-        System.out.println("Version 0.3.2.");
+        System.out.println("Version 0.3.3.");
 
         if (args.length == 0) {
             return;
         }
-        CommandLineArgsResolver clar = null;
+        ICommandLineArgsResolver clar = null;
         try {
             clar = new CommandLineArgsResolver(args);
         } catch (HelpScreenException e) {
@@ -45,16 +48,15 @@ public class Das {
             return;
         } catch (ArgumentParserException e) {
             System.out.println("Could not parse commandline arguments: " + e);
-            CommandLineArgsResolver.printHelp();
             return;
         }
         if (!clar.isCommand()) {
-            CommandLineArgsResolver.printHelp();
+            clar.printHelp();
             return;
         }
         String command = clar.getCommand();
         if (null == command) {
-            CommandLineArgsResolver.printHelp();
+            clar.printHelp();
             return;
         }
         IAction action = commands.get(command);
@@ -64,7 +66,8 @@ public class Das {
             return;
         }
         try {
-            action.execute(args);
+            IProjectResolver pr = new ProjectResolver();
+            action.execute(new Object[]{clar, pr});
         } catch (Throwable e) {
             System.out.println("Command execution has been failed with error: ");
             System.out.println(e.getMessage());

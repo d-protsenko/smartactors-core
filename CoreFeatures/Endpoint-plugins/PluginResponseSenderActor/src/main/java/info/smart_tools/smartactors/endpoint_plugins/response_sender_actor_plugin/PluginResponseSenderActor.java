@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.endpoint_plugins.response_sender_actor_plugin;
 
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.endpoint.actor.response_sender_actor.ResponseSenderActor;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -41,8 +42,8 @@ public class PluginResponseSenderActor implements IPlugin {
                         try {
                             IOC.register(
                                     Keys.getOrAdd("ResponseSenderActor"),
-                                    // Response sender is stateless so it's safe to use singleton strategy.
-                                    new SingletonStrategy(new ResponseSenderActor()));
+                                    // Response sender prints deprecation message on creation so create it every time it is resolved.
+                                    new ApplyFunctionToArgumentsStrategy(a -> new ResponseSenderActor()));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get ResponseSenderActor key", e);
                         } catch (InvalidArgumentException e) {
