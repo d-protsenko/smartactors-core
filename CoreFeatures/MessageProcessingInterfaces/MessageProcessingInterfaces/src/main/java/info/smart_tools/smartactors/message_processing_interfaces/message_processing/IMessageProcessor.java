@@ -99,4 +99,20 @@ public interface IMessageProcessor {
      *                                             #pauseProcess()} since start of execution of last receiver
      */
     void continueProcess(Throwable e) throws AsynchronousOperationException;
+
+    /**
+     * Send a signal to this message processor.
+     *
+     * A exception will be resolved using given name and processed by the message processor as soon as possible (usually after completion of
+     * current step) just as if it was thrown on the step being currently executed.
+     *
+     * If there is no chain handling signal exception then processing of the message will be completed silently.
+     *
+     * Signal exception should extend {@link Signal}.
+     *
+     * @param signalName    name of the signal
+     * @throws InvalidArgumentException if {@code signalName} is {@code null}
+     * @throws InvalidArgumentException if {@code signalName} is not a valid signal name
+     */
+    void signal(String signalName) throws InvalidArgumentException;
 }

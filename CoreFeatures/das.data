@@ -2168,6 +2168,11 @@
   "rawName" : "ReceiverChain",
   "version" : "0.3.3"
 }, {
+  "artifactId" : "signals",
+  "uploadRepositories" : [ ],
+  "rawName" : "Signals",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "message-processing.chain-modifications",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2860,6 +2865,11 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
   "plugins" : [ {
+  "artifactId" : "signals-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "SignalsPlugin",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "null-response-strategy-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "NullResponseStrategyPlugin",
