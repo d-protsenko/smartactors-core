@@ -3,9 +3,11 @@ package info.smart_tools.smartactors.shutdown_plugins.shutdown_task_processing_s
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -14,10 +16,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.CompositeStrategy;
-import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.ExecuteTaskStrategy;
-import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.IgnoreTaskStrategy;
-import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.NotifyTaskStrategy;
+import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.*;
 import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessStrategy;
 
@@ -42,6 +41,21 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                 new SingletonStrategy(new ExecuteTaskStrategy()));
         IOC.register(Keys.getOrAdd("notify task processing strategy"),
                 new SingletonStrategy(new NotifyTaskStrategy()));
+        IOC.register(Keys.getOrAdd("limit trials task processing strategy"),
+                new ApplyFunctionToArgumentsStrategy(args -> {
+                    int maxTrials = (int) args[0];
+                    int silentTrials = maxTrials;
+
+                    if (args.length > 1) {
+                        silentTrials = (int) args[1];
+                    }
+
+                    try {
+                        return new LimitTrialCountStrategy(maxTrials, silentTrials);
+                    } catch (InvalidArgumentException e) {
+                        throw new FunctionExecutionException(e);
+                    }
+                }));
 
         IResolveDependencyStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
                 a -> a,

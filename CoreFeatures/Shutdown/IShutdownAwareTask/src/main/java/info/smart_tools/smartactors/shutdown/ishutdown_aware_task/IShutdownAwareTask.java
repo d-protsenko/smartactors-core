@@ -12,4 +12,23 @@ public interface IShutdownAwareTask {
      * @throws ShutdownAwareTaskNotificationException if any error occurs processing notification
      */
     void notifyShuttingDown() throws ShutdownAwareTaskNotificationException;
+
+    /**
+     * Notify this task that there is a shutdown request and shutdown strategy decided not to execute this task.
+     *
+     * @throws ShutdownAwareTaskNotificationException if any error occurs processing notification
+     */
+    void notifyIgnored() throws ShutdownAwareTaskNotificationException;
+
+    /**
+     * Store a shutdown status object (required for some shutdown strategies).
+     *
+     * @param status    new shutdown status
+     */
+    void setShutdownStatus(Object status);
+
+    /**
+     * @return object stored by last call of {@link #setShutdownStatus(Object)}.
+     */
+    Object getShutdownStatus();
 }

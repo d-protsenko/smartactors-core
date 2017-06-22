@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
+import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessStrategy;
 
 public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
 
@@ -30,8 +31,7 @@ public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
             throws ResolutionException, AdditionDependencyStrategyException, InvalidArgumentException {
         IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd(
                 "expandable_strategy#shutdown mode task processing strategy by task class"));
-        strategy.register(MessageProcessor.class, new SingletonStrategy(
-                IOC.resolve(Keys.getOrAdd("notify task processing strategy"))
-        ));
+        ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("notify task processing strategy"));
+        strategy.register(MessageProcessor.class, new SingletonStrategy(taskProcessStrategy));
     }
 }

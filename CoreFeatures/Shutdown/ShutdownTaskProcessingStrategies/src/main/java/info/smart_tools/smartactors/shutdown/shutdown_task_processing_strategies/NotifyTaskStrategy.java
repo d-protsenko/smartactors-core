@@ -15,11 +15,12 @@ public class NotifyTaskStrategy implements ITaskProcessStrategy {
     @Override
     public void process(final ITaskExecutionState state)
             throws TaskExecutionException, InvalidArgumentException, TaskProcessException {
-        IShutdownAwareTask shutdownAwareTask = state.getTaskAs(IShutdownAwareTask.class);
         try {
-            shutdownAwareTask.notifyShuttingDown();
+            state.getTaskAs(IShutdownAwareTask.class).notifyShuttingDown();
         } catch (ShutdownAwareTaskNotificationException e) {
             throw new TaskProcessException(e);
         }
+
+        state.execute();
     }
 }

@@ -96,6 +96,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
 
     private IUpCounter upCounter;
     private boolean notifiedOnShutdown = false;
+    private Object shutdownStatus;
 
     /**
      * The constructor.
@@ -182,6 +183,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
             upCounter.up();
 
             notifiedOnShutdown = false;
+            shutdownStatus = null;
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | IllegalUpCounterState e) {
             throw new MessageProcessorProcessException(e);
         }
@@ -397,5 +399,20 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
                 throw new ShutdownAwareTaskNotificationException(e);
             }
         }
+    }
+
+    @Override
+    public void notifyIgnored() throws ShutdownAwareTaskNotificationException {
+        complete();
+    }
+
+    @Override
+    public void setShutdownStatus(final Object status) {
+        this.shutdownStatus = status;
+    }
+
+    @Override
+    public Object getShutdownStatus() {
+        return this.shutdownStatus;
     }
 }

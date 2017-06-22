@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
+import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.IShutdownAwareTask;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -53,6 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({IOC.class})
 public class MessageProcessorTest {
     private final Signal signal = new Signal("test") { };
+    private final Signal shutdownSignal = new Signal("shutdown") { };
 
     private IQueue<ITask> taskQueueMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
@@ -69,6 +71,7 @@ public class MessageProcessorTest {
     private final IKey KEY_FOR_FIELD_NAME = mock(IKey.class);
     private final IKey KEY_FOR_FINAL_TASK = mock(IKey.class);
     private final IKey KEY_FOR_TEST_SIGNAL = mock(IKey.class);
+    private final IKey KEY_FOR_SHUTDOWN_SIGNAL = mock(IKey.class);
     private final IKey KEY_INVALID_KEY = mock(IKey.class);
     private final IKey KEY_FOR_UP_COUNTER = mock(IKey.class);
 
@@ -91,6 +94,7 @@ public class MessageProcessorTest {
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "final task")).thenReturn(KEY_FOR_FINAL_TASK);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "root upcounter")).thenReturn(KEY_FOR_UP_COUNTER);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "test signal")).thenReturn(KEY_FOR_TEST_SIGNAL);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, "shutdown signal")).thenReturn(KEY_FOR_SHUTDOWN_SIGNAL);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "invalid key")).thenReturn(KEY_INVALID_KEY);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, IObject.class.getCanonicalName())).thenReturn(KEY_FOR_NEW_IOBJECT);
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
@@ -101,6 +105,7 @@ public class MessageProcessorTest {
         when(IOC.resolve(same(KEY_FOR_FINAL_TASK), any())).thenReturn(this.finalTaskMock);
         when(IOC.resolve(same(KEY_FOR_UP_COUNTER))).thenReturn(upCounterMock);
         when(IOC.resolve(same(KEY_FOR_TEST_SIGNAL))).thenReturn(signal);
+        when(IOC.resolve(same(KEY_FOR_SHUTDOWN_SIGNAL))).thenReturn(shutdownSignal);
         when(IOC.resolve(same(KEY_INVALID_KEY))).thenThrow(ResolutionException.class);
     }
 
@@ -493,5 +498,34 @@ public class MessageProcessorTest {
 
         assertSame(actionStub, list.get(0));
         assertEquals(2, list.size());
+    }
+
+    @Test
+    public void Should_haveAssociatedShutdownAwareTask()
+            throws Exception {
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
+
+        IShutdownAwareTask shutdownAwareTask = messageProcessor.getAs(IShutdownAwareTask.class);
+
+        assertNotNull(shutdownAwareTask);
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_throwWhenAssociatedObjectOfUnknownClassRequired()
+            throws Exception {
+        new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock).getAs(IObject.class);
+    }
+
+    @Test
+    public void Should_emitShutdownSignalWhenNotifiedOnShutdownButExactlyOnce()
+            throws Exception {
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
+
+        messageProcessor.getAs(IShutdownAwareTask.class).notifyShuttingDown();
+        messageProcessor.execute();
+        messageProcessor.getAs(IShutdownAwareTask.class).notifyShuttingDown();
+        messageProcessor.execute();
+
+        verify(messageProcessingSequenceMock, times(1)).catchException(same(shutdownSignal), any());
     }
 }

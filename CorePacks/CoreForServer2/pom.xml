@@ -187,6 +187,12 @@
             <version>${core.version}</version>
             <type>zip</type>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>shutdown</artifactId>
+            <version>${core.version}</version>
+            <type>zip</type>
+        </dependency>
     </dependencies>
 
 
