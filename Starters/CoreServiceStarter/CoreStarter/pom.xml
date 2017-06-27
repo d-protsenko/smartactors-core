@@ -12,6 +12,51 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iaction</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.ikey</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.ifield-name</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.iioccontainer</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.iobject</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.itask-dispatcher</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>task.interfaces.ithread-pool</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager.configuration-manager</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
