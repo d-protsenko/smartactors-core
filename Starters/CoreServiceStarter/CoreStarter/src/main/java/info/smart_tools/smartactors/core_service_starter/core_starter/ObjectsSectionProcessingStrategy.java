@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.core_service_starter.core_starter;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -66,12 +67,12 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
                 } catch (ObjectCreationException e) {
                     throw new ConfigurationProcessingException(
                             String.format(
-                                    "Could not create object \"%s\" described in \"objects\" section: %s",
-                                    objDesc, e.getMessage()),
+                                    "Could not create object %s described in \"objects\" section: %s",
+                                    objDesc.serialize(), e.getMessage()),
                             e);
                 }
             }
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+        } catch (ResolutionException | ReadValueException | InvalidArgumentException | SerializeException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"objects\" configuration section.", e);
         }
     }
