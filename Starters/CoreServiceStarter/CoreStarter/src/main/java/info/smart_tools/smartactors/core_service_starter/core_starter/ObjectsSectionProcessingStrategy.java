@@ -17,9 +17,9 @@ import java.util.List;
 
 /**
  * Creates objects using configuration.
- *
+ * <p>
  * Expects the following configuration format:
- *
+ * <p>
  * <pre>
  *     {
  *         "objects": [
@@ -61,12 +61,18 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
                 IRoutedObjectCreator objectCreator = IOC.resolve(
                         Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#" + String.valueOf(kindId)));
 
-                objectCreator.createObject(router, objDesc);
+                try {
+                    objectCreator.createObject(router, objDesc);
+                } catch (ObjectCreationException e) {
+                    throw new ConfigurationProcessingException(
+                            String.format(
+                                    "Could not create object \"%s\" described in \"objects\" section: %s",
+                                    objDesc, e.getMessage()),
+                            e);
+                }
             }
         } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"objects\" configuration section.", e);
-        } catch (ObjectCreationException e) {
-            throw new ConfigurationProcessingException("Could not create object described in \"objects\" section.", e);
         }
     }
 
