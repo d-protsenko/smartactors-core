@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.async_operations.close_async_operation;
 
+import info.smart_tools.smartactors.async_operations.close_async_operation.exception.CloseAsyncOpException;
 import info.smart_tools.smartactors.async_operations.close_async_operation.wrapper.CloseAsyncOpMessage;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
@@ -44,14 +45,14 @@ public class CloseAsyncOperationActor {
      *                </pre>
      * @throws InvalidArgumentException Throw when can't read some value from message or have invalid parameters
      */
-    public void completeAsyncOp(final CloseAsyncOpMessage message) throws InvalidArgumentException {
+    public void completeAsyncOp(final CloseAsyncOpMessage message) throws CloseAsyncOpException {
         try {
             message.getOperationTokens().remove(message.getToken());
             collection.complete(message.getOperation());
         } catch (ReadValueException e) {
-            throw new InvalidArgumentException("Can't read some of values in message", e);
+            throw new CloseAsyncOpException("Can't read some of values in message", e);
         } catch (CompleteAsyncOperationException e) {
-            throw new InvalidArgumentException("Can't close async operation with this parameters: " + message, e);
+            throw new CloseAsyncOpException("Can't close async operation with this parameters: " + message, e);
         }
     }
 }
