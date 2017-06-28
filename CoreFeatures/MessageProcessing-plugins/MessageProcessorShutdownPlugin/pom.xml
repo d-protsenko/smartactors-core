@@ -70,7 +70,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
         <!-- Components of info.smart_tools.smartactors.ioc -->

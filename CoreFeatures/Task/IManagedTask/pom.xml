@@ -20,7 +20,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
 
