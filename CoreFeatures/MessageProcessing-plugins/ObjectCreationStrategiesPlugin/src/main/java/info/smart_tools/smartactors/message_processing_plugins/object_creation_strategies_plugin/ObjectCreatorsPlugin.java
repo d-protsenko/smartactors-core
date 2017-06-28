@@ -78,6 +78,8 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     @After({
             "basic_receiver_strategies",            // for HandlerRouterReceiverCreator and PerReceiverActorSynchronizationReceiverCreator
             "invoker_receiver_creation_strategy",   // required for UserObjectMethodInvokerReceiverCreator
+            "iobject",
+            "IFieldNamePlugin",
     })
     public void registerCreators()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
@@ -130,13 +132,16 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     }
 
     @Item("basic_object_kinds")
+    @After({
+        "IOC",
+    })
     public void registerKinds()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
                 Keys.getOrAdd("object kind filter sequence#raw"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
-                        "non-thread-safe wrapper creator",
+                        "thread-safe wrapper creator",
                         "set address from name"
                 ))
         );
@@ -146,7 +151,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                         "top-level object",
                         "method invokers",
                         "handler router receiver",
-                        "non-thread-safe wrapper creator",
+                        "thread-safe wrapper creator",
                         "set address from name"
                 ))
         );
@@ -156,7 +161,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                         "top-level object",
                         "method invokers",
                         "handler router receiver",
-                        "thread-safe wrapper creator",
+                        "non-thread-safe wrapper creator",
                         "per-receiver actor sync",
                         "set address from name"
                 ))

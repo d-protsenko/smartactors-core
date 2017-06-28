@@ -20,8 +20,8 @@
         <module>IRouter</module>
         <module>IWrapperGenerator</module>
         <module>IResponseStrategy</module>
-        <module>MessageProcessingInterfacesDistribution</module>
         <module>ObjectCreationInterfaces</module>
+        <module>MessageProcessingInterfacesDistribution</module>
     </modules>
     <build>
         <pluginManagement>

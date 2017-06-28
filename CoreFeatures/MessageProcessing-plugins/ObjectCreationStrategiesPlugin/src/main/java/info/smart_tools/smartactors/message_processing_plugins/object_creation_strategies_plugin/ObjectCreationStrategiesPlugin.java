@@ -35,7 +35,10 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @Item("global_router_registration_receiver_object_listener")
-    @After("router")
+    @After({
+        "router",
+        "IOC",
+    })
     public void registerRouterListener()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
@@ -45,6 +48,9 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @Item("full_object_creator_resolution_strategy")
+    @After({
+            "IOC",
+    })
     public void registerFullCreatorStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
@@ -54,6 +60,9 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @Item("basic_receiver_strategies")
+    @After({
+        "IOC",
+    })
     public void registerBasicReceiver()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         // Dependencies of ActorReceiver
@@ -88,6 +97,9 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @Item("wrapper_resolution_strategies_for_invokers")
+    @After({
+            "IOC",
+    })
     public void registerWrapperResolutionStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IResolveDependencyStrategy newInstanceWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
@@ -141,7 +153,11 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @Item("invoker_receiver_creation_strategy")
-    @After({"wrapper_resolution_strategies_for_invokers"})
+    @After({
+        "wrapper_resolution_strategies_for_invokers",
+        "IFieldNamePlugin",
+        "InitializeReceiverGenerator",
+    })
     public void registerInvokerCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(

@@ -2376,7 +2376,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ObjectCreationInterfaces",
-  "version" : "0.3.2"
+  "version" : "0.3.3"
 }, {
   "artifactId" : "message-processing-interfaces.irouted-object-creator",
   "uploadRepositories" : [ {

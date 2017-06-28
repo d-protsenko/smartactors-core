@@ -46,20 +46,23 @@ public class FieldNameTest {
     public void checkNullArgument()
             throws Exception {
         new FieldName(null);
-        fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkEmptyArgument()
             throws Exception {
         new FieldName("");
-        fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkWrongArgument()
             throws Exception {
         new FieldName("?");
-        fail();
+    }
+
+    @Test
+    public void checkComparable()
+            throws Exception {
+        assertEquals(new FieldName("asd").compareTo(new FieldName("qwe")), "asd".compareTo("qwe"));
     }
 }

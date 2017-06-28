@@ -30,7 +30,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
      *
      * @param bootstrap the bootstrap
      */
-    protected ObjectCofigurationCanonizationStrategies(final IBootstrap bootstrap) {
+    public ObjectCofigurationCanonizationStrategies(final IBootstrap bootstrap) {
         super(bootstrap);
     }
 
@@ -38,13 +38,14 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
     @After({
             "basic_object_creators",
             "basic_object_kinds",
+            "ConfigurationObject",
     })
     public void registerCanonizationStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException, AdditionDependencyStrategyException {
         IOC.register(Keys.getOrAdd("canonize objects configuration section item filters list"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
-                        IObject value = (IObject) args[1];
+                        IObject value = (IObject) args[0];
 
                         IFieldName filtersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filters");
                         IFieldName kindFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "kind");

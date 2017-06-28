@@ -121,7 +121,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
         "core_upcounters_setup:done",
     })
     @Before({
-        "config_sections:end",
+        "config_sections:done",
     })
     public void registerOnShutdownRequestSectionProcessingStrategy()
             throws ResolutionException, InvalidArgumentException {

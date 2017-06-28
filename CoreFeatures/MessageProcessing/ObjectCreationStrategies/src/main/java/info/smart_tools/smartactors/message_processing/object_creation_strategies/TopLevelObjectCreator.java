@@ -44,6 +44,7 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
             context.setValue(topLevelObjectFieldName, object);
 
             listener.acceptItem(null, object);
+            listener.endItems();
         } catch (InvalidArgumentException | ReadValueException | ChangeValueException | ResolutionException e) {
             throw new ReceiverObjectCreatorException(e);
         }

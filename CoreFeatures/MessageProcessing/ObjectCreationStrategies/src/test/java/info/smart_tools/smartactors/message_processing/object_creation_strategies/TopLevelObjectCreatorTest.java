@@ -67,6 +67,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
 
         verify(objectResolutionStrategy, times(1)).resolve(any());
         verify(listenerMock).acceptItem(isNull(), same(object));
+        verify(listenerMock).endItems();
         verify(contextMock).setValue(eq(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "topLevelObject")), same(object));
     }
 
