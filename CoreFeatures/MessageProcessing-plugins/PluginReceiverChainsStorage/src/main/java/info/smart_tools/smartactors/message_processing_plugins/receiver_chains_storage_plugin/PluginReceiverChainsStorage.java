@@ -44,7 +44,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
             BootstrapItem chainsStorageChainStateItem = new BootstrapItem("receiver_chains_storage_chain_state");
 
             chainsStorageChainStateItem
-                    .after("scope_provider_container")
+                    .after("create_system_scope")
                     .process(() -> {
                         try {
                             IOC.register(
