@@ -5,7 +5,7 @@
     <parent>
         <artifactId>message-processing</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>helpers.plugins-loading-test-base</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
 
@@ -54,37 +54,37 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scope-plugins.scope-provider-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.fieldname-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>0.3.2</version>
+            <version>[0.1.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
