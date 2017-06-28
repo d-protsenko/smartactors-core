@@ -293,7 +293,7 @@ def launch_debugger():
     try:
         import IPython
         print _BANNER
-        IPython.start_ipython(user_ns=_CONSOLE_SCOPE)
+        IPython.start_ipython(user_ns=_CONSOLE_SCOPE, argv=[])
     except ImportError as e:
         code.InteractiveConsole(locals=_CONSOLE_SCOPE).interact(_BANNER+_IPYTHON_NOTICE)
 
