@@ -1818,21 +1818,6 @@
 } ],
   "rawName" : "TaskDispatcher",
   "version" : "0.3.3"
-}, {
-  "artifactId" : "itask-preprocess-strategy",
-  "uploadRepositories" : [ ],
-  "rawName" : "ITaskPreprocessStrategy",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "itask-execution-state",
-  "uploadRepositories" : [ ],
-  "rawName" : "ITaskExecutionState",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "imanaged-task",
-  "uploadRepositories" : [ ],
-  "rawName" : "IManagedTask",
-  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -2032,6 +2017,14 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing.object-creation-strategies",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ObjectCreationStrategies",
+  "version" : "0.3.2"
+},{
   "artifactId" : "message-processing.null-response-strategy",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2172,6 +2165,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "Signals",
   "version" : "0.3.2"
+}, {
+  "artifactId" : "wrapper-creator-receiver-decorator",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecorator",
+  "version" : "0.3.3"
 }, {
   "artifactId" : "message-processing.chain-modifications",
   "uploadRepositories" : [ {
@@ -2372,6 +2370,14 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing-interfaces.object-creation-interfaces",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ObjectCreationInterfaces",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "message-processing-interfaces.irouted-object-creator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2865,6 +2871,16 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
   "plugins" : [ {
+  "artifactId":"object-creation-strategies-plugin",
+  "uploadRepositories":[],
+  "rawName":"ObjectCreationStrategiesPlugin",
+  "version":"0.3.2"
+}, {
+  "artifactId" : "wrapper-creator-receiver-decorator-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecoratorPlugin",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "signals-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "SignalsPlugin",

@@ -62,7 +62,7 @@
             <artifactId>base.isynchronous-service</artifactId>
             <version>${core.version}</version>
         </dependency>
-             
+
         <!-- Dump interface -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -350,7 +350,6 @@
             <artifactId>shutdown-plugins.root-up-counter-plugin</artifactId>
             <version>${core.version}</version>
         </dependency>
-
 
         <!-- CoreStarter -->
         <dependency>
