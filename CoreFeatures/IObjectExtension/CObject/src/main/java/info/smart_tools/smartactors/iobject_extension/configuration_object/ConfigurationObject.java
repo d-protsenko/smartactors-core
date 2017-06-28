@@ -124,7 +124,7 @@ public class ConfigurationObject implements IObject {
             }
             return canonicalValue;
         } catch (Throwable e) {
-            throw new ReadValueException("Can't read value for current field name");
+            throw new ReadValueException("Can't read value for current field name", e);
         }
     }
 
@@ -163,6 +163,16 @@ public class ConfigurationObject implements IObject {
     @Override
     public Iterator<Map.Entry<IFieldName, Object>> iterator() {
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return body.hashCode() * 31 + 42;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
     }
 }
 

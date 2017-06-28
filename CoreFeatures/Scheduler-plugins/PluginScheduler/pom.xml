@@ -144,12 +144,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core-service-starter.core-starter</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>task.blocking-queue</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
