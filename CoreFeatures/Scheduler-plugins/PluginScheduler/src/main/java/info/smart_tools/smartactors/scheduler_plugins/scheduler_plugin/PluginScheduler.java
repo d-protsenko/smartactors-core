@@ -4,8 +4,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -30,12 +28,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousServ
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.timer.interfaces.itimer.ITime;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
-import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 /**
  * Plugin that registers scheduler actor and related components.

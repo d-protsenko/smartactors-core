@@ -17,7 +17,9 @@ import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Plugin for adding map for handling OutOfResourcesException
@@ -58,17 +60,26 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             object.setValue(IOC.resolve(fieldNameKey, "kind"), "raw");
                             object.setValue(IOC.resolve(fieldNameKey, "dependency"), "RetryingToTakeResourceExceptionHandler");
                             object.setValue(IOC.resolve(fieldNameKey, "name"), "retryingToTakeResourceExceptionHandler");
-                            templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), Collections.singletonList(object));
+
+                            List<IObject> objectsSection = new ArrayList<>(1);
+                            objectsSection.add(object);
+                            templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), objectsSection);
 
                             IObject map = IOC.resolve(Keys.getOrAdd("configuration object"));
                             map.setValue(IOC.resolve(fieldNameKey, "id"), "tryToTakeResourceMap");
 
                             IObject step = IOC.resolve(Keys.getOrAdd("configuration object"));
                             step.setValue(IOC.resolve(fieldNameKey, "target"), "retryingToTakeResourceExceptionHandler");
-                            map.setValue(IOC.resolve(fieldNameKey, "steps"), Collections.singletonList(step));
 
-                            map.setValue(IOC.resolve(fieldNameKey, "exceptional"), Collections.emptyList());
-                            templateObj.setValue(IOC.resolve(fieldNameKey, "maps"), Collections.singletonList(map));
+                            List<IObject> steps = new ArrayList<>(1);
+                            steps.add(step);
+                            map.setValue(IOC.resolve(fieldNameKey, "steps"), steps);
+
+                            map.setValue(IOC.resolve(fieldNameKey, "exceptional"), new ArrayList<IObject>(0));
+
+                            List<IObject> mapsSection = new ArrayList<>(1);
+                            mapsSection.add(map);
+                            templateObj.setValue(IOC.resolve(fieldNameKey, "maps"), mapsSection);
 
                             configurationManager.applyConfig(templateObj);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | ConfigurationProcessingException e) {

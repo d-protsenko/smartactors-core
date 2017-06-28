@@ -41,11 +41,10 @@ public interface IMessageProcessor {
     IMessageProcessingSequence getSequence();
 
     /**
-     * Returns the message environment object.
+     * Returns the raw message environment object.
      *
      * <p>
-     * If there is no wrapper IObject generated (it is generated when arguments of current target contain "wrapper" field) the environment
-     * object should contain at least the following fields:
+     * The raw environment object contains at least the following fields:
      * </p>
      * <ul>
      *   <li>{@code "message"} - the message itself (as instance of {@link IObject})</li>
@@ -59,6 +58,17 @@ public interface IMessageProcessor {
      * @return the environment object
      */
     IObject getEnvironment();
+
+    /**
+     * Set current environment object.
+     *
+     * The object passed to this method will be returned by any call of {@link #getEnvironment()} until execution of next step starts or
+     * {@code #pushEnvironment(IObject)} is called again.
+     *
+     * @param newEnvironment    new current environment object
+     * @throws InvalidArgumentException if {@code newEnvironment} is {@code null}
+     */
+    void pushEnvironment(IObject newEnvironment) throws InvalidArgumentException;
 
     /**
      * Set a global configuration object to use for processing of next message.
@@ -99,4 +109,20 @@ public interface IMessageProcessor {
      *                                             #pauseProcess()} since start of execution of last receiver
      */
     void continueProcess(Throwable e) throws AsynchronousOperationException;
+
+    /**
+     * Send a signal to this message processor.
+     *
+     * A exception will be resolved using given name and processed by the message processor as soon as possible (usually after completion of
+     * current step) just as if it was thrown on the step being currently executed.
+     *
+     * If there is no chain handling signal exception then processing of the message will be completed silently.
+     *
+     * Signal exception should extend {@link Signal}.
+     *
+     * @param signalName    name of the signal
+     * @throws InvalidArgumentException if {@code signalName} is {@code null}
+     * @throws InvalidArgumentException if {@code signalName} is not a valid signal name
+     */
+    void signal(String signalName) throws InvalidArgumentException;
 }

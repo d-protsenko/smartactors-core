@@ -77,6 +77,7 @@
         <module>Shutdown-plugins</module>
         <module>SchedulerAutoStartup</module>
         <module>CheckpointAutoStartup</module>
+        <module>Shutdown</module>
     </modules>
 
     <build>

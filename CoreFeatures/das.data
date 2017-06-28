@@ -2017,6 +2017,14 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing.object-creation-strategies",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ObjectCreationStrategies",
+  "version" : "0.3.2"
+},{
   "artifactId" : "message-processing.null-response-strategy",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2151,6 +2159,16 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ReceiverChain",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "signals",
+  "uploadRepositories" : [ ],
+  "rawName" : "Signals",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "wrapper-creator-receiver-decorator",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecorator",
   "version" : "0.3.3"
 }, {
   "artifactId" : "message-processing.chain-modifications",
@@ -2352,6 +2370,14 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
+  "artifactId" : "message-processing-interfaces.object-creation-interfaces",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ObjectCreationInterfaces",
+  "version" : "0.3.3"
+}, {
   "artifactId" : "message-processing-interfaces.irouted-object-creator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2845,6 +2871,21 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
   "plugins" : [ {
+  "artifactId":"object-creation-strategies-plugin",
+  "uploadRepositories":[],
+  "rawName":"ObjectCreationStrategiesPlugin",
+  "version":"0.3.2"
+}, {
+  "artifactId" : "wrapper-creator-receiver-decorator-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "WrapperCreatorReceiverDecoratorPlugin",
+  "version" : "0.3.2"
+}, {
+  "artifactId" : "signals-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "SignalsPlugin",
+  "version" : "0.3.2"
+}, {
   "artifactId" : "null-response-strategy-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "NullResponseStrategyPlugin",
@@ -2858,6 +2899,11 @@
   "artifactId" : "chain-modification-strategies-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "ChainModificationStrategiesPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "message-processor-shutdown-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "MessageProcessorShutdownPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
@@ -3265,10 +3311,33 @@
   "uploadRepositories" : [ ],
   "rawName" : "OnShutownRequestConfigurationSectionPlugin",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "shutdown-task-processing-strategies-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ShutdownTaskProcessingStrategiesPlugin",
+  "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "shutdown-plugins",
   "rawName" : "Shutdown-plugins",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "ishutdown-aware-task",
+  "uploadRepositories" : [ ],
+  "rawName" : "IShutdownAwareTask",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "shutdown-task-processing-strategies",
+  "uploadRepositories" : [ ],
+  "rawName" : "ShutdownTaskProcessingStrategies",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "shutdown",
+  "rawName" : "Shutdown",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
