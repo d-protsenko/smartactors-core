@@ -16,7 +16,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
