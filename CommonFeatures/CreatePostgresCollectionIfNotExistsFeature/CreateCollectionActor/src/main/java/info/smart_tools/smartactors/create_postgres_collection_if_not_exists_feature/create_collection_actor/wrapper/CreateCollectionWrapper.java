@@ -4,5 +4,5 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 
 public interface CreateCollectionWrapper {
     String getCollectionName() throws ReadValueException;
-    String getConnectionPoolName() throws ReadValueException;
+    String getConnectionOptionsRegistrationName() throws ReadValueException;
 }

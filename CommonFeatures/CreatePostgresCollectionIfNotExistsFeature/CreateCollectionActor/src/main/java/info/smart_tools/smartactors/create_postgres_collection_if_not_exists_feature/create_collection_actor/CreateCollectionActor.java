@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 public class CreateCollectionActor {
     public void createTable(CreateCollectionWrapper message) throws CreateCollectionActorException {
         try {
-            final ConnectionOptions options = IOC.resolve(Keys.getOrAdd(message.getConnectionPoolName()));
+            final ConnectionOptions options = IOC.resolve(Keys.getOrAdd(message.getConnectionOptionsRegistrationName()));
             final IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
 
             String collectionName = message.getCollectionName();
