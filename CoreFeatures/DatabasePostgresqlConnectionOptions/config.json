@@ -28,7 +28,8 @@
             "in_getMaxConnections": "message/maxConnections"
           }
         }
-      ]
+      ],
+      "exceptional": []
     }
   ]
 }
