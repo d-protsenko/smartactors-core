@@ -22,7 +22,8 @@
           "target": "CreateCollectionIfNotExists",
           "handler": "createTable",
           "wrapper": {
-            "in_getCollectionName": "message/collectionName"
+            "in_getCollectionName": "message/collectionName",
+            "in_getConnectionPoolName": "message/connectionPoolName"
           }
         }
       ],

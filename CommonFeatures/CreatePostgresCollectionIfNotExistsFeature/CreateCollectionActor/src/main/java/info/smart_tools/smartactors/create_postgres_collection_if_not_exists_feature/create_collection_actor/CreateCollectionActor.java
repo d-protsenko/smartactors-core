@@ -14,19 +14,11 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 public class CreateCollectionActor {
-    private final IPool pool;
-
-    public CreateCollectionActor() throws CreateCollectionActorException {
-        try {
-            ConnectionOptions options = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
-            pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
-        } catch (ResolutionException e) {
-            throw new CreateCollectionActorException("Cannot create actor: " + e.getMessage(), e);
-        }
-    }
-
     public void createTable(CreateCollectionWrapper message) throws CreateCollectionActorException {
         try {
+            final ConnectionOptions options = IOC.resolve(Keys.getOrAdd(message.getConnectionPoolName()));
+            final IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
+
             String collectionName = message.getCollectionName();
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
@@ -38,7 +30,7 @@ public class CreateCollectionActor {
             } catch (TaskExecutionException | ResolutionException | PoolGuardException e) {
                 throw new CreateCollectionActorException(e);
             }
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | ResolutionException e) {
             throw new CreateCollectionActorException(e);
         }
     }
