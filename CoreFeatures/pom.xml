@@ -78,6 +78,7 @@
         <module>SchedulerAutoStartup</module>
         <module>CheckpointAutoStartup</module>
         <module>Shutdown</module>
+        <module>DatabasePostgresqlConnectionOptions</module>
     </modules>
 
     <build>

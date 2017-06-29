@@ -1,0 +1,34 @@
+{
+  "featureName": "info.smart_tools.smartactors:database-postgresql-connection-options",
+  "afterFeatures": [
+    "info.smart_tools.smartactors:database-postgresql",
+    "info.smart_tools.smartactors:database-plugins",
+    "info.smart_tools.smartactors:database-postgresql-plugins"
+  ],
+  "objects": [
+    {
+      "kind": "stateless_actor",
+      "dependency": "PostgresJsonConnectionOptionsActor",
+      "name": "PostgresJsonConnectionOptions"
+    }
+  ],
+  "maps": [
+    {
+      "id": "registerPostgresConnectionOptions",
+      "externalAccess": false,
+      "steps": [
+        {
+          "target": "PostgresJsonConnectionOptions",
+          "handler": "register",
+          "wrapper": {
+            "in_getConnectionOptionsRegistrationName": "message/connectionOptionsRegistrationName",
+            "in_getUrl": "message/url",
+            "in_getUsername": "message/username",
+            "in_getPassword": "message/password",
+            "in_getMaxConnections": "message/maxConnections"
+          }
+        }
+      ]
+    }
+  ]
+}
