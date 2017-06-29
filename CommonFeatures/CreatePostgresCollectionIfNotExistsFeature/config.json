@@ -23,7 +23,7 @@
           "handler": "createTable",
           "wrapper": {
             "in_getCollectionName": "message/collectionName",
-            "in_getConnectionPoolName": "message/connectionPoolName"
+            "in_getConnectionOptionsRegistrationName": "message/connectionOptionsRegistrationName"
           }
         }
       ],
