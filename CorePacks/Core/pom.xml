@@ -351,6 +351,27 @@
             <version>${core.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.wrapper-creator-receiver-decorator-plugin</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing.wrapper-creator-receiver-decorator</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.object-creation-strategies-plugin</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing.object-creation-strategies</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
         <!-- CoreStarter -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

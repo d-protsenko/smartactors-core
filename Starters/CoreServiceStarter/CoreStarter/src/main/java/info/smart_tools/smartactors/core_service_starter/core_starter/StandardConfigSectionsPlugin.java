@@ -38,6 +38,8 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .before("config_sections:done")
                     .after("router")
                     .after("IFieldNamePlugin")
+                    .after("full_object_creator_resolution_strategy")
+                    .after("global_router_registration_receiver_object_listener")
                     .before("starter")
                     .process(() -> {
                         try {
