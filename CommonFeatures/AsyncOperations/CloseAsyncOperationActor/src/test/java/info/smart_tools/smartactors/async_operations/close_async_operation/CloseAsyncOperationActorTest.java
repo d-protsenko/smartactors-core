@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.async_operations.close_async_operation;
 
+import info.smart_tools.smartactors.async_operations.close_async_operation.exception.CloseAsyncOpException;
 import info.smart_tools.smartactors.async_operations.close_async_operation.wrapper.CloseAsyncOpMessage;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
@@ -69,7 +70,7 @@ public class CloseAsyncOperationActorTest {
     }
 
     @Test
-    public void MustCorrectCompleteAsyncOperation() throws ReadValueException, CompleteAsyncOperationException, InvalidArgumentException {
+    public void MustCorrectCompleteAsyncOperation() throws ReadValueException, CompleteAsyncOperationException, CloseAsyncOpException {
         String targetToken = "targetToken";
 
         List<String> allTokens = mock(List.class);
@@ -99,7 +100,7 @@ public class CloseAsyncOperationActorTest {
 
         try {
             testActor.completeAsyncOp(message);
-        } catch (InvalidArgumentException e) {
+        } catch (CloseAsyncOpException e) {
             verify(message).getToken();
             return;
         }
@@ -123,7 +124,7 @@ public class CloseAsyncOperationActorTest {
 
         try {
             testActor.completeAsyncOp(message);
-        } catch (InvalidArgumentException e) {
+        } catch (CloseAsyncOpException e) {
 
             verify(message).getToken();
             verify(message).getOperationTokens();

@@ -9,7 +9,7 @@
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>async-operations-plugins</artifactId>
-    <version>0.3.3</version>
+
     <packaging>pom</packaging>
     <modules>
         <module>PluginCheckValidityAsyncOperationActor</module>

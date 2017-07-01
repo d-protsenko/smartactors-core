@@ -8,7 +8,7 @@
         <version>0.3.3</version>
     </parent>
     <artifactId>async-operations-plugins.check-validity-async-operation-plugin</artifactId>
-    <version>0.3.3</version>
+
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
