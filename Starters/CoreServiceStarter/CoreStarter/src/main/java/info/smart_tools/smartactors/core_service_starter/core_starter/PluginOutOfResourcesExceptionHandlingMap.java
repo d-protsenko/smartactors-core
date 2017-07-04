@@ -51,6 +51,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .after("global_router_registration_receiver_object_listener")
                     .after("full_object_creator_resolution_strategy")
                     .after("wrapper_creator_receiver_decorator")
+                    .after("object_configuration_canonization_strategies")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
@@ -84,7 +85,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             mapsSection.add(map);
                             templateObj.setValue(IOC.resolve(fieldNameKey, "maps"), mapsSection);
 
-                            configurationManager.applyConfig(IOC.resolve(Keys.getOrAdd("canonize objects configuration section item filters list"), templateObj));
+                            configurationManager.applyConfig(templateObj);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | ConfigurationProcessingException e) {
                             throw new ActionExecuteException(e);
                         }

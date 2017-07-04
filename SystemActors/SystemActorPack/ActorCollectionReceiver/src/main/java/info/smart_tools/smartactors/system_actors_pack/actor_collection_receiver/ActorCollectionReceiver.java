@@ -143,7 +143,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
 
         ReceiverListener listener = new ReceiverListener();
 
-        creator.create(listener, stepConf, context);
+        creator.create(listener, newObjectConfig, context);
 
         return listener.getReceiver();
     }
