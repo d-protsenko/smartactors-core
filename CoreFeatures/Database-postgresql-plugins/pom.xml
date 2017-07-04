@@ -14,7 +14,6 @@
     <modules>
         <module>PluginPostgresDBTasks</module>
         <module>PluginPostgresConnectionPool</module>
-        <module>PluginCachedCollection</module>
         <module>Database-postgresql-pluginsDistribution</module>
     </modules>
     <build>
