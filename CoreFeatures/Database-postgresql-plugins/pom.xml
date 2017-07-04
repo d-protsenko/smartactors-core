@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>PluginPostgresDBTasks</module>
-        <module>PluginAsyncOpsCollection</module>
         <module>PluginConnectionOptions</module>
         <module>PluginPostgresConnectionPool</module>
         <module>PluginCachedCollection</module>
