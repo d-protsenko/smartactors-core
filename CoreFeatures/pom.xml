@@ -80,6 +80,7 @@
         <module>Shutdown</module>
         <module>DatabasePostgresqlConnectionOptions</module>
         <module>DatabasePostgresqlAsyncOpsCollection</module>
+        <module>DatabasePostgresqlCachedCollection</module>
     </modules>
 
     <build>

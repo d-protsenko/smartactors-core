@@ -1,5 +1,5 @@
 {
-  "featureName": "info.smart_tools.smartactors:database-postgresql-async-ops-collection",
+  "featureName": "info.smart_tools.smartactors:database-postgresql-cached-collection",
   "afterFeatures": [
     "info.smart_tools.smartactors:database-postgresql",
     "info.smart_tools.smartactors:database-plugins",
