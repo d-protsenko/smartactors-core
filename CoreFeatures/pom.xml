@@ -79,6 +79,7 @@
         <module>CheckpointAutoStartup</module>
         <module>Shutdown</module>
         <module>DatabasePostgresqlConnectionOptions</module>
+        <module>DatabasePostgresqlAsyncOpsCollection</module>
     </modules>
 
     <build>
