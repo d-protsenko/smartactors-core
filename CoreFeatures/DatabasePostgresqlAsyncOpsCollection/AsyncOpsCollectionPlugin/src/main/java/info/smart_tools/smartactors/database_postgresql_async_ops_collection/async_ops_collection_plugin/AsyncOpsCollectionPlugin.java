@@ -21,7 +21,7 @@ public class AsyncOpsCollectionPlugin extends BootstrapPlugin {
         super(bootstrap);
     }
 
-    @Item("AsyncOpsCollectionPlugin")
+    @Item("PostgresAsyncOpsCollectionPlugin")
     @After({})
     @Before("")
     public void registerActor() throws ResolutionException, RegistrationException, InvalidArgumentException {

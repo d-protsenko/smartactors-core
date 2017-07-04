@@ -26,7 +26,7 @@ import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_composite_name_
 public class CachedCollectionActor {
     public void register(final CachedCollectionWrapper wrapper) throws CachedCollectionException {
         registerCachedCollection(wrapper);
-//        registerTasks();
+        registerTasks();
     }
 
     private void registerCachedCollection(final CachedCollectionWrapper wrapper) throws CachedCollectionException {

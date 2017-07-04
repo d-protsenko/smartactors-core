@@ -12,6 +12,11 @@
     <version>0.3.3</version>
 
     <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql-cached-collection.cached-collection-actor</artifactId>
+            <version>0.3.3</version>
+        </dependency>
         <!-- Components of info.smart_tools.smartactors.base -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
