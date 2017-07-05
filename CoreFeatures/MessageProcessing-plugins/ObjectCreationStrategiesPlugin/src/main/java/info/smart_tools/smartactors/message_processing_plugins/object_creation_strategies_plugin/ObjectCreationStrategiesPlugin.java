@@ -39,6 +39,9 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         "router",
         "IOC",
     })
+    @Before({
+            "object_creation_strategies:done",
+    })
     public void registerRouterListener()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
@@ -50,6 +53,9 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     @Item("full_object_creator_resolution_strategy")
     @After({
             "IOC",
+    })
+    @Before({
+            "object_creation_strategies:done",
     })
     public void registerFullCreatorStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
@@ -158,11 +164,19 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         "IFieldNamePlugin",
         "InitializeReceiverGenerator",
     })
+    @Before({
+        "object_creation_strategies:done",
+    })
     public void registerInvokerCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
                 Keys.getOrAdd("method invoker receiver"),
                 new MethodInvokerReceiverResolutionStrategy()
         );
+    }
+
+    @Item("object_creation_strategies:done")
+    public void creationStrategiesDone() {
+
     }
 }
