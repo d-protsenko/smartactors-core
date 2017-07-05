@@ -75,9 +75,9 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
      */
     public ContinuouslyRepeatScheduleStrategy()
             throws ResolutionException {
-        startFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "start");
-        intervalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "interval");
-        saveFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "save");
+        startFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
+        intervalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
+        saveFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
     }
 
     @Override

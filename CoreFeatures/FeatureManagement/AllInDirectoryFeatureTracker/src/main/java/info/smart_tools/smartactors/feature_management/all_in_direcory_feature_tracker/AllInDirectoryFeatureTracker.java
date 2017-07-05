@@ -41,14 +41,14 @@ public class AllInDirectoryFeatureTracker {
      */
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
-        this.featureNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
-        this.afterFeaturesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeatures");
-        this.repositoriesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositories");
+        this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        this.afterFeaturesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
+        this.repositoriesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "repositories");
 
-        this.featuresFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "features");
-        this.nameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-        this.groupFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "group");
-        this.versionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "version");
+        this.featuresFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "features");
+        this.nameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        this.groupFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "group");
+        this.versionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "version");
     }
 
     /**
@@ -99,7 +99,7 @@ public class AllInDirectoryFeatureTracker {
             throw new Exception("File config.json not found in the folder :" + f.getPath());
         }
 
-        IObject jsonConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), new Scanner(jsonFile).useDelimiter("\\Z").next());
+        IObject jsonConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), new Scanner(jsonFile).useDelimiter("\\Z").next());
 
         String name = (String) jsonConfig.getValue(this.featureNameFN);
         Set<String> dependencies = new HashSet<>((List) jsonConfig.getValue(this.afterFeaturesFN));
@@ -125,7 +125,7 @@ public class AllInDirectoryFeatureTracker {
             return features;
         }
 
-        IObject jsonConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), new Scanner(jsonFile).useDelimiter("\\Z").next());
+        IObject jsonConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), new Scanner(jsonFile).useDelimiter("\\Z").next());
 
 
         List<IObject> repositories = (List<IObject>) jsonConfig.getValue(this.repositoriesFN);

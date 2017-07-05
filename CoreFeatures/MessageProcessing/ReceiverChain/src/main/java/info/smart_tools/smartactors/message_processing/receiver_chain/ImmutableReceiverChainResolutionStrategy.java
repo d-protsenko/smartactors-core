@@ -72,7 +72,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
             IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
             IRouter router = (IRouter) args[ROUTER_ARG_INDEX];
 
-            IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+            IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
             IKey chainIdKey = Keys.getOrAdd("chain_id");
 
@@ -105,7 +105,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
-                IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()));
+                IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
                 chainAndEnv.setValue(exceptionChainFieldName, chain);
                 chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
                 exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);

@@ -39,10 +39,10 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
      */
     public DatabaseCountQueryExecutor()
             throws ResolutionException {
-        collectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collection");
-        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency");
-        connectionPoolDependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionPoolDependency");
-        filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
+        collectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collection");
+        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency");
+        connectionPoolDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency");
+        filterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
     }
 
     @Override

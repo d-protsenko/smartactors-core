@@ -72,7 +72,7 @@ public class CachedCollectionTasksPlugin implements IPlugin {
                                                     IObject document = (IObject) args[2];
                                                     IDatabaseTask task = new UpsertIntoCachedCollectionTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     collectionNameField.out(query, collectionName);
                                                     documentField.out(query, document);
@@ -97,7 +97,7 @@ public class CachedCollectionTasksPlugin implements IPlugin {
                                                     IObject document = (IObject) args[2];
                                                     IDatabaseTask task = new DeleteFromCachedCollectionTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     collectionNameField.out(query, collectionName);
                                                     documentField.out(query, document);
@@ -121,7 +121,7 @@ public class CachedCollectionTasksPlugin implements IPlugin {
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                                     IDatabaseTask task = new GetItemFromCachedCollectionTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                                     collectionNameField.out(query, collectionName);
                                                     keyNameField.out(query, args[2]);
                                                     keyField.out(query, args[3]);

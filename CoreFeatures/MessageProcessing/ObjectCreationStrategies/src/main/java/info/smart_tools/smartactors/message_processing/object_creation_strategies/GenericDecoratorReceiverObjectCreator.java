@@ -31,7 +31,7 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
             throws ResolutionException {
         super(underlyingObjectCreator, filterConfig, objectConfig);
 
-        decoratorDependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency");
+        decoratorDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency");
     }
 
     @Override

@@ -55,7 +55,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         when(originalChainMock.get(0)).thenReturn(receivers[0]);
 
         IReceiverChain decorated = new ReplaceReceiversChainModificationStrategy().resolve(originalChainMock,
-                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{'replacements':[]}".replace('\'','"')));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'replacements':[]}".replace('\'','"')));
 
         assertSame(receivers[0], decorated.get(0));
 
@@ -84,7 +84,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test
     public void Should_replaceReceivers()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject modDesc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':0," +
@@ -121,7 +121,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test(expected = ResolveDependencyStrategyException.class)
     public void Should_throwWhenReplacementStepIndexIsTooLarge()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject modDesc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':2," +

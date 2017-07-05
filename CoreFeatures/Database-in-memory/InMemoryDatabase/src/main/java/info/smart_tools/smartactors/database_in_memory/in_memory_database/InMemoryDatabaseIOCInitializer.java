@@ -104,7 +104,7 @@ public final class InMemoryDatabaseIOCInitializer {
                                     }
                                     IFieldName bufFieldName =
                                             IOC.resolve(
-                                                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                                     fieldString
                                             );
                                     bufObject = ((IObject) bufObject).getValue(bufFieldName);
@@ -140,7 +140,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     while (mainIterator.hasNext()) {
                         Map.Entry<IFieldName, Object> entry = mainIterator.next();
                         try {
-                            IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                             iObject.setValue(entry.getKey(), entry.getValue());
                             and.add(iObject);
                         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
@@ -150,8 +150,8 @@ public final class InMemoryDatabaseIOCInitializer {
                     if (and.size() > 1) {
                         IFieldName andFieldName;
                         try {
-                            newCondition = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                            andFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "$and");
+                            newCondition = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            andFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "$and");
                             newCondition.setValue(andFieldName, and);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
                         }
@@ -366,7 +366,7 @@ public final class InMemoryDatabaseIOCInitializer {
                         }
 
                         IFieldName tagFieldName = IOC.resolve(
-                                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                 reference
                         );
                         return null != ((IObject) entry).getValue(tagFieldName);
@@ -475,15 +475,15 @@ public final class InMemoryDatabaseIOCInitializer {
                             Integer pageSize = DEFAULT_PAGE_SIZE;
                             try {
                                 IFieldName pageFieldName = IOC.resolve(
-                                        Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "page"
                                 );
                                 IFieldName pageNumberFieldName = IOC.resolve(
-                                        Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "number"
                                 );
                                 IFieldName pageSizeFieldName = IOC.resolve(
-                                        Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "size"
                                 );
                                 IObject page = (IObject) ((IObject) args[0]).getValue(pageFieldName);
@@ -514,7 +514,7 @@ public final class InMemoryDatabaseIOCInitializer {
 
                             try {
                                 IObject condition = (IObject) args[0];
-                                IFieldName sortFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sort");
+                                IFieldName sortFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sort");
                                 sortRules = (List<IObject>) condition.getValue(sortFieldName);
                             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
                                 // ignoring absence of sort rule

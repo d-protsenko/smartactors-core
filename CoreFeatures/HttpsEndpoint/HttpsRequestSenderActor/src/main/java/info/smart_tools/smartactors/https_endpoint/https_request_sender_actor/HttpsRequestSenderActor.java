@@ -21,7 +21,7 @@ public class HttpsRequestSenderActor {
      */
     public HttpsRequestSenderActor() {
         try {
-            uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
+            uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -37,14 +37,14 @@ public class HttpsRequestSenderActor {
             throws HttpsRequestSenderActorException {
         try {
             if (message.getRequest().getValue(uriFieldName).toString().startsWith("https:")) {
-                uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
+                uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
                 if (message.getRequest().getValue(uriFieldName) != null) {
                     IClient client = IOC.resolve(Keys.getOrAdd("getHttpsClient"), message.getRequest());
                     IOC.resolve(Keys.getOrAdd("sendHttpsRequest"), client, message.getRequest());
                 }
             }
             if (message.getRequest().getValue(uriFieldName).toString().startsWith("http:")) {
-                uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
+                uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
                 if (message.getRequest().getValue(uriFieldName) != null) {
                     IClient client = IOC.resolve(Keys.getOrAdd("getHttpClient"), message.getRequest());
                     IOC.resolve(Keys.getOrAdd("sendHttpRequest"), client, message.getRequest());

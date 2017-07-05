@@ -69,7 +69,7 @@ public class HttpResponseSenderTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
         IKey keyCookiesExtractor = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
         IKey keyHeadersExtractor = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
@@ -139,7 +139,7 @@ public class HttpResponseSenderTest {
     public void writeShouldCallSendMethod() throws
             ResponseSendingException, ResolutionException, CookieSettingException, HeadersSetterException {
         HttpResponseSender sender = new HttpResponseSender("123");
-        IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"foo\":\"bar\"}");
+        IObject environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"foo\":\"bar\"}");
         when(responseStatusExtractor.extract(any(IObject.class))).thenReturn(200);
         when(response.getContent()).thenReturn("{\"foo\":\"bar\"}".getBytes());
         sender.send(response, environment, ctx);

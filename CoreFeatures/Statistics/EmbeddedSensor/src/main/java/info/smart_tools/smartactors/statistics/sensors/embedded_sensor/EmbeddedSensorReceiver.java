@@ -61,11 +61,11 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
      */
     public EmbeddedSensorReceiver(final IObject args)
             throws ResolutionException, ReadValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
-        periodFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "period");
-        startFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "start");
-        limitFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "limit");
-        strategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "strategy");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statisticsChain");
+        periodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "period");
+        startFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
+        limitFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
+        strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
 
         timer = IOC.resolve(Keys.getOrAdd("timer"));
         systemTime = IOC.resolve(Keys.getOrAdd("time"));

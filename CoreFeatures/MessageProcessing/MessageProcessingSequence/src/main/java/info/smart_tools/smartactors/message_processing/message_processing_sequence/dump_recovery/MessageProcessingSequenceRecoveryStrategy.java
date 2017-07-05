@@ -35,10 +35,10 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
      */
     public MessageProcessingSequenceRecoveryStrategy()
             throws ResolutionException {
-        stepsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepsStack");
-        chainsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack");
-        maxDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth");
-        chainsDumpFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump");
+        stepsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack");
+        chainsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack");
+        maxDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth");
+        chainsDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump");
     }
 
     @Override

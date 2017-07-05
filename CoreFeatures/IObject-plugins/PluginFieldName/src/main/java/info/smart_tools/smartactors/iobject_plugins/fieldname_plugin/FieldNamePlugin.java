@@ -64,7 +64,7 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
-                            IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {

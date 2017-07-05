@@ -78,20 +78,20 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
 
-        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "causeLevel");
-        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "causeStep");
-        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchLevel");
-        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "catchStep");
-        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exception");
-        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "after");
-        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chain");
+        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeLevel");
+        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeStep");
+        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchLevel");
+        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchStep");
+        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exception");
+        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
+        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
-        stepsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepsStack");
-        chainsStackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack");
-        maxDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth");
-        chainsDumpFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump");
-        excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "excludeExceptional");
-        skipChainsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "skipChains");
+        stepsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack");
+        chainsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack");
+        maxDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth");
+        chainsDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump");
+        excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "excludeExceptional");
+        skipChainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "skipChains");
 
         reset();
     }
@@ -276,7 +276,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     @Override
     public IObject dump(final IObject options) throws DumpException {
         try {
-            IObject dump = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject dump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             dump.setValue(maxDepthFieldName, chainStack.length);
             dump.setValue(stepsStackFieldName,
@@ -288,7 +288,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             Object excludeExceptional = options.getValue(excludeExceptionalFieldName);
 
             if (skipChains == null || !(boolean) skipChains) {
-                IObject chainsDump = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                IObject chainsDump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 dump.setValue(chainsDumpFieldName, chainsDump);
 
@@ -301,7 +301,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
                 for (IReceiverChain chain : dumpedChains) {
                     Object chainDump = IOC.resolve(Keys.getOrAdd("make dump"), chain, options);
-                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), chain.getName());
+                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), chain.getName());
 
                     chainsDump.setValue(fieldName, chainDump);
                 }

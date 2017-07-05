@@ -97,10 +97,10 @@ public class MessageProcessorTest {
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "test signal")).thenReturn(KEY_FOR_TEST_SIGNAL);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "shutdown signal")).thenReturn(KEY_FOR_SHUTDOWN_SIGNAL);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "invalid key")).thenReturn(KEY_INVALID_KEY);
-        when(IOC.resolve(KEY_FOR_KEY_STORAGE, IObject.class.getCanonicalName())).thenReturn(KEY_FOR_NEW_IOBJECT);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, "info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(KEY_FOR_NEW_IOBJECT);
         when(IOC.resolve(KEY_FOR_NEW_IOBJECT))
                 .thenReturn(environmentMock);
-        when(IOC.resolve(KEY_FOR_KEY_STORAGE, IFieldName.class.getCanonicalName())).thenReturn(KEY_FOR_FIELD_NAME);
+        when(IOC.resolve(KEY_FOR_KEY_STORAGE, "info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(KEY_FOR_FIELD_NAME);
         when(IOC.resolve(same(KEY_FOR_FIELD_NAME), any()))
                 .thenAnswer(invocationOnMock -> new FieldName((String) invocationOnMock.getArguments()[1]));
         when(IOC.resolve(same(KEY_FOR_FINAL_TASK), any())).thenReturn(this.finalTaskMock);
@@ -423,7 +423,7 @@ public class MessageProcessorTest {
             throws Exception {
         MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
-        messageProcessor.signal(IObject.class.getCanonicalName());
+        messageProcessor.signal("info.smart_tools.smartactors.iobject.iobject.IObject");
     }
 
     @Test

@@ -45,13 +45,13 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             environmentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "environment"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
             );
             messageFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "message"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
             );
             contextFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of TestEnvironmentHandler.", e);
@@ -94,7 +94,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                     checker.getSuccessfulReceiverArguments()
             );
             IMessageProcessingSequence sequence = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                     STACK_DEPTH, mainTestChain
             );
             IQueue<ITask> taskQueue = IOC.resolve(
@@ -102,7 +102,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             );
 
             IMessageProcessor mp = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()), taskQueue, sequence
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence
             );
             fmp[0] = mp;
             mp.process(message, context);
@@ -118,10 +118,10 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             IFieldName interceptFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "intercept"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "intercept"
             );
             IFieldName assertFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "assert"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "assert"
             );
 
             List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);

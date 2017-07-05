@@ -49,14 +49,14 @@ public class DeserializeStrategyPostFormUrlencodedTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
             new CreateNewInstanceStrategy(
                 (args) -> new DSObject()
 
             )
         );
-        IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {

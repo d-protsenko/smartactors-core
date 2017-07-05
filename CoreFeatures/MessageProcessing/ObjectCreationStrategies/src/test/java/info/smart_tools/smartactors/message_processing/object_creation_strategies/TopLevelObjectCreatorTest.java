@@ -54,7 +54,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
 
         when(objectResolutionStrategy.resolve(same(configMock))).thenReturn(object);
 
-        when(configMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency")))
+        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")))
                 .thenReturn("the object dependency");
     }
 
@@ -68,7 +68,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
         verify(objectResolutionStrategy, times(1)).resolve(any());
         verify(listenerMock).acceptItem(isNull(), same(object));
         verify(listenerMock).endItems();
-        verify(contextMock).setValue(eq(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "topLevelObject")), same(object));
+        verify(contextMock).setValue(eq(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject")), same(object));
     }
 
     @Test

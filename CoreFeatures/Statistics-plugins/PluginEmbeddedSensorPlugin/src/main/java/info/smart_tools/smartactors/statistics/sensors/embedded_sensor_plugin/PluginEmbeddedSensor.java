@@ -130,12 +130,12 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     @Item("save_timestamp_receiver_creation_strategy")
     public void registerTimesatampSaverCreationStrategy()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "timeFieldName");
+        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
 
         IOC.register(Keys.getOrAdd("save timestamp receiver"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 IObject arg = (IObject) args[0];
-                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         arg.getValue(timeFieldNameFieldName));
 
                 return new SaveTimestampReceiver(timeFieldName);

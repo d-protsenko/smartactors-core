@@ -71,7 +71,7 @@ public class PostgresUpsertTask implements IDatabaseTask {
             UpsertMessage message = IOC.resolve(Keys.getOrAdd(UpsertMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             idField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     String.format(PostgresSchema.ID_FIELD_PATTERN, collection.toString()));
             document = message.getDocument();
 

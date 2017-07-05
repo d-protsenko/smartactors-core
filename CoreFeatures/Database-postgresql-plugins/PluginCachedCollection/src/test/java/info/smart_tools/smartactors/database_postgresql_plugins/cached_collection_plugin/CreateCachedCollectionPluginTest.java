@@ -125,7 +125,7 @@ public class CreateCachedCollectionPluginTest {
         CachedCollection cachedCollection = mock(CachedCollection.class);
 
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(iobjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
 
         IKey connectionPoolKey = mock(IKey.class);
         when(Keys.getOrAdd("PostgresConnectionPool")).thenReturn(connectionPoolKey);
@@ -151,7 +151,7 @@ public class CreateCachedCollectionPluginTest {
         verify(collectionMap).get(collectionMapKey);
 
         verifyStatic();
-        Keys.getOrAdd(IObject.class.getCanonicalName());
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
 
         verifyStatic();
         IOC.resolve(iobjectKey);

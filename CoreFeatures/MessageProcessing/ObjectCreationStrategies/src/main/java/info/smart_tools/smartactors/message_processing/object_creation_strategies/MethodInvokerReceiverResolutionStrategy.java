@@ -28,7 +28,7 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
      */
     public MethodInvokerReceiverResolutionStrategy()
             throws ResolutionException {
-        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "wrapperResolutionStrategyDependency");
 
         receiverGenerator = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));

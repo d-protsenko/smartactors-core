@@ -130,10 +130,10 @@ public class ReplaceReceiversChainModificationStrategy implements IResolveDepend
      */
     public ReplaceReceiversChainModificationStrategy()
             throws ResolutionException {
-        replacementsFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "replacements");
-        stepFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "step");
-        dependencyFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
-        argsFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "args");
+        replacementsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
+        stepFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        dependencyFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        argsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
     }
 
     @Override

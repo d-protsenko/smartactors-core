@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class HttpClientInitializer {
     public static void init() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IFieldName uuidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uuid");
-        IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "timeout");
+        IFieldName uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
+        IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeout");
 
         Map<Object, ITimerTask> timerTasks = new HashMap<>();
         IOC.register(Keys.getOrAdd("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(

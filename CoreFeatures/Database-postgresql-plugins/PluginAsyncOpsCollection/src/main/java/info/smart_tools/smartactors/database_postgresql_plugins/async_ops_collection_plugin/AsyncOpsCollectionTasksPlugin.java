@@ -72,7 +72,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     String id = (String) args[2];
                                                     IDatabaseTask task = new GetAsyncOperationTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     collectionNameField.out(query, collectionName);
                                                     tokenField.out(query, id);
@@ -95,7 +95,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                 try {
                                                     IStorageConnection connection = (IStorageConnection) args[0];
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
-                                                    IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     asyncDataField.out(document, args[2]);
                                                     tokenField.out(document, args[3]);
@@ -103,7 +103,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
 
                                                     IDatabaseTask task = new CreateAsyncOperationTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     collectionNameField.out(query, collectionName);
                                                     documentField.out(query, document);
@@ -128,8 +128,8 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                                     IDatabaseTask task = new DeleteAsyncOperationTask(connection);
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-                                                    IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                                    IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                                     tokenField.out(document, args[2]);
                                                     documentField.out(query, document);
@@ -155,7 +155,7 @@ public class AsyncOpsCollectionTasksPlugin implements IPlugin {
                                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                                     IObject document = (IObject) args[2];
 
-                                                    IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                    IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                                     collectionNameField.out(query, collectionName);
                                                     documentField.out(query, document);
 

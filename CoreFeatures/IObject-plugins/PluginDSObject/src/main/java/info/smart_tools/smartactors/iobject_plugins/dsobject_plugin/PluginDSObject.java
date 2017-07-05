@@ -38,7 +38,7 @@ public class PluginDSObject implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                                     new CreateNewInstanceStrategy(args -> {
                                         if (args.length == 0) {
                                             return new DSObject();

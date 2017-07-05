@@ -88,7 +88,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBUpsertTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -115,7 +115,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 String collectionName = String.valueOf(args[1]);
                                 IDatabaseTask task = new InMemoryDBCreateCollectionTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
 
@@ -147,7 +147,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<IObject> callback = (IAction<IObject>) args[3];
                                 IDatabaseTask task = new InMemoryGetByIdTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 idField.out(query, id);
@@ -181,7 +181,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
                                 IDatabaseTask task = new InMemoryDBSelectTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 criteriaField.out(query, criteria);
@@ -212,7 +212,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBDeleteTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -245,7 +245,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<Long> callback = (IAction<Long>) args[3];
                                 IDatabaseTask task = new InMemoryDBCountTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 criteriaField.out(query, criteria);
@@ -276,7 +276,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBInsertTask();
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);

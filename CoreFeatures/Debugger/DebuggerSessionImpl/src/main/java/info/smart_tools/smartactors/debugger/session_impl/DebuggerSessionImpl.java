@@ -71,7 +71,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
         this.breakpointsStorage = IOC.resolve(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()));
 
-        sessionIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sessionId");
+        sessionIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sessionId");
 
         commands.put("start", this::startDebugging);
         commands.put("continue", this::continueDebugging);
@@ -133,7 +133,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("modifyBreakpoint", args -> {
             try {
                 IObject arg = (IObject) args;
-                String bpId = (String) arg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id"));
+                String bpId = (String) arg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"));
 
                 breakpointsStorage.modifyBreakpoint(bpId, arg);
 
@@ -239,15 +239,15 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
         try {
             IMessageProcessingSequence innerSequence = IOC.resolve(
-                    Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, mainChain);
+                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, mainChain);
 
             sequence = IOC.resolve(Keys.getOrAdd("new debugger sequence"), innerSequence, debuggerAddress);
 
             Object taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
-            processor = IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, sequence);
+            processor = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence);
 
-            IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             context.setValue(sessionIdFieldName, id);
 
@@ -352,11 +352,11 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName fieldNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            IFieldName fieldValueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
-            IFieldName dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
+            IFieldName fieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            IFieldName fieldValueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            IFieldName dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
 
-            IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), args.getValue(fieldNameFieldName));
+            IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), args.getValue(fieldNameFieldName));
             Object dependencyName = args.getValue(dependencyFieldName);
             Object value = args.getValue(fieldValueFieldName);
 
@@ -377,8 +377,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName levelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "level");
-            IFieldName stepFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "step");
+            IFieldName levelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "level");
+            IFieldName stepFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
 
             int level = ((Number) args.getValue(levelFieldName)).intValue();
             int step = ((Number) args.getValue(stepFieldName)).intValue();

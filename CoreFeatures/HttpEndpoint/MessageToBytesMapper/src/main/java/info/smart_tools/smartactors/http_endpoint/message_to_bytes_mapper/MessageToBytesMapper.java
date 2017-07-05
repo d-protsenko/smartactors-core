@@ -28,7 +28,7 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
         }
         String string = new String(serializedInput);
         string = string.substring(string.indexOf('{'), string.lastIndexOf('}') + 1);
-        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), string);
+        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), string);
     }
 
     @Override

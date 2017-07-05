@@ -34,7 +34,7 @@ public class UnzipFeatureActor {
      */
     public UnzipFeatureActor()
             throws ResolutionException {
-        this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeatures");
+        this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
     }
 
     /**
@@ -88,7 +88,7 @@ public class UnzipFeatureActor {
     private void updateFeature(final File f, final IFeature feature)
             throws Exception {
         String content = new Scanner(f).useDelimiter("\\Z").next();
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), content);
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);

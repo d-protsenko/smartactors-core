@@ -98,10 +98,10 @@ public class MessageProcessingTest {
                 })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new CreateNewInstanceStrategy(objects -> new DSObject()));
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(objects -> {
                     try {
                         return new FieldName(String.valueOf(objects[0]));
@@ -232,7 +232,7 @@ public class MessageProcessingTest {
         IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
 
-        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "target");
+        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
         IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"),
                 new IResolveDependencyStrategy() {
@@ -266,8 +266,8 @@ public class MessageProcessingTest {
         IObject payloadChainDesc = new DSObject();
         IObject innerPayloadChainDesc = new DSObject();
 
-        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "exceptional");
-        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "steps");
+        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
+        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
 
         // Main chain
         mainChainDesc.setValue(exceptionalFieldName, new ArrayList<>());

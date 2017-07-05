@@ -70,24 +70,24 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
                     Keys.getOrAdd("db.collection.create"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             createTask.execute();
 
             saved = new IObject[] {
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy1','entryId':'0'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy2','entryId':'1'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy3','entryId':'2'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy4','entryId':'3'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy5','entryId':'4'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy6','entryId':'5'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy7','entryId':'6'}".replace('\'', '"')),
             };
 
@@ -129,7 +129,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
                     Keys.getOrAdd("db.collection.count"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{'filter':{},'sort':[]}".replace('\'','"')),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'filter':{},'sort':[]}".replace('\'','"')),
                     (IAction<Long>) c -> res[0] = c.intValue());
 
             createTask.execute();

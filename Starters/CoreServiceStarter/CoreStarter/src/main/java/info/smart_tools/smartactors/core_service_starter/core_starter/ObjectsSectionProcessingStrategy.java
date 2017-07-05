@@ -52,7 +52,7 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
      */
     public ObjectsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "objects");
+        this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
             for (IObject objDesc : section) {
                 IReceiverObjectListener listener = IOC.resolve(Keys.getOrAdd("global router registration receiver object listener"));
                 IReceiverObjectCreator creator = IOC.resolve(Keys.getOrAdd("full receiver object creator"), objDesc);
-                IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                 creator.create(listener, objDesc, context);
             }
         } catch (InvalidReceiverPipelineException | ResolutionException | InvalidArgumentException | ReadValueException

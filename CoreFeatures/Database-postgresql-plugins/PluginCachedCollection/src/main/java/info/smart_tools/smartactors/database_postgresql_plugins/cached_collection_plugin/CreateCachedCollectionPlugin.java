@@ -62,7 +62,7 @@ public class CreateCachedCollectionPlugin implements IPlugin {
                                     String keyName = String.valueOf(args[1]);
                                     ConnectionOptions connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
                                     IPool connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
-                                    IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                    IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                     connectionPoolField.out(config, connectionPool);
                                     collectionNameField.out(config, collectionName);
                                     keyNameField.out(config, keyName);

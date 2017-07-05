@@ -49,7 +49,7 @@ public class PluginBlockingQueue implements IPlugin {
                             IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
                                     IFieldName queueSizeFieldName = IOC.resolve(
-                                            Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queueSize");
+                                            Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
                                     int queueSize = DEFAULT_QUEUE_SIZE;
 
                                     if (args.length > 0) {

@@ -30,7 +30,7 @@ public class InMemoryDatabase implements IDatabase {
      */
     public InMemoryDatabase() throws IDatabaseException {
         try {
-            filterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filter");
+            filterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to resolve IFieldName", e);
         }
@@ -157,7 +157,7 @@ public class InMemoryDatabase implements IDatabase {
     private IObject clone(final IObject iObject) throws IDatabaseException {
         try {
             String serializedIObject = iObject.serialize();
-            return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serializedIObject);
+            return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), serializedIObject);
         } catch (ResolutionException | SerializeException e) {
             throw new IDatabaseException("Failed to clone IObject", e);
         }
@@ -173,7 +173,7 @@ public class InMemoryDatabase implements IDatabase {
                 if (inDbItem.getId().equals(item.getId())) {
                     list.remove(inDbItem);
                     try {
-                        document.deleteField(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName + "ID"));
+                        document.deleteField(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collectionName + "ID"));
                     } catch (DeleteValueException | InvalidArgumentException e) {
                         throw new IDatabaseException("Failed to resolve IFieldName", e);
                     } catch (ResolutionException e) {

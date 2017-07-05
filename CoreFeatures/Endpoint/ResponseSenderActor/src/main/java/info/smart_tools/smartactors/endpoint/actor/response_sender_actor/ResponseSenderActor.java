@@ -42,22 +42,22 @@ public class ResponseSenderActor {
         //Get response IObject
         IFieldName responseFieldName = null;
         try {
-            responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
+            responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
             IObject responseIObject = messageWrapper.getEnvironmentIObject(responseFieldName);
 
             //Create and fill full environment
-            IObject environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
-            IFieldName configFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "config");
-            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-            IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
+            IObject environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd");
+            IFieldName configFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
+            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+            IFieldName endpointName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
             environment.setValue(responseFieldName, responseIObject);
             environment.setValue(configFieldName, messageWrapper.getEnvironmentIObject(configFieldName));
             environment.setValue(contextFieldName, messageWrapper.getEnvironmentIObject(contextFieldName));
             environment.setValue(messageFieldName, messageWrapper.getEnvironmentIObject(messageFieldName));
 
-            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
             IChannelHandler channelHandler = (IChannelHandler)
                     messageWrapper.getEnvironmentIObject(contextFieldName).getValue(channelFieldName);
 

@@ -35,7 +35,7 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
                 throws ResolutionException, ChangeValueException, InvalidArgumentException {
             this.enabled = enabled;
 
-            this.asIObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            this.asIObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             this.asIObject.setValue(chainFN, chain);
             this.asIObject.setValue(stepFN, stepId);
             this.asIObject.setValue(enabledFN, true);
@@ -80,11 +80,11 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
      */
     public DebuggerBreakpointsStorageImpl()
             throws ResolutionException {
-        chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
-        stepFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "step");
-        enabledFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "enabled");
-        idFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
-        argsFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "args");
+        chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        stepFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        enabledFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "enabled");
+        idFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        argsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
     }
 
     @Override

@@ -26,10 +26,10 @@ public class MessageBusResponseStrategy implements IResponseStrategy {
 
     public MessageBusResponseStrategy()
             throws ResolutionException {
-        contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-        responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
-        replyChainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageBusReplyTo");
-        responseStrategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy");
+        contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+        replyChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo");
+        responseStrategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
         nullResponseStrategy = IOC.resolve(Keys.getOrAdd("null response strategy"));
     }
@@ -42,7 +42,7 @@ public class MessageBusResponseStrategy implements IResponseStrategy {
             Object replyChainId = context.getValue(replyChainFieldName);
 
             String sResponse = response.serialize();
-            response = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), sResponse);
+            response = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), sResponse);
 
             MessageBus.send(response, replyChainId);
 

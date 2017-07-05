@@ -90,21 +90,21 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IObject filterObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject filterObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             keyField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), (String) keyNameField.in(query));
             String keyValue = keyValueField.in(query);
 
-            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(eqKeyObject, keyValue);
             keyField.out(filterObject, eqKeyObject);
 
-            IObject isActiveObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject isActiveObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(isActiveObject, true);
             isActiveField.out(filterObject, isActiveObject);
 
-            IObject dateObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject dateObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             dateToField.out(dateObject, LocalDateTime.now().format(formatter));
             startDateTimeField.out(filterObject, dateObject);
 

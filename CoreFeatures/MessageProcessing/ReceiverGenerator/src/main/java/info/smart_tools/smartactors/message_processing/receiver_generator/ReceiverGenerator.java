@@ -82,7 +82,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .addPackageName(usersObject.getClass().getPackage().getName())
                 .addImport(usersObject.getClass().getCanonicalName())
                 .addImport(wrapperInterface.getCanonicalName())
-                .addImport(IMessageProcessor.class.getCanonicalName())
+                .addImport("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor")
                 .addImport(IMessageReceiver.class.getCanonicalName())
                 .addImport(AsynchronousOperationException.class.getCanonicalName())
                 .addImport(MessageReceiveException.class.getCanonicalName())

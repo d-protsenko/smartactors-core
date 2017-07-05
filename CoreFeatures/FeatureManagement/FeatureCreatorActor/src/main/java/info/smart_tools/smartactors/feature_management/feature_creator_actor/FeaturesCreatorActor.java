@@ -44,13 +44,13 @@ public class FeaturesCreatorActor {
      */
     public FeaturesCreatorActor()
             throws ResolutionException {
-        this.featuresFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "features");
-        this.repositoriesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "repositories");
+        this.featuresFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "features");
+        this.repositoriesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "repositories");
 
-        this.nameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-        this.groupFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "group");
-        this.versionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "version");
-        this.featureLocationFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureLocation");
+        this.nameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        this.groupFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "group");
+        this.versionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "version");
+        this.featureLocationFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureLocation");
     }
 
     /**
@@ -130,7 +130,7 @@ public class FeaturesCreatorActor {
         try {
             String name = file.getName().split("-\\d\\.\\d\\.\\d-")[0];
             List<IObject> featuresDescription = new ArrayList<>();
-            IObject featureDescription = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject featureDescription = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             featureDescription.setValue(this.nameFN, name);
             featureDescription.setValue(this.groupFN, null);
             featureDescription.setValue(this.versionFN, null);
@@ -147,7 +147,7 @@ public class FeaturesCreatorActor {
             throws FeatureCreationException {
         try {
             IObject jsonConfig = IOC.resolve(
-                    Keys.getOrAdd(IObject.class.getCanonicalName()), new Scanner(file).useDelimiter("\\Z").next()
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), new Scanner(file).useDelimiter("\\Z").next()
             );
             return (List<IObject>) jsonConfig.getValue(fieldName);
         } catch (ResolutionException | IOException | ReadValueException | InvalidArgumentException e) {

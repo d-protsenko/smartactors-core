@@ -41,11 +41,11 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
      */
     public ExecutorSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "executor");
-        this.threadCountFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "threadCount");
-        this.maxRunningThreadsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxRunningThreads");
-        this.maxExecutionDelayFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxExecutionDelay");
-        this.defaultStackDepthFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "defaultStackDepth");
+        this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executor");
+        this.threadCountFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "threadCount");
+        this.maxRunningThreadsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxRunningThreads");
+        this.maxExecutionDelayFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxExecutionDelay");
+        this.defaultStackDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "defaultStackDepth");
     }
 
     @Override

@@ -60,7 +60,7 @@ public class HttpsEndpointPluginTest {
                 new ResolveByNameIocStrategy()
         );
         IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {

@@ -46,8 +46,8 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
      */
     public MapsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maps");
-        this.mapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
+        this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps");
+        this.mapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
     }
 
     @Override

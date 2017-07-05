@@ -52,7 +52,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
 
         backupActionMock = mock(IAction.class);
 
-        messageFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message___");
+        messageFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message___");
     }
 
     @Test

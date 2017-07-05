@@ -38,9 +38,9 @@ public class ChainCallReceiver implements IMessageReceiver {
      */
     public ChainCallReceiver(final IChainStorage chainStorage, final IChainChoiceStrategy chainChoiceStrategy)
             throws InvalidArgumentException, ResolutionException {
-        externalAccessFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "externalAccess");
-        fromExternalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "fromExternal");
-        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
+        externalAccessFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess");
+        fromExternalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "fromExternal");
+        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "accessToChainForbiddenError");
         if (null == chainStorage) {
             throw new InvalidArgumentException("Storage should not be null.");
         }

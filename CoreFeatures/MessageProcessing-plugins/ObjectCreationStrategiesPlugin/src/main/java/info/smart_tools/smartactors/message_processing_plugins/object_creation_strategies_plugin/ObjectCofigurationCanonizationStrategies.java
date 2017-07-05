@@ -47,8 +47,8 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                     try {
                         IObject value = (IObject) args[0];
 
-                        IFieldName filtersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filters");
-                        IFieldName kindFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "kind");
+                        IFieldName filtersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+                        IFieldName kindFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind");
 
                         List filtersList = (List) value.getValue(filtersFieldName);
                         String kindName = (String) value.getValue(kindFieldName);
