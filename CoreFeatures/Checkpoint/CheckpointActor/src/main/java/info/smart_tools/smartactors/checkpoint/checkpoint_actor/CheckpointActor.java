@@ -24,6 +24,7 @@ import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
@@ -203,11 +204,18 @@ public class CheckpointActor {
                 return;
             }
 
-            entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
+            // Pause entry execution to prevent race between current thread and timer thread
+            entry.pause();
+            try {
 
-            entry.getState().setValue(gotFeedbackFieldName, true);
-            entry.getState().setValue(completedFieldName, true);
-        } catch (EntryNotFoundException ignore) {
+                entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
+
+                entry.getState().setValue(gotFeedbackFieldName, true);
+                entry.getState().setValue(completedFieldName, true);
+            } finally {
+                entry.unpause();
+            }
+        } catch (EntryNotFoundException | EntryPauseException ignore) {
             // There is no entry with required identifier. OK
         }
     }

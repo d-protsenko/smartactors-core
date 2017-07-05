@@ -147,6 +147,19 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
         }
     }
 
+    @Override
+    public void notifyPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+    }
+
+    @Override
+    public void notifyUnPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+        restore(entry);
+    }
+
+    @Override
+    public void processPausedExecution(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+    }
+
     private TemporalAmount parseInterval(final String intervalString) {
         TemporalAmount interval;
         try {

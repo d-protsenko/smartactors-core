@@ -25,4 +25,13 @@ public class SchedulingStrategyExecutionException extends Exception {
     public SchedulingStrategyExecutionException(final String msg) {
         this(msg, null);
     }
+
+    /**
+     * The constructor.
+     *
+     * @param cause    the cause
+     */
+    public SchedulingStrategyExecutionException(final Throwable cause) {
+        super(cause);
+    }
 }

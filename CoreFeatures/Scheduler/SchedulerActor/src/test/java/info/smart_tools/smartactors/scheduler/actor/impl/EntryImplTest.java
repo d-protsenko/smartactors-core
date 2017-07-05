@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldName
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
@@ -257,5 +258,89 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         entry.suspend();
 
         verifyNoMoreInteractions(storage, timer);
+    }
+
+    @Test(expected = EntryPauseException.class)
+    public void Should_throwWhenTryingToUnpauseNotPaused()
+            throws Exception {
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        entry.unpause();
+    }
+
+    @Test(expected = EntryPauseException.class)
+    public void Should_throwWhenTryingToPausePaused()
+            throws Exception {
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        try {
+            entry.pause();
+        } catch (EntryPauseException e) {
+            throw new AssertionError(e);
+        }
+
+        entry.pause();
+    }
+
+    @Test
+    public void Should_notifyStrategyWhenEntryIsPausedOrUnpaused()
+            throws Exception {
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        reset(strategy);
+
+        entry.pause();
+
+        verify(strategy).notifyPaused(same(entry));
+        verifyNoMoreInteractions(strategy);
+
+        entry.unpause();
+
+        verify(strategy).notifyUnPaused(same(entry));
+        verifyNoMoreInteractions(strategy);
+    }
+
+    @Test
+    public void Should_notifyStrategyWhenEntryIsExecutedBeingPaused()
+            throws Exception {
+        ISchedulerAction actionMock = mock(ISchedulerAction.class);
+
+        IOC.register(Keys.getOrAdd("neverschedule strategy"), new SingletonStrategy(strategy));
+
+        IOC.register(Keys.getOrAdd("default scheduler action"), new SingletonStrategy(actionMock));
+
+        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
+
+        ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
+
+        entry.scheduleNext(0);
+
+        ArgumentCaptor<ITask> taskCaptor = ArgumentCaptor.forClass(ITask.class);
+        verify(timer).schedule(taskCaptor.capture(), anyLong());
+
+        entry.pause();
+
+        reset(strategy);
+
+        taskCaptor.getValue().execute();
+
+        verify(strategy).processPausedExecution(same(entry));
+        verifyNoMoreInteractions(strategy, actionMock);
     }
 }
