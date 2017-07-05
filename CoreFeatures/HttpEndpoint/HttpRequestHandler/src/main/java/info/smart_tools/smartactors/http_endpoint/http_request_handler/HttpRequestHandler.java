@@ -28,6 +28,9 @@ import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.excepti
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -69,6 +72,8 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
     private boolean isShuttingDown = false;
 
+    private IQueue<ITask> taskQueue;
+
     /**
      * Constructor for HttpRequestHandler
      *
@@ -98,6 +103,8 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         responseStrategyName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy");
 
         upCounter.onShutdownRequest(mode -> isShuttingDown = true);
+
+        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
     }
 
     @Override
@@ -199,6 +206,8 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             } catch (SerializeException | ResolutionException | InvalidArgumentException e1) {
                 throw new RequestHandlerInternalException("Failed to send response", e);
             }
+        } finally {
+            request.release();
         }
     }
 
@@ -233,7 +242,26 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 e1.printStackTrace();
             }
         } else {
-            super.handle(ctx, request);
+            try {
+                request.retain();
+                taskQueue.put(() -> {
+                    try {
+                        super.handle(ctx, request);
+                    } catch (ExecutionException e) {
+                        try {
+                            sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
+                        } catch (Exception ee) {
+                            e.addSuppressed(ee);
+                        }
+
+                        throw new TaskExecutionException(e);
+                    }
+                });
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                request.release();
+            }
+//            super.handle(ctx, request);
         }
     }
 }
