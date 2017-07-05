@@ -5,7 +5,10 @@ import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.ex
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
+
+import java.util.Arrays;
 
 /**
  * Strategy for deserialization message from post request with application/json content-type.
@@ -30,11 +33,12 @@ public class DeserializeStrategyPostJson implements IDeserializeStrategy<FullHtt
      */
     @Override
     public IObject deserialize(final FullHttpRequest request) throws DeserializationException {
-        byte[] bytes = new byte[request.content().capacity()];
+        ByteBuf content = request.content();
 
-        for (int i = 0, size = request.content().capacity(); i < size; i++) {
-            bytes[i] = request.content().getByte(i);
-        }
+        byte[] bytes = new byte[content.capacity()];
+
+        content.getBytes(0, bytes);
+
         try {
             return messageMapper.deserialize(bytes);
         } catch (ResolutionException e) {
