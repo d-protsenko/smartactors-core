@@ -260,11 +260,11 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
     private ITask activeRefresherTask(final ITask task) {
         return () -> {
             stateLock.lock();
-            if (!isStarted) {
-                return;
-            }
-
             try {
+                if (!isStarted) {
+                    return;
+                }
+
                 task.execute();
             } finally {
                 stateLock.unlock();
