@@ -25,6 +25,7 @@ import info.smart_tools.smartactors.scheduler.actor.wrappers.StartStopMessage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
@@ -140,6 +141,8 @@ public class SchedulerActor {
     /**
      * Delete and cancel a scheduler entry.
      *
+     * This handler is idempotent i.e. it has no effect and does not throw any exceptions if the entry is already deleted.
+     *
      * @param message    the query message
      * @throws ReadValueException if error occurs reading value from the message
      * @throws EntryStorageAccessException if error occurs accessing entry storage to get or delete the entry
@@ -147,7 +150,11 @@ public class SchedulerActor {
      */
     public void deleteEntry(final DeleteEntryQueryMessage message)
             throws ReadValueException, EntryStorageAccessException, EntryScheduleException {
-        service.getEntryStorage().getEntry(message.getEntryId()).cancel();
+        try {
+            service.getEntryStorage().getEntry(message.getEntryId()).cancel();
+        } catch (EntryNotFoundException ignore) {
+            // Entry is already deleted, OK
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.remote_storage;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public interface IRemoteEntryStorage {
      *
      * @param entry    the entry to delete
      * @throws EntryStorageAccessException if error occurs
+     * @throws EntryNotFoundException if there was no entry with given id and storage implementation can detect such situation
      */
-    void deleteEntry(ISchedulerEntry entry) throws EntryStorageAccessException;
+    void deleteEntry(ISchedulerEntry entry) throws EntryStorageAccessException, EntryNotFoundException;
 
     /**
      * Search for a record of entry with given id.
@@ -32,8 +34,9 @@ public interface IRemoteEntryStorage {
      * @param id    identifier of the entry
      * @return entry state saved in remote storage or {@code null} if there is mo such record
      * @throws EntryStorageAccessException if error occurs
+     * @throws EntryNotFoundException if there is no entry with given id
      */
-    IObject querySingleEntry(String id) throws EntryStorageAccessException;
+    IObject querySingleEntry(String id) throws EntryStorageAccessException, EntryNotFoundException;
 
     /**
      * Download saved states of entries.

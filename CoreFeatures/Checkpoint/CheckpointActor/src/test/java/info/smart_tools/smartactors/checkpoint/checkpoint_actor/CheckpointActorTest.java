@@ -27,6 +27,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -350,7 +351,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         CheckpointActor actor = new CheckpointActor(args);
 
         when(feedbackMessageMock.getPrevCheckpointEntryId()).thenReturn("prevId");
-        when(storageMock.getEntry("prevId")).thenThrow(EntryStorageAccessException.class);
+        when(storageMock.getEntry("prevId")).thenThrow(EntryNotFoundException.class);
 
         actor.feedback(feedbackMessageMock);
     }

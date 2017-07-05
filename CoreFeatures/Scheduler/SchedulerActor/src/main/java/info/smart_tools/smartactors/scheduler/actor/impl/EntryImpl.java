@@ -12,12 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.*;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
@@ -226,7 +221,11 @@ public final class EntryImpl implements ISchedulerEntry {
                 tt.cancel();
             }
 
-            storage.delete(this);
+            try {
+                storage.delete(this);
+            } catch (EntryNotFoundException ignore) {
+                // The entry is already deleted (probably by another thread), OK
+            }
         }
     }
 
@@ -239,7 +238,12 @@ public final class EntryImpl implements ISchedulerEntry {
             if (null == tt) {
                 if (isCancelled) {
                     // This entry is a "zombie"
-                    storage.delete(this);
+                    try {
+                        storage.delete(this);
+                    } catch (EntryNotFoundException ignore) {
+                        // Someone else has killed this zombie
+                    }
+
                     return;
                 }
 

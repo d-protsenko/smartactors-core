@@ -23,6 +23,7 @@ import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_containe
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
@@ -190,9 +191,10 @@ public class CheckpointActor {
      * @throws EntryScheduleException if error occurs cancelling the entry
      * @throws InvalidArgumentException if something goes wrong
      * @throws ChangeValueException if error occurs updating entry state
+     * @throws EntryStorageAccessException if error occurs accessing entry storage
      */
     public void feedback(final FeedbackMessage message)
-            throws ReadValueException, ChangeValueException, InvalidArgumentException, EntryScheduleException {
+            throws ReadValueException, ChangeValueException, InvalidArgumentException, EntryScheduleException, EntryStorageAccessException {
         try {
             ISchedulerEntry entry = service.getEntryStorage().getEntry(message.getPrevCheckpointEntryId());
 
@@ -205,7 +207,7 @@ public class CheckpointActor {
 
             entry.getState().setValue(gotFeedbackFieldName, true);
             entry.getState().setValue(completedFieldName, true);
-        } catch (EntryStorageAccessException ignore) {
+        } catch (EntryNotFoundException ignore) {
             // There is no entry with required identifier. OK
         }
     }
