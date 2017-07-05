@@ -15,13 +15,13 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageO
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.*;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,6 +29,28 @@ import java.util.concurrent.locks.ReentrantLock;
  * Implementation of {@link ISchedulerEntryStorage}.
  */
 public class EntryStorage implements ISchedulerEntryStorage {
+    /**
+     * Subclass of {@link WeakReference weak reference} to {@link ISchedulerEntry scheduler entry} that stores entry identifier.
+     */
+    private static class WeakEntryReference extends WeakReference<ISchedulerEntry> {
+        private final String id;
+
+        /**
+         * The constructor.
+         *
+         * @param referent    the entry
+         * @param q           the reference queue
+         */
+        WeakEntryReference(final ISchedulerEntry referent, final ReferenceQueue<? super ISchedulerEntry> q) {
+            super(referent, q);
+            this.id = referent.getId();
+        }
+
+        String getId() {
+            return id;
+        }
+    }
+
     private final ITimer timer;
 
     private final IRemoteEntryStorage remoteEntryStorage;
@@ -36,7 +58,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private final Map<String, ISchedulerEntry> activeEntries;
     private final Map<String, ISchedulerEntry> strongSuspendEntries;
-    private final Map<String, WeakReference<ISchedulerEntry>> weakSuspendEntries;
+    private final Map<String, WeakEntryReference> weakSuspendEntries;
+    private final ReferenceQueue<ISchedulerEntry> weakSuspendReferenceQueue = new ReferenceQueue<>();
 
     private final List<ISchedulerEntry> refreshAwakeList;
     private final List<ISchedulerEntry> refreshSuspendList;
@@ -50,6 +73,14 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private boolean isEntryCancelledRecently(final String id) {
         return recentlyDeletedIdSets[0].contains(id) || recentlyDeletedIdSets[1].contains(id);
+    }
+
+    private void cleanupWeakSuspendedEntries() {
+        WeakEntryReference reference;
+
+        while (null != (reference = (WeakEntryReference) weakSuspendReferenceQueue.poll())) {
+            weakSuspendEntries.remove(reference.getId());
+        }
     }
 
     /**
@@ -68,7 +99,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
         activeEntries = new HashMap<>();
         strongSuspendEntries = new HashMap<>();
-        weakSuspendEntries = new WeakHashMap<>();
+        weakSuspendEntries = new HashMap<>();
 
         refreshAwakeList = new ArrayList<>();
         refreshSuspendList = new ArrayList<>();
@@ -104,6 +135,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
         localStorageLock.lock();
         try {
+            cleanupWeakSuspendedEntries();
+
             if (isEntryCancelledRecently(entryId)) {
                 try {
                     entry.cancel();
@@ -147,8 +180,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
             if (keepReference) {
                 strongSuspendEntries.put(entry.getId(), entry);
             } else {
-                weakSuspendEntries.put(entry.getId(), new WeakReference<>(entry));
+                weakSuspendEntries.put(entry.getId(), new WeakEntryReference(entry, weakSuspendReferenceQueue));
             }
+
+            cleanupWeakSuspendedEntries();
         } finally {
             localStorageLock.unlock();
         }
@@ -159,6 +194,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException, EntryNotFoundException {
         localStorageLock.lock();
         try {
+            cleanupWeakSuspendedEntries();
+
             try {
                 recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
@@ -192,6 +229,11 @@ public class EntryStorage implements ISchedulerEntryStorage {
         } finally {
             localStorageLock.unlock();
         }
+    }
+
+    @Override
+    public int contLocalEntries() throws EntryStorageAccessException {
+        return activeEntries.size() + strongSuspendEntries.size() + weakSuspendEntries.size();
     }
 
     @Override
@@ -252,6 +294,9 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException, EntryScheduleException, SchedulerEntryFilterException {
         synchronized (refreshLock) {
             localStorageLock.lock();
+
+            cleanupWeakSuspendedEntries();
+
             try {
                 // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
                 // map we are iterating over)
