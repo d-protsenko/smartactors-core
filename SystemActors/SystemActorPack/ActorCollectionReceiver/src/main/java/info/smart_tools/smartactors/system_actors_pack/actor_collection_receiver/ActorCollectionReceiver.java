@@ -183,6 +183,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             Object id =  processor.getEnvironment().getValue(fieldNameForKeyName);
 
             IMessageReceiver child = resolveReceiver(id, stepConf);
+            processor.resetEnvironment();
 
             try {
                 child.receive(processor);

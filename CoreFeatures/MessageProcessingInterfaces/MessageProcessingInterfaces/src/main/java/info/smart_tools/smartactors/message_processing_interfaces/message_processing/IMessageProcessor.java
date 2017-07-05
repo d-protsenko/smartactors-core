@@ -70,6 +70,8 @@ public interface IMessageProcessor {
      */
     void pushEnvironment(IObject newEnvironment) throws InvalidArgumentException;
 
+    void resetEnvironment();
+
     /**
      * Set a global configuration object to use for processing of next message.
      *

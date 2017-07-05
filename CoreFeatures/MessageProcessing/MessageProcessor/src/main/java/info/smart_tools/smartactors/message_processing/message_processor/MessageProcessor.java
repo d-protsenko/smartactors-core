@@ -279,6 +279,11 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
     }
 
     @Override
+    public void resetEnvironment() {
+        currentEnvironment = rawEnvironment;
+    }
+
+    @Override
     public void setConfig(final IObject config) throws InvalidArgumentException {
         if (null == config) {
             throw new InvalidArgumentException("Configuration object should not be null.");
