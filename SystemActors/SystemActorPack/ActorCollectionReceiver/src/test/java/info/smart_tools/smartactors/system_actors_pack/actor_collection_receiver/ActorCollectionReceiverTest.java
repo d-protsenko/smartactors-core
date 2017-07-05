@@ -180,4 +180,21 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
         IMessageReceiver receiver = new ActorCollectionReceiver(new HashMap<>());
         receiver.receive(processorMocks[0]);
     }
+
+    @Test
+    public void Should_resetMessageProcessorEnvironmentBeforeReceiverCall()
+            throws Exception {
+        doAnswer(invocation -> {
+            verify(processorMocks[0]).resetEnvironment();
+            return null;
+        }).when(childReceiverMocks[0]).receive(same(processorMocks[0]));
+
+        IMessageReceiver receiver = new ActorCollectionReceiver(new HashMap<>());
+
+        receiver.receive(processorMocks[0]);
+
+        verify(childReceiverMocks[0], times(1)).receive(same(processorMocks[0]));
+
+        verify(creatorMocks[0], times(1)).create(any(), any(), any());
+    }
 }
