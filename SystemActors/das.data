@@ -29,6 +29,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "ShutdownActor",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "actor-collection-receiver-interfaces",
+  "uploadRepositories" : [ ],
+  "rawName" : "ActorCollectionReceiverInterfaces",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",

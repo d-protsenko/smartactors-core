@@ -16,6 +16,7 @@
         <module>ActorCollectionReceiver</module>
         <module>RepeaterActor</module>
         <module>ShutdownActor</module>
+        <module>ActorCollectionReceiverInterfaces</module>
         <module>SystemActorPackDistribution</module>
     </modules>
     <build>

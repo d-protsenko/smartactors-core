@@ -56,7 +56,8 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
 
         IOC.register(Keys.getOrAdd("create some receiver decorator"), decoratorReceiverResolutionStrategy);
 
-        when(decoratorReceiverResolutionStrategy.resolve(same(receiverMocks[0]), same(filterConfig))).thenReturn(receiverMocks[1]);
+        when(decoratorReceiverResolutionStrategy.resolve(
+                same(receiverMocks[0]), same(filterConfig), same(objectConfig), same(context))).thenReturn(receiverMocks[1]);
 
         when(filterConfig.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency")))
                 .thenReturn("create some receiver decorator");
@@ -83,7 +84,7 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_wrapExceptions()
             throws Exception {
-        when(decoratorReceiverResolutionStrategy.resolve(any(), any())).thenThrow(ResolveDependencyStrategyException.class);
+        when(decoratorReceiverResolutionStrategy.resolve(any(), any(), any(), any())).thenThrow(ResolveDependencyStrategyException.class);
 
         IReceiverObjectCreator tested = new GenericDecoratorReceiverObjectCreator(creatorMock, filterConfig, objectConfig);
 

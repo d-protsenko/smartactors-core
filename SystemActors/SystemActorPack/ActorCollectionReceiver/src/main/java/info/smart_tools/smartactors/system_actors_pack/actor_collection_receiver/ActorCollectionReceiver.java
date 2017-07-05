@@ -1,8 +1,11 @@
 package info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -12,10 +15,10 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
-import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectListener;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.ReceiverObjectCreatorException;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.ReceiverObjectListenerException;
+import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver.pipeline.CollectionReceiverReceiverListener;
 
 import java.text.MessageFormat;
 import java.util.Map;
@@ -41,6 +44,7 @@ import java.util.Map;
  *             "target": "my-actor-collection",
  *             "handler": "transformAndPutForResponse",
  *             "new": {
+ *                 "deletionCheckStrategy": "default child deletion check strategy",
  *                 "kind": "actor",
  *                 "dependency": "SampleActor"
  *             },
@@ -59,55 +63,13 @@ import java.util.Map;
  * </pre>
  */
 public class ActorCollectionReceiver implements IMessageReceiver {
-    private static class ReceiverListener implements IReceiverObjectListener {
-        private IMessageReceiver receiver;
-        private boolean finished;
-
-        @Override
-        public void acceptItem(final Object itemId, final Object item)
-                throws ReceiverObjectListenerException, InvalidReceiverPipelineException, InvalidArgumentException {
-            if (null == item) {
-                throw new InvalidArgumentException("Item is null.");
-            }
-
-            IMessageReceiver receiverItem;
-
-            try {
-                receiverItem = (IMessageReceiver) item;
-            } catch (ClassCastException e) {
-                throw new InvalidReceiverPipelineException("Item is not a message receiver.", e);
-            }
-
-            if (null != receiver) {
-                throw new InvalidReceiverPipelineException("Collection receiver supports only objects with single external receiver.");
-            }
-
-            receiver = receiverItem;
-        }
-
-        @Override
-        public void endItems()
-                throws ReceiverObjectListenerException, InvalidReceiverPipelineException {
-            if (null == receiver) {
-                throw new InvalidReceiverPipelineException("No items passed to collection receiver.");
-            }
-
-            finished = true;
-        }
-
-        public IMessageReceiver getReceiver() throws InvalidReceiverPipelineException {
-            if (!finished) {
-                throw new InvalidReceiverPipelineException("Object creation not finished synchronously.");
-            }
-
-            return receiver;
-        }
-    }
-
-    private IFieldName keyFieldName;
-    private IFieldName newFieldName;
+    private final IFieldName keyFieldName;
+    private final IFieldName newFieldName;
+    private final IFieldName deletionActionFieldName;
 
     private Map<Object, IMessageReceiver> childReceivers;
+
+    private final IAction<IObject> deletionAction;
 
     /**
      * The constructor.
@@ -126,19 +88,31 @@ public class ActorCollectionReceiver implements IMessageReceiver {
 
         this.keyFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "key");
         this.newFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "new");
+        this.deletionActionFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deletionAction");
+
+        this.deletionAction = ctx -> {
+            try {
+                childReceivers.remove(ctx.getValue(keyFieldName));
+            } catch (ReadValueException | InvalidArgumentException e) {
+                throw new ActionExecuteException(e);
+            }
+        };
     }
 
-    private IMessageReceiver createReceiver(final IObject stepConf)
+    private IMessageReceiver createReceiver(final IObject stepConf, final Object id)
             throws ResolutionException, ReadValueException, InvalidArgumentException, ReceiverObjectListenerException,
-                ReceiverObjectCreatorException , InvalidReceiverPipelineException {
+                ReceiverObjectCreatorException , InvalidReceiverPipelineException, ChangeValueException {
         IObject newObjectConfig = (IObject) stepConf.getValue(newFieldName);
+
         IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        context.setValue(keyFieldName, id);
+        context.setValue(deletionActionFieldName, deletionAction);
 
         IReceiverObjectCreator creator = IOC.resolve(Keys.getOrAdd("full receiver object creator"), newObjectConfig);
 
-        ReceiverListener listener = new ReceiverListener();
+        CollectionReceiverReceiverListener listener = new CollectionReceiverReceiverListener();
 
-        creator.create(listener, stepConf, context);
+        creator.create(listener, newObjectConfig, context);
 
         return listener.getReceiver();
     }
@@ -154,9 +128,9 @@ public class ActorCollectionReceiver implements IMessageReceiver {
         try {
             return childReceivers.computeIfAbsent(id, __ -> {
                 try {
-                    return createReceiver(stepConf);
+                    return createReceiver(stepConf, id);
                 } catch (ResolutionException | ReadValueException | InvalidArgumentException | ReceiverObjectListenerException |
-                        ReceiverObjectCreatorException | InvalidReceiverPipelineException e) {
+                        ReceiverObjectCreatorException | InvalidReceiverPipelineException | ChangeValueException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -178,7 +152,6 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             Object id =  processor.getEnvironment().getValue(fieldNameForKeyName);
 
             IMessageReceiver child = resolveReceiver(id, stepConf);
-            processor.resetEnvironment();
 
             try {
                 child.receive(processor);
