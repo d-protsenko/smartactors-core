@@ -69,7 +69,7 @@ public class EnvironmentHandlerTest {
         IKey keyIMessageProcessingSequence = Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName());
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
         IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
