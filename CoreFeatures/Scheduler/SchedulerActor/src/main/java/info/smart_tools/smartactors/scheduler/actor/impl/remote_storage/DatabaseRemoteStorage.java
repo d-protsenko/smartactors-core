@@ -26,9 +26,21 @@ import java.util.List;
 
 /**
  * Remote entry storage storing entries in database.
+ *
+ * <p>
+ * Collection this storage works with should support 64-bit integers as numeric values.
+ * </p>
  */
 public class DatabaseRemoteStorage implements IRemoteEntryStorage {
     private static final int DEFAULT_PAGE_SIZE = 100;
+
+    /**
+     * Name of entry state field used only by {@link DatabaseRemoteStorage} to store last time the entry was scheduled on.
+     *
+     * To minimize risk of collisions this filed name contains some unpredictable underscores and abbreviations so it's even a bit more
+     * difficult to collide with than my password.
+     */
+    private static final String LAST_SCHEDULED_TIME_FIELD_NAME = "__last_sched_time_";
 
     private final IPool connectionPool;
     private final String collectionName;
@@ -66,13 +78,13 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
         pageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "page");
         sizeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "size");
         documentIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName.toLowerCase() + "ID");
-        lastScheduledTimeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "__last_sched_time_");
+        lastScheduledTimeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), LAST_SCHEDULED_TIME_FIELD_NAME);
 
         entriesQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 String.format(("{" +
-                        "'filter':{'entryId':{'$isNull':false},'__last_sched_time_':{}}," +
+                        "'filter':{'" + LAST_SCHEDULED_TIME_FIELD_NAME + "':{}}," +
                         "'page':{'size':%s,'number':1}," +
-                        "'sort':[{'entryId':'asc'}]" +
+                        "'sort':[{'" + LAST_SCHEDULED_TIME_FIELD_NAME + "':'asc'}]" +
                         "}").replace('\'', '"'), DEFAULT_PAGE_SIZE));
     }
 
@@ -160,13 +172,12 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
 
             // This method will be called from at most one thread at time so it should be safe to re-use the query object and result field
             IObject filter = (IObject) entriesQuery.getValue(filterFieldName);
-            IObject filterEntryId = (IObject) filter.getValue(entryIdFieldName);
             IObject filterSchTime = (IObject) filter.getValue(lastScheduledTimeFieldName);
 
             if (lastSkip != null) {
-                filterEntryId.setValue(gtFieldName, lastSkip.getValue(entryIdFieldName));
+                filterSchTime.setValue(gtFieldName, lastSkip.getValue(lastScheduledTimeFieldName));
             } else {
-                filterEntryId.deleteField(gtFieldName);
+                filterSchTime.deleteField(gtFieldName);
             }
 
             filterSchTime.setValue(ltFieldName, untilTime);
