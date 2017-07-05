@@ -148,8 +148,8 @@
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "create-postgres-collection-if-not-exists-feature",
-  "rawName" : "CreatePostgresCollectionIfNotExistsFeature",
+  "artifactId" : "database-postgresql-create-collection-if-not-exists",
+  "rawName" : "DatabasePostgresqlCreateCollectionIfNotExists",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
