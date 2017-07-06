@@ -57,6 +57,7 @@ public class FeatureManagerActor {
 
     /**
      * Default constructor
+     *
      * @throws ResolutionException if any errors occurred on resolution IOC dependencies
      */
     public FeatureManagerActor()
@@ -79,6 +80,7 @@ public class FeatureManagerActor {
 
     /**
      * Adds features to the processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -105,8 +107,8 @@ public class FeatureManagerActor {
                 Object featureName = feature.getName();
                 if (
                         null == this.processingFeatures.get(featureName) &&
-                        null == this.loadedFeatures.get(featureName)
-                ) {
+                                null == this.loadedFeatures.get(featureName)
+                        ) {
                     this.processingFeatures.put(feature.getName(), feature);
                     IMessageProcessingSequence processingSequence =
                             IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, scatterChain);
@@ -144,6 +146,7 @@ public class FeatureManagerActor {
 
     /**
      * Ends feature processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -193,14 +196,13 @@ public class FeatureManagerActor {
                                     this.mainProcessesForInfo.get(mp).stream().map(
                                             a -> "\n" + a.getName() + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
                                     ).collect(Collectors.toList())
-                            + "\n\n"
+                                    + "\n\n"
                     );
                     this.mainProcessesForInfo.remove(mp);
                 } catch (AsynchronousOperationException | ReadValueException | ActionExecuteException e) {
                     throw new RuntimeException(e);
                 }
             });
-            checkUnresolved();
 
         } catch (ReadValueException e) {
             throw new FeatureManagementException("Feature should not be null.");
@@ -209,6 +211,7 @@ public class FeatureManagerActor {
 
     /**
      * Ends step of feature processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -229,6 +232,7 @@ public class FeatureManagerActor {
                 //wrapper.getFeatureProcess().put(mp, feature);
                 this.featureProcess.put(mp, feature);
             }
+            checkUnresolved();
         } catch (ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
@@ -236,6 +240,7 @@ public class FeatureManagerActor {
 
     /**
      * Gets state of added features
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -279,5 +284,18 @@ public class FeatureManagerActor {
     }
 
     private void checkUnresolved() {
+        final Set<String> unloadedFeatureNames = mainProcesses.values().stream().flatMap(process -> process.stream().map(IFeature::getName)).collect(Collectors.toSet());
+        final Set<String> frozenFeatureNames = featureProcess.values().stream().map(IFeature::getName).collect(Collectors.toSet());
+        final Set<String> intersected = new HashSet<>();
+        intersected.addAll(unloadedFeatureNames);
+        intersected.addAll(frozenFeatureNames);
+        if (intersected.size() == unloadedFeatureNames.size() && intersected.size() == frozenFeatureNames.size()) {
+            System.out.println("Feature loading process is frozen:");
+            featureProcess.values().forEach(feature ->
+                    System.out.println(String.format("\tFeature %s is waiting for features %s",
+                            feature.getName(),
+                            String.join(", ", feature.getDependencies())
+                    )));
+        }
     }
 }
