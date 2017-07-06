@@ -54,14 +54,8 @@ public class PostgresCreateTableIfNotExistsTest {
                         "CREATE TABLE IF NOT EXISTS test_collection (document jsonb NOT NULL);\n" +
                         "do\n" +
                         "$$\n" +
-                        "begin\n" +
-                        "if not exists (\n" +
-                        "select indexname\n" +
-                        "    from pg_indexes\n" +
-                        "    where tablename = 'test_collection'\n" +
-                        "        and indexname = 'test_collection_pkey'\n" +
-                        ")\n" +
-                        "then\n" +
+                        "BEGIN\n" +
+                        "IF to_regclass('test_collection_pkey') IS NULL THEN\n" +
                         "    CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
                         "end if;\n" +
                         "end \n" +

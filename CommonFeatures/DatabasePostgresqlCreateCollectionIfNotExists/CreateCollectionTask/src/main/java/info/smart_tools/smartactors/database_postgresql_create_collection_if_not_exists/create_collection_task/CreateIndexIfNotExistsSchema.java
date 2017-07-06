@@ -26,14 +26,8 @@ public final class CreateIndexIfNotExistsSchema {
         body.write(String.format(
                 "do\n" +
                         "$$\n" +
-                        "begin\n" +
-                        "if not exists (\n" +
-                        "select indexname\n" +
-                        "    from pg_indexes\n" +
-                        "    where tablename = '%1$s'\n" +
-                        "        and indexname = '%1$s_pkey'\n" +
-                        ")\n" +
-                        "then\n" +
+                        "BEGIN\n" +
+                        "IF to_regclass('%1$s_pkey') IS NULL THEN\n" +
                         "    CREATE UNIQUE INDEX %1$s_pkey ON %1$s USING BTREE ((%2$s));\n" +
                         "end if;\n" +
                         "end \n" +
