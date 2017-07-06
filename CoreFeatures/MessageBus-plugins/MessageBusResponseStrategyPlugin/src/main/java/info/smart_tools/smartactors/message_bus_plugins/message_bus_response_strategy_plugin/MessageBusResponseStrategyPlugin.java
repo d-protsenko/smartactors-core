@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.message_processing_plugins.message_bus_response_strategy;
+package info.smart_tools.smartactors.message_bus_plugins.message_bus_response_strategy_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -22,7 +22,6 @@ public class MessageBusResponseStrategyPlugin  extends BootstrapPlugin {
     }
 
     @Item("message_bus_response_strategy")
-    @After({"null_response_strategy"})
     public void registerMessageBusResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(new MessageBusResponseStrategy()));

@@ -78,6 +78,7 @@
         <module>SchedulerAutoStartup</module>
         <module>CheckpointAutoStartup</module>
         <module>Shutdown</module>
+        <module>MessageBus-plugins</module>
     </modules>
 
     <build>

@@ -2024,7 +2024,7 @@
 } ],
   "rawName" : "ObjectCreationStrategies",
   "version" : "0.3.2"
-},{
+}, {
   "artifactId" : "message-processing.null-response-strategy",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2871,10 +2871,10 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
   "plugins" : [ {
-  "artifactId":"object-creation-strategies-plugin",
-  "uploadRepositories":[],
-  "rawName":"ObjectCreationStrategiesPlugin",
-  "version":"0.3.2"
+  "artifactId" : "object-creation-strategies-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ObjectCreationStrategiesPlugin",
+  "version" : "0.3.2"
 }, {
   "artifactId" : "wrapper-creator-receiver-decorator-plugin",
   "uploadRepositories" : [ ],
@@ -3338,6 +3338,19 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "shutdown",
   "rawName" : "Shutdown",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "message-bus-response-strategy-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "MessageBusResponseStrategyPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "message-bus-plugins",
+  "rawName" : "MessageBus-plugins",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
