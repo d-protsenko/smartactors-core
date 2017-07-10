@@ -106,8 +106,8 @@ public class HttpEndpointPlugin implements IPlugin {
                                                                     (Integer) configuration.getValue(stackDepthFieldName);
                                                             return new EnvironmentHandler(queue, stackDepth);
                                                         } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                                                            throw new RuntimeException(e);
                                                         }
-                                                        return null;
                                                     }
                                             )
                                     );

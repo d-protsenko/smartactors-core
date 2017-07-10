@@ -2,11 +2,15 @@ package info.smart_tools.smartactors.endpoint.endpoint_handler;
 
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.util.concurrent.ExecutionException;
 
@@ -24,6 +28,8 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IScope scope;
     private final String name;
 
+    private final IQueue<ITask> taskQueue;
+
     /**
      * Constructor for HttpRequestHandler
      *
@@ -31,13 +37,16 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
      * @param name               name of the endpoint
+     * @throws ResolutionException if error occurs resolving any dependencies
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope, final String name) {
+                           final IScope scope, final String name) throws ResolutionException {
         this.scope = scope;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
         this.name = name;
+
+        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
     }
 
     /**
@@ -71,15 +80,29 @@ public abstract class EndpointHandler<TContext, TRequest> {
      */
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
-            ScopeProvider.setCurrentScope(scope);
-            IObject environment = getEnvironment(ctx, request);
-            environmentHandler.handle(environment, receiverChain, null);
+            taskQueue.put(() -> {
+                try {
+                    ScopeProvider.setCurrentScope(scope);
+                    IObject environment = getEnvironment(ctx, request);
+                    environmentHandler.handle(environment, receiverChain, null);
+                } catch (Exception e) {
+                    trySendExceptionalResponse(e, ctx, request);
+
+                    throw new TaskExecutionException(e);
+                }
+            });
         } catch (Exception e) {
-            try {
-                sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            trySendExceptionalResponse(e, ctx, request);
+
+            throw new ExecutionException(e);
+        }
+    }
+
+    private void trySendExceptionalResponse(final Exception e, final TContext context, final TRequest request) {
+        try {
+            sendExceptionalResponse(context, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
+        } catch (Exception e1) {
+            e.addSuppressed(e1);
         }
     }
 }

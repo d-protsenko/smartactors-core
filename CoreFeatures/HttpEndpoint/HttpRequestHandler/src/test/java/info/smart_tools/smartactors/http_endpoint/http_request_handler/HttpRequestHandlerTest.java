@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -44,10 +45,11 @@ import static org.mockito.Mockito.when;
  */
 public class HttpRequestHandlerTest {
 
-    IDeserializeStrategy deserializeStrategy;
-    IKey mockedKey;
-    IAddRequestParametersToIObject requestParametersToIObject;
-    IObject httpResponse;
+    private IDeserializeStrategy deserializeStrategy;
+    private IKey mockedKey;
+    private IAddRequestParametersToIObject requestParametersToIObject;
+    private IObject httpResponse;
+    private IQueue taskQueueMock;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
@@ -119,6 +121,10 @@ public class HttpRequestHandlerTest {
         );
 
         IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new Object()));
+
+        taskQueueMock = mock(IQueue.class);
+
+        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
     }
 
     @Test

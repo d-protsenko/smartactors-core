@@ -72,8 +72,6 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
     private boolean isShuttingDown = false;
 
-    private IQueue<ITask> taskQueue;
-
     /**
      * Constructor for HttpRequestHandler
      *
@@ -103,8 +101,6 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         responseStrategyName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
         upCounter.onShutdownRequest(mode -> isShuttingDown = true);
-
-        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
     }
 
     @Override
@@ -242,26 +238,13 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 e1.printStackTrace();
             }
         } else {
+            request.retain();
             try {
-                request.retain();
-                taskQueue.put(() -> {
-                    try {
-                        super.handle(ctx, request);
-                    } catch (ExecutionException e) {
-                        try {
-                            sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
-                        } catch (Exception ee) {
-                            e.addSuppressed(ee);
-                        }
-
-                        throw new TaskExecutionException(e);
-                    }
-                });
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                super.handle(ctx, request);
+            } catch (ExecutionException | RuntimeException e) {
                 request.release();
+                throw e;
             }
-//            super.handle(ctx, request);
         }
     }
 }
