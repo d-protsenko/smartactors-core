@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>notifier.slf4j</artifactId>
+    <artifactId>notifier.exceptionformatter</artifactId>
     <packaging>jar</packaging>
 
     <groupId>info.smart_tools.smartactors</groupId>
@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>notifier.inotifier</artifactId>
+            <artifactId>notifier.imessagegenerator</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>

@@ -4,16 +4,39 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>info.smart_tools.smartactors</groupId>
+        <artifactId>notifier.pack</artifactId>
+        <version>0.3.3</version>
+    </parent>
+
     <artifactId>notifier.service</artifactId>
     <packaging>jar</packaging>
 
-    <groupId>info.smart_tools.smartactors</groupId>
     <version>0.3.3</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>notifier.imessagegenerator</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>notifier.inotifier</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>notifier.slf4j</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>

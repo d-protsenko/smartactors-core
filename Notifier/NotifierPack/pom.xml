@@ -8,7 +8,11 @@
     <packaging>pom</packaging>
     <modules>
         <module>NotifierService</module>
-        <module>NotifierDistribution</module>
+        <module>IMessageGenerator</module>
+        <module>INotifier</module>
+        <module>ExceptionFormatter</module>
+        <module>Slf4jNotifier</module>
+        <module>ConsoleNotifier</module>
     </modules>
 
     <groupId>info.smart_tools.smartactors</groupId>
