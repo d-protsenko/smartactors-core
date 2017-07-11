@@ -20,6 +20,7 @@
         <module>Email</module>
         <module>AsyncOperations</module>
         <module>Email-plugins</module>
+        <module>DatabasePostgresqlCreateCollectionIfNotExists</module>
     </modules>
 
     <build>
