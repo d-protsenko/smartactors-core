@@ -136,6 +136,16 @@
       "group": "info.smart_tools.smartactors",
       "name": "utility-tools",
       "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "shutdown",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "shutdown-plugins",
+      "version": "RELEASE"
     }
   ]
 }

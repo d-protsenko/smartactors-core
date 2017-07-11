@@ -39,6 +39,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("router")
                     .after("IFieldNamePlugin")
                     .before("starter")
+                    .after("object_creation_strategies:done")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

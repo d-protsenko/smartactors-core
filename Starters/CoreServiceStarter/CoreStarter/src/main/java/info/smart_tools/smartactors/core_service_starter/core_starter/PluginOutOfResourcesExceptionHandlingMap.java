@@ -48,6 +48,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .after("ConfigurationObject")
                     .after("messaging_identifiers")
                     .before("read_initial_config")
+                    .after("object_configuration_canonization_strategies")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

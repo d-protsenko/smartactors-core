@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.
 import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.exceptions.CookieSettingException;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.exceptions.HeadersSetterException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -70,7 +71,7 @@ public class HttpResponseSenderTest {
                 new ResolveByNameIocStrategy()
         );
         IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
-        IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         IKey keyCookiesExtractor = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
         IKey keyHeadersExtractor = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
         IKey keyResponseStatusExtractor = Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName());

@@ -1,46 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
         <version>0.3.3</version>
     </parent>
+
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>message-processing-plugins</artifactId>
+    <artifactId>message-bus-plugins</artifactId>
     <version>0.3.3</version>
+
     <packaging>pom</packaging>
+
     <modules>
-        <module>PluginReceiverGenerator</module>
-        <module>PluginExceptionHandlingReceivers</module>
-        <module>PluginWrapperGenerator</module>
-        <module>PluginReceiverChainsStorage</module>
-        <module>PluginHandlerRoutingReceiverCreator</module>
-        <module>PluginReceiverChain</module>
-        <module>PluginMessagingIdentifiers</module>
-        <module>PluginMapRouter</module>
-        <module>PluginConstantChainChoiceStrategy</module>
-        <module>PluginChainChoiceStrategy</module>
-        <module>PluginMessageProcessorAndSequence</module>
-        <module>PluginChainCallReceiver</module>
-        <module>PluginActorReceiverCreator</module>
-        <module>PluginStarter</module>
-        <module>PluginStandardObjectCreators</module>
-        <module>PluginConditionChainChoiceStrategy</module>
-        <module>ObjectCreationStrategiesPlugin</module>
-        <module>NullResponseStrategyPlugin</module>
-        <module>ResponseSenderReceiverPlugin</module>
-        <module>ChainModificationStrategiesPlugin</module>
-        <module>SignalsPlugin</module>
-        <module>MessageProcessorShutdownPlugin</module>
-        <module>WrapperCreatorReceiverDecoratorPlugin</module>
-        <module>MessageProcessing-pluginsDistribution</module>
+        <module>MessageBusResponseStrategyPlugin</module>
+        <module>MessageBus-pluginsDistribution</module>
     </modules>
+
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -56,8 +39,10 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.0.0</version>
+                    <inherited>true</inherited>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -66,7 +51,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <inherited>true</inherited>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
@@ -101,4 +85,5 @@
             </plugins>
         </pluginManagement>
     </build>
+
 </project>

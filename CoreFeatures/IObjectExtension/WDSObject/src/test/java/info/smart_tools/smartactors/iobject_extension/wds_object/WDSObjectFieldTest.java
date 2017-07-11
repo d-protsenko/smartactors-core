@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.iobject_extension.wds_object;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -47,7 +48,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(FieldName.class.getCanonicalName()),
+                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
