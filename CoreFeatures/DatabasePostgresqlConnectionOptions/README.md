@@ -16,7 +16,7 @@ Create your custom feature with single config.json file of this content:
   ],
   "onFeatureLoading": [
     {
-      "chain": "registerPostgresConnectionOptions",
+      "chain": "registerPostgresJsonConnectionOptions",
       "messages": [
         {
           "connectionOptionsRegistrationName": "MyConnectionOptions",

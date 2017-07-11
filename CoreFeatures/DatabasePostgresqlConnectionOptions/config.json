@@ -14,7 +14,7 @@
   ],
   "maps": [
     {
-      "id": "registerPostgresConnectionOptions",
+      "id": "registerPostgresJsonConnectionOptions",
       "externalAccess": false,
       "steps": [
         {

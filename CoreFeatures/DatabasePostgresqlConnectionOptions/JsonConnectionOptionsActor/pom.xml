@@ -95,6 +95,25 @@
                             <id>default-deploy</id>
                             <phase>none</phase>
                         </execution>
+                        <execution>
+                            <id>archiva.smartactors-features</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy-file</goal>
+                            </goals>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <generatePom>true</generatePom>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.zip</file>
+                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
+                                <repositoryId>archiva.smartactors-features</repositoryId>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>zip</packaging>
+                                <description>This archive contains ...</description>
+                            </configuration>
+                        </execution>
                     </executions>
                 </plugin>
             </plugins>
