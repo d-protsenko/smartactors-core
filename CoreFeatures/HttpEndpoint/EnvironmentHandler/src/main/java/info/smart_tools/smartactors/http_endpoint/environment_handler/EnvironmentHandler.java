@@ -39,9 +39,9 @@ public class EnvironmentHandler implements IEnvironmentHandler {
      */
     public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth)
             throws InvalidArgumentException, ResolutionException {
-        this.messageFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "message");
-        this.contextFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "context");
-        this.fromExternalFieldName = IOC.resolve(Keys.getOrAdd(FieldName.class.getCanonicalName()), "fromExternal");
+        this.messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        this.contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
+        this.fromExternalFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "fromExternal");
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");
         }

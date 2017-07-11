@@ -373,7 +373,7 @@ public class MessageProcessorTest {
     }
 
     @Test
-    public void Should_setEnvironmentAndResetIt()
+    public void Should_setEnvironmentAndResetItOnNextStep()
             throws Exception {
         MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
 
@@ -385,6 +385,23 @@ public class MessageProcessorTest {
         assertSame(nEnv, messageProcessor.getEnvironment());
 
         messageProcessor.execute();
+
+        assertSame(environmentMock, messageProcessor.getEnvironment());
+    }
+
+    @Test
+    public void Should_setEnvironmentAndResetItOnResetEnvironmentCall()
+            throws Exception {
+        MessageProcessor messageProcessor = new MessageProcessor(taskQueueMock, messageProcessingSequenceMock, configurationMock);
+
+        IObject nEnv = mock(IObject.class);
+
+        messageProcessor.process(messageMock, contextMock);
+        messageProcessor.pushEnvironment(nEnv);
+
+        assertSame(nEnv, messageProcessor.getEnvironment());
+
+        messageProcessor.resetEnvironment();
 
         assertSame(environmentMock, messageProcessor.getEnvironment());
     }

@@ -62,13 +62,18 @@ public interface IMessageProcessor {
     /**
      * Set current environment object.
      *
-     * The object passed to this method will be returned by any call of {@link #getEnvironment()} until execution of next step starts or
-     * {@code #pushEnvironment(IObject)} is called again.
+     * The object passed to this method will be returned by any call of {@link #getEnvironment()} until execution of next step starts,
+     * {@code #pushEnvironment(IObject)} is called again or {@link #resetEnvironment()} is called.
      *
      * @param newEnvironment    new current environment object
      * @throws InvalidArgumentException if {@code newEnvironment} is {@code null}
      */
     void pushEnvironment(IObject newEnvironment) throws InvalidArgumentException;
+
+    /**
+     * Reset current environment object to initial value.
+     */
+    void resetEnvironment();
 
     /**
      * Set a global configuration object to use for processing of next message.

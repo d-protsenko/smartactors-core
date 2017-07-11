@@ -69,7 +69,7 @@ public class EnvironmentHandlerTest {
         IKey keyIMessageProcessingSequence = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
         IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-        IKey keyFieldName = Keys.getOrAdd(FieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
