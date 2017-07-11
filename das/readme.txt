@@ -109,7 +109,7 @@ update plugin version:
 update version of all plugins for specific feature:
     > das uplv -fn FeatureName -pln all -v 0.2.1
 update version of all plugins for all features:
-    > das uav -fn all -pln all -v 0.2.1
+    > das uplv -fn all -pln all -v 0.2.1
 
 
 create server:
