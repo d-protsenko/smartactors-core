@@ -6,14 +6,6 @@ package info.smart_tools.smartactors.notifier;
 public interface INotifier {
 
     /**
-     * Sends the message and the exception.
-     * @param message the message to send
-     * @param error the exception where to get the details about an error
-     * @throws Exception if cannot send
-     */
-    void send(String message, Throwable error) throws Exception;
-
-    /**
      * Sends a message produced by the generator and the exception.
      * @param generator the generator to take a message
      * @param error the exception where to get the details about an error
