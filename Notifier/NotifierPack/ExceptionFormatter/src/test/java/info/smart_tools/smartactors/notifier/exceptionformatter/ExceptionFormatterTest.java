@@ -1,5 +1,6 @@
+package info.smart_tools.smartactors.notifier.exceptionformatter;
+
 import info.smart_tools.smartactors.notifier.IMessageGenerator;
-import info.smart_tools.smartactors.notifier.exceptionformatter.ExceptionFormatter;
 import org.junit.Test;
 
 import java.io.IOException;
