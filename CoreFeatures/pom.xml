@@ -78,6 +78,9 @@
         <module>SchedulerAutoStartup</module>
         <module>CheckpointAutoStartup</module>
         <module>Shutdown</module>
+        <module>DatabasePostgresqlConnectionOptions</module>
+        <module>DatabasePostgresqlAsyncOpsCollection</module>
+        <module>DatabasePostgresqlCachedCollection</module>
         <module>MessageBus-plugins</module>
     </modules>
 
