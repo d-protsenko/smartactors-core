@@ -7,10 +7,13 @@ checkpoint-plugins
 https-endpoint-plugins
 database-0
 message-bus
+message-bus-plugins
 database-plugins
-database-postgresql        
+database-postgresql
+database-postgresql-plugins
+database-postgresql-async-ops-collection
+database-postgresql-cached-collection
 morph-expressions
-database-postgresql-plugins 
 scheduler
 dumpable-interface         
 scheduler-auto-startup

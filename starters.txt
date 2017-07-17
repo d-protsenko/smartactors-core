@@ -1,3 +1,4 @@
 endpoint-service-starter
 message-bus-service-starter
 global-constants-service-starter
+database-service-starter

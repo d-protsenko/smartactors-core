@@ -70,8 +70,6 @@ public interface IMessageProcessor {
      */
     void pushEnvironment(IObject newEnvironment) throws InvalidArgumentException;
 
-    void resetEnvironment();
-
     /**
      * Reset current environment object to initial value.
      */
