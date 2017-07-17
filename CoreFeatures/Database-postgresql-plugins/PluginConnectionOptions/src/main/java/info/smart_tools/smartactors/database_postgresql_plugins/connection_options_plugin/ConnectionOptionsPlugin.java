@@ -45,7 +45,7 @@ public class ConnectionOptionsPlugin implements IPlugin {
             item
                 .process(() -> {
                     try {
-                        IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(
+                        IOC.register(Keys.getOrAdd("PostgresConnectionOptionsStrategy"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 IObject opts = (IObject) args[0];
                                 return new ConnectionOptions() {
