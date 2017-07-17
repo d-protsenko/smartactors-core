@@ -51,7 +51,6 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .after("global_router_registration_receiver_object_listener")
                     .after("full_object_creator_resolution_strategy")
                     .after("wrapper_creator_receiver_decorator")
-                    .after("object_configuration_canonization_strategies")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

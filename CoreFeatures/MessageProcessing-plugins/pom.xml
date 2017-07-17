@@ -30,7 +30,6 @@
         <module>PluginConditionChainChoiceStrategy</module>
         <module>ObjectCreationStrategiesPlugin</module>
         <module>NullResponseStrategyPlugin</module>
-        <module>MessageBusResponseStrategyPlugin</module>
         <module>ResponseSenderReceiverPlugin</module>
         <module>ChainModificationStrategiesPlugin</module>
         <module>SignalsPlugin</module>

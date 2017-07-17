@@ -15,12 +15,15 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.verification.AtLeast;
+import org.mockito.internal.verification.Times;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.atLeast;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
 
@@ -38,35 +41,39 @@ public class CloseAsyncOperationActorTest {
 
         IObject actorParams = mock(IObject.class);
         String collectionName = "asdasd";
+        String databaseOptionsKey = "key";
+        Object databaseOptions = mock(Object.class);
 
         IField collectionNameField = mock(IField.class);
-        IKey collectionNameFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
-        when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
+        IField databaseOptionsF = mock(IField.class);
+        IKey fieldKey = mock(IKey.class);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(fieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
 
         when(collectionNameField.in(actorParams)).thenReturn(collectionName);
+
+        when(databaseOptionsF.in(actorParams)).thenReturn(databaseOptionsKey);
+        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
 
         IKey collectionKey = mock(IKey.class);
         when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
 
         targetCollection = mock(IAsyncOperationCollection.class);
-        when(IOC.resolve(collectionKey, collectionName)).thenReturn(targetCollection);
+        when(IOC.resolve(collectionKey, databaseOptions, collectionName)).thenReturn(targetCollection);
 
         testActor = new CloseAsyncOperationActor(actorParams);
 
-        verifyStatic();
+        verifyStatic(atLeast(2));
         Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
-        IOC.resolve(collectionNameFieldKey, "collectionName");
+        IOC.resolve(fieldKey, "collectionName");
 
         verify(collectionNameField).in(actorParams);
 
         verifyStatic();
         Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
-
-        verifyStatic();
-        IOC.resolve(collectionKey, collectionName);
     }
 
     @Test

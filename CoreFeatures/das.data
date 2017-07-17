@@ -205,36 +205,12 @@
   "rawName" : "PluginPostgresDBTasks",
   "version" : "0.3.3"
 }, {
-  "artifactId" : "database-postgresql-plugins.async-ops-collection-plugin",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "PluginAsyncOpsCollection",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "database-postgresql-plugins.connection-options-plugin",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "PluginConnectionOptions",
-  "version" : "0.3.3"
-}, {
   "artifactId" : "database-postgresql-plugins.postgres-connection-pool-plugin",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginPostgresConnectionPool",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "database-postgresql-plugins.cached-collection-plugin",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "PluginCachedCollection",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
@@ -2024,7 +2000,7 @@
 } ],
   "rawName" : "ObjectCreationStrategies",
   "version" : "0.3.2"
-},{
+}, {
   "artifactId" : "message-processing.null-response-strategy",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2871,10 +2847,10 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
 } ],
   "plugins" : [ {
-  "artifactId":"object-creation-strategies-plugin",
-  "uploadRepositories":[],
-  "rawName":"ObjectCreationStrategiesPlugin",
-  "version":"0.3.2"
+  "artifactId" : "object-creation-strategies-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "ObjectCreationStrategiesPlugin",
+  "version" : "0.3.2"
 }, {
   "artifactId" : "wrapper-creator-receiver-decorator-plugin",
   "uploadRepositories" : [ ],
@@ -3338,6 +3314,73 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "shutdown",
   "rawName" : "Shutdown",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "json-connection-options-actor",
+  "uploadRepositories" : [ ],
+  "rawName" : "JsonConnectionOptionsActor",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "json-connection-options-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "JsonConnectionOptionsPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "database-postgresql-connection-options",
+  "rawName" : "DatabasePostgresqlConnectionOptions",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "async-ops-collection-actor",
+  "uploadRepositories" : [ ],
+  "rawName" : "AsyncOpsCollectionActor",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "async-ops-collection-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "AsyncOpsCollectionPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "database-postgresql-async-ops-collection",
+  "rawName" : "DatabasePostgresqlAsyncOpsCollection",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "cached-collection-actor",
+  "uploadRepositories" : [ ],
+  "rawName" : "CachedCollectionActor",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "cached-collection-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "CachedCollectionPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "database-postgresql-cached-collection",
+  "rawName" : "DatabasePostgresqlCachedCollection",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "message-bus-response-strategy-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "MessageBusResponseStrategyPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "message-bus-plugins",
+  "rawName" : "MessageBus-plugins",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],

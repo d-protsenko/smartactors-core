@@ -41,6 +41,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("full_object_creator_resolution_strategy")
                     .after("global_router_registration_receiver_object_listener")
                     .before("starter")
+                    .after("object_creation_strategies:done")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

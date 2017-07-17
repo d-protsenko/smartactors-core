@@ -4,6 +4,8 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.Bootst
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -15,9 +17,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Plugin for resolving connection options from properties
@@ -36,59 +35,62 @@ public class ConnectionOptionsPlugin implements IPlugin {
 
     @Override
     public void load() throws PluginException {
-
         try {
-            IBootstrapItem<String> item = new BootstrapItem("ConnectionOptionsPlugin");
+            IField urlF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "url");
+            IField usernameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "username");
+            IField passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
+            IField maxConnectionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "maxConnections");
 
+            IBootstrapItem<String> item = new BootstrapItem("PostgresConnectionOptionsPlugin");
             item
-//                .after("IOC")
-//                .before("starter")
                 .process(() -> {
                     try {
                         IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
-                                Properties connectionProperties = new Properties();
-                                ClassLoader loader = ConnectionOptionsPlugin.class.getClassLoader();
-                                try (InputStream resourceStream = loader.getResourceAsStream("db_connection.properties")) {
-                                    connectionProperties.load(resourceStream);
-                                    return new ConnectionOptions() {
+                                IObject opts = (IObject) args[0];
+                                return new ConnectionOptions() {
 
-                                        @Override
-                                        public String getUrl() throws ReadValueException {
-                                            return connectionProperties.getProperty("url");
-                                        }
-                                        @Override
-                                        public String getUsername() throws ReadValueException {
-                                            return connectionProperties.getProperty("username");
-                                        }
-                                        @Override
-                                        public String getPassword() throws ReadValueException {
-                                            return connectionProperties.getProperty("password");
-                                        }
-                                        @Override
-                                        public Integer getMaxConnections() throws ReadValueException {
-                                            return Integer.parseInt(connectionProperties.getProperty("maxConnections", "1"));
-                                        }
-                                        @Override
-                                        public void setUrl(final String url) throws ChangeValueException {
-                                        }
-                                        @Override
-                                        public void setUsername(final String username) throws ChangeValueException {
-                                        }
-                                        @Override
-                                        public void setPassword(final String password) throws ChangeValueException {
-                                        }
-                                        @Override
-                                        public void setMaxConnections(final Integer maxConnections) throws ChangeValueException {
-                                        }
-                                    };
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
+                                    @Override
+                                    public String getUrl() throws ReadValueException {
+                                        try {
+                                            return urlF.in(opts);
+                                        } catch (InvalidArgumentException e) {return null;}
+                                    }
+                                    @Override
+                                    public String getUsername() throws ReadValueException {
+                                        try {
+                                            return usernameF.in(opts);
+                                        } catch (InvalidArgumentException e) {return null;}
+                                    }
+                                    @Override
+                                    public String getPassword() throws ReadValueException {
+                                        try {
+                                            return passwordF.in(opts);
+                                        } catch (InvalidArgumentException e) {return null;}
+                                    }
+                                    @Override
+                                    public Integer getMaxConnections() throws ReadValueException {
+                                        try {
+                                            return maxConnectionsF.in(opts);
+                                        } catch (InvalidArgumentException e) {return 1;}
+                                    }
+                                    @Override
+                                    public void setUrl(final String url) throws ChangeValueException {
+                                    }
+                                    @Override
+                                    public void setUsername(final String username) throws ChangeValueException {
+                                    }
+                                    @Override
+                                    public void setPassword(final String password) throws ChangeValueException {
+                                    }
+                                    @Override
+                                    public void setMaxConnections(final Integer maxConnections) throws ChangeValueException {
+                                    }
+                                };
                             }
                         ));
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("ConnectionOptions plugin can't load: can't get CreateSessionActor key", e);
+                        throw new ActionExecuteException("ConnectionOptions plugin can't load: can't get PostgresConnectionOptions key", e);
                     } catch (InvalidArgumentException e) {
                         throw new ActionExecuteException("ConnectionOptions plugin can't load: can't create strategy", e);
                     } catch (RegistrationException e) {
@@ -96,8 +98,8 @@ public class ConnectionOptionsPlugin implements IPlugin {
                     }
                 });
             bootstrap.add(item);
-        } catch (InvalidArgumentException e) {
-            throw new PluginException("Can't load ConnectionOptionsPlugin", e);
+        } catch (InvalidArgumentException | ResolutionException e) {
+            throw new PluginException("Can't load PostgresConnectionOptionsPlugin", e);
         }
     }
 }

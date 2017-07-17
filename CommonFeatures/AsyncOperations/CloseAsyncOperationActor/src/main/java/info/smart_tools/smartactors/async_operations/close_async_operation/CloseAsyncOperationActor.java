@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * Actor that close async operation
  */
 public class CloseAsyncOperationActor {
-    private static IField collectionNameField;
+
     private IAsyncOperationCollection collection;
 
     /**
@@ -26,8 +26,10 @@ public class CloseAsyncOperationActor {
      */
     public CloseAsyncOperationActor(final IObject params) throws InvalidArgumentException {
         try {
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params));
+            IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
+            collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameF.in(params));
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't read collection name from message", e);
         } catch (ResolutionException e) {

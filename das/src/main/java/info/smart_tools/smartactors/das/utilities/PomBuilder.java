@@ -105,7 +105,7 @@ public class PomBuilder {
             mavenWriter.write(writer, model);
         } catch (Throwable e) {
             System.out.println("Could not update version in the pom file.");
-            throw new Exception("Could not update version in the pom file.");
+            throw new Exception("Could not update version in the pom file.", e);
         }
     }
 
@@ -124,7 +124,7 @@ public class PomBuilder {
             mavenWriter.write(writer, model);
         } catch (Throwable e) {
             System.out.println("Could not update version in the pom file.");
-            throw new Exception("Could not update version in the pom file.");
+            throw new Exception("Could not update version in the pom file.", e);
         }
 
     }

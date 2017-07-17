@@ -80,6 +80,10 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
             "invoker_receiver_creation_strategy",   // required for UserObjectMethodInvokerReceiverCreator
             "iobject",
             "IFieldNamePlugin",
+            "wrapper_creator_receiver_decorator",
+    })
+    @Before({
+            "object_creation_strategies:done",
     })
     public void registerCreators()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
@@ -134,6 +138,9 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     @Item("basic_object_kinds")
     @After({
         "IOC",
+    })
+    @Before({
+            "object_creation_strategies:done",
     })
     public void registerKinds()
             throws RegistrationException, ResolutionException, InvalidArgumentException {

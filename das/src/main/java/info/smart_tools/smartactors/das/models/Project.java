@@ -49,7 +49,7 @@ public class Project {
             this.version = version;
             this.path = Paths.get(path.toString(), this.name);
         } catch (Throwable e) {
-            throw new InvalidArgumentException("Invalid argument(s). Please use follows structure: groupId:projectName:version.");
+            throw new InvalidArgumentException("Invalid argument(s). Please use follows structure: groupId:projectName:version.", e);
         }
     }
 
