@@ -37,22 +37,31 @@ public class GetAsyncOperationActorTest {
     private IAsyncOperationCollection collection;
 
     @Before
-    public void setUp() throws ResolutionException, GetAsyncOperationActorException {
+    public void setUp() throws Exception {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
         collection = Mockito.mock(IAsyncOperationCollection.class);
         IKey collectionKey = Mockito.mock(IKey.class);
+        String databaseOptionsKey = "key";
+        Object databaseOptions = mock(Object.class);
 
         when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
-        when(IOC.resolve(eq(collectionKey), any())).thenReturn(collection);
+        when(IOC.resolve(eq(collectionKey), any(), any())).thenReturn(collection);
 
         IField collectionNameField = Mockito.mock(IField.class);
+        IField databaseOptionsF = mock(IField.class);
         IKey collectionNameFieldKey = Mockito.mock(IKey.class);
+
+        when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(collectionNameFieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
 
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
         when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
+
+        when(databaseOptionsF.in(any())).thenReturn(databaseOptionsKey);
+        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
 
         message = mock(GetAsyncOperationMessage.class);
         actor = new GetAsyncOperationActor(mock(IObject.class));

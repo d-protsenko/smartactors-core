@@ -28,8 +28,10 @@ public class GetAsyncOperationActor {
     public GetAsyncOperationActor(final IObject params) throws GetAsyncOperationActorException {
         try {
             IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
             collection = IOC.resolve(
-                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params)
+                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new GetAsyncOperationActorException("Can't read collection name from message", e);
