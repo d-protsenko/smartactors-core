@@ -9,7 +9,7 @@ database-0
 message-bus
 message-bus-plugins
 database-plugins
-database-postgresql
+database-postgresql-0
 database-postgresql-plugins
 database-postgresql-async-ops-collection
 database-postgresql-cached-collection
