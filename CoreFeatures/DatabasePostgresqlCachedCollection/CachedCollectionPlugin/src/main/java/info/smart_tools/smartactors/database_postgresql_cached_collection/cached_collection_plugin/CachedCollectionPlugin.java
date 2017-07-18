@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.database.database_storage.utils.CollectionNa
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.database_postgresql_cached_collection.cached_collection_actor.exception.CachedCollectionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield.IField;
@@ -38,12 +37,12 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
     @Item("PostgresCachedCollectionPlugin")
     @After({})
     @Before("")
-    public void registerPostgresCachedCollection() throws CachedCollectionException {
+    public void registerPostgresCachedCollection() throws RegistrationException {
         registerCachedCollection();
         registerTasks();
     }
 
-    private void registerCachedCollection() throws CachedCollectionException {
+    private void registerCachedCollection() throws RegistrationException {
         try {
             IKey cachedCollectionKey = Keys.getOrAdd(ICachedCollection.class.getCanonicalName());
             IField connectionPoolField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "connectionPool");
@@ -65,11 +64,11 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
                         }
                     }));
         } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-            throw new CachedCollectionException("CreateCachedCollection plugin can't load", e);
+            throw new RegistrationException("CreateCachedCollection plugin can't load", e);
         }
     }
 
-    private void registerTasks() throws CachedCollectionException {
+    private void registerTasks() throws RegistrationException {
         try {
             IField collectionNameField = IOC.resolve(
                     Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
@@ -158,7 +157,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
                     )
             );
         } catch (RegistrationException | InvalidArgumentException | ResolutionException e) {
-            throw new CachedCollectionException(e);
+            throw new RegistrationException(e);
         }
     }
 }

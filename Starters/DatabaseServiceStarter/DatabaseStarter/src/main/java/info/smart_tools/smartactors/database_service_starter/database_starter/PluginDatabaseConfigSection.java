@@ -31,6 +31,7 @@ public class PluginDatabaseConfigSection implements IPlugin {
             IBootstrapItem<String> endpointsSectionItem = new BootstrapItem("config_section:database");
 
             endpointsSectionItem
+                    .before("config_section:objects")
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =

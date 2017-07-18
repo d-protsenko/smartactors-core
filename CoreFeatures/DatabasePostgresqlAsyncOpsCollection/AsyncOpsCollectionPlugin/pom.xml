@@ -14,7 +14,22 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql-async-ops-collection.async-ops-collection-actor</artifactId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database.async-operation-collection</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-strategy-pack.resolve-by-composite-name-ioc-with-lambda-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <!-- Components of info.smart_tools.smartactors.base -->
