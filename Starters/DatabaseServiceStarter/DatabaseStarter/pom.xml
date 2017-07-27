@@ -57,22 +57,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap-item</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
 
