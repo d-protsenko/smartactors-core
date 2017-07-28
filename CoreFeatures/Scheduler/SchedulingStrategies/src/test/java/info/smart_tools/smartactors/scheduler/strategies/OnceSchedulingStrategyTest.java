@@ -151,4 +151,35 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
 
         verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
     }
+
+    @Test
+    public void Should_cancelPausedEntryWhenItIsNotNeverTooLate()
+            throws Exception {
+        ISchedulingStrategy strategy = new OnceSchedulingStrategy();
+
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'time':'3410-01-01T00:00:01','neverTooLate':false}".replace('\'','"')));
+
+        strategy.notifyPaused(entry);
+        strategy.processPausedExecution(entry);
+        strategy.notifyUnPaused(entry);
+
+        verify(entry).cancel();
+    }
+
+    @Test
+    public void Should_reschedulePausedEntryWhenItIsNeverTooLate()
+            throws Exception {
+        ISchedulingStrategy strategy = new OnceSchedulingStrategy();
+
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                "{'time':'3410-01-01T00:00:01','neverTooLate':true}".replace('\'','"')));
+
+        strategy.notifyPaused(entry);
+        strategy.processPausedExecution(entry);
+        strategy.notifyUnPaused(entry);
+
+        verify(entry, times(0)).cancel();
+        verify(entry).scheduleNext(anyLong());
+    }
 }

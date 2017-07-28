@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -14,7 +15,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
-import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
+import info.smart_tools.smartactors.scheduler.actor.impl.actions.BlockingMessageSchedulerAction;
+import info.smart_tools.smartactors.scheduler.actor.impl.actions.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.filter.SchedulerPreShutdownModeEntryFilter;
@@ -53,9 +55,20 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("scheduler_default_action")
     public void registerDefaultAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IResolveDependencyStrategy nonBlockingMessageActionS = new SingletonStrategy(new DefaultSchedulerAction());
+        IResolveDependencyStrategy blockingMessageActionS = new SingletonStrategy(new BlockingMessageSchedulerAction());
+
+        IOC.register(
+                Keys.getOrAdd("blocking message scheduler action"),
+                blockingMessageActionS
+        );
+        IOC.register(
+                Keys.getOrAdd("non-blocking scheduler action"),
+                nonBlockingMessageActionS
+        );
         IOC.register(
                 Keys.getOrAdd("default scheduler action"),
-                new SingletonStrategy(new DefaultSchedulerAction())
+                nonBlockingMessageActionS
         );
     }
 

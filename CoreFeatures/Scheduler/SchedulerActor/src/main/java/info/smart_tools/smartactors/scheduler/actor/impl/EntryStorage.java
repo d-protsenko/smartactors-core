@@ -12,10 +12,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.*;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
 import java.lang.ref.WeakReference;
@@ -159,7 +156,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     @Override
     public void delete(final ISchedulerEntry entry)
-            throws EntryStorageAccessException {
+            throws EntryStorageAccessException, EntryNotFoundException {
         localStorageLock.lock();
         try {
             try {
@@ -199,7 +196,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     @Override
     public ISchedulerEntry getEntry(final String id)
-            throws EntryStorageAccessException {
+            throws EntryStorageAccessException, EntryNotFoundException {
         try {
             ISchedulerEntry localEntry = getLocalEntry(id);
 

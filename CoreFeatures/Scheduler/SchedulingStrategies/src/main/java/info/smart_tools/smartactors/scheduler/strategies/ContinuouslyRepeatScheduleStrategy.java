@@ -14,7 +14,11 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAmount;
 
@@ -145,6 +149,19 @@ public class ContinuouslyRepeatScheduleStrategy implements ISchedulingStrategy {
         } catch (EntryStorageAccessException | EntryScheduleException ee) {
             throw new SchedulingStrategyExecutionException("Error occurred cancelling failed scheduler entry.", ee);
         }
+    }
+
+    @Override
+    public void notifyPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+    }
+
+    @Override
+    public void notifyUnPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+        restore(entry);
+    }
+
+    @Override
+    public void processPausedExecution(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
     }
 
     private TemporalAmount parseInterval(final String intervalString) {

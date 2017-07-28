@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -113,7 +114,7 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
     }
 
     @Override
-    public IObject querySingleEntry(final String id) throws EntryStorageAccessException {
+    public IObject querySingleEntry(final String id) throws EntryStorageAccessException, EntryNotFoundException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             final IObject[] res = new IObject[1];
             Object connection = guard.getObject();
@@ -133,14 +134,14 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
                     collectionName,
                     query,
                     (IAction<IObject[]>) docs -> {
-                        if (docs.length < 1) {
-                            throw new ActionExecuteException("Entry not found.");
-                        }
-
                         res[0] = docs[0];
                     });
 
             task.execute();
+
+            if (null == res[0]) {
+                throw new EntryNotFoundException("No entry with id='" + id + "' found in remote storage.");
+            }
 
             return res[0];
         } catch (PoolGuardException | ResolutionException | ChangeValueException | InvalidArgumentException | TaskExecutionException e) {
@@ -209,6 +210,6 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
             saveEntry(entry);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new EntryStorageAccessException("", e);
-        } catch (EntryStorageAccessException ignore) {}
+        } catch (EntryStorageAccessException ignore) { }
     }
 }

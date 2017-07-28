@@ -1,10 +1,7 @@
 package info.smart_tools.smartactors.scheduler.interfaces.exceptions;
 
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
-
 /**
- * Exception thrown by {@link ISchedulerEntry} when it cannot save itself to a
- * storage (database).
+ * Exception thrown by scheduler components when error occurs accessing local or remote entry storage.
  */
 public class EntryStorageAccessException extends Exception {
     /**

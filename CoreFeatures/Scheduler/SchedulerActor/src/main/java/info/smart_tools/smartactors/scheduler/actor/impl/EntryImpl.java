@@ -1,10 +1,6 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -12,6 +8,13 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scheduler.actor.impl.utils.QuickLock;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
@@ -36,12 +39,17 @@ public final class EntryImpl implements ISchedulerEntry {
     private final IObject state;
     private final String id;
     private final ISchedulingStrategy strategy;
-    private long lastScheduledTime;
+    private volatile long lastScheduledTime;
     private final AtomicReference<ITimerTask> timerTask;
+    private boolean isPaused;
     private boolean isCancelled;
     private boolean isSavedRemotely;
     private final ISchedulerAction action;
     private final ITask task = this::executeTask;
+
+    private static final Object SHARED_LOCK = new Object();
+
+    private final QuickLock entryLock = new QuickLock(SHARED_LOCK);
 
     /**
      * The constructor.
@@ -73,6 +81,8 @@ public final class EntryImpl implements ISchedulerEntry {
 
         this.timerTask = new AtomicReference<>(null);
         this.isCancelled = false;
+
+        this.isPaused = false;
 
         this.id = (String) state.getValue(idFieldName);
     }
@@ -189,12 +199,23 @@ public final class EntryImpl implements ISchedulerEntry {
 
     private void executeTask() throws TaskExecutionException {
         try {
+            entryLock.lock();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new TaskExecutionException(e);
+        }
+
+        try {
             if (!storage.getFilter().testExec(this)) {
                 return;
             }
 
-            action.execute(this);
-            strategy.postProcess(this);
+            if (isPaused) {
+                strategy.processPausedExecution(this);
+                return;
+            }
+
+            processTask();
         } catch (SchedulerActionExecutionException | SchedulingStrategyExecutionException | SchedulerEntryFilterException e) {
             try {
                 strategy.processException(this, e);
@@ -202,6 +223,18 @@ public final class EntryImpl implements ISchedulerEntry {
                 ee.addSuppressed(e);
                 throw new TaskExecutionException(ee);
             }
+        } finally {
+            entryLock.unlock();
+        }
+    }
+
+    private void processTask()
+            throws SchedulerActionExecutionException, SchedulingStrategyExecutionException {
+        action.execute(this);
+
+        // `action` could pause the entry
+        if (!isPaused) {
+            strategy.postProcess(this);
         }
     }
 
@@ -218,7 +251,18 @@ public final class EntryImpl implements ISchedulerEntry {
 
     @Override
     public void cancel() throws EntryStorageAccessException {
-        if (!isCancelled) {
+        try {
+            entryLock.lock();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new EntryStorageAccessException("Thread interrupted while trying to acquire entry lock.", e);
+        }
+
+        try {
+            if (isCancelled) {
+                return;
+            }
+
             this.isCancelled = true;
             ITimerTask tt = timerTask.getAndSet(null);
 
@@ -226,7 +270,13 @@ public final class EntryImpl implements ISchedulerEntry {
                 tt.cancel();
             }
 
-            storage.delete(this);
+            try {
+                storage.delete(this);
+            } catch (EntryNotFoundException ignore) {
+                // The entry is already deleted (probably by another thread), OK
+            }
+        } finally {
+            entryLock.unlock();
         }
     }
 
@@ -239,7 +289,12 @@ public final class EntryImpl implements ISchedulerEntry {
             if (null == tt) {
                 if (isCancelled) {
                     // This entry is a "zombie"
-                    storage.delete(this);
+                    try {
+                        storage.delete(this);
+                    } catch (EntryNotFoundException ignore) {
+                        // Someone else has killed this zombie
+                    }
+
                     return;
                 }
 
@@ -292,5 +347,57 @@ public final class EntryImpl implements ISchedulerEntry {
     @Override
     public boolean isAwake() {
         return !isCancelled && timerTask.get() != null;
+    }
+
+    @Override
+    public void pause() throws EntryPauseException {
+        try {
+            entryLock.lock();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new EntryPauseException(e);
+        }
+
+        try {
+            if (isPaused) {
+                throw new EntryPauseException("Entry is already paused");
+            }
+
+            isPaused = true;
+
+            try {
+                strategy.notifyPaused(this);
+            } catch (SchedulingStrategyExecutionException e) {
+                throw new EntryPauseException(e);
+            }
+        } finally {
+            entryLock.unlock();
+        }
+    }
+
+    @Override
+    public void unpause() throws EntryPauseException {
+        try {
+            entryLock.lock();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new EntryPauseException(e);
+        }
+
+        try {
+            if (!isPaused) {
+                throw new EntryPauseException("Entry is not paused.");
+            }
+
+            isPaused = false;
+
+            try {
+                strategy.notifyUnPaused(this);
+            } catch (SchedulingStrategyExecutionException e) {
+                throw new EntryPauseException(e);
+            }
+        } finally {
+            entryLock.unlock();
+        }
     }
 }

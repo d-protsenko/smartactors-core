@@ -30,11 +30,16 @@ import java.time.ZoneOffset;
  *     <li>{@code "neverTooLate"} - {@code true} if the entry should be scheduled at current time when restored from database with {@code
  *     "time"} before current time, {@code false} otherwise. This argument may be omitted if {@code "save"} is {@code false}.</li>
  * </ul>
+ *
+ * <p>
+ * {@code "executionPaused"} field of entry state is set to
+ * </p>
  */
 public class OnceSchedulingStrategy implements ISchedulingStrategy {
     private final IFieldName timeFieldName;
     private final IFieldName saveFieldName;
     private final IFieldName neverTooLateFieldName;
+    private final IFieldName pausedExecutionFieldName;
 
     private long datetimeToMillis(final LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
@@ -50,6 +55,7 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
         timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "time");
         saveFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "save");
         neverTooLateFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "neverTooLate");
+        pausedExecutionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "executionPaused");
     }
 
     @Override
@@ -106,6 +112,35 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
             entry.cancel();
         } catch (EntryStorageAccessException | EntryScheduleException ee) {
             throw new SchedulingStrategyExecutionException("Error occurred cancelling failed entry.", ee);
+        }
+    }
+
+    @Override
+    public void notifyPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+    }
+
+    @Override
+    public void notifyUnPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+        try {
+            if (Boolean.TRUE == entry.getState().getValue(pausedExecutionFieldName)) {
+                restore(entry);
+            }
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new SchedulingStrategyExecutionException(e);
+        }
+    }
+
+    @Override
+    public void processPausedExecution(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+        try {
+            if (entry.getState().getValue(neverTooLateFieldName) == Boolean.TRUE) {
+                entry.getState().setValue(pausedExecutionFieldName, Boolean.TRUE);
+            } else {
+                entry.cancel();
+            }
+        } catch (ReadValueException | ChangeValueException | InvalidArgumentException | EntryScheduleException
+                | EntryStorageAccessException e) {
+            throw new SchedulingStrategyExecutionException(e);
         }
     }
 }
