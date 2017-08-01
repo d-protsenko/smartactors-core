@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -92,5 +93,12 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
 
         assertSameEntries(Arrays.asList(Arrays.copyOf(entries, 5)), remoteEntryStorage.downloadEntries(650, null, 5));
         assertSameEntries(Arrays.asList(Arrays.copyOfRange(entries, 5, 7)), remoteEntryStorage.downloadEntries(650, entries[4].getState(), 5));
+    }
+
+    @Test(expected = EntryNotFoundException.class)
+    public void Should_throwWhenSingleRequiredEntryIsNotFound()
+            throws Exception {
+        IRemoteEntryStorage remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");
+        remoteEntryStorage.querySingleEntry("not-exist-id");
     }
 }
