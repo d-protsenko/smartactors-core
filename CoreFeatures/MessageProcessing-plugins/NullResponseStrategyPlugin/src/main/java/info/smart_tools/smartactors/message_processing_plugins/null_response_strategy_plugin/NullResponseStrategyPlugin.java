@@ -22,6 +22,7 @@ public class NullResponseStrategyPlugin extends BootstrapPlugin {
     }
 
     @Item("null_response_strategy")
+    @After({"IOC", "IFieldNamePlugin"})
     public void registerNullResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(NullResponseStrategy.INSTANCE));
