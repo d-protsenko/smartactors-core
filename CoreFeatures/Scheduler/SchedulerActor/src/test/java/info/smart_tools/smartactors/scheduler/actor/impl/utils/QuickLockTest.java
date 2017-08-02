@@ -77,4 +77,43 @@ public class QuickLockTest {
             assertNull(q.poll());
         }
     }
+
+    @Test(timeout = 10000)
+    public void Should_notCauseDeadlock()
+            throws Exception {
+        int n = 16, m = 1000;
+        barrier = new CyclicBarrier(n + 1);
+
+        Object shared = new Object();
+        QuickLock[] locks = new QuickLock[] {
+                new QuickLock(shared),
+                new QuickLock(shared),
+                new QuickLock(shared),
+                new QuickLock(shared),
+        };
+
+        for (int i = 0; i < n; i++) {
+            new Thread(() -> {
+                try {
+                    for (int j = 0; j < m; j++) {
+                        QuickLock lock = locks[j % 4];
+                        lock.lock();
+                        Thread.yield();
+                        if ((j & 1) != 0) {
+                            lock.lock();
+                            Thread.yield();
+                            lock.unlock();
+                            Thread.yield();
+                        }
+                        lock.unlock();
+                    }
+                    barrier.await();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+
+        barrier.await();
+    }
 }
