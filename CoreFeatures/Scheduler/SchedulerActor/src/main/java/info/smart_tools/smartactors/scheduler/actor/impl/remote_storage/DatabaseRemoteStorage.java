@@ -146,7 +146,9 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
                     collectionName,
                     query,
                     (IAction<IObject[]>) docs -> {
-                        res[0] = docs[0];
+                        if (docs.length != 0) {
+                            res[0] = docs[0];
+                        }
                     });
 
             task.execute();

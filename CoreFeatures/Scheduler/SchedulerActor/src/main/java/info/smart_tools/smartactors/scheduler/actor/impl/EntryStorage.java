@@ -132,12 +132,15 @@ public class EntryStorage implements ISchedulerEntryStorage {
     public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         final String entryId = entry.getId();
+        boolean keepLock = true;
 
         localStorageLock.lock();
         try {
             cleanupWeakSuspendedEntries();
 
             if (isEntryCancelledRecently(entryId)) {
+                localStorageLock.unlock();
+                keepLock = false;
                 try {
                     entry.cancel();
                     return;
@@ -151,21 +154,25 @@ public class EntryStorage implements ISchedulerEntryStorage {
             strongSuspendEntries.remove(entryId, entry);
             weakSuspendEntries.remove(entryId, entry);
 
-            try {
-                observer.onUpdateEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
-            }
-
             if (null != oldEntry && entry != oldEntry) {
                 try {
+                    localStorageLock.unlock();
+                    keepLock = false;
                     oldEntry.cancel();
                 } catch (EntryScheduleException e) {
                     throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
                 }
             }
         } finally {
-            localStorageLock.unlock();
+            if (keepLock) {
+                localStorageLock.unlock();
+            }
+        }
+
+        try {
+            observer.onUpdateEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
         }
 
         remoteEntryStorage.weakSaveEntry(entry);
@@ -196,19 +203,19 @@ public class EntryStorage implements ISchedulerEntryStorage {
         try {
             cleanupWeakSuspendedEntries();
 
-            try {
-                recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
+            recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
-                activeEntries.remove(entry.getId(), entry);
-                strongSuspendEntries.remove(entry.getId(), entry);
-                weakSuspendEntries.remove(entry.getId(), entry);
-
-                observer.onCancelEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
-            }
+            activeEntries.remove(entry.getId(), entry);
+            strongSuspendEntries.remove(entry.getId(), entry);
+            weakSuspendEntries.remove(entry.getId(), entry);
         } finally {
             localStorageLock.unlock();
+        }
+
+        try {
+            observer.onCancelEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
 
         // It's safe to delete entry from database outside of critical section as we remember that
@@ -252,7 +259,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
         } catch (CancelledLocalEntryRequestException e) {
-            throw new EntryStorageAccessException("The entry was not found as it was cancelled recently.");
+            throw new EntryNotFoundException("The entry was not found as it was cancelled recently.");
         }
     }
 

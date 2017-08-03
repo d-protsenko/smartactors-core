@@ -24,7 +24,7 @@ public class QuickLock {
 
     private final Object lock;
     private final AtomicInteger state = new AtomicInteger(STATE_FREE);
-    private long ownerTID = -1;
+    private volatile long ownerTID = -1;
     private int lockDepth = 0;
 
     /**
@@ -94,6 +94,8 @@ public class QuickLock {
             --lockDepth;
             return;
         }
+
+        ownerTID = -1;
 
         if (state.compareAndSet(STATE_LOCKED, STATE_FREE)) {
             return;
