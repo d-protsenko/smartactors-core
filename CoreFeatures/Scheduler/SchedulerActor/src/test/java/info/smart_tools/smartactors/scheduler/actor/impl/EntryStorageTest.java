@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.Database
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tasks_plugin.PluginInMemoryDBTasks;
@@ -274,7 +275,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         assertSame(entries[0], storage.getEntry("0"));
     }
 
-    @Test(expected = EntryStorageAccessException.class)
+    @Test(expected = EntryNotFoundException.class)
     public void Should_throwWhenRequiredEntryIsNotFoundInBothRemoteAndLocalStorage()
             throws Exception {
         EntryStorage storage = new EntryStorage(remoteEntryStorage, null);
