@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.https_endpoint_plugins.https_endpoint_plugi
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
@@ -69,8 +68,8 @@ public class HttpsEndpointPlugin implements IPlugin {
 //                    .after("IOC")
 //                    .after("message_processor")
 //                    .after("message_processing_sequence")
-                    .after("response")
-                    .after("response_content_strategy")
+//                    .after("response")                    // in http-endpoint-plugin
+//                    .after("response_content_strategy")   // in http-endpoint-plugin
 //                    .after("FieldNamePlugin")
 //                    .before("starter")
                     .process(
