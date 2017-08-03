@@ -193,7 +193,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
         try {
             assertNull(storage.getEntry("1"));
             fail();
-        } catch (EntryStorageAccessException e) {}
+        } catch (EntryNotFoundException e) {}
 
         assertEquals(-1, countDBEntries()-iCnt);
     }
