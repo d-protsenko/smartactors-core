@@ -118,12 +118,6 @@ public class EntryStorage implements ISchedulerEntryStorage {
             strongSuspendEntries.remove(entryId, entry);
             weakSuspendEntries.remove(entryId, entry);
 
-            try {
-                observer.onUpdateEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
-            }
-
             if (null != oldEntry && entry != oldEntry) {
                 try {
                     oldEntry.cancel();
@@ -133,6 +127,12 @@ public class EntryStorage implements ISchedulerEntryStorage {
             }
         } finally {
             localStorageLock.unlock();
+        }
+
+        try {
+            observer.onUpdateEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
         }
 
         remoteEntryStorage.weakSaveEntry(entry);
@@ -159,19 +159,19 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException, EntryNotFoundException {
         localStorageLock.lock();
         try {
-            try {
-                recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
+            recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
-                activeEntries.remove(entry.getId(), entry);
-                strongSuspendEntries.remove(entry.getId(), entry);
-                weakSuspendEntries.remove(entry.getId(), entry);
-
-                observer.onCancelEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
-            }
+            activeEntries.remove(entry.getId(), entry);
+            strongSuspendEntries.remove(entry.getId(), entry);
+            weakSuspendEntries.remove(entry.getId(), entry);
         } finally {
             localStorageLock.unlock();
+        }
+
+        try {
+            observer.onCancelEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
 
         // It's safe to delete entry from database outside of critical section as we remember that
