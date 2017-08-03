@@ -101,10 +101,13 @@ public class EntryStorage implements ISchedulerEntryStorage {
     public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         final String entryId = entry.getId();
+        boolean keepLock = true;
 
         localStorageLock.lock();
         try {
             if (isEntryCancelledRecently(entryId)) {
+                localStorageLock.unlock();
+                keepLock = false;
                 try {
                     entry.cancel();
                     return;
@@ -120,13 +123,17 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             if (null != oldEntry && entry != oldEntry) {
                 try {
+                    localStorageLock.unlock();
+                    keepLock = false;
                     oldEntry.cancel();
                 } catch (EntryScheduleException e) {
                     throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
                 }
             }
         } finally {
-            localStorageLock.unlock();
+            if (keepLock) {
+                localStorageLock.unlock();
+            }
         }
 
         try {
