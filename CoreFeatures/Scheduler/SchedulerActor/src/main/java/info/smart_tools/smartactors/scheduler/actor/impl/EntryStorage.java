@@ -210,7 +210,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
         } catch (CancelledLocalEntryRequestException e) {
-            throw new EntryStorageAccessException("The entry was not found as it was cancelled recently.");
+            throw new EntryNotFoundException("The entry was not found as it was cancelled recently.");
         }
     }
 
