@@ -269,14 +269,14 @@ public final class EntryImpl implements ISchedulerEntry {
             if (null != tt) {
                 tt.cancel();
             }
-
-            try {
-                storage.delete(this);
-            } catch (EntryNotFoundException ignore) {
-                // The entry is already deleted (probably by another thread), OK
-            }
         } finally {
             entryLock.unlock();
+        }
+
+        try {
+            storage.delete(this);
+        } catch (EntryNotFoundException ignore) {
+            // The entry is already deleted (probably by another thread), OK
         }
     }
 

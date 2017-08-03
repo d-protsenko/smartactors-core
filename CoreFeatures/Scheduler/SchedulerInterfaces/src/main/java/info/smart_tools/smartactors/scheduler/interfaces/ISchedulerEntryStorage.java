@@ -62,6 +62,18 @@ public interface ISchedulerEntryStorage {
     List<ISchedulerEntry> listLocalEntries() throws EntryStorageAccessException;
 
     /**
+     * Get count of local entries.
+     *
+     * <p>
+     * In concurrent environment returned number may become invalid immediately after (or even before) the method returns.
+     * </p>
+     *
+     * @return count of local entries
+     * @throws EntryStorageAccessException if any error occurs
+     */
+    int contLocalEntries() throws EntryStorageAccessException;
+
+    /**
      * Get (a locally saved) entry with given identifier.
      *
      * @param id    the entry identifier
