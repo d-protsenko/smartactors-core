@@ -21,6 +21,7 @@ import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.filter.SchedulerPreShutdownModeEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
+import info.smart_tools.smartactors.scheduler.actor.impl.refresher.ISchedulerStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
@@ -220,7 +221,7 @@ public class PluginScheduler extends BootstrapPlugin {
 
                 EntryStorage storage = new EntryStorage(remoteEntryStorage, observer, (ITimer) timerService);
 
-                IDelayedSynchronousService refresher = IOC.resolve(
+                ISchedulerStorageRefresher refresher = IOC.resolve(
                         Keys.getOrAdd("scheduler entry storage refresher"),
                         storage, remoteEntryStorage);
 

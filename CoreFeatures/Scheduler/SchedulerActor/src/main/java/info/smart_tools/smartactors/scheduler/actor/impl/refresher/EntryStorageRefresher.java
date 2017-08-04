@@ -33,7 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Service that synchronizes entries between remote and local storage (downloads entries from remote storage periodically).
  */
-public class EntryStorageRefresher implements IDelayedSynchronousService {
+public class EntryStorageRefresher implements ISchedulerStorageRefresher {
     private final EntryStorage entryStorage;
     private final IRemoteEntryStorage remoteEntryStorage;
 
@@ -171,6 +171,7 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
         return v;
     }
 
+    @Override
     public void configure(final IObject conf)
             throws ReadValueException, InvalidArgumentException {
         stateLock.lock();
@@ -307,7 +308,8 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
                     lastDownloadedState = entryState;
 
                     if (--nAllowed <= 0) {
-                        break;
+                        cont = false;
+                        return;
                     }
                 }
 
