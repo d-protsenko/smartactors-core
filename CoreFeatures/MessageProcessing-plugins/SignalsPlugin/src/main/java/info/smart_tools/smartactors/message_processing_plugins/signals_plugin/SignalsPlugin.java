@@ -26,6 +26,7 @@ public class SignalsPlugin extends BootstrapPlugin {
     }
 
     @Item("system_signal_classes")
+    @After({"IOC", "IFieldNamePlugin"})
     public void registerSystemSignals()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("shutdown signal"), new SingletonStrategy(new ShutdownSignal()));
