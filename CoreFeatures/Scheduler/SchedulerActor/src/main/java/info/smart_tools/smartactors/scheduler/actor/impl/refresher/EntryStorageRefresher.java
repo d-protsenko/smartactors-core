@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -41,12 +42,21 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
     private ITimer timer;
     private ITime time;
 
-    private int pageSize;
+    private int maxPageSize;
+    private int minPageSize;
+    private int maxLocalEntries;
     private long refreshRepeatInterval;
     private long refreshAwakeInterval;
     private long refreshSuspendInterval;
     private long refreshStart;
     private long refreshStop;
+
+    private final IFieldName maxPageSizeFN;
+    private final IFieldName minPageSizeFN;
+    private final IFieldName maxLocalEntriesFN;
+    private final IFieldName refreshRepeatIntervalFN;
+    private final IFieldName refreshAwakeIntervalFN;
+    private final IFieldName refreshSuspendIntervalFN;
 
     private IObject lastDownloadedState;
 
@@ -71,18 +81,22 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
      * @param refreshRepeatInterval     interval between refresher executions in milliseconds
      * @param refreshAwakeInterval      time (in milliseconds after current execution start) to awake entries scheduled until
      * @param refreshSuspendInterval    time (in milliseconds after current execution start) to suspend entries scheduled after
-     * @param pageSize                  size of pages downloaded from remote storage
+     * @param maxPageSize               maximal size of pages downloaded from remote storage
+     * @param minPageSize               minimal size of pages downloaded from remote storage
+     * @param maxLocalEntries           maximal amount of entries stored in local storage
      * @throws ResolutionException if error occurs resolving any dependency
      * @throws InvalidArgumentException if {@code entryStorage} or {@code remoteEntryStorage} are {@code null}
      * @throws InvalidArgumentException if interval values do not satisfy requirements described above
-     * @throws InvalidArgumentException if {@code pageSize} is not a positive value
+     * @throws InvalidArgumentException if {@code maxPageSize} is not a positive value
      */
     public EntryStorageRefresher(final EntryStorage entryStorage,
                                  final IRemoteEntryStorage remoteEntryStorage,
                                  final long refreshRepeatInterval,
                                  final long refreshAwakeInterval,
                                  final long refreshSuspendInterval,
-                                 final int pageSize)
+                                 final int maxPageSize,
+                                 final int minPageSize,
+                                 final int maxLocalEntries)
             throws ResolutionException, InvalidArgumentException {
         if (null == entryStorage) {
             throw new InvalidArgumentException("Entry storage should not be null.");
@@ -92,19 +106,7 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
             throw new InvalidArgumentException("Remote entry storage should not be null.");
         }
 
-        if (!(
-                (0 < refreshRepeatInterval) &&
-                (refreshRepeatInterval <= refreshAwakeInterval) &&
-                (refreshAwakeInterval < refreshSuspendInterval)
-        )) {
-            throw new InvalidArgumentException(String.format(
-                    "Invalid interval values: RRI = %d, RAI = %d, RSI = %d; should be: 0 < RRI <= RAI < RSI.",
-                    refreshRepeatInterval, refreshAwakeInterval, refreshSuspendInterval));
-        }
-
-        if (pageSize <= 0) {
-            throw new InvalidArgumentException("Invalid page size.");
-        }
+        verifyParameters(refreshRepeatInterval, refreshAwakeInterval, refreshSuspendInterval, maxPageSize, minPageSize, maxLocalEntries);
 
         this.entryStorage = entryStorage;
         this.remoteEntryStorage = remoteEntryStorage;
@@ -113,7 +115,9 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
         this.refreshAwakeInterval = refreshAwakeInterval;
         this.refreshSuspendInterval = refreshSuspendInterval;
 
-        this.pageSize = pageSize;
+        this.maxPageSize = maxPageSize;
+        this.minPageSize = minPageSize;
+        this.maxLocalEntries = maxLocalEntries;
 
         this.taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
@@ -121,6 +125,75 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
 
         timer = IOC.resolve(Keys.getOrAdd("timer"));
         time = IOC.resolve(Keys.getOrAdd("time"));
+
+        maxPageSizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxPageSize");
+        minPageSizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "minPageSize");
+        maxLocalEntriesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxLocalEntries");
+        refreshAwakeIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshAwakeInterval");
+        refreshRepeatIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshRepeatInterval");
+        refreshSuspendIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshSuspendInterval");
+    }
+
+    private void verifyParameters(final long refreshRepeatIntervalParam,
+                                  final long refreshAwakeIntervalParm,
+                                  final long refreshSuspendIntervalParam,
+                                  final int maxPageSizeParam,
+                                  final int minPageSizeParam,
+                                  final int maxLocalEntriesParam)
+            throws InvalidArgumentException {
+        if (!(
+                (0 < refreshRepeatIntervalParam) &&
+                        (refreshRepeatIntervalParam <= refreshAwakeIntervalParm) &&
+                        (refreshAwakeIntervalParm < refreshSuspendIntervalParam)
+        )) {
+            throw new InvalidArgumentException(String.format(
+                    "Invalid interval values: RRI = %d, RAI = %d, RSI = %d; should be: 0 < RRI <= RAI < RSI.",
+                    refreshRepeatIntervalParam, refreshAwakeIntervalParm, refreshSuspendIntervalParam));
+        }
+
+        if (minPageSizeParam <= 0 || maxPageSizeParam < minPageSizeParam) {
+            throw new InvalidArgumentException(String.format("Invalid page sizes: %d, %d.", minPageSizeParam, maxPageSizeParam));
+        }
+
+        if (maxLocalEntriesParam <= 0) {
+            throw new InvalidArgumentException(String.format("Invalid maximal amount of local entries: %d.", maxLocalEntriesParam));
+        }
+    }
+
+    private Number readNum(final IObject object, final IFieldName fieldName, final Number def)
+            throws ReadValueException, InvalidArgumentException {
+        Number v = (Number) object.getValue(fieldName);
+
+        if (null == v) {
+            return def;
+        }
+
+        return v;
+    }
+
+    public void configure(final IObject conf)
+            throws ReadValueException, InvalidArgumentException {
+        stateLock.lock();
+
+        try {
+            long rri = readNum(conf, refreshRepeatIntervalFN, refreshRepeatInterval).longValue();
+            long rai = readNum(conf, refreshAwakeIntervalFN, refreshAwakeInterval).longValue();
+            long rsi = readNum(conf, refreshSuspendIntervalFN, refreshSuspendInterval).longValue();
+            int minPS = readNum(conf, minPageSizeFN, minPageSize).intValue();
+            int maxPS = readNum(conf, maxPageSizeFN, maxPageSize).intValue();
+            int maxLE = readNum(conf, maxLocalEntriesFN, maxLocalEntries).intValue();
+
+            verifyParameters(rri, rai, rsi, maxPS, minPS, maxLE);
+
+            this.refreshAwakeInterval = rai;
+            this.refreshRepeatInterval = rri;
+            this.refreshSuspendInterval = rsi;
+            this.minPageSize = minPS;
+            this.maxPageSize = maxPS;
+            this.maxLocalEntries = maxLE;
+        } finally {
+            stateLock.unlock();
+        }
     }
 
     @Override
@@ -201,10 +274,17 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
         try {
             boolean cont = true;
             try {
+                int nAllowed = maxLocalEntries - entryStorage.contLocalEntries();
+
+                if (nAllowed <= 0) {
+                    cont = false;
+                    return;
+                }
+
                 List<IObject> entries = remoteEntryStorage.downloadEntries(
                         Math.min(refreshStart + refreshRepeatInterval, refreshStop),
                         lastDownloadedState,
-                        pageSize);
+                        Math.min(maxPageSize, Math.max(minPageSize, nAllowed)));
 
                 for (IObject entryState : entries) {
                     String id = (String) entryState.getValue(entryIdFN);
@@ -225,6 +305,10 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
                     }
 
                     lastDownloadedState = entryState;
+
+                    if (--nAllowed <= 0) {
+                        break;
+                    }
                 }
 
                 cont = !entries.isEmpty();
