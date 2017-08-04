@@ -4,30 +4,5 @@
     "info.smart_tools.smartactors:database-postgresql",
     "info.smart_tools.smartactors:database-plugins",
     "info.smart_tools.smartactors:database-postgresql-plugins"
-  ],
-  "objects": [
-    {
-      "kind": "stateless_actor",
-      "dependency": "PostgresCachedCollectionActor",
-      "name": "PostgresCachedCollection"
-    }
-  ],
-  "maps": [
-    {
-      "id": "registerPostgresCachedCollection",
-      "externalAccess": false,
-      "steps": [
-        {
-          "target": "PostgresCachedCollection",
-          "handler": "register",
-          "wrapper": {
-            "in_getConnectionOptionsRegistrationName": "message/connectionOptionsRegistrationName",
-            "in_getCollectionName": "message/collectionName",
-            "in_getKeyName": "message/keyName"
-          }
-        }
-      ],
-      "exceptional": []
-    }
   ]
 }

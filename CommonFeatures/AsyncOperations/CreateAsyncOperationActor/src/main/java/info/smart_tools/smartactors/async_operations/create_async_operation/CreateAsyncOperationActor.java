@@ -36,8 +36,10 @@ public class CreateAsyncOperationActor {
         try {
             formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
             collection = IOC.resolve(
-                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), (String) collectionNameField.in(params)
+                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new CreateAsyncOperationActorException("Can't read collection name from message", e);
