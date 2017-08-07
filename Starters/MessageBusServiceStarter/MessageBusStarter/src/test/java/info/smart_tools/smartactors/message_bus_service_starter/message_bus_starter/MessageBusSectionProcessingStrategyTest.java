@@ -83,7 +83,7 @@ public class MessageBusSectionProcessingStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -125,16 +125,16 @@ public class MessageBusSectionProcessingStrategyTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             return new DSObject();

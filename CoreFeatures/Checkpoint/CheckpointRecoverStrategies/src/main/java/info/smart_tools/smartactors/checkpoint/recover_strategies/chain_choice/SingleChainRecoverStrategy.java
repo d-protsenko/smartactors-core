@@ -31,7 +31,7 @@ public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy 
      */
     public SingleChainRecoverStrategy()
             throws ResolutionException {
-        chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override

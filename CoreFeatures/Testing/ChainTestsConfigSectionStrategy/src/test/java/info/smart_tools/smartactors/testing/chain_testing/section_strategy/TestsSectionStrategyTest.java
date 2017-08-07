@@ -65,15 +65,15 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         TestsSectionStrategy strategy = new TestsSectionStrategy();
 
-        assertEquals(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"), strategy.getSectionName());
+        assertEquals(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"), strategy.getSectionName());
     }
 
     @Test
     public void Should_runTestWhenItPasses()
             throws Exception {
         IObject td1 = mock(IObject.class);
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Collections.singletonList(td1));
         when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
 
@@ -103,8 +103,8 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
         IObject td2 = mock(IObject.class);
         when(td2.getValue(new FieldName("entryPoint"))).thenReturn("assert");
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Arrays.asList(td1, td2));
 
         doAnswer(invocation -> {
@@ -149,8 +149,8 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IObject td1 = mock(IObject.class);
         IObject td2 = mock(IObject.class);
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        config.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "tests"),
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Arrays.asList(td1, td2));
 
         doThrow(TestExecutionException.class).when(testRunnerMock).runTest(same(td1), any());

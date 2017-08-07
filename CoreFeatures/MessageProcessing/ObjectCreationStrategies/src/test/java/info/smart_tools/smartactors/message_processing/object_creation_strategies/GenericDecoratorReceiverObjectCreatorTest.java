@@ -59,7 +59,7 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
         when(decoratorReceiverResolutionStrategy.resolve(
                 same(receiverMocks[0]), same(filterConfig), same(objectConfig), same(context))).thenReturn(receiverMocks[1]);
 
-        when(filterConfig.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency")))
+        when(filterConfig.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency")))
                 .thenReturn("create some receiver decorator");
 
         doAnswer(invocation -> {

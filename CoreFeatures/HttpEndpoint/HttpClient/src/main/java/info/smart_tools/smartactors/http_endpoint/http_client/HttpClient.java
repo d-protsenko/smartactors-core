@@ -50,14 +50,14 @@ public class HttpClient extends NettyClient<HttpRequest> {
     public HttpClient(final URI serverUri, final IResponseHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
         try {
-            uriFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uri");
-            methodFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "method");
-            headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
-            nameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            valueFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
-            cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookie");
-            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageMapId");
-            contentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "content");
+            uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+            methodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "method");
+            headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+            nameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            valueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookie");
+            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
+            contentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content");
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }

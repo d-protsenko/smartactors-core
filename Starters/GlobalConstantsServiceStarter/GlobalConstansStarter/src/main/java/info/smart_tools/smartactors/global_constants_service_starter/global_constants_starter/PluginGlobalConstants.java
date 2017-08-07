@@ -47,11 +47,11 @@ public class PluginGlobalConstants implements IPlugin {
 //            constantsObjectItem.after("iobject");
             constantsObjectItem.process(() -> {
                 try {
-                    IObject obj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                    IObject obj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                     IOC.register(Keys.getOrAdd("global constants"), new SingletonStrategy(obj));
 
                     IOC.register(
-                            Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+                            Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                             new CreateNewInstanceStrategy(args -> {
                                 IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                 IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];

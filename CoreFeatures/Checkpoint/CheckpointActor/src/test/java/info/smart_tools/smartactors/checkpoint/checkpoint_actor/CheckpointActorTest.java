@@ -149,7 +149,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_resolveActivate_StartAndStop_SchedulerService()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
@@ -170,7 +170,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createNewEntryForNewEnteringMessage()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
@@ -179,7 +179,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         CheckpointActor actor = new CheckpointActor(args);
 
-        IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'theUniqueAndVeryImportantField':'42'}".replace('\'','"'));
 
         when(enteringMessageMock.getCheckpointId()).thenReturn("thisCp");
@@ -201,29 +201,29 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         IObject entryArgs = (IObject) objectsArgumentCaptor.getAllValues().get(0);
 
         assertSame(enteringMessageMock.getRecoverConfiguration(),
-                entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover")));
+                entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover")));
         assertSame(enteringMessageMock.getSchedulingConfiguration(),
-                entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "scheduling")));
+                entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling")));
         assertEquals("checkpoint scheduler action",
-                entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action")));
+                entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action")));
         assertEquals("42",
-                ((IObject) entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")))
-                    .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "theUniqueAndVeryImportantField")));
-        assertNotSame(message, entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
-        assertSame(messageProcessorMock, entryArgs.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor")));
+                ((IObject) entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")))
+                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "theUniqueAndVeryImportantField")));
+        assertNotSame(message, entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")));
+        assertSame(messageProcessorMock, entryArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor")));
 
         verify(enteringMessageMock).setCheckpointStatus(iObjectArgumentCaptor.capture());
 
         IObject newCS = iObjectArgumentCaptor.getValue();
 
-        assertEquals("thisCp", newCS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
-        assertEquals("entry0", newCS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId")));
+        assertEquals("thisCp", newCS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
+        assertEquals("entry0", newCS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
     }
 
     @Test
     public void Should_interruptMessageProcessingWhenEntryIsPresent()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
@@ -232,7 +232,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         CheckpointActor actor = new CheckpointActor(args);
 
-        IObject status = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject status = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'responsibleCheckpointId':'prevCp'," +
                         "'checkpointEntryId':'prevId'" +
@@ -240,7 +240,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         ISchedulerEntry oldEntry = entryMock[2];
         when(oldEntry.getId()).thenReturn("newIdPresent");
-        when(oldEntry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        when(oldEntry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'prevCheckpointId':'prevCp'," +
                         "'prevCheckpointEntryId':'prevId'" +
@@ -249,7 +249,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         when(enteringMessageMock.getCheckpointId()).thenReturn("thisCp");
         when(enteringMessageMock.getCheckpointStatus()).thenReturn(status);
-        when(enteringMessageMock.getMessage()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+        when(enteringMessageMock.getMessage()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
         when(enteringMessageMock.getProcessor()).thenReturn(messageProcessorMock);
         when(enteringMessageMock.getRecoverConfiguration()).thenReturn(mock(IObject.class));
         when(enteringMessageMock.getSchedulingConfiguration()).thenReturn(mock(IObject.class));
@@ -265,7 +265,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_sendFeedbackMessage()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
@@ -274,7 +274,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         CheckpointActor actor = new CheckpointActor(args);
 
-        IObject status = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject status = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'responsibleCheckpointId':'prevCp'," +
                         "'checkpointEntryId':'prevId'" +
@@ -282,7 +282,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         when(enteringMessageMock.getCheckpointId()).thenReturn("thisCp");
         when(enteringMessageMock.getCheckpointStatus()).thenReturn(status);
-        when(enteringMessageMock.getMessage()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+        when(enteringMessageMock.getMessage()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
         when(enteringMessageMock.getProcessor()).thenReturn(messageProcessorMock);
         when(enteringMessageMock.getRecoverConfiguration()).thenReturn(mock(IObject.class));
         when(enteringMessageMock.getSchedulingConfiguration()).thenReturn(mock(IObject.class));
@@ -299,27 +299,27 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         IObject fbMessage = iObjectArgumentCaptor.getValue();
 
         assertEquals("thisCp",
-                fbMessage.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
+                fbMessage.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
         assertEquals("entry0",
-                fbMessage.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId")));
+                fbMessage.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
         assertEquals("prevCp",
-                fbMessage.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
+                fbMessage.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
         assertEquals("prevId",
-                fbMessage.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
+                fbMessage.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
     }
 
     @Test
     public void Should_processFeedbackMessages()
             throws Exception {
         long startTime = System.currentTimeMillis();
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
                         "'collectionName':'" + collectionName + "'" +
                         "}").replace('\'','"'));
 
-        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         CheckpointActor actor = new CheckpointActor(args);
 
@@ -331,7 +331,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<Long> timeCaptor = ArgumentCaptor.forClass(long.class);
 
-        assertNotNull(entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed")));
+        assertNotNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
         verify(entryMock[0]).scheduleNext(timeCaptor.capture());
 
         assertTrue(timeCaptor.getValue() >= (startTime + 1000));
@@ -340,7 +340,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_notThrowWhenNoMatchingEntryFoundProcessingFeedbackMessage()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
@@ -358,14 +358,14 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_ignoreFeedbackMessagesIfTheEntryIsAlreadyCompleted()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +
                         "'collectionName':'" + collectionName + "'" +
                         "}").replace('\'','"'));
 
-        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'completed':true}").replace('\'','"'));
 
         CheckpointActor actor = new CheckpointActor(args);
@@ -383,7 +383,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
     @Test
     public void Should_registerUpCounterCallback()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options'," +
                         "'connectionPoolDependency':'the connection pool'," +

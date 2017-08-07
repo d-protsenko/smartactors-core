@@ -84,7 +84,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
 
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
-            states[i] = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+            states[i] = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format("{'entryId':'entry-%010d'}".replace('\'', '"'), i));
         }
 

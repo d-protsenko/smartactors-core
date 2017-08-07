@@ -28,6 +28,9 @@ import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.excepti
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -84,18 +87,18 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         super(receiver, environmentHandler, scope, name);
         this.name = name;
 
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-        contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-        finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
-        httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
-        httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "httpResponseStatusCode");
-        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "accessToChainForbiddenError");
-        requestFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
-        channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
-        headersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "headers");
-        cookiesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "cookies");
-        endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
-        responseStrategyName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy");
+        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd");
+        httpResponseStatusCodeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "httpResponseStatusCode");
+        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "accessToChainForbiddenError");
+        requestFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "request");
+        channelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
+        headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+        cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies");
+        endpointName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
+        responseStrategyName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
         upCounter.onShutdownRequest(mode -> isShuttingDown = true);
     }
@@ -107,7 +110,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             IObject message = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             if (!request.method().toString().equals("GET")) {
                 IDeserializeStrategy deserializeStrategy = IOC.resolve(
-                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                        Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                         IOC.resolve(Keys.getOrAdd("http_request_key_for_deserialize"), request),
                         name
                 );
@@ -124,7 +127,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
             //resolving uri and another request parameters of the request
             IAddRequestParametersToIObject requestParametersToIObject = IOC.resolve(
-                    Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                     "HTTP_GET",
                     name
             );
@@ -138,7 +141,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
             IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
 
-            IChannelHandler channelHandler = IOC.resolve(Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName()), ctx);
+            IChannelHandler channelHandler = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"), ctx);
             //create context of the MP
             IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             context.setValue(channelFieldName, channelHandler);
@@ -159,7 +162,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                                 return;
                             }
                         }
-                        IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+                        IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
                         IChannelHandler channelHandler = (IChannelHandler)
                                 context.getValue(channelFieldName);
 
@@ -199,6 +202,8 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             } catch (SerializeException | ResolutionException | InvalidArgumentException e1) {
                 throw new RequestHandlerInternalException("Failed to send response", e);
             }
+        } finally {
+            request.release();
         }
     }
 
@@ -211,7 +216,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
 
     private FullHttpResponse formExceptionalResponse(final IObject iObjectResponse)
             throws SerializeException, ResolutionException, ReadValueException, InvalidArgumentException {
-        IFieldName exceptionalStatusCode = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statusCode");
+        IFieldName exceptionalStatusCode = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statusCode");
         ByteBuf byteResponse = Unpooled.wrappedBuffer(((String) iObjectResponse.serialize()).getBytes(Charset.forName("UTF-8")));
         int length = ((String) iObjectResponse.serialize()).length();
         FullHttpResponse response =
@@ -233,7 +238,13 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                 e1.printStackTrace();
             }
         } else {
-            super.handle(ctx, request);
+            request.retain();
+            try {
+                super.handle(ctx, request);
+            } catch (ExecutionException | RuntimeException e) {
+                request.release();
+                throw e;
+            }
         }
     }
 }

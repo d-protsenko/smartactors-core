@@ -47,13 +47,13 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
      * @throws ResolutionException if fails to resolve any dependencies
      */
     InMemoryDBSectionProcessingStrategy() throws ResolutionException {
-        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "inMemoryDb");
+        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "inMemoryDb");
         this.nameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "name"
         );
         this.documentsFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "documents"
         );
     }

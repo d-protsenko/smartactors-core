@@ -46,7 +46,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
         chainIdStrategy = mock(IResolveDependencyStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
@@ -60,7 +60,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainConditionIsTrue()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{'chainCondition': true}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': true}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 
@@ -70,7 +70,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainConditionIsFalse()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{'chainCondition': false}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 

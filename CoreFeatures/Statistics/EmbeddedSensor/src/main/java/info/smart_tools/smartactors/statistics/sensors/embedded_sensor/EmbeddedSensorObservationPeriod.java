@@ -52,9 +52,9 @@ public class EmbeddedSensorObservationPeriod<TState> implements IEmbeddedSensorO
         this.state = strategy.initPeriod();
         this.strategy = strategy;
 
-        periodStartFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodStart");
-        periodEndFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodEnd");
-        dataFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "data");
+        periodStartFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
+        periodEndFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
+        dataFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
     }
 
     @Override
@@ -110,7 +110,7 @@ public class EmbeddedSensorObservationPeriod<TState> implements IEmbeddedSensorO
     @Override
     public IObject createMessage()
             throws ResolutionException, ChangeValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
-        IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         message.setValue(periodStartFieldName, periodStart);
         message.setValue(periodEndFieldName, periodEnd);
         message.setValue(dataFieldName, extractData());

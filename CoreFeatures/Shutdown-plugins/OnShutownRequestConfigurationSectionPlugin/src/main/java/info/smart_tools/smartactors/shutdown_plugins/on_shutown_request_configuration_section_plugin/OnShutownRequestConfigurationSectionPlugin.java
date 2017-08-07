@@ -52,14 +52,14 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
             IObject arg = (IObject) args[0];
 
             try {
-                IFieldName messagesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messages");
-                IFieldName chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
-                IFieldName modeFieldFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "modeField");
+                IFieldName messagesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messages");
+                IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+                IFieldName modeFieldFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modeField");
 
                 List<IObject> messages = (List) arg.getValue(messagesFN);
                 Object chainName = arg.getValue(chainFN);
                 IFieldName modeFieldName = (null == arg.getValue(modeFieldFN)) ? null :
-                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), arg.getValue(modeFieldFN));
+                        IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), arg.getValue(modeFieldFN));
 
                 IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
                         IChainStorage.class.getCanonicalName()));
@@ -86,16 +86,16 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             }
 
                             IMessageProcessingSequence processingSequence = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
                                     chain
                             );
                             IMessageProcessor messageProcessor = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     queue,
                                     processingSequence
                             );
-                            messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+                            messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                         }
                     } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException e) {
                         throw new ActionExecuteException(e);

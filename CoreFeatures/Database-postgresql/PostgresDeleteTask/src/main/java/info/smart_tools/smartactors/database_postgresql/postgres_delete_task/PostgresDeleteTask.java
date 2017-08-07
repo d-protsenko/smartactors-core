@@ -72,7 +72,7 @@ public class PostgresDeleteTask implements IDatabaseTask {
 
             document = message.getDocument();
             idField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     String.format(PostgresSchema.ID_FIELD_PATTERN, collection.toString()));
             id = document.getValue(idField);
 

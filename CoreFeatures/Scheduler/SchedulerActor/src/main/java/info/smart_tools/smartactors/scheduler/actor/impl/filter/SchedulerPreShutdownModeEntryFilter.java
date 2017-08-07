@@ -24,7 +24,7 @@ public class SchedulerPreShutdownModeEntryFilter implements ISchedulerEntryFilte
      */
     public SchedulerPreShutdownModeEntryFilter()
             throws ResolutionException {
-        preShutdownExecFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "preShutdownExec");
+        preShutdownExecFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "preShutdownExec");
     }
 
     @Override

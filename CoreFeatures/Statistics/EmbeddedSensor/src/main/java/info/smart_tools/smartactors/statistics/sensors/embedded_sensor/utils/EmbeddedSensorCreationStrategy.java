@@ -66,14 +66,14 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
      */
     public EmbeddedSensorCreationStrategy()
             throws ResolutionException {
-        argsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "args");
-        stepFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "step");
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statisticsChain");
-        replacementsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "replacements");
-        modificationFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "modification");
-        embedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "embed");
-        chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        argsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        stepFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        replacementsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
+        modificationFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
+        embedFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "embed");
+        chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                             itemArgs
                         );
 
-                IObject replacement = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                IObject replacement = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 replacement.setValue(stepFieldName, embedItemConf.getValue(stepFieldName));
                 replacement.setValue(dependencyFieldName, SENSOR_RECEIVER_REPLACEMENT_DEPENDENCY);
@@ -111,7 +111,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                 replacements.add(replacement);
             }
 
-            IObject modification = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject modification = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             modification.setValue(modificationFieldName, RECEIVER_REPLACEMENT_MODIFICATION_DEPENDENCY);
             modification.setValue(replacementsFieldName, replacements);

@@ -66,7 +66,7 @@ public class EndpointsSectionProcessingStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(

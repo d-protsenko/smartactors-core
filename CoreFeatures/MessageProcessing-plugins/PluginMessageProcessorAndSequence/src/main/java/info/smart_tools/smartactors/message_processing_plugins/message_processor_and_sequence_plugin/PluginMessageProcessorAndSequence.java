@@ -103,7 +103,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     })
                             );
                             IOC.register(
-                                    Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+                                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     new CreateNewInstanceStrategy(args -> {
                                         IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                         IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
@@ -113,7 +113,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                                config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }
@@ -145,7 +145,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()),
+                                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     new CreateNewInstanceStrategy(args -> {
                                         int stackDepth = ((Number) args[0]).intValue();
                                         IReceiverChain mainChain = (IReceiverChain) args[1];

@@ -41,8 +41,8 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
         try {
             contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
             headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "headers");
-            headerName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            headerValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
+            headerName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            headerValue = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
         } catch (ResolutionException e) {
             throw new HeadersSetterException("Failed to resolve fieldName", e);
         }

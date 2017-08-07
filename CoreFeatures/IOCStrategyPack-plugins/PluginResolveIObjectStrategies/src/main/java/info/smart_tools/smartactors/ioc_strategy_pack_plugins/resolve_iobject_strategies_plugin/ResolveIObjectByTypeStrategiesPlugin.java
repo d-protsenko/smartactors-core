@@ -66,8 +66,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                             return strategy;
                         };
 
-                        IKey typeStrategy = Keys.getOrAdd(IObject.class.getCanonicalName() + "convert");
-                        IKey expandableTypeStrategy = Keys.getOrAdd("expandable_strategy#" + IObject.class.getCanonicalName());
+                        IKey typeStrategy = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
+                        IKey expandableTypeStrategy = Keys.getOrAdd("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
                         IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                         ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
                         ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());

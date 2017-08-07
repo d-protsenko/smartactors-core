@@ -44,7 +44,7 @@ public class MapToIObjectResolveDependencyStrategyTest {
     public void ShouldCorrectConvertMapToIObject() throws Exception {
 
         IKey key = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(key);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(key);
 
         IFieldName fieldName1 = mock(IFieldName.class);
         IFieldName fieldName2 = mock(IFieldName.class);

@@ -59,12 +59,12 @@ public class GetAsyncOperationTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IObject filterObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject filterObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             String token = tokenField.in(query);
 
-            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(eqKeyObject, token);
             tokenField.out(filterObject, eqKeyObject);
 

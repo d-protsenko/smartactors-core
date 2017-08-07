@@ -64,7 +64,7 @@ public class WrapperExample {
         new ConcatSplitRulesPlugin(bootstrap).load();
         bootstrap.start();
 
-        iObjectKey = Keys.getOrAdd(IObject.class.getCanonicalName());
+        iObjectKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         iFieldKey = Keys.getOrAdd(IField.class.getCanonicalName());
         configObjectKey = Keys.getOrAdd("configuration object");
         wdsObjectKey = Keys.getOrAdd(WDSObject.class.getCanonicalName());

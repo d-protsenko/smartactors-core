@@ -65,10 +65,10 @@ public class EnvironmentHandlerTest {
                 new ResolveByNameIocStrategy()
         );
         IKey keyIObjectByString = Keys.getOrAdd("IObjectByString");
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
-        IKey keyIMessageProcessingSequence = Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIMessageProcessingSequence = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
-        IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
@@ -124,13 +124,13 @@ public class EnvironmentHandlerTest {
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
             throws Exception {
         messageProcessor = mock(IMessageProcessor.class);
-        IKey keyIMessageProcessor = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
+        IKey keyIMessageProcessor = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
         IOC.register(
                 keyIMessageProcessor,
                 new SingletonStrategy(messageProcessor)
         );
         IObject iObject = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{}");
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(
                 keyIObject,
                 new SingletonStrategy(iObject)
@@ -149,8 +149,8 @@ public class EnvironmentHandlerTest {
         handler.handle(environment, chain, null);
         try {
             verify(messageProcessor, times(1)).process(
-                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")),
-                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context")));
+                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),
+                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")));
         } catch (ReadValueException e) {
             e.printStackTrace();
         }

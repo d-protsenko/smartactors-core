@@ -39,9 +39,9 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
      */
     public InMemoryGetByIdTask() throws TaskPrepareException {
         try {
-            collectionNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
-            idFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "id");
-            callbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
+            collectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            idFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+            callbackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve IFieldName", e);
         }

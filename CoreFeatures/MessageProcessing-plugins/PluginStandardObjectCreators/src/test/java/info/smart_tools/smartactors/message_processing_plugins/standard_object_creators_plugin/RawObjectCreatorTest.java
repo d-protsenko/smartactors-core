@@ -55,7 +55,7 @@ public class RawObjectCreatorTest {
         when(IOC.resolve(fieldNameKey, "dependency")).thenReturn(dependencyFieldName);
         when(IOC.resolve(fieldNameKey, "name")).thenReturn(nameFieldName);
 
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(fieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
         when(Keys.getOrAdd("route_from_object_name")).thenReturn(routeFromObjectNameKey);
 
         routerMock = mock(IRouter.class);

@@ -70,11 +70,11 @@ public class MainTestChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new FieldName((String) args[0]))
         );
     }
@@ -97,7 +97,7 @@ public class MainTestChainTest {
     public void Should_constructorThrowInitializationExceptionWhenIOCNotInitialized()
             throws Exception {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
         assertNotNull(new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock));
         fail();

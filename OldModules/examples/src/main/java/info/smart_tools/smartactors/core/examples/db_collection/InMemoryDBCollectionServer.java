@@ -50,11 +50,11 @@ public class InMemoryDBCollectionServer implements IServer {
                     "test_" + Long.toHexString(Double.doubleToLongBits(Math.random())));
 
             IFieldName idField = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()), collection + "ID");
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collection + "ID");
 
-            IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IFieldName textField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
-            IFieldName intField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
+            IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IFieldName textField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
+            IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
             document.setValue(textField, "initial value");
             document.setValue(intField, 1);
 

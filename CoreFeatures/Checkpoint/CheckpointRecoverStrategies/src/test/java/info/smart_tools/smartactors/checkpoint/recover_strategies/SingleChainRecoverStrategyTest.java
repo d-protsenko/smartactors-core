@@ -47,8 +47,8 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
-        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'theChain'}".replace('\'','"'));
 
         strategy.init(state, args);
@@ -63,8 +63,8 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
-        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         strategy.init(state, args);
     }

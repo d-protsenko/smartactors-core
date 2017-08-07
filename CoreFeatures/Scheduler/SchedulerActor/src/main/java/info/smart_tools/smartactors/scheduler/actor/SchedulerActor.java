@@ -51,11 +51,11 @@ public class SchedulerActor {
             throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecuteException,
                    UpCounterCallbackExecutionException {
         String connectionOptionsDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionPoolDependency"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
         String collectionName = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
 
         Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
         IPool connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);

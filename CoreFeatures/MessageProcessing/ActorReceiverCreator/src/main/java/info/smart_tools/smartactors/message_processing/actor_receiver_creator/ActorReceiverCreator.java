@@ -43,8 +43,8 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
     public ActorReceiverCreator()
             throws ObjectCreationException {
         try {
-            this.name = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            this.dependency = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
+            this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            this.dependency = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
         }

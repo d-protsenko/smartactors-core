@@ -83,7 +83,7 @@ public final class CreateClauses {
             return;
         }
         try {
-            IKey fieldKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+            IKey fieldKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IFieldName fullTextField = IOC.resolve(fieldKey, "fulltext");
             Object fullTextDefinition = options.getValue(fullTextField);
             if (fullTextDefinition == null) {

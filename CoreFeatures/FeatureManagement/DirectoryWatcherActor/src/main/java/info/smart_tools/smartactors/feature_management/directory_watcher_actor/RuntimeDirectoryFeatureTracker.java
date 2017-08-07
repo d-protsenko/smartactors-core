@@ -78,11 +78,11 @@ public class RuntimeDirectoryFeatureTracker {
             this.scope = ScopeProvider.getCurrentScope();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     wrapper.getFileNameFieldName()
             );
             this.observedDirectoryFieldName = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     wrapper.getObservedDirectoryFieldName()
             );
             resolveChainByChainName(wrapper.getExecutionChain());
@@ -112,16 +112,16 @@ public class RuntimeDirectoryFeatureTracker {
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 stackDepth,
                 this.executionChain
         );
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 queue,
                 processingSequence);
-        IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         message.setValue(this.fileNameFieldName, newFilePath);
         message.setValue(this.observedDirectoryFieldName, this.watchingDir);
         messageProcessor.process(message, context);

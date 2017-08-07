@@ -40,7 +40,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
-        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
     }
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor, final IObject namedFilterConfig)
@@ -63,7 +63,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         if (null != namedFilterConfig) {
             namedFilterConfig.setValue(
-                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                     dependencyName
             );
 
@@ -109,12 +109,12 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 GenericDecoratorReceiverObjectCreator::new,
                 null);
 
-        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "thread safe wrapper creator receiver decorator");
 
         IOC.register(
@@ -122,12 +122,12 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 new SingletonStrategy(tsWrapperCreatorConfig)
         );
 
-        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "non thread safe wrapper creator receiver decorator");
         IOC.register(
                 Keys.getOrAdd("named filter config#non-thread-safe wrapper creator"),

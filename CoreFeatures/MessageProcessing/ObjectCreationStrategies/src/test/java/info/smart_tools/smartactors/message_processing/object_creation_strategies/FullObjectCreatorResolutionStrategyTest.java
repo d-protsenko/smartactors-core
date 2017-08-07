@@ -55,7 +55,7 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
     @Test
     public void Should_resolveCreatorsPipeline()
             throws Exception {
-        IObject objectConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject objectConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                  "  'filters':[" +
                  "      {" +

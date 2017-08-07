@@ -43,7 +43,7 @@ public class MessageToBytesMapperTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         IKey keyString = Keys.getOrAdd(String.class.toString());
         IKey keyEmptyIObject = Keys.getOrAdd("EmptyIObject");
         IOC.register(keyIObject,
@@ -78,7 +78,7 @@ public class MessageToBytesMapperTest {
     @Test
     public void messageToBytesMapperShouldReturnDeserializedIObject() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
-        IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
+        IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
         byte[] bytes = iObject.serialize().toString().getBytes();
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));
@@ -87,7 +87,7 @@ public class MessageToBytesMapperTest {
     public void messageToBytesMapperShouldDeleteNonASCIICharacters() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
         String stringWithNonASCII = "\uFEFF{\"hello\": \"world\"}";
-        IObject iObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
+        IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
         byte[] bytes = stringWithNonASCII.getBytes();
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));

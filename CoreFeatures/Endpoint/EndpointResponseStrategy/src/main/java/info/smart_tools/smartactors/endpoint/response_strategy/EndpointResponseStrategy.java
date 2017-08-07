@@ -19,11 +19,11 @@ public class EndpointResponseStrategy implements IResponseStrategy {
     public void sendResponse(final IObject environment) throws ResponseException {
         try {
             // Most of this code is copy-pasted from old ResponseSenderActor.
-            IFieldName responseFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
-            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd");
-            IFieldName endpointName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName");
-            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel");
+            IFieldName responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd");
+            IFieldName endpointName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
+            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
 
             IObject responseIObject = (IObject) environment.getValue(responseFieldName);
             IObject contextIObject = (IObject) environment.getValue(contextFieldName);

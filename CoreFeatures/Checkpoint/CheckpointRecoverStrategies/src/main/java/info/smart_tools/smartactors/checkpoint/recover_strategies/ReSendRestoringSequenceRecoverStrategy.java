@@ -37,14 +37,14 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
      */
     public ReSendRestoringSequenceRecoverStrategy()
             throws ResolutionException {
-        sequenceDumpFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sequenceDump");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
-        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
-        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus");
-        entryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
+        sequenceDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequenceDump");
+        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus");
+        entryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
             String sMessage = ((IObject) state.getValue(messageFieldName)).serialize();
             IObject messageClone = IOC.resolve(Keys.getOrAdd(IObject.class.getName()), sMessage);
 
-            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             checkpointStatus.setValue(responsibleCheckpointIdFieldName, state.getValue(responsibleCheckpointIdFieldName));
             checkpointStatus.setValue(checkpointEntryIdFieldName, state.getValue(entryIdFieldName));
@@ -77,12 +77,12 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
             IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd("recover message processing sequence"),
                     state.getValue(sequenceDumpFieldName));
 
-            IMessageProcessor processor = IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+            IMessageProcessor processor = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                     IOC.resolve(Keys.getOrAdd("task_queue")),
                     sequence
                     );
 
-            processor.process(messageClone, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+            processor.process(messageClone, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
         } catch (ReadValueException | InvalidArgumentException | SerializeException | ResolutionException | ChangeValueException
                 | MessageProcessorProcessException e) {
             throw new RecoverStrategyExecutionException("Error occurred re-sending message.", e);

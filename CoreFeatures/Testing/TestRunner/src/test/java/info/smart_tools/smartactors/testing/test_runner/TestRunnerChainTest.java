@@ -67,7 +67,7 @@ public class TestRunnerChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -146,7 +146,7 @@ public class TestRunnerChainTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
         new ChainTestRunner();

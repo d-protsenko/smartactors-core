@@ -82,7 +82,7 @@ public class CreateAsyncOperationActorTest {
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
         when(message.getOperationData()).thenReturn(asyncDataObj);
 
         actor.create(message);
@@ -103,7 +103,7 @@ public class CreateAsyncOperationActorTest {
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(dataKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
         when(message.getOperationData()).thenReturn(asyncDataObj);
 
         doThrow(new CreateAsyncOperationException("exception")).when(collection).createAsyncOperation(any(), any(), any());

@@ -95,7 +95,7 @@ public class AsyncOperationCollectionTest {
         String token = mock(String.class);
         IObject deleteQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd(IObject.class.getCanonicalName())).thenReturn(keyIObject);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(deleteQuery);
 
         IDatabaseTask deleteTask = mock(IDatabaseTask.class);

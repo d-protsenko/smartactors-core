@@ -49,7 +49,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -138,7 +138,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -157,7 +157,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

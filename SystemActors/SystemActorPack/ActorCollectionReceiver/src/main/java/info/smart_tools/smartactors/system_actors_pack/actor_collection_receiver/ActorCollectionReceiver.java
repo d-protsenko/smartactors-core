@@ -86,8 +86,8 @@ public class ActorCollectionReceiver implements IMessageReceiver {
 
         this.childReceivers = childStorage;
 
-        this.keyFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "key");
-        this.newFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "new");
+        this.keyFieldName  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key");
+        this.newFieldName  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new");
         this.deletionActionFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deletionAction");
 
         this.deletionAction = ctx -> {
@@ -104,7 +104,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
                 ReceiverObjectCreatorException , InvalidReceiverPipelineException, ChangeValueException {
         IObject newObjectConfig = (IObject) stepConf.getValue(newFieldName);
 
-        IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         context.setValue(keyFieldName, id);
         context.setValue(deletionActionFieldName, deletionAction);
 
@@ -146,7 +146,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             IObject stepConf = processor.getSequence().getCurrentReceiverArguments();
 
             IFieldName fieldNameForKeyName = IOC.resolve(
-                    Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     stepConf.getValue(this.keyFieldName));
 
             Object id =  processor.getEnvironment().getValue(fieldNameForKeyName);

@@ -40,13 +40,13 @@ public class ReSendToChainRecoverStrategy implements IRecoverStrategy {
             throws ResolutionException {
         this.chainChoiceStrategy = chainChoiceStrategy;
 
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
-        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
-        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus");
-        entryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        checkpointStatusFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus");
+        entryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
+        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ReSendToChainRecoverStrategy implements IRecoverStrategy {
             String sMessage = ((IObject) state.getValue(messageFieldName)).serialize();
             IObject messageClone = IOC.resolve(Keys.getOrAdd(IObject.class.getName()), sMessage);
 
-            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject checkpointStatus = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             checkpointStatus.setValue(responsibleCheckpointIdFieldName, state.getValue(responsibleCheckpointIdFieldName));
             checkpointStatus.setValue(checkpointEntryIdFieldName, state.getValue(entryIdFieldName));

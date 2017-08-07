@@ -256,7 +256,7 @@ public class TestHttpEndpointTest {
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
         ISource<IObject, IObject> source = mock(ISource.class);
         IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null);
@@ -397,7 +397,7 @@ public class TestHttpEndpointTest {
     private void initFiledNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a)-> {
                     try {
                         return new FieldName((String) a[0]);
@@ -411,7 +411,7 @@ public class TestHttpEndpointTest {
     private void initIObjectStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((a)-> {
                     try {
                         return new DSObject();

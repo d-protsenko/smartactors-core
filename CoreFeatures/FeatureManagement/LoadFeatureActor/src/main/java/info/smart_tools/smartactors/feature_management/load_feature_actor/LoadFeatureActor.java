@@ -62,8 +62,8 @@ public class LoadFeatureActor {
         this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-        this.featureNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
-        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeaturesCallbackQueue");
+        this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
     /**
@@ -144,7 +144,7 @@ public class LoadFeatureActor {
             throws Exception {
         if (f.exists()) {
             String content = new Scanner(f).useDelimiter("\\Z").next();
-            IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), content);
+            IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
             String featureName = (String) config.getValue(this.featureNameFN);
             feature.setName(featureName);
         }

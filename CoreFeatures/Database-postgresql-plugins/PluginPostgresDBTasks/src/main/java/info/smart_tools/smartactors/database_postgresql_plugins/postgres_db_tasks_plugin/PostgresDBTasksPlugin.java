@@ -129,7 +129,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 }
                                 IDatabaseTask task = new PostgresCreateTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 optionsField.out(query, options);
@@ -195,7 +195,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresUpsertTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -264,7 +264,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<IObject> callback = (IAction<IObject>) args[3];
                                 IDatabaseTask task = new PostgresGetByIdTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 idField.out(query, id);
@@ -334,7 +334,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
                                 IDatabaseTask task = new PostgresSearchTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 criteriaField.out(query, criteria);
@@ -393,7 +393,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresDeleteTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -451,7 +451,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresInsertTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -520,7 +520,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<Long> callback = (IAction<Long>) args[3];
                                 IDatabaseTask task = new PostgresCountTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 criteriaField.out(query, criteria);
