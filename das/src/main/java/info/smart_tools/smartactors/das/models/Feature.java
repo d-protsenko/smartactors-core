@@ -322,7 +322,7 @@ public class Feature {
                 System.out.println("Could not create feature directory: ");
                 System.err.println(e);
 
-                throw new Exception("Feature:makeFeatureDirectory - failed.");
+                throw new Exception("Feature:makeFeatureDirectory - failed.", e);
             }
         } else {
             System.out.println("Directory for given feature name already exists. May be feature with given name already exists? Please remove directory and try again.");
@@ -402,7 +402,7 @@ public class Feature {
             System.out.println("Could not find feature config.json: ");
             System.err.println(e);
 
-            throw new Exception("Feature:makeConfigFile - failed.");
+            throw new Exception("Feature:makeConfigFile - failed.", e);
         }
     }
 
@@ -416,7 +416,7 @@ public class Feature {
                 System.out.println("Could not create distribution feature directory: ");
                 System.err.println(e);
 
-                throw new Exception("Feature:makeDistributionModule - failed.");
+                throw new Exception("Feature:makeDistributionModule - failed.", e);
             }
         } else {
             System.out.println("Directory for given feature name already exists. May be feature with given name already exists? Please remove directory and try again.");
@@ -484,7 +484,7 @@ public class Feature {
             System.out.println("Could not update project pom file: ");
             System.err.println(e);
 
-            throw new Exception("Feature:updateProjectPom - failed.");
+            throw new Exception("Feature:updateProjectPom - failed.", e);
         }
     }
 

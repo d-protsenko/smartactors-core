@@ -14,8 +14,14 @@ import info.smart_tools.smartactors.message_processing_interfaces.object_creatio
 /**
  * A receiver creator that wraps objects created on previous step with a decorator.
  *
- * The decorator is resolved using IOC with two arguments - the underlying item and filter configuration. Dependency name is taken from
- * {@code "decoratorDependency"} field of filter configuration.
+ * <p>
+ * The decorator is resolved using IOC with 4 arguments: the underlying item, filter configuration, object configuration and pipeline
+ * creation context.
+ * </p>
+ *
+ * <p>
+ * Dependency name is taken from {@code "decoratorDependency"} field of filter configuration.
+ * </p>
  */
 public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateReceiverObjectCreator {
     private final IFieldName decoratorDependencyFieldName;
@@ -27,7 +33,8 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
      * @param filterConfig            configuration of the step of pipeline
      * @param objectConfig            configuration of the object
      */
-    public GenericDecoratorReceiverObjectCreator(IReceiverObjectCreator underlyingObjectCreator, IObject filterConfig, IObject objectConfig)
+    public GenericDecoratorReceiverObjectCreator(
+            final IReceiverObjectCreator underlyingObjectCreator, final IObject filterConfig, final IObject objectConfig)
             throws ResolutionException {
         super(underlyingObjectCreator, filterConfig, objectConfig);
 
@@ -35,7 +42,7 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
     }
 
     @Override
-    public void acceptItem(Object itemId, Object item)
+    public void acceptItem(final Object itemId, final Object item)
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException, InvalidArgumentException {
         Object decorator;
 
@@ -43,7 +50,9 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
             decorator = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), getFilterConfig().getValue(decoratorDependencyFieldName)),
                     item,
-                    getFilterConfig()
+                    getFilterConfig(),
+                    getObjectConfig(),
+                    getContext()
             );
         } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
             throw new ReceiverObjectListenerException("Error occurred creating receiver decorator.", e);

@@ -55,6 +55,8 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
 
                         if (null == filtersList) {
                             filtersList = new ArrayList();
+                        } else {
+                            filtersList = new ArrayList(filtersList);
                         }
 
                         if (null != kindName) {

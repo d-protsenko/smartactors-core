@@ -63,8 +63,8 @@ public class HttpsClientPlugin implements IPlugin {
 //                    .after("IOC")
 //                    .after("message_processor")
 //                    .after("message_processing_sequence")
-                    .after("response")
-                    .after("response_content_strategy")
+//                    .after("response")                    // in http-endpoint-plugin
+//                    .after("response_content_strategy")   // in http-endpoint-plugin
 //                    .after("FieldNamePlugin")
 //                    .before("starter")
                     .process(

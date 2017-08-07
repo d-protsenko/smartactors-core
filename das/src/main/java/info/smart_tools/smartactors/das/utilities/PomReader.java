@@ -22,7 +22,7 @@ public class PomReader {
             reader.close();
             return model.getGroupId();
         } catch (Throwable e) {
-            throw new PomReadingException("Could not read the pom file. Could not read 'group id': " + e.getMessage());
+            throw new PomReadingException("Could not read the pom file. Could not read 'group id': " + e.getMessage(), e);
         }
     }
 
@@ -37,7 +37,7 @@ public class PomReader {
             reader.close();
             return model.getVersion();
         } catch (Throwable e) {
-            throw new PomReadingException("Could not read the pom file. Could not read 'version': " + e.getMessage());
+            throw new PomReadingException("Could not read the pom file. Could not read 'version': " + e.getMessage(), e);
         }
     }
 
@@ -52,7 +52,7 @@ public class PomReader {
             reader.close();
             return model.getArtifactId();
         } catch (Throwable e) {
-            throw new PomReadingException("Could not read the pom file. Could not read 'artifact id': " + e.getMessage());
+            throw new PomReadingException("Could not read the pom file. Could not read 'artifact id': " + e.getMessage(), e);
         }
     }
 

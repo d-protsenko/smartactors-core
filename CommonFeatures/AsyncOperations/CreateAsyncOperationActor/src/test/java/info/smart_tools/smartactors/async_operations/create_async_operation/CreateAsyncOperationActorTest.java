@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -40,7 +41,8 @@ public class CreateAsyncOperationActorTest {
 
     @Before
     public void setUp() throws Exception {
-
+        String databaseOptionsKey = "key";
+        Object databaseOptions = PowerMockito.mock(Object.class);
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
@@ -52,13 +54,17 @@ public class CreateAsyncOperationActorTest {
         IKey collectionKey = mock(IKey.class);
 
         when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
-        when(IOC.resolve(eq(collectionKey), any())).thenReturn(collection);
+        when(IOC.resolve(eq(collectionKey), any(), any())).thenReturn(collection);
 
         IField collectionNameField = mock(IField.class);
+        IField databaseOptionsF = PowerMockito.mock(IField.class);
         IKey collectionNameFieldKey = mock(IKey.class);
 
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
         when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
+        when(IOC.resolve(collectionNameFieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
+        when(databaseOptionsF.in(any())).thenReturn(databaseOptionsKey);
+        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
 
         actor = new CreateAsyncOperationActor(mock(IObject.class));
         message = mock(CreateAsyncOperationMessage.class);
@@ -70,6 +76,7 @@ public class CreateAsyncOperationActorTest {
                 CreateAsyncOperationException {
 
         String sessionId = "sessionId";
+        when(IOC.resolve(Keys.getOrAdd("db.collection.nextid"))).thenReturn("");
         when(message.getSessionId()).thenReturn(sessionId);
         when(message.getExpiredTime()).thenReturn(4);
 
@@ -90,6 +97,7 @@ public class CreateAsyncOperationActorTest {
         CreateAsyncOperationException {
 
         String sessionId = "sessionId";
+        when(IOC.resolve(Keys.getOrAdd("db.collection.nextid"))).thenReturn("");
         when(message.getSessionId()).thenReturn(sessionId);
         when(message.getExpiredTime()).thenReturn(4);
 

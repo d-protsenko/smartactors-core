@@ -12,6 +12,7 @@
     <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
+        <module>PluginConnectionOptions</module>
         <module>PluginPostgresDBTasks</module>
         <module>PluginPostgresConnectionPool</module>
         <module>Database-postgresql-pluginsDistribution</module>
