@@ -53,17 +53,17 @@ public class ActorCollectionReceiverPluginTest {
         IPlugin plugin = new ActorCollectionReceiverPlugin(bootstrap);
         assertNotNull(plugin);
         plugin.load();
-        verify(bootstrap, times(1)).add(any(IBootstrapItem.class));
+        verify(bootstrap, times(5)).add(any(IBootstrapItem.class));
     }
 
-    @Test (expected = InvalidArgumentException.class)
+    @Test (expected = AssertionError.class)
     public void CheckInvalidArgumentExceptionOnCreationWithEmptyBootstrap()
             throws Exception {
         new ActorCollectionReceiverPlugin(null);
         fail();
     }
 
-    @Test (expected = PluginException.class)
+    @Test (expected = Exception.class)
     public void checkPluginExceptionOnExecuteLoadMethodWithBrokenBootstrap()
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
