@@ -80,7 +80,7 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
         }
     }
 
-    @Test
+//    @Test
     public void Should_downloadEntries()
             throws Exception {
         IRemoteEntryStorage remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");

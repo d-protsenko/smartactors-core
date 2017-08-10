@@ -1,18 +1,14 @@
-package info.smart_tools.smartactors.scheduler.interfaces;
+package info.smart_tools.smartactors.scheduler.actor.impl.refresher;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;
 
 /**
- * Service providing an entry storage and execution and synchronization of entries stored there.
+ * Interface for a service performing synchronization between remote and local entry storages.
  */
-public interface ISchedulerService extends IDelayedSynchronousService {
-    /**
-     * @return the entry storage of this service
-     */
-    ISchedulerEntryStorage getEntryStorage();
-
+public interface ISchedulerStorageRefresher extends IDelayedSynchronousService {
     /**
      * Update service configuration.
      *

@@ -4,6 +4,9 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.scheduler.actor.impl.refresher.ISchedulerStorageRefresher;
 import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
@@ -13,12 +16,12 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
  */
 public class SchedulingService implements ISchedulerService {
     private final IDelayedSynchronousService timerService;
-    private final IDelayedSynchronousService refreshService;
+    private final ISchedulerStorageRefresher refreshService;
     private final ISchedulerEntryStorage entryStorage;
 
     public SchedulingService(
             final IDelayedSynchronousService timerService,
-            final IDelayedSynchronousService refreshService,
+            final ISchedulerStorageRefresher refreshService,
             final ISchedulerEntryStorage entryStorage) {
         this.timerService = timerService;
         this.refreshService = refreshService;
@@ -54,5 +57,10 @@ public class SchedulingService implements ISchedulerService {
     @Override
     public ISchedulerEntryStorage getEntryStorage() {
         return entryStorage;
+    }
+
+    @Override
+    public void configure(final IObject config) throws ReadValueException, InvalidArgumentException {
+        refreshService.configure(config);
     }
 }

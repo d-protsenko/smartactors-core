@@ -97,37 +97,49 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowIfStorageIsNull()
             throws Exception {
-        assertNull(new EntryStorageRefresher(null, remoteStorageMock, 1, 2, 3, 4));
+        assertNull(new EntryStorageRefresher(null, remoteStorageMock, 1, 2, 3, 4, 2, 100));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowIfRemoteStorageIsNull()
             throws Exception {
-        assertNull(new EntryStorageRefresher(storageMock, null, 1, 2, 3, 4));
+        assertNull(new EntryStorageRefresher(storageMock, null, 1, 2, 3, 4, 2, 100));
     }
 
     @Test(expected = InvalidArgumentException.class)
-    public void Should_constructorThrowIfPageSizeIsNonPositive()
+    public void Should_constructorThrowIfMinPageSizeIsNonPositive()
             throws Exception {
-        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 2, 3, 0));
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 2, 3, 4, 0, 100));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_constructorThrowIfMaxPageSizeLessThanMinPageSize()
+            throws Exception {
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 2, 3, 1, 4, 100));
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void Should_constructorThrowIfMaximalAmountOfLocalEntriesIsNotPositive()
+            throws Exception {
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 2, 3, 4, 2, 0));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowIfIntervalsAreInvalid_1()
             throws Exception {
-        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 0, 2, 3, 100));
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 0, 2, 3, 100, 2, 100));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowIfIntervalsAreInvalid_2()
             throws Exception {
-        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 2, 1, 3, 100));
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 2, 1, 3, 100, 2, 100));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowIfIntervalsAreInvalid_3()
             throws Exception {
-        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 3, 1, 100));
+        assertNull(new EntryStorageRefresher(storageMock, remoteStorageMock, 1, 3, 1, 100, 2, 100));
     }
 
     private ITask executeEnqueuedTask() throws Exception {
@@ -143,7 +155,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
             throws Exception {
         when(timeMock.currentTimeMillis()).thenReturn(1337L);
 
-        new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100).start();
+        new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100, 2, 100).start();
 
         verify(timerMock).schedule(taskArgumentCaptor.capture(), eq(1337L));
 
@@ -179,7 +191,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
             throws Exception {
         when(timeMock.currentTimeMillis()).thenReturn(1337L);
 
-        EntryStorageRefresher refresher = new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100);
+        EntryStorageRefresher refresher = new EntryStorageRefresher(storageMock, remoteStorageMock, 1000, 1001, 1500, 100, 2, 100);
         refresher.startAfter(1338);
         refresher.stopAfter(1449);
 

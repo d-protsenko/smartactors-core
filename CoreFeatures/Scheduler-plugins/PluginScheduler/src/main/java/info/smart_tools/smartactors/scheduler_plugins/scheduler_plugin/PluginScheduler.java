@@ -21,6 +21,7 @@ import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.filter.SchedulerPreShutdownModeEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
+import info.smart_tools.smartactors.scheduler.actor.impl.refresher.ISchedulerStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
@@ -105,7 +106,9 @@ public class PluginScheduler extends BootstrapPlugin {
     }
 
     private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 10; // 10 seconds
-    private static final long DEFAULT_REFRESH_PAGE_SIZE = 100;
+    private static final int DEFAULT_REFRESH_PAGE_SIZE_MAX = 100;
+    private static final int DEFAULT_REFRESH_PAGE_SIZE_MIN = 20;
+    private static final int DEFAULT_REFRESH_LOCAL_ENTRIES = 1000;
 
     /**
      * Register default refresh parameters resolution strategies.
@@ -131,8 +134,14 @@ public class PluginScheduler extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rsi"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL * 2));
 
-        IOC.register(Keys.getOrAdd("scheduler storage refresh page size"),
-                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE));
+        IOC.register(Keys.getOrAdd("scheduler storage refresh max page size"),
+                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MAX));
+
+        IOC.register(Keys.getOrAdd("scheduler storage refresh min page size"),
+                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MIN));
+
+        IOC.register(Keys.getOrAdd("scheduler storage refresh local entries limit"),
+                new SingletonStrategy(DEFAULT_REFRESH_LOCAL_ENTRIES));
     }
 
     /**
@@ -157,9 +166,11 @@ public class PluginScheduler extends BootstrapPlugin {
                 long rrInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rri"), args);
                 long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
                 long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
-                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh page size"), args).intValue();
+                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh max page size"), args).intValue();
+                int refreshMinPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh min page size"), args).intValue();
+                int maxLocalEntries = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh local entries limit"), args).intValue();
                 return new EntryStorageRefresher(
-                        storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
+                        storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize, refreshMinPageSize, maxLocalEntries);
             } catch (ClassCastException | ResolutionException e) {
                 throw new FunctionExecutionException(e);
             }
@@ -210,7 +221,7 @@ public class PluginScheduler extends BootstrapPlugin {
 
                 EntryStorage storage = new EntryStorage(remoteEntryStorage, observer, (ITimer) timerService);
 
-                IDelayedSynchronousService refresher = IOC.resolve(
+                ISchedulerStorageRefresher refresher = IOC.resolve(
                         Keys.getOrAdd("scheduler entry storage refresher"),
                         storage, remoteEntryStorage);
 

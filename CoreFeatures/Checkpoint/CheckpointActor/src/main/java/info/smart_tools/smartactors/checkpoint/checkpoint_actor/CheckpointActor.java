@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
+import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.ConfigureMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.EnteringMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.FeedbackMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.StartStopMessage;
@@ -242,6 +243,18 @@ public class CheckpointActor {
     public void stop(final StartStopMessage message)
             throws IllegalServiceStateException, ServiceStopException {
         service.stop();
+    }
+
+    /**
+     * Configure scheduling service of this checkpoint.
+     *
+     * @param message    the message
+     * @throws InvalidArgumentException if configuration is not valid
+     * @throws ReadValueException if error occurs reading the configuration
+     */
+    public void configure(final ConfigureMessage message)
+            throws InvalidArgumentException, ReadValueException {
+        service.configure(message.getConfig());
     }
 
     private IObject cloneMessage(final IObject message)

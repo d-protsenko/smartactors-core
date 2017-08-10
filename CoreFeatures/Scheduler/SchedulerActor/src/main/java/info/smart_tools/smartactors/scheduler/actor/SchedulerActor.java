@@ -16,12 +16,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryListMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.AddEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.DeleteEntryQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.ListEntriesQueryMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.SetEntryIdMessage;
-import info.smart_tools.smartactors.scheduler.actor.wrappers.StartStopMessage;
+import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
@@ -179,5 +174,17 @@ public class SchedulerActor {
     public void stop(final StartStopMessage message)
             throws IllegalServiceStateException, ServiceStopException {
         service.stop();
+    }
+
+    /**
+     * Configure scheduling service.
+     *
+     * @param message    the message
+     * @throws InvalidArgumentException if configuration parameters are invalid
+     * @throws ReadValueException if error occurs reading parameters
+     */
+    public void configure(final ConfigureQueryMessage message)
+            throws InvalidArgumentException, ReadValueException {
+        service.configure(message.getConfig());
     }
 }
