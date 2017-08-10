@@ -73,6 +73,11 @@
             <artifactId>netty-all</artifactId>
             <version>4.0.24.Final</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>http-endpoint.tcp-server</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
 
     <build>
