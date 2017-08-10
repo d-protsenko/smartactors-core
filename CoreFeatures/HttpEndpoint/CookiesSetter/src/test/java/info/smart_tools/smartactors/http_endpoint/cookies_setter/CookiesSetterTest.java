@@ -56,7 +56,7 @@ public class CookiesSetterTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyFieldName,
                 new CreateNewInstanceStrategy(

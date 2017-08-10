@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -44,10 +45,11 @@ import static org.mockito.Mockito.when;
  */
 public class HttpRequestHandlerTest {
 
-    IDeserializeStrategy deserializeStrategy;
-    IKey mockedKey;
-    IAddRequestParametersToIObject requestParametersToIObject;
-    IObject httpResponse;
+    private IDeserializeStrategy deserializeStrategy;
+    private IKey mockedKey;
+    private IAddRequestParametersToIObject requestParametersToIObject;
+    private IObject httpResponse;
+    private IQueue taskQueueMock;
 
     @Before
     public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
@@ -74,7 +76,7 @@ public class HttpRequestHandlerTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -90,7 +92,7 @@ public class HttpRequestHandlerTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             if (args[0].equals(mockedKey)) {
                                 return deserializeStrategy;
@@ -105,11 +107,11 @@ public class HttpRequestHandlerTest {
         IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new SingletonStrategy(mockedKey));
 
 //        IOC.register(
-//                Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+//                Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
 //                new SingletonStrategy(requestParametersToIObject)
 //        );
 
-        IOC.register(Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName()), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"), new CreateNewInstanceStrategy(
                         (args) -> {
                             IChannelHandler channelHandler = new ChannelHandlerNetty();
                             channelHandler.init(args[0]);
@@ -119,6 +121,10 @@ public class HttpRequestHandlerTest {
         );
 
         IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new Object()));
+
+        taskQueueMock = mock(IQueue.class);
+
+        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
     }
 
     @Test

@@ -73,8 +73,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         contextMock = mock(IObject.class);
 
-        chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
-        afterActionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "after");
+        chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        afterActionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
 
         makeDumpStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("make dump"), makeDumpStrategy);
@@ -280,10 +280,10 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         messageProcessingSequence.catchException(exception, contextMock);
 
-        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeLevel")), eq(3));
-        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "causeStep")), eq(1));
-        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchLevel")), eq(1));
-        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "catchStep")), eq(0));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeLevel")), eq(3));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeStep")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchLevel")), eq(1));
+        verify(contextMock).setValue(same(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchStep")), eq(0));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -388,13 +388,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createDumpOfItsState()
             throws Exception {
-        IObject options = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{}");
+        IObject options = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{}");
 
-        IObject dump1 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject dump1 = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'1'}".replace('\'','"'));
-        IObject dump2 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject dump2 = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'2'}".replace('\'','"'));
-        IObject dump3 = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject dump3 = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'3'}".replace('\'','"'));
 
         IReceiverChain chain1 = mock(IReceiverChain.class);
@@ -429,24 +429,24 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         assertNotNull(dump);
 
-        IObject chainsDump = (IObject) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump"));
+        IObject chainsDump = (IObject) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump"));
 
         assertNotNull(chainsDump);
 
-        assertSame(dump1, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain1")));
-        assertSame(dump2, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain2")));
-        assertSame(dump3, chainsDump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain3")));
+        assertSame(dump1, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain1")));
+        assertSame(dump2, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain2")));
+        assertSame(dump3, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain3")));
 
-        Collection ss = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stepsStack"));
+        Collection ss = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack"));
 
         assertNotNull(ss);
         assertEquals(Arrays.asList(1,0), ss);
 
-        Collection cs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsStack"));
+        Collection cs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack"));
 
         assertNotNull(cs);
         assertEquals(Arrays.asList("chain1", "chain2"), cs);
 
-        assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxDepth")));
+        assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth")));
     }
 }

@@ -74,7 +74,7 @@ public class AssertionChecker implements IResultChecker {
             );
 
             IFieldName wrapperFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "wrapper"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"
             );
             preparedSuccessReceiverArguments.setValue(wrapperFieldName, preparedSuccessReceiverWrapperConfig);
 
@@ -107,20 +107,20 @@ public class AssertionChecker implements IResultChecker {
             throws InitializationException {
         try {
             IFieldName assertNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"
             );
             IFieldName assertTypeFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "type"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "type"
             );
             IFieldName assertValueFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "value"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value"
             );
 
             for (IObject assertion : descriptions) {
                 String name = (String) assertion.getValue(assertNameFieldName);
                 String type = (String) assertion.getValue(assertTypeFieldName);
                 IFieldName getterFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "in_" + name
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_" + name
                 );
 
                 try {

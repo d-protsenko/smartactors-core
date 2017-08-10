@@ -152,7 +152,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
         Object marker = UUID.randomUUID().toString();
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC).plus(delay, ChronoUnit.MILLIS);
 
-        IObject entryArgs = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject entryArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 String.format("{" +
                         "   'strategy':'do once scheduling strategy'," +
                         "   'action': 'count scheduler action'," +
@@ -201,7 +201,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
 
         IOC.register(Keys.getOrAdd("count scheduler action"), new SingletonStrategy(new CountSchedulerAction()));
 
-        markerFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "_marker");
+        markerFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "_marker");
         duplicateMarkers = new CopyOnWriteArrayList<>();
     }
 

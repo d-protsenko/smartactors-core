@@ -38,7 +38,7 @@ public final class CollectionOperations {
      */
     public static void createCollection(final IPool pool, final CollectionName collection)
             throws ResolutionException, PoolGuardException, TaskExecutionException {
-        IObject createOptions = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject createOptions = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"fulltext\": \"text\", \"language\": \"english\" }");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
@@ -143,7 +143,7 @@ public final class CollectionOperations {
      */
     public static void searchDocumentByIntField(final IPool pool, final CollectionName collection)
             throws ResolutionException, TaskExecutionException, PoolGuardException, InvalidArgumentException {
-        IFieldName intField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
+        IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
                     Keys.getOrAdd("db.collection.search"),
@@ -178,7 +178,7 @@ public final class CollectionOperations {
      */
     public static void searchDocumentByTextField(final IPool pool, final CollectionName collection)
             throws ResolutionException, InvalidArgumentException, TaskExecutionException, PoolGuardException {
-        IFieldName textField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "text");
+        IFieldName textField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
                     Keys.getOrAdd("db.collection.search"),
@@ -276,7 +276,7 @@ public final class CollectionOperations {
      */
     public static void countByInt(final IPool pool, final CollectionName collection)
             throws PoolGuardException, ResolutionException, InvalidArgumentException, TaskExecutionException {
-        IFieldName intField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "int");
+        IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
                     Keys.getOrAdd("db.collection.count"),

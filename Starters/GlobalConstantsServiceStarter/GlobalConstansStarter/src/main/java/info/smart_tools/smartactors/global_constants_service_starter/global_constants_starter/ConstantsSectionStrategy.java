@@ -45,9 +45,9 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
      */
     public ConstantsSectionStrategy()
             throws ResolutionException {
-        sectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "const");
-        constantNameFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-        constantValueFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
+        sectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "const");
+        constantNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        constantValueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
             List<IObject> section = (List<IObject>) config.getValue(sectionFieldName);
 
             for (IObject obj : section) {
-                IFieldName cFName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), obj.getValue(constantNameFN));
+                IFieldName cFName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
                 Object cValue = obj.getValue(constantValueFN);
 
                 constants.setValue(cFName, cValue);

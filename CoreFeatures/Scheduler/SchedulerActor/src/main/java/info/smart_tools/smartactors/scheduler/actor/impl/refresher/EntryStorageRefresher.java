@@ -117,7 +117,7 @@ public class EntryStorageRefresher implements IDelayedSynchronousService {
 
         this.taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
-        this.entryIdFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "entryId");
+        this.entryIdFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
 
         timer = IOC.resolve(Keys.getOrAdd("timer"));
         time = IOC.resolve(Keys.getOrAdd("time"));

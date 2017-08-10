@@ -102,7 +102,7 @@ public class MailingActor {
             recipientF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "recipient");
             typeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "type");
 
-            mailingContext = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            mailingContext = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             serverUri = new URI(serverURI_ActorParams_F.in(params, String.class));
             serverHost = new InetSocketAddress(serverUri.getHost(), serverUri.getPort());

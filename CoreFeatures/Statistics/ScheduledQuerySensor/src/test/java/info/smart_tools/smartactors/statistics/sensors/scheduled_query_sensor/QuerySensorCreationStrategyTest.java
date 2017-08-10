@@ -49,13 +49,13 @@ public class QuerySensorCreationStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createSchedulerEntryAndSensorHandle()
             throws Exception {
-        IObject conf = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject conf = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         when(newEntryStrategyMock.resolve(same(conf), same(entryStorage))).thenAnswer(invocation -> {
             assertEquals("stat_chain",
-                    conf.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statisticsChain")));
+                    conf.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain")));
             assertEquals("query sensor scheduler action",
-                    conf.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action")));
+                    conf.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action")));
             return entryMock;
         });
 

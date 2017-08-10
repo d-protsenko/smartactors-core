@@ -95,7 +95,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
             throws Exception {
         when(timeMock.currentTimeMillis()).thenReturn(1000L);
 
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'period':'PT1M'," +
                         "'strategy':'the sensor strategy'," +

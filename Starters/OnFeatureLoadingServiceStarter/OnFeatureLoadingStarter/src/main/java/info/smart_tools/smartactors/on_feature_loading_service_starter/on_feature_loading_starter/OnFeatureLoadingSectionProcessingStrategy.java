@@ -62,15 +62,15 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     public OnFeatureLoadingSectionProcessingStrategy()
             throws ResolutionException {
         this.sectionNameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "onFeatureLoading"
         );
         this.chainFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "chain"
         );
         this.messagesFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messages"
         );
     }
@@ -98,16 +98,16 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                 for (IObject message : messages) {
                     IMessageProcessingSequence processingSequence = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                             stackDepth,
                             chain
                     );
                     IMessageProcessor messageProcessor = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                             queue,
                             processingSequence
                     );
-                    messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+                    messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                 }
             }
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | MessageProcessorProcessException e) {

@@ -16,7 +16,7 @@ public class ConstantChainChoiceStrategy implements IChainChoiceStrategy {
 
     public ConstantChainChoiceStrategy()
             throws ResolutionException {
-        chainIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        chainIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override

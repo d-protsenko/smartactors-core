@@ -51,7 +51,7 @@ public class CheckpointFailureActionSectionStrategyTest extends PluginsLoadingTe
     public void Should_returnSectionName()
             throws Exception {
         assertEquals(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpoint_failure_action"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action"),
                 new CheckpointFailureActionSectionStrategy().getSectionName()
         );
     }
@@ -59,10 +59,10 @@ public class CheckpointFailureActionSectionStrategyTest extends PluginsLoadingTe
     @Test
     public void Should_resolveAndRegisterCustomAction()
             throws Exception {
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'checkpoint_failure_action':{'action':'that checkpoint failure action'}}".replace('\'','"'));
         when(actionStrategyMock.resolve(
-                same(config.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpoint_failure_action")))
+                same(config.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action")))
         )).thenReturn(actionMock);
 
         new CheckpointFailureActionSectionStrategy().onLoadConfig(config);
@@ -73,10 +73,10 @@ public class CheckpointFailureActionSectionStrategyTest extends PluginsLoadingTe
     @Test
     public void Should_resolveAndRegisterDefaultActionIfActionDependencyNameWasNotGiven()
             throws Exception {
-        IObject config = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'checkpoint_failure_action':{}}".replace('\'','"'));
         when(defaultActionStrategyMock.resolve(
-                same(config.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpoint_failure_action")))
+                same(config.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action")))
         )).thenReturn(actionMock);
 
         new CheckpointFailureActionSectionStrategy().onLoadConfig(config);

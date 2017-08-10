@@ -47,7 +47,7 @@ public class ValidateFormDataActor {
             IObject formFields = message.getForm();
             IObject clientData = message.getFormFromRequest();
 
-            IObject resultObject = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject resultObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             Iterator<Map.Entry<IFieldName, Object>> fieldsIterator = formFields.iterator();
             Map.Entry<IFieldName, Object> entry = fieldsIterator.next();

@@ -37,11 +37,11 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
      */
     public QuerySensorSchedulerAction()
             throws ResolutionException {
-        queryExecutorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queryExecutor");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "statisticsChain");
-        dataFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "data");
-        periodStartFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodStart");
-        periodEndFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "periodEnd");
+        queryExecutorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryExecutor");
+        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        dataFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
+        periodStartFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
+        periodEndFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
             Collection<? extends Number> data = queryExecutor.execute(entry);
             Long time = entry.getLastTime();
 
-            IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             message.setValue(dataFieldName, data);
             message.setValue(periodStartFieldName, time);
             message.setValue(periodEndFieldName, time);

@@ -64,7 +64,7 @@ public class ResponseSenderActorTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(keyFieldName,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -75,7 +75,7 @@ public class ResponseSenderActorTest {
                             return null;
                         }
                 ));
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
                 new CreateNewInstanceStrategy(
                         (args) -> new DSObject()

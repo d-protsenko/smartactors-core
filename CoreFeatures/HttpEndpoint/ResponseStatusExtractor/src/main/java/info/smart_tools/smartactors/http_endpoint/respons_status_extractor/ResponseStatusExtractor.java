@@ -23,10 +23,10 @@ public class ResponseStatusExtractor implements IResponseStatusExtractor {
      */
     public ResponseStatusExtractor() throws ResolutionException {
         this.httpResponseStatusCodeFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "httpResponseStatusCode"
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "httpResponseStatusCode"
         );
         this.contextFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "context"
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
         );
     }
 

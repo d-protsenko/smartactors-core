@@ -59,7 +59,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
             when(fullCreatorResolutionStrategy.resolve(same(objectConfigMocks[i]))).thenReturn(creatorMocks[i]);
         }
 
-        when(configMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "objects")))
+        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects")))
                 .thenReturn(Arrays.asList(objectConfigMocks));
 
         IOC.register(Keys.getOrAdd("global router registration receiver object listener"), new SingletonStrategy(listenerMock));
@@ -80,7 +80,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     public void Should_storeSectionName()
             throws Exception {
         assertEquals(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "objects"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects"),
                 new ObjectsSectionProcessingStrategy().getSectionName()
         );
     }

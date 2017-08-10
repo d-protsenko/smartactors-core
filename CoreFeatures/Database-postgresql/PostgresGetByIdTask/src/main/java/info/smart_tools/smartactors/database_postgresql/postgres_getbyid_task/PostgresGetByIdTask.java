@@ -79,7 +79,7 @@ public class PostgresGetByIdTask implements IDatabaseTask {
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), sqlDoc);
+                IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
                 callback.execute(document);
                 connection.commit();
             } else {

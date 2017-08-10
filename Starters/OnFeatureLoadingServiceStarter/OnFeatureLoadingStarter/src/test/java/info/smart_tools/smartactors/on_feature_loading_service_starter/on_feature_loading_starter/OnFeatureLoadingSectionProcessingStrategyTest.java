@@ -73,7 +73,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -97,7 +97,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IOC.register(chainStorageKey,
                 new SingletonStrategy(this.chainStorage));
 
-        IKey messageProcessorKey = Keys.getOrAdd(IMessageProcessor.class.getCanonicalName());
+        IKey messageProcessorKey = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
         this.messageProcessor = mock(IMessageProcessor.class);
         IOC.register(messageProcessorKey, new SingletonStrategy(this.messageProcessor));
 
@@ -106,7 +106,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IOC.register(stackDepthKey, new SingletonStrategy(this.stackDepth));
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new SingletonStrategy(this.context)
         );
     }
@@ -165,7 +165,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         when(this.chainStorage.resolve(mapId2)).thenReturn(chain2);
 
         this.sequenceResolveStrategy = mock(IResolveDependencyStrategy.class);
-        IKey sequenceKey = Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName());
+        IKey sequenceKey = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         this.sequence = mock(IMessageProcessingSequence.class);
         IOC.register(sequenceKey, this.sequenceResolveStrategy);
         when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain1)).thenReturn(sequence);

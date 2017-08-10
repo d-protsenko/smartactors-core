@@ -56,9 +56,9 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             throws EnvironmentHandleException {
         try {
             IMessageProcessingSequence processingSequence =
-                    IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, receiverChain);
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);
             IMessageProcessor messageProcessor =
-                    IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), taskQueue, processingSequence);
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
 
             IObject message = (IObject) environment.getValue(this.messageFieldName);
             IObject context = (IObject) environment.getValue(this.contextFieldName);

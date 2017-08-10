@@ -65,7 +65,7 @@ public class EndpointPlugin implements IPlugin {
                                     } catch (InvalidArgumentException e) {
                                         throw new RuntimeException(e);
                                     }
-                                    IOC.register(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                    IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                             deserializationStrategyChooser
                                     );
 

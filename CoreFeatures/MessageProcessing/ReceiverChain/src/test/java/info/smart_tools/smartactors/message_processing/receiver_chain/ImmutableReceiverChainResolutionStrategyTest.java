@@ -59,10 +59,10 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         mockStatic(IOC.class);
 
         when(IOC.getKeyForKeyStorage()).thenReturn(keyStorageKey);
-        when(IOC.resolve(keyStorageKey, IFieldName.class.getCanonicalName())).thenReturn(fieldNameKey);
+        when(IOC.resolve(keyStorageKey, "info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
         when(IOC.resolve(keyStorageKey, "chain_id")).thenReturn(chainIdKey);
         when(IOC.resolve(keyStorageKey, "receiver_id_from_iobject")).thenReturn(receiverIdKey);
-        when(IOC.resolve(keyStorageKey, IObject.class.getCanonicalName())).thenReturn(iobjectKey);
+        when(IOC.resolve(keyStorageKey, "info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
 
         when(IOC.resolve(fieldNameKey, "steps")).thenReturn(mock(IFieldName.class));
         when(IOC.resolve(fieldNameKey, "exceptional")).thenReturn(mock(IFieldName.class));

@@ -113,7 +113,7 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
     @Test
     public void Should_generateReceiverWithSpecificWrapperStrategy()
             throws Exception {
-        when(configMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapperResolutionStrategyDependency")))
+        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapperResolutionStrategyDependency")))
                 .thenReturn("special wrapper resolution strategy dependency for invoker receiver");
 
         assertSame(receiverMock2, strategy.resolve(

@@ -74,7 +74,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
 
         IDebuggerBreakpointsStorage storage = new DebuggerBreakpointsStorageImpl();
 
-        String id = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        String id = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'thatChain'," +
                         "'step':42," +
@@ -89,7 +89,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
 
         assertEquals(1, storage.listBreakpoints().size());
 
-        String id2 = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        String id2 = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'thatChain'," +
                         "'step':21," +
@@ -101,7 +101,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
         when(realSequenceMock.getCurrentReceiverArguments()).thenReturn(stepArgsMock2);
         assertFalse(storage.shouldBreakAt(debuggerSequenceMock));
 
-        storage.modifyBreakpoint(id2, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        storage.modifyBreakpoint(id2, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'" + id2 + "'," +
                         "'enabled':true" +

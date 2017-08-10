@@ -44,7 +44,7 @@ public class ExceptionInterceptor implements IResultChecker {
             expectedReceiver = router.route(expectedReceiverId);
 
             IFieldName exceptionClassFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "class"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"
             );
             expectedExceptionClassName = String.valueOf(description.getValue(exceptionClassFieldName));
 

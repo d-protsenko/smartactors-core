@@ -52,7 +52,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                                                     IOC.resolve(
                                                             IOC.resolve(
                                                                     IOC.getKeyForKeyStorage(),
-                                                                    IFieldName.class.getCanonicalName()
+                                                                    "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                             ), "messageMapId"
                                                     )
                                             );

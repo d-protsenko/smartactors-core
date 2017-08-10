@@ -89,9 +89,9 @@ public class InMemoryDBCountTask implements IDatabaseTask {
      */
     public InMemoryDBCountTask() throws TaskPrepareException {
         try {
-            collectionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
-            criteriaFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "criteria");
-            callbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
+            collectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            criteriaFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "criteria");
+            callbackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }

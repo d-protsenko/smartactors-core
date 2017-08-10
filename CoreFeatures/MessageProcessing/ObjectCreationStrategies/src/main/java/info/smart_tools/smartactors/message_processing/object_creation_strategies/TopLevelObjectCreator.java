@@ -28,8 +28,8 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
 
     public TopLevelObjectCreator()
             throws ResolutionException {
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
-        topLevelObjectFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "topLevelObject");
+        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        topLevelObjectFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject");
     }
 
     @Override

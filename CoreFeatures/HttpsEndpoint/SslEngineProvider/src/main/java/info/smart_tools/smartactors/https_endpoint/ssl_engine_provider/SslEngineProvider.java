@@ -51,8 +51,8 @@ public class SslEngineProvider implements ISslEngineProvider {
         IFieldName certPassFieldName = null;
         IFieldName certPathFieldName = null;
         try {
-            certPassFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPass");
-            certPathFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "certPath");
+            certPassFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPass");
+            certPathFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPath");
         } catch (ResolutionException e) {
             throw new SSLEngineProviderException("An exception on resolving \"FieldName\"", e);
         }

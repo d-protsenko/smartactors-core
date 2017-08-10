@@ -92,9 +92,9 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         when(processorStrategyMock.resolve(same(taskQueue), same(debuggerSequenceMock)))
                 .thenReturn(messageProcessorMock)
                 .thenThrow(ResolveDependencyStrategyException.class);
-        IOC.register(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), sequenceStrategyMock);
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
         IOC.register(Keys.getOrAdd("new debugger sequence"), debuggerSequenceStrategyMock);
-        IOC.register(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), processorStrategyMock);
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), processorStrategyMock);
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
         IOC.register(Keys.getOrAdd("make dump"), sequenceDumpStrategyMock);
         IOC.register(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()), new SingletonStrategy(breakpointsStorageMock));
@@ -147,7 +147,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             fail("should not start when there is no message set and no chain selected");
         } catch (CommandExecutionException ignore) {}
 
-        c("setMessage", IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        c("setMessage", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'a':'foo','b':'bar'}".replace('\'', '"')));
         c("setChain", "the-chain");
         c("setStackDepth", 12.2);
@@ -256,17 +256,17 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
         c("stop", null);
 
-        c("setMessageField", IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        c("setMessageField", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name':'z','value':'x','dependency':'value_dependency'}".replace('\'', '"')));
-        c("setMessageField", IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        c("setMessageField", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name':'zz','value':'e'}".replace('\'', '"')));
 
         IObject msg = (IObject) c("getMessage", null);
 
-        assertEquals("x_value", msg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "z")));
-        assertEquals("e", msg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "zz")));
-        assertEquals("foo", msg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a")));
-        assertEquals("bar", msg.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "b")));
+        assertEquals("x_value", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "z")));
+        assertEquals("e", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "zz")));
+        assertEquals("foo", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
+        assertEquals("bar", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "b")));
     }
 
     @Test
@@ -349,7 +349,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             throws Exception {
         Should_startDebugging();
 
-        IObject arg = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject arg = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'id':'this-is-id'}".replace('\'','"'));
 
         c("modifyBreakpoint", arg);
@@ -364,7 +364,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         c("pause", null);
         session.handleInterrupt(messageProcessorMock);
 
-        IObject arg = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject arg = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'level':4,'step':42}".replace('\'','"'));
 
         c("goTo", arg);

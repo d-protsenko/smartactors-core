@@ -45,9 +45,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainInConfiguredSequence()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'trials':[1,3,2],'chains':['A','B','C','D']}".replace('\'','"'));
-        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
@@ -70,8 +70,8 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = RecoverStrategyInitializationException.class)
     public void Should_throwWhenArgumentsContainNoRequiredFields()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
@@ -81,9 +81,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = RecoverStrategyInitializationException.class)
     public void Should_throwWhenListSizesDoNotMatch()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'trials':[1,3,2],'chains':['A','B','C','D','E']}".replace('\'', '"'));
-        IObject state = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 

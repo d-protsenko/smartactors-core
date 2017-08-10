@@ -43,9 +43,9 @@ public class CheckpointConfigCanonizationStrategyPlugin extends BootstrapPlugin 
             try {
                 IObject checkpointConfig = (IObject) args[0];
 
-                IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "target");
-                IFieldName handlerFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "handler");
-                IFieldName wrapperFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper");
+                IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+                IFieldName handlerFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "handler");
+                IFieldName wrapperFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
 
                 checkpointConfig.setValue(targetFieldName, "checkpoint");
                 checkpointConfig.setValue(handlerFieldName, "enter");
@@ -67,10 +67,42 @@ public class CheckpointConfigCanonizationStrategyPlugin extends BootstrapPlugin 
                 try {
                     Object obj = args[1];
 
+                    // TODO:: Remove the following copy-paste
+                    // TODO:: Remove the following copy-paste
+                    // TODO:: Remove the following copy-paste
                     if (obj instanceof List) {
                         for (IObject innerObject : (List<IObject>) obj) {
-                            IFieldName checkpointFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpoint");
-                            IFieldName stepsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "steps");
+                            if (null == innerObject.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess"))) {
+                                innerObject.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess"), false);
+                            }
+                            if (!innerObject.getValue(
+                                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"))
+                                    .equals("tryToTakeResourceMap")) {
+                                List exceptionalList = (List) innerObject.getValue(
+                                        IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional"));
+
+                                IObject outOfResourcesExceptionObj = IOC.resolve(Keys.getOrAdd("configuration object"));
+                                outOfResourcesExceptionObj.setValue(
+                                        IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"),
+                                        "info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException");
+                                outOfResourcesExceptionObj.setValue(
+                                        IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain"),
+                                        "tryToTakeResourceMap");
+                                outOfResourcesExceptionObj.setValue(
+                                        IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after"),
+                                        "break");
+                                exceptionalList.add(0, outOfResourcesExceptionObj);
+                            }
+                        }
+                    }
+                    // Until here
+                    // Until here
+                    // Until here
+
+                    if (obj instanceof List) {
+                        for (IObject innerObject : (List<IObject>) obj) {
+                            IFieldName checkpointFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint");
+                            IFieldName stepsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
 
                             Object checkpointConf = innerObject.getValue(checkpointFieldName);
                             if (null != checkpointConf) {

@@ -56,9 +56,9 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
     public OnShutdownRequestConfigurationSectionStrategy(final Object defaultActionKeyName)
             throws ResolutionException {
         this.defaultActionKeyName = defaultActionKeyName;
-        sectionNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "onShutdownRequest");
-        upcounterFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "upcounter");
-        actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
+        sectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "onShutdownRequest");
+        upcounterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "upcounter");
+        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
     }
 
     @Override

@@ -52,8 +52,8 @@ public class TestPostgresSearchServer implements IServer {
             new PostgresDBTasksPlugin(bootstrap).load();
             bootstrap.start();
 
-            iObjectKey = Keys.getOrAdd(IObject.class.getCanonicalName());
-            iFieldKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+            iObjectKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+            iFieldKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed", e);
         }

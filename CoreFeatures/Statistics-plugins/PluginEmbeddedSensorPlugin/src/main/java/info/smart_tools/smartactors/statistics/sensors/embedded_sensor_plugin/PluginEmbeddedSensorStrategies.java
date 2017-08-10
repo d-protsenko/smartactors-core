@@ -53,14 +53,14 @@ public class PluginEmbeddedSensorStrategies extends BootstrapPlugin {
     @Item("embedded_sensor_strategy:limited_count_time_delta")
     public void registerTimeDeltaStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IFieldName limitFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "limit");
-        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "timeFieldName");
+        IFieldName limitFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
+        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
         IOC.register(Keys.getOrAdd("embedded sensor time delta strategy for limited count"), new ApplyFunctionToArgumentsStrategy(args -> {
             IObject arg = (IObject) args[0];
 
             try {
                 int limit = ((Number) arg.getValue(limitFieldName)).intValue();
-                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         arg.getValue(timeFieldNameFieldName));
                 return new TimeDeltaForLimitedCountStrategy(limit, timeFieldName);
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {

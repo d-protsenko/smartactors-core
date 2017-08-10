@@ -62,7 +62,7 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
         when(chainStorageMock.update(eq("the_chain__0"), any())).thenAnswer(invocation -> {
             chain = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), invocation.getArgumentAt(1, IObject.class)
-                        .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "modification"))),
+                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification"))),
                     chain,
                     invocation.getArgumentAt(1, IObject.class)
             );
@@ -86,7 +86,7 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
         when(chain.get(2)).thenReturn(receivers[2]);
 
         ISensorHandle handle = new EmbeddedSensorCreationStrategy().resolve("stat_chain", IOC.resolve(
-                Keys.getOrAdd(IObject.class.getCanonicalName()),
+                Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'the_chain'," +
                         "'args':{}," +

@@ -38,7 +38,7 @@ public class ClientActor {
             throws RequestSenderActorException {
         try {
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            IFieldName uidFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "uid");
+            IFieldName uidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uid");
             ITask task =
                     () -> {
                         try {

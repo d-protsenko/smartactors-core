@@ -49,10 +49,10 @@ public class CookiesSetter implements ICookiesSetter {
         try {
             contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
             cookiesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
-            cookieName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "name");
-            cookieValue = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "value");
-            cookiePath = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "path");
-            maxAgeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxAge");
+            cookieName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            cookieValue = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            cookiePath = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "path");
+            maxAgeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxAge");
         } catch (ResolutionException e) {
             throw new CookieSettingException("Failed to resolve fieldName", e);
         }

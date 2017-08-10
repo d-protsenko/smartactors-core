@@ -53,7 +53,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     @Override
     public IObject getAsyncOperation(final String token) throws GetAsyncOperationException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
-            IObject result = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject result = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             IDatabaseTask getItemTask = IOC.resolve(
                 Keys.getOrAdd("db.async_ops_collection.get"),
@@ -70,7 +70,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             );
             getItemTask.execute();
 
-            IObject searchResult = (IObject) result.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "result"));
+            IObject searchResult = (IObject) result.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "result"));
             if (searchResult == null) {
                 throw new GetAsyncOperationException("Can't find operation.");
             }

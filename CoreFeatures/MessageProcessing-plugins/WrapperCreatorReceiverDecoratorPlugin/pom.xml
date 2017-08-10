@@ -8,6 +8,7 @@
         <version>0.3.3</version>
     </parent>
     <artifactId>message-processing-plugins.wrapper-creator-receiver-decorator-plugin</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

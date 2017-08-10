@@ -75,7 +75,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
 
         allExceptionalChains = new HashSet<>();
 
-        IFieldName chainFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
+        IFieldName chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
         for (IObject exceptionEnv : exceptionalChainsAndEnv.values()) {
             allExceptionalChains.add((IReceiverChain) exceptionEnv.getValue(chainFieldName));

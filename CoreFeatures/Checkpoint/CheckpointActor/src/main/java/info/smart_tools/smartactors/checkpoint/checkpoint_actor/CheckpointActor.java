@@ -71,24 +71,24 @@ public class CheckpointActor {
             throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecuteException,
                    UpCounterCallbackExecutionException {
         //
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId");
-        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId");
-        schedulingFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "scheduling");
-        messageFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId");
-        actionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
-        recoverFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recover");
-        completedFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "completed");
-        gotFeedbackFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "gotFeedback");
-        processorFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId");
+        schedulingFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling");
+        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        recoverFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
+        completedFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
+        gotFeedbackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
+        processorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
 
         String connectionOptionsDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionOptionsDependency"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionPoolDependency"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
         String collectionName = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName"));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
 
         storageObserver = new CheckpointSchedulerEntryStorageObserver();
 
@@ -150,7 +150,7 @@ public class CheckpointActor {
             }
         }
 
-        IObject entryArguments = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject entryArguments = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         entryArguments.setValue(schedulingFieldName, message.getSchedulingConfiguration());
         entryArguments.setValue(messageFieldName, cloneMessage(message.getMessage()));
@@ -171,7 +171,7 @@ public class CheckpointActor {
 
         // Update checkpoint status in message.
         // Checkpoint status of re-sent messages will be set by checkpoint scheduler action.
-        IObject newCheckpointStatus = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject newCheckpointStatus = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         newCheckpointStatus.setValue(responsibleCheckpointIdFieldName, message.getCheckpointId());
         newCheckpointStatus.setValue(checkpointEntryIdFieldName, entry.getId());
@@ -247,12 +247,12 @@ public class CheckpointActor {
     private IObject cloneMessage(final IObject message)
             throws SerializeException, ResolutionException {
         String serialized = message.serialize();
-        return IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serialized);
+        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), serialized);
     }
 
     private void sendFeedback(final IObject checkpointStatus, final String fromCheckpoint, final String newId)
             throws ResolutionException, SendingMessageException, InvalidArgumentException, ChangeValueException, ReadValueException {
-        IObject feedbackMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject feedbackMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         feedbackMessage.setValue(responsibleCheckpointIdFieldName, fromCheckpoint);
         feedbackMessage.setValue(checkpointEntryIdFieldName, newId);

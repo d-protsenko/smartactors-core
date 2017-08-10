@@ -106,8 +106,8 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                                     (Integer) configuration.getValue(stackDepthFieldName);
                                                             return new EnvironmentHandler(queue, stackDepth);
                                                         } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                                                            throw new RuntimeException(e);
                                                         }
-                                                        return null;
                                                     }
                                             )
                                     );
@@ -129,7 +129,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                             )
                                     );
 
-                                    IKey channelHandlerNettyKey = Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName());
+                                    IKey channelHandlerNettyKey = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
                                     IOC.register(channelHandlerNettyKey,
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
@@ -155,44 +155,44 @@ public class HttpsEndpointPlugin implements IPlugin {
 
         typeFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "type"
                 );
         portFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "port"
                 );
         startChainNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "startChain"
                 );
         stackDepthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "stackDepth"
                 );
         maxContentLengthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "maxContentLength"
                 );
         endpointNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "endpointName"
                 );
 
         queueFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "queue"
                 );
 
         templatesFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
     }
@@ -206,12 +206,12 @@ public class HttpsEndpointPlugin implements IPlugin {
                             IObject configuration = (IObject) args[0];
                             try {
                                 IOC.resolve(
-                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_GET",
                                         configuration.getValue(endpointNameFieldName),
                                         configuration.getValue(templatesFieldName));
                                 IOC.resolve(
-                                        Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_POST",
                                         configuration.getValue(endpointNameFieldName));
 

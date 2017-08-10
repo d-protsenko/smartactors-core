@@ -76,7 +76,7 @@ public class IFieldPluginTest {
         IKey iFieldKey = mock(IKey.class);
         when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         IFieldName fieldName = mock(IFieldName.class);
         when(IOC.resolve(eq(iFieldNameKey), anyString())).thenReturn(fieldName);
@@ -171,9 +171,9 @@ public class IFieldPluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
         IKey iFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(iFieldKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldKey);
 
         whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 

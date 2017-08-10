@@ -60,7 +60,7 @@ public class UnzipFeatureActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -71,7 +71,7 @@ public class UnzipFeatureActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();

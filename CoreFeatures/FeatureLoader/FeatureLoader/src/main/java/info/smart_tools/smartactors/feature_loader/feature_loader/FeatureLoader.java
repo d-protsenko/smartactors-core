@@ -71,8 +71,8 @@ public class FeatureLoader implements IFeatureLoader {
      */
     public FeatureLoader()
             throws ResolutionException {
-        featureNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureName");
-        afterFeaturesFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeatures");
+        featureNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        afterFeaturesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
         pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
@@ -108,7 +108,7 @@ public class FeatureLoader implements IFeatureLoader {
                 metaFeatureStatus.addDependency(dependencyStatus);
             }
 
-            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             preStartProcess(metaFeatureStatus);
 
