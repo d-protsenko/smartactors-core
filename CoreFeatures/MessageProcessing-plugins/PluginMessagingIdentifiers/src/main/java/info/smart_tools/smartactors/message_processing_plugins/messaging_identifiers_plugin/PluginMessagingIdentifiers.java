@@ -43,7 +43,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
                     .before("starter")
                     .process(() -> {
                         try {
-                            IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "target");
+                            IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
                             // Just use strings as identifiers for chains and receivers
                             IResolveDependencyStrategy toStringStrategy = new IResolveDependencyStrategy() {

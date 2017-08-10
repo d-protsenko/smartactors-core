@@ -50,19 +50,19 @@ public class EndpointResponseStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        environment = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-        responseObj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        responseObj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         responseSender = mock(IResponseSender.class);
         channelHandler = mock(IChannelHandler.class);
         response = mock(IResponse.class);
         responseContentStrategy = mock(IResponseContentStrategy.class);
 
-        environment.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context"), context);
-        environment.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response"), responseObj);
-        context.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "endpointName"), "theEpName");
-        context.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "channel"), channelHandler);
+        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), context);
+        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response"), responseObj);
+        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName"), "theEpName");
+        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel"), channelHandler);
 
         request = mock(Object.class);
 
@@ -91,7 +91,7 @@ public class EndpointResponseStrategyTest extends PluginsLoadingTestBase {
         verify(responseContentStrategy).setContent(responseObj, response);
         verify(responseSender).send(same(response), same(environment), same(channelHandler));
         assertEquals(Boolean.TRUE, context.getValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "sendResponseOnChainEnd")));
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd")));
     }
 
     @Test(expected = ResponseException.class)

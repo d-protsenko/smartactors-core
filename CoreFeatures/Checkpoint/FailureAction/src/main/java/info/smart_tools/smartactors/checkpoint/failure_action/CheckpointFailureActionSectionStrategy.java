@@ -42,9 +42,9 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
      */
     public CheckpointFailureActionSectionStrategy()
             throws ResolutionException {
-        sectionName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpoint_failure_action");
+        sectionName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action");
 
-        actionNameFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
+        actionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
     }
 
     @Override

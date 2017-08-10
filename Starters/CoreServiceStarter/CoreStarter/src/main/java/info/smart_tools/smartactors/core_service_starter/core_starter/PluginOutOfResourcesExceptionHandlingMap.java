@@ -54,7 +54,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             IConfigurationManager configurationManager =
                                     IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 
-                            IKey fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+                            IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
                             IObject templateObj = IOC.resolve(Keys.getOrAdd("configuration object"));
 
                             IObject object = IOC.resolve(Keys.getOrAdd("configuration object"));

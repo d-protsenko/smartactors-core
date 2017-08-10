@@ -35,10 +35,10 @@ public class TestsSectionStrategy implements ISectionStrategy {
     public TestsSectionStrategy()
             throws ResolutionException {
         name = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "tests"
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"
         );
         this.testRunnerName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "entryPoint"
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryPoint"
         );
     }
 
@@ -48,7 +48,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
         try {
             System.out.println("--------------------------------- Run testing ---------------------------------");
             IFieldName testNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "name"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"
             );
             List<IObject> tests = (List<IObject>) config.getValue(name);
             CyclicBarrier barrier = new CyclicBarrier(2);

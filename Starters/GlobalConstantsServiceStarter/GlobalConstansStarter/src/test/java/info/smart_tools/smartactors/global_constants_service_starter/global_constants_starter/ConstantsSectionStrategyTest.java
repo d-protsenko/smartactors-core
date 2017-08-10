@@ -43,7 +43,7 @@ public class ConstantsSectionStrategyTest {
             throws Exception {
         mockStatic(IOC.class, Keys.class);
 
-        when(Keys.getOrAdd(IFieldName.class.getCanonicalName())).thenReturn(fieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
         when(IOC.resolve(fieldNameKey, "const")).thenReturn(constFieldName);
         when(IOC.resolve(fieldNameKey, "name")).thenReturn(constNameFieldName);
         when(IOC.resolve(fieldNameKey, "value")).thenReturn(constValueFieldName);

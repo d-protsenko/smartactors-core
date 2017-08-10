@@ -94,7 +94,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("new scheduler service"), serviceStrategy);
         IOC.register(Keys.getOrAdd("scheduler service activation action for scheduler actor"), actionStrategy);
 
-        args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options dependency'," +
                         "'connectionPoolDependency':'the connection pool dependency'," +

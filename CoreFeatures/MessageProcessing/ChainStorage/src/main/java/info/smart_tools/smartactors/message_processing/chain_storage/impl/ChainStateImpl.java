@@ -60,7 +60,7 @@ public class ChainStateImpl implements IChainState {
         this.current = initial;
         this.modifications.put(initial, new Modification(null, initial));
 
-        modificationFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "modification");
+        modificationFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
     }
 
     private IReceiverChain applyModification(final IReceiverChain chain, final IObject modification)

@@ -67,9 +67,9 @@ public class MessageBusHandler implements IMessageBusHandler {
         this.chain = receiverChain;
         this.replyAction = finalAction;
 
-        this.finalActionsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
-        this.replyToFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageBusReplyTo");
-        this.responseStrategyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseStrategy");
+        this.finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        this.replyToFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo");
+        this.responseStrategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
         this.messageBusResponseStrategy = IOC.resolve(Keys.getOrAdd("message bus response strategy"));
         this.nullResponseStrategy = IOC.resolve(Keys.getOrAdd("null response strategy"));
@@ -133,12 +133,12 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private IMessageProcessor resolveMessageProcessor(final IReceiverChain mpChain) throws ResolutionException {
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessingSequence.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 this.stackDepth,
                 mpChain
         );
         return IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IMessageProcessor.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 this.taskQueue,
                 processingSequence
         );
@@ -146,7 +146,7 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private IObject resolveDefaultContext()
             throws InvalidArgumentException, ResolutionException, ChangeValueException {
-        IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         context.setValue(responseStrategyFieldName, nullResponseStrategy);
         return context;
     }

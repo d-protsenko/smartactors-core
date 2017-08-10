@@ -55,7 +55,7 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
                     Keys.getOrAdd("db.collection.create"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName())));
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             createTask.execute();
         }
@@ -65,7 +65,7 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
             when(entries[i].getLastTime()).thenReturn(100L * i);
-            when(entries[i].getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+            when(entries[i].getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format(("{" +
                             "'entryId':'entry-%010d'" +
                             "}").replace('\'', '"'), i)));

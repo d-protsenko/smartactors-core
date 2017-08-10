@@ -94,9 +94,9 @@ public class HttpEndpointTest {
                 new ResolveByNameIocStrategy()
         );
         IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.getCanonicalName());
-        IKey keyIObject = Keys.getOrAdd(IObject.class.getCanonicalName());
-        IKey keyChannelHandler = Keys.getOrAdd(ChannelHandlerNetty.class.getCanonicalName());
-        IKey keyIFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyChannelHandler = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+        IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyMessageProcessingSequence,
                 new CreateNewInstanceStrategy(
@@ -143,7 +143,7 @@ public class HttpEndpointTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd(IDeserializeStrategy.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                 new CreateNewInstanceStrategy(
                         (args) -> new DeserializeStrategyPostJson(mapperStub)
                 ));
@@ -171,7 +171,7 @@ public class HttpEndpointTest {
     /* @Test
      public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
              throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
-         IObject stubMessage = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), "{\"hello\": \"world\"}");
+         IObject stubMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
          when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
          HttpRequest request = createTestRequest();
          sendRequest(request);

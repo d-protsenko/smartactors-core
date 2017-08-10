@@ -60,7 +60,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("checkpoint failure action"), new SingletonStrategy(failureAction));
 
         entryMock = mock(ISchedulerEntry.class);
-        entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         entryId = UUID.randomUUID().toString();
         when(entryMock.getState()).thenReturn(entryState);
         when(entryMock.getId()).thenReturn(entryId);
@@ -74,7 +74,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
             throws Exception {
         CheckpointSchedulerAction action = new CheckpointSchedulerAction();
 
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'recover':{'strategy':'the recover strategy'},'message':null}".replace('\'','"'));
 
         action.init(entryMock, args);
@@ -86,30 +86,30 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
         CheckpointSchedulerAction action = new CheckpointSchedulerAction();
         IMessageProcessor processorMock = mock(IMessageProcessor.class);
 
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'recover':{'strategy':'the recover strategy'}," +
                         "'message':{'a':'1'}," +
                         "'responsibleCheckpointId':'rCP'," +
                         "'prevCheckpointId':'prCP'," +
                         "'prevCheckpointEntryId':'pcpEi'}").replace('\'','"'));
 
-        args.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processor"), processorMock);
+        args.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor"), processorMock);
 
         action.init(entryMock, args);
 
         verify(recoverStrategy).init(same(entryState), any(), same(processorMock));
-        assertEquals("rCP", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
-        assertEquals("prCP", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
-        assertEquals("pcpEi", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
-        assertEquals("the recover strategy", entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "recoverStrategy")));
-        assertEquals("1", ((IObject) entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")))
-            .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a")));
+        assertEquals("rCP", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
+        assertEquals("prCP", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
+        assertEquals("pcpEi", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
+        assertEquals("the recover strategy", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recoverStrategy")));
+        assertEquals("1", ((IObject) entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")))
+            .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
     }
 
     @Test
     public void Should_sendCloneOfMessageFillingCheckpointStatusOnExecution()
             throws Exception {
-        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'recoverStrategy':'the recover strategy'," +
                         "'message':{'a':'1'}," +
                         "'responsibleCheckpointId':'rCP'," +
@@ -129,22 +129,22 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
 //        verify(messageBusHandlerMock).handle(mc.capture(), same(chainId));
 //
 //        IObject sent = mc.getValue();
-//        IObject sentCPS = (IObject) sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointStatus"));
+//        IObject sentCPS = (IObject) sent.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus"));
 //
-//        assertEquals("1", sent.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a")));
+//        assertEquals("1", sent.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
 //
-//        assertEquals(entryId, sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "checkpointEntryId")));
-//        assertEquals("rCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responsibleCheckpointId")));
-//        assertEquals("prCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointId")));
-//        assertEquals("pcpEi", sentCPS.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "prevCheckpointEntryId")));
+//        assertEquals(entryId, sentCPS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
+//        assertEquals("rCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
+//        assertEquals("prCP", sentCPS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
+//        assertEquals("pcpEi", sentCPS.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
 //
-//        assertNotSame(sent, entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message")));
+//        assertNotSame(sent, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")));
     }
 
     @Test
     public void Should_notSendMessageIfEntryIsMarkedAsCompleted()
             throws Exception {
-        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'recoverStrategy':'the recover strategy'," +
                         "'message':{'a':'1'}," +
                         "'responsibleCheckpointId':'rCP'," +
@@ -165,7 +165,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_notExecuteFailureActionIfEntryIsMarkedAsCompletedButGotNoFeedback()
             throws Exception {
-        IObject entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'recoverStrategy':'the recover strategy'," +
                         "'message':{'a':'1'}," +
                         "'responsibleCheckpointId':'rCP'," +
@@ -180,6 +180,6 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
         action.execute(entryMock);
 
         verify(messageBusHandlerMock, never()).handle(any(), any());
-        verify(failureAction).execute(same(entryState.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message"))));
+        verify(failureAction).execute(same(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"))));
     }
 }

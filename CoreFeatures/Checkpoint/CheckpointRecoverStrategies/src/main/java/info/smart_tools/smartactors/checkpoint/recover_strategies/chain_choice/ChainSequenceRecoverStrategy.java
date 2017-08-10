@@ -39,8 +39,8 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
      */
     public ChainSequenceRecoverStrategy()
             throws ResolutionException {
-        trialsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "trials");
-        chainsFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chains");
+        trialsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trials");
+        chainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chains");
     }
 
     @Override

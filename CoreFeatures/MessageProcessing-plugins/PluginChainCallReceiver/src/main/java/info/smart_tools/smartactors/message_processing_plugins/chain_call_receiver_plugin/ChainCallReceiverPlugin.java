@@ -62,7 +62,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                             IFieldName fieldName = IOC.resolve(
                                                                     IOC.resolve(
                                                                             IOC.getKeyForKeyStorage(),
-                                                                            IFieldName.class.getCanonicalName()
+                                                                            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                                     ),
                                                                     "strategyDependency"
                                                             );

@@ -65,8 +65,8 @@ public class PluginFeatureLoader extends BootstrapPlugin {
             }
         }));
 
-        IFieldName sizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "queueSize");
-        IObject sizeObj = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IFieldName sizeFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
+        IObject sizeObj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
         sizeObj.setValue(sizeFN, 10);
         IQueue queue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()), sizeObj);
         IOC.register(Keys.getOrAdd("feature group load completion task queue"),

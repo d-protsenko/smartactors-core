@@ -45,8 +45,8 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
 
     public FullObjectCreatorResolutionStrategy()
             throws ResolutionException {
-        filtersFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "filters");
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency");
+        filtersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
     }
 
     @Override

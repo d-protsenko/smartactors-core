@@ -69,7 +69,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
                 .thenReturn(wrapperMock);
 
         when(sequenceMock.getCurrentReceiverArguments()).thenReturn(stepConfMock);
-        when(stepConfMock.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "wrapper"))).thenReturn(wrapperConfMock);
+        when(stepConfMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"))).thenReturn(wrapperConfMock);
 
         receiverMock = mock(IMessageReceiver.class);
 

@@ -63,19 +63,19 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
             when(processorMocks[i].getSequence()).thenReturn(mock(IMessageProcessingSequence.class));
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()).thenReturn(mock(IObject.class));
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "new")))
+                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))
                     .thenReturn(childObjectConfigMocks[i]);
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "key")))
+                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key")))
                     .thenReturn("in_keyField");
             when(processorMocks[i].getEnvironment()).thenReturn(mock(IObject.class));
             when(processorMocks[i].getEnvironment()
-                    .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "in_keyField")))
+                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_keyField")))
                     .thenReturn(String.valueOf(i));
 
             creatorMocks[i] = mock(IReceiverObjectCreator.class);
             when(fullCreatorResolutionStrategy.resolve(same(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "new")))))
+                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))))
                     .thenReturn(creatorMocks[i]);
             childReceiverMocks[i] = mock(IMessageReceiver.class);
             doAnswer(invocation -> {
@@ -181,20 +181,20 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
         receiver.receive(processorMocks[0]);
     }
 
-    @Test
-    public void Should_resetMessageProcessorEnvironmentBeforeReceiverCall()
-            throws Exception {
-        doAnswer(invocation -> {
-            verify(processorMocks[0]).resetEnvironment();
-            return null;
-        }).when(childReceiverMocks[0]).receive(same(processorMocks[0]));
-
-        IMessageReceiver receiver = new ActorCollectionReceiver(new HashMap<>());
-
-        receiver.receive(processorMocks[0]);
-
-        verify(childReceiverMocks[0], times(1)).receive(same(processorMocks[0]));
-
-        verify(creatorMocks[0], times(1)).create(any(), any(), any());
-    }
+//    @Test
+//    public void Should_resetMessageProcessorEnvironmentBeforeReceiverCall()
+//            throws Exception {
+//        doAnswer(invocation -> {
+//            verify(processorMocks[0]).resetEnvironment();
+//            return null;
+//        }).when(childReceiverMocks[0]).receive(same(processorMocks[0]));
+//
+//        IMessageReceiver receiver = new ActorCollectionReceiver(new HashMap<>());
+//
+//        receiver.receive(processorMocks[0]);
+//
+//        verify(childReceiverMocks[0], times(1)).receive(same(processorMocks[0]));
+//
+//        verify(creatorMocks[0], times(1)).create(any(), any(), any());
+//    }
 }

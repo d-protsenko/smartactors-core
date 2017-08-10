@@ -69,12 +69,12 @@ public class FeatureManagerActor {
         this.failedFeatures = new ConcurrentHashMap<>();
         this.processingFeatures = new ConcurrentHashMap<>();
 
-        this.loadedFeatureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "loadedFeatures");
-        this.failedFeatureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "failedFeatures");
-        this.processingFeatureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "processingFeatures");
-        this.featureProcessFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "featureProcess");
-        this.featureFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "feature");
-        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "afterFeaturesCallbackQueue");
+        this.loadedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "loadedFeatures");
+        this.failedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "failedFeatures");
+        this.processingFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processingFeatures");
+        this.featureProcessFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureProcess");
+        this.featureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "feature");
+        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
     /**
@@ -109,17 +109,17 @@ public class FeatureManagerActor {
                 ) {
                     this.processingFeatures.put(feature.getName(), feature);
                     IMessageProcessingSequence processingSequence =
-                            IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), stackDepth, scatterChain);
+                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, scatterChain);
                     IMessageProcessor messageProcessor =
-                            IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), queue, processingSequence);
-                    IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), queue, processingSequence);
+                    IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                     message.setValue(this.loadedFeatureFN, this.loadedFeatures);
                     message.setValue(this.failedFeatureFN, this.failedFeatures);
                     message.setValue(this.processingFeatureFN, this.processingFeatures);
                     message.setValue(this.featureProcessFN, this.featureProcess);
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
-                    IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                    IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                     messageProcessor.process(message, context);
                     ++count;
                 }

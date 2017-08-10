@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>AsyncOpsCollectionActor</module>
         <module>AsyncOpsCollectionPlugin</module>
         <module>DatabasePostgresqlAsyncOpsCollectionDistribution</module>
     </modules>

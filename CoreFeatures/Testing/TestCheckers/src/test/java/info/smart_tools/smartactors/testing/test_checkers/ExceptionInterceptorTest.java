@@ -67,7 +67,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenInvalidClassNameGivenInDescriptionObject()
             throws Exception {
-        IObject desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'class': 'org.hell.Unexist'}".replace('\'', '"'));
         Object receiverId = new Object();
         Mockito.when(receiverIdStrategyMock.resolve(Matchers.same(desc))).thenReturn(receiverId);
@@ -79,7 +79,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenInvalidReceiverIdGivenAsArgument()
             throws Exception {
-        IObject desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'class': 'java.lang.NullPointerException'}".replace('\'', '"'));
         Object receiverId = new Object();
         Mockito.when(receiverIdStrategyMock.resolve(Matchers.same(desc))).thenReturn(receiverId);
@@ -91,7 +91,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenSomethingGoesWrong()
             throws Exception {
-        IObject desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'class': 'java.lang.NullPointerException'}".replace('\'', '"'));
 
         IOC.remove(Keys.getOrAdd("receiver_id_from_iobject"));
@@ -101,7 +101,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
 
     private ExceptionInterceptor createCorrect()
             throws Exception {
-        IObject desc = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'class': 'java.lang.IllegalStateException'}".replace('\'', '"'));
         Object receiverId = new Object();
         Mockito.when(receiverIdStrategyMock.resolve(Matchers.same(desc))).thenReturn(receiverId);

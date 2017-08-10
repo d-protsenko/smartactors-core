@@ -80,7 +80,7 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
         documentIdFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), collectionName.toLowerCase() + "ID");
         lastScheduledTimeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), LAST_SCHEDULED_TIME_FIELD_NAME);
 
-        entriesQuery = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        entriesQuery = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 String.format(("{" +
                         "'filter':{'" + LAST_SCHEDULED_TIME_FIELD_NAME + "':{}}," +
                         "'page':{'size':%s,'number':1}," +
@@ -132,9 +132,9 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
             Object connection = guard.getObject();
 
             // {"filter":{"entryId":{"$eq":id}}}
-            IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IObject filter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
-            IObject entryIdFilter = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject filter = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject entryIdFilter = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             query.setValue(filterFieldName, filter);
             filter.setValue(entryIdFieldName, entryIdFilter);

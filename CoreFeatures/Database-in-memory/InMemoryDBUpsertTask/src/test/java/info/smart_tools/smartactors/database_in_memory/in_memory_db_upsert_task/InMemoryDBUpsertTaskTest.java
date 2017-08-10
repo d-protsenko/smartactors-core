@@ -51,7 +51,7 @@ public class InMemoryDBUpsertTaskTest {
                 IOC.getKeyForKeyStorage(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {

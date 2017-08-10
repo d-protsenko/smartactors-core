@@ -27,7 +27,7 @@ public class InMemoryDBCreateCollectionTask implements IDatabaseTask {
      */
     public InMemoryDBCreateCollectionTask() throws TaskPrepareException {
         try {
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "collectionName");
+            collectionNameField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve IFieldName", e);
         }

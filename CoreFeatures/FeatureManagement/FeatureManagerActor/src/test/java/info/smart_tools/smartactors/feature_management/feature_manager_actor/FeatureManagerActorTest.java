@@ -91,7 +91,7 @@ public class FeatureManagerActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -102,7 +102,7 @@ public class FeatureManagerActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -126,10 +126,10 @@ public class FeatureManagerActorTest {
                 Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)
         );
         IOC.register(
-                Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), this.getSequence
+                Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), this.getSequence
         );
         IOC.register(
-                Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), this.getProcessor
+                Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), this.getProcessor
         );
         IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
     }

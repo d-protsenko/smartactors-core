@@ -80,7 +80,7 @@ public class ChainTestRunner implements ITestRunner {
             throws InitializationException {
         try {
             this.chainNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()), "chainName"
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of ChainTestRunner.", e);

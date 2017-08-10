@@ -46,7 +46,7 @@ public class IFieldPlugin implements IPlugin {
                             (args) -> {
                                 String fieldName = String.valueOf(args[0]);
                                 try {
-                                    return new Field(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName));
+                                    return new Field(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
                                 } catch (InvalidArgumentException | ResolutionException e) {
                                     throw new RuntimeException("Can't resolve IField: ", e);
                                 }

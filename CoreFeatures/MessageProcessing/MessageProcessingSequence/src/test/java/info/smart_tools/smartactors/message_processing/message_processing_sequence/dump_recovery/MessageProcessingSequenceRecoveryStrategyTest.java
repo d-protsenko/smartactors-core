@@ -70,7 +70,7 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
             throws Exception {
         IReceiverChain chainA = mock(IReceiverChain.class), chainB = mock(IReceiverChain.class);
 
-        IObject seqDump = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject seqDump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'maxDepth':3," +
                         "'chainsStack':['a','b','a']," +
@@ -85,8 +85,8 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         when(chainResolutionStrategyMock.resolve(
                 eq("a"),
                 same(((IObject) seqDump
-                        .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chainsDump")))
-                        .getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "a"))),
+                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump")))
+                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a"))),
                 any(),
                 same(routerMock)
         )).thenReturn(chainA);

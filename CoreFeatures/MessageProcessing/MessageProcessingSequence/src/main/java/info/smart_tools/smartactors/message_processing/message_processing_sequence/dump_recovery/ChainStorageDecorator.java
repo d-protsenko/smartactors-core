@@ -60,7 +60,7 @@ public class ChainStorageDecorator implements IChainStorage {
         }
 
         try {
-            IFieldName dumpFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), chainId.toString());
+            IFieldName dumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), chainId.toString());
 
             IObject dump = (IObject) dumps.getValue(dumpFieldName);
 

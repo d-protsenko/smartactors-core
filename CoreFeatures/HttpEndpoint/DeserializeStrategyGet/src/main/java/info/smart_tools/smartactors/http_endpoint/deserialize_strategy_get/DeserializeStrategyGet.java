@@ -48,7 +48,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         decoder.parameters().forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
+                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v.get(0));
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         parameters.forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), k);
+                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v);
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);

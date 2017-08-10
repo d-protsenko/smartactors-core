@@ -52,10 +52,10 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
      */
     public OnceSchedulingStrategy()
             throws ResolutionException {
-        timeFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "time");
-        saveFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "save");
-        neverTooLateFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "neverTooLate");
-        pausedExecutionFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "executionPaused");
+        timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "time");
+        saveFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
+        neverTooLateFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "neverTooLate");
+        pausedExecutionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executionPaused");
     }
 
     @Override
