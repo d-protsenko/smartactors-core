@@ -33,9 +33,7 @@ public class DefaultDeletionCheckStrategy implements IChildDeletionCheckStrategy
     public boolean checkDelete(final IObject creationContext, final IObject messageEnvironment)
             throws DeletionCheckException {
         try {
-            //TODO :: check!!!
-            //IObject messageContext = (IObject) messageEnvironment.getValue(contextFN);
-            IObject messageContext = (IObject) messageEnvironment;
+            IObject messageContext = (IObject) messageEnvironment.getValue(contextFN);
             Object deletionFlag = messageContext.getValue(deleteFN);
             messageContext.deleteField(deleteFN);
 

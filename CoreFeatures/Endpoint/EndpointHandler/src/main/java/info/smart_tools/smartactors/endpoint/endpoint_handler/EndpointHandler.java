@@ -102,13 +102,8 @@ public abstract class EndpointHandler<TContext, TRequest> {
         try {
             sendExceptionalResponse(context, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
         } catch (Exception e1) {
-            e.addSuppressed(e1);
-            try {
-                sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
-            } catch (Exception e1) {
-                System.err.println(new java.util.Date());
-                e1.printStackTrace();
-            }
+            System.err.println(new java.util.Date());
+            e1.printStackTrace();
         }
     }
 }
