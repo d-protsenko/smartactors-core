@@ -37,9 +37,9 @@
                 }
                 socket.onclose = function(e) {
                     if (e.wasClean) {
-                        showNotification("Disconnected", "Cleanly disconnected from " + WS_ADDR);
+                        showNotification("Disconnected", "Cleanly disconnected from " + WS_ADDR + " code: " + e.code);
                     } else {
-                        showNotification("Disconnected", "Uncleanly disconnected from " + WS_ADDR);
+                        showNotification("Disconnected", "Uncleanly disconnected from " + WS_ADDR + " code: " + e.code);
                     }
                     socket = null;
                 }
