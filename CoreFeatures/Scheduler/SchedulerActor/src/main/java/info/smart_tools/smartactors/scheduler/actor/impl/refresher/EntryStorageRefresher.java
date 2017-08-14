@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
-import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
@@ -275,7 +274,7 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
         try {
             boolean cont = true;
             try {
-                int nAllowed = maxLocalEntries - entryStorage.contLocalEntries();
+                int nAllowed = maxLocalEntries - entryStorage.countLocalEntries();
 
                 if (nAllowed <= 0) {
                     cont = false;

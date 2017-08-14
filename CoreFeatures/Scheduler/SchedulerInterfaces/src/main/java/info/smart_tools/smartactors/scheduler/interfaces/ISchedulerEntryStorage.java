@@ -71,7 +71,7 @@ public interface ISchedulerEntryStorage {
      * @return count of local entries
      * @throws EntryStorageAccessException if any error occurs
      */
-    int contLocalEntries() throws EntryStorageAccessException;
+    int countLocalEntries() throws EntryStorageAccessException;
 
     /**
      * Get (a locally saved) entry with given identifier.
