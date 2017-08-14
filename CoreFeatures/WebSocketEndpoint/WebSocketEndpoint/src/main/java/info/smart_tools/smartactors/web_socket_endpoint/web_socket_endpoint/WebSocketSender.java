@@ -52,6 +52,6 @@ public class WebSocketSender {
         Channel channel = connectionsMap.get(wrapper.getConnectionId());
 
         String serialized = wrapper.getMessage().serialize();
-        channel.write(new TextWebSocketFrame(serialized));
+        channel.writeAndFlush(new TextWebSocketFrame(serialized));
     }
 }

@@ -54,7 +54,9 @@ public class WebSocketConnectionLifecycleMonitor extends ChannelInboundHandlerAd
     private void onHandshakeFinished(final ChannelHandlerContext ctx)
             throws Exception {
         Channel channel = ctx.channel();
-        Object id = channel.attr(idAttributeKey).setIfAbsent(connectionIdStrategy.resolve(channel));
+        Object id = connectionIdStrategy.resolve(channel);
+        Object oldId = channel.attr(idAttributeKey).setIfAbsent(id);
+        id = oldId == null ? id : oldId;
         listener.onNewConnection(id, channel);
         channel.closeFuture().addListener(channelCloseListener);
     }

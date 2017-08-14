@@ -3395,6 +3395,19 @@
   "artifactId" : "web-socket-endpoint",
   "rawName" : "WebSocketEndpoint",
   "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ {
+  "artifactId" : "web-socket-endpoint-plugin",
+  "uploadRepositories" : [ ],
+  "rawName" : "WebSocketEndpointPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "web-socket-endpoint-plugins",
+  "rawName" : "WebSocketEndpointPlugins",
+  "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],
   "on-feature-creation-upload-repositories" : [ ],

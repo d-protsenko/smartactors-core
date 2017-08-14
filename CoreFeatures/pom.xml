@@ -82,6 +82,7 @@
         <module>DatabasePostgresqlCachedCollection</module>
         <module>MessageBus-plugins</module>
         <module>WebSocketEndpoint</module>
+        <module>WebSocketEndpointPlugins</module>
     </modules>
 
     <build>

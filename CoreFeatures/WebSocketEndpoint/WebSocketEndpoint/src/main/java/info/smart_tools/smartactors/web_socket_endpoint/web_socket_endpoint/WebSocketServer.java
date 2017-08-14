@@ -17,7 +17,7 @@ import java.util.UUID;
 public class WebSocketServer extends TcpServer {
     private final String path;
     private final int maxContentLength;
-    private final WebSocketConnectionLifecycleListener listener;
+    private final WebSocketConnectionLifecycleMonitor connectionLifecycleMonitor;
 
     /**
      * Constructor.
@@ -37,7 +37,15 @@ public class WebSocketServer extends TcpServer {
         super(port, requestHandler);
         this.path = path;
         this.maxContentLength = maxContentLength;
-        this.listener = listener;
+
+        this.connectionLifecycleMonitor = new WebSocketConnectionLifecycleMonitor(
+                x -> x == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE,
+                listener, new IResolveDependencyStrategy() {
+            @Override
+            public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+                return (T) UUID.randomUUID().toString();
+            }
+        });
     }
 
     @Override
@@ -47,15 +55,7 @@ public class WebSocketServer extends TcpServer {
                         new HttpServerCodec(),
                         new HttpObjectAggregator(maxContentLength),
                         new WebSocketServerProtocolHandler(path),
-                        new WebSocketConnectionLifecycleMonitor(
-                                x -> x == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE,
-                                listener, new IResolveDependencyStrategy() {
-                                    @Override
-                                    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-                                        return (T) UUID.randomUUID().toString();
-                                    }
-                                }
-                        )
+                        connectionLifecycleMonitor
                 );
     }
 }
