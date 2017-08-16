@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -14,11 +15,13 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.scheduler.actor.SchedulerActor;
-import info.smart_tools.smartactors.scheduler.actor.impl.DefaultSchedulerAction;
+import info.smart_tools.smartactors.scheduler.actor.impl.actions.BlockingMessageSchedulerAction;
+import info.smart_tools.smartactors.scheduler.actor.impl.actions.DefaultSchedulerAction;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryImpl;
 import info.smart_tools.smartactors.scheduler.actor.impl.EntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.filter.SchedulerPreShutdownModeEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
+import info.smart_tools.smartactors.scheduler.actor.impl.refresher.ISchedulerStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.NullRemoteStorage;
@@ -53,9 +56,20 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("scheduler_default_action")
     public void registerDefaultAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
+        IResolveDependencyStrategy nonBlockingMessageActionS = new SingletonStrategy(new DefaultSchedulerAction());
+        IResolveDependencyStrategy blockingMessageActionS = new SingletonStrategy(new BlockingMessageSchedulerAction());
+
+        IOC.register(
+                Keys.getOrAdd("blocking message scheduler action"),
+                blockingMessageActionS
+        );
+        IOC.register(
+                Keys.getOrAdd("non-blocking scheduler action"),
+                nonBlockingMessageActionS
+        );
         IOC.register(
                 Keys.getOrAdd("default scheduler action"),
-                new SingletonStrategy(new DefaultSchedulerAction())
+                nonBlockingMessageActionS
         );
     }
 
@@ -92,7 +106,9 @@ public class PluginScheduler extends BootstrapPlugin {
     }
 
     private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 10; // 10 seconds
-    private static final long DEFAULT_REFRESH_PAGE_SIZE = 100;
+    private static final int DEFAULT_REFRESH_PAGE_SIZE_MAX = 100;
+    private static final int DEFAULT_REFRESH_PAGE_SIZE_MIN = 20;
+    private static final int DEFAULT_REFRESH_LOCAL_ENTRIES = 1000;
 
     /**
      * Register default refresh parameters resolution strategies.
@@ -118,8 +134,14 @@ public class PluginScheduler extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rsi"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL * 2));
 
-        IOC.register(Keys.getOrAdd("scheduler storage refresh page size"),
-                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE));
+        IOC.register(Keys.getOrAdd("scheduler storage refresh max page size"),
+                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MAX));
+
+        IOC.register(Keys.getOrAdd("scheduler storage refresh min page size"),
+                new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MIN));
+
+        IOC.register(Keys.getOrAdd("scheduler storage refresh local entries limit"),
+                new SingletonStrategy(DEFAULT_REFRESH_LOCAL_ENTRIES));
     }
 
     /**
@@ -144,9 +166,11 @@ public class PluginScheduler extends BootstrapPlugin {
                 long rrInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rri"), args);
                 long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
                 long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
-                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh page size"), args).intValue();
+                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh max page size"), args).intValue();
+                int refreshMinPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh min page size"), args).intValue();
+                int maxLocalEntries = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh local entries limit"), args).intValue();
                 return new EntryStorageRefresher(
-                        storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize);
+                        storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize, refreshMinPageSize, maxLocalEntries);
             } catch (ClassCastException | ResolutionException e) {
                 throw new FunctionExecutionException(e);
             }
@@ -197,7 +221,7 @@ public class PluginScheduler extends BootstrapPlugin {
 
                 EntryStorage storage = new EntryStorage(remoteEntryStorage, observer, (ITimer) timerService);
 
-                IDelayedSynchronousService refresher = IOC.resolve(
+                ISchedulerStorageRefresher refresher = IOC.resolve(
                         Keys.getOrAdd("scheduler entry storage refresher"),
                         storage, remoteEntryStorage);
 

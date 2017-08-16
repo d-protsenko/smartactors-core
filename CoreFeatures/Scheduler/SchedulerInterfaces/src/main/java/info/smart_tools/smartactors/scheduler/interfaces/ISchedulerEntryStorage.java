@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.scheduler.interfaces;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
@@ -48,8 +49,9 @@ public interface ISchedulerEntryStorage {
      *
      * @param entry    the entry
      * @throws EntryStorageAccessException if error occurs accessing remote storage
+     * @throws EntryNotFoundException if the entry does not exist
      */
-    void delete(ISchedulerEntry entry) throws EntryStorageAccessException;
+    void delete(ISchedulerEntry entry) throws EntryStorageAccessException, EntryNotFoundException;
 
     /**
      * Get list of all locally saved entries.
@@ -60,13 +62,26 @@ public interface ISchedulerEntryStorage {
     List<ISchedulerEntry> listLocalEntries() throws EntryStorageAccessException;
 
     /**
+     * Get count of local entries.
+     *
+     * <p>
+     * In concurrent environment returned number may become invalid immediately after (or even before) the method returns.
+     * </p>
+     *
+     * @return count of local entries
+     * @throws EntryStorageAccessException if any error occurs
+     */
+    int countLocalEntries() throws EntryStorageAccessException;
+
+    /**
      * Get (a locally saved) entry with given identifier.
      *
      * @param id    the entry identifier
      * @return the entry saved with given identifier
-     * @throws EntryStorageAccessException if there is no entry with given identifier
+     * @throws EntryNotFoundException if entry with required identifier is not found
+     * @throws EntryStorageAccessException if any error occurs accessing local or remote entry storage or restoring entry from saved state
      */
-    ISchedulerEntry getEntry(String id) throws EntryStorageAccessException;
+    ISchedulerEntry getEntry(String id) throws EntryNotFoundException, EntryStorageAccessException;
 
     /**
      * @return a timer that should be used by entries stored in this storage

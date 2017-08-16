@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.scheduler.interfaces;
 
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -104,4 +105,32 @@ public interface ISchedulerEntry {
      * @return {@code true} if the entry is active
      */
     boolean isAwake();
+
+    /**
+     * Pause entry execution.
+     *
+     * <p>
+     * This method blocks if entry is being executed in another thread until execution is completed (but it's still possible to
+     * pause/unpause entry at the same thread it's being executed - from scheduler action or scheduling strategy).
+     * </p>
+     *
+     * <p>
+     * When entry is paused it's action is not executed and {@link ISchedulingStrategy#postProcess(ISchedulerEntry)} is not called;
+     * {@link ISchedulingStrategy#processPausedExecution(ISchedulerEntry)} is called instead.
+     * </p>
+     *
+     * <p>
+     * Caller of this method must keep strong reference to this entry and call {@link #unpause()} later.
+     * </p>
+     *
+     * @throws EntryPauseException if any error occurs
+     */
+    void pause() throws EntryPauseException;
+
+    /**
+     * Unpause entry execution.
+     *
+     * @throws EntryPauseException if any error occurs
+     */
+    void unpause() throws EntryPauseException;
 }

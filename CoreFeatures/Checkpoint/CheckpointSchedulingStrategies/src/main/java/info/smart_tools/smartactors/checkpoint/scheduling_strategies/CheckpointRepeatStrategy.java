@@ -180,4 +180,22 @@ public abstract class CheckpointRepeatStrategy implements ISchedulingStrategy {
             throw new SchedulingStrategyExecutionException("Error occurred cancelling failed checkpoint scheduler entry.", e1);
         }
     }
+
+    @Override
+    public void notifyPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+
+    }
+
+    @Override
+    public void notifyUnPaused(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+        try {
+            entry.awake();
+        } catch (EntryStorageAccessException | EntryScheduleException e) {
+            throw new SchedulingStrategyExecutionException(e);
+        }
+    }
+
+    @Override
+    public void processPausedExecution(final ISchedulerEntry entry) throws SchedulingStrategyExecutionException {
+    }
 }
