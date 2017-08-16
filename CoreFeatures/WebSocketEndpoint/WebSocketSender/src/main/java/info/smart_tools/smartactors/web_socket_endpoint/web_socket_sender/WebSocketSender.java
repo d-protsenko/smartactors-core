@@ -1,9 +1,9 @@
-package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint;
+package info.smart_tools.smartactors.web_socket_endpoint.web_socket_sender;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.exceptions.UnknownConnectionIdException;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_sender.exception.UnknownConnectionIdException;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;

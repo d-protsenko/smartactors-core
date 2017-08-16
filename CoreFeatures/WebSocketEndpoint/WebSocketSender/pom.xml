@@ -8,7 +8,7 @@
         <version>0.3.3</version>
     </parent>
 
-    <artifactId>web-socket-endpoint.web-socket-endpoint</artifactId>
+    <artifactId>web-socket-endpoint.web-socket-sender</artifactId>
     <version>0.3.3</version>
 
     <dependencies>
@@ -72,31 +72,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.0.24.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>http-endpoint.tcp-server</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.endpoint-handler</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.endpoint-channel-inbound-handler</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>web-socket-endpoint.web-socket-endpoint-interfaces</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>web-socket-endpoint.connection-lifecycle-monitor</artifactId>
-            <version>0.3.3</version>
         </dependency>
     </dependencies>
 

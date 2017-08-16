@@ -1,12 +1,12 @@
-package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint;
+package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces;
 
-import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.exceptions.ConnectionListenerException;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.exception.ConnectionListenerException;
 import io.netty.channel.Channel;
 
 /**
  * Interface for a object being notified on web-socket server connections status changes.
  */
-public interface WebSocketConnectionLifecycleListener {
+public interface IWebSocketConnectionLifecycleListener {
     /**
      * Called when a new connection to web-socket server is started.
      *

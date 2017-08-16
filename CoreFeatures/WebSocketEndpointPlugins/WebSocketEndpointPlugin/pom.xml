@@ -118,6 +118,11 @@
             <artifactId>web-socket-endpoint.web-socket-endpoint</artifactId>
             <version>0.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>web-socket-endpoint.web-socket-sender</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
 
     <build>

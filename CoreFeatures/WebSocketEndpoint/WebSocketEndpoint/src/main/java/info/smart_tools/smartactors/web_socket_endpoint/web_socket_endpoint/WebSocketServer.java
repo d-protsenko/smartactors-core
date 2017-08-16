@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.http_endpoint.tcp_server.TcpServer;
+import info.smart_tools.smartactors.web_socket_endpoint.connection_lifecycle_monitor.WebSocketConnectionLifecycleMonitor;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.IWebSocketConnectionLifecycleListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -17,7 +19,7 @@ import java.util.UUID;
 public class WebSocketServer extends TcpServer {
     private final String path;
     private final int maxContentLength;
-    private final WebSocketConnectionLifecycleMonitor connectionLifecycleMonitor;
+    private final ChannelHandler connectionLifecycleMonitor;
 
     /**
      * Constructor.
@@ -33,7 +35,7 @@ public class WebSocketServer extends TcpServer {
             final ChannelHandler requestHandler,
             final String path,
             final int maxContentLength,
-            final WebSocketConnectionLifecycleListener listener) {
+            final IWebSocketConnectionLifecycleListener listener) {
         super(port, requestHandler);
         this.path = path;
         this.maxContentLength = maxContentLength;

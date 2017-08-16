@@ -16,6 +16,9 @@
 
     <modules>
         <module>WebSocketEndpoint</module>
+        <module>WebSocketSender</module>
+        <module>WebSocketEndpointInterfaces</module>
+        <module>ConnectionLifecycleMonitor</module>
         <module>WebSocketEndpointDistribution</module>
     </modules>
 

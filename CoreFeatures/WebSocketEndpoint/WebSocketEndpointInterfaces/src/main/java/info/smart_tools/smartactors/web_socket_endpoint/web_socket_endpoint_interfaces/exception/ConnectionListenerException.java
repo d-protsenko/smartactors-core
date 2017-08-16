@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.exceptions;
+package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.exception;
 
 /**
  *

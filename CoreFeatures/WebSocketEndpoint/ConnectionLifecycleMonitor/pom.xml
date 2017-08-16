@@ -8,7 +8,7 @@
         <version>0.3.3</version>
     </parent>
 
-    <artifactId>web-socket-endpoint.web-socket-endpoint</artifactId>
+    <artifactId>web-socket-endpoint.connection-lifecycle-monitor</artifactId>
     <version>0.3.3</version>
 
     <dependencies>
@@ -66,6 +66,42 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>helpers.plugins-loading-test-base</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- etc -->
         <dependency>
@@ -75,27 +111,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>http-endpoint.tcp-server</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.endpoint-handler</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint.endpoint-channel-inbound-handler</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>web-socket-endpoint.web-socket-endpoint-interfaces</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>web-socket-endpoint.connection-lifecycle-monitor</artifactId>
             <version>0.3.3</version>
         </dependency>
     </dependencies>

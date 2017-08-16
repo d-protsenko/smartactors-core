@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.exceptions;
+package info.smart_tools.smartactors.web_socket_endpoint.web_socket_sender.exception;
 
 /**
  * Exception thrown by object sending message to web-socket connection when a connection identifier is no longer registered (this usually

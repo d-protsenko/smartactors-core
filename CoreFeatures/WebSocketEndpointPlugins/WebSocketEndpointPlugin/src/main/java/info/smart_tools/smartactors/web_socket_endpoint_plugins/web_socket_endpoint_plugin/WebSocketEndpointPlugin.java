@@ -15,10 +15,10 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.WebSocketConnectionLifecycleListener;
 import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.WebSocketEndpoint;
-import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.WebSocketSender;
-import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint.exceptions.ConnectionListenerException;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.IWebSocketConnectionLifecycleListener;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.exception.ConnectionListenerException;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_sender.WebSocketSender;
 import io.netty.channel.Channel;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,7 +74,7 @@ public class WebSocketEndpointPlugin extends BootstrapPlugin {
             try {
                 ConcurrentMap<Object, Channel> connectionMap = IOC.resolve(Keys.getOrAdd("web-socket connection map"));
 
-                WebSocketConnectionLifecycleListener connectionLifecycleListener = new WebSocketConnectionLifecycleListener() {
+                IWebSocketConnectionLifecycleListener connectionLifecycleListener = new IWebSocketConnectionLifecycleListener() {
                     @Override
                     public void onNewConnection(final Object id, final Channel channel) throws ConnectionListenerException {
                         connectionMap.put(id, channel);

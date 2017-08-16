@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEn
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.web_socket_endpoint.web_socket_endpoint_interfaces.IWebSocketConnectionLifecycleListener;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
 /**
@@ -27,14 +28,14 @@ public class WebSocketEndpoint extends WebSocketServer {
             final int port,
             final String path,
             final int maxContentLength,
-            final WebSocketConnectionLifecycleListener listener,
+            final IWebSocketConnectionLifecycleListener listener,
             final IEnvironmentHandler environmentHandler,
             final IScope scope,
             final String name,
             final IReceiverChain receiverChain
             ) throws ResolutionException {
         super(port,
-                new EndpointChannelInboundHandler<>(new WSEndpointHandler(
+                new EndpointChannelInboundHandler<WebSocketFrame>(new WSEndpointHandler(
                     receiverChain, environmentHandler, scope, name
                 ), WebSocketFrame.class),
                 path, maxContentLength, listener);
