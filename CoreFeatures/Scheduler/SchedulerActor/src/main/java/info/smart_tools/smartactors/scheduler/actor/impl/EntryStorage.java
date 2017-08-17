@@ -239,7 +239,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
     }
 
     @Override
-    public int contLocalEntries() throws EntryStorageAccessException {
+    public int countLocalEntries() throws EntryStorageAccessException {
         return activeEntries.size() + strongSuspendEntries.size() + weakSuspendEntries.size();
     }
 
