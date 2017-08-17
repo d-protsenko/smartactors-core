@@ -83,6 +83,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             requestFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendRequest");
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
             uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
+            exceptionalMessageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
 
             this.request = request;
             this.exceptionalMessageMapId = request.getValue(exceptionalMessageMapIdFieldName);
