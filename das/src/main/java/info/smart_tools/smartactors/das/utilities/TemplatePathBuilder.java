@@ -2,9 +2,6 @@ package info.smart_tools.smartactors.das.utilities;
 
 import java.io.File;
 
-/**
- * Created by sevenbits on 22.08.17.
- */
 public class TemplatePathBuilder {
     private static final String RESOURCE_DIR = "resources";
 
