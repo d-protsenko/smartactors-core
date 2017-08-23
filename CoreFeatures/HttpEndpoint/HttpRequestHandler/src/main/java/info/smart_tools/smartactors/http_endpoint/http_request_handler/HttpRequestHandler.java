@@ -4,7 +4,6 @@ package info.smart_tools.smartactors.http_endpoint.http_request_handler;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
-import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.endpoint.endpoint_handler.EndpointHandler;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -28,9 +27,7 @@ import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.excepti
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,7 +41,6 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -233,6 +229,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
     public void handle(final ChannelHandlerContext ctx, final FullHttpRequest request) throws ExecutionException {
         if (isShuttingDown) {
             try {
+                ScopeProvider.setCurrentScope(scope);
                 sendExceptionalResponse(ctx, request, IOC.resolve(Keys.getOrAdd("HttpShuttingDownException")));
             } catch (Exception e1) {
                 e1.printStackTrace();

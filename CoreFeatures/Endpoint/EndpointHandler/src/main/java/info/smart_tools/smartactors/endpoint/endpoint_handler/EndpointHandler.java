@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 public abstract class EndpointHandler<TContext, TRequest> {
     private final IReceiverChain receiverChain;
     private final IEnvironmentHandler environmentHandler;
-    private final IScope scope;
+    protected final IScope scope;
     private final String name;
 
     private final IQueue<ITask> taskQueue;
