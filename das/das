@@ -12,8 +12,13 @@ then
     fi
 elif [ "$1" = "deploy" ]
 then
+    if [ "$2" = "test" ]
+    then
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=jar deploy
+    else
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=zip deploy
+    fi
     echo "deploy project components"
-    mvn -Dmaven.test.skip=true -DdeployOnly=true deploy
 else
     java -D -jar /usr/share/das/das.jar $@
 fi
