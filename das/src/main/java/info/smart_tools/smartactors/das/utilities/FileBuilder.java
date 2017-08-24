@@ -20,8 +20,7 @@ public class FileBuilder {
         InputStream templateStream;
         try {
             templateStream = new FileInputStream(
-                    FileBuilder.GetExecutionPath() +
-                    File.separator + RESOURCE_DIR + File.separator + sourceTemplate.getName()
+                    TemplatePathBuilder.buildTemplatePath(sourceTemplate.getName())
             );
         } catch (IOException e) {
             System.out.println("Could not open template file");
@@ -62,8 +61,7 @@ public class FileBuilder {
         InputStream templateStream;
         try {
             templateStream = new FileInputStream(
-                    FileBuilder.GetExecutionPath() +
-                            File.separator + RESOURCE_DIR + File.separator + template.getName()
+                    TemplatePathBuilder.buildTemplatePath(template.getName())
             );
         } catch (IOException e) {
             System.out.println("Could not open template file");
@@ -121,12 +119,5 @@ public class FileBuilder {
                 System.err.println(e);
             }
         }
-    }
-
-    private static String GetExecutionPath(){
-        String absolutePath = FileBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
-
-        return absolutePath;
     }
 }

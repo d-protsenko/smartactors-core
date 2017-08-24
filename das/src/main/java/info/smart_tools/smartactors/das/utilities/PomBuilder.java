@@ -9,8 +9,10 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,13 @@ public class PomBuilder {
             final Map<String, String> tags
     )
             throws Exception {
-        InputStream templateStream = ClassLoader.getSystemClassLoader().getResourceAsStream(sourceTemplate.getName());
-        if (null == templateStream) {
+
+        InputStream templateStream;
+        try {
+            templateStream = new FileInputStream(
+                    TemplatePathBuilder.buildTemplatePath(sourceTemplate.getName())
+            );
+        } catch (IOException e) {
             System.out.println("Could not open template file");
 
             return;
@@ -151,7 +158,7 @@ public class PomBuilder {
 
     private static void replaceVersion(final List<Dependency> dependencies)
             throws Exception {
-        for(Dependency dependency : dependencies) {
+        for (Dependency dependency : dependencies) {
             if (dependency.getVersion().equals("${core.version}")) {
                 dependency.setVersion("0.3.3");
             }
