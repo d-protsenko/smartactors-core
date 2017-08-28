@@ -3,34 +3,11 @@
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
     <id>archive</id>
     <formats>
-        <format>${build.format}</format>
+        <format>zip</format>
     </formats>
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
-    <!--<moduleSets>-->
-        <!--<moduleSet>-->
-            <!--<useAllReactorProjects>true</useAllReactorProjects>-->
-            <!--<includes>-->
-                <!--<include>info.smart_tools.smartactors:servers.*</include>-->
-            <!--</includes>-->
-            <!--<binaries>-->
-                <!--<outputDirectory>/</outputDirectory>-->
-                <!--<unpack>false</unpack>-->
-            <!--</binaries>-->
-        <!--</moduleSet>-->
-    <!--</moduleSets>-->
-    <!--<fileSets>-->
-        <!--<fileSet>-->
-            <!--<outputDirectory>/</outputDirectory>-->
-            <!--<includes>-->
-                <!--<include>configuration.json</include>-->
-                <!--<include>core</include>-->
-                <!--<include>corefeatures</include>-->
-                <!--<include>features</include>-->
-            <!--</includes>-->
-        <!--</fileSet>-->
-    <!--</fileSets>-->
     <files>
         <file>
             <source>../Server/target/server.jar</source>

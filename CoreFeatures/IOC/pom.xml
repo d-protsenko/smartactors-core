@@ -80,7 +80,7 @@
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
-                                <packaging>zip</packaging>
+                                <packaging>${deploy.format}</packaging>
                                 <description>This archive contains ...</description>
                             </configuration>
                         </execution>
