@@ -10,8 +10,8 @@
 
     <repositories>
         <repository>
-            <id>smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>smartactors-features</id>
+            <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
         </repository>
     </repositories>
 
