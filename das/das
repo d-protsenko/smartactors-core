@@ -2,19 +2,26 @@
 
 if [ "$1" = "make" ]
 then
-    if [ "$2" = "test" ]
+    if [ "$2" = "jar" ]
     then
-        echo make project for tests
+        echo "make project jars"
         mvn clean install package -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false
+    elif [ "$2" = "zip" ]
+    then
+        echo "make project zips"
+        mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true
     else
-        echo "make project"
+        echo "make project zips"
         mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true
     fi
 elif [ "$1" = "deploy" ]
 then
-    if [ "$2" = "test" ]
+    if [ "$2" = "jar" ]
     then
         mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=jar deploy
+    elif [ "$2" = "zip"]
+    then
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=zip deploy
     else
         mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=zip deploy
     fi

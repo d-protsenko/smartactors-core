@@ -17,6 +17,14 @@
             <excludes>
                 <exclude>info.smart_tools.smartactors:feature-loading-system.test-jar</exclude>
             </excludes>
+            <sources>
+                <includeModuleDirectory>true</includeModuleDirectory>
+                <fileSets>
+                    <fileSet>
+                        <outputDirectory>/</outputDirectory>
+                    </fileSet>
+                </fileSets>
+            </sources>
             <binaries>
                 <dependencySets>
                     <dependencySet>
