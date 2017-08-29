@@ -39,9 +39,10 @@ public class ChildDeletionCheckerReceiver implements IMessageReceiver {
         this.deletionAction = deletionAction;
     }
 
-    private void checkDeletion(final IObject env)
+    private void checkDeletion(final IMessageProcessor messageProcessor)
             throws ActionExecuteException, DeletionCheckException, InvalidArgumentException {
-        if (deletionCheckStrategy.checkDelete(creationContext, env)) {
+        messageProcessor.resetEnvironment();
+        if (deletionCheckStrategy.checkDelete(creationContext, messageProcessor.getEnvironment())) {
             deletionAction.execute(creationContext);
         }
     }
@@ -49,15 +50,13 @@ public class ChildDeletionCheckerReceiver implements IMessageReceiver {
     @Override
     public void receive(final IMessageProcessor processor)
             throws MessageReceiveException, AsynchronousOperationException {
-        IObject env = processor.getEnvironment();
-
         try {
             underlyingReceiver.receive(processor);
 
-            checkDeletion(env);
+            checkDeletion(processor);
         } catch (MessageReceiveException e) {
             try {
-                checkDeletion(env);
+                checkDeletion(processor);
             } catch (ActionExecuteException | DeletionCheckException | InvalidArgumentException ee) {
                 e.addSuppressed(ee);
             }
