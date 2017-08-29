@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -42,7 +45,6 @@ public class ActorCollectionReceiverPluginTest {
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
-
     }
 
     @Test
@@ -77,18 +79,22 @@ public class ActorCollectionReceiverPluginTest {
     public void checkPluginProcessExecution() throws Exception {
         registerKeyStorage();
         registerIFieldNameStrategy();
-        final IBootstrapItem[] items = new IBootstrapItem[1];
+        final List<IBootstrapItem> items = new ArrayList<>();
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                items[0] = (BootstrapItem)invocationOnMock.getArguments()[0];
+                items.add((BootstrapItem)invocationOnMock.getArguments()[0]);
                 return null;
             }
         }).when(bootstrap).add(any(IBootstrapItem.class));
         IPlugin plugin = new ActorCollectionReceiverPlugin(bootstrap);
         plugin.load();
-        items[0].executeProcess();
+        for (IBootstrapItem item : items) {
+            if (item.getItemName().equals("ActorCollectionReceiver")) {
+                item.executeProcess();
+            }
+        }
         IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "ActorCollection"));
         assertNotNull(receiver);
     }
