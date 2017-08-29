@@ -22,7 +22,6 @@ public class MessageBusResponseStrategyPlugin  extends BootstrapPlugin {
     }
 
     @Item("message_bus_response_strategy")
-    @After({"null_response_strategy"})
     public void registerMessageBusResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(new MessageBusResponseStrategy()));
