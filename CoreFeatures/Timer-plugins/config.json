@@ -1,0 +1,4 @@
+{
+  "featureName":"info.smart_tools.smartactors:timer-plugins",
+  "afterFeatures":["info.smart_tools.smartactors:timer"]
+}
