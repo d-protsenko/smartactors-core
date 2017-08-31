@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.helpers;
 
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 
 /**
- * A {@link IMessageHandler message handler} that does not change types of source message, destination message and
- * connection context.
+ * A {@link IMessageHandler message handler} that does not change type of message context.
  *
- * @param <TSrc> type of source message
- * @param <TDst> type of destination message
- * @param <TCtx> type of connection context
+ * @param <TContext>
  */
-public interface IBypassMessageHandler<TSrc, TDst, TCtx> extends IMessageHandler<TSrc, TDst, TCtx, TSrc, TDst, TCtx> {
+public interface IBypassMessageHandler<TContext extends IMessageContext>
+        extends IMessageHandler<TContext, TContext> {
 }

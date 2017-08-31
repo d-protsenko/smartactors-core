@@ -57,26 +57,17 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.excepti
  *  endpoint-implementation-specific way.
  * </p>
  *
- * @param <TSrc>     source message type
- * @param <TDst>     destination message type
- * @param <TCtx>     connection context type
- * @param <TNextDst> type of destination message passed to the next handler
- * @param <TNextSrc> type of source message passed to the next handler. Handler may transform/split/aggregate the
- *                  message so {@code TSrc} and {@code TNextSrc} may be different types
- * @param <TNextCtx> type of connection context passed to next handler. Handler may switch between application-specific
- *                  and endpoint-implementation-specific context types so {@code TCtx} and {@code TNextCtx} may be
- *                  different types
+ * @param <TContext>     type of message context
+ * @param <TNextContext> type of message context expected by the next handler
  */
-public interface IMessageHandler<TSrc, TDst, TCtx, TNextSrc, TNextDst, TNextCtx> {
+public interface IMessageHandler<TContext extends IMessageContext, TNextContext extends IMessageContext> {
     /**
      * Handle the message.
      *
      * @param next       callback that should handle the destination message after this handler
-     * @param srcMessage the source message
-     * @param dstMessage the destination message, may be {@code null}
-     * @param ctx        the connection context
+     * @param context    message context
      * @throws MessageHandlerException if any error occurs handling te message
      */
-    void handle(IMessageHandlerCallback<TNextSrc, TNextDst, TNextCtx> next, TSrc srcMessage, TDst dstMessage, TCtx ctx)
+    void handle(IMessageHandlerCallback<TNextContext> next, TContext context)
             throws MessageHandlerException;
 }

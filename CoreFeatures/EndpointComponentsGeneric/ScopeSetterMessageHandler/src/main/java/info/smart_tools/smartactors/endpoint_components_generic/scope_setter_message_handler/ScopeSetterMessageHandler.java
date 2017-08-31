@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.endpoint_components_generic.scope_setter_message_handler;
 
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.helpers.IBypassMessageHandler;
@@ -11,11 +12,10 @@ import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
  * A {@link info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler message handler} that sets
  * a scope for the next handler in pipeline.
  *
- * @param <TSrc>
- * @param <TDst>
- * @param <TCtx>
+ * @param <TContext> message context type
  */
-public class ScopeSetterMessageHandler<TSrc, TDst, TCtx> implements IBypassMessageHandler<TSrc, TDst, TCtx> {
+public class ScopeSetterMessageHandler<TContext extends IMessageContext>
+        implements IBypassMessageHandler<TContext> {
     private final IScope scope;
 
     /**
@@ -29,8 +29,8 @@ public class ScopeSetterMessageHandler<TSrc, TDst, TCtx> implements IBypassMessa
 
     @Override
     public void handle(
-            final IMessageHandlerCallback<TSrc, TDst, TCtx> next,
-            final TSrc srcMessage, final TDst dstMessage, final TCtx ctx)
+            final IMessageHandlerCallback<TContext> next,
+            final TContext ctx)
             throws MessageHandlerException {
         try {
             ScopeProvider.setCurrentScope(scope);
@@ -38,6 +38,6 @@ public class ScopeSetterMessageHandler<TSrc, TDst, TCtx> implements IBypassMessa
             throw new MessageHandlerException(e);
         }
 
-        next.handle(srcMessage, dstMessage, ctx);
+        next.handle(ctx);
     }
 }

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.endpoint_components_generic.create_environment_message_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
@@ -18,7 +19,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * @param <TCtx>
  */
 public class CreateEnvironmentMessageHandler<TSrc, TCtx>
-        implements IMessageHandler<TSrc, Void, TCtx, TSrc, IObject, TCtx> {
+        implements IMessageHandler<IDefaultMessageContext<TSrc, Void, TCtx>, IDefaultMessageContext<TSrc, IObject, TCtx>> {
     private final IFieldName contextFieldName, fromExternalFieldName;
 
     /**
@@ -34,8 +35,8 @@ public class CreateEnvironmentMessageHandler<TSrc, TCtx>
 
     @Override
     public void handle(
-            final IMessageHandlerCallback<TSrc, IObject, TCtx> next,
-            final TSrc srcMessage, final Void dstMessage, final TCtx ctx)
+            final IMessageHandlerCallback<IDefaultMessageContext<TSrc, IObject, TCtx>> next,
+            final IDefaultMessageContext<TSrc, Void, TCtx> ctx)
             throws MessageHandlerException {
         try {
             IObject environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
@@ -45,7 +46,11 @@ public class CreateEnvironmentMessageHandler<TSrc, TCtx>
 
             environment.setValue(contextFieldName, context);
 
-            next.handle(srcMessage, environment, ctx);
+            IDefaultMessageContext<TSrc, IObject, TCtx> nextCtx = ctx.cast();
+
+            nextCtx.setDstMessage(environment);
+
+            next.handle(nextCtx);
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
             throw new MessageHandlerException(e);
         }

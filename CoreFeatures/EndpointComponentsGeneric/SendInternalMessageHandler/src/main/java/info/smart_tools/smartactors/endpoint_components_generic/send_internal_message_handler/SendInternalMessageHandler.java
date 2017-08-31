@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.endpoint_components_generic.send_internal_message_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.helpers.ITerminalMessageHandler;
@@ -24,7 +26,8 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
  * @param <TSrc>
  * @param <TCtx>
  */
-public class SendInternalMessageHandler<TSrc, TCtx> implements ITerminalMessageHandler<TSrc, IObject, TCtx> {
+public class SendInternalMessageHandler<TSrc, TCtx>
+        implements ITerminalMessageHandler<IDefaultMessageContext<TSrc, IObject, TCtx>> {
     private final IFieldName messageFieldName, contextFieldName;
 
     private final int stackDepth;
@@ -51,10 +54,12 @@ public class SendInternalMessageHandler<TSrc, TCtx> implements ITerminalMessageH
 
     @Override
     public void handle(
-            final IMessageHandlerCallback<Void, Void, Void> next,
-            final TSrc srcMessage, final IObject dstMessage, final TCtx ctx)
+            final IMessageHandlerCallback<IMessageContext> next,
+            final IDefaultMessageContext<TSrc, IObject, TCtx> ctx)
             throws MessageHandlerException {
         try {
+            IObject env = ctx.getDstMessage();
+
             IMessageProcessingSequence processingSequence =
                     IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                             stackDepth, receiverChain);
@@ -62,8 +67,8 @@ public class SendInternalMessageHandler<TSrc, TCtx> implements ITerminalMessageH
                     IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                             taskQueue, processingSequence);
 
-            IObject message = (IObject) dstMessage.getValue(this.messageFieldName);
-            IObject context = (IObject) dstMessage.getValue(this.contextFieldName);
+            IObject message = (IObject) env.getValue(this.messageFieldName);
+            IObject context = (IObject) env.getValue(this.contextFieldName);
 
             // TODO: Refactor message processor to avoid duplicate environment object creation (and add a #process(IObject env) method)
             messageProcessor.process(message, context);

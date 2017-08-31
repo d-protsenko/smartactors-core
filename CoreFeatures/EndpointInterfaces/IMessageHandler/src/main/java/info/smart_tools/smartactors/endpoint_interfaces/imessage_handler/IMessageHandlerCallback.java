@@ -5,19 +5,15 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.excepti
 /**
  * Interface for a callback passed to {@link IMessageHandlerCallback}.
  *
- * @param <TSrc> source message type
- * @param <TDst> destination message type
- * @param <TCtx> context type
+ * @param <TContext> type of message context expected by the callback
  */
-public interface IMessageHandlerCallback<TSrc, TDst, TCtx> {
+public interface IMessageHandlerCallback<TContext extends IMessageContext> {
     /**
      * Delegate message handling to the next handler.
      *
-     * @param srcMessage the source message
-     * @param dstMessage the destination message
-     * @param ctx        the connection context
+     * @param context message context
      * @throws MessageHandlerException if any error occurs
      */
-    void handle(TSrc srcMessage, TDst dstMessage, TCtx ctx)
+    void handle(TContext context)
             throws MessageHandlerException;
 }
