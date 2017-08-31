@@ -83,6 +83,7 @@
         <module>MessageBus-plugins</module>
         <module>WebSocketEndpoint</module>
         <module>WebSocketEndpointPlugins</module>
+        <module>EndpointInterfaces</module>
     </modules>
 
     <build>
