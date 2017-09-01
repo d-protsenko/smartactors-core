@@ -18,6 +18,7 @@
         <module>ScopeSetterMessageHandler</module>
         <module>SendInternalMessageHandler</module>
         <module>CreateEnvironmentMessageHandler</module>
+        <module>AsynchronousUnorderedMessageHandler</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 

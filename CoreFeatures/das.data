@@ -3452,6 +3452,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "CreateEnvironmentMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "asynchronous-unordered-message-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "AsynchronousUnorderedMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3460,7 +3465,12 @@
   "rawName" : "EndpointComponentsGeneric",
   "version" : "0.3.3"
 }, {
-  "actors" : [ ],
+  "actors" : [ {
+  "artifactId" : "inbound-netty-message-reference-count-management-components",
+  "uploadRepositories" : [ ],
+  "rawName" : "InboundNettyMessageReferenceCountManagementComponents",
+  "version" : "0.3.3"
+} ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",

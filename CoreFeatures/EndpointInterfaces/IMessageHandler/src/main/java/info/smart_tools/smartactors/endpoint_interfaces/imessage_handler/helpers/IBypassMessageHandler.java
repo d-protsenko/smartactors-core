@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessag
 /**
  * A {@link IMessageHandler message handler} that does not change type of message context.
  *
- * @param <TContext>
+ * @param <TContext> message context type
  */
 public interface IBypassMessageHandler<TContext extends IMessageContext>
         extends IMessageHandler<TContext, TContext> {
