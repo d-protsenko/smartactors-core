@@ -3457,6 +3457,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "AsynchronousUnorderedMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-message-handler-pipeline",
+  "uploadRepositories" : [ ],
+  "rawName" : "DefaultMessageHandlerPipeline",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

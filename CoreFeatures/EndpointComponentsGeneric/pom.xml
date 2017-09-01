@@ -19,6 +19,7 @@
         <module>SendInternalMessageHandler</module>
         <module>CreateEnvironmentMessageHandler</module>
         <module>AsynchronousUnorderedMessageHandler</module>
+        <module>DefaultMessageHandlerPipeline</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
