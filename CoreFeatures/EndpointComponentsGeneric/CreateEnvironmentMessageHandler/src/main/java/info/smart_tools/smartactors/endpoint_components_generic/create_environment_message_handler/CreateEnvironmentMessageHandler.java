@@ -46,7 +46,7 @@ public class CreateEnvironmentMessageHandler<TSrc, TCtx>
 
             environment.setValue(contextFieldName, context);
 
-            IDefaultMessageContext<TSrc, IObject, TCtx> nextCtx = ctx.cast();
+            IDefaultMessageContext<TSrc, IObject, TCtx> nextCtx = ctx.cast(IDefaultMessageContext.class);
 
             nextCtx.setDstMessage(environment);
 

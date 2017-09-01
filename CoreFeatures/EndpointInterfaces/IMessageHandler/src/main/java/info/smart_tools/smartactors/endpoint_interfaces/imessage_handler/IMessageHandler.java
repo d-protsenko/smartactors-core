@@ -57,6 +57,14 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.excepti
  *  endpoint-implementation-specific way.
  * </p>
  *
+ * <p>
+ *  All parameters passed between message handlers are packed into a single object called {@link IMessageContext
+ *  message context}. Concrete message context types are defined by {@code TContext} and {@code TNextContext} type
+ *  parameters of concrete handler class. Caller of {@link #handle(IMessageHandlerCallback, IMessageContext)} method
+ *  should guarantee that passed context of type {@code TContext} is able to be converted to {@code TNextContext} type
+ *  by call of {@link IMessageContext#cast(Class)} method.
+ * </p>
+ *
  * @param <TContext>     type of message context
  * @param <TNextContext> type of message context expected by the next handler
  */
