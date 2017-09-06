@@ -21,6 +21,11 @@
             <artifactId>endpoint-interfaces.imessage-handler</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-interfaces.imessage-byte-array</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
 
         <!-- Netty -->
         <dependency>
@@ -32,6 +37,7 @@
 
     <modules>
         <module>InboundNettyMessageReferenceCountManagementComponents</module>
+        <module>WrapInboundNettyMessageToMessageByteArrayMessageHandler</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

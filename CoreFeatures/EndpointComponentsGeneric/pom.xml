@@ -21,6 +21,7 @@
         <module>AsynchronousUnorderedMessageHandler</module>
         <module>DefaultMessageHandlerPipeline</module>
         <module>DefaultMessageContextImplementation</module>
+        <module>MessageAttributeRoutingMessageHandler</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
