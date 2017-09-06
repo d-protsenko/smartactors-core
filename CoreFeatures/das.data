@@ -3495,6 +3495,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "WrapInboundNettyMessageToMessageByteArrayMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "inbound-netty-channel-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "InboundNettyChannelHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

@@ -38,6 +38,7 @@
     <modules>
         <module>InboundNettyMessageReferenceCountManagementComponents</module>
         <module>WrapInboundNettyMessageToMessageByteArrayMessageHandler</module>
+        <module>InboundNettyChannelHandler</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
