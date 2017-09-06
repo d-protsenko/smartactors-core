@@ -28,4 +28,9 @@ public interface IMessageContext extends Cloneable {
      * @return the message context converted to {@code T}
      */
     <T extends IMessageContext> T cast(Class<? super T> hint);
+
+    /**
+     * @return shallow copy of this object
+     */
+    IMessageContext clone();
 }
