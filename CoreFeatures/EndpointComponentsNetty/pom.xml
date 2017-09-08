@@ -42,6 +42,7 @@
         <module>HttpQueryStringParser</module>
         <module>SendNettyMessageMessageHandler</module>
         <module>HttpExceptionalAction</module>
+        <module>OutboundNettyMessageCreationHandler</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

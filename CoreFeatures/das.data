@@ -3535,6 +3535,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "HttpExceptionalAction",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "outbound-netty-message-creation-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "OutboundNettyMessageCreationHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
