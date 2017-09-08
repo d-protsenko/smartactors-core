@@ -6,7 +6,7 @@
         <format>${build.format}</format>
     </formats>
 
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeBaseDirectory>${build.includeBaseDirectory}</includeBaseDirectory>
 
     <moduleSets>
         <moduleSet>
