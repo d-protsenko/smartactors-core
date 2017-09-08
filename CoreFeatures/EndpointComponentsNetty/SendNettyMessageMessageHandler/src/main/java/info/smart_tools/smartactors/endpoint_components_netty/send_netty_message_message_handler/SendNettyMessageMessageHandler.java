@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.endpoint_components_netty.send_netty_message_message_handler;
 
-import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IMessageByteArray;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IInboundMessageByteArray;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
@@ -14,7 +14,7 @@ import io.netty.channel.Channel;
  * @param <TMessage>
  * @param <T>
  */
-public class SendNettyMessageMessageHandler<TMessage, T extends IDefaultMessageContext<?, IMessageByteArray<TMessage>, Channel>>
+public class SendNettyMessageMessageHandler<TMessage, T extends IDefaultMessageContext<?, IInboundMessageByteArray<TMessage>, Channel>>
         implements ITerminalMessageHandler<T> {
 
     @Override

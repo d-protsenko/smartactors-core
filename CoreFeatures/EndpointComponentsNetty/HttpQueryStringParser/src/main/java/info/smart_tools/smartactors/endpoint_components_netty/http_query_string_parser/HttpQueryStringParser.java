@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IMessageByteArray;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IInboundMessageByteArray;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @param <T>
  */
-public class HttpQueryStringParser<T extends IDefaultMessageContext<IMessageByteArray<? extends HttpRequest>, IObject, ?>>
+public class HttpQueryStringParser<T extends IDefaultMessageContext<IInboundMessageByteArray<? extends HttpRequest>, IObject, ?>>
         implements IBypassMessageHandler<T> {
     private final IFieldName messageFieldName;
 
