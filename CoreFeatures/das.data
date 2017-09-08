@@ -3492,6 +3492,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "GenericExceptionInterceptorMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoint-response-strategy",
+  "uploadRepositories" : [ ],
+  "rawName" : "EndpointResponseStrategy",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

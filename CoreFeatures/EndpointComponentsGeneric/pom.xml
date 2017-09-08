@@ -39,6 +39,7 @@
         <module>CreateEmptyMessageMessageHandler</module>
         <module>DefaultMessageCodecs</module>
         <module>GenericExceptionInterceptorMessageHandler</module>
+        <module>EndpointResponseStrategy</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
