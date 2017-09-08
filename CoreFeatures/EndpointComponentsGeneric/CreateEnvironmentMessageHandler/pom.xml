@@ -12,12 +12,6 @@
     <version>0.3.3</version>
 
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-interfaces.imessage-handler</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-
         <!-- Components of info.smart_tools.smartactors.iobject -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

@@ -3477,6 +3477,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "MessageAttributeRoutingMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "create-empty-message-message-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "CreateEmptyMessageMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3499,6 +3504,16 @@
   "artifactId" : "inbound-netty-channel-handler",
   "uploadRepositories" : [ ],
   "rawName" : "InboundNettyChannelHandler",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-query-string-parser",
+  "uploadRepositories" : [ ],
+  "rawName" : "HttpQueryStringParser",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "send-netty-message-message-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "SendNettyMessageMessageHandler",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],

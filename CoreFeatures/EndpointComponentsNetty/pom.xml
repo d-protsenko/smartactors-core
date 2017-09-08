@@ -39,6 +39,8 @@
         <module>InboundNettyMessageReferenceCountManagementComponents</module>
         <module>WrapInboundNettyMessageToMessageByteArrayMessageHandler</module>
         <module>InboundNettyChannelHandler</module>
+        <module>HttpQueryStringParser</module>
+        <module>SendNettyMessageMessageHandler</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
