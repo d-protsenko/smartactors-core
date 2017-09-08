@@ -15,10 +15,19 @@
                 <include>info.smart_tools.smartactors:testing-plugins.*</include>
             </includes>
             <sources>
-                <includeModuleDirectory>true</includeModuleDirectory>
+                <includeModuleDirectory>false</includeModuleDirectory>
+                <excludes>
+                    <exclude>*.iml</exclude>
+                    <exclude>target/**</exclude>
+                    <exclude>src/**</exclude>
+                </excludes>
                 <fileSets>
                     <fileSet>
+                        <directory>src/main/java</directory>
                         <outputDirectory>/</outputDirectory>
+                        <excludes>
+                            <exclude>${build.exclude}</exclude>
+                        </excludes>
                     </fileSet>
                 </fileSets>
             </sources>

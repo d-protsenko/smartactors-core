@@ -95,6 +95,7 @@
                                 <version>${project.version}</version>
                                 <packaging>zip</packaging>
                                 <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
                             </configuration>
                         </execution>
                     </executions>
