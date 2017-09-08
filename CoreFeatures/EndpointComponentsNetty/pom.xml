@@ -41,6 +41,7 @@
         <module>InboundNettyChannelHandler</module>
         <module>HttpQueryStringParser</module>
         <module>SendNettyMessageMessageHandler</module>
+        <module>HttpExceptionalAction</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

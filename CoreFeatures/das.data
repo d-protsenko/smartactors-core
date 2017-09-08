@@ -3482,6 +3482,16 @@
   "uploadRepositories" : [ ],
   "rawName" : "CreateEmptyMessageMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-message-codecs",
+  "uploadRepositories" : [ ],
+  "rawName" : "DefaultMessageCodecs",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "generic-exception-interceptor-message-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "GenericExceptionInterceptorMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3514,6 +3524,11 @@
   "artifactId" : "send-netty-message-message-handler",
   "uploadRepositories" : [ ],
   "rawName" : "SendNettyMessageMessageHandler",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-exceptional-action",
+  "uploadRepositories" : [ ],
+  "rawName" : "HttpExceptionalAction",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],

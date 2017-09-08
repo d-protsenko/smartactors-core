@@ -37,6 +37,8 @@
         <module>DefaultMessageContextImplementation</module>
         <module>MessageAttributeRoutingMessageHandler</module>
         <module>CreateEmptyMessageMessageHandler</module>
+        <module>DefaultMessageCodecs</module>
+        <module>GenericExceptionInterceptorMessageHandler</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
