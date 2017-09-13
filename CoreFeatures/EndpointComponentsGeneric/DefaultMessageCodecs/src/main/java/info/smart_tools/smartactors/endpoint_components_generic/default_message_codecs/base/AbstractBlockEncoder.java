@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T>
  */
-public abstract class AbstractBlockEncoder<T extends IDefaultMessageContext<IObject, IOutboundMessageByteArray<?>, ?>>
+public abstract class AbstractBlockEncoder<T extends IDefaultMessageContext<IObject, ? extends IOutboundMessageByteArray<?>, ?>>
         implements IBypassMessageHandler<T> {
     private final IFieldName messageFieldName;
 

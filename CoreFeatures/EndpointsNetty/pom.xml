@@ -9,40 +9,28 @@
     </parent>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>endpoint-components-generic</artifactId>
+    <artifactId>endpoints-netty</artifactId>
     <version>0.3.3</version>
 
     <packaging>pom</packaging>
 
+    <modules>
+        <module>StaticHttpEndpoint</module>
+        <module>EndpointsNettyDistribution</module>
+    </modules>
+
     <dependencies>
-        <!-- Endpoint component interfaces -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-interfaces.imessage-handler</artifactId>
+            <artifactId>endpoint-components-generic</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-interfaces.imessage-byte-array</artifactId>
+            <artifactId>endpoint-components-netty</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
-
-    <modules>
-        <module>ScopeSetterMessageHandler</module>
-        <module>SendInternalMessageHandler</module>
-        <module>CreateEnvironmentMessageHandler</module>
-        <module>AsynchronousUnorderedMessageHandler</module>
-        <module>DefaultMessageHandlerPipeline</module>
-        <module>DefaultMessageContextImplementation</module>
-        <module>MessageAttributeRoutingMessageHandler</module>
-        <module>CreateEmptyMessageMessageHandler</module>
-        <module>DefaultMessageCodecs</module>
-        <module>GenericExceptionInterceptorMessageHandler</module>
-        <module>EndpointResponseStrategy</module>
-        <module>ResponseStrategySetMessageHandler</module>
-        <module>EndpointComponentsGenericDistribution</module>
-    </modules>
 
     <build>
         <pluginManagement>

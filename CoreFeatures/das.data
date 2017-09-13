@@ -3497,6 +3497,11 @@
   "uploadRepositories" : [ ],
   "rawName" : "EndpointResponseStrategy",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "response-strategy-set-message-handler",
+  "uploadRepositories" : [ ],
+  "rawName" : "ResponseStrategySetMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3546,6 +3551,19 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-components-netty",
   "rawName" : "EndpointComponentsNetty",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "static-http-endpoint",
+  "uploadRepositories" : [ ],
+  "rawName" : "StaticHttpEndpoint",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "endpoints-netty",
+  "rawName" : "EndpointsNetty",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ ],

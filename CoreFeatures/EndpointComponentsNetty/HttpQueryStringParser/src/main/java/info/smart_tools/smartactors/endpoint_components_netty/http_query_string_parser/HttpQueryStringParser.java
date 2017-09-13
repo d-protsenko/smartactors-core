@@ -23,10 +23,11 @@ import java.util.Map;
  * Message handler that parses query string of the inbound HTTP request and stores query parameter values in the
  * internal message.
  *
- * @param <T>
+ * @param <TReq>
+ * @param <TCtx>
  */
-public class HttpQueryStringParser<T extends IDefaultMessageContext<IInboundMessageByteArray<? extends HttpRequest>, IObject, ?>>
-        implements IBypassMessageHandler<T> {
+public class HttpQueryStringParser<TReq extends HttpRequest, TCtx>
+        implements IBypassMessageHandler<IDefaultMessageContext<IInboundMessageByteArray<TReq>, IObject, TCtx>> {
     private final IFieldName messageFieldName;
 
     /**
@@ -40,8 +41,10 @@ public class HttpQueryStringParser<T extends IDefaultMessageContext<IInboundMess
     }
 
     @Override
-    public void handle(final IMessageHandlerCallback<T> next, final T context)
-            throws MessageHandlerException {
+    public void handle(
+            final IMessageHandlerCallback<IDefaultMessageContext<IInboundMessageByteArray<TReq>, IObject, TCtx>> next,
+            final IDefaultMessageContext<IInboundMessageByteArray<TReq>, IObject, TCtx> context)
+                throws MessageHandlerException {
         try {
             String uri = context.getSrcMessage().getMessage().uri();
             IObject message = (IObject) context.getDstMessage().getValue(messageFieldName);

@@ -10,7 +10,12 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 
 import java.nio.ByteBuffer;
 
-public class JsonBlockEncoder<T extends IDefaultMessageContext<IObject, IOutboundMessageByteArray<?>, ?>>
+/**
+ * A {@link AbstractBlockEncoder block encoder} that encodes a message to JSON.
+ *
+ * @param <T>
+ */
+public class JsonBlockEncoder<T extends IDefaultMessageContext<IObject, ? extends IOutboundMessageByteArray<?>, ?>>
         extends AbstractBlockEncoder<T> {
     /**
      * The constructor.

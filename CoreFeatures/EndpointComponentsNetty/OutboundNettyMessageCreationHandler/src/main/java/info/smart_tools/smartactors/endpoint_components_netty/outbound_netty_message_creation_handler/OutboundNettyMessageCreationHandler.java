@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.endpoint_components_netty.outbound_netty_me
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IMessageByteArray;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IOutboundMessageByteArray;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
@@ -23,7 +24,7 @@ public class OutboundNettyMessageCreationHandler<
         TDstMessage extends ByteBufHolder,
         TSrcMessage,
         TSrcContext extends IDefaultMessageContext<TSrcMessage, Void, Channel>,
-        TDstContext extends IDefaultMessageContext<TSrcContext, IMessageByteArray<TDstMessage>, Channel>>
+        TDstContext extends IDefaultMessageContext<TSrcMessage, IOutboundMessageByteArray<TDstMessage>, Channel>>
             implements IMessageHandler<TSrcContext, TDstContext> {
     private final IFunction0<TDstMessage> messageFactory;
 

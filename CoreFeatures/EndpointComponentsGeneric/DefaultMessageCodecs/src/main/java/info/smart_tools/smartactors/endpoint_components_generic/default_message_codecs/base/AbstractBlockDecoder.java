@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T>
  */
-public abstract class AbstractBlockDecoder<T extends IDefaultMessageContext<IInboundMessageByteArray<?>, IObject, ?>>
+public abstract class AbstractBlockDecoder<T extends IDefaultMessageContext<? extends IInboundMessageByteArray<?>, IObject, ?>>
         implements IBypassMessageHandler<T> {
     private final IFieldName messageFieldName;
 
@@ -54,6 +54,7 @@ public abstract class AbstractBlockDecoder<T extends IDefaultMessageContext<IInb
      *
      * @param buf external message content
      * @return internal message object
+     * @throws BlockCodecException if any error occurs decoding the message
      */
     protected abstract IObject decode(ByteBuffer buf) throws BlockCodecException;
 }

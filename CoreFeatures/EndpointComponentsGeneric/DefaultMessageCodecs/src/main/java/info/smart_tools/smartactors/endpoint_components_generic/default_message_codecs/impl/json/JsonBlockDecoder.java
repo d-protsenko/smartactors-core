@@ -12,7 +12,12 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-public class JsonBlockDecoder<T extends IDefaultMessageContext<IInboundMessageByteArray<?>, IObject, ?>>
+/**
+ * A {@link AbstractBlockDecoder block decoder} that decodes each block as a JSON document.
+ *
+ * @param <T>
+ */
+public class JsonBlockDecoder<T extends IDefaultMessageContext<? extends IInboundMessageByteArray<?>, IObject, ?>>
         extends AbstractBlockDecoder<T> {
     /**
      * The constructor.

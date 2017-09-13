@@ -86,6 +86,7 @@
         <module>EndpointInterfaces</module>
         <module>EndpointComponentsGeneric</module>
         <module>EndpointComponentsNetty</module>
+        <module>EndpointsNetty</module>
     </modules>
 
     <build>
