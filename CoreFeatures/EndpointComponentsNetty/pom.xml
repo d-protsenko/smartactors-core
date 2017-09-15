@@ -7,10 +7,7 @@
         <artifactId>core-features</artifactId>
         <version>0.3.3</version>
     </parent>
-
-    <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>endpoint-components-netty</artifactId>
-    <version>0.3.3</version>
 
     <packaging>pom</packaging>
 
@@ -43,6 +40,7 @@
         <module>SendNettyMessageMessageHandler</module>
         <module>HttpExceptionalAction</module>
         <module>OutboundNettyMessageCreationHandler</module>
+        <module>DeserializeStrategyGet</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
