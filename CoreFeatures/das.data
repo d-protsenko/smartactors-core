@@ -3545,6 +3545,21 @@
   "uploadRepositories" : [ ],
   "rawName" : "OutboundNettyMessageCreationHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "inetty-transport-provider",
+  "uploadRepositories" : [ ],
+  "rawName" : "INettyTransportProvider",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "default-transport-providers",
+  "uploadRepositories" : [ ],
+  "rawName" : "DefaultTransportProviders",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "event-loops-configuration-section",
+  "uploadRepositories" : [ ],
+  "rawName" : "EventLoopsConfigurationSection",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

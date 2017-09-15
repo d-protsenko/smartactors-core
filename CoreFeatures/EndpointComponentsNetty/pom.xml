@@ -43,6 +43,9 @@
         <module>SendNettyMessageMessageHandler</module>
         <module>HttpExceptionalAction</module>
         <module>OutboundNettyMessageCreationHandler</module>
+        <module>INettyTransportProvider</module>
+        <module>DefaultTransportProviders</module>
+        <module>EventLoopsConfigurationSection</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
