@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>endpoint-components-netty</artifactId>
+        <groupId>info.smart_tools.smartactors</groupId>
         <version>0.3.3</version>
     </parent>
-    <artifactId>endpoint-components-netty.deserialize-strategy-get</artifactId>
+    <artifactId>endpoint-components-netty.http-headers-setter</artifactId>
 
     <dependencies>
         <!-- Components of info.smart_tools.smartactors.base -->
@@ -38,6 +40,11 @@
             <artifactId>iobject.iobject</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.ifield</artifactId>
+            <version>RELEASE</version>
+        </dependency>
 
         <!-- Components of info.smart_tools.smartactors.ioc -->
         <dependency>
@@ -48,12 +55,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.parse-tree</artifactId>
             <version>RELEASE</version>
         </dependency>
 

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.endpoint_component_netty.deserialize_strategy_get;
+package info.smart_tools.smartactors.endpoint_component_netty.http_path_parse;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint_components_generic.parse_tree.IParseTree;
@@ -20,7 +20,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import java.util.List;
 import java.util.Map;
 
-public class DeserializeStrategyGet<TReq extends HttpRequest, TCtx>
+public class HttpPathParse<TReq extends HttpRequest, TCtx>
         implements IBypassMessageHandler<IDefaultMessageContext<IInboundMessageByteArray<TReq>, IObject, TCtx>> {
     private final IFieldName messageFieldName;
     private final IParseTree tree;
@@ -30,7 +30,7 @@ public class DeserializeStrategyGet<TReq extends HttpRequest, TCtx>
      *
      * @throws ResolutionException if error occurs resolving any dependencies
      */
-    public DeserializeStrategyGet(List<String> templates) throws ResolutionException {
+    public HttpPathParse(List<String> templates) throws ResolutionException {
         messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
         this.tree = IOC.resolve(Keys.getOrAdd(IParseTree.class.getCanonicalName()));
         if (null == templates) {

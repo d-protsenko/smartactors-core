@@ -40,8 +40,9 @@
         <module>SendNettyMessageMessageHandler</module>
         <module>HttpExceptionalAction</module>
         <module>OutboundNettyMessageCreationHandler</module>
-        <module>DeserializeStrategyGet</module>
+        <module>HttpPathParse</module>
         <module>EndpointComponentsNettyDistribution</module>
+        <module>HttpHeadersSetter</module>
     </modules>
 
     <build>
