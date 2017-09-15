@@ -15,8 +15,6 @@ The following transport types are registered by default plugin:
 * `"force-native"` - use native transport if possible, fail otherwise
 * `"blocking"` - use OIO transport
 
-**TODO**: Remove this TODO when all transport types will be implemented
-
 ## Event loops configuration section
 
 This feature adds a configuration section named `"nettyEventLoops"` that may be used to configure event loops used by Netty endpoints to poll channels.
