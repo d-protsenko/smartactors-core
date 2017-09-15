@@ -29,6 +29,7 @@
     </dependencies>
 
     <modules>
+        <module>ParseTree</module>
         <module>ScopeSetterMessageHandler</module>
         <module>SendInternalMessageHandler</module>
         <module>CreateEnvironmentMessageHandler</module>
