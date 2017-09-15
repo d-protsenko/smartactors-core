@@ -41,8 +41,9 @@
         <module>HttpExceptionalAction</module>
         <module>OutboundNettyMessageCreationHandler</module>
         <module>HttpPathParse</module>
-        <module>EndpointComponentsNettyDistribution</module>
         <module>HttpHeadersSetter</module>
+        <module>CookiesSetter</module>
+        <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
     <build>
