@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.system_actors_pack.repeater_actor;
 
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.system_actors_pack.repeater_actor.wrapper.IRepeatRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class RepeaterActorTest {
     public void Should_repeaterRepeatChainWhenRequired()
             throws Exception {
         when(sequenceMock.getCurrentLevel()).thenReturn(42);
-        when(requestMock.repeat()).thenReturn(true);
+        when(requestMock.getRepeatCondition()).thenReturn(true);
 
         RepeaterActor actor = new RepeaterActor();
 
@@ -41,7 +42,7 @@ public class RepeaterActorTest {
     @Test
     public void Should_repeaterNotRepeatChainWhenNotRequired()
             throws Exception {
-        when(requestMock.repeat()).thenReturn(false);
+        when(requestMock.getRepeatCondition()).thenReturn(false);
 
         RepeaterActor actor = new RepeaterActor();
 

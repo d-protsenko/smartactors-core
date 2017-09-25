@@ -12,7 +12,7 @@ step.
 
 In `"objects"` section:
 
-```JavaScript
+```json
 {
     "kind": "raw",
     "dependency": "ActorCollection",
@@ -67,12 +67,14 @@ Default strategy deletes the receiver if there is a deletion flag set in
 message context (`"deleteChild"` field of message context is set to
 `true`). You may easily set this flag in a child receiver if you have a
 setter method in wrapper configured like the following:
+
 ```JavaScript
 "wrapper": {
     "out_setKillChild": "context/deleteChild",
     // . . .
 }
 ```
+
 Default strategy clears the flag after reading it so setting it in one
 child receiver will not destroy all the next child receivers the message
 passes.
@@ -82,13 +84,105 @@ returns so it's undefined behavior if the flag is set in code executed
 asynchronously.
 
 ## Object enumeration actor
+Actor that enumerates messaging system objects (receivers and chains).
 
-TBD
+### Configuration example
+In `"objects"` section:
+
+```json
+{
+    "kind": "raw",
+    "dependency": "ObjectEnumerationActor",
+    "name": "objectEnumerationActor"
+}
+```
+
+In chain step:
+
+Enumerates all chains stored in global chain storage.
+```json
+{
+    "target": "objectEnumerationActor",
+    "handler": "enumerateChains",
+    "wrapper": {
+        "out_setItems": "message/chainsList"
+    }
+}
+```
+
+Enumerates all message receivers registered in global router.
+```json
+{
+    "target": "objectEnumerationActor",
+    "handler": "enumerateReceivers",
+    "wrapper": {
+        "in_getUpCounterName": "message/receiversList"
+    }
+}
+```
 
 ## Repeater actor
+Actor repeating current chain in message processing sequence.
 
-TBD
+### Configuration example
+In `"objects"` section:
+
+```json
+{
+    "kind": "actor",
+    "dependency": "RepeaterActor",
+    "name": "repeaterActor"
+}
+```
+In chain step:
+
+```json
+{
+    "target": "repeaterActor",
+    "handler": "handle",
+    "wrapper": {
+        "in_getSequence": "processor/sequence",
+        "in_getRepeatCondition": "message/repeatCondition"
+    }
+}
+```
 
 ## Shutdown actor
+Actor serves for shutdown server.
 
-TBD
+### Configuration example
+
+In `"objects"` section:
+
+```json
+{
+    "kind": "raw",
+    "dependency": "shutdown actor",
+    "name": "shutdownActor"
+}
+```
+
+In chain step:
+
+Shutdown
+```json
+{
+    "target": "shutdownActor",
+    "handler": "shutdown",
+    "wrapper": {
+        "in_getShutdownMode": "message/shutdownMode",
+        "in_getUpCounterName": "message/upCounterName"
+    }
+}
+```
+
+Force shutdown
+```json
+{
+    "target": "shutdownActor",
+    "handler": "forceShutdown",
+    "wrapper": {
+        "in_getUpCounterName": "message/upCounterName"
+    }
+}
+```

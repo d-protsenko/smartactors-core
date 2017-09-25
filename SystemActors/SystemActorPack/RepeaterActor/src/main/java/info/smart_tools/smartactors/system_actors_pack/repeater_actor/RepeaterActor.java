@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.system_actors_pack.repeater_actor;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.system_actors_pack.repeater_actor.wrapper.IRepeatRequest;
 
 /**
  * Actor repeating current chain in message processing sequence.
@@ -18,9 +19,8 @@ public class RepeaterActor {
      */
     public void handle(final IRepeatRequest request)
             throws ReadValueException, InvalidArgumentException {
-        if (request.repeat()) {
+        if (request.getRepeatCondition()) {
             IMessageProcessingSequence sequence = request.getSequence();
-
             sequence.goTo(sequence.getCurrentLevel(), 0);
         }
     }
