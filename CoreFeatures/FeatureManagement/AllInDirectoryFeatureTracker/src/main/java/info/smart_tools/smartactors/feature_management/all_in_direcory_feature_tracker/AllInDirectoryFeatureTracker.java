@@ -37,6 +37,7 @@ public class AllInDirectoryFeatureTracker {
 
     /**
      * Default constructor
+     *
      * @throws ResolutionException if any errors occurred on IOC resolution
      */
     public AllInDirectoryFeatureTracker()
@@ -53,6 +54,7 @@ public class AllInDirectoryFeatureTracker {
 
     /**
      * Scans specific directory for features descriptions, creates features and puts them to the message for post processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureTrackerException if any errors occurred on feature creation
      */
@@ -60,8 +62,8 @@ public class AllInDirectoryFeatureTracker {
             throws FeatureTrackerException {
         try {
             String path = wrapper.getPath();
-            File[] f = new File(path).listFiles(File::isDirectory);
-            File[] fZipped = new File(path).listFiles((item, string) ->  string.endsWith(".zip"));
+            
+            File[] fZipped = new File(path).listFiles((item, string) -> string.endsWith(".zip"));
 
             File downloadList = new File(path + "/features.json");
 
@@ -69,14 +71,6 @@ public class AllInDirectoryFeatureTracker {
 
             features.putAll(this.parseFeatureList(downloadList));
 
-            Arrays.stream(f).map(m -> {
-                        try {
-                            return createFeature(m);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-            ).forEach(i -> features.put(i.getName(), i));
             Arrays.stream(fZipped).map(m -> {
                         try {
                             return createZippedFeature(m);

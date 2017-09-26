@@ -12,19 +12,16 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryStorageObserverException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.*;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,6 +29,28 @@ import java.util.concurrent.locks.ReentrantLock;
  * Implementation of {@link ISchedulerEntryStorage}.
  */
 public class EntryStorage implements ISchedulerEntryStorage {
+    /**
+     * Subclass of {@link WeakReference weak reference} to {@link ISchedulerEntry scheduler entry} that stores entry identifier.
+     */
+    private static class WeakEntryReference extends WeakReference<ISchedulerEntry> {
+        private final String id;
+
+        /**
+         * The constructor.
+         *
+         * @param referent    the entry
+         * @param q           the reference queue
+         */
+        WeakEntryReference(final ISchedulerEntry referent, final ReferenceQueue<? super ISchedulerEntry> q) {
+            super(referent, q);
+            this.id = referent.getId();
+        }
+
+        String getId() {
+            return id;
+        }
+    }
+
     private final ITimer timer;
 
     private final IRemoteEntryStorage remoteEntryStorage;
@@ -39,7 +58,8 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private final Map<String, ISchedulerEntry> activeEntries;
     private final Map<String, ISchedulerEntry> strongSuspendEntries;
-    private final Map<String, WeakReference<ISchedulerEntry>> weakSuspendEntries;
+    private final Map<String, WeakEntryReference> weakSuspendEntries;
+    private final ReferenceQueue<ISchedulerEntry> weakSuspendReferenceQueue = new ReferenceQueue<>();
 
     private final List<ISchedulerEntry> refreshAwakeList;
     private final List<ISchedulerEntry> refreshSuspendList;
@@ -53,6 +73,14 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     private boolean isEntryCancelledRecently(final String id) {
         return recentlyDeletedIdSets[0].contains(id) || recentlyDeletedIdSets[1].contains(id);
+    }
+
+    private void cleanupWeakSuspendedEntries() {
+        WeakEntryReference reference;
+
+        while (null != (reference = (WeakEntryReference) weakSuspendReferenceQueue.poll())) {
+            weakSuspendEntries.remove(reference.getId());
+        }
     }
 
     /**
@@ -71,7 +99,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
         activeEntries = new HashMap<>();
         strongSuspendEntries = new HashMap<>();
-        weakSuspendEntries = new WeakHashMap<>();
+        weakSuspendEntries = new HashMap<>();
 
         refreshAwakeList = new ArrayList<>();
         refreshSuspendList = new ArrayList<>();
@@ -104,10 +132,15 @@ public class EntryStorage implements ISchedulerEntryStorage {
     public void notifyActive(final ISchedulerEntry entry)
             throws EntryStorageAccessException {
         final String entryId = entry.getId();
+        boolean keepLock = true;
 
         localStorageLock.lock();
         try {
+            cleanupWeakSuspendedEntries();
+
             if (isEntryCancelledRecently(entryId)) {
+                localStorageLock.unlock();
+                keepLock = false;
                 try {
                     entry.cancel();
                     return;
@@ -121,21 +154,25 @@ public class EntryStorage implements ISchedulerEntryStorage {
             strongSuspendEntries.remove(entryId, entry);
             weakSuspendEntries.remove(entryId, entry);
 
-            try {
-                observer.onUpdateEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
-            }
-
             if (null != oldEntry && entry != oldEntry) {
                 try {
+                    localStorageLock.unlock();
+                    keepLock = false;
                     oldEntry.cancel();
                 } catch (EntryScheduleException e) {
                     throw new EntryStorageAccessException("Error cancelling duplicate entry.", e);
                 }
             }
         } finally {
-            localStorageLock.unlock();
+            if (keepLock) {
+                localStorageLock.unlock();
+            }
+        }
+
+        try {
+            observer.onUpdateEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on updated entry.", e);
         }
 
         remoteEntryStorage.weakSaveEntry(entry);
@@ -150,8 +187,10 @@ public class EntryStorage implements ISchedulerEntryStorage {
             if (keepReference) {
                 strongSuspendEntries.put(entry.getId(), entry);
             } else {
-                weakSuspendEntries.put(entry.getId(), new WeakReference<>(entry));
+                weakSuspendEntries.put(entry.getId(), new WeakEntryReference(entry, weakSuspendReferenceQueue));
             }
+
+            cleanupWeakSuspendedEntries();
         } finally {
             localStorageLock.unlock();
         }
@@ -159,22 +198,24 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
     @Override
     public void delete(final ISchedulerEntry entry)
-            throws EntryStorageAccessException {
+            throws EntryStorageAccessException, EntryNotFoundException {
         localStorageLock.lock();
         try {
-            try {
-                recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
+            cleanupWeakSuspendedEntries();
 
-                activeEntries.remove(entry.getId(), entry);
-                strongSuspendEntries.remove(entry.getId(), entry);
-                weakSuspendEntries.remove(entry.getId(), entry);
+            recentlyDeletedIdSets[refreshIterationCounter & 1].add(entry.getId());
 
-                observer.onCancelEntry(entry);
-            } catch (SchedulerEntryStorageObserverException e) {
-                throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
-            }
+            activeEntries.remove(entry.getId(), entry);
+            strongSuspendEntries.remove(entry.getId(), entry);
+            weakSuspendEntries.remove(entry.getId(), entry);
         } finally {
             localStorageLock.unlock();
+        }
+
+        try {
+            observer.onCancelEntry(entry);
+        } catch (SchedulerEntryStorageObserverException e) {
+            throw new EntryStorageAccessException("Error occurred notifying observer on deleted entry.");
         }
 
         // It's safe to delete entry from database outside of critical section as we remember that
@@ -198,8 +239,13 @@ public class EntryStorage implements ISchedulerEntryStorage {
     }
 
     @Override
+    public int countLocalEntries() throws EntryStorageAccessException {
+        return activeEntries.size() + strongSuspendEntries.size() + weakSuspendEntries.size();
+    }
+
+    @Override
     public ISchedulerEntry getEntry(final String id)
-            throws EntryStorageAccessException {
+            throws EntryStorageAccessException, EntryNotFoundException {
         try {
             ISchedulerEntry localEntry = getLocalEntry(id);
 
@@ -213,7 +259,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
         } catch (CancelledLocalEntryRequestException e) {
-            throw new EntryStorageAccessException("The entry was not found as it was cancelled recently.");
+            throw new EntryNotFoundException("The entry was not found as it was cancelled recently.");
         }
     }
 
@@ -255,6 +301,9 @@ public class EntryStorage implements ISchedulerEntryStorage {
             throws EntryStorageAccessException, EntryScheduleException, SchedulerEntryFilterException {
         synchronized (refreshLock) {
             localStorageLock.lock();
+
+            cleanupWeakSuspendedEntries();
+
             try {
                 // Keep references in separate list to avoid ConcurrentModificationException (awake/suspend methods may remove the entry from the
                 // map we are iterating over)

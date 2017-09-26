@@ -166,9 +166,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <inherited>false</inherited>
                     <version>2.8.2</version>
                     <executions>
                         <execution>
@@ -176,7 +174,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.common-features</id>
+                            <id>archiva.common-actors</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -184,17 +182,18 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.zip</file>
-                                <url>http://archiva.smart-tools.info/repository/common-features/</url>
-                                <repositoryId>archiva.common-features</repositoryId>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <url>http://archiva.smart-tools.info/repository/common-actors/</url>
+                                <repositoryId>archiva.common-actors</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
-                                <packaging>zip</packaging>
-                                <description>This archive contains ...</description>
+                                <packaging>jar</packaging>
+                                <description>This package contains ...</description>
                             </configuration>
                         </execution>
                     </executions>
+                    <inherited>false</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>

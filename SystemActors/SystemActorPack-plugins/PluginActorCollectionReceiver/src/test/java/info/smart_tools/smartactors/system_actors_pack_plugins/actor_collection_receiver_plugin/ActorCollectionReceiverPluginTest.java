@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -42,7 +45,6 @@ public class ActorCollectionReceiverPluginTest {
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
-
     }
 
     @Test
@@ -53,17 +55,17 @@ public class ActorCollectionReceiverPluginTest {
         IPlugin plugin = new ActorCollectionReceiverPlugin(bootstrap);
         assertNotNull(plugin);
         plugin.load();
-        verify(bootstrap, times(1)).add(any(IBootstrapItem.class));
+        verify(bootstrap, times(5)).add(any(IBootstrapItem.class));
     }
 
-    @Test (expected = InvalidArgumentException.class)
+    @Test (expected = AssertionError.class)
     public void CheckInvalidArgumentExceptionOnCreationWithEmptyBootstrap()
             throws Exception {
         new ActorCollectionReceiverPlugin(null);
         fail();
     }
 
-    @Test (expected = PluginException.class)
+    @Test (expected = Exception.class)
     public void checkPluginExceptionOnExecuteLoadMethodWithBrokenBootstrap()
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
@@ -77,18 +79,22 @@ public class ActorCollectionReceiverPluginTest {
     public void checkPluginProcessExecution() throws Exception {
         registerKeyStorage();
         registerIFieldNameStrategy();
-        final IBootstrapItem[] items = new IBootstrapItem[1];
+        final List<IBootstrapItem> items = new ArrayList<>();
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                items[0] = (BootstrapItem)invocationOnMock.getArguments()[0];
+                items.add((BootstrapItem)invocationOnMock.getArguments()[0]);
                 return null;
             }
         }).when(bootstrap).add(any(IBootstrapItem.class));
         IPlugin plugin = new ActorCollectionReceiverPlugin(bootstrap);
         plugin.load();
-        items[0].executeProcess();
+        for (IBootstrapItem item : items) {
+            if (item.getItemName().equals("ActorCollectionReceiver")) {
+                item.executeProcess();
+            }
+        }
         IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "ActorCollection"));
         assertNotNull(receiver);
     }

@@ -40,8 +40,6 @@ public class PasswordEncoderPlugin implements IPlugin {
         try {
             IBootstrapItem<String> item = new BootstrapItem("PasswordEncoderPlugin");
             item
-                .after("IOC")
-                .before("starter")
                 .process(() -> {
                     try {
                         IOC.register(Keys.getOrAdd("CharSequenceCodec"), new ApplyFunctionToArgumentsStrategy(

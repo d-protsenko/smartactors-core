@@ -39,6 +39,20 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -83,14 +97,15 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.zip</file>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.${deploy.fomat}</file>
                                 <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
                                 <repositoryId>archiva.smartactors-features</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
-                                <packaging>zip</packaging>
+                                <packaging>${deploy.format}</packaging>
                                 <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
                             </configuration>
                         </execution>
                     </executions>

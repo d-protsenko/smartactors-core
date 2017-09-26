@@ -8,29 +8,6 @@
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
-    <!--<moduleSets>-->
-        <!--<moduleSet>-->
-            <!--<useAllReactorProjects>true</useAllReactorProjects>-->
-            <!--<includes>-->
-                <!--<include>info.smart_tools.smartactors:servers.*</include>-->
-            <!--</includes>-->
-            <!--<binaries>-->
-                <!--<outputDirectory>/</outputDirectory>-->
-                <!--<unpack>false</unpack>-->
-            <!--</binaries>-->
-        <!--</moduleSet>-->
-    <!--</moduleSets>-->
-    <!--<fileSets>-->
-        <!--<fileSet>-->
-            <!--<outputDirectory>/</outputDirectory>-->
-            <!--<includes>-->
-                <!--<include>configuration.json</include>-->
-                <!--<include>core</include>-->
-                <!--<include>corefeatures</include>-->
-                <!--<include>features</include>-->
-            <!--</includes>-->
-        <!--</fileSet>-->
-    <!--</fileSets>-->
     <files>
         <file>
             <source>../Server/target/server.jar</source>
