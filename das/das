@@ -2,12 +2,43 @@
 
 if [ "$1" = "make" ]
 then
-    echo "make project"
-    mvn clean install package
+    if [ "$2" = "jar" ]
+    then
+        if [ "$3" = "sources" ]
+        then
+            echo "make project jars"
+            mvn clean install package -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=
+        else
+            echo "make project jars"
+            mvn clean install package -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=**/**
+        fi
+    elif [ "$2" = "zip" ]
+    then
+        echo "make project zips"
+        mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
+    else
+        echo "make project zips"
+        mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
+    fi
 elif [ "$1" = "deploy" ]
 then
+    if [ "$2" = "jar" ]
+    then
+    if [ "$3" = "sources" ]
+    then
+        echo "make project jars"
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=jar -Ddeploy.classifier=sources deploy
+    else
+        echo "make project jars"
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=jar -Ddeploy.classifier= deploy
+    fi
+    elif [ "$2" = "zip"]
+    then
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=zip -Ddeploy.classifier= deploy
+    else
+        mvn -Dmaven.test.skip=true -DdeployOnly=true -Ddeploy.fomat=zip -Ddeploy.classifier= deploy
+    fi
     echo "deploy project components"
-    mvn -Dmaven.test.skip=true -DdeployOnly=true deploy
 else
     java -D -jar /usr/share/das/das.jar $@
 fi

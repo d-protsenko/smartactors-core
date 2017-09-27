@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
+import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.ConfigureMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.EnteringMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.FeedbackMessage;
 import info.smart_tools.smartactors.checkpoint.checkpoint_actor.wrappers.StartStopMessage;
@@ -23,6 +24,8 @@ import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_containe
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 
@@ -190,9 +193,10 @@ public class CheckpointActor {
      * @throws EntryScheduleException if error occurs cancelling the entry
      * @throws InvalidArgumentException if something goes wrong
      * @throws ChangeValueException if error occurs updating entry state
+     * @throws EntryStorageAccessException if error occurs accessing entry storage
      */
     public void feedback(final FeedbackMessage message)
-            throws ReadValueException, ChangeValueException, InvalidArgumentException, EntryScheduleException {
+            throws ReadValueException, ChangeValueException, InvalidArgumentException, EntryScheduleException, EntryStorageAccessException {
         try {
             ISchedulerEntry entry = service.getEntryStorage().getEntry(message.getPrevCheckpointEntryId());
 
@@ -201,11 +205,18 @@ public class CheckpointActor {
                 return;
             }
 
-            entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
+            // Pause entry execution to prevent race between current thread and timer thread
+            entry.pause();
+            try {
 
-            entry.getState().setValue(gotFeedbackFieldName, true);
-            entry.getState().setValue(completedFieldName, true);
-        } catch (EntryStorageAccessException ignore) {
+                entry.scheduleNext(System.currentTimeMillis() + COMPLETE_ENTRY_RESCHEDULE_DELAY);
+
+                entry.getState().setValue(gotFeedbackFieldName, true);
+                entry.getState().setValue(completedFieldName, true);
+            } finally {
+                entry.unpause();
+            }
+        } catch (EntryNotFoundException | EntryPauseException ignore) {
             // There is no entry with required identifier. OK
         }
     }
@@ -232,6 +243,18 @@ public class CheckpointActor {
     public void stop(final StartStopMessage message)
             throws IllegalServiceStateException, ServiceStopException {
         service.stop();
+    }
+
+    /**
+     * Configure scheduling service of this checkpoint.
+     *
+     * @param message    the message
+     * @throws InvalidArgumentException if configuration is not valid
+     * @throws ReadValueException if error occurs reading the configuration
+     */
+    public void configure(final ConfigureMessage message)
+            throws InvalidArgumentException, ReadValueException {
+        service.configure(message.getConfig());
     }
 
     private IObject cloneMessage(final IObject message)

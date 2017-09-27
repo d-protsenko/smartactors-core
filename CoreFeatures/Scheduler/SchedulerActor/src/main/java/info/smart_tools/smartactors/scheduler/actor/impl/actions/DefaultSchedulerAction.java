@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.scheduler.actor.impl;
+package info.smart_tools.smartactors.scheduler.actor.impl.actions;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;

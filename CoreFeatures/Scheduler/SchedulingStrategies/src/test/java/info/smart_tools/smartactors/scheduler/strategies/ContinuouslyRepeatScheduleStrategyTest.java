@@ -186,4 +186,22 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         long nextInterval = LocalDateTime.ofInstant(Instant.ofEpochMilli(captured0), ZoneOffset.UTC).plus(Period.ofMonths(2)).atZone(ZoneOffset.UTC).toInstant().toEpochMilli() - captured0;
         assertEquals(nextInterval, timeCaptor.getValue() - captured0);
     }
+
+    @Test
+    public void Should_reschedulePausedEntry()
+            throws Exception {
+        ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
+        when(entry.getState()).thenReturn(
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+                        "{'start':'1994-10-15T17:32:05','interval':'P2M'}".replace('\'','"')));
+
+        strategy.notifyPaused(entry);
+        strategy.processPausedExecution(entry);
+
+        verifyNoMoreInteractions(entry);
+
+        strategy.notifyUnPaused(entry);
+
+        verify(entry).scheduleNext(anyLong());
+    }
 }
