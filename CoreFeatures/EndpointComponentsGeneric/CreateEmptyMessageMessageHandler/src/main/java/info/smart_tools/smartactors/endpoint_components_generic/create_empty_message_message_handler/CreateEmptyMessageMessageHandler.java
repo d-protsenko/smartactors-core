@@ -39,7 +39,7 @@ public class CreateEmptyMessageMessageHandler<T extends IDefaultMessageContext<?
     @Override
     public void handle(final IMessageHandlerCallback<T> next, final T context) throws MessageHandlerException {
         try {
-            IObject emptyMessage = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            IObject emptyMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             context.getDstMessage().setValue(messageFieldName, emptyMessage);
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
             throw new MessageHandlerException(e);
