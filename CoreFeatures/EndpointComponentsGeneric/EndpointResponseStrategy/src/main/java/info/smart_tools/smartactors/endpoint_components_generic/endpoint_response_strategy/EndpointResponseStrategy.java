@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
@@ -32,6 +33,8 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
     private final IFieldName contextFN;
     private final IFieldName connectionContextFN;
 
+    private final IKey envKey;
+
     /**
      * The constructor.
      *
@@ -50,6 +53,8 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
         responseFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
         contextFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         connectionContextFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionContext");
+
+        envKey = Keys.getOrAdd(IObject.class.getCanonicalName());
     }
 
     @Override
@@ -62,9 +67,9 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
             // The code putting EndpointResponseStrategy to internal message context should ensure that it is of type
             // TCtx as required by response pipeline
             @SuppressWarnings({"unchecked"})
-            TCtx connectionContext = (TCtx) environment.getValue(connectionContextFN);
+            TCtx connectionContext = (TCtx) requestContext.getValue(connectionContextFN);
 
-            IObject responseEnv = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            IObject responseEnv = IOC.resolve(envKey);
 
             responseEnv.setValue(messageFN, responseObject);
             responseEnv.setValue(contextFN, requestContext);

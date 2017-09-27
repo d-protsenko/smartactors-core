@@ -72,6 +72,18 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-generic.default-message-context-implementation</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

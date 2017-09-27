@@ -1700,6 +1700,11 @@
 } ],
   "rawName" : "TestLoadingPlugins",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "trivial-plugins-loading-test-base",
+  "uploadRepositories" : [ ],
+  "rawName" : "TrivialPluginsLoadingTestBase",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
