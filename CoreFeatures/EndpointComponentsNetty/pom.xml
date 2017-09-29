@@ -11,6 +11,10 @@
 
     <packaging>pom</packaging>
 
+    <properties>
+        <netty.version>4.1.2.Final</netty.version>
+    </properties>
+
     <dependencies>
         <!-- Endpoint component interfaces -->
         <dependency>
@@ -28,7 +32,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.2.Final</version>
+            <version>${netty.version}</version>
         </dependency>
     </dependencies>
 

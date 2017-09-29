@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.endpoint_components_netty.event_loops_configuration_section;
+package info.smart_tools.smartactors.base.synchronized_lazy_named_items_storage_strategy;
 
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
@@ -27,11 +27,14 @@ public class SynchronizedLazyNamedItemsStorageStrategy
     private static final class LazyRef {
         private Object item;
         private ResolveDependencyStrategyException err;
+        private boolean inProgress;
 
         private final IResolveDependencyStrategy factory;
 
         private LazyRef(final IResolveDependencyStrategy factory) {
             this.factory = factory;
+
+            this.inProgress = false;
         }
 
         Object get(final Object... args)
@@ -45,10 +48,17 @@ public class SynchronizedLazyNamedItemsStorageStrategy
             }
 
             try {
+                if (inProgress) {
+                    throw new ResolveDependencyStrategyException("Named items dependency loop detected.");
+                }
+
+                inProgress = true;
                 item = factory.resolve(args);
             } catch (ResolveDependencyStrategyException e) {
                 err = e;
                 throw e;
+            } finally {
+                inProgress = false;
             }
 
             return item;
@@ -80,7 +90,7 @@ public class SynchronizedLazyNamedItemsStorageStrategy
         }
 
         if (res != ref) {
-            throw new RuntimeException();
+            throw new AdditionDependencyStrategyException("Item '" + key + "' is already resolved.");
         }
     }
 

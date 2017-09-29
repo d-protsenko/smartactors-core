@@ -53,6 +53,20 @@
             <version>RELEASE</version>
         </dependency>
 
+        <!-- Endpoint interfaces -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-netty.inetty-transport-provider</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <version>${netty.version}</version>
+            <classifier>linux-x86_64</classifier>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
@@ -68,8 +82,9 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-netty.inetty-transport-provider</artifactId>
-            <version>0.3.3</version>
+            <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

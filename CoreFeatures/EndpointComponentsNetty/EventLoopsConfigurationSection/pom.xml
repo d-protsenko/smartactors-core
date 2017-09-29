@@ -69,16 +69,26 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.inetty-transport-provider</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.iup-counter</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.synchronized-lazy-named-items-storage-strategy</artifactId>
             <version>0.3.3</version>
         </dependency>
     </dependencies>

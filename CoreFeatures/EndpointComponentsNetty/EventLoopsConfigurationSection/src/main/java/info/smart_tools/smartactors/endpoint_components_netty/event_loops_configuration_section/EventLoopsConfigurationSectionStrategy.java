@@ -29,7 +29,7 @@ import java.util.List;
  *          {
  *              "id": "serverParent",                       // Name of event loop group
  *              "transport": "prefer-native",               // Transport type
- *              "upcounter": "root upcounter",              // Upcounter that will manage event loop shutdown
+ *              "upcounter": "root",                        // Upcounter that will manage event loop shutdown
  *              "threads": 4,                               // Transport-specific parameters (thread count, etc)
  *              ...
  *          },
