@@ -17,6 +17,9 @@
     <modules>
         <module>IMessageHandler</module>
         <module>IMessageByteArray</module>
+        <module>IEndpointPipeline</module>
+        <module>IEndpointPipelineSet</module>
+        <module>IEndpointProfile</module>
         <module>EndpointInterfacesDistribution</module>
     </modules>
 

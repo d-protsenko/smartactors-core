@@ -3447,6 +3447,30 @@
   "uploadRepositories" : [ ],
   "rawName" : "IMessageByteArray",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "iendpoint-pipeline",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IEndpointPipeline",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "iendpoint-pipeline-set",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IEndpointPipelineSet",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "iendpoint-profile",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IEndpointProfile",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
