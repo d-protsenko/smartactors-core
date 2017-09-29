@@ -8,10 +8,12 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
+@Ignore
 public class DefaultStaticMessageHandlerPipelineBuilderTest {
     @Test
     public void Should_buildPipeline()
