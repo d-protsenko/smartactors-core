@@ -3539,6 +3539,14 @@
   "uploadRepositories" : [ ],
   "rawName" : "ResponseStrategySetMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-endpoint-profile",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultEndpointProfile",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

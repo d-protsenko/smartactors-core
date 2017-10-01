@@ -42,6 +42,7 @@
         <module>GenericExceptionInterceptorMessageHandler</module>
         <module>EndpointResponseStrategy</module>
         <module>ResponseStrategySetMessageHandler</module>
+        <module>DefaultEndpointProfile</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
