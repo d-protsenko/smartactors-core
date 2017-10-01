@@ -3547,6 +3547,14 @@
 } ],
   "rawName" : "DefaultEndpointProfile",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoint-profiles-configuration-section",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointProfilesConfigurationSection",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
