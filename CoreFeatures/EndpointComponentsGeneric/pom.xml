@@ -44,6 +44,7 @@
         <module>ResponseStrategySetMessageHandler</module>
         <module>DefaultEndpointProfile</module>
         <module>EndpointProfilesConfigurationSection</module>
+        <module>DefaultEndpointPipelineSet</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
