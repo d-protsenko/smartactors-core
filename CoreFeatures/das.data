@@ -3634,6 +3634,30 @@
   "uploadRepositories" : [ ],
   "rawName" : "StaticHttpEndpoint",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-tc-psingle-port-server-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyTCPSinglePortServerEndpoint",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-ud-pserver-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyUDPServerEndpoint",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-base-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyBaseEndpoint",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

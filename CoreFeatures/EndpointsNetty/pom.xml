@@ -16,6 +16,9 @@
 
     <modules>
         <module>StaticHttpEndpoint</module>
+        <module>NettyTCPSinglePortServerEndpoint</module>
+        <module>NettyUDPServerEndpoint</module>
+        <module>NettyBaseEndpoint</module>
         <module>EndpointsNettyDistribution</module>
     </modules>
 
