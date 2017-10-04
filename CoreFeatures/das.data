@@ -3563,6 +3563,14 @@
 } ],
   "rawName" : "DefaultEndpointPipelineSet",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "dead-end-message-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DeadEndMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3620,6 +3628,14 @@
   "artifactId" : "event-loops-configuration-section",
   "uploadRepositories" : [ ],
   "rawName" : "EventLoopsConfigurationSection",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "default-channel-initialization-handlers",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultChannelInitializationHandlers",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
