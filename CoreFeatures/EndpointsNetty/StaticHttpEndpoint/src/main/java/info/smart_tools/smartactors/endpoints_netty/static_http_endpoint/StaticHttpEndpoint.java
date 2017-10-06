@@ -73,8 +73,8 @@ public class StaticHttpEndpoint {
                         new HttpServerExceptionalAction()))
                 .finish();
 
-        ChannelHandler httpInboundHandler = new InboundNettyChannelHandler<>(
-                requestPipelineCallback, DefaultMessageContextImplementation::new, FullHttpRequest.class);
+        //ChannelHandler httpInboundHandler = new InboundNettyChannelHandler<>(
+        //        requestPipelineCallback, DefaultMessageContextImplementation::new, FullHttpRequest.class);
 
 
     }

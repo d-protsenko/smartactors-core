@@ -46,6 +46,7 @@
         <module>EndpointProfilesConfigurationSection</module>
         <module>DefaultEndpointPipelineSet</module>
         <module>EndpointComponentsGenericDistribution</module>
+        <module>DefaultEndpointPipelineImplementation</module>
     </modules>
 
     <build>
