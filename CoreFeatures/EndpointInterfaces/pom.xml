@@ -20,6 +20,7 @@
         <module>IEndpointPipeline</module>
         <module>IEndpointPipelineSet</module>
         <module>IEndpointProfile</module>
+        <module>IOutboundConnectionChannel</module>
         <module>EndpointInterfacesDistribution</module>
     </modules>
 

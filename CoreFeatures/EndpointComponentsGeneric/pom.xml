@@ -46,6 +46,8 @@
         <module>EndpointProfilesConfigurationSection</module>
         <module>DefaultEndpointPipelineSet</module>
         <module>DeadEndMessageHandler</module>
+        <module>DefaultOutboundConnectionChannel</module>
+        <module>OutboundMessageSender</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 

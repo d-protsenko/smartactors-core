@@ -3471,6 +3471,14 @@
 } ],
   "rawName" : "IEndpointProfile",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "ioutbound-connection-channel",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IOutboundConnectionChannel",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3570,6 +3578,22 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DeadEndMessageHandler",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "default-outbound-connection-channel",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultOutboundConnectionChannel",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "outbound-message-sender",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "OutboundMessageSender",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
