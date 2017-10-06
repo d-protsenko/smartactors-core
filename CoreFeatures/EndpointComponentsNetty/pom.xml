@@ -50,6 +50,7 @@
         <module>HttpPathParse</module>
         <module>HttpHeadersSetter</module>
         <module>CookiesSetter</module>
+        <module>DefaultChannelInitializationHandlers</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

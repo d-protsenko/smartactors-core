@@ -3563,6 +3563,14 @@
 } ],
   "rawName" : "DefaultEndpointPipelineSet",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "dead-end-message-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DeadEndMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3621,6 +3629,14 @@
   "uploadRepositories" : [ ],
   "rawName" : "EventLoopsConfigurationSection",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-channel-initialization-handlers",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultChannelInitializationHandlers",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3633,6 +3649,30 @@
   "artifactId" : "static-http-endpoint",
   "uploadRepositories" : [ ],
   "rawName" : "StaticHttpEndpoint",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-tc-psingle-port-server-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyTCPSinglePortServerEndpoint",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-ud-pserver-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyUDPServerEndpoint",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "netty-base-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NettyBaseEndpoint",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
