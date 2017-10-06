@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>endpoint-components-generic</artifactId>
+        <groupId>info.smart_tools.smartactors</groupId>
         <version>0.3.3</version>
     </parent>
-
-    <artifactId>endpoint-components-generic.default-message-handler-pipeline</artifactId>
-    <version>0.3.3</version>
+    <artifactId>endpoint-components-generic.default-endpoint-pipeline-implementation</artifactId>
 
     <dependencies>
         <!-- Components of info.smart_tools.smartactors.base -->
@@ -91,6 +91,13 @@
             <artifactId>endpoint-components-generic.scope-setter-message-handler</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-interfaces.iendpoint-pipeline</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <!-- Tests -->
+
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.ds-object</artifactId>

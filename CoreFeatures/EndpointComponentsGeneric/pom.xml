@@ -49,6 +49,7 @@
         <module>DefaultOutboundConnectionChannel</module>
         <module>OutboundMessageSender</module>
         <module>EndpointComponentsGenericDistribution</module>
+        <module>DefaultEndpointPipelineImplementation</module>
     </modules>
 
     <build>

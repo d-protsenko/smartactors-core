@@ -119,6 +119,5 @@ public class ParseTree implements IParseTree {
             constChildElems.add(treeElem);
             treeElem.addTemplate(template);
         }
-
     }
 }
