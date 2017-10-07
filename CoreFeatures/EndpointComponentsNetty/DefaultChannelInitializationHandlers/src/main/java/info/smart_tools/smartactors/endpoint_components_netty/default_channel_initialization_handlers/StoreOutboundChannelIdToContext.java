@@ -48,5 +48,7 @@ public class StoreOutboundChannelIdToContext<TChannel extends Channel, TSrc>
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new MessageHandlerException(e);
         }
+
+        next.handle(context);
     }
 }

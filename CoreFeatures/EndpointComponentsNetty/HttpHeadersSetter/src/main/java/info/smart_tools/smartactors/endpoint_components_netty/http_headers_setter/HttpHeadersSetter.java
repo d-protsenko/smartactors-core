@@ -30,11 +30,16 @@ import java.util.List;
  */
 public class HttpHeadersSetter<TMsg extends FullHttpMessage, TCtx>
         implements IBypassMessageHandler<IDefaultMessageContext<IObject, IOutboundMessageByteArray<TMsg>, TCtx>> {
-    IField contextField;
-    IField headersField;
-    IFieldName headerName;
-    IFieldName headerValue;
+    private final IField contextField;
+    private final IField headersField;
+    private final IFieldName headerName;
+    private final IFieldName headerValue;
 
+    /**
+     * The constructor.
+     *
+     * @throws ResolutionException if error occurs resolving any dependency
+     */
     public HttpHeadersSetter() throws ResolutionException {
         contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
         headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "headers");
@@ -44,8 +49,8 @@ public class HttpHeadersSetter<TMsg extends FullHttpMessage, TCtx>
 
     @Override
     public void handle(
-        IMessageHandlerCallback<IDefaultMessageContext<IObject, IOutboundMessageByteArray<TMsg>, TCtx>> next,
-        IDefaultMessageContext<IObject, IOutboundMessageByteArray<TMsg>, TCtx> context)
+        final IMessageHandlerCallback<IDefaultMessageContext<IObject, IOutboundMessageByteArray<TMsg>, TCtx>> next,
+        final IDefaultMessageContext<IObject, IOutboundMessageByteArray<TMsg>, TCtx> context)
             throws MessageHandlerException {
         try {
             FullHttpMessage httpMessage = context.getDstMessage().getMessage();

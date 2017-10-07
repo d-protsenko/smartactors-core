@@ -3734,6 +3734,14 @@
   "uploadRepositories" : [ ],
   "rawName" : "DefaultNettyTransportsPlugin",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "message-handler-resolution-strategies-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "MessageHandlerResolutionStrategiesPlugin",
+  "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-components-netty-plugins",

@@ -28,9 +28,10 @@ public class HttpPathParse<TReq extends HttpRequest, TCtx>
     /**
      * The constructor.
      *
+     * @param templates list of path templates
      * @throws ResolutionException if error occurs resolving any dependencies
      */
-    public HttpPathParse(List<String> templates) throws ResolutionException {
+    public HttpPathParse(final List<String> templates) throws ResolutionException {
         messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
         this.tree = IOC.resolve(Keys.getOrAdd(IParseTree.class.getCanonicalName()));
         if (null == templates) {
