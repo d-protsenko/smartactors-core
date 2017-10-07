@@ -3595,6 +3595,22 @@
 } ],
   "rawName" : "OutboundMessageSender",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "message-handler-resolution-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "MessageHandlerResolutionStrategy",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "error-message-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ErrorMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3722,6 +3738,25 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-components-netty-plugins",
   "rawName" : "EndpointComponentsNettyPlugins",
+  "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-features",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+} ],
+  "plugins" : [ {
+  "artifactId" : "message-handler-resolution-strategies-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "MessageHandlerResolutionStrategiesPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "endpoint-components-generic-plugins",
+  "rawName" : "EndpointComponentsGenericPlugins",
   "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ {

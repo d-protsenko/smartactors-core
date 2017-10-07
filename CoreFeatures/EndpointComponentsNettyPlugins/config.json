@@ -1,4 +1,4 @@
 {
   "featureName": "info.smart_tools.smartactors:endpoint-components-netty-plugins",
-  "afterFeatures": []
+  "afterFeatures": ["info.smart_tools.smartactors:endpoint-components-netty"]
 }
