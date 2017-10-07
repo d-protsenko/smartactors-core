@@ -13,6 +13,10 @@
     <packaging>pom</packaging>
     <modules>
         <module>MessageHandlerResolutionStrategiesPlugin</module>
+        <module>EndpointProfileStrategiesPlugin</module>
+        <module>EndpointSkeletonsPlugin</module>
+        <module>EndpointsConfigSectionPlugin</module>
+        <module>EndpointPipelineSetPlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>

@@ -3611,6 +3611,14 @@
 } ],
   "rawName" : "ErrorMessageHandler",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoints-config-section-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointsConfigSectionStrategy",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3760,6 +3768,38 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageHandlerResolutionStrategiesPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoint-profile-strategies-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointProfileStrategiesPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoint-skeletons-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointSkeletonsPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoints-config-section-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointsConfigSectionPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "endpoint-pipeline-set-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointPipelineSetPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
