@@ -62,6 +62,16 @@
             <artifactId>endpoint-components-netty.inbound-netty-channel-handler</artifactId>
             <version>0.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-interfaces.iendpoint-pipeline</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-interfaces.ioutbound-connection-channel</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
