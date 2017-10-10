@@ -35,9 +35,7 @@ public class DefaultEndpointPipelineImplementation implements IEndpointPipeline 
         ListIterator li = handlers.listIterator(handlers.size());
         while (li.hasPrevious()) {
             IMessageHandler handler = (IMessageHandler) li.previous();
-            this.callback = (ctx -> {
-                handler.handle(callback, ctx);
-            });
+            this.callback = (ctx -> handler.handle(callback, ctx));
         }
     }
 
