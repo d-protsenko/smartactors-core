@@ -91,7 +91,8 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                 (map, key) -> ((Map) map).get(key)
         );
 
-        storage.register("root", IOC.resolve(Keys.getOrAdd("root upcounter")));
+        IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        storage.register("root", new SingletonStrategy(rootUpCounter));
 
         IOC.register(Keys.getOrAdd("upcounter"), storage);
         IOC.register(Keys.getOrAdd("expandable_strategy#upcounter"), new SingletonStrategy(storage));

@@ -18,6 +18,7 @@
         <module>EndpointsConfigSectionPlugin</module>
         <module>EndpointPipelineSetPlugin</module>
         <module>EndpointPipelinePlugin</module>
+        <module>EndpointProfilesConfigurationSectionPlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>

@@ -110,7 +110,7 @@ public class EndpointProfilesConfigurationSectionStrategy implements ISectionStr
                 IObject descriptionIObject = (IObject) description;
                 Object id = descriptionIObject.getValue(idFieldName);
 
-                IEndpointProfile profile = IOC.resolve(Keys.getOrAdd("create endpoint profile"), descriptionIObject);
+                IEndpointProfile profile = IOC.resolve(Keys.getOrAdd("parse endpoint profile"), descriptionIObject);
                 profilesStrategy.register(id, new SingletonStrategy(profile));
             }
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | AdditionDependencyStrategyException e) {

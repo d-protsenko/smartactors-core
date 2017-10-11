@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.endpoint_components_generic_plugins.endpoint_profile_strategies_plugin;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.endpoint_components_generic.default_endpoint_profile.ProfileCreationStrategy;
@@ -33,7 +34,13 @@ public class EndpointProfileStrategiesPlugin extends BootstrapPlugin {
     public void registerNamedStorage() throws Exception {
         StrategyStorageStrategy storage = new StrategyStorageStrategy(
                 x -> x,
-                (map, key) -> ((Map) map).get(key)
+                (map, key) -> {
+                    Object r = ((Map) map).get(key);
+                    if (null == r) {
+                        throw new FunctionExecutionException("No profile named '" + key + "' found.");
+                    }
+                    return r;
+                }
         );
 
         IOC.register(Keys.getOrAdd("endpoint profile"), storage);

@@ -30,7 +30,7 @@ public class EndpointProfilesConfigurationSectionStrategyTest extends TrivialPlu
         IOC.register(Keys.getOrAdd("expandable_strategy#endpoint profile"),
                 new SingletonStrategy(namedProfilesStrategy));
         creationStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("create endpoint profile"), creationStrategy);
+        IOC.register(Keys.getOrAdd("parse endpoint profile"), creationStrategy);
     }
 
     private static String conf1 = ("" +

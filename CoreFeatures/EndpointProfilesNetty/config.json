@@ -231,7 +231,8 @@
           "id": "accept-client/setup-channel",
           "stages": [
             {
-              "type": "netty/setup/http server channel"
+              "type": "netty/setup/http server channel",
+              "maxAggregatedContentLength": 4096
             }
           ]
         },
