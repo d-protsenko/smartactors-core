@@ -70,7 +70,7 @@ public class NettyUDPServerEndpoint extends NettyBaseServerEndpoint {
      * @throws PipelineDescriptionNotFoundException if noo description found for configured pipeline name
      * @throws PipelineCreationException            if error occurs creating any of endpoint pipelines
      */
-    protected NettyUDPServerEndpoint(final IObject config, final IEndpointPipelineSet pipelineSet)
+    public NettyUDPServerEndpoint(final IObject config, final IEndpointPipelineSet pipelineSet)
             throws ReadValueException, InvalidArgumentException, ResolutionException, InvalidEventLoopGroupException,
             UnsupportedChannelTypeException, PipelineDescriptionNotFoundException, PipelineCreationException {
         super(config);
