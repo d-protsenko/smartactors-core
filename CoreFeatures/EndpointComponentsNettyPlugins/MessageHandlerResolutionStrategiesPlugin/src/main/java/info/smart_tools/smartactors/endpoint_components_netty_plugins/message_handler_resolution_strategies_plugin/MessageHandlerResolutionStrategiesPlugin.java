@@ -90,6 +90,11 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/fixed http path parser",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     List templates = (List) handlerConf.getValue(templatesFN);
+
+                    if (null == templates) {
+                        templates = (List) endpointConf.getValue(templatesFN);
+                    }
+
                     return new HttpPathParse(templates);
                 }));
 
@@ -199,7 +204,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/create outbound message",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     Object typeName = handlerConf.getValue(messageTypeFN);
-                    IFunction0 factory = IOC.resolve(Keys.getOrAdd("netty outbound message factory"), messageTypeFN);
+                    IFunction0 factory = IOC.resolve(Keys.getOrAdd("netty outbound message factory"), typeName);
                     return new OutboundNettyMessageCreationHandler(factory);
                 }));
 

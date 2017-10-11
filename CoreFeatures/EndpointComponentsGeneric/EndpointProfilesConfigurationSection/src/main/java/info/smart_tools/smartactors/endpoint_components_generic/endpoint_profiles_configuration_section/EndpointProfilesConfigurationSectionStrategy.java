@@ -45,6 +45,7 @@ import java.util.List;
  *      "endpointProfiles": [
  *          {
  *              "id": "1",
+ *              "extend": [],
  *              ...
  *          },
  *          {
@@ -71,6 +72,7 @@ import java.util.List;
  *      "endpointProfiles": [
  *          {
  *              "id": "1",
+ *              "extend": [],
  *              ...
  *          },
  *          {

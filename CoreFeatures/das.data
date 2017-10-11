@@ -3833,6 +3833,17 @@
   "artifactId" : "endpoints-netty-plugins",
   "rawName" : "EndpointsNettyPlugins",
   "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-features",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+} ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "endpoint-profiles-netty",
+  "rawName" : "EndpointProfilesNetty",
+  "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
