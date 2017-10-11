@@ -17,6 +17,7 @@
         <module>EndpointSkeletonsPlugin</module>
         <module>EndpointsConfigSectionPlugin</module>
         <module>EndpointPipelineSetPlugin</module>
+        <module>EndpointPipelinePlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>
