@@ -8,18 +8,11 @@
         <version>0.3.3</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>endpoint-components-generic-plugins</artifactId>
+    <artifactId>endpoint-profiles-netty</artifactId>
     <version>0.3.3</version>
     <packaging>pom</packaging>
     <modules>
-        <module>MessageHandlerResolutionStrategiesPlugin</module>
-        <module>EndpointProfileStrategiesPlugin</module>
-        <module>EndpointSkeletonsPlugin</module>
-        <module>EndpointsConfigSectionPlugin</module>
-        <module>EndpointPipelineSetPlugin</module>
-        <module>EndpointPipelinePlugin</module>
-        <module>EndpointProfilesConfigurationSectionPlugin</module>
-        <module>EndpointComponentsGenericPluginsDistribution</module>
+        <module>EndpointProfilesNettyDistribution</module>
     </modules>
     <build>
         <pluginManagement>

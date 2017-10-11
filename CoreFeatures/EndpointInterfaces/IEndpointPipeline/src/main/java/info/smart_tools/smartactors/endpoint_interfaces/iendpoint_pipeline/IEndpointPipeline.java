@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessag
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 
+import java.util.List;
+
 /**
  * Interface for handler pipeline.
  *
@@ -34,15 +36,15 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessag
  */
 public interface IEndpointPipeline<T extends IMessageContext> {
     /**
-     * Iterable of all handlers included in the pipeline.
+     * List of all handlers included in the pipeline.
      *
      * <p>
      *  Handlers are iterated in the same order as they are passed by message.
      * </p>
      *
-     * @return iterable of all handlers included in the pipeline
+     * @return list of all handlers included in the pipeline
      */
-    Iterable<IMessageHandler> getHandlers();
+    List<IMessageHandler> getHandlers();
 
     /**
      * Returns factory creating message contexts acceptable for this pipeline.

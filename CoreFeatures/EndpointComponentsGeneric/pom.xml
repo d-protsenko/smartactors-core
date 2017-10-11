@@ -51,8 +51,8 @@
         <module>MessageHandlerResolutionStrategy</module>
         <module>ErrorMessageHandler</module>
         <module>EndpointsConfigSectionStrategy</module>
-        <module>EndpointComponentsGenericDistribution</module>
         <module>DefaultEndpointPipelineImplementation</module>
+        <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
     <build>

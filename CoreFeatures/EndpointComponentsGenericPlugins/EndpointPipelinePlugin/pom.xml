@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>endpoint-components-netty</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
+        <artifactId>endpoint-components-generic-plugins</artifactId>
         <version>0.3.3</version>
     </parent>
-    <artifactId>endpoint-components-netty.cookies-setter</artifactId>
-
+    <artifactId>endpoint-components-generic-plugins.endpoint-pipeline-plugin</artifactId>
+    <version>0.3.3</version>
     <dependencies>
-        <!-- Components of info.smart_tools.smartactors.base -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
@@ -33,8 +35,36 @@
             <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.iobject -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iaction</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-item</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
@@ -42,11 +72,9 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ifield</artifactId>
+            <artifactId>ioc.iioccontainer</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.ioc -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
@@ -57,8 +85,11 @@
             <artifactId>ioc.named-keys-storage</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
-
-        <!-- Tests -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.ikey</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -73,64 +104,19 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ds-object</artifactId>
+            <artifactId>endpoint-components-generic.default-message-context-implementation</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>helpers.plugins-loading-test-base</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>scope-plugins.scoped-ioc-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc-plugins.ioc-keys-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>scope-plugins.scope-provider-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-plugins.fieldname-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-plugins.ds-object-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject-plugins.ifieldname-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>field-plugins.field-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
+            <artifactId>endpoint-components-generic.default-endpoint-pipeline-implementation</artifactId>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -139,16 +125,34 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <inherited>false</inherited>
                     <version>2.8.2</version>
                     <executions>
                         <execution>
                             <id>default-deploy</id>
                             <phase>none</phase>
                         </execution>
+                        <execution>
+                            <id>archiva.smartactors-modules</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy-file</goal>
+                            </goals>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <generatePom>true</generatePom>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>jar</packaging>
+                                <description>This package contains ...</description>
+                            </configuration>
+                        </execution>
                     </executions>
+                    <inherited>false</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>

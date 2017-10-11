@@ -12,7 +12,7 @@
         <moduleSet>
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
-                <include>info.smart_tools.smartactors:endpoint-components-netty.*</include>
+                <include>info.smart_tools.smartactors:endpoints-netty-plugins.*</include>
             </includes>
             <binaries>
                 <dependencySets>
@@ -20,12 +20,11 @@
                         <unpack>false</unpack>
                         <scope>runtime</scope>
                         <outputDirectory>/</outputDirectory>
-                        <!--<excludes>-->
-                            <!--<exclude>*:*</exclude>-->
-                        <!--</excludes>-->
-                        <includes>
-                            <include>io.netty:netty-all</include>
-                        </includes>
+                        <excludes>
+                            <exclude>*:*</exclude>
+                        </excludes>
+                        <!--<includes>-->
+                        <!--</includes>-->
                     </dependencySet>
                 </dependencySets>
                 <outputDirectory>/</outputDirectory>

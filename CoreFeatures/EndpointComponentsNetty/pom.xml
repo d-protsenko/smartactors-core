@@ -48,8 +48,8 @@
         <module>DefaultTransportProviders</module>
         <module>EventLoopsConfigurationSection</module>
         <module>HttpPathParse</module>
-        <module>HttpHeadersSetter</module>
         <module>CookiesSetter</module>
+        <module>HttpHeadersSetter</module>
         <module>DefaultChannelInitializationHandlers</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>

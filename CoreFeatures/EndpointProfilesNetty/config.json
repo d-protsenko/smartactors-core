@@ -1,0 +1,266 @@
+{
+  "featureName": "info.smart_tools.smartactors:endpoint-profiles-netty",
+  "afterFeatures": [
+    "info.smart_tools.smartactors:endpoint-components-netty-plugins",
+    "info.smart_tools.smartactors:endpoints-netty"
+  ],
+
+  "nettyEventLoops": [
+    {
+      "id": "defaultServerParent",
+      "upcounter": "root",
+      "transport": "prefer-native",
+      "threads": 1
+    },
+    {
+      "id": "defaultServerChild",
+      "upcounter": "root",
+      "transport": "prefer-native",
+      "threads": 4
+    }
+  ],
+
+  "endpointProfiles": [
+    {
+      "id": "netty/server/tcp-base",
+      "extend": [],
+      "pipelines": [
+        {
+          "id": "accept-client",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "accept-client/optional/enable-ssl"
+            },
+            {
+              "type": "include",
+              "pipeline": "accept-client/setup-channel"
+            },
+            {
+              "type": "include",
+              "pipeline": "accept-client/setup-handler"
+            },
+            {
+              "type": "dead end"
+            }
+          ]
+        },
+
+        {
+          "id": "accept-client/optional/enable-ssl",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "accept-client/no-ssl"
+            }
+          ]
+        },
+        {
+          "id": "accept-client/no-ssl",
+          "stages": []
+        },
+
+        {
+          "id": "accept-client/setup-handler",
+          "stages": [
+            {
+              "type": "netty/setup/inbound chanel handler",
+              "pipeline": "receive-inbound",
+              "messageClass": "java.lang.Object"
+            }
+          ]
+        },
+
+        {
+          "id": "intercept-exception",
+          "stages": []
+        },
+
+        {
+          "id": "delegate-to-executor",
+          "stages": [
+            {
+              "type": "netty/retain message",
+              "extractor": "unwrapped inbound"
+            },
+            {
+              "type": "default async unordered executor"
+            },
+            {
+              "type": "netty/release message",
+              "extractor": "unwrapped inbound"
+            },
+            {
+              "type": "include",
+              "pipeline": "intercept-exception"
+            }
+          ]
+        },
+        
+        {
+          "id": "receive-inbound/optional/delegate-to-executor",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "delegate-to-executor"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-inbound/send-internal",
+          "stages": [
+            {
+              "type": "internal message sender",
+              "stackDepth": 5,
+              "chain": "endpointInboundChain"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-inbound/set-response-strategy",
+          "stages": [
+            {
+              "type": "response strategy setter",
+              "pipeline": "send-response"
+            }
+          ]
+        },
+        {
+          "id": "receive-inbound/optional/set-response-strategy",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-inbound/set-response-strategy"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-inbound",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "intercept-exception"
+            },
+            {
+              "type": "include",
+              "pipeline": "receive-inbound/optional/delegate-to-executor"
+            },
+
+            {
+              "type": "netty/wrap inbound message"
+            },
+
+            {
+              "type": "include",
+              "pipeline": "preprocess-inbound"
+            },
+
+            {
+              "type": "create environment"
+            },
+
+            {
+              "type": "include",
+              "pipeline": "process-inbound"
+            },
+
+            {
+              "type": "include",
+              "pipeline": "receive-inbound/optional/set-response-strategy"
+            },
+            {
+              "type": "include",
+              "pipeline": "receive-inbound/send-internal"
+            }
+          ]
+        },
+
+        {
+          "id": "process-inbound",
+          "stages": [
+            {
+              "type": "create empty message"
+            }
+          ]
+        },
+        {
+          "id": "preprocess-inbound",
+          "stages": [
+          ]
+        },
+
+        {
+          "id": "send-response",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "create-response"
+            },
+
+            {
+              "type": "include",
+              "pipeline": "fill-response"
+            },
+
+            {
+              "type": "netty/send outbound message"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "netty/server/http",
+      "extend": ["netty/server/tcp-base"],
+      "pipelines": [
+        {
+          "id": "create-response",
+          "stages": [
+            {
+              "type": "netty/create outbound message",
+              "messageType": "http response"
+            }
+          ]
+        },
+
+        {
+          "id": "accept-client/setup-channel",
+          "stages": [
+            {
+              "type": "netty/setup/http server channel",
+              "maxAggregatedContentLength": 4096
+            }
+          ]
+        },
+
+        {
+          "id": "process-inbound",
+          "stages": [
+            {
+              "type": "decoder/block/json"
+            },
+            {
+              "type": "netty/http query string parser"
+            },
+            {
+              "type": "netty/fixed http path parser"
+            }
+          ]
+        },
+
+        {
+          "id": "fill-response",
+          "stages": [
+            {
+              "type": "encoder/block/json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

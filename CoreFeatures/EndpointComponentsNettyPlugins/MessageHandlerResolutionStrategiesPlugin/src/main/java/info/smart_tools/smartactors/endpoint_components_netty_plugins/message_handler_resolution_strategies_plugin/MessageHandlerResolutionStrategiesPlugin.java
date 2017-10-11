@@ -3,12 +3,15 @@ package info.smart_tools.smartactors.endpoint_components_netty_plugins.message_h
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.endpoint_component_netty.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.endpoint_component_netty.http_path_parse.HttpPathParse;
 import info.smart_tools.smartactors.endpoint_components_generic.default_outbound_connection_channel.DefaultOutboundConnectionChannel;
 import info.smart_tools.smartactors.endpoint_components_generic.message_handler_resolution_strategy.MessageHandlerResolutionStrategy;
+import info.smart_tools.smartactors.endpoint_components_generic.parse_tree.IParseTree;
+import info.smart_tools.smartactors.endpoint_components_generic.parse_tree.ParseTree;
 import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.HTTPServerChannelSetupHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.InboundNettyChannelHandlerSetupHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.OutboundChannelCreator;
@@ -78,6 +81,9 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/http headers setter",
                 new SingletonStrategy(new HttpHeadersSetter()));
 
+        IOC.register(Keys.getOrAdd(IParseTree.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(args -> new ParseTree()));
+
         /*
          * {
          *  "type": "netty/fixed http path parser",
@@ -90,6 +96,11 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/fixed http path parser",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     List templates = (List) handlerConf.getValue(templatesFN);
+
+                    if (null == templates) {
+                        templates = (List) endpointConf.getValue(templatesFN);
+                    }
+
                     return new HttpPathParse(templates);
                 }));
 
@@ -199,7 +210,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/create outbound message",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     Object typeName = handlerConf.getValue(messageTypeFN);
-                    IFunction0 factory = IOC.resolve(Keys.getOrAdd("netty outbound message factory"), messageTypeFN);
+                    IFunction0 factory = IOC.resolve(Keys.getOrAdd("netty outbound message factory"), typeName);
                     return new OutboundNettyMessageCreationHandler(factory);
                 }));
 

@@ -30,6 +30,9 @@ public class EndpointSkeletonsPlugin extends BootstrapPlugin {
                 (map, key) -> ((Map) map).get(key)
         );
 
+        /*
+         * (String skeletonId, IObject endpointConf, IEndpointPipelineSet pipelineSet) -> Object
+         */
         IOC.register(Keys.getOrAdd("create endpoint"), storage);
         IOC.register(Keys.getOrAdd("expandable_strategy#create endpoint"),
                 new SingletonStrategy(storage));

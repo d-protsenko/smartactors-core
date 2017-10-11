@@ -41,7 +41,7 @@ public class DefaultEndpointPipelineImplementation implements IEndpointPipeline 
     }
 
     @Override
-    public Iterable<IMessageHandler> getHandlers() {
+    public List<IMessageHandler> getHandlers() {
         return handlers;
     }
 
