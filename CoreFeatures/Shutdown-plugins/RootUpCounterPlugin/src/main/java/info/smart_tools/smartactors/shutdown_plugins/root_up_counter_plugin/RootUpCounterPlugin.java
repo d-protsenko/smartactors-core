@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
@@ -86,10 +87,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     })
     public void registerNamedUpcounterStorage()
             throws ResolutionException, RegistrationException, AdditionDependencyStrategyException, InvalidArgumentException {
-        StrategyStorageStrategy storage = new StrategyStorageStrategy(
-                x -> x,
-                (map, key) -> ((Map) map).get(key)
-        );
+        SimpleStrictStorageStrategy storage = new SimpleStrictStorageStrategy("named upcounter");
 
         IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
         storage.register("root", new SingletonStrategy(rootUpCounter));

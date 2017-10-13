@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -12,6 +13,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  *
  * @param <TNettyMsg>
  */
+@ChannelHandler.Sharable
 public class InboundNettyChannelHandler<TNettyMsg> extends SimpleChannelInboundHandler<TNettyMsg> {
     private final IMessageHandlerCallback<IDefaultMessageContext<TNettyMsg, Void, Channel>> pipelineCallback;
     private final IFunction0<IDefaultMessageContext<TNettyMsg, Void, Channel>> contextFactory;

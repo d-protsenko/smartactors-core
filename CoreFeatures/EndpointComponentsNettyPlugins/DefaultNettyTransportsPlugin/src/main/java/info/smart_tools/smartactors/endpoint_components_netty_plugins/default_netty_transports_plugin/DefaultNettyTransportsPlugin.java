@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.endpoint_components_netty.default_transport_providers.EpollTransportProvider;
@@ -33,10 +34,7 @@ public class DefaultNettyTransportsPlugin extends BootstrapPlugin {
     @Item("netty_transport_providers_storage")
     public void registerTransportStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IResolveDependencyStrategy storage = new StrategyStorageStrategy(
-                x -> x,
-                (map, key) -> ((Map) map).get(key)
-        );
+        SimpleStrictStorageStrategy storage = new SimpleStrictStorageStrategy("netty transport provider");
         IOC.register(Keys.getOrAdd("netty transport provider"), storage);
         IOC.register(Keys.getOrAdd("expandable_strategy#netty transport provider"), new SingletonStrategy(storage));
     }

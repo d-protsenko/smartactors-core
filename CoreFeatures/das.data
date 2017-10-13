@@ -702,6 +702,14 @@
 } ],
   "rawName" : "SynchronizedLazyNamedItemsStorageStrategy",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "simple-strict-storage-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "SimpleStrictStorageStrategy",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",

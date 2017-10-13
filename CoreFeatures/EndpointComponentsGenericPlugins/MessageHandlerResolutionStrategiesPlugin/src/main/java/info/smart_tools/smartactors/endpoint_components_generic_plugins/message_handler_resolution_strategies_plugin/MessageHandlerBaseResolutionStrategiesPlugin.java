@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
@@ -35,10 +36,8 @@ public class MessageHandlerBaseResolutionStrategiesPlugin extends BootstrapPlugi
 
     @Item("base_message_handler_strategies")
     public void registerBaseStrategies() throws Exception {
-        StrategyStorageStrategy messageHandlerStrategyStorage = new StrategyStorageStrategy(
-                x -> x,
-                (map, key) -> ((Map) map).get(key)
-        );
+        SimpleStrictStorageStrategy messageHandlerStrategyStorage
+                = new SimpleStrictStorageStrategy("endpoint message handler");
 
         /*
          * (String type, IObject handlerConf, IObject endpointConf, IEndpointPipelineSet pipelineSet)

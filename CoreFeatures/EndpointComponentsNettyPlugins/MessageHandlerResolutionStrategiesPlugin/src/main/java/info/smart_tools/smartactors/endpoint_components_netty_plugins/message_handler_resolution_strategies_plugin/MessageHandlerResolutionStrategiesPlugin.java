@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.endpoint_components_netty_plugins.message_h
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
@@ -24,6 +25,8 @@ import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_mess
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.RetainNettyMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.InboundMessageExtractor;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.OutboundMessageExtractor;
+import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.WrappedInboundMessageExtractor;
+import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.WrappedOutboundMessageExtractor;
 import info.smart_tools.smartactors.endpoint_components_netty.outbound_netty_message_creation_handler.OutboundNettyMessageCreationHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.send_netty_message_message_handler.SendNettyMessageMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.wrap_inbound_netty_message_to_message_byte_array_message_handler.WrapInboundNettyMessageToMessageByteArrayMessageHandler;
@@ -168,12 +171,15 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/store outbound channel id",
                 new SingletonStrategy(new StoreOutboundChannelIdToContext<>()));
 
-        Map<String, IFunction> nettyMessageExtractors = new HashMap<>();
-        nettyMessageExtractors.put("unwrapped inbound", new InboundMessageExtractor());
-        nettyMessageExtractors.put("unwrapped outbound", new OutboundMessageExtractor());
+        SimpleStrictStorageStrategy extractorStorage = new SimpleStrictStorageStrategy(new HashMap<>(), "message extractor");
+        extractorStorage.register("unwrapped inbound", new SingletonStrategy(new InboundMessageExtractor()));
+        extractorStorage.register("unwrapped outbound", new SingletonStrategy(new OutboundMessageExtractor()));
+        extractorStorage.register("wrapped inbound", new SingletonStrategy(new WrappedInboundMessageExtractor()));
+        extractorStorage.register("wrapped outbound", new SingletonStrategy(new WrappedOutboundMessageExtractor()));
 
-        IOC.register(Keys.getOrAdd("netty message from context extractors map"),
-                new SingletonStrategy(nettyMessageExtractors));
+        IOC.register(Keys.getOrAdd("netty message extractor"), extractorStorage);
+        IOC.register(Keys.getOrAdd("expandable_strategy#netty message extractor"),
+                new SingletonStrategy(extractorStorage));
 
         /*
          * {
@@ -184,7 +190,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/retain message",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     String extractorName = (String) handlerConf.getValue(messageExtractorFN);
-                    IFunction extractor = nettyMessageExtractors.get(extractorName);
+                    IFunction extractor = IOC.resolve(Keys.getOrAdd("netty message extractor"), extractorName);
                     return new RetainNettyMessageHandler(extractor);
                 }));
 
@@ -197,7 +203,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("netty/release message",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     String extractorName = (String) handlerConf.getValue(messageExtractorFN);
-                    IFunction extractor = nettyMessageExtractors.get(extractorName);
+                    IFunction extractor = IOC.resolve(Keys.getOrAdd("netty message extractor"), extractorName);
                     return new ReleaseNettyMessageHandler(extractor);
                 }));
 
@@ -228,10 +234,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
 
     @Item("netty_outbound_message_factories_strategy")
     public void registerOutboundMessageFactories() throws Exception {
-        StrategyStorageStrategy storage = new StrategyStorageStrategy(
-                x -> x,
-                (map, key) -> ((Map) map).get(key)
-        );
+        SimpleStrictStorageStrategy storage = new SimpleStrictStorageStrategy("outbound netty message");
 
         IOC.register(Keys.getOrAdd("netty outbound message factory"), storage);
         IOC.register(Keys.getOrAdd("expandable_strategy#netty outbound message factory"),

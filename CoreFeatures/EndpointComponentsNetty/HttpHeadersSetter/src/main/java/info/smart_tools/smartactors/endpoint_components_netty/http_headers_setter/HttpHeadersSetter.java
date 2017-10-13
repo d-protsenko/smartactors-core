@@ -11,7 +11,10 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpMessage;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 
 import java.util.List;
 
@@ -22,8 +25,8 @@ import java.util.List;
  * <pre>
  *     "headers": [
  *         {
- *             "name": "nameOfTheCookie",
- *             "value": "valueOfTheCookie"
+ *             "name": "nameOfTheHeader",
+ *             "value": "valueOfTheHeader"
  *         }
  *     ]
  * </pre>
@@ -56,15 +59,15 @@ public class HttpHeadersSetter<TMsg extends FullHttpMessage, TCtx>
             FullHttpMessage httpMessage = context.getDstMessage().getMessage();
             IObject messageContext = contextField.in(context.getSrcMessage());
 
-            httpMessage.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+            httpMessage.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
             List<IObject> headers = headersField.in(messageContext, List.class);
 
             for (IObject header : headers) {
                     httpMessage.headers().set(String.valueOf(header.getValue(headerName)),
                             String.valueOf(header.getValue(headerValue)));
             }
-            httpMessage.headers().set(HttpHeaders.Names.CONTENT_LENGTH, httpMessage.content().readableBytes());
-            httpMessage.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+            httpMessage.headers().set(HttpHeaderNames.CONTENT_LENGTH, httpMessage.content().readableBytes());
+            httpMessage.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         } catch (Exception e) {
             throw new MessageHandlerException(e);
         }

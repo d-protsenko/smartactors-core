@@ -34,6 +34,7 @@
         <module>UpCounter</module>
         <module>ISynchronousService</module>
         <module>SynchronizedLazyNamedItemsStorageStrategy</module>
+        <module>SimpleStrictStorageStrategy</module>
         <module>BaseDistribution</module>
     </modules>
     <build>

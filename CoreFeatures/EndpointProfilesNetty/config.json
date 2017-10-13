@@ -81,14 +81,14 @@
           "stages": [
             {
               "type": "netty/retain message",
-              "extractor": "unwrapped inbound"
+              "messageExtractor": "unwrapped inbound"
             },
             {
               "type": "default async unordered executor"
             },
             {
               "type": "netty/release message",
-              "extractor": "unwrapped inbound"
+              "messageExtractor": "unwrapped inbound"
             },
             {
               "type": "include",
@@ -96,7 +96,7 @@
             }
           ]
         },
-        
+
         {
           "id": "receive-inbound/optional/delegate-to-executor",
           "stages": [
@@ -203,6 +203,13 @@
             {
               "type": "include",
               "pipeline": "fill-response"
+            },
+
+            {
+              "type": "netty/http headers setter"
+            },
+            {
+              "type": "netty/http cookie setter"
             },
 
             {

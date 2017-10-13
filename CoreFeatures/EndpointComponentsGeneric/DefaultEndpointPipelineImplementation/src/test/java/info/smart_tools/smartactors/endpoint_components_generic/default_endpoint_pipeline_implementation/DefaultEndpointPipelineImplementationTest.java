@@ -6,16 +6,10 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessag
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
-import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
-import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
-import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
-import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
-import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertSame;
@@ -23,20 +17,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class DefaultEndpointPipelineImplementationTest extends PluginsLoadingTestBase {
-    @Override
-    protected void loadPlugins() throws Exception {
-        load(ScopedIOCPlugin.class);
-        load(PluginScopeProvider.class);
-        load(PluginIOCKeys.class);
-        load(PluginDSObject.class);
-        load(IFieldNamePlugin.class);
-        load(IFieldPlugin.class);
-    }
-
-    @Override
-    protected void registerMocks() throws Exception {}
-
+public class DefaultEndpointPipelineImplementationTest {
     @Test
     public void Should_buildPipeline()
             throws Exception {
@@ -82,12 +63,13 @@ public class DefaultEndpointPipelineImplementationTest extends PluginsLoadingTes
             }
         };
 
+        IMessageHandler handler2 = mock(IMessageHandler.class);
 
-        List<IMessageHandler> handlers = new ArrayList<IMessageHandler>() {{
-            add(handler1);
-        }};
+        List<IMessageHandler> handlers = Arrays.asList(handler1, handler2);
 
         IEndpointPipeline pipeline = new DefaultEndpointPipelineImplementation(handlers, ctxFactory);
         pipeline.getInputCallback().handle(ctx);
+
+        verify(handler2).handle(any(), same(ctx));
     }
 }

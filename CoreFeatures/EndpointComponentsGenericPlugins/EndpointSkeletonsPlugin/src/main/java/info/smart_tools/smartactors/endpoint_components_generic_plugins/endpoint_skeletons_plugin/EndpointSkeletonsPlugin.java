@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.endpoint_components_generic_plugins.endpoint_skeletons_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -25,10 +26,7 @@ public class EndpointSkeletonsPlugin extends BootstrapPlugin {
 
     @Item("endpoint_skeletons_storage")
     public void registerStorage() throws Exception {
-        StrategyStorageStrategy storage = new StrategyStorageStrategy(
-                x -> x,
-                (map, key) -> ((Map) map).get(key)
-        );
+        SimpleStrictStorageStrategy storage = new SimpleStrictStorageStrategy("endpoint skeleton");
 
         /*
          * (String skeletonId, IObject endpointConf, IEndpointPipelineSet pipelineSet) -> Object

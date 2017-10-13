@@ -99,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-component-netty.cookies-setter</artifactId>
+            <artifactId>endpoint-components-netty.cookies-setter</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
@@ -167,6 +167,11 @@
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.wrap-inbound-netty-message-to-message-byte-array-message-handler
             </artifactId>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.simple-strict-storage-strategy</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
     </dependencies>
