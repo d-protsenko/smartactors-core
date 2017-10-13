@@ -87,6 +87,12 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         storage.register("decoder/block/json",
                 new SingletonStrategy(new JsonBlockDecoder()));
 
+        SimpleStrictStorageStrategy exceptionalActionsStorage
+                = new SimpleStrictStorageStrategy("exceptional endpoint action");
+        IOC.register(Keys.getOrAdd("exceptional endpoint action"), exceptionalActionsStorage);
+        IOC.register(Keys.getOrAdd("expandable_strategy#exceptional endpoint action"),
+                new SingletonStrategy(exceptionalActionsStorage));
+
         /*
          * {
          *  "type": "exception interceptor",
@@ -96,7 +102,8 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         storage.register("exception interceptor",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     Object actionName = handlerConf.getValue(actionFN);
-                    IBiAction action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionName), handlerConf);
+                    IBiAction action = IOC.resolve(Keys.getOrAdd("exceptional endpoint action"),
+                            actionName, handlerConf);
                     return new GenericExceptionInterceptorMessageHandler(action);
                 }));
 

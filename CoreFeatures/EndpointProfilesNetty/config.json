@@ -310,7 +310,8 @@
           "stages": [
             {
               "type": "exception interceptor",
-              "action": "netty http server default exceptional action"
+              "action": "netty/http/server/default",
+              "status": 500
             }
           ]
         }

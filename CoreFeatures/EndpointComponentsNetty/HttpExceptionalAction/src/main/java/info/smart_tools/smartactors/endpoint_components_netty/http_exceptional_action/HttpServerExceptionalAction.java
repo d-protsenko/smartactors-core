@@ -13,10 +13,20 @@ import io.netty.handler.codec.http.HttpVersion;
  * Action to be executed by HTTP server endpoint when exception occurs parsing request or sending response.
  *
  * <p>
- *  This action sends empty response with code 500 and closes connection.
+ *  This action sends empty response with some error code and closes connection.
  * </p>
  */
 public class HttpServerExceptionalAction implements IBiAction<Channel, Throwable> {
+    private final HttpResponseStatus responseStatus;
+
+    /**
+     * The constructor.
+     *
+     * @param responseStatus response status
+     */
+    public HttpServerExceptionalAction(final HttpResponseStatus responseStatus) {
+        this.responseStatus = responseStatus;
+    }
 
     @Override
     public void execute(
@@ -24,7 +34,7 @@ public class HttpServerExceptionalAction implements IBiAction<Channel, Throwable
             final Throwable exception)
                 throws ActionExecuteException, InvalidArgumentException {
         channel
-                .writeAndFlush(new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR))
+                .writeAndFlush(new DefaultHttpResponse(HttpVersion.HTTP_1_1, responseStatus))
                 .addListener(ChannelFutureListener.CLOSE);
     }
 }

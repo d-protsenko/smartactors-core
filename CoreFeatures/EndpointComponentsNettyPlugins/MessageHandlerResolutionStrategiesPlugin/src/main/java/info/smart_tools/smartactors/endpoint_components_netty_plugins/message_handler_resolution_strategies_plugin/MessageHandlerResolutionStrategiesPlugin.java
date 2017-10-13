@@ -1,12 +1,13 @@
 package info.smart_tools.smartactors.endpoint_components_netty_plugins.message_handler_resolution_strategies_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
 import info.smart_tools.smartactors.endpoint_component_netty.cookies_setter.CookiesSetter;
 import info.smart_tools.smartactors.endpoint_component_netty.http_path_parse.HttpPathParse;
 import info.smart_tools.smartactors.endpoint_components_generic.default_outbound_connection_channel.DefaultOutboundConnectionChannel;
@@ -37,6 +38,8 @@ import info.smart_tools.smartactors.endpoint_interfaces.ioutbound_connection_cha
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.channel.Channel;
@@ -46,7 +49,6 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -232,8 +234,21 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
 
     @Item("netty_exceptional_actions")
     public void registerExceptionalActions() throws Exception {
-        IOC.register(Keys.getOrAdd("netty http server default exceptional action"),
-                new SingletonStrategy(new HttpServerExceptionalAction()));
+        IFieldName statusFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "status");
+
+        IAdditionDependencyStrategy storage = IOC.resolve(
+                Keys.getOrAdd("expandable_strategy#exceptional endpoint action"));
+        storage.register("netty/http/server/default", new ApplyFunctionToArgumentsStrategy(args -> {
+            IObject conf = (IObject) args[1];
+
+            try {
+                int status = ((Number) conf.getValue(statusFN)).intValue();
+
+                return new HttpServerExceptionalAction(HttpResponseStatus.valueOf(status));
+            } catch (ReadValueException | InvalidArgumentException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
     }
 
     @Item("netty_outbound_message_factories_strategy")

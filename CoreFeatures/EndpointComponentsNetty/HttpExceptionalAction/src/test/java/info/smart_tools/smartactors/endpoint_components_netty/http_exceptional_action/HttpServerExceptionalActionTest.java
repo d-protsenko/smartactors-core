@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -23,7 +24,7 @@ public class HttpServerExceptionalActionTest {
 
         ArgumentCaptor<Object> argCaptor = ArgumentCaptor.forClass(Object.class);
 
-        new HttpServerExceptionalAction().execute(channelMock, new Throwable());
+        new HttpServerExceptionalAction(HttpResponseStatus.INTERNAL_SERVER_ERROR).execute(channelMock, new Throwable());
 
         verify(channelMock).writeAndFlush(argCaptor.capture());
 

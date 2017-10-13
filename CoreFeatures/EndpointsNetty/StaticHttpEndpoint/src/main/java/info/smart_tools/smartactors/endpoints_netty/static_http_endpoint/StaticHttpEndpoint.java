@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.endpoint_components_generic.response_strateg
 import info.smart_tools.smartactors.endpoint_components_generic.send_internal_message_handler.SendInternalMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_action.HttpServerExceptionalAction;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
-import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_channel_handler.InboundNettyChannelHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.ReleaseNettyMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.RetainNettyMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.InboundMessageExtractor;
@@ -29,7 +28,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.*;
 
 
@@ -48,7 +46,7 @@ public class StaticHttpEndpoint {
                 .add(new OutboundNettyMessageCreationHandler<>(
                                 () -> new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK)))
                 .add(new GenericExceptionInterceptorMessageHandler<>(
-                        new HttpServerExceptionalAction()))
+                        new HttpServerExceptionalAction(HttpResponseStatus.INTERNAL_SERVER_ERROR)))
                 .finish();
 
         final IMessageHandlerCallback<IDefaultMessageContext<FullHttpRequest, Void, Channel>> requestPipelineCallback =
@@ -65,12 +63,12 @@ public class StaticHttpEndpoint {
                 .add(new CreateEnvironmentMessageHandler<>())
                 .add(new WrapInboundNettyMessageToMessageByteArrayMessageHandler<>())
                 .add(new GenericExceptionInterceptorMessageHandler<>(
-                        new HttpServerExceptionalAction()))
+                        new HttpServerExceptionalAction(HttpResponseStatus.INTERNAL_SERVER_ERROR)))
                 .add(new ReleaseNettyMessageHandler<>(new InboundMessageExtractor<>()))
                 .add(new AsynchronousUnorderedMessageHandler<>(taskQueue))
                 .add(new RetainNettyMessageHandler<>(new InboundMessageExtractor<>()))
                 .add(new GenericExceptionInterceptorMessageHandler<>(
-                        new HttpServerExceptionalAction()))
+                        new HttpServerExceptionalAction(HttpResponseStatus.INTERNAL_SERVER_ERROR)))
                 .finish();
 
         //ChannelHandler httpInboundHandler = new InboundNettyChannelHandler<>(
