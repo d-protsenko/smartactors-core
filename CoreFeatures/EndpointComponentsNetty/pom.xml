@@ -34,6 +34,14 @@
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
         </dependency>
+
+        <!-- Testing dependencies -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
+            <scope>test</scope>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
     </dependencies>
 
     <modules>
@@ -51,6 +59,8 @@
         <module>CookiesSetter</module>
         <module>HttpHeadersSetter</module>
         <module>DefaultChannelInitializationHandlers</module>
+        <module>HttpResponseMetadataPresetup</module>
+        <module>HttpMessageAttributeExtractors</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

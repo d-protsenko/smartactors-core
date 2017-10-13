@@ -18,6 +18,7 @@
         <module>NettyEventLoopGroupsPlugin</module>
         <module>DefaultNettyTransportsPlugin</module>
         <module>MessageHandlerResolutionStrategiesPlugin</module>
+        <module>HttpMessageAttributeExtractorsPlugin</module>
         <module>EndpointComponentsNettyPluginsDistribution</module>
     </modules>
 

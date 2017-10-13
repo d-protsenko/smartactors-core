@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.endpoint_components_netty.default_channel_in
 import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_action.HttpServerExceptionalAction;
 import info.smart_tools.smartactors.endpoint_components_netty.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
+import info.smart_tools.smartactors.endpoint_components_netty.http_response_metadata_presetup.HttpResponseMetadataPreSetup;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_channel_handler.InboundNettyChannelHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.ReleaseNettyMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.RetainNettyMessageHandler;
@@ -109,6 +110,9 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
 
         storage.register("netty/http query string parser",
                 new SingletonStrategy(new HttpQueryStringParser()));
+
+        storage.register("netty/http response metadata presetup",
+                new SingletonStrategy(new HttpResponseMetadataPreSetup()));
 
         /*
          * {

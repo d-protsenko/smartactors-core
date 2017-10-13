@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.endpoint_components_generic_plugins.message
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint_components_generic.asynchronous_unordered_message_handler.AsynchronousUnorderedMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.create_empty_message_message_handler.CreateEmptyMessageMessageHandler;
@@ -98,6 +99,12 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
                     return new GenericExceptionInterceptorMessageHandler(action);
                 }));
 
+        SimpleStrictStorageStrategy attributeExtractorsStorage
+                = new SimpleStrictStorageStrategy("message attribute extractor");
+        IOC.register(Keys.getOrAdd("message attribute extractor"), attributeExtractorsStorage);
+        IOC.register(Keys.getOrAdd("expandable_strategy#message attribute extractor"),
+                new SingletonStrategy(attributeExtractorsStorage));
+
         /*
          * {
          *  "type": "fixed attribute router",
@@ -119,7 +126,9 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         storage.register("fixed attribute router",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     Object extractorName = handlerConf.getValue(extractorFN);
-                    IFunction extractor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), extractorName));
+                    IFunction extractor = IOC.resolve(
+                            Keys.getOrAdd("message attribute extractor"),
+                            extractorName, handlerConf);
 
                     IMessageHandler defaultHandler = IOC.resolve(Keys.getOrAdd("parse endpoint message handler"),
                             handlerConf.getValue(defaultFN), endpointConf, pipelineSet);

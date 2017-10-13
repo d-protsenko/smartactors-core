@@ -248,13 +248,17 @@
           "id": "process-inbound",
           "stages": [
             {
-              "type": "decoder/block/json"
+              "type": "include",
+              "pipeline": "parse-request-body"
             },
             {
               "type": "netty/http query string parser"
             },
             {
               "type": "netty/fixed http path parser"
+            },
+            {
+              "type": "netty/http response metadata presetup"
             }
           ]
         },
@@ -264,6 +268,30 @@
           "stages": [
             {
               "type": "encoder/block/json"
+            }
+          ]
+        },
+
+        {
+          "id": "parse-request-body",
+          "stages": [
+            {
+              "type": "fixed attribute router",
+              "extractor": "netty/http/method",
+              "messageExtractor": "wrapped inbound",
+              "default": {
+                "type": "decoder/block/json"
+              },
+              "routes": [
+                {
+                  "value": "GET",
+                  "type": "create empty message"
+                },
+                {
+                  "value": "HEAD",
+                  "type": "create empty message"
+                }
+              ]
             }
           ]
         }

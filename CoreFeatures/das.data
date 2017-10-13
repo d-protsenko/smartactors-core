@@ -3693,6 +3693,22 @@
 } ],
   "rawName" : "DefaultChannelInitializationHandlers",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "http-response-metadata-presetup",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HttpResponseMetadataPresetup",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-message-attribute-extractors",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HttpMessageAttributeExtractors",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3757,6 +3773,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageHandlerResolutionStrategiesPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-message-attribute-extractors-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HttpMessageAttributeExtractorsPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
