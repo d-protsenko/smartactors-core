@@ -54,7 +54,8 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
 
     @Item("default_generic_message_handlers")
     @After({
-            "base_message_handler_strategies"
+            "base_message_handler_strategies",
+            "global_message_handler_tables_storage",
     })
     public void registerDefaultHandlers() throws Exception {
         IFieldName actionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "action");
@@ -164,12 +165,16 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         storage.register("global table attribute router",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     Object extractorName = handlerConf.getValue(extractorFN);
-                    IFunction extractor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), extractorName));
+                    IFunction extractor = IOC.resolve(
+                            Keys.getOrAdd("message attribute extractor"),
+                            extractorName, handlerConf);
 
                     IMessageHandler defaultHandler = IOC.resolve(Keys.getOrAdd("parse endpoint message handler"),
                             handlerConf.getValue(defaultFN), endpointConf, pipelineSet);
 
-                    Map routes = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), handlerConf.getValue(tableFN)));
+                    Map routes = IOC.resolve(
+                            Keys.getOrAdd("message handler table"),
+                            handlerConf.getValue(tableFN), handlerConf);
 
                     return new MessageAttributeRoutingMessageHandler(extractor, routes, defaultHandler);
                 }));
@@ -229,5 +234,13 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
 
                     return new ErrorMessageHandler(message);
                 }));
+    }
+
+    @Item("global_message_handler_tables_storage")
+    public void registerTableStorage() throws Exception {
+        SimpleStrictStorageStrategy tableStorage = new SimpleStrictStorageStrategy("message handler table");
+        IOC.register(Keys.getOrAdd("message handler table"), tableStorage);
+        IOC.register(Keys.getOrAdd("expandable_strategy#message handler table"),
+                new SingletonStrategy(tableStorage));
     }
 }

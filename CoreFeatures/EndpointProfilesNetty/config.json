@@ -280,7 +280,16 @@
               "extractor": "netty/http/method",
               "messageExtractor": "wrapped inbound",
               "default": {
-                "type": "decoder/block/json"
+                "type": "global table attribute router",
+                "extractor": "netty/http/header",
+                "messageExtractor": "wrapped inbound",
+                "defaultValue": "application/json",
+                "header": "content-type",
+                "table": "default block decoders by mime type",
+                "default": {
+                  "type": "error",
+                  "message": "unsupported mime type"
+                }
               },
               "routes": [
                 {
@@ -292,6 +301,16 @@
                   "type": "create empty message"
                 }
               ]
+            }
+          ]
+        },
+
+        {
+          "id": "intercept-exception",
+          "stages": [
+            {
+              "type": "exception interceptor",
+              "action": "netty http server default exceptional action"
             }
           ]
         }
