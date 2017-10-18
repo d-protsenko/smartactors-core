@@ -59,6 +59,15 @@
           "id": "accept-client/no-ssl",
           "stages": []
         },
+        {
+          "id": "accept-client/enable-ssl",
+          "stages": [
+            {
+              "type": "error",
+              "message": "SSL not implemented"
+            }
+          ]
+        },
 
         {
           "id": "accept-client/setup-handler",
@@ -235,11 +244,195 @@
         },
 
         {
+          "id": "accept-client/setup-handler",
+          "stages": [
+            {
+              "type": "netty/setup/inbound chanel handler",
+              "pipeline": "receive-inbound",
+              "messageClass": "io.netty.handler.codec.http.HttpMessage"
+            }
+          ]
+        },
+
+        {
           "id": "accept-client/setup-channel",
           "stages": [
             {
               "type": "netty/setup/http server channel",
               "maxAggregatedContentLength": 4096
+            },
+            {
+              "type": "include",
+              "pipeline": "accept-client/setup-channel/optional/setup-websocket-upgrade-handler"
+            }
+          ]
+        },
+
+        {
+          "id": "accept-client/setup-channel/optional/setup-websocket-upgrade-handler",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "accept-client/setup-channel/setup-websocket-upgrade-handler"
+            }
+          ]
+        },
+
+        {
+          "id": "accept-client/setup-channel/setup-websocket-upgrade-handler",
+          "stages": [
+            {
+              "type": "netty/setup/http web-socket upgrade listener",
+              "path": "/ws",
+              "pipeline": "upgrade-to-websocket"
+            }
+          ]
+        },
+
+        {
+          "id": "upgrade-to-websocket",
+          "stages": [
+            {
+              "type": "netty/setup/attach dynamic outbound channel",
+              "pipeline": "send-websocket",
+              "listener": "global outbound connection channel storage channel listener"
+            },
+            {
+              "type": "netty/setup/inbound chanel handler",
+              "pipeline": "receive-websocket-text",
+              "messageClass": "io.netty.handler.codec.http.websocketx.TextWebSocketFrame"
+            },
+            {
+              "type": "netty/setup/inbound chanel handler",
+              "pipeline": "receive-websocket-binary",
+              "messageClass": "io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame"
+            },
+            {
+              "type": "dead end"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-websocket/optional/delegate-to-executor",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "delegate-to-executor"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-websocket/pre-process",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-websocket/optional/delegate-to-executor"
+            },
+            {
+              "type": "default scope setter"
+            },
+            {
+              "type": "create environment"
+            }
+          ]
+        },
+
+        {
+          "id": "decode-websocket-binary",
+          "stages": [
+            {
+              "type": "error",
+              "message": "no binary web-socket frame decoder configured"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-websocket-binary",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-websocket/pre-process"
+            },
+            {
+              "type": "include",
+              "pipeline": "decode-websocket-binary"
+            },
+            {
+              "type": "include",
+              "pipeline": "web-socket/send-inbound"
+            }
+          ]
+        },
+
+        {
+          "id": "decode-websocket-text",
+          "stages": [
+            {
+              "type": "netty/wrap inbound message"
+            },
+            {
+              "type": "decoder/block/json"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-websocket-text",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-websocket/pre-process"
+            },
+            {
+              "type": "include",
+              "pipeline": "decode-websocket-text"
+            },
+            {
+              "type": "include",
+              "pipeline": "web-socket/send-inbound"
+            }
+          ]
+        },
+
+        {
+          "id": "web-socket/send-inbound",
+          "stages": [
+            {
+              "type": "netty/store outbound channel id"
+            },
+            {
+              "type": "internal message sender",
+              "stackDepth": 5,
+              "chain": "webSocketInboundChain"
+            }
+          ]
+        },
+
+        {
+          "id": "send-websocket",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "send-websocket/build-frame"
+            },
+            {
+              "type": "netty/send outbound message"
+            }
+          ]
+        },
+
+        {
+          "id": "send-websocket/build-frame",
+          "stages": [
+            {
+              "type": "netty/create outbound message",
+              "messageType": "websocket text frame"
+            },
+            {
+              "type": "encoder/block/json"
             }
           ]
         },

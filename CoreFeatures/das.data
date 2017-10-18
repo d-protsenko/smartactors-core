@@ -3627,6 +3627,14 @@
 } ],
   "rawName" : "EndpointsConfigSectionStrategy",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-outbound-channel-listener",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultOutboundChannelListener",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3708,6 +3716,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpMessageAttributeExtractors",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-web-socket-upgrade-listener",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HttpWebSocketUpgradeListener",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
@@ -3856,6 +3872,22 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MimeCodecTablesPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "outbound-message-sender-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "OutboundMessageSenderPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "global-outbound-connection-channel-storage-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "GlobalOutboundConnectionChannelStoragePlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",

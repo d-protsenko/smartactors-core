@@ -20,6 +20,8 @@
         <module>EndpointPipelinePlugin</module>
         <module>EndpointProfilesConfigurationSectionPlugin</module>
         <module>MimeCodecTablesPlugin</module>
+        <module>OutboundMessageSenderPlugin</module>
+        <module>GlobalOutboundConnectionChannelStoragePlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>

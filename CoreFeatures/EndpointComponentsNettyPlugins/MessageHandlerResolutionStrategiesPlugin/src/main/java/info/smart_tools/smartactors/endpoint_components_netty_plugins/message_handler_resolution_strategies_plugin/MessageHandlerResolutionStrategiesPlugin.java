@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_a
 import info.smart_tools.smartactors.endpoint_components_netty.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
 import info.smart_tools.smartactors.endpoint_components_netty.http_response_metadata_presetup.HttpResponseMetadataPreSetup;
+import info.smart_tools.smartactors.endpoint_components_netty.http_web_socket_upgrade_listener.HttpWebSocketUpgradeListenerSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_channel_handler.InboundNettyChannelHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.ReleaseNettyMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.RetainNettyMessageHandler;
@@ -46,6 +47,8 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +81,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         IFieldName templatesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "templates");
         IFieldName messageExtractorFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageExtractor");
         IFieldName messageTypeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageType");
+        IFieldName pathFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "path");
 
         IAdditionDependencyStrategy storage = IOC.resolve(
                 Keys.getOrAdd("expandable_strategy#endpoint message handler"));
@@ -127,6 +131,21 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                     int maxAggregatedContentLen = ((Number) handlerConf.getValue(maxAggregatedContentLenFN)).intValue();
 
                     return new HTTPServerChannelSetupHandler(maxAggregatedContentLen);
+                }));
+
+        /*
+         * {
+         *  "type": "netty/setup/http web-socket upgrade listener",
+         *  "pipeline": ".. pipeline name ..",
+         *  "path": ".. web-socket path .."
+         * }
+         */
+        storage.register("netty/setup/http web-socket upgrade listener",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    IEndpointPipeline pipeline = pipelineSet.getPipeline((String) handlerConf.getValue(pipelineFN));
+                    String path = (String) handlerConf.getValue(pathFN);
+
+                    return new HttpWebSocketUpgradeListenerSetter(pipeline, path);
                 }));
 
         /*
@@ -269,5 +288,9 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
 
         storage.register("http response", new SingletonStrategy(
                 (IFunction0) () -> new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK)));
+        storage.register("websocket text frame", new SingletonStrategy(
+                (IFunction0) TextWebSocketFrame::new));
+        storage.register("websocket binary frame", new SingletonStrategy(
+                (IFunction0) BinaryWebSocketFrame::new));
     }
 }

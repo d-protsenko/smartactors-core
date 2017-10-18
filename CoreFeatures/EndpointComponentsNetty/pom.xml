@@ -61,6 +61,7 @@
         <module>DefaultChannelInitializationHandlers</module>
         <module>HttpResponseMetadataPresetup</module>
         <module>HttpMessageAttributeExtractors</module>
+        <module>HttpWebSocketUpgradeListener</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

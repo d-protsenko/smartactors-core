@@ -52,6 +52,7 @@
         <module>ErrorMessageHandler</module>
         <module>EndpointsConfigSectionStrategy</module>
         <module>DefaultEndpointPipelineImplementation</module>
+        <module>DefaultOutboundChannelListener</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
