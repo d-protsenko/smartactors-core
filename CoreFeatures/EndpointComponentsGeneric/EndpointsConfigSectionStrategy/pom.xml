@@ -13,37 +13,37 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>RELEASE</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -60,12 +60,18 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager.interfaces.iconfiguration-manager</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1,1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-interfaces.iendpoint-profile</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
+            <version>[0.0.1,1.0.0)</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

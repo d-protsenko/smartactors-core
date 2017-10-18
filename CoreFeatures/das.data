@@ -3516,11 +3516,6 @@
   "rawName" : "AsynchronousUnorderedMessageHandler",
   "version" : "0.3.3"
 }, {
-  "artifactId" : "default-message-handler-pipeline",
-  "uploadRepositories" : [ ],
-  "rawName" : "DefaultMessageHandlerPipeline",
-  "version" : "0.3.3"
-}, {
   "artifactId" : "default-message-context-implementation",
   "uploadRepositories" : [ ],
   "rawName" : "DefaultMessageContextImplementation",
@@ -3734,11 +3729,6 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
-  "artifactId" : "static-http-endpoint",
-  "uploadRepositories" : [ ],
-  "rawName" : "StaticHttpEndpoint",
-  "version" : "0.3.3"
-}, {
   "artifactId" : "netty-tc-psingle-port-server-endpoint",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",

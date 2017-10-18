@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
  */
 public class HttpWebSocketUpgradeListenerSetter<TChan extends Channel, TDst>
         implements IBypassMessageHandler<IDefaultMessageContext<TChan, TDst, TChan>> {
-    private final IEndpointPipeline<IDefaultMessageContext<Channel, ?, Channel>> upgradeProcessPipeline;
+    private final IEndpointPipeline<IDefaultMessageContext<Channel, Void, Channel>> upgradeProcessPipeline;
     private final String webSocketPath;
 
     /**
@@ -36,16 +36,18 @@ public class HttpWebSocketUpgradeListenerSetter<TChan extends Channel, TDst>
         public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt)
                 throws Exception {
             if (evt == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE) {
-                IDefaultMessageContext<Channel, ?, Channel> messageContext
+                IDefaultMessageContext<Channel, Void, Channel> messageContext
                         = upgradeProcessPipeline.getContextFactory().execute();
-                messageContext.setSrcMessage(ctx.channel());
-                messageContext.setConnectionContext(ctx.channel());
+                Channel channel = ctx.channel();
+                messageContext.setSrcMessage(channel);
+                messageContext.setConnectionContext(channel);
                 upgradeProcessPipeline.getInputCallback().handle(messageContext);
             }
 
             super.userEventTriggered(ctx, evt);
         }
     }
+
     private final UpgradeEventListener upgradeEventListener = new UpgradeEventListener();
 
     /**
@@ -55,7 +57,7 @@ public class HttpWebSocketUpgradeListenerSetter<TChan extends Channel, TDst>
      * @param webSocketPath          path of web socket
      */
     public HttpWebSocketUpgradeListenerSetter(
-            final IEndpointPipeline<IDefaultMessageContext<Channel, ?, Channel>> upgradeProcessPipeline,
+            final IEndpointPipeline<IDefaultMessageContext<Channel, Void, Channel>> upgradeProcessPipeline,
             final String webSocketPath) {
         this.upgradeProcessPipeline = upgradeProcessPipeline;
         this.webSocketPath = webSocketPath;

@@ -34,7 +34,6 @@
         <module>SendInternalMessageHandler</module>
         <module>CreateEnvironmentMessageHandler</module>
         <module>AsynchronousUnorderedMessageHandler</module>
-        <module>DefaultMessageHandlerPipeline</module>
         <module>DefaultMessageContextImplementation</module>
         <module>MessageAttributeRoutingMessageHandler</module>
         <module>CreateEmptyMessageMessageHandler</module>
