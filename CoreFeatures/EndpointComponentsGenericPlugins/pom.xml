@@ -22,6 +22,7 @@
         <module>MimeCodecTablesPlugin</module>
         <module>OutboundMessageSenderPlugin</module>
         <module>GlobalOutboundConnectionChannelStoragePlugin</module>
+        <module>CompositeExceptionalActionPlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>

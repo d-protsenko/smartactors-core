@@ -499,12 +499,32 @@
         },
 
         {
-          "id": "intercept-exception",
+          "id": "intercept-exception/default",
           "stages": [
             {
               "type": "exception interceptor",
-              "action": "netty/http/server/default",
-              "status": 500
+              "action": "composite",
+              "exceptionClassActions": [
+                {
+                  "class": "info.smart_tools.smartactors.endpoint_components_generic.common_exceptions.InboundMessageDecoderException",
+                  "action": "netty/http/server/default",
+                  "status": 400
+                }
+              ],
+              "defaultAction": {
+                "action": "netty/http/server/default",
+                "status": 500
+              }
+            }
+          ]
+        },
+
+        {
+          "id": "intercept-exception",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "intercept-exception/default"
             }
           ]
         }

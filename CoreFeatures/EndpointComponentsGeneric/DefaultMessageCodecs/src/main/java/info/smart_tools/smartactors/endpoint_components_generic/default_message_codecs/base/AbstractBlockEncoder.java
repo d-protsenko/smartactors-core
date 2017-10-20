@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.endpoint_components_generic.default_message_codecs.base;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint_components_generic.common_exceptions.OutboundMessageEncoderException;
 import info.smart_tools.smartactors.endpoint_components_generic.default_message_codecs.base.exceptions.BlockCodecException;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_byte_array.IOutboundMessageByteArray;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
@@ -42,7 +43,7 @@ public abstract class AbstractBlockEncoder<T extends IDefaultMessageContext<IObj
             IObject message = (IObject) context.getSrcMessage().getValue(messageFieldName);
             context.getDstMessage().setAsByteBuffer(encode(message));
         } catch (InvalidArgumentException | ReadValueException | BlockCodecException e) {
-            throw new MessageHandlerException(e);
+            throw new OutboundMessageEncoderException(e);
         }
 
         next.handle(context);

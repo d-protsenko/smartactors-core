@@ -3630,6 +3630,22 @@
 } ],
   "rawName" : "DefaultOutboundChannelListener",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "composite-exceptional-action",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "CompositeExceptionalAction",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "common-exception-types",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "CommonExceptionTypes",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3878,6 +3894,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "GlobalOutboundConnectionChannelStoragePlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "composite-exceptional-action-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "CompositeExceptionalActionPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
