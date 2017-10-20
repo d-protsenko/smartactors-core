@@ -45,7 +45,10 @@ public enum  AddressUtils { ;
         String portS = addressString.substring(colonIdx + 1);
 
         int portI = portS.length() == 0 ? 0 : Integer.parseInt(portS);
-        host = host.length() == 0 ? null : host;
+
+        if (host.length() == 0) {
+            return new InetSocketAddress(portI);
+        }
 
         try {
             return new InetSocketAddress(InetAddress.getByName(host), portI);

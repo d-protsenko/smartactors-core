@@ -16,7 +16,7 @@ public class AddressUtilsTest {
 
     @Test public void Should_parsePortOnly() throws Exception {
         InetSocketAddress address = AddressUtils.parseLocalAddress(":8093");
-        assertEquals(new InetSocketAddress(InetAddress.getByName(null), 8093), address);
+        assertEquals(new InetSocketAddress(8093), address);
     }
 
     @Test public void Should_parseHostOnly() throws Exception {
