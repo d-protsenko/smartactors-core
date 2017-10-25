@@ -19,6 +19,7 @@
         <module>DefaultNettyTransportsPlugin</module>
         <module>MessageHandlerResolutionStrategiesPlugin</module>
         <module>HttpMessageAttributeExtractorsPlugin</module>
+        <module>SslEngineStrategiesPlugin</module>
         <module>EndpointComponentsNettyPluginsDistribution</module>
     </modules>
 

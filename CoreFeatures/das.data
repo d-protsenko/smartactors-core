@@ -3736,6 +3736,14 @@
 } ],
   "rawName" : "HttpWebSocketUpgradeListener",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "ssl-channel-initialization-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "SslChannelInitializationHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3803,6 +3811,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpMessageAttributeExtractorsPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "ssl-engine-strategies-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "SslEngineStrategiesPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",

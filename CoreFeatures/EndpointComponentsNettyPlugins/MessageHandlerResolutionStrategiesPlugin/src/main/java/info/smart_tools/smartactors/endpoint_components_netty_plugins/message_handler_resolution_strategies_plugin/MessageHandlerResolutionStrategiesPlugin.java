@@ -32,6 +32,7 @@ import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_mess
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.WrappedOutboundMessageExtractor;
 import info.smart_tools.smartactors.endpoint_components_netty.outbound_netty_message_creation_handler.OutboundNettyMessageCreationHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.send_netty_message_message_handler.SendNettyMessageMessageHandler;
+import info.smart_tools.smartactors.endpoint_components_netty.ssl_channel_initialization_handler.SslChannelInitializationHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.wrap_inbound_netty_message_to_message_byte_array_message_handler.WrapInboundNettyMessageToMessageByteArrayMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline.IEndpointPipeline;
 import info.smart_tools.smartactors.endpoint_interfaces.ioutbound_connection_channel.IOutboundConnectionChannel;
@@ -50,6 +51,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
+import javax.net.ssl.SSLEngine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -71,6 +73,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
     @Item("netty_endpoint_message_handlers")
     @After({
             "netty_outbound_message_factories_strategy",
+            "netty_ssl_engine_strategies",
     })
     public void registerHandlerStrategies() throws Exception {
         IFieldName maxAggregatedContentLenFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
@@ -249,6 +252,30 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                 new SingletonStrategy(new SendNettyMessageMessageHandler()));
         storage.register("netty/wrap inbound message",
                 new SingletonStrategy(new WrapInboundNettyMessageToMessageByteArrayMessageHandler()));
+
+        /*
+         * {
+         *  "type": "netty/ssl-setup/server",
+         *  "ciphers": [
+         *   .. list of supported ciphers ..
+         *  ]
+         * }
+         *
+         * In endpoint configuration:
+         *
+         * {
+         *  ..
+         *  "serverCertificate": ".. certificate (*.crt file) path ..",
+         *  "serverCertificateKey": ".. key (*.key file) path ..",
+         *  ..
+         * }
+         */
+        storage.register("netty/ssl-setup/server",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    SSLEngine engine = IOC.resolve(Keys.getOrAdd("server endpoint ssl engine"), handlerConf, endpointConf);
+
+                    return new SslChannelInitializationHandler(engine);
+                }));
     }
 
     @Item("netty_exceptional_actions")

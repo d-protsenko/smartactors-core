@@ -63,8 +63,22 @@
           "id": "accept-client/enable-ssl",
           "stages": [
             {
-              "type": "error",
-              "message": "SSL not implemented"
+              "type": "netty/ssl-setup/server",
+              "ciphers": [
+                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+                "TLS_RSA_WITH_AES_128_GCM_SHA256",
+                "TLS_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_RSA_WITH_AES_256_CBC_SHA",
+                "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA"
+              ]
             }
           ]
         },
@@ -223,6 +237,22 @@
 
             {
               "type": "netty/send outbound message"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "netty/server/ssl",
+      "extend": [],
+      "pipelines": [
+        {
+          "id": "accept-client/optional/enable-ssl",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "accept-client/enable-ssl"
             }
           ]
         }
@@ -535,6 +565,12 @@
           ]
         }
       ]
+    },
+
+    {
+      "id": "netty/server/https",
+      "extend": ["netty/server/ssl", "netty/server/http"],
+      "pipelines": []
     }
   ]
 }

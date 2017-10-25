@@ -62,6 +62,7 @@
         <module>HttpResponseMetadataPresetup</module>
         <module>HttpMessageAttributeExtractors</module>
         <module>HttpWebSocketUpgradeListener</module>
+        <module>SslChannelInitializationHandler</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
