@@ -481,7 +481,8 @@
                 "table": "default block decoders by mime type",
                 "default": {
                   "type": "error",
-                  "message": "unsupported mime type"
+                  "message": "unsupported mime type",
+                  "errorClass": "info.smart_tools.smartactors.endpoint_profiles_netty.profile_pipeline_exceptions.UnknownMimeTypeException"
                 }
               },
               "routes": [
@@ -509,6 +510,11 @@
                   "class": "info.smart_tools.smartactors.endpoint_components_generic.common_exceptions.InboundMessageDecoderException",
                   "action": "netty/http/server/default",
                   "status": 400
+                },
+                {
+                  "class": "info.smart_tools.smartactors.endpoint_profiles_netty.profile_pipeline_exceptions.UnknownMimeTypeException",
+                  "action": "netty/http/server/default",
+                  "status": 415
                 }
               ],
               "defaultAction": {

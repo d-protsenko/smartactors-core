@@ -4,17 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>core-features</artifactId>
+        <artifactId>endpoint-profiles-netty</artifactId>
         <version>0.3.3</version>
     </parent>
-    <groupId>info.smart_tools.smartactors</groupId>
-    <artifactId>endpoint-profiles-netty</artifactId>
+    <artifactId>endpoint-profiles-netty.profile-pipeline-exceptions</artifactId>
     <version>0.3.3</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ProfilePipelineExceptions</module>
-        <module>EndpointProfilesNettyDistribution</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-interfaces.imessage-handler</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+    </dependencies>
     <build>
         <pluginManagement>
             <plugins>
@@ -27,26 +28,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
-                    <configuration>
-                        <useSystemClassLoader>false</useSystemClassLoader>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <inherited>true</inherited>
-                </plugin>
-                <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
                     <executions>
@@ -55,7 +36,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-features</id>
+                            <id>archiva.smartactors-modules</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -63,18 +44,18 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.zip</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                                <repositoryId>archiva.smartactors-features</repositoryId>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+                                <repositoryId>archiva.smartactors-modules</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
-                                <packaging>zip</packaging>
+                                <packaging>jar</packaging>
                                 <description>This package contains ...</description>
                             </configuration>
                         </execution>
                     </executions>
-                    <inherited>true</inherited>
+                    <inherited>false</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -21,6 +21,7 @@ import info.smart_tools.smartactors.endpoint_components_generic.scope_setter_mes
 import info.smart_tools.smartactors.endpoint_components_generic.send_internal_message_handler.SendInternalMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline.IEndpointPipeline;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -68,6 +69,7 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         IFieldName stackDepthFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
         IFieldName chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
         IFieldName messageFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
+        IFieldName errorClassFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "errorClass");
 
         IAdditionDependencyStrategy storage = IOC.resolve(Keys.getOrAdd("expandable_strategy#endpoint message handler"));
 
@@ -232,14 +234,20 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         /*
          * {
          *  "type": "error",
+         *  "errorClass": ".. canonical name of error class ..", (optional)
          *  "message": ".. error message .."
          * }
          */
         storage.register("error",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     String message = (String) handlerConf.getValue(messageFN);
+                    String errorClass = (String) handlerConf.getValue(errorClassFN);
 
-                    return new ErrorMessageHandler(message);
+                    Class<? extends Throwable> clz = errorClass == null
+                            ? MessageHandlerException.class
+                            : getClass().getClassLoader().loadClass(errorClass).asSubclass(Throwable.class);
+
+                    return new ErrorMessageHandler(clz, message);
                 }));
     }
 
