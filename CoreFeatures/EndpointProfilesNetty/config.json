@@ -64,7 +64,8 @@
           "stages": [
             {
               "type": "netty/ssl-setup/server",
-              "ciphers": [
+              "ciphers": "@@sslCiphers",
+              "sslCiphers": [
                 "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
                 "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
                 "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
@@ -135,7 +136,8 @@
           "stages": [
             {
               "type": "internal message sender",
-              "stackDepth": 5,
+              "stackDepth": "@@mainInboundMessageChainStackDepth",
+              "mainInboundMessageChainStackDepth": 5,
               "chain": "@@mainInboundChain",
               "mainInboundChain": "defaultEndpointInboundChain"
             }
@@ -294,7 +296,8 @@
           "stages": [
             {
               "type": "netty/setup/http server channel",
-              "maxAggregatedContentLength": 4096
+              "maxAggregatedContentLength": "@@maxHttpAggregatedContentLength",
+              "maxHttpAggregatedContentLength": 4096
             },
             {
               "type": "include",
@@ -441,7 +444,8 @@
             },
             {
               "type": "internal message sender",
-              "stackDepth": 5,
+              "stackDepth": "@@webSocketInboundMessageChainStackDepth",
+              "webSocketInboundMessageChainStackDepth": 5,
               "chain": "@@webSocketInboundChain",
               "webSocketInboundChain": "defaultWebSocketInboundChain"
             }
