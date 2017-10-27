@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_a
 import info.smart_tools.smartactors.endpoint_components_netty.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
 import info.smart_tools.smartactors.endpoint_components_netty.http_response_metadata_presetup.HttpResponseMetadataPreSetup;
+import info.smart_tools.smartactors.endpoint_components_netty.http_status_setter.HttpStatusSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_web_socket_upgrade_listener.HttpWebSocketUpgradeListenerSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_channel_handler.InboundNettyChannelHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.ReleaseNettyMessageHandler;
@@ -93,6 +94,8 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                 new SingletonStrategy(new CookiesSetter()));
         storage.register("netty/http headers setter",
                 new SingletonStrategy(new HttpHeadersSetter()));
+        storage.register("netty/http response status code setter",
+                new SingletonStrategy(new HttpStatusSetter()));
 
         IOC.register(Keys.getOrAdd(IParseTree.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> new ParseTree()));

@@ -63,6 +63,7 @@
         <module>HttpMessageAttributeExtractors</module>
         <module>HttpWebSocketUpgradeListener</module>
         <module>SslChannelInitializationHandler</module>
+        <module>HttpStatusSetter</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
