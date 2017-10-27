@@ -136,7 +136,8 @@
             {
               "type": "internal message sender",
               "stackDepth": 5,
-              "chain": "endpointInboundChain"
+              "chain": "@@mainInboundChain",
+              "mainInboundChain": "defaultEndpointInboundChain"
             }
           ]
         },
@@ -313,7 +314,8 @@
           "stages": [
             {
               "type": "netty/setup/http web-socket upgrade listener",
-              "path": "/ws",
+              "path": "@@webSocketPath",
+              "webSocketPath": "/web-socket",
               "pipeline": "upgrade-to-websocket"
             }
           ]
@@ -436,7 +438,8 @@
             {
               "type": "internal message sender",
               "stackDepth": 5,
-              "chain": "webSocketInboundChain"
+              "chain": "@@webSocketInboundChain",
+              "webSocketInboundChain": "defaultWebSocketInboundChain"
             }
           ]
         },
@@ -478,7 +481,8 @@
               "type": "netty/http query string parser"
             },
             {
-              "type": "netty/fixed http path parser"
+              "type": "netty/fixed http path parser",
+              "templates": "@@httpPathTemplates"
             },
             {
               "type": "netty/http response metadata presetup"
@@ -508,7 +512,8 @@
                 "messageExtractor": "wrapped inbound",
                 "defaultValue": "application/json",
                 "header": "content-type",
-                "table": "default block decoders by mime type",
+                "table": "@@httpDecoderTable",
+                "httpDecoderTable": "default block decoders by mime type",
                 "default": {
                   "type": "error",
                   "message": "unsupported mime type",

@@ -3646,6 +3646,14 @@
 } ],
   "rawName" : "CommonExceptionTypes",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "handler-configuration-object",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HandlerConfigurationObject",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

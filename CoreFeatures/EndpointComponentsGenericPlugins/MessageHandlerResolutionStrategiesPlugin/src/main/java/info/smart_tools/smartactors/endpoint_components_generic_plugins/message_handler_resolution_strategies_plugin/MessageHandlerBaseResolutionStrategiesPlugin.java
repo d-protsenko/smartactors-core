@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleSt
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_strategy.StrategyStorageStrategy;
+import info.smart_tools.smartactors.endpoint_components_generic.handler_configuration_object.HandlerConfigurationObject;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline_set.IEndpointPipelineSet;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline_set.exceptions.PipelineCreationException;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline_set.exceptions.PipelineDescriptionNotFoundException;
@@ -35,6 +36,9 @@ public class MessageHandlerBaseResolutionStrategiesPlugin extends BootstrapPlugi
     }
 
     @Item("base_message_handler_strategies")
+    @After({
+            "endpoint_pipeline_handler_configuration_object_strategy",
+    })
     public void registerBaseStrategies() throws Exception {
         SimpleStrictStorageStrategy messageHandlerStrategyStorage
                 = new SimpleStrictStorageStrategy("endpoint message handler");
@@ -43,7 +47,18 @@ public class MessageHandlerBaseResolutionStrategiesPlugin extends BootstrapPlugi
          * (String type, IObject handlerConf, IObject endpointConf, IEndpointPipelineSet pipelineSet)
          *      -> IMessageHandler
          */
-        IOC.register(Keys.getOrAdd("endpoint message handler"), messageHandlerStrategyStorage);
+        IOC.register(Keys.getOrAdd("endpoint message handler"), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return messageHandlerStrategyStorage.resolve(
+                        args[0],
+                        IOC.resolve(Keys.getOrAdd("endpoint message handler configuration object"), args[1], args[2]),
+                        args[2],
+                        args[3]
+                );
+            } catch (ResolveDependencyStrategyException | ResolutionException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
         IOC.register(Keys.getOrAdd("expandable_strategy#endpoint message handler"),
                 new SingletonStrategy(messageHandlerStrategyStorage));
 
@@ -58,7 +73,12 @@ public class MessageHandlerBaseResolutionStrategiesPlugin extends BootstrapPlugi
                         strategy = new IResolveDependencyStrategy() {
                             @Override
                             public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
-                                return (T) Collections.singletonList(messageHandlerStrategyStorage.resolve(args));
+                                try {
+                                    return (T) Collections.singletonList(
+                                            IOC.resolve(Keys.getOrAdd("endpoint message handler"), args));
+                                } catch (ResolutionException e) {
+                                    throw new ResolveDependencyStrategyException(e);
+                                }
                             }
                         };
                     }
@@ -140,5 +160,19 @@ public class MessageHandlerBaseResolutionStrategiesPlugin extends BootstrapPlugi
                     throw new FunctionExecutionException(e);
                 }
             }));
+    }
+
+    @Item("endpoint_pipeline_handler_configuration_object_strategy")
+    public void registerHandlerConfigObjectStrategy() throws Exception {
+        IOC.register(Keys.getOrAdd("endpoint message handler configuration object"),
+                new ApplyFunctionToArgumentsStrategy(args -> {
+            IObject[] objects = new IObject[args.length];
+
+            for (int i = 0; i < args.length; i++) {
+                objects[i] = (IObject) args[i];
+            }
+
+            return new HandlerConfigurationObject(objects);
+        }));
     }
 }

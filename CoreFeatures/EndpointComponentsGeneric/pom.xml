@@ -54,6 +54,7 @@
         <module>DefaultOutboundChannelListener</module>
         <module>CompositeExceptionalAction</module>
         <module>CommonExceptionTypes</module>
+        <module>HandlerConfigurationObject</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
