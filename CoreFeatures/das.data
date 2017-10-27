@@ -3813,7 +3813,7 @@
   "rawName" : "HttpMessageAttributeExtractorsPlugin",
   "version" : "0.3.3"
 }, {
-  "artifactId" : "ssl-engine-strategies-plugin",
+  "artifactId" : "ssl-context-strategies-plugin",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"

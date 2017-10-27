@@ -9,26 +9,26 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import io.netty.buffer.ByteBufAllocator;
+import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 
-import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.util.List;
 
-public class ServerSSLEngineResolutionStrategy implements IResolveDependencyStrategy {
-    private final IFieldName serverCertificateFN, serverCertificateKeyFN, ciphersFN;
+public class ServerSSLContextResolutionStrategy implements IResolveDependencyStrategy {
+    private final IFieldName serverCertificateFN, serverCertificateKeyFN, ciphersFN, serverCertificateKeyPasswordFN;
 
     /**
      * The constructor.
      *
      * @throws ResolutionException if error occurs resolving any dependencies
      */
-    public ServerSSLEngineResolutionStrategy() throws ResolutionException {
+    public ServerSSLContextResolutionStrategy() throws ResolutionException {
         serverCertificateFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificate");
         serverCertificateKeyFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificateKey");
         ciphersFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "ciphers");
+        serverCertificateKeyPasswordFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificateKeyPassword");
     }
 
     @Override
@@ -39,15 +39,15 @@ public class ServerSSLEngineResolutionStrategy implements IResolveDependencyStra
         try {
             File certFile = new File((String) endpointConf.getValue(serverCertificateFN));
             File keyFile = new File((String) endpointConf.getValue(serverCertificateKeyFN));
+            String keyPassword = (String) endpointConf.getValue(serverCertificateKeyPasswordFN);
             List ciphers = (List) handlerConf.getValue(ciphersFN);
 
-            SSLEngine engine = SslContextBuilder
-                    .forServer(certFile, keyFile)
+            SslContext context = SslContextBuilder
+                    .forServer(certFile, keyFile, keyPassword)
                     .ciphers(ciphers)
-                    .build()
-                    .newEngine(ByteBufAllocator.DEFAULT);
+                    .build();
 
-            return (T) engine;
+            return (T) context;
         } catch (ReadValueException | InvalidArgumentException | SSLException e) {
             throw new ResolveDependencyStrategyException(e);
         }

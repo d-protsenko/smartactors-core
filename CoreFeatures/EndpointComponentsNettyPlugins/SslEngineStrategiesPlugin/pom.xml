@@ -7,7 +7,7 @@
         <artifactId>endpoint-components-netty-plugins</artifactId>
         <version>0.3.3</version>
     </parent>
-    <artifactId>endpoint-components-netty-plugins.ssl-engine-strategies-plugin</artifactId>
+    <artifactId>endpoint-components-netty-plugins.ssl-context-strategies-plugin</artifactId>
     <version>0.3.3</version>
     <dependencies>
         <dependency>

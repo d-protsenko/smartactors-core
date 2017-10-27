@@ -4,10 +4,9 @@ import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaul
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandlerCallback;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.helpers.IBypassMessageHandler;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
-import io.netty.handler.ssl.SslHandler;
-
-import javax.net.ssl.SSLEngine;
+import io.netty.handler.ssl.SslContext;
 
 /**
  * Handler that adds SSL handler to Netty pipeline.
@@ -16,15 +15,15 @@ import javax.net.ssl.SSLEngine;
  */
 public class SslChannelInitializationHandler<T extends IDefaultMessageContext<Channel, ?, ?>>
         implements IBypassMessageHandler<T> {
-    private final SSLEngine engine;
+    private final SslContext sslContext;
 
     /**
      * The constructor.
      *
-     * @param engine SSL engine to use
+     * @param context the SSL context tha will serve as factory of SSL handlers
      */
-    public SslChannelInitializationHandler(SSLEngine engine) {
-        this.engine = engine;
+    public SslChannelInitializationHandler(SslContext context) {
+        this.sslContext = context;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class SslChannelInitializationHandler<T extends IDefaultMessageContext<Ch
             final IMessageHandlerCallback<T> next,
             final T context) throws MessageHandlerException {
         context.getSrcMessage().pipeline()
-                .addFirst("ssl", new SslHandler(engine));
+                .addFirst("ssl", sslContext.newHandler(ByteBufAllocator.DEFAULT));
         next.handle(context);
     }
 }

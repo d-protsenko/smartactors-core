@@ -50,8 +50,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.ssl.SslContext;
 
-import javax.net.ssl.SSLEngine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -272,9 +272,9 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
          */
         storage.register("netty/ssl-setup/server",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
-                    SSLEngine engine = IOC.resolve(Keys.getOrAdd("server endpoint ssl engine"), handlerConf, endpointConf);
+                    SslContext context = IOC.resolve(Keys.getOrAdd("netty server endpoint ssl context"), handlerConf, endpointConf);
 
-                    return new SslChannelInitializationHandler(engine);
+                    return new SslChannelInitializationHandler(context);
                 }));
     }
 
