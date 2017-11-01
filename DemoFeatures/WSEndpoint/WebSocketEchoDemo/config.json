@@ -4,37 +4,64 @@
 
   "endpoints": [
     {
-      "name": "ws",
-      "type": "websocket",
-      "port": 9966,
-      "startChain": "wsEchoChain",
-      "maxContentLength": 4098,
-      "stackDepth": 5,
-      "path": "/ws"
+      "skeleton": "netty/server/tcp/single-port",
+      "profile": "netty/server/http",
+
+      "parentEventLoopGroup": "defaultServerParent",
+      "childEventLoopGroup": "defaultServerChild",
+
+      "transport": "prefer-native",
+      "upcounter": "root",
+
+      "connectPipeline": "accept-client",
+
+      "address": ":9966",
+
+      "mainInboundChain": "httpInboundChain",
+      "webSocketInboundChain": "wsEchoChain",
+      "webSocketPath": "/ws",
+
+      "httpPathTemplates": [
+        "/ws"
+      ]
     }
   ],
 
   "objects": [
     {
-      "name": "ws_sender",
-      "dependency": "websocket message sender",
-      "kind": "stateless_actor"
+      "name": "sendResponse",
+      "kind": "raw",
+      "dependency": "response sender receiver"
+    },
+    {
+      "name": "sendOutbound",
+      "kind": "stateless_actor",
+      "dependency": "outbound message sender"
     }
   ],
 
   "maps": [
     {
       "id": "wsEchoChain",
-      "externalAccess": true,
       "exceptional": [],
       "steps": [
         {
-          "target": "ws_sender",
+          "target": "sendOutbound",
           "handler": "send",
           "wrapper": {
-            "in_getConnectionId": "context/wsConnectionId",
-            "in_getMessage": "message"
+            "in_getMessage": "message",
+            "in_getContext": "context",
+            "in_getConnectionId": "context/channelId"
           }
+        }
+      ]
+    },
+    {
+      "id": "httpInboundChain",
+      "exceptional": [],
+      "steps": [
+        {
+          "target": "sendResponse"
         }
       ]
     }
