@@ -232,17 +232,6 @@
             },
 
             {
-              "type": "netty/http headers setter"
-            },
-            {
-              "type": "netty/http cookie setter"
-            },
-
-            {
-              "type": "netty/http response status code setter"
-            },
-
-            {
               "type": "netty/send outbound message"
             }
           ]
@@ -276,6 +265,17 @@
             {
               "type": "netty/create outbound message",
               "messageType": "http response"
+            },
+
+            {
+              "type": "netty/http headers setter"
+            },
+            {
+              "type": "netty/http cookie setter"
+            },
+
+            {
+              "type": "netty/http response status code setter"
             }
           ]
         },
