@@ -53,12 +53,11 @@ public class HttpStatusSetter<TResp extends FullHttpResponse, TCtx>
         final IDefaultMessageContext<IObject, IOutboundMessageByteArray<TResp>, TCtx> context)
             throws MessageHandlerException {
         try {
-            FullHttpResponse response = context.getDstMessage().getMessage();
-
             IObject messageContext = (IObject) context.getSrcMessage().getValue(contextFN);
             Number statusCode = (Number) messageContext.getValue(statusCodeFN);
 
             if (null != statusCode) {
+                FullHttpResponse response = context.getDstMessage().getMessage();
                 response.setStatus(HttpResponseStatus.valueOf(statusCode.intValue()));
             }
         } catch (InvalidArgumentException | ReadValueException | ClassCastException e) {
