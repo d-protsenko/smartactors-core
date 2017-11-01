@@ -86,8 +86,6 @@
         <module>DatabasePostgresqlAsyncOpsCollection</module>
         <module>DatabasePostgresqlCachedCollection</module>
         <module>MessageBus-plugins</module>
-        <module>WebSocketEndpoint</module>
-        <module>WebSocketEndpointPlugins</module>
         <module>EndpointInterfaces</module>
         <module>EndpointComponentsGeneric</module>
         <module>EndpointComponentsNetty</module>

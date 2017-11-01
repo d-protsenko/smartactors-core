@@ -3405,47 +3405,6 @@
   "version" : "0.3.3"
 }, {
   "actors" : [ {
-  "artifactId" : "web-socket-endpoint",
-  "uploadRepositories" : [ ],
-  "rawName" : "WebSocketEndpoint",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "web-socket-sender",
-  "uploadRepositories" : [ ],
-  "rawName" : "WebSocketSender",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "web-socket-endpoint-interfaces",
-  "uploadRepositories" : [ ],
-  "rawName" : "WebSocketEndpointInterfaces",
-  "version" : "0.3.3"
-}, {
-  "artifactId" : "connection-lifecycle-monitor",
-  "uploadRepositories" : [ ],
-  "rawName" : "ConnectionLifecycleMonitor",
-  "version" : "0.3.3"
-} ],
-  "uploadRepositories" : [ ],
-  "plugins" : [ ],
-  "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "web-socket-endpoint",
-  "rawName" : "WebSocketEndpoint",
-  "version" : "0.3.3"
-}, {
-  "actors" : [ ],
-  "uploadRepositories" : [ ],
-  "plugins" : [ {
-  "artifactId" : "web-socket-endpoint-plugin",
-  "uploadRepositories" : [ ],
-  "rawName" : "WebSocketEndpointPlugin",
-  "version" : "0.3.3"
-} ],
-  "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "web-socket-endpoint-plugins",
-  "rawName" : "WebSocketEndpointPlugins",
-  "version" : "0.3.3"
-}, {
-  "actors" : [ {
   "artifactId" : "imessage-handler",
   "uploadRepositories" : [ ],
   "rawName" : "IMessageHandler",

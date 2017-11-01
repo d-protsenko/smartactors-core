@@ -1,4 +1,0 @@
-{
-  "featureName": "info.smart_tools.smartactors:web-socket-endpoint-plugins",
-  "afterFeatures": ["info.smart_tools.smartactors:web-socket-endpoint"]
-}
