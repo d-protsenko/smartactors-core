@@ -3719,6 +3719,22 @@
 } ],
   "rawName" : "HttpStatusSetter",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "default-tcp-client-connection-pool",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "DefaultTcpClientConnectionPool",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "isocket-connection-pool",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ISocketConnectionPool",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

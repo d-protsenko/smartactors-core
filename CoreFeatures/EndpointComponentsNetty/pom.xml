@@ -64,6 +64,8 @@
         <module>HttpWebSocketUpgradeListener</module>
         <module>SslChannelInitializationHandler</module>
         <module>HttpStatusSetter</module>
+        <module>DefaultTcpClientConnectionPool</module>
+        <module>ISocketConnectionPool</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
