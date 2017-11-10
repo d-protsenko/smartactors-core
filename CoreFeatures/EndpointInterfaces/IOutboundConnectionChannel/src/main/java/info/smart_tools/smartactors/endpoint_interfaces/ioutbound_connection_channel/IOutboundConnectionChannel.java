@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
  *
  * <p>
  *  Outbound connection channel is created for a connection when it is able to send outbound messages not correlated
- *  with inbound messages i.e. not in request-response mode.
+ *  with preceding inbound messages i.e. when it is not a server working in request-response mode.
  * </p>
  */
 public interface IOutboundConnectionChannel {

@@ -31,8 +31,8 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
      * @param channelSetupCallback action that configures channels (sets up the pipeline)
      */
     public DefaultTcpClientConnectionPool(
-            ChannelFactory<? extends SocketChannel> channelFactory,
-            IAction<SocketChannel> channelSetupCallback) {
+            final ChannelFactory<? extends SocketChannel> channelFactory,
+            final IAction<SocketChannel> channelSetupCallback) {
         this.channelFactory = channelFactory;
         this.channelSetupCallback = channelSetupCallback;
         channelCollections = new ConcurrentHashMap<>();
@@ -43,7 +43,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
      */
     private class ChannelCloseListener implements ChannelFutureListener {
         @Override
-        public void operationComplete(ChannelFuture future)
+        public void operationComplete(final ChannelFuture future)
                 throws Exception {
             SocketChannel channel = (SocketChannel) future.channel();
 
@@ -60,7 +60,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
         private boolean terminated = false;
         private Queue<SocketChannel> channels = new ConcurrentLinkedQueue<>();
 
-        void recycle(SocketChannel channel) {
+        void recycle(final SocketChannel channel) {
             if (terminated) {
                 channel.close();
                 processTerminated();
@@ -69,7 +69,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
             }
         }
 
-        void closed(SocketChannel channel) {
+        void closed(final SocketChannel channel) {
             channels.remove(channel);
 
             if (channels.isEmpty()) {
@@ -103,7 +103,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
     private final ChannelFutureListener closeFutureListener = new ChannelCloseListener();
 
     @Override
-    public SocketChannel getChannel(InetSocketAddress address)
+    public SocketChannel getChannel(final InetSocketAddress address)
             throws SocketConnectionPoolException {
         SocketChannel channel = tryGetPooled(address);
 
@@ -115,7 +115,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
     }
 
     @Override
-    public void recycleChannel(SocketChannel channel)
+    public void recycleChannel(final SocketChannel channel)
             throws SocketConnectionPoolException {
         if (channel.isOpen()) {
             ChannelCollection collection = channelCollections.computeIfAbsent(
@@ -125,7 +125,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
         }
     }
 
-    private SocketChannel tryGetPooled(InetSocketAddress address) {
+    private SocketChannel tryGetPooled(final InetSocketAddress address) {
         ChannelCollection collection = channelCollections.get(address);
 
         if (null == collection) {
@@ -135,7 +135,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
         return collection.get();
     }
 
-    private SocketChannel createChannel(InetSocketAddress address)
+    private SocketChannel createChannel(final InetSocketAddress address)
             throws SocketConnectionPoolException {
         SocketChannel channel = channelFactory.newChannel();
 

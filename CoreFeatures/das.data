@@ -3446,6 +3446,14 @@
 } ],
   "rawName" : "IOutboundConnectionChannel",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "iclient-callback",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IClientCallback",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3612,6 +3620,30 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HandlerConfigurationObject",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "null-client-callback",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "NullClientCallback",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "outbound-request-sender",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "OutboundRequestSender",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "interrupt-client-callback",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "InterruptClientCallback",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],

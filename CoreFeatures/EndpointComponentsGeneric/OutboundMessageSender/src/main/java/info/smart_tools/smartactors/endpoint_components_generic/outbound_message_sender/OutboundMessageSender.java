@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
- * Object/(stateless)actor that sends outbound messages sing globally registered {@link IOutboundConnectionChannel
+ * Object/(stateless)actor that sends outbound messages using globally registered {@link IOutboundConnectionChannel
  * outbound connection channels}.
  */
 public class OutboundMessageSender {

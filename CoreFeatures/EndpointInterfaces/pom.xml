@@ -21,6 +21,7 @@
         <module>IEndpointPipelineSet</module>
         <module>IEndpointProfile</module>
         <module>IOutboundConnectionChannel</module>
+        <module>IClientCallback</module>
         <module>EndpointInterfacesDistribution</module>
     </modules>
 
