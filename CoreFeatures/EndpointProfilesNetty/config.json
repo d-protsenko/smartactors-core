@@ -90,6 +90,7 @@
             {
               "type": "netty/setup/inbound chanel handler",
               "pipeline": "receive-inbound",
+              "errorPipeline": "handle-channel-exception",
               "messageClass": "java.lang.Object"
             }
           ]
@@ -98,6 +99,15 @@
         {
           "id": "intercept-exception",
           "stages": []
+        },
+
+        {
+          "id": "handle-channel-exception",
+          "stages": [
+            {
+              "type": "dead end"
+            }
+          ]
         },
 
         {
@@ -286,6 +296,7 @@
             {
               "type": "netty/setup/inbound chanel handler",
               "pipeline": "receive-inbound",
+              "errorPipeline": "handle-channel-exception",
               "messageClass": "io.netty.handler.codec.http.HttpMessage"
             }
           ]
@@ -339,13 +350,24 @@
             {
               "type": "netty/setup/inbound chanel handler",
               "pipeline": "receive-websocket-text",
+              "errorPipeline": "handle-websocket-channel-exception",
               "messageClass": "io.netty.handler.codec.http.websocketx.TextWebSocketFrame"
             },
             {
               "type": "netty/setup/inbound chanel handler",
               "pipeline": "receive-websocket-binary",
+              "errorPipeline": "handle-websocket-channel-exception",
               "messageClass": "io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame"
             },
+            {
+              "type": "dead end"
+            }
+          ]
+        },
+
+        {
+          "id": "handle-websocket-channel-exception",
+          "stages": [
             {
               "type": "dead end"
             }

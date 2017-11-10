@@ -119,7 +119,7 @@ This feature registers some message handlers specific for Netty-based endpoints.
     ```
     
 * `"netty/setup/inbound chanel handler"`
-    Set up handler in Netty channel pipeline that will notify some pipeline on inbound messages.
+    Set up handler in Netty channel pipeline that will notify some pipelines on inbound messages and errors.
     
     Configuration example:
     
@@ -128,6 +128,8 @@ This feature registers some message handlers specific for Netty-based endpoints.
       "type": "netty/setup/inbound chanel handler",
 
       "pipeline": ".. pipeline name ..",
+
+      "errorPipeline": ".. pipeline name ..",
     
       // Only messages of classes inheriting given class will be routed to the pipeline
       "messageClass": ".. canonical name of message class .."

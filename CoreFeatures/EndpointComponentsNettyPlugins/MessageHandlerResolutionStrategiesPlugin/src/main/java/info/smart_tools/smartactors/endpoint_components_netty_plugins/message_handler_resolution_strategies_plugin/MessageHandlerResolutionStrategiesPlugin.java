@@ -80,6 +80,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         IFieldName maxAggregatedContentLenFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()),
                 "maxAggregatedContentLength");
         IFieldName pipelineFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "pipeline");
+        IFieldName errorPipelineFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "errorPipeline");
         IFieldName messageClassFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageClass");
         IFieldName listenerFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "listener");
         IFieldName templatesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "templates");
@@ -158,6 +159,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
          * {
          *  "type": "netty/setup/inbound chanel handler",
          *  "pipeline": ".. pipeline name ..",
+         *  "errorPipeline": ".. error pipeline name ..",
          *  "messageClass": ".. canonical name of message class .."
          * }
          */
@@ -165,12 +167,14 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
                     String pipelineId = (String) handlerConf.getValue(pipelineFN);
                     IEndpointPipeline pipeline = pipelineSet.getPipeline(pipelineId);
+                    String errorPipelineId = (String) handlerConf.getValue(errorPipelineFN);
+                    IEndpointPipeline errorPipeline = pipelineSet.getPipeline(errorPipelineId);
                     Class messageClass = getClass().getClassLoader().loadClass((String) handlerConf.getValue(messageClassFN));
 
                     return new InboundNettyChannelHandlerSetupHandler(
                             new InboundNettyChannelHandler(
-                                    pipeline.getInputCallback(),
-                                    pipeline.getContextFactory(),
+                                    pipeline,
+                                    errorPipeline,
                                     messageClass
                             ));
                 }));

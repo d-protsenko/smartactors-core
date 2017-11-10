@@ -64,6 +64,14 @@ public class OutboundRequestSender {
      *  This method modifies request object by setting required {@link IClientCallback callback}.
      * </p>
      *
+     * <p>
+     *  After call of this method request environment object (returned by {@link SendRequestWrapper#getRequest()}) is
+     *  owned by request processing operation. I.e. it should not be modified or accessed by consequent message
+     *  receivers.
+     *  It also may and will contain non-serializable data (including but not only a {@link IClientCallback client
+     *  callback} instance).
+     * </p>
+     *
      * @param message the message
      * @throws ReadValueException if error occurs reading values from wrapper
      * @throws ResolutionException if there is no callback implementation for required request mode
