@@ -13,42 +13,36 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 
 import javax.net.ssl.SSLException;
-import java.io.File;
 import java.util.List;
 
-public class ServerSSLContextResolutionStrategy implements IResolveDependencyStrategy {
-    private final IFieldName serverCertificateFN, serverCertificateKeyFN, ciphersFN, serverCertificateKeyPasswordFN;
+public class ClientSSLContextResolutionStrategy implements IResolveDependencyStrategy {
+    private final IFieldName ciphersFN;
 
     /**
      * The constructor.
      *
-     * @throws ResolutionException if error occurs resolving any dependencies
+     * @throws ResolutionException if error occurs resolving any dependency
      */
-    public ServerSSLContextResolutionStrategy() throws ResolutionException {
-        serverCertificateFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificate");
-        serverCertificateKeyFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificateKey");
+    public ClientSSLContextResolutionStrategy()
+            throws ResolutionException {
         ciphersFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "ciphers");
-        serverCertificateKeyPasswordFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "serverCertificateKeyPassword");
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args)
+            throws ResolveDependencyStrategyException {
         IObject handlerConf = (IObject) args[0];
-        IObject endpointConf = (IObject) args[1];
 
         try {
-            File certFile = new File((String) endpointConf.getValue(serverCertificateFN));
-            File keyFile = new File((String) endpointConf.getValue(serverCertificateKeyFN));
-            String keyPassword = (String) endpointConf.getValue(serverCertificateKeyPasswordFN);
             List ciphers = (List) handlerConf.getValue(ciphersFN);
 
             SslContext context = SslContextBuilder
-                    .forServer(certFile, keyFile, keyPassword)
+                    .forClient()
                     .ciphers(ciphers)
                     .build();
 
             return (T) context;
-        } catch (ReadValueException | InvalidArgumentException | SSLException e) {
+        } catch (SSLException | ReadValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);
         }
     }

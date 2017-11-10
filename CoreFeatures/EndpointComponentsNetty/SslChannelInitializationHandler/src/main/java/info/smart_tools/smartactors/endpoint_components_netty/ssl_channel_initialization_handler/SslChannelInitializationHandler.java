@@ -22,7 +22,7 @@ public class SslChannelInitializationHandler<T extends IDefaultMessageContext<Ch
      *
      * @param context the SSL context tha will serve as factory of SSL handlers
      */
-    public SslChannelInitializationHandler(SslContext context) {
+    public SslChannelInitializationHandler(final SslContext context) {
         this.sslContext = context;
     }
 

@@ -346,3 +346,15 @@ This feature registers some message handlers specific for Netty-based endpoints.
       "serverCertificateKeyPassword": "password"
     }
     ```
+    
+* `"netty/ssl-setup/client"`
+    Enables SSL for TCP client channel.
+    
+    Configuration example:
+    
+    ```JavaScript
+    {
+      "type": "netty/ssl-setup/client",
+      "ciphers": [/* .. list of names of supported ciphers .. */]
+    }
+    ```

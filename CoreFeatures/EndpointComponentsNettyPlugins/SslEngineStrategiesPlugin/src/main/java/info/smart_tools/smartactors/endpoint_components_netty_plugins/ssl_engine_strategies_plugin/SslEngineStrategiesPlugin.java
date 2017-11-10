@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.endpoint_components_netty_plugins.ssl_engine_strategies_plugin;
 
+import info.smart_tools.smartactors.endpoint_components_netty.ssl_channel_initialization_handler.ClientSSLContextResolutionStrategy;
 import info.smart_tools.smartactors.endpoint_components_netty.ssl_channel_initialization_handler.ServerSSLContextResolutionStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -21,5 +22,7 @@ public class SslEngineStrategiesPlugin extends BootstrapPlugin {
     public void registerStrategies() throws Exception {
         IOC.register(Keys.getOrAdd("netty server endpoint ssl context"),
                 new ServerSSLContextResolutionStrategy());
+        IOC.register(Keys.getOrAdd("netty client endpoint ssl context"),
+                new ClientSSLContextResolutionStrategy());
     }
 }

@@ -279,7 +279,24 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
          */
         storage.register("netty/ssl-setup/server",
                 new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
-                    SslContext context = IOC.resolve(Keys.getOrAdd("netty server endpoint ssl context"), handlerConf, endpointConf);
+                    SslContext context = IOC.resolve(
+                            Keys.getOrAdd("netty server endpoint ssl context"), handlerConf, endpointConf);
+
+                    return new SslChannelInitializationHandler(context);
+                }));
+
+        /*
+         * {
+         *  "type": "netty/ssl-setup/client",
+         *  "ciphers": [
+         *   .. list of supported ciphers ..
+         *  ]
+         * }
+         */
+        storage.register("netty/ssl-setup/client",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    SslContext context = IOC.resolve(
+                            Keys.getOrAdd("netty client endpoint ssl context"), handlerConf, endpointConf);
 
                     return new SslChannelInitializationHandler(context);
                 }));
