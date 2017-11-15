@@ -94,6 +94,7 @@
         <module>EndpointComponentsGenericPlugins</module>
         <module>EndpointsNettyPlugins</module>
         <module>EndpointProfilesNetty</module>
+        <module>EndpointsGeneric</module>
     </modules>
 
     <build>

@@ -4001,6 +4001,25 @@
   "artifactId" : "endpoint-profiles-netty",
   "rawName" : "EndpointProfilesNetty",
   "version" : "0.3.3"
+}, {
+  "actors" : [ {
+  "artifactId" : "generic-outound-endpoint",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "GenericOutboundEndpoint",
+  "version" : "0.3.3"
+} ],
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-features",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+} ],
+  "plugins" : [ ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "endpoints-generic",
+  "rawName" : "EndpointsGeneric",
+  "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
