@@ -59,6 +59,7 @@
         <module>OutboundRequestSender</module>
         <module>InterruptClientCallback</module>
         <module>ClientHandlers</module>
+        <module>OutboundUrlParser</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
