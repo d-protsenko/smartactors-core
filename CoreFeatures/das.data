@@ -3645,6 +3645,14 @@
 } ],
   "rawName" : "InterruptClientCallback",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "client-handlers",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ClientHandlers",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3766,6 +3774,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ISocketConnectionPool",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "channel-pool-handlers",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ChannelPoolHandlers",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],

@@ -58,6 +58,7 @@
         <module>NullClientCallback</module>
         <module>OutboundRequestSender</module>
         <module>InterruptClientCallback</module>
+        <module>ClientHandlers</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 

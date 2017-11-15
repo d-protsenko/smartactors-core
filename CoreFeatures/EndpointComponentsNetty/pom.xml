@@ -66,6 +66,7 @@
         <module>HttpStatusSetter</module>
         <module>DefaultTcpClientConnectionPool</module>
         <module>ISocketConnectionPool</module>
+        <module>ChannelPoolHandlers</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
