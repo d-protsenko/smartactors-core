@@ -62,11 +62,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
@@ -106,6 +101,11 @@
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-generic.outbound-message-sender</artifactId>
             <version>[0.0.1,1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-generic.outbound-request-sender</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
     <build>

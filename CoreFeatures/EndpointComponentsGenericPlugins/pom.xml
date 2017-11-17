@@ -23,6 +23,7 @@
         <module>OutboundMessageSenderPlugin</module>
         <module>GlobalOutboundConnectionChannelStoragePlugin</module>
         <module>CompositeExceptionalActionPlugin</module>
+        <module>ClientCallbacksPlugin</module>
         <module>EndpointComponentsGenericPluginsDistribution</module>
     </modules>
     <build>

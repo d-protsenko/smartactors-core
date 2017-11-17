@@ -3875,6 +3875,14 @@
 } ],
   "rawName" : "SslEngineStrategiesPlugin",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "connection-pools-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ConnectionPoolsPlugin",
+  "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-components-netty-plugins",
@@ -3973,6 +3981,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CompositeExceptionalActionPlugin",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "client-callbacks-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ClientCallbacksPlugin",
   "version" : "0.3.3"
 } ],
   "groupId" : "info.smart_tools.smartactors",

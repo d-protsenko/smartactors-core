@@ -194,6 +194,16 @@
             <artifactId>endpoint-components-netty.http-status-setter</artifactId>
             <version>0.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-netty.channel-pool-handlers</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-netty.client-context-binding-handlers</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

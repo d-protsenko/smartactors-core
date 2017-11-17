@@ -20,6 +20,7 @@
         <module>MessageHandlerResolutionStrategiesPlugin</module>
         <module>HttpMessageAttributeExtractorsPlugin</module>
         <module>SslEngineStrategiesPlugin</module>
+        <module>ConnectionPoolsPlugin</module>
         <module>EndpointComponentsNettyPluginsDistribution</module>
     </modules>
 

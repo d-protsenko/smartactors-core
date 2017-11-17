@@ -4,86 +4,91 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>endpoint-components-generic-plugins</artifactId>
+        <artifactId>endpoint-components-netty-plugins</artifactId>
         <version>0.3.3</version>
     </parent>
-    <artifactId>endpoint-components-generic-plugins.message-handler-resolution-strategies-plugin</artifactId>
+    <artifactId>endpoint-components-netty-plugins.connection-pools-plugin</artifactId>
     <version>0.3.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.singleton-strategy</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaction</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.iioccontainer</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ioc</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.ikey</artifactId>
-            <version>[0.0.1,1.0.0)</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -99,98 +104,18 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.strategy-storage-strategy</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-interfaces.iendpoint-pipeline-set</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.message-handler-resolution-strategy</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.asynchronous-unordered-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.create-empty-message-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.create-environment-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.dead-end-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.default-message-codecs</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.generic-exception-interceptor-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.message-attribute-routing-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.response-strategy-set-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.scope-setter-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.send-internal-message-handler</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.error-message-handler</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.simple-strict-storage-strategy</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
+            <version>0.3.3</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.handler-configuration-object</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
+            <artifactId>endpoint-components-netty.default-tcp-client-connection-pool</artifactId>
+            <version>0.3.3</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.client-handlers</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.outbound-url-parser</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
+            <artifactId>endpoint-components-netty.inetty-transport-provider</artifactId>
+            <version>0.3.3</version>
         </dependency>
     </dependencies>
     <build>

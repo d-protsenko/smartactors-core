@@ -2,8 +2,10 @@ package info.smart_tools.smartactors.endpoint_components_netty_plugins.message_h
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction0;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -14,10 +16,11 @@ import info.smart_tools.smartactors.endpoint_components_generic.default_outbound
 import info.smart_tools.smartactors.endpoint_components_generic.message_handler_resolution_strategy.MessageHandlerResolutionStrategy;
 import info.smart_tools.smartactors.endpoint_components_generic.parse_tree.IParseTree;
 import info.smart_tools.smartactors.endpoint_components_generic.parse_tree.ParseTree;
-import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.HTTPServerChannelSetupHandler;
-import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.InboundNettyChannelHandlerSetupHandler;
-import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.OutboundChannelCreator;
-import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.StoreOutboundChannelIdToContext;
+import info.smart_tools.smartactors.endpoint_components_netty.channel_pool_handlers.AcquireChannelFromPoolHandler;
+import info.smart_tools.smartactors.endpoint_components_netty.channel_pool_handlers.ReleasePooledChannelHandler;
+import info.smart_tools.smartactors.endpoint_components_netty.client_context_binding_handlers.BindRequestToChannelHandler;
+import info.smart_tools.smartactors.endpoint_components_netty.client_context_binding_handlers.StoreBoundRequestHandler;
+import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.*;
 import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_action.HttpServerExceptionalAction;
 import info.smart_tools.smartactors.endpoint_components_netty.http_headers_setter.HttpHeadersSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
@@ -31,11 +34,14 @@ import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_mess
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.OutboundMessageExtractor;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.WrappedInboundMessageExtractor;
 import info.smart_tools.smartactors.endpoint_components_netty.inbound_netty_message_reference_count_management_components.message_extractors.WrappedOutboundMessageExtractor;
+import info.smart_tools.smartactors.endpoint_components_netty.isocket_connection_pool.ISocketConnectionPool;
 import info.smart_tools.smartactors.endpoint_components_netty.outbound_netty_message_creation_handler.OutboundNettyMessageCreationHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.send_netty_message_message_handler.SendNettyMessageMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.ssl_channel_initialization_handler.SslChannelInitializationHandler;
 import info.smart_tools.smartactors.endpoint_components_netty.wrap_inbound_netty_message_to_message_byte_array_message_handler.WrapInboundNettyMessageToMessageByteArrayMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline.IEndpointPipeline;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.endpoint_interfaces.ioutbound_connection_channel.IOutboundConnectionChannel;
 import info.smart_tools.smartactors.endpoint_interfaces.ioutbound_connection_channel.IOutboundConnectionChannelListener;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -46,9 +52,8 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import io.netty.channel.Channel;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.ssl.SslContext;
@@ -87,6 +92,8 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         IFieldName messageExtractorFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageExtractor");
         IFieldName messageTypeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "messageType");
         IFieldName pathFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "path");
+        IFieldName setupPipelineFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "setupPipeline");
+        IFieldName poolTypeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "poolType");
 
         IAdditionDependencyStrategy storage = IOC.resolve(
                 Keys.getOrAdd("expandable_strategy#endpoint message handler"));
@@ -138,6 +145,19 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                     int maxAggregatedContentLen = ((Number) handlerConf.getValue(maxAggregatedContentLenFN)).intValue();
 
                     return new HTTPServerChannelSetupHandler(maxAggregatedContentLen);
+                }));
+
+        /*
+         * {
+         *  "type": "netty/setup/http client channel",
+         *  "maxAggregatedContentLength": #max. length of aggregated message#
+         * }
+         */
+        storage.register("netty/setup/http client channel",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    int maxAggregatedContentLen = ((Number) handlerConf.getValue(maxAggregatedContentLenFN)).intValue();
+
+                    return new HTTPClientChannelSetupHandler(maxAggregatedContentLen);
                 }));
 
         /*
@@ -300,6 +320,45 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
 
                     return new SslChannelInitializationHandler(context);
                 }));
+
+        /*
+         * {
+         *  "type": "netty/client/acquire channel",
+         *  "setupPipeline": ".. channel setup pipeline ..",
+         *  "poolType": ".. channel pool type ..",
+         *  .. pool options ..
+         * }
+         */
+        storage.register("netty/client/acquire channel",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    IEndpointPipeline<IDefaultMessageContext<SocketChannel, Void, SocketChannel>> setupPipeline
+                            = pipelineSet.getPipeline((String) handlerConf.getValue(setupPipelineFN));
+                    IAction<SocketChannel> setupAction = ch -> {
+                        try {
+                            IDefaultMessageContext<SocketChannel, Void, SocketChannel> ctx = setupPipeline.getContextFactory().execute();
+
+                            ctx.setSrcMessage(ch);
+                            ctx.setConnectionContext(ch);
+
+                            setupPipeline.getInputCallback().handle(ctx);
+                        } catch (FunctionExecutionException | MessageHandlerException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    };
+
+                    ISocketConnectionPool pool = IOC.resolve(Keys.getOrAdd("netty client connection pool"),
+                            handlerConf.getValue(poolTypeFN), handlerConf, setupAction);
+
+                    return new AcquireChannelFromPoolHandler(pool);
+                }));
+
+        storage.register("netty/client/release channel",
+                new SingletonStrategy(new ReleasePooledChannelHandler()));
+
+        storage.register("netty/client/bind request to channel",
+                new SingletonStrategy(new BindRequestToChannelHandler()));
+        storage.register("netty/client/get bound request",
+                new SingletonStrategy(new StoreBoundRequestHandler()));
     }
 
     @Item("netty_exceptional_actions")
@@ -343,5 +402,7 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                 (IFunction0) TextWebSocketFrame::new));
         storage.register("websocket binary frame", new SingletonStrategy(
                 (IFunction0) BinaryWebSocketFrame::new));
+        storage.register("http request", new SingletonStrategy(
+                (IFunction0) () -> new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/")));
     }
 }
