@@ -761,6 +761,13 @@
           "id": "receive-response",
           "stages": [
             {
+              "type": "default scope setter"
+            },
+
+            {
+              "type": "netty/wrap inbound message"
+            },
+            {
               "type": "create environment"
             },
             {
@@ -822,6 +829,18 @@
             {
               "type": "netty/create outbound message",
               "messageType": "http request"
+            }
+          ]
+        },
+
+        {
+          "id": "encode-request",
+          "stages": [
+            {
+              "type": "encoder/block/json"
+            },
+            {
+              "type": "netty/http headers setter"
             }
           ]
         },

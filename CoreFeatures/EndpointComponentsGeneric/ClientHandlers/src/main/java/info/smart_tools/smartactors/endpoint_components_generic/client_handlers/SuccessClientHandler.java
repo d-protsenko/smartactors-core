@@ -35,8 +35,8 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * </p>
  * @param <TResp>
  */
-public class SuccessClientHandler<TResp>
-        implements ITerminalMessageHandler<IDefaultMessageContext<TResp, IObject, IObject>> {
+public class SuccessClientHandler<TResp, TCtx>
+        implements ITerminalMessageHandler<IDefaultMessageContext<TResp, IObject, TCtx>> {
     private final IFieldName callbackFN;
     private final IFieldName requestFN;
 
@@ -54,10 +54,9 @@ public class SuccessClientHandler<TResp>
     @Override
     public void handle(
         final IMessageHandlerCallback<IMessageContext> next,
-        final IDefaultMessageContext<TResp, IObject, IObject> context)
+        final IDefaultMessageContext<TResp, IObject, TCtx> context)
             throws MessageHandlerException {
-        IObject response = context.getDstMessage();
-        IObject env = context.getConnectionContext();
+        IObject env = context.getDstMessage();
         IObject request;
 
         IClientCallback callback;
@@ -70,7 +69,7 @@ public class SuccessClientHandler<TResp>
         }
 
         try {
-            callback.onSuccess(request, response);
+            callback.onSuccess(request, env);
         } catch (ClientCallbackException e) {
             //
         } finally {

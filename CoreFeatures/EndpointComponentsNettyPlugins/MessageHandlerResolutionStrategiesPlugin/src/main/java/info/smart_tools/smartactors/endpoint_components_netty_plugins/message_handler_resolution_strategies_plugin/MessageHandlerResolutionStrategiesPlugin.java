@@ -403,6 +403,6 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
         storage.register("websocket binary frame", new SingletonStrategy(
                 (IFunction0) BinaryWebSocketFrame::new));
         storage.register("http request", new SingletonStrategy(
-                (IFunction0) () -> new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/")));
+                (IFunction0) () -> new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "/")));
     }
 }
