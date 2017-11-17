@@ -7,16 +7,29 @@
 
   "nettyEventLoops": [
     {
-      "id": "defaultServerParent",
-      "upcounter": "root",
-      "transport": "prefer-native",
-      "threads": 1
-    },
-    {
-      "id": "defaultServerChild",
+      "id": "defaultWorker",
       "upcounter": "root",
       "transport": "prefer-native",
       "threads": 4
+    },
+    {
+      "id": "defaultMaster",
+      "upcouner": "root",
+      "transport": "prefer-native",
+      "threads": 1
+    },
+
+    {
+      "id": "defaultClient",
+      "alias": "defaultWorker"
+    },
+    {
+      "id": "defaultServerParent",
+      "alias": "defaultMaster"
+    },
+    {
+      "id": "defaultServerChild",
+      "alias": "defaultWorker"
     }
   ],
 
@@ -606,6 +619,215 @@
       "id": "netty/server/https",
       "extend": ["netty/server/ssl", "netty/server/http"],
       "pipelines": []
+    },
+
+    {
+      "id": "netty/client/tcp",
+      "extend": [],
+      "pipelines": [
+        {
+          "id": "setup-connection/optional/enable-ssl",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "setup-connection/no-ssl"
+            }
+          ]
+        },
+        {
+          "id": "setup-connection/no-ssl",
+          "stages": [
+          ]
+        },
+        {
+          "id": "setup-connection/enable-ssl",
+          "stages": [
+            {
+              "type": "netty/ssl-setup/client",
+              "ciphers": "@@sslCiphers",
+              "sslCiphers": [
+                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+                "TLS_RSA_WITH_AES_128_GCM_SHA256",
+                "TLS_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_RSA_WITH_AES_256_CBC_SHA",
+                "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "netty/client/ssl",
+      "extend": [],
+      "pipelines": [
+        {
+          "id": "setup-connection/optional/enable-ssl",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "setup-connection/enable-ssl"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "netty/client/tcp-rr",
+      "extend": ["netty/client/tcp"],
+      "pipelines": [
+        {
+          "id": "send-request",
+          "stages": [
+            {
+              "type": "outbound url parser"
+            },
+            {
+              "type": "include",
+              "pipeline": "create-request"
+            },
+            {
+              "type": "include",
+              "pipeline": "encode-request"
+            },
+            {
+              "type": "netty/client/acquire channel",
+              "setupPipeline": "setup-connection",
+
+              "poolType": "@@connectionPoolType",
+              "connectionPoolType": "default",
+
+              "transport": "@@transportType",
+              "transportType": "prefer-native",
+
+              "eventLoopGroup": "@@eventLoop",
+              "eventLoop": "defaultClient"
+            },
+            {
+              "type": "netty/client/bind request to channel"
+            },
+            {
+              "type": "client callback/start"
+            },
+            {
+              "type": "netty/send outbound message"
+            }
+          ]
+        },
+
+        {
+          "id": "setup-connection",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "setup-connection/optional/enable-ssl"
+            },
+            {
+              "type": "include",
+              "pipeline": "setup-connection/setup-codec"
+            },
+            {
+              "type": "netty/setup/inbound chanel handler",
+              "pipeline": "receive-response",
+              "errorPipeline": "receive-error",
+              "messageClass": "java.lang.Object"
+            },
+            {
+              "type": "dead end"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-response",
+          "stages": [
+            {
+              "type": "create environment"
+            },
+            {
+              "type": "netty/client/get bound request"
+            },
+            {
+              "type": "netty/client/release channel"
+            },
+            {
+              "type": "include",
+              "pipeline": "decode-response"
+            },
+            {
+              "type": "client callback/success"
+            }
+          ]
+        },
+        {
+          "id": "receive-error",
+          "stages": [
+            {
+              "type": "create environment"
+            },
+            {
+              "type": "netty/client/get bound request"
+            },
+            {
+              "type": "client callback/error"
+            }
+          ]
+        },
+
+        {
+          "id": "encode-request",
+          "stages": [
+            {
+              "type": "encoder/block/json"
+            }
+          ]
+        },
+        {
+          "id": "decode-response",
+          "stages": [
+            {
+              "type": "decoder/block/json"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "netty/client/http",
+      "extend": ["netty/client/tcp-rr"],
+      "pipelines": [
+        {
+          "id": "create-request",
+          "stages": [
+            {
+              "type": "netty/create outbound message",
+              "messageType": "http request"
+            }
+          ]
+        },
+
+        {
+          "id": "setup-connection/setup-codec",
+          "stages": [
+            {
+              "type": "netty/setup/http client channel",
+              "maxAggregatedContentLength": "@@maxAggregatedHttpContentLength",
+              "maxAggregatedHttpContentLength": 4096
+            }
+          ]
+        }
+      ]
     }
   ]
 }
