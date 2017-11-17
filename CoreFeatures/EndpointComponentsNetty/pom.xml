@@ -67,6 +67,7 @@
         <module>DefaultTcpClientConnectionPool</module>
         <module>ISocketConnectionPool</module>
         <module>ChannelPoolHandlers</module>
+        <module>ClientContextBindingHandlers</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

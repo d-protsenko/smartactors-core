@@ -16,25 +16,43 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-public class ErrorClientHandler
-        implements ITerminalMessageHandler<IDefaultMessageContext<Throwable, Void, IObject>> {
+/**
+ * Calls {@link IClientCallback#onError(IObject, Throwable)} method of client callback.
+ *
+ * <p>
+ *  Expects internal inbound message of the same format as {@link SuccessClientHandler} and a {@link Throwable}
+ *  representing the happen error as source message.
+ * </p>
+ */
+public class ErrorClientHandler<TCtx>
+        implements ITerminalMessageHandler<IDefaultMessageContext<Throwable, IObject, TCtx>> {
     private final IFieldName callbackFN;
+    private final IFieldName requestFN;
 
-    public ErrorClientHandler() throws ResolutionException {
+    /**
+     * The constructor.
+     *
+     * @throws ResolutionException if error occurs resolving any dependency
+     */
+    public ErrorClientHandler()
+            throws ResolutionException {
         callbackFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
+        requestFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
     }
 
     @Override
     public void handle(
         final IMessageHandlerCallback<IMessageContext> next,
-        final IDefaultMessageContext<Throwable, Void, IObject> context)
+        final IDefaultMessageContext<Throwable, IObject, TCtx> context)
             throws MessageHandlerException {
         Throwable error = context.getSrcMessage();
-        IObject request = context.getConnectionContext();
+        IObject env = context.getDstMessage();
+        IObject request;
 
         IClientCallback callback;
 
         try {
+            request = (IObject) env.getValue(requestFN);
             callback = (IClientCallback) request.getValue(callbackFN);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageHandlerException(e);

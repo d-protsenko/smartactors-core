@@ -3791,6 +3791,14 @@
 } ],
   "rawName" : "ChannelPoolHandlers",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "client-context-binding-handlers",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ClientContextBindingHandlers",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

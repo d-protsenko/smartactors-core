@@ -14,18 +14,35 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
-public class StartClientHandler<TCtx>
-        implements IBypassMessageHandler<IDefaultMessageContext<IObject, Void, TCtx>> {
+/**
+ * Calls {@link IClientCallback#onStart(IObject)} method of callback passed with request object.
+ *
+ * <p>
+ *  Also calls {@link IClientCallback#onError(IObject, Throwable)} method of the same callback if any of consequent
+ *  handlers throws (<b>unless the callback was removed from request object</b>).
+ * </p>
+ *
+ * @param <TCtx>
+ * @param <TDst>
+ */
+public class StartClientHandler<TCtx, TDst>
+        implements IBypassMessageHandler<IDefaultMessageContext<IObject, TDst, TCtx>> {
     private final IFieldName callbackFN;
 
-    public StartClientHandler() throws ResolutionException {
+    /**
+     * The constructor.
+     *
+     * @throws ResolutionException if error occurs resolving any dependency
+     */
+    public StartClientHandler()
+            throws ResolutionException {
         callbackFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
     }
 
     @Override
     public void handle(
-        final IMessageHandlerCallback<IDefaultMessageContext<IObject, Void, TCtx>> next,
-        final IDefaultMessageContext<IObject, Void, TCtx> context)
+        final IMessageHandlerCallback<IDefaultMessageContext<IObject, TDst, TCtx>> next,
+        final IDefaultMessageContext<IObject, TDst, TCtx> context)
             throws MessageHandlerException {
         IObject request = context.getSrcMessage();
         IClientCallback callback;

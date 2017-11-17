@@ -16,12 +16,39 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
+/**
+ * Calls {@link IClientCallback#onSuccess(IObject, IObject)} method of request callback.
+ *
+ * <p>
+ *  Expected content of internal inbound message environment (destination message):
+ * <pre>
+ *  {
+ *    ...
+ *
+ *    "request": { // The original request object
+ *      "callback": {{@link IClientCallback} instance},
+ *
+ *      ...
+ *    }
+ *  }
+ * </pre>
+ * </p>
+ * @param <TResp>
+ */
 public class SuccessClientHandler<TResp>
         implements ITerminalMessageHandler<IDefaultMessageContext<TResp, IObject, IObject>> {
     private final IFieldName callbackFN;
+    private final IFieldName requestFN;
 
-    public SuccessClientHandler() throws ResolutionException {
+    /**
+     * The constructor.
+     *
+     * @throws ResolutionException if error occurs resolving any dependency
+     */
+    public SuccessClientHandler()
+            throws ResolutionException {
         callbackFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "callback");
+        requestFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "request");
     }
 
     @Override
@@ -30,11 +57,13 @@ public class SuccessClientHandler<TResp>
         final IDefaultMessageContext<TResp, IObject, IObject> context)
             throws MessageHandlerException {
         IObject response = context.getDstMessage();
-        IObject request = context.getConnectionContext();
+        IObject env = context.getConnectionContext();
+        IObject request;
 
         IClientCallback callback;
 
         try {
+            request = (IObject) env.getValue(requestFN);
             callback = (IClientCallback) request.getValue(callbackFN);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageHandlerException(e);
