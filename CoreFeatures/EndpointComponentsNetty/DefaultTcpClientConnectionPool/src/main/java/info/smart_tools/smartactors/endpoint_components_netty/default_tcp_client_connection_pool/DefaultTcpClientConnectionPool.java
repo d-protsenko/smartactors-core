@@ -78,7 +78,7 @@ public class DefaultTcpClientConnectionPool implements ISocketConnectionPool<Soc
     public SocketChannel getChannel(final InetSocketAddress address)
             throws SocketConnectionPoolException {
         try {
-            return (SocketChannel) pools.get(address).acquire().await().getNow();
+            return (SocketChannel) pools.get(address).acquire().sync().getNow();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new SocketConnectionPoolException(e);

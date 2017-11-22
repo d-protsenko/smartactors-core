@@ -190,6 +190,20 @@ This feature provides some message handler types:
       /* .. action-specific parameters .. */
     }
     ```
+
+* `"exception forwarder"`
+    
+    Is alike to `"exception interceptor"` but sends a exception as source message to specified pipeline.
+    
+    Configuration example:
+    
+    ```JavaScript
+    {
+      "type": "exception forwarder",
+      "pipeline": ".. pipeline name .."
+    }
+    ```
+
 * `"fixed attribute router"`
     
     Chooses between configured handlers depending on value of some attribute of message.

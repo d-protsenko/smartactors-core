@@ -758,8 +758,48 @@
         },
 
         {
+          "id": "receive-response/optional/delegate-to-executor",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-response/delegate-to-executor"
+            }
+          ]
+        },
+        {
+          "id": "receive-response/delegate-to-executor",
+          "stages": [
+            {
+              "type": "netty/retain message",
+              "messageExtractor": "unwrapped inbound"
+            },
+            {
+              "type": "default async unordered executor"
+            },
+            {
+              "type": "netty/release message",
+              "messageExtractor": "unwrapped inbound"
+            },
+            {
+              "type": "include",
+              "pipeline": "receive-response/intercept-exception"
+            }
+          ]
+        },
+
+        {
           "id": "receive-response",
           "stages": [
+            {
+              "type": "include",
+              "pipeline": "receive-response/intercept-exception"
+            },
+
+            {
+              "type": "include",
+              "pipeline": "receive-response/optional/delegate-to-executor"
+            },
+
             {
               "type": "default scope setter"
             },
@@ -789,6 +829,9 @@
           "id": "receive-error",
           "stages": [
             {
+              "type": "default scope setter"
+            },
+            {
               "type": "create environment"
             },
             {
@@ -796,6 +839,16 @@
             },
             {
               "type": "client callback/error"
+            }
+          ]
+        },
+
+        {
+          "id": "receive-response/intercept-exception",
+          "stages": [
+            {
+              "type": "exception forwarder",
+              "pipeline": "receive-error"
             }
           ]
         },

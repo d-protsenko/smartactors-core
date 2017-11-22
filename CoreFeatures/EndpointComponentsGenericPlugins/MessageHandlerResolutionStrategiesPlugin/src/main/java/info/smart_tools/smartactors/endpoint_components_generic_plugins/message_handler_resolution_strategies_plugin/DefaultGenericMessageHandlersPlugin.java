@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.endpoint_components_generic_plugins.message
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint_components_generic.asynchronous_unordered_message_handler.AsynchronousUnorderedMessageHandler;
@@ -20,6 +22,7 @@ import info.smart_tools.smartactors.endpoint_components_generic.response_strateg
 import info.smart_tools.smartactors.endpoint_components_generic.scope_setter_message_handler.ScopeSetterMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.send_internal_message_handler.SendInternalMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline.IEndpointPipeline;
+import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.exception.MessageHandlerException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -106,6 +109,34 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
                     Object actionName = handlerConf.getValue(actionFN);
                     IBiAction action = IOC.resolve(Keys.getOrAdd("exceptional endpoint action"),
                             actionName, handlerConf);
+                    return new GenericExceptionInterceptorMessageHandler(action);
+                }));
+
+        /*
+         * {
+         *  "type": "exception forwarder",
+         *  "pipeline": ".. pipeline name .."
+         * }
+         */
+        storage.register("exception forwarder",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    String pipelineName = (String) handlerConf.getValue(pipelineFN);
+                    IEndpointPipeline<IDefaultMessageContext<Throwable, Void, Object>> pipeline
+                            = pipelineSet.getPipeline(pipelineName);
+
+                    IBiAction<Object, Throwable> action = (ctx, err) -> {
+                        try {
+                            IDefaultMessageContext<Throwable, Void, Object> context = pipeline.getContextFactory().execute();
+
+                            context.setSrcMessage(err);
+                            context.setConnectionContext(ctx);
+
+                            pipeline.getInputCallback().handle(context);
+                        } catch (MessageHandlerException | FunctionExecutionException e) {
+                            throw new ActionExecuteException(e);
+                        }
+                    };
+
                     return new GenericExceptionInterceptorMessageHandler(action);
                 }));
 
