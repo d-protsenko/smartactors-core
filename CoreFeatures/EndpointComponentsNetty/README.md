@@ -301,6 +301,18 @@ This feature registers some message handlers specific for Netty-based endpoints.
     }
     ```
     
+* `"netty/setup/http client channel"`
+    Sets up HTTP codec and aggregator on client THHP channel.
+
+    Configuration example:
+
+    ```JavaScript
+    {
+      "type": "netty/setup/http client channel",
+      "maxAggregatedContentLength": 1024
+    }
+    ```
+    
 * `"netty/setup/http web-socket upgrade listener"`
     Sets up Web-socket upgrade listener on server HTTP channel.
     
@@ -358,3 +370,38 @@ This feature registers some message handlers specific for Netty-based endpoints.
       "ciphers": [/* .. list of names of supported ciphers .. */]
     }
     ```
+
+* `"netty/client/acquire channel"`
+    Creates a pool of client connections (when created) and retains a channel from that pool and passes it as connection context to next handler when receives a message.
+    
+    Configuration example:
+    
+    ```JavaScript
+    {
+      "type": "netty/client/acquire channel",
+      
+      // This pipeline will be notified when a new
+      // channel is actually created.
+      // It must setup Netty pipeline.
+      "setupPipeline": ".. name of setup pipeline ..",
+      
+      // Use default pool implementation.
+      // It uses Neety's built-in connection pool.
+      // Alternative is a "none" type that creates
+      // a new connection every time.
+      "poolType": "default",
+      
+      // Default pool parameters:
+      "transport": ".. transport kind ..",
+      "eventLoopGroup": ".. event loop group name .."
+    }
+    ```
+
+* `"netty/client/release channel"`
+    Releases channel acquired fromm pool by `"netty/client/acquire channel"` handler.
+
+* `"netty/client/bind request to channel"`
+    Stores a source message in attribute of a channel.
+
+* `"netty/client/get bound request"`
+    Reads a message stored in channel attribute by `"netty/client/bind request to channel"` and stores it in `"request"` field of destination environment.

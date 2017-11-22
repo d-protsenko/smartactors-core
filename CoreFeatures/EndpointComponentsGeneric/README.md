@@ -312,6 +312,22 @@ This feature provides some message handler types:
     }
     ```
 
+* `"outbound url parser"`
+    
+    Parses URL passed as part of internal outbound message. See JavaDoc for `info.smart_tools.smartactors.endpoint_components_generic.outbound_url_parser.OutboundURLParser` for more information.
+
+* `"client callback/start"`
+
+    Calls `#onStart()` method of a client callback and `#onError()` method of the same callack if error occurs synchronously in one of consequent handlers.
+
+* `"client callback/success"`
+
+    Calls `#onSuccess()` method of client callback.
+
+* `"client callback/error"`
+
+    Calls `#onError()` method of client callback. The source message must be a `Throwable`.
+
 #### Actions for "exception interceptor"
 
 Registering custom exceptional action:
