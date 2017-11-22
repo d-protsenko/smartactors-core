@@ -518,6 +518,16 @@
             },
             {
               "type": "netty/http response metadata presetup"
+            },
+            {
+              "type": "add final actions",
+              "actions": [
+                {
+                  "action": "expect response sent",
+                  "exceptionalAction": "netty/http/server/default",
+                  "status": 500
+                }
+              ]
             }
           ]
         },

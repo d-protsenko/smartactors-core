@@ -32,6 +32,7 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
     private final IFieldName responseFN;
     private final IFieldName contextFN;
     private final IFieldName connectionContextFN;
+    private final IFieldName responseSentFN;
 
     private final IKey envKey;
 
@@ -53,6 +54,7 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
         responseFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "response");
         contextFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
         connectionContextFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "connectionContext");
+        responseSentFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseSent");
 
         envKey = Keys.getOrAdd(IObject.class.getCanonicalName());
     }
@@ -81,6 +83,8 @@ public class EndpointResponseStrategy<TCtx> implements IResponseStrategy {
             context.setConnectionContext(connectionContext);
 
             responsePipelineCallback.handle(context);
+
+            requestContext.setValue(responseSentFN, Boolean.TRUE);
         } catch (ResolutionException | ReadValueException | ChangeValueException | InvalidArgumentException
                 | FunctionExecutionException | MessageHandlerException e) {
             throw new ResponseException(e);

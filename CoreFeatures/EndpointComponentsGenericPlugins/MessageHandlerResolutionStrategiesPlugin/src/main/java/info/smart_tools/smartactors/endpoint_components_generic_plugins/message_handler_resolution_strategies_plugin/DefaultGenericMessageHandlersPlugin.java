@@ -1,12 +1,16 @@
 package info.smart_tools.smartactors.endpoint_components_generic_plugins.message_handler_resolution_strategies_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.simple_strict_storage_strategy.SimpleStrictStorageStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.endpoint_components_generic.add_final_actions_handler.AddFinalActionsHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.asynchronous_unordered_message_handler.AsynchronousUnorderedMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.create_empty_message_message_handler.CreateEmptyMessageMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.create_environment_message_handler.CreateEnvironmentMessageHandler;
@@ -15,6 +19,7 @@ import info.smart_tools.smartactors.endpoint_components_generic.default_message_
 import info.smart_tools.smartactors.endpoint_components_generic.default_message_codecs.impl.json.JsonBlockEncoder;
 import info.smart_tools.smartactors.endpoint_components_generic.endpoint_response_strategy.EndpointResponseStrategy;
 import info.smart_tools.smartactors.endpoint_components_generic.error_message_handler.ErrorMessageHandler;
+import info.smart_tools.smartactors.endpoint_components_generic.expect_sent_response_final_action.ExpectSentResponseFinalAction;
 import info.smart_tools.smartactors.endpoint_components_generic.generic_exception_interceptor_message_handler.GenericExceptionInterceptorMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.message_attribute_routing_message_handler.MessageAttributeRoutingMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.message_handler_resolution_strategy.MessageHandlerResolutionStrategy;
@@ -29,6 +34,8 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.Boot
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -38,6 +45,7 @@ import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +81,7 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         IFieldName chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
         IFieldName messageFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
         IFieldName errorClassFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "errorClass");
+        IFieldName actionsFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "actions");
 
         IAdditionDependencyStrategy storage = IOC.resolve(Keys.getOrAdd("expandable_strategy#endpoint message handler"));
 
@@ -280,6 +289,31 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
 
                     return new ErrorMessageHandler(clz, message);
                 }));
+
+        /*
+         * {
+         *  "type": "add final actions",
+         *  "actions": [
+         *    {
+         *      "action": ".. action name ..",
+         *      .. action parameters ..
+         *    },
+         *    ...
+         *  ]
+         * }
+         */
+        storage.register("add final actions",
+                new MessageHandlerResolutionStrategy((type, handlerConf, endpointConf, pipelineSet) -> {
+                    List<IObject> actionDescs = (List) handlerConf.getValue(actionsFN);
+                    List<IAction<IObject>> actions = new ArrayList<>(actionDescs.size());
+
+                    for (IObject actionDesc : actionDescs) {
+                        Object actionType = actionDesc.getValue(actionFN);
+                        actions.add(IOC.resolve(Keys.getOrAdd("endpoint final action"), actionType, actionDesc));
+                    }
+
+                    return new AddFinalActionsHandler(actions);
+                }));
     }
 
     @Item("global_message_handler_tables_storage")
@@ -288,5 +322,35 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("message handler table"), tableStorage);
         IOC.register(Keys.getOrAdd("expandable_strategy#message handler table"),
                 new SingletonStrategy(tableStorage));
+    }
+
+    @Item("endpoint_final_actions_table")
+    public void registerFinalActionsTable() throws Exception {
+        SimpleStrictStorageStrategy tableStorage = new SimpleStrictStorageStrategy("endpoint final action");
+        IOC.register(Keys.getOrAdd("endpoint final action"), tableStorage);
+        IOC.register(Keys.getOrAdd("expandable_strategy#endpoint final action"),
+                new SingletonStrategy(tableStorage));
+    }
+
+    @Item("default_endpoint_final_actions")
+    @After({
+            "endpoint_final_actions_table",
+    })
+    public void registerFinalActions() throws Exception {
+        IFieldName exceptionalActionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "exceptionalAction");
+
+        IAdditionDependencyStrategy storage = IOC.resolve(Keys.getOrAdd("expandable_strategy#endpoint final action"));
+
+        storage.register("expect response sent", new ApplyFunctionToArgumentsStrategy(args -> {
+            IObject conf = (IObject) args[1];
+
+            try {
+                IBiAction<Object, Throwable> action
+                        = IOC.resolve(Keys.getOrAdd("exceptional endpoint action"), conf.getValue(exceptionalActionFN), conf);
+                return new ExpectSentResponseFinalAction<>(action);
+            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+                throw new FunctionExecutionException(e);
+            }
+        }));
     }
 }

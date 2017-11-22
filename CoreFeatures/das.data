@@ -3661,6 +3661,22 @@
 } ],
   "rawName" : "OutboundUrlParser",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "add-final-actions-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "AddFinalActionsHandler",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "expect-sent-response-final-action",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ExpectSentResponseFinalAction",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

@@ -293,6 +293,24 @@ This feature provides some message handler types:
       "message": ".. error message .."
     }
     ```
+* `"add final actions"`
+
+    Adds final actions to message processor of inbound internal message.
+    
+    Configuration example:
+    
+    ```JavaScript
+    {
+      "type": "add final actions",
+      "actions": [
+        {
+          "action": ".. action name ..",
+          ..
+        },
+        ...
+      ]
+    }
+    ```
 
 #### Actions for "exception interceptor"
 

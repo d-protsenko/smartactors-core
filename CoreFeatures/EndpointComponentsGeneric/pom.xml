@@ -60,6 +60,8 @@
         <module>InterruptClientCallback</module>
         <module>ClientHandlers</module>
         <module>OutboundUrlParser</module>
+        <module>AddFinalActionsHandler</module>
+        <module>ExpectSentResponseFinalAction</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 

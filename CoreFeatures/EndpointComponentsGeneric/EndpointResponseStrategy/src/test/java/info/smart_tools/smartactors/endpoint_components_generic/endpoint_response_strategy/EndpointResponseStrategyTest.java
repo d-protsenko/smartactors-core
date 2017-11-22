@@ -57,5 +57,7 @@ public class EndpointResponseStrategyTest extends TrivialPluginsLoadingTestBase 
         endpointResponseStrategy.sendResponse(reqEnv);
 
         verify(responsePipelineMock, times(1)).handle(any());
+
+        assertEquals(true, reqCtx.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "responseSent")));
     }
 }
