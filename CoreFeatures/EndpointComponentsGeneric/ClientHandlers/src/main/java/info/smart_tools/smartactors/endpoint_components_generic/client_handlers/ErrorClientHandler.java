@@ -61,7 +61,7 @@ public class ErrorClientHandler<TCtx>
         try {
             callback.onError(request, error);
         } catch (ClientCallbackException e) {
-            //
+            throw new MessageHandlerException(e);
         } finally {
             try {
                 request.deleteField(callbackFN);

@@ -33,6 +33,8 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  *  }
  * </pre>
  * </p>
+ *
+ * @param <TResp>
  * @param <TResp>
  */
 public class SuccessClientHandler<TResp, TCtx>
@@ -71,7 +73,7 @@ public class SuccessClientHandler<TResp, TCtx>
         try {
             callback.onSuccess(request, env);
         } catch (ClientCallbackException e) {
-            //
+            throw new MessageHandlerException(e);
         } finally {
             try {
                 request.deleteField(callbackFN);

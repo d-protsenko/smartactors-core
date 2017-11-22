@@ -49,13 +49,9 @@ public class StartClientHandler<TCtx, TDst>
 
         try {
             callback = (IClientCallback) request.getValue(callbackFN);
-        } catch (ReadValueException | InvalidArgumentException e) {
-            throw new MessageHandlerException(e);
-        }
 
-        try {
             callback.onStart(request);
-        } catch (ClientCallbackException e) {
+        } catch (ReadValueException | InvalidArgumentException | ClientCallbackException e) {
             throw new MessageHandlerException(e);
         }
 
