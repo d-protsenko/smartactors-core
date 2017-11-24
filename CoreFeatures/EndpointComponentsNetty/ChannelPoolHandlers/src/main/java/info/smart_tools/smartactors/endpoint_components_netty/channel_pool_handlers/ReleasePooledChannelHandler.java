@@ -20,20 +20,18 @@ public class ReleasePooledChannelHandler<TSrc, TDst, TChan extends Channel>
         ISocketConnectionPool<TChan, ?> pool
                 = (ISocketConnectionPool<TChan, ?>) channel.attr(AttributeKeys.POOL_ATTRIBUTE_KEY).getAndRemove();
 
-        if (null != pool) {
-            context.setConnectionContext(null);
+        context.setConnectionContext(null);
 
+        if (null != pool) {
             try {
                 pool.recycleChannel(channel);
             } catch (SocketConnectionPoolException e) {
                 throw new MessageHandlerException(e);
             }
         } else {
-            // TODO:: M.b. throw an exception here
             channel.close();
+            throw new MessageHandlerException("Invalid use of ReleasePooledChannelHandler: no pool reference stored in channel.");
         }
-
-        context.setConnectionContext(null);
 
         next.handle(context.cast(IDefaultMessageContext.class));
     }
