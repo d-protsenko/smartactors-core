@@ -733,7 +733,9 @@
               "transportType": "prefer-native",
 
               "eventLoopGroup": "@@eventLoop",
-              "eventLoop": "defaultClient"
+              "eventLoop": "defaultClient",
+
+              "readTimeout": "@@channelReadTimeout"
             },
             {
               "type": "netty/client/bind request to channel"

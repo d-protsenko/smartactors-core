@@ -12,6 +12,9 @@ import info.smart_tools.smartactors.endpoint_components_netty.default_tcp_client
 import info.smart_tools.smartactors.endpoint_components_netty.inetty_transport_provider.INettyTransportProvider;
 import info.smart_tools.smartactors.endpoint_components_netty.inetty_transport_provider.exceptions.InvalidEventLoopGroupException;
 import info.smart_tools.smartactors.endpoint_components_netty.inetty_transport_provider.exceptions.UnsupportedChannelTypeException;
+import info.smart_tools.smartactors.endpoint_components_netty.isocket_connection_pool.ISocketConnectionPoolObserver;
+import info.smart_tools.smartactors.endpoint_components_netty.isocket_connection_pool.NullSocketConnectionPoolObserver;
+import info.smart_tools.smartactors.endpoint_components_netty.read_timeout_connection_pool_observer.ReadTimeoutConnectionPoolObserver;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -51,6 +54,7 @@ public class ConnectionPoolsPlugin extends BootstrapPlugin {
     @Item("default_netty_connection_pool_types")
     @After({
             "netty_connection_pools_storage_strategy",
+            "netty_connection_pool_observers_strategies",
     })
     public void registerDefaultPoolTypes() throws Exception {
         IFieldName transportFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "transport");
@@ -79,12 +83,16 @@ public class ConnectionPoolsPlugin extends BootstrapPlugin {
 
                         transport.verifyEventLoopGroup(eventLoopGroup);
 
+                        ISocketConnectionPoolObserver observer = IOC.resolve(
+                                Keys.getOrAdd("netty client connection pool observer"),
+                                conf);
+
                         return new DefaultTcpClientConnectionPool(
                                 channelFactory,
                                 setupAction,
                                 eventLoopGroup,
-                                SimpleChannelPool::new
-                        );
+                                SimpleChannelPool::new,
+                                observer);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException | InvalidEventLoopGroupException
                             | UnsupportedChannelTypeException e) {
                         throw new FunctionExecutionException(e);
@@ -112,13 +120,39 @@ public class ConnectionPoolsPlugin extends BootstrapPlugin {
 
                         transport.verifyEventLoopGroup(eventLoopGroup);
 
+                        ISocketConnectionPoolObserver observer = IOC.resolve(
+                                Keys.getOrAdd("netty client connection pool observer"),
+                                conf);
+
                         return new FakeTcpClientConnectionPool(
                                 channelFactory,
                                 setupAction,
-                                eventLoopGroup
-                        );
+                                eventLoopGroup,
+                                observer);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException | InvalidEventLoopGroupException
                             | UnsupportedChannelTypeException e) {
+                        throw new FunctionExecutionException(e);
+                    }
+                }));
+    }
+
+    @Item("netty_connection_pool_observers_strategies")
+    public void registerObserverStrategies() throws Exception {
+        IFieldName readTimeoutFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "readTimeout");
+
+        IOC.register(Keys.getOrAdd("netty client connection pool observer"),
+                new ApplyFunctionToArgumentsStrategy(args -> {
+                    IObject conf = (IObject) args[0];
+
+                    try {
+                        Number timeout = (Number) conf.getValue(readTimeoutFN);
+
+                        if (null != timeout) {
+                            return new ReadTimeoutConnectionPoolObserver(timeout.longValue());
+                        } else {
+                            return NullSocketConnectionPoolObserver.get();
+                        }
+                    } catch (ReadValueException | InvalidArgumentException e) {
                         throw new FunctionExecutionException(e);
                     }
                 }));

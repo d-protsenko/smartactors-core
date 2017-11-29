@@ -3831,6 +3831,14 @@
 } ],
   "rawName" : "HttpMethodSetter",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "read-timeout-connection-pool-observer",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ReadTimeoutConnectionPoolObserver",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],

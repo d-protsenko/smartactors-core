@@ -393,7 +393,11 @@ This feature registers some message handlers specific for Netty-based endpoints.
       
       // Default pool parameters:
       "transport": ".. transport kind ..",
-      "eventLoopGroup": ".. event loop group name .."
+      "eventLoopGroup": ".. event loop group name ..",
+      
+      // Timeout in milliseconds.
+      // Optional, by default no timeout applied.
+      "readTimeout": 5000,
     }
     ```
 

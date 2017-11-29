@@ -69,6 +69,7 @@
         <module>ChannelPoolHandlers</module>
         <module>ClientContextBindingHandlers</module>
         <module>HttpMethodSetter</module>
+        <module>ReadTimeoutConnectionPoolObserver</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 
