@@ -134,11 +134,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-netty.http-path-parse</artifactId>
-            <version>[0.0.1,1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.http-query-string-parser</artifactId>
             <version>[0.0.1,1.0.0)</version>
         </dependency>
@@ -192,17 +187,22 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.http-status-setter</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.channel-pool-handlers</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>endpoint-components-netty.client-context-binding-handlers</artifactId>
-            <version>0.3.3</version>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-netty.http-method-setter</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
     <build>

@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.endpoint_components_generic.message_handler_
 import info.smart_tools.smartactors.endpoint_components_generic.response_strategy_set_message_handler.ResponseStrategySetMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.scope_setter_message_handler.ScopeSetterMessageHandler;
 import info.smart_tools.smartactors.endpoint_components_generic.send_internal_message_handler.SendInternalMessageHandler;
+import info.smart_tools.smartactors.endpoint_components_generic.store_raw_inbound_message_handler.StoreRawInboundMessageHandler;
 import info.smart_tools.smartactors.endpoint_interfaces.iendpoint_pipeline.IEndpointPipeline;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IDefaultMessageContext;
 import info.smart_tools.smartactors.endpoint_interfaces.imessage_handler.IMessageHandler;
@@ -314,6 +315,9 @@ public class DefaultGenericMessageHandlersPlugin extends BootstrapPlugin {
 
                     return new AddFinalActionsHandler(actions);
                 }));
+
+        storage.register("store raw inbound message",
+                new SingletonStrategy(new StoreRawInboundMessageHandler()));
     }
 
     @Item("global_message_handler_tables_storage")

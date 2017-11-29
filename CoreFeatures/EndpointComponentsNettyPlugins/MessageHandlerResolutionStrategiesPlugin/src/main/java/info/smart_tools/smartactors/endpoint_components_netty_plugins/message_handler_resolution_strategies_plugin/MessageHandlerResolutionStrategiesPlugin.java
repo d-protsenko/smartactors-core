@@ -23,6 +23,7 @@ import info.smart_tools.smartactors.endpoint_components_netty.client_context_bin
 import info.smart_tools.smartactors.endpoint_components_netty.default_channel_initialization_handlers.*;
 import info.smart_tools.smartactors.endpoint_components_netty.http_exceptional_action.HttpServerExceptionalAction;
 import info.smart_tools.smartactors.endpoint_components_netty.http_headers_setter.HttpHeadersSetter;
+import info.smart_tools.smartactors.endpoint_components_netty.http_method_setter.HttpMethodSetter;
 import info.smart_tools.smartactors.endpoint_components_netty.http_query_string_parser.HttpQueryStringParser;
 import info.smart_tools.smartactors.endpoint_components_netty.http_response_metadata_presetup.HttpResponseMetadataPreSetup;
 import info.smart_tools.smartactors.endpoint_components_netty.http_status_setter.HttpStatusSetter;
@@ -359,6 +360,9 @@ public class MessageHandlerResolutionStrategiesPlugin extends BootstrapPlugin {
                 new SingletonStrategy(new BindRequestToChannelHandler()));
         storage.register("netty/client/get bound request",
                 new SingletonStrategy(new StoreBoundRequestHandler()));
+
+        storage.register("netty/set outbound http request method",
+                new SingletonStrategy(new HttpMethodSetter()));
     }
 
     @Item("netty_exceptional_actions")

@@ -3677,6 +3677,14 @@
 } ],
   "rawName" : "ExpectSentResponseFinalAction",
   "version" : "0.3.3"
+}, {
+  "artifactId" : "store-raw-inbound-message-handler",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "StoreRawInboundMessageHandler",
+  "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
@@ -3814,6 +3822,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ClientContextBindingHandlers",
+  "version" : "0.3.3"
+}, {
+  "artifactId" : "http-method-setter",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "HttpMethodSetter",
   "version" : "0.3.3"
 } ],
   "uploadRepositories" : [ ],

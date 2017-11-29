@@ -520,6 +520,9 @@
               "type": "netty/http response metadata presetup"
             },
             {
+              "type": "store raw inbound message"
+            },
+            {
               "type": "add final actions",
               "actions": [
                 {
@@ -831,6 +834,9 @@
               "pipeline": "decode-response"
             },
             {
+              "type": "store raw inbound message"
+            },
+            {
               "type": "client callback/success"
             }
           ]
@@ -875,6 +881,15 @@
           "id": "decode-response",
           "stages": [
             {
+              "type": "include",
+              "pipeline": "decode-response/default"
+            }
+          ]
+        },
+        {
+          "id": "decode-response/default",
+          "stages": [
+            {
               "type": "global table attribute router",
               "extractor": "netty/http/header",
               "messageExtractor": "wrapped inbound",
@@ -915,6 +930,9 @@
             },
             {
               "type": "netty/http headers setter"
+            },
+            {
+              "type": "netty/set outbound http request method"
             }
           ]
         },

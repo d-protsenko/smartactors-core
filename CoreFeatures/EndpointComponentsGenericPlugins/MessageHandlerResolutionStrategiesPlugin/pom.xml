@@ -202,6 +202,11 @@
             <artifactId>endpoint-components-generic.expect-sent-response-final-action</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>endpoint-components-generic.store-raw-inbound-message-handler</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

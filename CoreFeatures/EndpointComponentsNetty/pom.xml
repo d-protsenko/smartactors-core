@@ -68,6 +68,7 @@
         <module>ISocketConnectionPool</module>
         <module>ChannelPoolHandlers</module>
         <module>ClientContextBindingHandlers</module>
+        <module>HttpMethodSetter</module>
         <module>EndpointComponentsNettyDistribution</module>
     </modules>
 

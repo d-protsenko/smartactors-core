@@ -62,6 +62,7 @@
         <module>OutboundUrlParser</module>
         <module>AddFinalActionsHandler</module>
         <module>ExpectSentResponseFinalAction</module>
+        <module>StoreRawInboundMessageHandler</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
