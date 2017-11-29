@@ -4,17 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>endpoint-components-generic-plugins</artifactId>
+        <artifactId>endpoint-components-generic</artifactId>
         <version>0.3.3</version>
     </parent>
-    <artifactId>endpoint-components-generic-plugins.client-callbacks-plugin</artifactId>
+    <artifactId>endpoint-components-generic.respond-to-chain-client-callback</artifactId>
     <version>0.3.3</version>
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
@@ -37,42 +32,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaction</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.interfaces.ibootstrap</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-item</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.iioccontainer</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -83,11 +43,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.named-keys-storage</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.ikey</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -104,28 +59,17 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.simple-strict-storage-strategy</artifactId>
+            <artifactId>endpoint-interfaces.iclient-callback</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.interrupt-client-callback</artifactId>
+            <artifactId>message-processing-interfaces.ichain-storage</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>helpers.trivial-plugins-loading-test-base</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.respond-to-chain-client-callback</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>endpoint-components-generic.null-client-callback</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>

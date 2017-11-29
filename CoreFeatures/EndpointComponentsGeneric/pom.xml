@@ -63,6 +63,7 @@
         <module>AddFinalActionsHandler</module>
         <module>ExpectSentResponseFinalAction</module>
         <module>StoreRawInboundMessageHandler</module>
+        <module>RespondToChainClientCallback</module>
         <module>EndpointComponentsGenericDistribution</module>
     </modules>
 
