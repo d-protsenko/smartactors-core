@@ -3338,6 +3338,25 @@
   "artifactId" : "endpoints-generic-plugins",
   "rawName" : "EndpointsGenericPlugins",
   "version" : "0.3.3"
+}, {
+  "actors" : [ ],
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-features",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+} ],
+  "plugins" : [ {
+  "artifactId" : "endpoints-section-canonization-strategy-plugin",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "EndpointsSectionCanonizationStrategyPlugin",
+  "version" : "0.3.3"
+} ],
+  "groupId" : "info.smart_tools.smartactors",
+  "artifactId" : "endpoints-compatibility",
+  "rawName" : "EndpointsCompatibility",
+  "version" : "0.3.3"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
