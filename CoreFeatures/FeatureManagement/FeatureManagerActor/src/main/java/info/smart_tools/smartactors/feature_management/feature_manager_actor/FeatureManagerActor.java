@@ -26,6 +26,9 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +42,8 @@ import java.util.stream.Collectors;
 public class FeatureManagerActor {
 
     private static final int DEFAULT_STACK_DEPTH = 5;
+
+    private static final DateTimeFormatter df = DateTimeFormatter.ISO_LOCAL_TIME;
 
     private Map<IMessageProcessor, Set<IFeature>> mainProcesses;
     private Map<IMessageProcessor, Set<IFeature>> mainProcessesForInfo;
@@ -54,6 +59,17 @@ public class FeatureManagerActor {
     private final IFieldName featureProcessFN;
     private final IFieldName featureFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
+    private final IFieldName startTimeOfLoadingFeatureGroupFN;
+
+    private final static String TASK_QUEUE_IOC_NAME = "task_queue";
+    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name";
+    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static String MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
+    private final static String MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
 
     /**
      * Default constructor
@@ -69,12 +85,27 @@ public class FeatureManagerActor {
         this.failedFeatures = new ConcurrentHashMap<>();
         this.processingFeatures = new ConcurrentHashMap<>();
 
-        this.loadedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "loadedFeatures");
-        this.failedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "failedFeatures");
-        this.processingFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processingFeatures");
-        this.featureProcessFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureProcess");
-        this.featureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "feature");
-        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
+        this.loadedFeatureFN =                  IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "loadedFeatures"
+        );
+        this.failedFeatureFN =                  IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "failedFeatures"
+        );
+        this.processingFeatureFN =              IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "processingFeatures"
+        );
+        this.featureProcessFN =                 IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureProcess"
+        );
+        this.featureFN =                        IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
+        );
+        this.afterFeaturesCallbackQueueFN =     IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeaturesCallbackQueue"
+        );
+        this.startTimeOfLoadingFeatureGroupFN = IOC.resolve(
+                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "startTimeOfLoadingFeatureGroup"
+        );
     }
 
     /**
@@ -85,20 +116,20 @@ public class FeatureManagerActor {
     public void addFeatures(final AddFeatureWrapper wrapper)
             throws FeatureManagementException {
         try {
+            LocalTime startLoadingTime = LocalTime.now();
             Set<IFeature> features = new HashSet<>(wrapper.getFeatures());
             Set<IFeature> featuresForInfo = new HashSet<>(wrapper.getFeatures());
             IMessageProcessor mp = wrapper.getMessageProcessor();
+            mp.getContext().setValue(this.startTimeOfLoadingFeatureGroupFN, startLoadingTime);
 
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
             String scatterChainName = wrapper.getScatterChainName();
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), scatterChainName);
+            Object chainId = IOC.resolve(Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME), scatterChainName);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
-
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
-
 
             int count = 0;
             for (IFeature feature : features) {
@@ -108,18 +139,20 @@ public class FeatureManagerActor {
                         null == this.loadedFeatures.get(featureName)
                 ) {
                     this.processingFeatures.put(feature.getName(), feature);
-                    IMessageProcessingSequence processingSequence =
-                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, scatterChain);
-                    IMessageProcessor messageProcessor =
-                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), queue, processingSequence);
-                    IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    IMessageProcessingSequence processingSequence = IOC.resolve(
+                            Keys.getOrAdd(MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
+                    );
+                    IMessageProcessor messageProcessor = IOC.resolve(
+                            Keys.getOrAdd(MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
+                    );
+                    IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
                     message.setValue(this.loadedFeatureFN, this.loadedFeatures);
                     message.setValue(this.failedFeatureFN, this.failedFeatures);
                     message.setValue(this.processingFeatureFN, this.processingFeatures);
                     message.setValue(this.featureProcessFN, this.featureProcess);
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
-                    IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
                     messageProcessor.process(message, context);
                     ++count;
                 }
@@ -187,16 +220,29 @@ public class FeatureManagerActor {
                         }
                     }
 
+                    LocalTime startLoadingTime = (LocalTime) mp.getContext().getValue(
+                            this.startTimeOfLoadingFeatureGroupFN
+                    );
                     mp.continueProcess(null);
+                    Duration elapsedInterval = Duration.between(startLoadingTime, LocalTime.now());
+                    LocalTime elapsedTimeToLocalTime = LocalTime.ofNanoOfDay(elapsedInterval.toNanos());
+
+                    System.out.println("\n\n");
                     System.out.println(
-                            "\n\n[INFO] Feature group has been loaded: " +
+                            "[INFO] Feature group has been loaded: " +
                                     this.mainProcessesForInfo.get(mp).stream().map(
                                             a -> "\n" + a.getName() + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
                                     ).collect(Collectors.toList())
-                            + "\n\n"
                     );
+                    System.out.println("[INFO] elapsed time - " + elapsedTimeToLocalTime.format(df) + ".");
+                    System.out.println("\n\n");
                     this.mainProcessesForInfo.remove(mp);
-                } catch (AsynchronousOperationException | ReadValueException | ActionExecuteException e) {
+                } catch (
+                        InvalidArgumentException |
+                        AsynchronousOperationException |
+                        ReadValueException |
+                        ActionExecuteException e
+                ) {
                     throw new RuntimeException(e);
                 }
             });
@@ -220,13 +266,12 @@ public class FeatureManagerActor {
             checkAndRunConnectedFeatures();
             for (IFeature loadedFeature : this.loadedFeatures.values()) {
                 if (null != feature.getDependencies()) {
-                    feature.getDependencies().remove(loadedFeature.getName());
+                    feature.getDependencies().remove(loadedFeature.getGroupId() + ":" + loadedFeature.getName());
                 }
             }
             if (null != feature.getDependencies() && !feature.getDependencies().isEmpty()) {
                 IMessageProcessor mp = wrapper.getMessageProcessor();
                 mp.pauseProcess();
-                //wrapper.getFeatureProcess().put(mp, feature);
                 this.featureProcess.put(mp, feature);
             }
         } catch (ReadValueException | AsynchronousOperationException e) {
@@ -273,11 +318,40 @@ public class FeatureManagerActor {
             throws FeatureManagementException {
         for (IFeature feature : this.processingFeatures.values()) {
             if (null != feature.getDependencies()) {
-                feature.getDependencies().remove(loadedFeature.getName());
+                feature.getDependencies().remove(loadedFeature.getGroupId() + ":" + loadedFeature.getName());
             }
         }
     }
 
     private void checkUnresolved() {
+        int minDependencies = this.processingFeatures
+                .values()
+                .stream()
+                .filter(feature -> null != feature.getDependencies())
+                .map(f -> f.getDependencies().size())
+                .min(Integer::compareTo)
+                .orElse(0);
+        if (
+                !this.processingFeatures.isEmpty()
+                && minDependencies > 0
+        ) {
+            Set<String> unresolved = this.processingFeatures
+                    .values()
+                    .stream()
+                    .map(IFeature::getDependencies)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+            unresolved.removeAll(
+                    this.processingFeatures
+                            .values()
+                            .stream()
+                            .map(f -> f.getGroupId() + ":" + f.getName())
+                            .collect(Collectors.toSet())
+            );
+
+            System.out.println("[INFO] The server are needed following features to continue: " +
+                    unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
+            );
+        }
     }
 }

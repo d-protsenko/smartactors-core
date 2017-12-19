@@ -46,6 +46,12 @@ public interface IFeature {
     IPath getFeatureLocation();
 
     /**
+     * Gets feature package type (zip, jar, etc)
+     * @return the feature package type
+     */
+    String getPackageType();
+
+    /**
      * Sets feature name
      * @param featureName the feature name
      */
@@ -80,4 +86,10 @@ public interface IFeature {
      * @param version the feature version
      */
     void setVersion(String version);
+
+    /**
+     * Sets feature package type
+     * @param packageType the feature package type
+     */
+    void setPackageType(String packageType);
 }

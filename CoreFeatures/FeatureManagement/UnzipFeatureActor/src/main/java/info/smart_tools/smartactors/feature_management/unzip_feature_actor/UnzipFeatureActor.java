@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.feature_management.unzip_feature_actor;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.exception.UnzipFeatureException;
@@ -15,8 +16,13 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
@@ -27,6 +33,18 @@ import java.util.Set;
 public class UnzipFeatureActor {
 
     private final IFieldName dependenciesFieldName;
+    private final IFieldName featureNameFN;
+
+    private final static String CONFIG_FILE_NAME = "config.json";
+    private final static String EXTENSION_SEPARATOR = ".";
+    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static String ARCHIVE_POSTFIX = "archive";
+    private final static String GROUP_AND_NAME_DELIMITER = ":";
+    private final static String END_OF_INPUT_DELIMITER = "\\Z";
+
+    private final Map<String, IBiFunction<File, IFeature, File>> unzipFunctions;
 
     /**
      * Default constructor
@@ -34,7 +52,26 @@ public class UnzipFeatureActor {
      */
     public UnzipFeatureActor()
             throws ResolutionException {
-        this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
+        this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
+        this.featureNameFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
+
+        //TODO: need refactoring. This actions would be took out to the plugin.
+        this.unzipFunctions = new HashMap<String, IBiFunction<File, IFeature, File>>(){{
+            put("zip", (file, feature) -> {
+                try {
+                    return unzip0(file, feature);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            put("jar", (file, feature) -> {
+                try {
+                    return copyJar(file, feature);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }};
     }
 
     /**
@@ -51,33 +88,36 @@ public class UnzipFeatureActor {
             throw new UnzipFeatureException("Feature should not be null.");
         }
         try {
-            if (null == feature.getDependencies() && feature.getFeatureLocation().toString().endsWith(".zip")) {
-                System.out.println("[INFO] Start unzipping feature - '" + feature.getName() + "'.");
+            if (null == feature.getDependencies()) {
+                System.out.println("[INFO] Start unzipping/copying feature - '" + feature.getName() + "'.");
                 File f = new File(feature.getFeatureLocation().toString());
-                File configFile = unzip0(f);
-                updateFeature(configFile, feature);
-                System.out.println("[OK] -------------- Feature '" + feature.getName() + "' has been unzipped successful.");
+                IBiFunction<File, IFeature, File> function = this.unzipFunctions.get(getExtension(f));
+                if (null != function) {
+                    File configFile = function.execute(f, feature);
+                    updateFeature(configFile, feature);
+                    System.out.println("[OK] -------------- Feature '" + feature.getName() + "' has been unzipped/copied successful.");
+                }
             }
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' unzipping has been aborted with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' unzipping/copying has been aborted with exception:");
             System.out.println(e);
         }
     }
 
-    private File unzip0(final File f)
+    private File unzip0(final File f, final IFeature feature)
             throws Exception {
         String destination = f.getPath();
-        if (f.getPath().lastIndexOf('/') >= 0) {
-            destination = f.getPath().substring(0, f.getPath().lastIndexOf('/'));
+        if (f.getPath().lastIndexOf(File.separator) >= 0) {
+            destination = f.getPath().substring(0, f.getPath().lastIndexOf(File.separator));
         }
         try {
-            ZipFile zipFile = new ZipFile(f);
-            zipFile.extractAll(destination);
-            List<FileHeader> headers = zipFile.getFileHeaders();
-            FileHeader configFileHeader = headers.stream().filter(fh -> fh.getFileName().endsWith("config.json")).findFirst().get();
+            if (checkFeatureWasUpdated(f, feature)) {
+                ZipFile zipFile = new ZipFile(f);
+                zipFile.extractAll(destination);
+            }
 
-            return new File(destination + File.separator + configFileHeader.getFileName());
+            return Paths.get(this.getFeatureDirectory(f).toString(), CONFIG_FILE_NAME).toFile();
         } catch (ZipException e) {
             throw new Exception("Unsupported feature format: broken archive.", e);
         } catch (NoSuchElementException e) {
@@ -85,13 +125,100 @@ public class UnzipFeatureActor {
         }
     }
 
+    private File copyJar(final File f, final IFeature feature)
+            throws Exception {
+        String location = f.getPath();
+        if (f.getPath().lastIndexOf(File.separator) >= 0) {
+            location = f.getPath().substring(0, f.getPath().lastIndexOf(File.separator));
+        }
+        try {
+            java.nio.file.Path destination = Paths.get(
+                    location, f.getName().substring(0, f.getName().lastIndexOf(EXTENSION_SEPARATOR))
+            );
+            if (checkFeatureWasUpdated(f, feature)) {
+                java.nio.file.Path dir = Files.createDirectories(
+                        destination
+                );
+                Files.copy(
+                        Paths.get(f.getPath()),
+                        Paths.get(dir.toString(), f.getName()),
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+                ZipFile zipFile = new ZipFile(f);
+                List<FileHeader> headers = zipFile.getFileHeaders();
+                FileHeader configFileHeader = headers
+                        .stream()
+                        .filter(fh -> fh.getFileName().endsWith(CONFIG_FILE_NAME))
+                        .findFirst()
+                        .get();
+                if (null != configFileHeader) {
+                    zipFile.extractFile(configFileHeader, dir.toString());
+                }
+            }
+
+            return new File(Paths.get(destination.toString(), CONFIG_FILE_NAME).toString());
+        } catch (ZipException e) {
+            throw new Exception("Unsupported feature format: broken archive.", e);
+        } catch (NoSuchElementException e) {
+            throw new Exception("Unsupported feature format: config.json not found or it's broken.", e);
+        }
+    }
+
+    private boolean checkFeatureWasUpdated(final File zippedFeature, final IFeature feature) {
+        try {
+            File destinationDir = this.getFeatureDirectory(zippedFeature).toFile();
+            if (destinationDir.exists() && destinationDir.isDirectory()) {
+                Long archiveModificationDate = zippedFeature.lastModified();
+                Long newlyFileInUnzippedFeature = Files
+                        .walk(Paths.get(destinationDir.toString()))
+                        .filter(Files::isRegularFile)
+                        .mapToLong(p -> p.toFile().lastModified())
+                        .max().getAsLong();
+                if (archiveModificationDate > newlyFileInUnzippedFeature) {
+                    System.out.println("[INFO] -------------- Unzipping/copying of the feature '" + feature.getName() + "' was skipped because the directory contains an actual state of this feature.");
+
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            return true;
+        }
+
+        return true;
+    }
+
+    private java.nio.file.Path getFeatureDirectory(final File f) {
+        String location = f.getPath();
+        if (f.getPath().lastIndexOf(File.separator) >= 0) {
+            location = f.getPath().substring(0, f.getPath().lastIndexOf(File.separator));
+        }
+        String featureName = f.getName().substring(0, f.getName().lastIndexOf(EXTENSION_SEPARATOR));
+        if (featureName.endsWith("-" + ARCHIVE_POSTFIX)) {
+            featureName = featureName.substring(0, featureName.length() - 8);
+        }
+        return Paths.get(
+                location, featureName
+        );
+    }
+
     private void updateFeature(final File f, final IFeature feature)
             throws Exception {
-        String content = new Scanner(f).useDelimiter("\\Z").next();
-        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
+        String content = new Scanner(f).useDelimiter(END_OF_INPUT_DELIMITER).next();
+        IObject config = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME), content);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
+        String featureNameWithGroup = (String) config.getValue(this.featureNameFN);
+        String[] groupAndName = featureNameWithGroup.split(GROUP_AND_NAME_DELIMITER);
+        String name = groupAndName[1];
+        String groupId = groupAndName[0];
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);
         feature.setFeatureLocation(new Path(f.getParent()));
+        feature.setName(name);
+        feature.setGroupId(groupId);
     }
+
+    private String getExtension(final File f) {
+        return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
+    }
+
 }

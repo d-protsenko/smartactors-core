@@ -162,6 +162,12 @@ public class FeatureManagerActorTest {
                 .thenReturn(features).thenReturn(features)
                 .thenReturn(features2).thenReturn(features2);
         when(wrapper.getMessageProcessor()).thenReturn(mp1).thenReturn(mp2).thenReturn(mp3);
+        IObject ctx1 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
+        IObject ctx2 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
+        IObject ctx3 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
+        when(mp1.getContext()).thenReturn(ctx1);
+        when(mp2.getContext()).thenReturn(ctx2);
+        when(mp3.getContext()).thenReturn(ctx3);
         when(wrapper.getScatterChainName()).thenReturn("chain");
         Object chainId = mock(Object.class);
         when(getChainIDByNameStrategy.resolve("chain")).thenReturn(chainId);
