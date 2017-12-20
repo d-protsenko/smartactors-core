@@ -208,6 +208,9 @@ public class UnzipFeatureActor {
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         String featureNameWithGroup = (String) config.getValue(this.featureNameFN);
         String[] groupAndName = featureNameWithGroup.split(GROUP_AND_NAME_DELIMITER);
+        if (groupAndName.length < 2) {
+            throw new Exception("Unsupported attribute 'featureName' in the config.json. Should follows the pattern [groupId:featureName].");
+        }
         String name = groupAndName[1];
         String groupId = groupAndName[0];
         Set<String> dependenciesSet = new HashSet<>(dependencies);
