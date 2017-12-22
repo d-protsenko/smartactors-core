@@ -503,6 +503,29 @@
         },
 
         {
+          "id": "process-inbound/parse-request-metadata-default",
+          "stages": [
+            {
+              "type": "netty/http query string parser"
+            },
+            {
+              "type": "netty/fixed http path parser",
+              "templates": "@@httpPathTemplates"
+            }
+          ]
+        },
+
+        {
+          "id": "process-inbound/parse-request-metadata",
+          "stages": [
+            {
+              "type": "include",
+              "pipeline": "process-inbound/parse-request-metadata-default"
+            }
+          ]
+        },
+
+        {
           "id": "process-inbound",
           "stages": [
             {
@@ -510,11 +533,8 @@
               "pipeline": "parse-request-body"
             },
             {
-              "type": "netty/http query string parser"
-            },
-            {
-              "type": "netty/fixed http path parser",
-              "templates": "@@httpPathTemplates"
+              "type": "include",
+              "pipeline": "process-inbound/parse-request-metadata"
             },
             {
               "type": "netty/http response metadata presetup"
