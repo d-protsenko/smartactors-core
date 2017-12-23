@@ -50,10 +50,7 @@ public class AllInDirectoryFeatureTracker {
     private final static String FEATURE_LIST_FILE_NAME = "features.json";
     private final static String DEF_PACKAGE_TYPE = "jar";
     private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
-    private final static List<String> FILE_TYPE_LIST = new ArrayList<String>() {{
-        add("zip");
-        add("jar");
-    }};
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
 
     /**
      * Default constructor

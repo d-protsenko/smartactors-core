@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,11 +61,7 @@ public class RuntimeDirectoryFeatureTracker {
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
 
     //TODO: this parameters would be took out into the config.json as actor arguments
-    private final static List<String> FILE_TYPE_LIST = new ArrayList<String>() {{
-        add("zip");
-        add("jar");
-        add("json");
-    }};
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar", "json");
 
     /**
      * Default constructor

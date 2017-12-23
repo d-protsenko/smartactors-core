@@ -16,9 +16,12 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +46,7 @@ public class UnzipFeatureActor {
     private final static String ARCHIVE_POSTFIX = "archive";
     private final static String GROUP_AND_NAME_DELIMITER = ":";
     private final static String END_OF_INPUT_DELIMITER = "\\Z";
+    private final static String NAME_OF_CHECK_FILE = ".checkfile";
 
     private final Map<String, IBiFunction<File, IFeature, File>> unzipFunctions;
 
@@ -115,6 +119,9 @@ public class UnzipFeatureActor {
             if (checkFeatureWasUpdated(f, feature)) {
                 ZipFile zipFile = new ZipFile(f);
                 zipFile.extractAll(destination);
+                createCheckFile(
+                        getFeatureDirectory(f).toFile()
+                );
             }
 
             return Paths.get(this.getFeatureDirectory(f).toString(), CONFIG_FILE_NAME).toFile();
@@ -127,18 +134,11 @@ public class UnzipFeatureActor {
 
     private File copyJar(final File f, final IFeature feature)
             throws Exception {
-        String location = f.getPath();
-        if (f.getPath().lastIndexOf(File.separator) >= 0) {
-            location = f.getPath().substring(0, f.getPath().lastIndexOf(File.separator));
-        }
         try {
-            java.nio.file.Path destination = Paths.get(
-                    location, f.getName().substring(0, f.getName().lastIndexOf(EXTENSION_SEPARATOR))
+            java.nio.file.Path dir = Files.createDirectories(
+                    getFeatureDirectory(f)
             );
             if (checkFeatureWasUpdated(f, feature)) {
-                java.nio.file.Path dir = Files.createDirectories(
-                        destination
-                );
                 Files.copy(
                         Paths.get(f.getPath()),
                         Paths.get(dir.toString(), f.getName()),
@@ -154,9 +154,10 @@ public class UnzipFeatureActor {
                 if (null != configFileHeader) {
                     zipFile.extractFile(configFileHeader, dir.toString());
                 }
+                createCheckFile(dir.toFile());
             }
 
-            return new File(Paths.get(destination.toString(), CONFIG_FILE_NAME).toString());
+            return new File(Paths.get(dir.toString(), CONFIG_FILE_NAME).toString());
         } catch (ZipException e) {
             throw new Exception("Unsupported feature format: broken archive.", e);
         } catch (NoSuchElementException e) {
@@ -168,15 +169,13 @@ public class UnzipFeatureActor {
         try {
             File destinationDir = this.getFeatureDirectory(zippedFeature).toFile();
             if (destinationDir.exists() && destinationDir.isDirectory()) {
-                Long archiveModificationDate = zippedFeature.lastModified();
-                Long newlyFileInUnzippedFeature = Files
-                        .walk(Paths.get(destinationDir.toString()))
-                        .filter(Files::isRegularFile)
-                        .mapToLong(p -> p.toFile().lastModified())
-                        .max().getAsLong();
-                if (archiveModificationDate > newlyFileInUnzippedFeature) {
-                    System.out.println("[INFO] -------------- Unzipping/copying of the feature '" + feature.getName() + "' was skipped because the directory contains an actual state of this feature.");
-
+                File checkFile = Paths.get(destinationDir.getPath(), NAME_OF_CHECK_FILE).toFile();
+                if (checkFile.exists() && zippedFeature.lastModified() < checkFile.lastModified()) {
+                    System.out.println(
+                            "[OK] -------------- Unzipping/copying of the feature '" +
+                            feature.getName() +
+                            "' was skipped because the directory contains an actual state of this feature."
+                    );
                     return false;
                 }
             }
@@ -222,6 +221,16 @@ public class UnzipFeatureActor {
 
     private String getExtension(final File f) {
         return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
+    }
+
+    private void createCheckFile(final File directory)
+            throws Exception {
+        File f = Paths.get(directory.getPath(), NAME_OF_CHECK_FILE).toFile();
+        if (f.exists()) {
+            f.setLastModified(System.currentTimeMillis());
+        } else {
+            Files.createFile(f.toPath());
+        }
     }
 
 }

@@ -349,7 +349,7 @@ public class FeatureManagerActor {
                             .collect(Collectors.toSet())
             );
 
-            System.out.println("[INFO] The server are needed following features to continue: " +
+            System.out.println("[INFO] The server needs the following features to continue: " +
                     unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
             );
         }

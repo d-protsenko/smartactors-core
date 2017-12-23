@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,11 +43,7 @@ public class DownloadFeatureActor {
     private static final String DEF_PACKAGE_TYPE = "jar";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-    private final static List<String> FILE_TYPE_LIST = new ArrayList<String>() {{
-        add("zip");
-        add("jar");
-    }};
-
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
 
     /**
      * Default constructor
