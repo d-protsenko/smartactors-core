@@ -22,6 +22,9 @@ public class EndpointProfilesConfigurationSectionPlugin extends BootstrapPlugin 
     }
 
     @Item("config_section:endpointProfiles")
+    @Before({
+            "config_section:endpoint"
+    })
     public void registerSection() throws Exception {
         IConfigurationManager configurationManager = IOC.resolve(
                 Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
