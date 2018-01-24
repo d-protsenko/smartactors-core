@@ -108,7 +108,7 @@ public class PluginScheduler extends BootstrapPlugin {
     private static final long DEFAULT_BASE_REFRESH_INTERVAL = 1000 * 10; // 10 seconds
     private static final int DEFAULT_REFRESH_PAGE_SIZE_MAX = 100;
     private static final int DEFAULT_REFRESH_PAGE_SIZE_MIN = 20;
-    private static final int DEFAULT_REFRESH_LOCAL_ENTRIES = 1000;
+    private static final int DEFAULT_REFRESH_LOCAL_ENTRIES = 5000;
 
     /**
      * Register default refresh parameters resolution strategies.
