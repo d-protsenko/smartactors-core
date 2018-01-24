@@ -63,4 +63,10 @@ public class SchedulingService implements ISchedulerService {
     public void configure(final IObject config) throws ReadValueException, InvalidArgumentException {
         refreshService.configure(config);
     }
+
+    @Override
+    public IObject getRefresherParams() throws ReadValueException {
+        return refreshService.getParams();
+    }
+
 }

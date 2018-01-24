@@ -36,4 +36,9 @@ public class NullEntryStorageRefresher implements ISchedulerStorageRefresher {
     public void configure(final IObject config) throws ReadValueException, InvalidArgumentException {
 
     }
+
+    @Override
+    public IObject getParams() throws ReadValueException {
+        return null;
+    }
 }

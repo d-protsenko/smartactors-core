@@ -21,4 +21,6 @@ public interface ISchedulerService extends IDelayedSynchronousService {
      * @throws InvalidArgumentException if parameters are not valid
      */
     void configure(IObject config) throws ReadValueException, InvalidArgumentException;
+
+    IObject getRefresherParams() throws ReadValueException;
 }

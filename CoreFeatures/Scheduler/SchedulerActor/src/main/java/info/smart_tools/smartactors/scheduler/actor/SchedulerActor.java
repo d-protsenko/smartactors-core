@@ -187,4 +187,15 @@ public class SchedulerActor {
             throws InvalidArgumentException, ReadValueException {
         service.configure(message.getConfig());
     }
+
+    /**
+     * Gets current EntryStorageRefresher params.
+     * @param message the message
+     * @throws ReadValueException if an error occurs
+     * @throws ChangeValueException if error occurs when set params
+     */
+    public void getEntryStorageRefresherParams(final GetEntryStorageRefresherParamsMessage message) throws ReadValueException, ChangeValueException {
+        IObject params = service.getRefresherParams();
+        message.setRefresherParams(params);
+    }
 }

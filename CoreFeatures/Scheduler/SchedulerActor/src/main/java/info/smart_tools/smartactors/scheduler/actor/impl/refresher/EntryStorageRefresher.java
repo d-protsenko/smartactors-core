@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -193,6 +194,22 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
             this.maxLocalEntries = maxLE;
         } finally {
             stateLock.unlock();
+        }
+    }
+
+    @Override
+    public IObject getParams() throws ReadValueException {
+        try {
+            IObject currentParams = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            currentParams.setValue(refreshRepeatIntervalFN, this.refreshRepeatInterval);
+            currentParams.setValue(refreshAwakeIntervalFN, this.refreshAwakeInterval);
+            currentParams.setValue(refreshSuspendIntervalFN, this.refreshSuspendInterval);
+            currentParams.setValue(minPageSizeFN, this.minPageSize);
+            currentParams.setValue(maxPageSizeFN, this.maxPageSize);
+            currentParams.setValue(maxLocalEntriesFN, this.maxLocalEntries);
+            return currentParams;
+        } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
+            throw new ReadValueException("Fail to get EntryStorageRefresher params!");
         }
     }
 

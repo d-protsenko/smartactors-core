@@ -17,4 +17,11 @@ public interface ISchedulerStorageRefresher extends IDelayedSynchronousService {
      * @throws InvalidArgumentException if parameters are not valid
      */
     void configure(IObject config) throws ReadValueException, InvalidArgumentException;
+
+    /**
+     * Get current refresher configuration.
+     * @return value as {@link IObject}
+     * @throws ReadValueException if an error occurs
+     */
+    IObject getParams() throws ReadValueException;
 }
