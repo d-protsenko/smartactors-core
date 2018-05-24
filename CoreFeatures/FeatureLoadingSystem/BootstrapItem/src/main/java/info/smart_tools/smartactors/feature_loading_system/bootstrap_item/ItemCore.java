@@ -89,7 +89,9 @@ class ItemCore {
     void executeRevertProcess()
             throws RevertProcessExecutionException {
         try {
-            this.revertProcess.execute();
+            if (null != this.revertProcess) {
+                this.revertProcess.execute();
+            }
         } catch (Throwable e) {
             throw new RevertProcessExecutionException("Revert process execution failed.", e);
         }

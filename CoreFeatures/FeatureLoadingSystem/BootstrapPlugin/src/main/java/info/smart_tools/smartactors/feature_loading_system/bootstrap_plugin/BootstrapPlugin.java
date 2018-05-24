@@ -11,6 +11,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for {@link IPlugin plugins} registering {@link IBootstrapItem bootstrap items} in a {@link IBootstrap bootstrap} passed to
@@ -43,13 +45,27 @@ import java.lang.reflect.Method;
  */
 public abstract class BootstrapPlugin implements IPlugin {
     /**
-     * Annotation used to mark the methods of plugins extending {@link BootstrapPlugin} for which the bootstrap items should e created.
+     * Annotation used to mark the methods of plugins extending {@link BootstrapPlugin} for which the bootstrap items should be created.
      */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Item {
         /**
          * Name of the bootstrap item to create.
+         *
+         * @return name of bootstrap item
+         */
+        String value();
+    }
+
+    /**
+     * Annotation used to mark the methods of plugins extending {@link BootstrapPlugin} for which the bootstrap items should be reverted.
+     */
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface ItemRevert {
+        /**
+         * Name of the bootstrap item to revert.
          *
          * @return name of bootstrap item
          */
@@ -110,12 +126,25 @@ public abstract class BootstrapPlugin implements IPlugin {
     @Override
     public final void load() throws PluginException {
         try {
+            Map<String, Method> itemMethods = new HashMap<String, Method>();
+            Map<String, Method> itemRevertMethods = new HashMap<String, Method>();
             for (Method method : this.getClass().getMethods()) {
-                if (null == method.getAnnotation(Item.class)) {
-                    continue;
+                if (null != method.getAnnotation(Item.class)) {
+                    String itemName = method.getAnnotation(Item.class).value();
+                    itemMethods.put(itemName, method);
                 }
-
-                bootstrap.add(new MethodBootstrapItem(this, method));
+                if (null != method.getAnnotation(ItemRevert.class)) {
+                    String itemName = method.getAnnotation(Item.class).value();
+                    itemRevertMethods.put(itemName, method);
+                }
+            }
+            for (Map.Entry<String, Method> entry : itemMethods.entrySet()) {
+                bootstrap.add(new MethodBootstrapItem(
+                        this,
+                        entry.getValue(),
+                        itemRevertMethods.get(entry.getKey())
+                    )
+                );
             }
         } catch (InvalidArgumentException e) {
             throw new PluginException(e);
