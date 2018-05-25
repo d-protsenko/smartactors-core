@@ -22,20 +22,52 @@ import static org.mockito.Mockito.verify;
 public class BootstrapTest {
 
     @Test
-    public void checkAdditionExecutionAndRevertingBootstrapItem()
+    public void checkAdditionalExecutionAndRevertingBootstrapItem()
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
         assertNotNull(bootstrap);
-        IBootstrapItem item = mock(IBootstrapItem.class);
-        doNothing().when(item).executeProcess();
-        doNothing().when(item).executeRevertProcess();
-        bootstrap.add(item);
+        IBootstrapItem item1 = mock(IBootstrapItem.class);
+        IBootstrapItem item2 = mock(IBootstrapItem.class);
+        IBootstrapItem item3 = mock(IBootstrapItem.class);
+        doNothing().when(item1).executeProcess();
+        doNothing().when(item1).executeRevertProcess();
+        doThrow(ProcessExecutionException.class).doNothing().when(item2).executeProcess();
+        doNothing().when(item2).executeRevertProcess();
+        doThrow(ProcessExecutionException.class).doThrow(ProcessExecutionException.class).doNothing().when(item3).executeProcess();
+        doNothing().when(item3).executeRevertProcess();
+        bootstrap.add(item1);
+        bootstrap.add(item2);
+        bootstrap.add(item3);
         List<IBootstrapItem<String>> items = bootstrap.start();
-        verify(item, times(1)).executeProcess();
+        verify(item1, times(1)).executeProcess();
+        verify(item2, times(2)).executeProcess();
+        verify(item2, times(1)).executeRevertProcess();
+        verify(item3, times(3)).executeProcess();
+        verify(item3, times(2)).executeRevertProcess();
         bootstrap.revert();
-        verify(item, times(1)).executeRevertProcess();
+        verify(item1, times(1)).executeRevertProcess();
         IBootstrap<IBootstrapItem<String>> nextBootstrap = new Bootstrap(items);
-        verify(item, times(1)).executeProcess();
+        verify(item1, times(1)).executeProcess();
+    }
+
+    @Test (expected = ProcessExecutionException.class)
+    public void checkDeadlockBootstrapItem()
+            throws Exception {
+        IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
+        assertNotNull(bootstrap);
+        IBootstrapItem item1 = mock(IBootstrapItem.class);
+        IBootstrapItem item2 = mock(IBootstrapItem.class);
+        doNothing().when(item1).executeProcess();
+        doNothing().when(item1).executeRevertProcess();
+        doThrow(ProcessExecutionException.class).when(item2).executeProcess();
+        doNothing().when(item2).executeRevertProcess();
+        bootstrap.add(item1);
+        bootstrap.add(item2);
+        List<IBootstrapItem<String>> items = bootstrap.start();
+        verify(item1, times(1)).executeProcess();
+        verify(item2, times(2)).executeProcess();
+        verify(item2, times(2)).executeRevertProcess();
+        fail();
     }
 
     @Test (expected = ProcessExecutionException.class)
@@ -44,7 +76,8 @@ public class BootstrapTest {
         IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
         IBootstrapItem item = mock(IBootstrapItem.class);
         bootstrap.add(item);
-        doThrow(ProcessExecutionException.class).when(item).executeProcess();
+        doThrow(Exception.class).when(item).executeProcess();
+        doThrow(Exception.class).when(item).executeRevertProcess();
         bootstrap.start();
         fail();
     }

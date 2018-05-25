@@ -134,7 +134,7 @@ public abstract class BootstrapPlugin implements IPlugin {
                     itemMethods.put(itemName, method);
                 }
                 if (null != method.getAnnotation(ItemRevert.class)) {
-                    String itemName = method.getAnnotation(Item.class).value();
+                    String itemName = method.getAnnotation(ItemRevert.class).value();
                     itemRevertMethods.put(itemName, method);
                 }
             }
