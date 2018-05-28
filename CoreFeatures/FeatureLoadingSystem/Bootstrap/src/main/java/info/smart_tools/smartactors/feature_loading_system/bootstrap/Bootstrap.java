@@ -50,7 +50,6 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
     public List<IBootstrapItem<String>> start()
             throws ProcessExecutionException {
         try {
-            /* --- */ Thread.sleep(5000);
             TopologicalSort ts = new TopologicalSort(itemStorage);
             List<IBootstrapItem<String>> orderedItems = ts.getOrderedList(false);
             List<IBootstrapItem<String>> doneItems = new ArrayList<>(orderedItems.size());
@@ -59,9 +58,9 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                 try {
                     item.executeProcess();
                     doneItems.add(item);
-                    /*---*/System.out.println("[INFO] Initial load DONE: plugin \"" + item.getItemName() + "\".");
+                    System.out.println("[OK] Initial load of plugin \"" + item.getItemName() + "\" done.");
                 } catch (Throwable ex) {
-                    System.out.println("[WARNING] Initial load FAILED: plugin \"" + item.getItemName() + "\".");
+                    System.out.println("[WARNING] Initial load of plugin \"" + item.getItemName() + "\" failed.");
                     item.executeRevertProcess();
                     failedItems.add(item);
                 }
@@ -78,9 +77,9 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                         item.executeProcess();
                         doneItems.add(item);
                         retryDoneItems.add(item);
-                        System.out.println("[INFO] Load retry DONE: plugin \""+item.getItemName()+"\".");
+                        System.out.println("[OK] Load retry of plugin \""+item.getItemName()+"\" done.");
                     } catch (Throwable ex) {
-                        System.out.println("[INFO] Load retry FAILED: plugin \""+item.getItemName()+"\".");
+                        System.out.println("[INFO] Load retry of plugin \""+item.getItemName()+"\" failed.");
                         item.executeRevertProcess();
                     }
                 }

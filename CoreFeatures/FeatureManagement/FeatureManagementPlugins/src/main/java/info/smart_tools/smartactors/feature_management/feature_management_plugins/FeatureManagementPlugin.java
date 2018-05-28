@@ -13,12 +13,15 @@ import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_ja
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_management.after_features_callback_storage.AfterFeaturesCallbackStorage;
 import info.smart_tools.smartactors.feature_management.all_in_direcory_feature_tracker.AllInDirectoryFeatureTracker;
+import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
+import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;
 import info.smart_tools.smartactors.feature_management.download_feature_actor.DownloadFeatureActor;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.FeatureManagerActor;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.LoadFeatureActor;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.UnzipFeatureActor;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -136,5 +139,89 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                     }
                 })
         );
+    }
+
+    @ItemRevert("feature_management")
+    public void deregister()
+            throws ResolutionException, RegistrationException, InvalidArgumentException, ChainNotFoundException, ChangeValueException {
+
+        try {
+            IOC.remove(Keys.getOrAdd("FeatureCreatorActor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"FeatureCreatorActor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            RuntimeDirectoryFeatureTracker runtimeDirectoryFeatureTracker = IOC.resolve(Keys.getOrAdd("DirectoryWatcherActor"));
+            runtimeDirectoryFeatureTracker.stopService(null);
+        } catch(Throwable e) {
+            System.out.println("[WARNING] \"DirectoryWatcherActor\" stopping has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("DirectoryWatcherActor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"DirectoryWatcherActor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("AllInDirectoryFeatureTracker"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"AllInDirectoryFeatureTracker\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("LoadFeatureActor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"LoadFeatureActor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("UnzipFeatureActor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"UnzipFeatureActor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("DownloadFeatureActor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"DownloadFeatureActor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("feature group load completion task queue"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"feature group load...\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("FeatureManager"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"FeatureManager\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("feature-repositories"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"feature-repositories\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("plugin loader"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"plugin loader\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("plugin loader visitor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"plugin loader visitor\" has failed while reverting \"feature_management\" plugin.");
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("plugin creator"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"plugin creator\" has failed while reverting \"feature_management\" plugin.");
+        }
     }
 }

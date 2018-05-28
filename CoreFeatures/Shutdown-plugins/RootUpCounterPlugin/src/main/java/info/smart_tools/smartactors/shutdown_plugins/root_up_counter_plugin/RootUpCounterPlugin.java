@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.base.up_counter.UpCounter;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,6 +41,20 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     }
 
     /**
+     * Reverts root upcounter registrations.
+     *
+     */
+    @ItemRevert("root_upcounter")
+    public void deregisterRootUpcounter() {
+        try {
+            IOC.remove(Keys.getOrAdd("root upcounter"));
+        } catch (DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"root upcounter\" has failed while reverting \"root upcounter\" plugin.");
+        } catch (ResolutionException e) {
+        }
+    }
+
+    /**
      * Registers strategy for creation of new upcounters. Strategy takes one optional argument - the parent upcounter. By default the root
      * upcounter is used as parent.
      *
@@ -62,6 +77,20 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                 throw new FunctionExecutionException(e);
             }
         }));
+    }
+
+    /**
+     * Reverts strategy for creation of new upcounters registration.
+     *
+     */
+    @ItemRevert("new_upcounter_creation_strategy")
+    public void deregisterNewUpcounterCreationStrategy() {
+        try {
+            IOC.remove(Keys.getOrAdd("new upcounter"));
+        } catch (DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"new upcounter\" has failed while reverting \"new_upcounter_creation_strategy\" plugin.");
+        } catch (ResolutionException e) {
+        }
     }
 
     /**
