@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -71,6 +72,14 @@ public class IFieldNamePlugin implements IPlugin {
                             throw new ActionExecuteException("IFieldName plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
                             throw new ActionExecuteException("IFieldName plugin can't load: can't register new strategy", e);
+                        }
+                    })
+                    .revertProcess(() -> {
+                        try {
+                            IOC.remove(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"));
+                        } catch (DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \"info.smart_tools.smartactors.iobject.ifield_name.IFieldName\" has failed while reverting \"IFieldNamePlugin\" plugin.");
+                        } catch (ResolutionException e) {
                         }
                     });
             bootstrap.add(item);

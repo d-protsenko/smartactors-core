@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -173,5 +174,29 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                         "set address from name"
                 ))
         );
+    }
+
+    @ItemRevert("basic_object_kinds")
+    public void deregisterKinds() {
+        try {
+            IOC.remove(Keys.getOrAdd("object kind filter sequence#raw"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#raw\" has failed while reverting \"basic_object_kinds\" plugin.");
+        } catch (ResolutionException e) {
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("object kind filter sequence#stateless_actor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#stateless_actor\" has failed while reverting \"basic_object_kinds\" plugin.");
+        } catch (ResolutionException e) {
+        }
+
+        try {
+            IOC.remove(Keys.getOrAdd("object kind filter sequence#actor"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#actor\" has failed while reverting \"basic_object_kinds\" plugin.");
+        } catch (ResolutionException e) {
+        }
     }
 }

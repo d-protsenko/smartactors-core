@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.Bootst
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -58,7 +59,17 @@ public class InitializeReceiverGenerator implements IPlugin {
                                     throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't register new strategy", e);
                                 }
                             }
-                        );
+                        )
+                    .revertProcess(
+                            () -> {
+                                try {
+                                    IOC.remove(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
+                                } catch(DeletionException e) {
+                                    System.out.println("[WARNING] Deregitration of ReceiverGenerator canonical name has failed while reverting \"InitializeReceiverGenerator\" plugin.");
+                                } catch (ResolutionException e) {
+                                }
+                            }
+                    );
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'ReceiverGenerator plugin'", e);

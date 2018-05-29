@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -50,6 +51,15 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("global_router_registration_receiver_object_listener")
+    public void deregisterRouterListener() {
+        try {
+            IOC.remove(Keys.getOrAdd("global router registration receiver object listener"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"global router registration receiver object listener\" has failed while reverting \"global_router_registration_receiver_object_listener\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("full_object_creator_resolution_strategy")
     @After({
             "IOC",
@@ -63,6 +73,15 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
                 Keys.getOrAdd("full receiver object creator"),
                 new FullObjectCreatorResolutionStrategy()
         );
+    }
+
+    @ItemRevert("full_object_creator_resolution_strategy")
+    public void deregisterFullCreatorStrategy() {
+        try {
+            IOC.remove(Keys.getOrAdd("full receiver object creator"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"full receiver object creator\" has failed while reverting \"full_object_creator_resolution_strategy\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     @Item("basic_receiver_strategies")
@@ -100,6 +119,33 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
                     }
                 })
         );
+    }
+
+    @ItemRevert("basic_receiver_strategies")
+    public void deregisterBasicReceiver() {
+        try {
+            IOC.remove(Keys.getOrAdd("actor_receiver_queue"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"actor_receiver_queue\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("actor_receiver_busyness_flag"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"actor_receiver_busyness_flag\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("create actor synchronization receiver"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"create actor synchronization receiver\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("create handler router receiver"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"create handler router receiver\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     @Item("wrapper_resolution_strategies_for_invokers")
@@ -158,6 +204,27 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("wrapper_resolution_strategies_for_invokers")
+    public void deregisterWrapperResolutionStrategies() {
+        try {
+            IOC.remove(Keys.getOrAdd("default wrapper resolution strategy dependency for invoker receiver"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"default wrapper resolution strategy dependency for invoker receiver\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("new instance wrapper resolution strategy"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"new instance wrapper resolution strategy\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("singleton wrapper resolution strategy"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"singleton wrapper resolution strategy\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("invoker_receiver_creation_strategy")
     @After({
         "wrapper_resolution_strategies_for_invokers",
@@ -175,8 +242,20 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("invoker_receiver_creation_strategy")
+    public void deregisterInvokerCreationStrategy() {
+        try {
+            IOC.remove(Keys.getOrAdd("method invoker receiver"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"method invoker receiver\" has failed while reverting \"invoker_receiver_creation_strategy\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("object_creation_strategies:done")
     public void creationStrategiesDone() {
+    }
 
+    @ItemRevert("object_creation_strategies:done")
+    public void destructionStrategiesDone() {
     }
 }
