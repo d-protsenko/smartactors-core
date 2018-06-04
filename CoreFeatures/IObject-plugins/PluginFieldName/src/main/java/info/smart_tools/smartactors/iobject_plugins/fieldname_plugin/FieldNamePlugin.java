@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -93,6 +94,24 @@ public class FieldNamePlugin implements IPlugin {
                         } catch (RegistrationException e) {
                             throw new ActionExecuteException("FieldName plugin can't load: can't register new strategy");
                         }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "FieldNamePlugin";
+                        String keyName = "";
+
+                        try {
+                            keyName = FieldName.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+                        try {
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

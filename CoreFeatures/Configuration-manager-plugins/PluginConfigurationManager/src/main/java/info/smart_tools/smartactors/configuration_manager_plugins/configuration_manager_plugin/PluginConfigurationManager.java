@@ -52,12 +52,15 @@ public class PluginConfigurationManager implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
+                        String itemName = "configuration_manager";
+                        String keyName = "";
+
                         try {
-                            IOC.remove(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-                        } catch (DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of canonical config manager name has failed while reverting \"configuration_manager\" plugin.");
-                        } catch (ResolutionException e) {
-                        }
+                            keyName = IConfigurationManager.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(configurationManagerItem);

@@ -17,6 +17,7 @@ import info.smart_tools.smartactors.message_processing.handler_routing_receiver.
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.FullObjectCreatorResolutionStrategy;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.MethodInvokerReceiverResolutionStrategy;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.RouterRegistrationObjectListener;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -123,28 +124,35 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
     @ItemRevert("basic_receiver_strategies")
     public void deregisterBasicReceiver() {
+        String itemName = "basic_receiver_strategies";
+        String keyName = "";
+
         try {
-            IOC.remove(Keys.getOrAdd("actor_receiver_queue"));
+            keyName = "actor_receiver_queue";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"actor_receiver_queue\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("actor_receiver_busyness_flag"));
+            keyName = "actor_receiver_busyness_flag";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"actor_receiver_busyness_flag\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("create actor synchronization receiver"));
+            keyName = "create actor synchronization receiver";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"create actor synchronization receiver\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("create handler router receiver"));
+            keyName = "create handler router receiver";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"create handler router receiver\" has failed while reverting \"basic_receiver_strategies\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 
@@ -206,22 +214,28 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
     @ItemRevert("wrapper_resolution_strategies_for_invokers")
     public void deregisterWrapperResolutionStrategies() {
+        String itemName = "wrapper_resolution_strategies_for_invokers";
+        String keyName = "";
+
         try {
-            IOC.remove(Keys.getOrAdd("default wrapper resolution strategy dependency for invoker receiver"));
+            keyName = "singleton wrapper resolution strategy";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"default wrapper resolution strategy dependency for invoker receiver\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("new instance wrapper resolution strategy"));
+            keyName = "new instance wrapper resolution strategy";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"new instance wrapper resolution strategy\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("singleton wrapper resolution strategy"));
+            keyName = "default wrapper resolution strategy dependency for invoker receiver";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"singleton wrapper resolution strategy\" has failed while reverting \"wrapper_resolution_strategies_for_invokers\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 
@@ -244,10 +258,14 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
     @ItemRevert("invoker_receiver_creation_strategy")
     public void deregisterInvokerCreationStrategy() {
+        String itemName = "invoker_receiver_creation_strategy";
+        String keyName = "";
+
         try {
-            IOC.remove(Keys.getOrAdd("method invoker receiver"));
+            keyName = "method invoker receiver";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"method invoker receiver\" has failed while reverting \"invoker_receiver_creation_strategy\" plugin.");
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 

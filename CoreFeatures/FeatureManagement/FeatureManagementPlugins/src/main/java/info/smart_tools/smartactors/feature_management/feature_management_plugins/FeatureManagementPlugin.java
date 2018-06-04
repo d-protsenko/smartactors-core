@@ -143,95 +143,92 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
 
     @ItemRevert("feature_management")
     public void deregister() {
-        try {
-            IOC.remove(Keys.getOrAdd("FeatureCreatorActor"));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"FeatureCreatorActor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+        String itemName = "feature_management";
+        String keyName = "";
 
         try {
-            RuntimeDirectoryFeatureTracker runtimeDirectoryFeatureTracker = IOC.resolve(Keys.getOrAdd("DirectoryWatcherActor"));
+            keyName = "FeatureCreatorActor";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            keyName = "DirectoryWatcherActor";
+            RuntimeDirectoryFeatureTracker runtimeDirectoryFeatureTracker = IOC.resolve(Keys.getOrAdd(keyName));
             runtimeDirectoryFeatureTracker.stopService(null);
         } catch(Throwable e) {
-            System.out.println("[WARNING] \"DirectoryWatcherActor\" stopping has failed while reverting \"feature_management\" plugin.");
+            System.out.println("[WARNING] \""+keyName+"\" stopping has failed while reverting \""+itemName+"\" plugin.");
         }
 
         try {
-            IOC.remove(Keys.getOrAdd("DirectoryWatcherActor"));
+            keyName = "DirectoryWatcherActor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"DirectoryWatcherActor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("AllInDirectoryFeatureTracker"));
+            keyName = "LoadFeatureActor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"AllInDirectoryFeatureTracker\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("LoadFeatureActor"));
+            keyName = "UnzipFeatureActor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"LoadFeatureActor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("UnzipFeatureActor"));
+            keyName = "DownloadFeatureActor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"UnzipFeatureActor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("DownloadFeatureActor"));
+            keyName = "feature group load completion task queue";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"DownloadFeatureActor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("feature group load completion task queue"));
+            keyName = "FeatureManager";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"feature group load...\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("FeatureManager"));
+            keyName = "feature-repositories";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"FeatureManager\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("feature-repositories"));
+            keyName = "plugin loader";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"feature-repositories\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("plugin loader"));
+            keyName = "plugin loader visitor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"plugin loader\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("plugin loader visitor"));
+            keyName = "plugin creator";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"plugin loader visitor\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
-
-        try {
-            IOC.remove(Keys.getOrAdd("plugin creator"));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"plugin creator\" has failed while reverting \"feature_management\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

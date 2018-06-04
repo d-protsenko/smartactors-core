@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -75,6 +76,40 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         }
     }
 
+    private void deregisterCreatorType(final String typeName, final String itemName) {
+        try {
+            deregisterCreatorType(typeName, itemName, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        } catch(ResolutionException e) { }
+    }
+
+    private void deregisterCreatorType(final String typeName, final String itemName, final IObject namedFilterConfig) {
+        String keyName;
+
+        keyName = "filter creator#" + typeName;
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        if (null != namedFilterConfig) {
+            keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+            try {
+                namedFilterConfig.deleteField(IOC.resolve(Keys.getOrAdd(keyName), "dependency"));
+            } catch(InvalidArgumentException | DeleteValueException e) {
+                System.out.println("[WARNING] Field \""+keyName+"\" deletion has failed while reverting \""+itemName+"\" plugin.");
+            } catch (ResolutionException e) { }
+
+
+            keyName = "named filter config#" + typeName;
+            try {
+                IOC.remove(Keys.getOrAdd(keyName));
+            } catch(DeletionException e) {
+                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            } catch (ResolutionException e) { }
+        }
+    }
+
     @Item("basic_object_creators")
     @After({
             "basic_receiver_strategies",            // for HandlerRouterReceiverCreator and PerReceiverActorSynchronizationReceiverCreator
@@ -136,6 +171,33 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("basic_object_creators")
+    public void deregisterCreators() {
+        String itemName = "basic_object_creators";
+        String keyName;
+
+        keyName = "named filter config#non-thread-safe wrapper creator";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "named filter config#thread-safe wrapper creator";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        deregisterCreatorType("decorate receiver", itemName,null);
+        deregisterCreatorType("set address from name", itemName);
+        deregisterCreatorType("per-receiver actor sync", itemName);
+        deregisterCreatorType("handler router receiver", itemName);
+        deregisterCreatorType("method invokers", itemName);
+        deregisterCreatorType("top-level object", itemName);
+    }
+
     @Item("basic_object_kinds")
     @After({
         "IOC",
@@ -178,25 +240,28 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     @ItemRevert("basic_object_kinds")
     public void deregisterKinds() {
-        try {
-            IOC.remove(Keys.getOrAdd("object kind filter sequence#raw"));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#raw\" has failed while reverting \"basic_object_kinds\" plugin.");
-        } catch (ResolutionException e) {
-        }
+        String itemName = "basic_object_kinds";
+        String keyName = "";
 
         try {
-            IOC.remove(Keys.getOrAdd("object kind filter sequence#stateless_actor"));
+            keyName = "object kind filter sequence#raw";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#stateless_actor\" has failed while reverting \"basic_object_kinds\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getOrAdd("object kind filter sequence#actor"));
+            keyName = "object kind filter sequence#stateless_actor";
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"object kind filter sequence#actor\" has failed while reverting \"basic_object_kinds\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            keyName = "object kind filter sequence#actor";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

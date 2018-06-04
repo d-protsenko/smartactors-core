@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.Boot
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,6 +41,21 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
                 // TODO:: Use some concurrent map with weak keys; ConcurrentHashMap will cause memory leak when chain containing non-actor \
                 // receiver with wrapper configuration is deleted
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentHashMap()));
+    }
+
+    @ItemRevert("wrapper_creator_receiver_decorator_map_strategies")
+    public void deregisterMapStrategies() {
+        try {
+            IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator non thread safe map"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"wrapper creator receiver decorator non thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator thread safe map"));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \"wrapper creator receiver decorator thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     @Item("wrapper_creator_receiver_decorator_wrapper_resolution_strategies")
@@ -100,6 +116,26 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("wrapper_creator_receiver_decorator_wrapper_resolution_strategies")
+    public void deregisterWrapperCreationStrategies() {
+        String itemName = "wrapper_creator_receiver_decorator_wrapper_resolution_strategies";
+        String keyName;
+
+        keyName = "thread safe environment wrapper creation strategy";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "non thread safe environment wrapper creation strategy";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("wrapper_creator_receiver_decorator")
     @After({
         "wrapper_creator_receiver_decorator_map_strategies",
@@ -120,6 +156,26 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
                         "wrapper creator receiver decorator non thread safe map",
                         "non thread safe environment wrapper creation strategy"
                 ));
+    }
+
+    @ItemRevert("wrapper_creator_receiver_decorator")
+    public void deregisterDecoratorCreationStrategy() {
+        String itemName = "wrapper_creator_receiver_decorator";
+        String keyName;
+
+        keyName = "thread safe wrapper creator receiver decorator";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "non thread safe wrapper creator receiver decorator";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     private static IResolveDependencyStrategy wrapperCreatorDecoratorStrategy(

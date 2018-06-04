@@ -62,12 +62,15 @@ public class InitializeReceiverGenerator implements IPlugin {
                         )
                     .revertProcess(
                             () -> {
+                                String itemName = "InitializeReceiverGenerator";
+                                String keyName = "";
+
                                 try {
-                                    IOC.remove(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
+                                    keyName = IReceiverGenerator.class.getCanonicalName();
+                                    IOC.remove(Keys.getOrAdd(keyName));
                                 } catch(DeletionException e) {
-                                    System.out.println("[WARNING] Deregitration of ReceiverGenerator canonical name has failed while reverting \"InitializeReceiverGenerator\" plugin.");
-                                } catch (ResolutionException e) {
-                                }
+                                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                } catch (ResolutionException e) { }
                             }
                     );
             this.bootstrap.add(item);

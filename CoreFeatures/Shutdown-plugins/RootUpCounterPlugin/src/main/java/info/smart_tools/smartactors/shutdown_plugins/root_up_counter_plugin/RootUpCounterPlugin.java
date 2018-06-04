@@ -46,12 +46,15 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("root_upcounter")
     public void deregisterRootUpcounter() {
+        String itemName = "root_upcounter";
+        String keyName = "";
+
         try {
-            IOC.remove(Keys.getOrAdd("root upcounter"));
-        } catch (DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"root upcounter\" has failed while reverting \"root upcounter\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            keyName = "root upcounter";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     /**
@@ -85,12 +88,15 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("new_upcounter_creation_strategy")
     public void deregisterNewUpcounterCreationStrategy() {
+        String itemName = "new_upcounter_creation_strategy";
+        String keyName;
+
+        keyName = "new upcounter";
         try {
-            IOC.remove(Keys.getOrAdd("new upcounter"));
-        } catch (DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"new upcounter\" has failed while reverting \"new_upcounter_creation_strategy\" plugin.");
-        } catch (ResolutionException e) {
-        }
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     /**

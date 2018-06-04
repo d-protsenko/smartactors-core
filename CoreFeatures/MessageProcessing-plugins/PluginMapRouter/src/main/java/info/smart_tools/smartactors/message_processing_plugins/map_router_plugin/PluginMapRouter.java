@@ -54,12 +54,15 @@ public class PluginMapRouter implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
+                        String itemName = "router";
+                        String keyName = "";
+
                         try {
-                            IOC.remove(Keys.getOrAdd(IRouter.class.getCanonicalName()));
-                        } catch (DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of canonical router name has failed while reverting \"router\" plugin.");
-                        } catch (ResolutionException e) {
-                        }
+                            keyName = IRouter.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(routerItem);

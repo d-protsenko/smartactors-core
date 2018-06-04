@@ -12,6 +12,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -495,7 +497,34 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                             e);
                                 }
                             }
-                        );
+                        )
+                    .revertProcess(
+                            () -> {
+                                String itemName = "ConfigurationObject";
+                                String keyName = "";
+
+                                try {
+                                    keyName = "expandable_strategy#resolve key for configuration object";
+                                    IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), "expandable_strategy#resolve key for configuration object"));
+                                } catch(DeletionException e) {
+                                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                } catch (ResolutionException e) { }
+
+                                try {
+                                    keyName = "resolve key for configuration object";
+                                    IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object"));
+                                } catch(DeletionException e) {
+                                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                } catch (ResolutionException e) { }
+
+                                try {
+                                    keyName = "configuration object";
+                                    IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"));
+                                } catch(DeletionException e) {
+                                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                } catch (ResolutionException e) { }
+                            }
+                    );
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'ConfigurationObject plugin'", e);
