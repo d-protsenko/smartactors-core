@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.message_processing_plugins.chain_choice_strategy_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -43,34 +46,41 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                     .before("starter")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
-                    .process(
-                            () -> {
+                    .process(() -> {
+                        try {
+                            IChainChoiceStrategy strategy = (a) -> {
                                 try {
-                                    IChainChoiceStrategy strategy = (a) -> {
-                                        try {
-                                            return a.getMessage().getValue(
+                                    return a.getMessage().getValue(
+                                            IOC.resolve(
                                                     IOC.resolve(
-                                                            IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
-                                                                    "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
-                                                            ), "messageMapId"
-                                                    )
-                                            );
-                                        } catch (Exception e) {
-                                            throw new RuntimeException("Could not execute chain choice strategy.");
-                                        }
-                                    };
-
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "chain choice strategy"),
-                                            new SingletonStrategy(strategy));
-                                } catch (Exception e) {
-                                    throw new RuntimeException(
-                                            "Could not create or register chain choice strategy.", e
+                                                            IOC.getKeyForKeyStorage(),
+                                                            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
+                                                    ), "messageMapId"
+                                            )
                                     );
+                                } catch (Exception e) {
+                                    throw new RuntimeException("Could not execute chain choice strategy.");
                                 }
-                            }
-                    );
+                            };
+
+                            IOC.register(
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain choice strategy"),
+                                    new SingletonStrategy(strategy));
+                        } catch (Exception e) {
+                            throw new RuntimeException(
+                                    "Could not create or register chain choice strategy.", e
+                            );
+                        }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "ChainChoiceStrategy";
+                        String keyName = "chain choice strategy";
+                        try {
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'ChainChoiceStrategy plugin'", e);

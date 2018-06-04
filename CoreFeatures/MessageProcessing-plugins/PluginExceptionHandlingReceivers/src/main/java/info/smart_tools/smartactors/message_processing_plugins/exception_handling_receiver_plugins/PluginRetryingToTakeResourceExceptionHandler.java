@@ -39,6 +39,10 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
                 new SingletonStrategy(new RetryingToTakeResourceExceptionHandler()));
     }
 
+    /**
+     * De-register RetryingToTakeResourceExceptionHandler.
+     *
+     */
     @BootstrapPlugin.ItemRevert("PluginRetryingToTakeResourceExceptionHandler")
     public void revertItem() {
         String itemName = "PluginRetryingToTakeResourceExceptionHandler";

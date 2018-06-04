@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.message_processing_plugins.handler_routing_receiver_creator_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.handler_routing_receiver_creator.HandlerRoutingReceiverCreator;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -14,6 +16,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 
 /**
  * Implementation of {@link IPlugin}.
@@ -48,8 +51,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                     .after("InitializeWrapperGenerator")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
-                    .process(
-                            () -> {
+                    .process(() -> {
                                 try {
                                     HandlerRoutingReceiverCreator objectCreator = new HandlerRoutingReceiverCreator();
                                     IOC.register(
@@ -69,7 +71,18 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                                     throw new ActionExecuteException("HandlerRoutingReceiverCreator plugin can't load: constructor error", e);
                                 }
                             }
-                    );
+                    )
+                    .revertProcess(() -> {
+                        String itemName = "HandlerRoutingReceiverCreator";
+                        String keyName = "";
+
+                        try {
+                            keyName = IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'HandlerRoutingReceiver plugin'", e);

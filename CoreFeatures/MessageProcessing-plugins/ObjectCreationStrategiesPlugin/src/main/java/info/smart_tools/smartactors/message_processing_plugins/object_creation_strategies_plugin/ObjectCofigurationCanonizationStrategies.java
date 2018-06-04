@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -107,5 +108,17 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                 throw new FunctionExecutionException(e);
             }
         }));
+    }
+
+    @ItemRevert("object_configuration_canonization_strategies")
+    public void deregisterCanonizationStrategies() {
+        String itemName = "object_configuration_canonization_strategies";
+        String keyName = "canonize objects configuration section item filters list";
+
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

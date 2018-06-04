@@ -71,110 +71,108 @@ public class HttpClientPlugin implements IPlugin {
                     .after("response_content_strategy")
 //                    .after("FieldNamePlugin")
 //                    .before("starter")
-                    .process(
-                            () -> {
-                                try {
-                                    registerFieldNames();
-                                    IOC.register(Keys.getOrAdd(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        try {
-                                                            return new URI((String) args[0]);
-                                                        } catch (URISyntaxException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                    IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
+                    .process(() -> {
+                        try {
+                            registerFieldNames();
+                            IOC.register(Keys.getOrAdd(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                            (args) -> {
+                                                try {
+                                                    return new URI((String) args[0]);
+                                                } catch (URISyntaxException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+                            IMessageMapper<byte[]> messageMapper = new MessageToBytesMapper();
 
-                                    IDeserializeStrategy deserializeStrategy = new HttpResponseDeserializationStrategy(messageMapper);
+                            IDeserializeStrategy deserializeStrategy = new HttpResponseDeserializationStrategy(messageMapper);
 
-                                    IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
-                                                    deserializeStrategy
-                                            )
-                                    );
+                            IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
+                                            deserializeStrategy
+                                    )
+                            );
 
-                                    IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
-                                                    (args) -> new DSObject()
-                                            )
-                                    );
-                                    IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        try {
-                                                            IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
-                                                            IObject request = (IObject) args[0];
-                                                            IResponseHandler responseHandler = new HttpResponseHandler(
-                                                                    (IQueue<ITask>) configuration.getValue(queueFieldName),
-                                                                    (Integer) configuration.getValue(stackDepthFieldName),
-                                                                    request.getValue(startChainNameFieldName),
-                                                                    request,
-                                                                    ScopeProvider.getCurrentScope()
+                            IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                                            (args) -> new DSObject()
+                                    )
+                            );
+                            IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                            (args) -> {
+                                                try {
+                                                    IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
+                                                    IObject request = (IObject) args[0];
+                                                    IResponseHandler responseHandler = new HttpResponseHandler(
+                                                            (IQueue<ITask>) configuration.getValue(queueFieldName),
+                                                            (Integer) configuration.getValue(stackDepthFieldName),
+                                                            request.getValue(startChainNameFieldName),
+                                                            request,
+                                                            ScopeProvider.getCurrentScope()
+                                                    );
+                                                    return responseHandler;
+                                                } catch (ResponseHandlerException | ResolutionException |
+                                                        ReadValueException | InvalidArgumentException |
+                                                        ScopeProviderException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+                            IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
+                            IOC.register(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
+                                            requestMaker
+                                    )
+                            );
+                            IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
+                                    new SingletonStrategy(
+                                            messageMapper
+                                    )
+                            );
+                            IOC.register(Keys.getOrAdd("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    HttpClient client = (HttpClient) args[0];
+                                                    IObject request = (IObject) args[1];
+                                                    client.sendRequest(request);
+                                                    IOC.resolve(
+                                                            Keys.getOrAdd("createTimerOnRequest"),
+                                                            request,
+                                                            request.getValue(exceptionalMessageMapId)
+                                                    );
+                                                    return client;
+                                                } catch (ResolutionException | RequestSenderException | ReadValueException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+
+                            IOC.register(Keys.getOrAdd("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                IObject request = (IObject) args[0];
+                                                try {
+                                                    IResponseHandler responseHandler = IOC.resolve(
+                                                            Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
+                                                            request
+                                                    );
+                                                    HttpClient client =
+                                                            new HttpClient(
+                                                                    URI.create((String) request.getValue(uriFieldName)),
+                                                                    responseHandler
                                                             );
-                                                            return responseHandler;
-                                                        } catch (ResponseHandlerException | ResolutionException |
-                                                                ReadValueException | InvalidArgumentException |
-                                                                ScopeProviderException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                    IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
-                                    IOC.register(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
-                                                    requestMaker
-                                            )
-                                    );
-                                    IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
-                                            new SingletonStrategy(
-                                                    messageMapper
-                                            )
-                                    );
-                                    IOC.register(Keys.getOrAdd("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
-                                                    (args) -> {
-                                                        try {
-                                                            HttpClient client = (HttpClient) args[0];
-                                                            IObject request = (IObject) args[1];
-                                                            client.sendRequest(request);
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd("createTimerOnRequest"),
-                                                                    request,
-                                                                    request.getValue(exceptionalMessageMapId)
-                                                            );
-                                                            return client;
-                                                        } catch (ResolutionException | RequestSenderException | ReadValueException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-
-                                    IOC.register(Keys.getOrAdd("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
-                                                    (args) -> {
-                                                        IObject request = (IObject) args[0];
-                                                        try {
-                                                            IResponseHandler responseHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
-                                                                    request
-                                                            );
-                                                            HttpClient client =
-                                                                    new HttpClient(
-                                                                            URI.create((String) request.getValue(uriFieldName)),
-                                                                            responseHandler
-                                                                    );
-                                                            return client;
-                                                        } catch (ReadValueException | ResolutionException | RequestSenderException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                    HttpClientInitializer.init();
-                                } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
-                                    e.printStackTrace();
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                    );
+                                                    return client;
+                                                } catch (ReadValueException | ResolutionException | RequestSenderException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+                            HttpClientInitializer.init();
+                        } catch (RegistrationException | ResolutionException | InvalidArgumentException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e);
+                        }
+                    });
             bootstrap.add(item);
 
         } catch (Exception e) {

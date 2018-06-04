@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -58,6 +59,15 @@ public class IFieldPlugin implements IPlugin {
                     } catch (RegistrationException e) {
                         throw new ActionExecuteException("IField plugin can't load: can't register new strategy", e);
                     }
+                })
+                .revertProcess(() -> {
+                    String itemName = "IFieldPlugin";
+                    String keyName = IField.class.getCanonicalName();
+                    try {
+                        IOC.remove(Keys.getOrAdd(keyName));
+                    } catch(DeletionException e) {
+                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                    } catch (ResolutionException e) { }
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

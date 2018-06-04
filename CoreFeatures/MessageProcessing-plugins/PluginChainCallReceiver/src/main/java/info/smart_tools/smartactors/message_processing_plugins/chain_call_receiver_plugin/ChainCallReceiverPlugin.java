@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.message_processing_plugins.chain_call_receiver_plugin;
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -48,50 +51,58 @@ public class ChainCallReceiverPlugin implements IPlugin {
                     .after("IFieldNamePlugin")
                     .after("receiver_chains_storage")
                     .after("ChainChoiceStrategy")
-                    .process(
-                            () -> {
-                                try {
-                                    IOC.register(
-                                            IOC.resolve(
-                                                    IOC.getKeyForKeyStorage(),
-                                                    ChainCallReceiver.class.getCanonicalName()
-                                            ),
-                                            new ApplyFunctionToArgumentsStrategy(
-                                                    (args) -> {
-                                                        try {
-                                                            IFieldName fieldName = IOC.resolve(
-                                                                    IOC.resolve(
-                                                                            IOC.getKeyForKeyStorage(),
-                                                                            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
-                                                                    ),
-                                                                    "strategyDependency"
-                                                            );
-                                                            IChainChoiceStrategy strategy = IOC.resolve(
-                                                                    IOC.resolve(
-                                                                            IOC.getKeyForKeyStorage(),
-                                                                            ((IObject) args[0]).getValue(fieldName)
-                                                                    )
-                                                            );
-                                                            IChainStorage storage = IOC.resolve(
-                                                                    IOC.resolve(
-                                                                            IOC.getKeyForKeyStorage(),
-                                                                            IChainStorage.class.getCanonicalName()
-                                                                    )
-                                                            );
-                                                            return new ChainCallReceiver(storage, strategy);
-                                                        } catch (Exception e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                } catch (Exception e) {
-                                    throw new RuntimeException(
-                                            "Could not create or register chain call receiver.", e
-                                    );
-                                }
-                            }
-                    );
+                    .process(() -> {
+                        try {
+                            IOC.register(
+                                    IOC.resolve(
+                                            IOC.getKeyForKeyStorage(),
+                                            ChainCallReceiver.class.getCanonicalName()
+                                    ),
+                                    new ApplyFunctionToArgumentsStrategy(
+                                            (args) -> {
+                                                try {
+                                                    IFieldName fieldName = IOC.resolve(
+                                                            IOC.resolve(
+                                                                    IOC.getKeyForKeyStorage(),
+                                                                    "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
+                                                            ),
+                                                            "strategyDependency"
+                                                    );
+                                                    IChainChoiceStrategy strategy = IOC.resolve(
+                                                            IOC.resolve(
+                                                                    IOC.getKeyForKeyStorage(),
+                                                                    ((IObject) args[0]).getValue(fieldName)
+                                                            )
+                                                    );
+                                                    IChainStorage storage = IOC.resolve(
+                                                            IOC.resolve(
+                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IChainStorage.class.getCanonicalName()
+                                                            )
+                                                    );
+                                                    return new ChainCallReceiver(storage, strategy);
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+                        } catch (Exception e) {
+                            throw new RuntimeException(
+                                    "Could not create or register chain call receiver.", e
+                            );
+                        }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "ChainCallReceiver";
+                        String keyName = ChainCallReceiver.class.getCanonicalName();
+
+                        try {
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'ChainCallReceiver plugin'", e);
