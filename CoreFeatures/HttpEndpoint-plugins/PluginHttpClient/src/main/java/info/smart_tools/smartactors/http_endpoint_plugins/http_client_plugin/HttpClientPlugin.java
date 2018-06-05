@@ -25,6 +25,7 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -172,6 +173,80 @@ public class HttpClientPlugin implements IPlugin {
                             e.printStackTrace();
                             throw new RuntimeException(e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "CreateHttpClient";
+                        String keyName = "";
+
+                        try {
+                            keyName = "cancelTimerOnRequest";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "createTimerOnRequest";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "getHttpClient";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "sendHttpRequest";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = MessageToBytesMapper.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = IRequestMaker.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = IResponseHandler.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "EmptyIObject";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "httpResponseResolver";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = URI.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
             bootstrap.add(item);
 
