@@ -95,6 +95,36 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        // ToDo: write corresponding revert code
+        /*try {
+            IObject messageBusObject = (IObject) config.getValue(name);
+
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
+            Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
+
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                    IChainStorage.class.getCanonicalName()));
+            String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
+            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+            IReceiverChain chain = chainStorage.resolve(mapId);
+
+            IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));
+
+            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain, finalAction);
+
+            ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
+        } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
+            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
+        } catch (ResolutionException e) {
+            throw new ConfigurationProcessingException("Error occurred resolving \"client\".", e);
+        } catch (ChainNotFoundException e) {
+            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        }*/
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return name;
     }

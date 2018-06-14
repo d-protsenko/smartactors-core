@@ -53,6 +53,16 @@ public class MapRouter implements IRouter {
     }
 
     @Override
+    public void deregister(final Object targetId) {
+        IMessageReceiver receiver = map.remove(targetId);
+
+        if (null == receiver) {
+            System.out.println(MessageFormat.format("Warning: ''{0}'' has no receivers, nothing to delete",
+                    targetId.toString()));
+        }
+    }
+
+    @Override
     public List<Object> enumerate() {
         return new ArrayList<>(map.keySet());
     }

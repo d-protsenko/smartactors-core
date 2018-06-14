@@ -26,4 +26,13 @@ public interface IConfigurationManager {
      * @throws ConfigurationProcessingException if any error occurs processing given configuration
      */
     void applyConfig(final IObject config) throws InvalidArgumentException, ConfigurationProcessingException;
+
+    /**
+     * Revert given configuration object.
+     *
+     * @param config    the initial configuration object
+     * @throws InvalidArgumentException if {@code config} is {@code null}
+     * @throws ConfigurationProcessingException if any error occurs while reverting given configuration
+     */
+    void revertConfig(final IObject config) throws InvalidArgumentException, ConfigurationProcessingException;
 }

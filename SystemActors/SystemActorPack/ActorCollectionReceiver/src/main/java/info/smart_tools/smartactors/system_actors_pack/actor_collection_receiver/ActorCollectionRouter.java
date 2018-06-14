@@ -28,6 +28,11 @@ public class ActorCollectionRouter implements IRouter {
     }
 
     @Override
+    public void deregister(Object targetId) {
+        this.map.remove(targetId);
+    }
+
+    @Override
     public List<Object> enumerate() {
         return new ArrayList<>(storage.keySet());
     }

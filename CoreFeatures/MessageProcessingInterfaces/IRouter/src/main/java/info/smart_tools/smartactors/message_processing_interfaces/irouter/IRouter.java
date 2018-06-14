@@ -27,6 +27,13 @@ public interface IRouter {
     void register(Object targetId, IMessageReceiver receiver);
 
     /**
+     * Remove a {@link IMessageReceiver} with given identifier.
+     *
+     * @param targetId    the target identifier
+     */
+    void deregister(Object targetId);
+
+    /**
      * Enumerate receivers registered in this router.
      *
      * @return list of identifiers of all receivers registered in this router

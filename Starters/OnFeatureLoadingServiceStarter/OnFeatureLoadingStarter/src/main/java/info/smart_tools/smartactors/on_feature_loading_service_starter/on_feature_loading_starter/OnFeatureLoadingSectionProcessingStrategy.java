@@ -118,6 +118,49 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     }
 
     @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        // ToDo: write corresponding revert code
+        /*try {
+            List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                    IChainStorage.class.getCanonicalName()));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
+            Integer stackDepth;
+            try {
+                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+            } catch (ResolutionException e) {
+                stackDepth = 5;
+            }
+
+            for (IObject task : onFeatureLoadingConfig) {
+                String chainName = (String) task.getValue(this.chainFieldName);
+                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+                IReceiverChain chain = chainStorage.resolve(mapId);
+                List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
+                for (IObject message : messages) {
+                    IMessageProcessingSequence processingSequence = IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                            stackDepth,
+                            chain
+                    );
+                    IMessageProcessor messageProcessor = IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                            queue,
+                            processingSequence
+                    );
+                    messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                }
+            }
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException | MessageProcessorProcessException e) {
+            throw new ConfigurationProcessingException("Error occurred executing \"onFeatureLoading\" configuration section.", e);
+        } catch (ChainNotFoundException e) {
+            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        }*/
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return this.sectionNameFieldName;
     }

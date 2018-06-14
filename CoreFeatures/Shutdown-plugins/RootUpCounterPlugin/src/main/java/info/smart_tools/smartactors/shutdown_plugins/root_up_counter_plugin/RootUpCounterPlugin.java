@@ -156,7 +156,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                     System.out.println("Forcing JVM shutdown...");
                     System.exit(1);
                 } catch (InterruptedException ignore) { }
-            });
+            }, "onShutdownCompleteThread");
 
             thread.setDaemon(true);
             thread.start();

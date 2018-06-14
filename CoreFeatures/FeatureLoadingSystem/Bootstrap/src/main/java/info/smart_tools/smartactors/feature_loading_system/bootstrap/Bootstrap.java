@@ -50,7 +50,7 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
     public List<IBootstrapItem<String>> start()
             throws ProcessExecutionException {
         try {
-            /* --- */ Thread.sleep(3000);
+            /* -- this line to remove -- */ Thread.sleep(3000);
             TopologicalSort ts = new TopologicalSort(itemStorage);
             List<IBootstrapItem<String>> orderedItems = ts.getOrderedList(false);
             List<IBootstrapItem<String>> doneItems = new ArrayList<>(orderedItems.size());
@@ -59,9 +59,9 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                 try {
                     item.executeProcess();
                     doneItems.add(item);
-                    System.out.println("[OK] Initial load of plugin \"" + item.getItemName() + "\" done.");
+                    System.out.println("[OK] "+Thread.currentThread().getName()+" Initial load of plugin \"" + item.getItemName() + "\" done.");
                 } catch (Throwable ex) {
-                    System.out.println("[WARNING] Initial load of plugin \"" + item.getItemName() + "\" failed.");
+                    System.out.println("[WARNING] "+Thread.currentThread().getName()+" Initial load of plugin \"" + item.getItemName() + "\" failed.");
                     item.executeRevertProcess();
                     failedItems.add(item);
                 }
@@ -78,9 +78,9 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                         item.executeProcess();
                         doneItems.add(item);
                         retryDoneItems.add(item);
-                        System.out.println("[OK] Load retry of plugin \""+item.getItemName()+"\" done.");
+                        System.out.println("[OK] "+Thread.currentThread().getName()+" Load retry of plugin \""+item.getItemName()+"\" done.");
                     } catch (Throwable ex) {
-                        System.out.println("[INFO] Load retry of plugin \""+item.getItemName()+"\" failed.");
+                        System.out.println("[WARNING] "+Thread.currentThread().getName()+" Load retry of plugin \""+item.getItemName()+"\" failed.");
                         item.executeRevertProcess();
                     }
                 }

@@ -93,6 +93,57 @@ public class TestsSectionStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        // ToDo: check if this block is necessary ?
+        /*try {
+            System.out.println("--------------------------------- Run testing ---------------------------------");
+            IFieldName testNameFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"
+            );
+            List<IObject> tests = (List<IObject>) config.getValue(name);
+            CyclicBarrier barrier = new CyclicBarrier(2);
+            AtomicReference<Throwable> eRef = new AtomicReference<>(null);
+
+            for (IObject testDesc : tests) {
+                System.out.println("Run test '" + testDesc.getValue(testNameFieldName) + "'.");
+                ITestRunner runner = IOC.resolve(
+                        IOC.resolve(
+                                IOC.getKeyForKeyStorage(),
+                                ITestRunner.class.getCanonicalName() + "#" + testDesc.getValue(this.testRunnerName))
+                );
+                runner.runTest(testDesc, err -> {
+                    eRef.set(err);
+                    try {
+                        barrier.await();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (BrokenBarrierException e) {
+                        throw new ActionExecuteException(e);
+                    }
+                });
+                try {
+                    barrier.await();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
+                if (null != eRef.get()) {
+                    throw new ConfigurationProcessingException("Test failed.", eRef.get());
+                } else {
+                    System.out.println("Test '" + testDesc.getValue(testNameFieldName) + "' is successful.");
+                }
+            }
+            System.out.println("--------------------------------- Testing completed ---------------------------------");
+        } catch (ReadValueException | ResolutionException | InvalidArgumentException | BrokenBarrierException | ClassCastException e) {
+            throw new ConfigurationProcessingException(e);
+        } catch (TestExecutionException e) {
+            throw new ConfigurationProcessingException("Could not start test.", e);
+        }*/
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return name;
     }

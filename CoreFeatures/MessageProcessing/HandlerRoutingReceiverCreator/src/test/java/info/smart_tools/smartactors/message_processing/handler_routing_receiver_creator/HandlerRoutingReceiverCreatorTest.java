@@ -105,10 +105,10 @@ public class HandlerRoutingReceiverCreatorTest {
                 });
 
         HandlerRoutingReceiverCreator hrrc = new HandlerRoutingReceiverCreator();
-        IRouter router = new Router();
+        IRouter router = new HandlerInnerRouter();
 
         hrrc.createObject(router, objectSection);
-        assertEquals(((Router) router).map.size(), 1);
+        assertEquals(((HandlerInnerRouter) router).map.size(), 1);
         IMessageReceiver receiver = router.route("actorID");
         assertSame(receiver.getClass(), HandlerRoutingReceiver.class);
         // mock IMessageProcessor, IMessageProcessingSequence, IObject as current sequence

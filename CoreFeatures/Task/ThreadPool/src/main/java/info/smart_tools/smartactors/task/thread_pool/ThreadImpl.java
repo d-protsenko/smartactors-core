@@ -51,15 +51,16 @@ class ThreadImpl {
     /**
      * The constructor.
      *
-     * @param pool    the thread pool that owns this thread
+     * @param pool          the thread pool that owns this thread
+     * @param threadName    the name for thread to create
      */
-    ThreadImpl(final ThreadPool pool) {
+    ThreadImpl(final ThreadPool pool, final String threadName) {
         this.pool = pool;
 
         this.setTaskRef = new AtomicReference<>(null);
         this.lock = new Object();
 
-        this.thread = new Thread(new ThreadRunnable());
+        this.thread = new Thread(new ThreadRunnable(), threadName);
 
         this.thread.start();
     }

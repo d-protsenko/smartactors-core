@@ -84,6 +84,11 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
     }
 
     @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        // ToDo: check if something should be done here
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return sectionNameFieldName;
     }

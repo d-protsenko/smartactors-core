@@ -68,6 +68,24 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        // ToDo: write corresponding revert code
+        /*try {
+            IObject constants = IOC.resolve(Keys.getOrAdd("global constants"));
+            List<IObject> section = (List<IObject>) config.getValue(sectionFieldName);
+
+            for (IObject obj : section) {
+                IFieldName cFName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
+                Object cValue = obj.getValue(constantValueFN);
+
+                constants.setValue(cFName, cValue);
+            }
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
+            throw new ConfigurationProcessingException(e);
+        }*/
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return sectionFieldName;
     }

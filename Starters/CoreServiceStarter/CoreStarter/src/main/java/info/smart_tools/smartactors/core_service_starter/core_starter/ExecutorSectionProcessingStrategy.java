@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -85,6 +86,57 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
                 | UpCounterCallbackExecutionException e) {
             throw new ConfigurationProcessingException(e);
         }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        try {
+            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+            rootUpCounter.onShutdownComplete(() -> {
+                // ToDo: revert back shutdown procedure from rootUpCounter
+            });
+        } catch (ResolutionException | UpCounterCallbackExecutionException e) { }
+
+        try {
+            IThreadPool threadPool = IOC.resolve(Keys.getOrAdd("thread_pool"));
+            threadPool.terminate();
+        } catch (ResolutionException e) { }
+
+        try {
+            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
+            taskDispatcher.stop();
+        } catch (ResolutionException e) { }
+
+        String itemName = "ExecutorSectionProcessingStrategy";
+        String keyName = "";
+
+        try {
+            keyName = "default_stack_depth";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            keyName = "thread_pool";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            keyName = "task_queue";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        try {
+            keyName = "task_dispatcher";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     @Override

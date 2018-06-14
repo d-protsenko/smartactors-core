@@ -123,6 +123,38 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        // ToDo: write corresponding revert code
+        /*try {
+            List<IObject> endpointObjects = (List<IObject>) config.getValue(name);
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                    IChainStorage.class.getCanonicalName()));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            for (IObject endpoint : endpointObjects) {
+                // TODO: 25.07.16 remove stack depth from endpoint config
+                String type = (String) endpoint.getValue(typeFieldName);
+                String startChainName = (String) endpoint.getValue(startChainNameFieldName);
+                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+                IReceiverChain chain = chainStorage.resolve(mapId);
+
+                endpoint.setValue(startChainNameFieldName, chain);
+                endpoint.setValue(queueFieldName, queue);
+                IAsyncService endpointService =
+                        IOC.resolve(Keys.getOrAdd(type + "_endpoint"), endpoint);
+                endpointService.start();
+            }
+        } catch (ReadValueException | InvalidArgumentException e) {
+            throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
+        } catch (ResolutionException e) {
+            throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
+        } catch (ChainNotFoundException e) {
+            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        } catch (ChangeValueException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return name;
     }

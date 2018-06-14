@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by sevenbits on 7/20/16.
  */
-public class Router implements IRouter {
+public class HandlerInnerRouter implements IRouter {
 
     Map<Object, IMessageReceiver> map = new HashMap<>();
 
@@ -26,6 +26,10 @@ public class Router implements IRouter {
         this.map.put(targetId, receiver);
     }
 
+    @Override
+    public void deregister(Object targetId) {
+        this.map.remove(targetId);
+    }
 
     @Override
     public List<Object> enumerate() {

@@ -128,10 +128,10 @@ public class ActorReceiverCreatorTest {
                 .thenReturn(a);
 
         ActorReceiverCreator arc = new ActorReceiverCreator();
-        IRouter router = new Router();
+        IRouter router = new ActorInnerRouter();
 
         arc.createObject(router, objectSection);
-        assertEquals(((Router) router).map.size(), 1);
+        assertEquals(((ActorInnerRouter) router).map.size(), 1);
         IMessageReceiver actorReceiver = router.route("actorID");
         assertSame(actorReceiver.getClass(), ActorReceiver.class);
 

@@ -37,7 +37,7 @@ public class FeatureManager implements IFeatureManager {
                 }
             }
         };
-        new Thread(queueWorker).start();
+        new Thread(queueWorker, "FeatureManagerThread").start();
     }
 
     @Override

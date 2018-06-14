@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -64,6 +65,18 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | RegistrationException e) {
             throw new ConfigurationProcessingException("Error occurred processing checkpoint_failure_action section.", e);
         }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        String itemName = "CheckpointFailureActionSectionStrategy";
+        String keyName = "checkpoint failure action";
+
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" object.");
+        } catch (ResolutionException e) { }
     }
 
     @Override
