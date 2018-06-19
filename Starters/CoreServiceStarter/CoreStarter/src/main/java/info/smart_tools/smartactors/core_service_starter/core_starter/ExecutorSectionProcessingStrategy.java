@@ -1,6 +1,9 @@
 //package info.smart_tools.smartactors.core_service_starter.core_starter;
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -78,7 +81,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
 
             IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-            rootUpCounter.onShutdownComplete(() -> {
+            rootUpCounter.onShutdownComplete(taskDispatcher.toString(), () -> {
                 taskDispatcher.stop();
                 threadPool.terminate();
             });
@@ -90,22 +93,22 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        IPoorAction taskDispatcherShutdown = null;
+
         try {
-            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
-            rootUpCounter.onShutdownComplete(() -> {
-                // ToDo: revert back shutdown procedure from rootUpCounter
-            });
-        } catch (ResolutionException | UpCounterCallbackExecutionException e) { }
+            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
+            try {
+                IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+                taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
+                taskDispatcherShutdown.execute();
+            } catch (ResolutionException | ActionExecuteException e) { }
+        } catch (ResolutionException e) { }
 
         try {
             IThreadPool threadPool = IOC.resolve(Keys.getOrAdd("thread_pool"));
             threadPool.terminate();
         } catch (ResolutionException e) { }
 
-        try {
-            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
-            taskDispatcher.stop();
-        } catch (ResolutionException e) { }
 
         String itemName = "ExecutorSectionProcessingStrategy";
         String keyName = "";

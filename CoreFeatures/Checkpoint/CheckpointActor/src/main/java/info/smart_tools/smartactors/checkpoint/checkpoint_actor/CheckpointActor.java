@@ -108,7 +108,7 @@ public class CheckpointActor {
         feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
 
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             try {
                 service.stop();
             } catch (IllegalServiceStateException ignore) {

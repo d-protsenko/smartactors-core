@@ -149,7 +149,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                             (String) configuration.getValue(endpointNameFieldName),
                                                             upCounter);
 
-                                                    upCounter.onShutdownComplete(endpoint::stop);
+                                                    upCounter.onShutdownComplete(this.toString(), endpoint::stop);
 
                                                     return endpoint;
                                                 } catch (ReadValueException | InvalidArgumentException

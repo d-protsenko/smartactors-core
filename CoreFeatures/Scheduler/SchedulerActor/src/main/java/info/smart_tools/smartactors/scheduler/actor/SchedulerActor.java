@@ -64,7 +64,7 @@ public class SchedulerActor {
         activationAction.execute(service);
 
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             try {
                 service.stop();
             } catch (IllegalServiceStateException ignore) {
@@ -75,7 +75,7 @@ public class SchedulerActor {
         });
         // Execute only entries with "preShutdownExec" flag after shutdown request received
         ISchedulerEntryFilter preShutdownModeFilter = IOC.resolve(Keys.getOrAdd("pre shutdown mode entry filter"));
-        upCounter.onShutdownRequest(mode -> service.getEntryStorage().setFilter(preShutdownModeFilter));
+        upCounter.onShutdownRequest(this.toString(), mode -> service.getEntryStorage().setFilter(preShutdownModeFilter));
     }
 
     /**

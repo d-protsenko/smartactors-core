@@ -66,4 +66,14 @@ public class ChildDeletionCheckerReceiver implements IMessageReceiver {
             throw new MessageReceiveException(e);
         }
     }
+
+    @Override
+    public void dispose() {
+        try {
+            underlyingReceiver.dispose();
+        } catch (Throwable e) {
+            e.addSuppressed(exception);
+            catchCriticalException(e);
+        }
+    }
 }

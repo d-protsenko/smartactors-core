@@ -56,7 +56,9 @@ public class MapRouter implements IRouter {
     public void deregister(final Object targetId) {
         IMessageReceiver receiver = map.remove(targetId);
 
-        if (null == receiver) {
+        if (null != receiver) {
+            receiver.dispose();
+        } else {
             System.out.println(MessageFormat.format("Warning: ''{0}'' has no receivers, nothing to delete",
                     targetId.toString()));
         }

@@ -25,7 +25,11 @@ public class ActorInnerRouter implements IRouter {
 
     @Override
     public void deregister(Object targetId) {
-        this.map.remove(targetId);
+        IMessageReceiver receiver = map.remove(targetId);
+
+        if (null != receiver) {
+            receiver.dispose();
+        }
     }
 
     @Override

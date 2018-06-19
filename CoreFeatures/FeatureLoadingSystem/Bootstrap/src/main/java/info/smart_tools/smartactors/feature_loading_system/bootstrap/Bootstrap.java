@@ -50,7 +50,6 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
     public List<IBootstrapItem<String>> start()
             throws ProcessExecutionException {
         try {
-            /* -- this line to remove -- */ Thread.sleep(3000);
             TopologicalSort ts = new TopologicalSort(itemStorage);
             List<IBootstrapItem<String>> orderedItems = ts.getOrderedList(false);
             List<IBootstrapItem<String>> doneItems = new ArrayList<>(orderedItems.size());

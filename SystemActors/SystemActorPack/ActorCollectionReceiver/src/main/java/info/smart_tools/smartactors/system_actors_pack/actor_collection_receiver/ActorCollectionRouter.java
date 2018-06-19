@@ -29,7 +29,11 @@ public class ActorCollectionRouter implements IRouter {
 
     @Override
     public void deregister(Object targetId) {
-        this.map.remove(targetId);
+        IMessageReceiver receiver = storage.remove(targetId);
+
+        if (null != receiver) {
+            receiver.dispose();
+        }
     }
 
     @Override

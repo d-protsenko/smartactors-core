@@ -131,4 +131,8 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
             throw new MessageReceiveException(e);
         }
     }
+
+    @Override
+    public void dispose() {
+    }
 }

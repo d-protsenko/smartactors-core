@@ -52,4 +52,16 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
             throw new MessageReceiveException("Error reading handler name.");
         }
     }
+
+    @Override
+    public void dispose() {
+        for (IMessageReceiver receiver : handlerReceiversMap.values()) {
+            try {
+                receiver.dispose();
+            } catch (Throwable e) {
+                e.addSuppressed(e);
+                e.printStackTrace();
+            }
+        }
+    }
 }

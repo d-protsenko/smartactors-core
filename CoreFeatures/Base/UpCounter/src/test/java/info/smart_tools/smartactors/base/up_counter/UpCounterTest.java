@@ -106,12 +106,12 @@ public class UpCounterTest {
         doThrow(ActionExecuteException.class).when(scCb1).execute();
         doThrow(ActionExecuteException.class).when(scCb3).execute();
 
-        counter.onShutdownRequest(srCb1);
-        counter.onShutdownRequest(srCb2);
-        counter.onShutdownRequest(srCb3);
-        counter.onShutdownComplete(scCb1);
-        counter.onShutdownComplete(scCb2);
-        counter.onShutdownComplete(scCb3);
+        counter.onShutdownRequest(this.toString(),srCb1);
+        counter.onShutdownRequest(this.toString(),srCb2);
+        counter.onShutdownRequest(this.toString(),srCb3);
+        counter.onShutdownComplete(this.toString(),scCb1);
+        counter.onShutdownComplete(this.toString(),scCb2);
+        counter.onShutdownComplete(this.toString(),scCb3);
 
         counter.up();
 
@@ -162,12 +162,12 @@ public class UpCounterTest {
         doThrow(ActionExecuteException.class).when(scCb1).execute();
         doThrow(ActionExecuteException.class).when(scCb3).execute();
 
-        counter.onShutdownRequest(srCb1);
-        counter.onShutdownRequest(srCb2);
-        counter.onShutdownRequest(srCb3);
-        counter.onShutdownComplete(scCb1);
-        counter.onShutdownComplete(scCb2);
-        counter.onShutdownComplete(scCb3);
+        counter.onShutdownRequest(this.toString(),srCb1);
+        counter.onShutdownRequest(this.toString(),srCb2);
+        counter.onShutdownRequest(this.toString(),srCb3);
+        counter.onShutdownComplete(this.toString(),scCb1);
+        counter.onShutdownComplete(this.toString(),scCb2);
+        counter.onShutdownComplete(this.toString(),scCb3);
 
         try {
             parent.shutdown(mode);
@@ -207,7 +207,7 @@ public class UpCounterTest {
 
         doThrow(ActionExecuteException.class).when(scCb).execute();
 
-        counter.onShutdownComplete(scCb);
+        counter.onShutdownComplete(this.toString(),scCb);
 
         try {
             parent.forceShutdown();
@@ -225,7 +225,7 @@ public class UpCounterTest {
         IUpCounter parent = new UpCounter();
         IUpCounter counter = new UpCounter(parent);
 
-        counter.onShutdownComplete(scCb);
+        counter.onShutdownComplete(this.toString(),scCb);
 
         parent.shutdown(new Object());
 

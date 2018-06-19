@@ -234,7 +234,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                         (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                         sslContextProvider, upCounter);
 
-                                upCounter.onShutdownComplete(endpoint::stop);
+                                upCounter.onShutdownComplete(this.toString(), endpoint::stop);
 
                                 return endpoint;
                             } catch (ReadValueException | ScopeProviderException | ResolutionException | InvalidArgumentException

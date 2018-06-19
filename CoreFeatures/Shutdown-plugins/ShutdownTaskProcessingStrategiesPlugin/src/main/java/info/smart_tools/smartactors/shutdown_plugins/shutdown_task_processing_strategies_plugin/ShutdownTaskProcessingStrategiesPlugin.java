@@ -147,7 +147,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
             throws ResolutionException, UpCounterCallbackExecutionException {
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             try {
                 ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
                 ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("task processing strategy for shutdown mode"));

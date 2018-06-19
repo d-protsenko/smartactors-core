@@ -124,7 +124,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .addStringToBody("\tthis.usersObject = object;")
                 .addStringToBody("\tthis.strategy = strategy;");
 
-        // Add method
+        // Add method receive
         cb
                 .addMethod()
                 .setModifier(Modifiers.PUBLIC)
@@ -143,6 +143,13 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .addStringToBody("} catch (Throwable e) {")
                 .addStringToBody("throw new MessageReceiveException(\"Could not execute receiver operation.\", e);")
                 .addStringToBody("}");
+
+        // Add method dispose
+        cb
+                .addMethod()
+                .setModifier(Modifiers.PUBLIC)
+                .setReturnType("void")
+                .setName("dispose");
 
         return (Class<IMessageReceiver>) classGenerator.generate(cb.buildClass().toString());
     }

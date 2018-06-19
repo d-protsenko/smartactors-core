@@ -26,4 +26,16 @@ public class CompositeSensorReceiver implements IMessageReceiver {
             receiver.receive(processor);
         }
     }
+
+    @Override
+    public void dispose() {
+        for (IMessageReceiver receiver : receivers) {
+            try {
+                receiver.dispose();
+            } catch (Throwable e) {
+                e.addSuppressed(e);
+                e.printStackTrace();
+            }
+        }
+    }
 }

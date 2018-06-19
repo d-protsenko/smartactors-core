@@ -395,7 +395,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
 
-        verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
+        verify(upCounterMock).onShutdownRequest(this.toString(), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute(null);
         verify(serviceMock).stop();

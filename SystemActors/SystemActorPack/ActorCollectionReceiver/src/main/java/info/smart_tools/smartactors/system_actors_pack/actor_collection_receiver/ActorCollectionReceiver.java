@@ -163,4 +163,16 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             throw new MessageReceiveException("Could not execute ActorCollectionReceiver.receive.", e);
         }
     }
+
+    @Override
+    public void dispose() {
+        for (IMessageReceiver receiver : childReceivers.values()) {
+            try {
+                receiver.dispose();
+            } catch (Throwable e) {
+                e.addSuppressed(exception);
+                catchCriticalException(e);
+            }
+        }
+    }
 }

@@ -138,16 +138,16 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
             throws ResolutionException, UpCounterCallbackExecutionException {
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);
         });
 
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             System.out.println("Shutting down completely...");
         });
 
         // TODO:: Remove/move to separate feature if multiple instances will be able to run in the same JVM
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             Thread thread = new Thread(() -> {
                 try {
                     Thread.sleep(TERMINATION_TIMEOUT / 2);

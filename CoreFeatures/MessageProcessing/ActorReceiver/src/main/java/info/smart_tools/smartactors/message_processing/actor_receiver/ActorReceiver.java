@@ -121,4 +121,14 @@ public class ActorReceiver implements IMessageReceiver {
         // another one.
         e.printStackTrace();
     }
+
+    @Override
+    public void dispose() {
+        try {
+            childReceiver.dispose();
+        } catch (Throwable e) {
+            e.addSuppressed(e);
+            catchCriticalException(e);
+        }
+    }
 }
