@@ -70,22 +70,6 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         // ToDo: write corresponding revert code
-        /*try {
-            IObject clientObject = (IObject) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
-                    IChainStorage.class.getCanonicalName()));
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            clientObject.setValue(queueFieldName, queue);
-            Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
-            clientObject.setValue(stackDepthFieldName, stackDepth);
-            IOC.register(Keys.getOrAdd("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
-        } catch (ReadValueException | InvalidArgumentException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
-        } catch (ResolutionException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
-        } catch (ChangeValueException | RegistrationException e) {
-            throw new ConfigurationProcessingException("Error occurred registering \"client\".", e);
-        }*/
     }
 
     @Override

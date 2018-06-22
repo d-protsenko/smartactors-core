@@ -83,24 +83,6 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         // ToDo: write corresponding revert code
-        /*try {
-            List<IObject> databaseObject = (List<IObject>) config.getValue(name);
-            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
-            for (IObject collection : databaseObject) {
-                String collectionName = (String) collection.getValue(nameFieldName);
-                dataBase.createCollection(collectionName);
-                List<String> documents = (List<String>) collection.getValue(documentsFieldName);
-                for (String document : documents) {
-                    dataBase.insert(IOC.resolve(Keys.getOrAdd("IObjectByString"), document), collectionName);
-                }
-            }
-        } catch (ReadValueException | InvalidArgumentException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"inMemoryDb\" configuration section.", e);
-        } catch (ResolutionException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"InMemoryDatabase\".", e);
-        } catch (IDatabaseException e) {
-            throw new ConfigurationProcessingException(e);
-        }*/
     }
 
     @Override

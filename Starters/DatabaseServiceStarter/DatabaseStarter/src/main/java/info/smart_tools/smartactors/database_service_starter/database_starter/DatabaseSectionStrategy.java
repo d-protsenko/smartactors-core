@@ -71,18 +71,6 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         // ToDo: write corresponding revert code
-        /*try {
-            //
-            List<IObject> databaseObjects = (List<IObject>) config.getValue(sectionFN);
-            for (IObject databaseObj : databaseObjects) {
-                Object databaseOpts = IOC.resolve(Keys.getOrAdd((String) databaseObj.getValue(typeFN)), databaseObj.getValue(configFN));
-                IOC.register(Keys.getOrAdd((String) databaseObj.getValue(keyFN)), new SingletonStrategy(databaseOpts));
-            }
-        } catch (ReadValueException | InvalidArgumentException | RegistrationException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"database\" configuration section.", e);
-        } catch (ResolutionException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"database\".", e);
-        }*/
     }
 
     @Override

@@ -53,7 +53,8 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
-    public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
+    public void onLoadConfig(final IObject config)
+            throws ConfigurationProcessingException {
         try {
             IObject section = (IObject) config.getValue(name);
             int threadsCount = Integer.valueOf(String.valueOf(section.getValue(threadCountFieldName)));
@@ -92,54 +93,47 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
-    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
-        IPoorAction taskDispatcherShutdown = null;
-
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"Executor\" configuration section.");
         try {
             ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
-            try {
-                IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
-                taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
-                taskDispatcherShutdown.execute();
-            } catch (ResolutionException | ActionExecuteException e) { }
-        } catch (ResolutionException e) { }
-
+            taskDispatcher.stop();
+            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+            IPoorAction taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
+            taskDispatcherShutdown.execute();
+        } catch (ResolutionException | ActionExecuteException e) {
+            exception.addSuppressed(e);
+        }
         try {
             IThreadPool threadPool = IOC.resolve(Keys.getOrAdd("thread_pool"));
             threadPool.terminate();
-        } catch (ResolutionException e) { }
-
-
-        String itemName = "ExecutorSectionProcessingStrategy";
-        String keyName = "";
-
+        } catch (ResolutionException e) {
+            exception.addSuppressed(e);
+        }
         try {
-            keyName = "default_stack_depth";
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
+            IOC.remove(Keys.getOrAdd("default_stack_depth"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
         try {
-            keyName = "thread_pool";
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
+            IOC.remove(Keys.getOrAdd("thread_pool"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
         try {
-            keyName = "task_queue";
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
+            IOC.remove(Keys.getOrAdd("task_queue"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
         try {
-            keyName = "task_dispatcher";
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+            IOC.remove(Keys.getOrAdd("task_dispatcher"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
+        }
     }
 
     @Override

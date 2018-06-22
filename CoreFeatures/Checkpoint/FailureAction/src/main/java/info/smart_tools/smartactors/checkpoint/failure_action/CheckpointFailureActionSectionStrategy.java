@@ -69,13 +69,10 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
-        String itemName = "CheckpointFailureActionSectionStrategy";
-        String keyName = "checkpoint failure action";
-
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.getOrAdd("checkpoint failure action"));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" object.");
+            throw new ConfigurationProcessingException("Error occurred while reverting checkpoint_failure_action section.", e);
         } catch (ResolutionException e) { }
     }
 

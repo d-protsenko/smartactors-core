@@ -76,6 +76,7 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"objects\" configuration section.");
         try {
             IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
             IFieldName objectNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
@@ -86,11 +87,18 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
 
             while (sectionIterator.hasPrevious()) {
                 objDesc = sectionIterator.previous();
-                objectName = objDesc.getValue(objectNameFieldName);
-                router.deregister(objectName);
+                try {
+                    objectName = objDesc.getValue(objectNameFieldName);
+                    router.deregister(objectName);
+                } catch (InvalidArgumentException | ReadValueException e) {
+                    exception.addSuppressed(e);
+                }
             }
         } catch ( ResolutionException | InvalidArgumentException | ReadValueException e) {
-            throw new ConfigurationProcessingException("Error occurred reverting \"objects\" configuration section.", e);
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

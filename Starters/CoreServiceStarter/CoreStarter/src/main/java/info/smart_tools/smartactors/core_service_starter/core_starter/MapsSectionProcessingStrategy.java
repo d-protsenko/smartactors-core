@@ -75,6 +75,7 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config)
             throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"maps\" configuration section.");
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
             ListIterator<IObject> sectionIterator = section.listIterator(section.size());
@@ -83,11 +84,18 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
 
             while (sectionIterator.hasPrevious()) {
                 mapDescription = sectionIterator.previous();
-                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
-                chainStorage.deregister(mapId);
+                try {
+                    Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                    chainStorage.deregister(mapId);
+                } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
             }
         } catch (InvalidArgumentException | ResolutionException | ReadValueException e) {
-            throw new ConfigurationProcessingException("Error occurred reverting \"maps\" section of configuration.", e);
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

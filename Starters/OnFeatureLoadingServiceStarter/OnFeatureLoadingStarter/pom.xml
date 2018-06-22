@@ -97,6 +97,23 @@
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
+            <version>0.3.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
+            <version>0.3.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.field-name</artifactId>
+            <version>0.3.3</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

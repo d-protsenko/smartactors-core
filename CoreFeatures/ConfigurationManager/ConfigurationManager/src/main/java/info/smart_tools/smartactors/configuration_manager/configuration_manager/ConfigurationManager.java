@@ -44,6 +44,19 @@ public class ConfigurationManager implements IConfigurationManager {
     }
 
     @Override
+    public void removeSectionStrategy(final IFieldName sectionName) throws InvalidArgumentException {
+        if (null == sectionName) {
+            throw new InvalidArgumentException("Strategy section name should not be null.");
+        }
+
+        if (!registeredSections.remove(sectionName)) {
+            throw new InvalidArgumentException("Strategy for the section has not been registered.");
+        }
+
+        sectionStrategies.removeIf(strategy -> strategy.getSectionName() == sectionName);
+    }
+
+    @Override
     public void applyConfig(final IObject config)
             throws InvalidArgumentException, ConfigurationProcessingException {
         for (ISectionStrategy sectionStrategy : sectionStrategies) {
@@ -62,6 +75,7 @@ public class ConfigurationManager implements IConfigurationManager {
     @Override
     public void revertConfig(final IObject config)
             throws InvalidArgumentException, ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred while reverting configuration load.");
         ListIterator<ISectionStrategy> sectionStrategyIterator = sectionStrategies.listIterator(sectionStrategies.size());
         ISectionStrategy sectionStrategy;
 
@@ -71,11 +85,16 @@ public class ConfigurationManager implements IConfigurationManager {
                 if (null != config.getValue(sectionStrategy.getSectionName())) {
                     sectionStrategy.onRevertConfig(config);
                 }
+            } catch (ConfigurationProcessingException e) {
+                exception.addSuppressed(e);
             } catch (ReadValueException e) {
-                throw new ConfigurationProcessingException(
+                exception.addSuppressed( new ConfigurationProcessingException(
                         MessageFormat.format("Could not read section ''{0}'' from given configuration object.",
-                                sectionStrategy.getSectionName()), e);
+                                sectionStrategy.getSectionName()), e));
             }
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 }

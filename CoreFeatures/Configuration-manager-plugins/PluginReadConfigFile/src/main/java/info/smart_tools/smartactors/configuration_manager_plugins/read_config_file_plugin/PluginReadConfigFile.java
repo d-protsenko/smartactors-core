@@ -92,7 +92,10 @@ public class PluginReadConfigFile implements IPlugin {
                         } catch (IOException e) {
                             throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't read configuration file", e);
                         } catch (ConfigurationProcessingException e) {
-                            throw new ActionExecuteException("Error occurred processing configuration.", e);
+                            /*  Now suppress all exceptions since we count revert successful
+                                even if not all actions done normally. Before it was:
+                                    throw new ActionExecuteException("Error occurred processing configuration.", e);
+                            */
                         }
                     });
 
