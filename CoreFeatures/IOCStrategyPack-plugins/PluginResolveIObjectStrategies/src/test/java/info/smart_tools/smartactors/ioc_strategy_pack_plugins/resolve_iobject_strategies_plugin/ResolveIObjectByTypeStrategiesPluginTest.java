@@ -26,9 +26,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
 @PrepareForTest({IOC.class, Keys.class, ResolveIObjectByTypeStrategiesPlugin.class})
@@ -56,6 +58,8 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.whenNew(BootstrapItem.class).withArguments("ResolveIObjectByTypeStrategiesPlugin").thenReturn(item);
 
         PowerMockito.when(item.after("IOC")).thenReturn(item);
+        PowerMockito.when(item.process(any())).thenReturn(item);
+        PowerMockito.when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -71,7 +75,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert")).thenReturn(strategyKey);
 
         StrategyStorageWithCacheStrategy strategy = PowerMockito.mock(StrategyStorageWithCacheStrategy.class);
-        PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(Matchers.any(IFunction.class), Matchers.any(IBiFunction.class)).thenReturn(strategy);
+        PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(any(IFunction.class), any(IBiFunction.class)).thenReturn(strategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
@@ -81,8 +85,13 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.verifyStatic();
         IOC.register(eq(strategyKey), eq(strategy));
 
-        Mockito.verify(strategy).register(eq(Map.class), Matchers.any(MapToIObjectResolveDependencyStrategy.class));
-        Mockito.verify(strategy).register(eq(String.class), Matchers.any(StringToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(Map.class), any(MapToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(String.class), any(StringToIObjectResolveDependencyStrategy.class));
+
+        !!!ToDo
+        IBiFunction findValueByArgument = IOC.resolve(strategyKey);
+        Map<Class, IResolveDependencyStrategy> map = new HashMap<Class, IResolveDependencyStrategy>();
+        findValueByArgument.execute(map, map);
     }
 
     @Test(expected = PluginException.class)

@@ -376,6 +376,9 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         when(entryMock[0].getState()).thenReturn(entryState);
 
         actor.feedback(feedbackMessageMock);
+        try {
+            actor.configure(null);
+        } catch (Exception ignore) {}
 
         verify(entryMock[0]).getState();
         verifyNoMoreInteractions(entryMock[0]);
@@ -394,8 +397,9 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         CheckpointActor actor = new CheckpointActor(args);
 
         ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
+        ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
 
-        verify(upCounterMock).onShutdownRequest(this.toString(), callbackCaptor.capture());
+        verify(upCounterMock).onShutdownRequest(keyCaptor.capture(), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute(null);
         verify(serviceMock).stop();

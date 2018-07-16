@@ -6,14 +6,17 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectListener;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.ReceiverObjectCreatorException;
+import info.smart_tools.smartactors.message_processing_plugins.map_router_plugin.PluginMapRouter;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
@@ -21,9 +24,11 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Test for {@link ObjectsSectionProcessingStrategy}
@@ -34,6 +39,8 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     private IObject[] objectConfigMocks;
     private IObject configMock;
     private IResolveDependencyStrategy fullCreatorResolutionStrategy;
+    private IKey fieldNameKey = mock(IKey.class);
+    private IFieldName objectsFieldName;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -42,6 +49,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
         load(PluginIOCKeys.class);
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
+        load(PluginMapRouter.class);
     }
 
     @Override
@@ -92,4 +100,44 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
 
         new ObjectsSectionProcessingStrategy().onLoadConfig(configMock);
     }
+
+    @Test
+    public void Should_disposeObjects()
+            throws Exception {
+        ObjectsSectionProcessingStrategy strategy = new ObjectsSectionProcessingStrategy();
+        strategy.onLoadConfig(configMock);
+
+        for (int i = 0; i < creatorMocks.length; i++) {
+            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
+                    .thenReturn("someObject");
+        }
+        strategy.onRevertConfig(configMock);
+    }
+
+    @Test
+    public void Should_throwExceptions()
+            throws Exception {
+        ObjectsSectionProcessingStrategy strategy = new ObjectsSectionProcessingStrategy();
+        strategy.onLoadConfig(configMock);
+
+        for (int i = 1; i < creatorMocks.length; i++) {
+            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
+                    .thenReturn("someObject");
+        }
+        doThrow(ReadValueException.class).when(objectConfigMocks[0]).getValue(any());
+
+        try {
+            strategy.onRevertConfig(configMock);
+            fail();
+        } catch(ConfigurationProcessingException e) {
+        }
+
+        doThrow(ReadValueException.class).when(configMock).getValue(any());
+        try {
+            strategy.onRevertConfig(configMock);
+        } catch(ConfigurationProcessingException e) {
+            fail();
+        }
+    }
+
 }

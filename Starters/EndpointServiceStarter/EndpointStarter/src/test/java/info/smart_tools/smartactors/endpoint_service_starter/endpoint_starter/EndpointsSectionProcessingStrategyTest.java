@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.C
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
@@ -32,6 +33,8 @@ import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -136,7 +139,7 @@ public class EndpointsSectionProcessingStrategyTest {
     }
 
     @Test
-    public void testLoadingConfig() throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException, ChainNotFoundException {
+    public void testLoadingConfig() throws Exception {
         when(chainStorage.resolve(mapId)).thenReturn(receiverChain);
         DSObject config = new DSObject("\n" +
                 "     {\n" +
@@ -153,5 +156,30 @@ public class EndpointsSectionProcessingStrategyTest {
                 "     }");
         EndpointsSectionProcessingStrategy strategy = new EndpointsSectionProcessingStrategy();
         strategy.onLoadConfig(config);
+        strategy.getSectionName();
+        strategy.onRevertConfig(config);
+
+        IObject configMock1 = mock(IObject.class);
+        IObject configMock2 = mock(IObject.class);
+        IObject configMock3 = mock(IObject.class);
+        IObject configMock4 = mock(IObject.class);
+        when(configMock1.getValue(any())).thenThrow(ReadValueException.class);
+        when(configMock2.getValue(any())).thenThrow(ResolutionException.class);
+        when(configMock3.getValue(any())).thenThrow(ChainNotFoundException.class);
+        when(configMock4.getValue(any())).thenThrow(ChangeValueException.class);
+        try {
+            strategy.onLoadConfig(configMock1);
+            fail();
+        } catch(ConfigurationProcessingException e) {}
+        try {
+            strategy.onLoadConfig(configMock2);
+            fail();
+        } catch(ConfigurationProcessingException e) {}
+        try {
+            strategy.onLoadConfig(configMock3);
+            fail();
+        } catch(ConfigurationProcessingException e) {}
+
+        strategy.onLoadConfig(configMock4);
     }
 }

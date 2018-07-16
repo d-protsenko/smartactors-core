@@ -61,6 +61,7 @@ public class IFieldPluginTest {
 
         when(item.after("IOC")).thenReturn(item);
         when(item.after("IFieldNamePlugin")).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
 
         plugin.load();
 
@@ -101,6 +102,8 @@ public class IFieldPluginTest {
 
         verifyNew(Field.class).withArguments(fieldName);
 
+        verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
+        iPoorActionArgumentCaptor.getValue().execute();
     }
 
     @Test
@@ -111,11 +114,10 @@ public class IFieldPluginTest {
 
         try {
             plugin.load();
+            fail();
         } catch (PluginException e) {
             verifyNew(BootstrapItem.class).withArguments("IFieldPlugin");
-            return;
         }
-        fail();
     }
 
     @Test
@@ -125,6 +127,7 @@ public class IFieldPluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldPlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
 
         plugin.load();
 
@@ -141,14 +144,12 @@ public class IFieldPluginTest {
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
+            fail();
         } catch (ActionExecuteException e) {
 
             verifyStatic();
             Keys.getOrAdd(IField.class.getCanonicalName());
-            return;
         }
-        fail();
-
     }
 
     @Test
@@ -158,6 +159,7 @@ public class IFieldPluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldPlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
 
         plugin.load();
 

@@ -229,6 +229,12 @@
             <version>0.3.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>message-processing-plugins.map-router-plugin</artifactId>
+            <version>0.3.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

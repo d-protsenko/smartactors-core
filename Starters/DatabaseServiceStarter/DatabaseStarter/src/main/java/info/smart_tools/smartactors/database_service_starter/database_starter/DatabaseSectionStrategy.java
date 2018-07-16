@@ -7,12 +7,14 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Strategy processing "database" configuration section.
@@ -70,7 +72,16 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
-        // ToDo: write corresponding revert code
+        try {
+            List<IObject> databaseObjects = (List<IObject>) config.getValue(sectionFN);
+            ListIterator<IObject> sectionIterator = databaseObjects.listIterator(databaseObjects.size());
+            while (sectionIterator.hasPrevious()) {
+                IObject databaseObj = sectionIterator.previous();
+                IOC.remove(Keys.getOrAdd((String) databaseObj.getValue(keyFN)));
+            }
+        } catch (DeletionException | ReadValueException | InvalidArgumentException | ResolutionException e) {
+            throw new ConfigurationProcessingException("Error occurred reverting \"database\" configuration section.", e);
+        }
     }
 
     @Override

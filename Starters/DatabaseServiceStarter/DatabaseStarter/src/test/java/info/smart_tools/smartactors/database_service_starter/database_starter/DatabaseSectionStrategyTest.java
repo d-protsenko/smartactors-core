@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -20,6 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 public class DatabaseSectionStrategyTest {
@@ -68,7 +73,7 @@ public class DatabaseSectionStrategyTest {
     }
 
     @Test
-    public void testLoadingConfig() throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException {
+    public void testLoadingRevertingConfig() throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException {
         DSObject config = new DSObject("\n" +
                 "     {\n" +
                 "         \"database\": [\n" +
@@ -82,5 +87,48 @@ public class DatabaseSectionStrategyTest {
         DatabaseSectionStrategy strategy = new DatabaseSectionStrategy();
         strategy.onLoadConfig(config);
         assertSame(configMock, IOC.resolve(Keys.getOrAdd("databaseKey")));
+        strategy.onRevertConfig(config);
+        try {
+            IOC.resolve(Keys.getOrAdd("databaseKey"));
+            fail();
+        } catch(ResolutionException e) {
+        }
+    }
+
+    @Test
+    public void testExceptionsOnProcessingConfig()
+            throws InvalidArgumentException, ResolutionException, ConfigurationProcessingException, ReadValueException {
+        DSObject config = new DSObject("\n" +
+                "     {\n" +
+                "         \"database\": [\n" +
+                "             {\n" +
+//                "                 \"key\": \"databaseKey\"," +
+//                "                 \"type\": \"TestStrategy\",\n" +
+//                "                 \"config\": {}\n" +
+                "             }\n" +
+                "         ]\n" +
+                "     }");
+        DatabaseSectionStrategy strategy = new DatabaseSectionStrategy();
+
+        strategy.getSectionName();
+
+        try {
+            strategy.onLoadConfig(config);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+        }
+        try {
+            strategy.onRevertConfig(config);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+        }
+
+        IObject configMock1 = mock(IObject.class);
+        doThrow(ReadValueException.class).when(configMock1).getValue(any());
+        try {
+            strategy.onLoadConfig(configMock1);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+        }
     }
 }

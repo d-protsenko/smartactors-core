@@ -17,10 +17,11 @@ import static org.mockito.Mockito.*;
  * Tests for {@link ConfigurationManager}.
  */
 public class ConfigurationManagerTest {
-    @Test(expected = InvalidArgumentException.class)
+    @Test
     public void Should_notAddStrategiesWithDuplicateSectionName()
             throws Exception {
         IFieldName sectionNameMock = mock(IFieldName.class);
+        IFieldName sectionNameMock1 = mock(IFieldName.class);
         ISectionStrategy sectionStrategy1 = mock(ISectionStrategy.class);
         ISectionStrategy sectionStrategy2 = mock(ISectionStrategy.class);
 
@@ -35,7 +36,22 @@ public class ConfigurationManagerTest {
             fail();
         }
 
-        configurationManager.addSectionStrategy(sectionStrategy2);
+        try {
+            configurationManager.addSectionStrategy(sectionStrategy2);
+            fail();
+        } catch (Exception e) { }
+
+        try {
+            configurationManager.removeSectionStrategy(null);
+            fail();
+        } catch (InvalidArgumentException e) { }
+
+        try {
+            configurationManager.removeSectionStrategy(sectionNameMock1);
+            fail();
+        } catch (InvalidArgumentException e) { }
+
+        configurationManager.removeSectionStrategy(sectionNameMock);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -70,24 +86,40 @@ public class ConfigurationManagerTest {
         verify(sectionStrategy2).onLoadConfig(same(configMock));
         verify(sectionStrategy1, times(2)).getSectionName();
         verify(sectionStrategy2, times(2)).getSectionName();
+
         verifyNoMoreInteractions(sectionStrategy1, sectionStrategy2);
+
+        configurationManager.revertConfig(configMock);
     }
 
-    @Test(expected = ConfigurationProcessingException.class)
+    @Test
     public void Should_wrapExceptionWhenCannotReadSectionValue()
             throws Exception {
         IFieldName sectionNameMock1 = mock(IFieldName.class);
+        IFieldName sectionNameMock2 = mock(IFieldName.class);
         ISectionStrategy sectionStrategy1 = mock(ISectionStrategy.class);
+        ISectionStrategy sectionStrategy2 = mock(ISectionStrategy.class);
 
         IObject configMock = mock(IObject.class);
 
         when(sectionStrategy1.getSectionName()).thenReturn(sectionNameMock1);
+        when(sectionStrategy2.getSectionName()).thenReturn(sectionNameMock2);
 
         when(configMock.getValue(sectionNameMock1)).thenThrow(ReadValueException.class);
+        when(configMock.getValue(sectionNameMock2)).thenThrow(ConfigurationProcessingException.class);
 
         IConfigurationManager configurationManager = new ConfigurationManager();
 
         configurationManager.addSectionStrategy(sectionStrategy1);
-        configurationManager.applyConfig(configMock);
+        configurationManager.addSectionStrategy(sectionStrategy2);
+        try {
+            configurationManager.applyConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) { }
+
+        try {
+            configurationManager.revertConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) { }
     }
 }

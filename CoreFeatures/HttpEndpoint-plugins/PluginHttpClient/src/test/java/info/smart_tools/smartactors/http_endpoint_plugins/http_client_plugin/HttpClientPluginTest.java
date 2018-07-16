@@ -111,6 +111,7 @@ public class HttpClientPluginTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
+        item.executeRevertProcess();
         reset(bootstrap);
     }
 

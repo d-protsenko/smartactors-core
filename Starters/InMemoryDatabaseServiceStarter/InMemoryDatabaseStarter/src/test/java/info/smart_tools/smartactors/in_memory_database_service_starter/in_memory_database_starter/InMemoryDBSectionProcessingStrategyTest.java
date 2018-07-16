@@ -88,6 +88,8 @@ public class InMemoryDBSectionProcessingStrategyTest {
         sectionProcessingStrategy.onLoadConfig(config);
         verify(inMemoryDatabase).createCollection("my_collection_name");
         verify(inMemoryDatabase, times(2)).insert(mockObject, "my_collection_name");
+        sectionProcessingStrategy.onRevertConfig(config);
+        sectionProcessingStrategy.getSectionName();
     }
 }
 

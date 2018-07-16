@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -100,6 +101,7 @@ public class MapsSectionProcessingStrategyTest {
     public void Should_wrapExceptionThrownByChainStorage()
             throws Exception {
         doThrow(ChainCreationException.class).when(chainStorageMock).register(chain2id, section.get(1));
+        doThrow(ReadValueException.class).when(chainStorageMock).deregister(chain2id);
 
         try {
             ISectionStrategy strategy = new MapsSectionProcessingStrategy();
@@ -112,13 +114,50 @@ public class MapsSectionProcessingStrategyTest {
 
             verify(chainStorageMock).register(chain1id, section.get(0));
         }
+
+        try {
+            ISectionStrategy strategy = new MapsSectionProcessingStrategy();
+
+            strategy.onRevertConfig(configMock);
+
+            fail();
+        } catch (ConfigurationProcessingException e) {
+            assertSame(ReadValueException.class, e.getSuppressed()[0].getClass());
+
+            verify(chainStorageMock).deregister(chain1id);
+        }
     }
 
-    @Test(expected = ConfigurationProcessingException.class)
+    @Test
     public void Should_wrapExceptionsThrownByIOC()
             throws Exception {
         when(IOC.resolve(chainStorageKey)).thenThrow(ResolutionException.class);
 
-        new MapsSectionProcessingStrategy().onLoadConfig(configMock);
+        try {
+            new MapsSectionProcessingStrategy().onLoadConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+            assertSame(ResolutionException.class, e.getCause().getClass());
+        }
+
+        try {
+            new MapsSectionProcessingStrategy().onRevertConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+            assertSame(ResolutionException.class, e.getSuppressed()[0].getClass());
+        }
+    }
+
+    @Test
+    public void Should_revertMaps()
+            throws Exception {
+        ISectionStrategy strategy = new MapsSectionProcessingStrategy();
+
+        assertSame(mapsFieldName, strategy.getSectionName());
+
+        strategy.onRevertConfig(configMock);
+
+        verify(chainStorageMock).deregister(chain1id);
+        verify(chainStorageMock).deregister(chain2id);
     }
 }
