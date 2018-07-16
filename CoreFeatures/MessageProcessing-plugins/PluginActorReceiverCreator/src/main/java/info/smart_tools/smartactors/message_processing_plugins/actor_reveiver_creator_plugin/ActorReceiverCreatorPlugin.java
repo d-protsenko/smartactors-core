@@ -67,10 +67,7 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
 
                             ActorReceiverCreator objectCreator = new ActorReceiverCreator();
                             IOC.register(
-                                    IOC.resolve(
-                                            IOC.getKeyForKeyStorage(),
-                                            IRoutedObjectCreator.class.getCanonicalName() + "#actor"
-                                    ),
+                                    Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
                                     new SingletonStrategy(objectCreator)
                             );
                         } catch (ResolutionException e) {

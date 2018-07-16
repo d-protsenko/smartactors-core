@@ -55,10 +55,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                                 try {
                                     HandlerRoutingReceiverCreator objectCreator = new HandlerRoutingReceiverCreator();
                                     IOC.register(
-                                            IOC.resolve(
-                                                    IOC.getKeyForKeyStorage(),
-                                                    IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"
-                                            ),
+                                            Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"),
                                             new SingletonStrategy(objectCreator)
                                     );
                                 } catch (ResolutionException e) {
