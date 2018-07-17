@@ -26,7 +26,11 @@ public class PluginStandardObjectCreators implements IPlugin {
      *
      * @param bootstrap    the bootstrap
      */
-    public PluginStandardObjectCreators(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public PluginStandardObjectCreators(final IBootstrap<IBootstrapItem<String>> bootstrap)
+            throws InvalidArgumentException {
+        if (null == bootstrap) {
+            throw new InvalidArgumentException("Incoming argument should not be null.");
+        }
         this.bootstrap = bootstrap;
     }
 

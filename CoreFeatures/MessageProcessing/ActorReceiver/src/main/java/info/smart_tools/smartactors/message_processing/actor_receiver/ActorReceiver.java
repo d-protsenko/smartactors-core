@@ -127,7 +127,6 @@ public class ActorReceiver implements IMessageReceiver {
         try {
             childReceiver.dispose();
         } catch (Throwable e) {
-            e.addSuppressed(e);
             catchCriticalException(e);
         }
     }

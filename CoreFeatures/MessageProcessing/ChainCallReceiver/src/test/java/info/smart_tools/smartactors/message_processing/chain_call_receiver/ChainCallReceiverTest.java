@@ -98,6 +98,8 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         } catch (MessageReceiveException e) {
             assertSame(exceptionMock, e.getCause());
         }
+
+        receiver.dispose();
     }
 
     @Test

@@ -59,7 +59,6 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
             try {
                 receiver.dispose();
             } catch (Throwable e) {
-                e.addSuppressed(e);
                 e.printStackTrace();
             }
         }
