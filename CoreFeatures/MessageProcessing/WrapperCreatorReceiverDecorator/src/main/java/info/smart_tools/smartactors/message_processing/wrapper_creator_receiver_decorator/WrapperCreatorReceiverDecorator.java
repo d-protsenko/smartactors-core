@@ -80,7 +80,6 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
         try {
             underlyingReceiver.dispose();
         } catch (Throwable e) {
-            e.addSuppressed(e);
             e.printStackTrace();
         }
     }

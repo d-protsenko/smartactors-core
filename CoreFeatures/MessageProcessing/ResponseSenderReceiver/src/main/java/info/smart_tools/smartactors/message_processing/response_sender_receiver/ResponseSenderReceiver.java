@@ -38,5 +38,6 @@ public class ResponseSenderReceiver implements IMessageReceiver {
 
     @Override
     public void dispose() {
+        // do nothing
     }
 }

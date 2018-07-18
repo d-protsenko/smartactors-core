@@ -130,5 +130,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         taskCaptor.getValue().execute();
 
         verify(messageBusHandlerMock).handle(same(periods[0].createMessage()), eq("theStatisticsChain__0"));
+
+        r.dispose();
     }
 }

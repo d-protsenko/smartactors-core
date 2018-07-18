@@ -25,7 +25,7 @@ public class MapRouterTest {
     }
 
     @Test
-    public void Should_storeReceivers()
+    public void Should_storeAndRevertReceivers()
             throws Exception {
         Map<Object, IMessageReceiver> map = mock(Map.class);
         Object id = mock(Object.class);
@@ -44,6 +44,13 @@ public class MapRouterTest {
         when(map.get(same(id))).thenReturn(receiver1);
 
         assertSame(receiver1, router.route(id));
+
+        router.deregister(id);
+        verify(map).remove(id);
+
+        when(map.remove(same(id))).thenReturn(receiver1);
+        router.deregister(id);
+        verify(receiver1).dispose();
     }
 
     @Test(expected = RouteNotFoundException.class)
