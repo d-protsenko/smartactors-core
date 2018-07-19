@@ -170,8 +170,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             try {
                 receiver.dispose();
             } catch (Throwable e) {
-                e.addSuppressed(exception);
-                catchCriticalException(e);
+                e.printStackTrace();
             }
         }
     }

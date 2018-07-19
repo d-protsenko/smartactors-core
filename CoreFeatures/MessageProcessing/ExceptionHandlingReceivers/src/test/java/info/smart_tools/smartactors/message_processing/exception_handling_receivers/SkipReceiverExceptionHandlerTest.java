@@ -33,6 +33,8 @@ public class SkipReceiverExceptionHandlerTest extends ExceptionHandlingReceiverT
         receiver.receive(messageProcessorMock);
 
         verify(sequenceMock).goTo(eq(137), eq(124));
+
+        receiver.dispose();
     }
 
     @Test
