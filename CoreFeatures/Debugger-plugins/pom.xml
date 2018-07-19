@@ -9,7 +9,7 @@
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>debugger-plugins</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>DebuggerActorPlugin</module>
@@ -50,9 +50,7 @@
                     <inherited>true</inherited>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <inherited>true</inherited>
                     <version>2.8.2</version>
                     <executions>
                         <execution>
@@ -80,6 +78,7 @@
                             </configuration>
                         </execution>
                     </executions>
+                    <inherited>true</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>

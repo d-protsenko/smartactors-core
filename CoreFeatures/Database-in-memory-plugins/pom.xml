@@ -9,7 +9,7 @@
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>database-in-memory-plugins</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>PluginInMemoryDBTasks</module>

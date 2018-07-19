@@ -9,7 +9,7 @@
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>base</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>IAdditionDependencyStrategy</module>
@@ -39,7 +39,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.0.1</version>
                     <executions>

@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>configuration-manager-plugins</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>configuration-manager-plugins.read-config-file-plugin</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>in-memory-database-service-starter</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>in-memory-database-service-starter-distribution</artifactId>
     <packaging>pom</packaging>

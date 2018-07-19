@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>checkpoint-auto-startup</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
-
     <artifactId>checkpoint-auto-startup.checkpoint-auto-startup-plugin</artifactId>
-    <version>0.3.3</version>
-
+    <version>0.4.0</version>
     <dependencies>
-        <!-- Components of info.smart_tools.smartactors.base -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
@@ -43,8 +40,6 @@
             <artifactId>base.interfaces.iaction</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.feature-loading-system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
@@ -65,15 +60,11 @@
             <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.iobject -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.ioc -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.iioccontainer</artifactId>
@@ -94,7 +85,6 @@
             <artifactId>ioc.ikey</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>scheduler.interfaces</artifactId>
@@ -111,12 +101,10 @@
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>

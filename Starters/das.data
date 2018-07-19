@@ -7,7 +7,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "InMemoryDatabaseStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -17,7 +17,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "in-memory-database-service-starter",
   "rawName" : "InMemoryDatabaseServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "message-bus-service-starter.messagebus-starter",
@@ -26,7 +26,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageBusStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -36,7 +36,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "message-bus-service-starter",
   "rawName" : "MessageBusServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "on-feature-loading-service-starter.on-feature-loading-starter",
@@ -45,7 +45,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "OnFeatureLoadingStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -55,7 +55,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "on-feature-loading-service-starter",
   "rawName" : "OnFeatureLoadingServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "global-constants-service-starter.global-constants-starter",
@@ -64,7 +64,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "GlobalConstansStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -74,7 +74,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "global-constants-service-starter",
   "rawName" : "GlobalConstantsServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "core-service-starter.core-starter",
@@ -83,7 +83,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CoreStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -93,7 +93,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "core-service-starter",
   "rawName" : "CoreServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "endpoint-service-starter.endpoint-starter",
@@ -102,7 +102,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "EndpointStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -112,20 +112,20 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-service-starter",
   "rawName" : "EndpointServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 }, {
   "actors" : [ {
   "artifactId" : "database-starter",
   "uploadRepositories" : [ ],
   "rawName" : "DatabaseStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-service-starter",
   "rawName" : "DatabaseServiceStarter",
-  "version" : "0.3.3"
+  "version" : "0.4.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",

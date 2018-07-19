@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>ioc-strategy-pack</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>ioc-strategy-pack.resolve-by-type-strategy</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -47,15 +47,12 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- java doc -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.strategy-storage-with-cache-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
     <build>
         <pluginManagement>
