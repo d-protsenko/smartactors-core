@@ -76,13 +76,13 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         }
     }
 
-    private void deregisterCreatorType(final String typeName, final String itemName) {
+    private void unregisterCreatorType(final String typeName, final String itemName) {
         try {
-            deregisterCreatorType(typeName, itemName, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+            unregisterCreatorType(typeName, itemName, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
         } catch(ResolutionException e) { }
     }
 
-    private void deregisterCreatorType(final String typeName, final String itemName, final IObject namedFilterConfig) {
+    private void unregisterCreatorType(final String typeName, final String itemName, final IObject namedFilterConfig) {
         String keyName;
 
         keyName = "filter creator#" + typeName;
@@ -172,7 +172,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("basic_object_creators")
-    public void deregisterCreators() {
+    public void unregisterCreators() {
         String itemName = "basic_object_creators";
         String keyName;
 
@@ -190,12 +190,12 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
             System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
-        deregisterCreatorType("decorate receiver", itemName,null);
-        deregisterCreatorType("set address from name", itemName);
-        deregisterCreatorType("per-receiver actor sync", itemName);
-        deregisterCreatorType("handler router receiver", itemName);
-        deregisterCreatorType("method invokers", itemName);
-        deregisterCreatorType("top-level object", itemName);
+        unregisterCreatorType("decorate receiver", itemName,null);
+        unregisterCreatorType("set address from name", itemName);
+        unregisterCreatorType("per-receiver actor sync", itemName);
+        unregisterCreatorType("handler router receiver", itemName);
+        unregisterCreatorType("method invokers", itemName);
+        unregisterCreatorType("top-level object", itemName);
     }
 
     @Item("basic_object_kinds")
@@ -239,7 +239,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("basic_object_kinds")
-    public void deregisterKinds() {
+    public void unregisterKinds() {
         String itemName = "basic_object_kinds";
         String keyName = "";
 

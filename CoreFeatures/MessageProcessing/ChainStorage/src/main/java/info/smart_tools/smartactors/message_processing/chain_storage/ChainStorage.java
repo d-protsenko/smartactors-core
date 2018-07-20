@@ -85,7 +85,7 @@ public class ChainStorage implements IChainStorage {
     }
 
     @Override
-    public void deregister(final Object chainId) {
+    public void unregister(final Object chainId) {
         IChainState oldState;
 
         synchronized (modificationLock) {

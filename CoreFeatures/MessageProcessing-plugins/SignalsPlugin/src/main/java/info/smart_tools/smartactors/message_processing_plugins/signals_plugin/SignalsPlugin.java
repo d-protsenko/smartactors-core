@@ -38,7 +38,7 @@ public class SignalsPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("system_signal_classes")
-    public void deregisterSystemSignals() {
+    public void unregisterSystemSignals() {
         String itemName = "system_signal_classes";
         String keyName = "";
 

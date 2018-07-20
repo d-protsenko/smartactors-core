@@ -101,7 +101,7 @@ public class MapsSectionProcessingStrategyTest {
     public void Should_wrapExceptionThrownByChainStorage()
             throws Exception {
         doThrow(ChainCreationException.class).when(chainStorageMock).register(chain2id, section.get(1));
-        doThrow(ReadValueException.class).when(chainStorageMock).deregister(chain2id);
+        doThrow(ReadValueException.class).when(chainStorageMock).unregister(chain2id);
 
         try {
             ISectionStrategy strategy = new MapsSectionProcessingStrategy();
@@ -124,7 +124,7 @@ public class MapsSectionProcessingStrategyTest {
         } catch (ConfigurationProcessingException e) {
             assertSame(ReadValueException.class, e.getSuppressed()[0].getClass());
 
-            verify(chainStorageMock).deregister(chain1id);
+            verify(chainStorageMock).unregister(chain1id);
         }
     }
 
@@ -157,7 +157,7 @@ public class MapsSectionProcessingStrategyTest {
 
         strategy.onRevertConfig(configMock);
 
-        verify(chainStorageMock).deregister(chain1id);
-        verify(chainStorageMock).deregister(chain2id);
+        verify(chainStorageMock).unregister(chain1id);
+        verify(chainStorageMock).unregister(chain2id);
     }
 }

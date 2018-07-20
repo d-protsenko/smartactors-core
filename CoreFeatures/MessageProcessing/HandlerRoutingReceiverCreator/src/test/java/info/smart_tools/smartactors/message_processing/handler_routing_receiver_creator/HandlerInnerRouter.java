@@ -27,7 +27,7 @@ public class HandlerInnerRouter implements IRouter {
     }
 
     @Override
-    public void deregister(Object targetId) {
+    public void unregister(Object targetId) {
         IMessageReceiver receiver = map.remove(targetId);
 
         if (null != receiver) {

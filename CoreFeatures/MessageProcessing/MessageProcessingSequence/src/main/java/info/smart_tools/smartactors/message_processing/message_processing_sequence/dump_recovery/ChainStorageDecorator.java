@@ -44,7 +44,7 @@ public class ChainStorageDecorator implements IChainStorage {
     }
 
     @Override
-    public void deregister(final Object chainId) {
+    public void unregister(final Object chainId) {
         // Not supported
     }
 

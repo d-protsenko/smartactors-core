@@ -26,7 +26,7 @@ public interface IChainStorage {
      *
      * @param chainId        identifier to store chain with
      */
-    void deregister(Object chainId);
+    void unregister(Object chainId);
 
     /**
      * Modify a chain and store the modified chain with the same identifier.

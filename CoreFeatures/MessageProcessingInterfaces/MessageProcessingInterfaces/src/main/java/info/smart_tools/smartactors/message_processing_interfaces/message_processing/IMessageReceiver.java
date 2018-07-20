@@ -21,7 +21,7 @@ public interface IMessageReceiver {
     /**
      * Dispose the receiver.
      *
-     * This method have to deregister all registrations in IOC done during receiver creation.
+     * This method have to unregister all registrations in IOC done during receiver creation.
      * Passes exception if any error occurs while disposing the receiver.
      */
     void dispose();

@@ -84,7 +84,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("shutdown_task_process_strategies")
-    public void deregisterStrategies() {
+    public void unregisterStrategies() {
         String itemName = "shutdown_task_process_strategies";
         String keyName = "";
 
@@ -159,6 +159,6 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("task_dispatcher_pre_shutdown_mode_callbacks")
-    public void deregisterUpcounterCallbackForTaskDispatcherShutdown() {
+    public void unregisterUpcounterCallbackForTaskDispatcherShutdown() {
     }
 }

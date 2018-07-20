@@ -29,7 +29,7 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("http_response_strategy")
-    public void deregisterHttpResponseStrategy() {
+    public void unregisterHttpResponseStrategy() {
         String itemName = "http_response_strategy";
         String keyName = "endpoint response strategy";
 

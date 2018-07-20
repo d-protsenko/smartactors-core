@@ -45,7 +45,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      *
      */
     @ItemRevert("root_upcounter")
-    public void deregisterRootUpcounter() {
+    public void unregisterRootUpcounter() {
         String itemName = "root_upcounter";
         String keyName = "";
 
@@ -87,7 +87,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      *
      */
     @ItemRevert("new_upcounter_creation_strategy")
-    public void deregisterNewUpcounterCreationStrategy() {
+    public void unregisterNewUpcounterCreationStrategy() {
         String itemName = "new_upcounter_creation_strategy";
         String keyName;
 

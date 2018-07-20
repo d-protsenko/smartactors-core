@@ -44,7 +44,7 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("wrapper_creator_receiver_decorator_map_strategies")
-    public void deregisterMapStrategies() {
+    public void unregisterMapStrategies() {
         try {
             IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator non thread safe map"));
         } catch(DeletionException e) {
@@ -117,7 +117,7 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("wrapper_creator_receiver_decorator_wrapper_resolution_strategies")
-    public void deregisterWrapperCreationStrategies() {
+    public void unregisterWrapperCreationStrategies() {
         String itemName = "wrapper_creator_receiver_decorator_wrapper_resolution_strategies";
         String keyName;
 
@@ -159,7 +159,7 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("wrapper_creator_receiver_decorator")
-    public void deregisterDecoratorCreationStrategy() {
+    public void unregisterDecoratorCreationStrategy() {
         String itemName = "wrapper_creator_receiver_decorator";
         String keyName;
 

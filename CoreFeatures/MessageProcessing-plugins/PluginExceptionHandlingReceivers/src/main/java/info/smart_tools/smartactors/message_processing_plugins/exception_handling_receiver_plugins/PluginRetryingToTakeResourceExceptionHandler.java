@@ -40,7 +40,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
     }
 
     /**
-     * De-register RetryingToTakeResourceExceptionHandler.
+     * Unregisters RetryingToTakeResourceExceptionHandler.
      *
      */
     @BootstrapPlugin.ItemRevert("PluginRetryingToTakeResourceExceptionHandler")

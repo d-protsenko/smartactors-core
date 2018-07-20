@@ -36,6 +36,6 @@ public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("message_processor_shutdown_strategy")
-    public void deregisterMessageProcessorShutdownStrategies() {
+    public void unregisterMessageProcessorShutdownStrategies() {
     }
 }

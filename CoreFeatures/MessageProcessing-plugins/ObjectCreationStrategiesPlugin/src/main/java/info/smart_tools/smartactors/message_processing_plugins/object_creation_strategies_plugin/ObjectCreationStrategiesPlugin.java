@@ -53,7 +53,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("global_router_registration_receiver_object_listener")
-    public void deregisterRouterListener() {
+    public void unregisterRouterListener() {
         try {
             IOC.remove(Keys.getOrAdd("global router registration receiver object listener"));
         } catch(DeletionException e) {
@@ -77,7 +77,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("full_object_creator_resolution_strategy")
-    public void deregisterFullCreatorStrategy() {
+    public void unregisterFullCreatorStrategy() {
         try {
             IOC.remove(Keys.getOrAdd("full receiver object creator"));
         } catch(DeletionException e) {
@@ -123,7 +123,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("basic_receiver_strategies")
-    public void deregisterBasicReceiver() {
+    public void unregisterBasicReceiver() {
         String itemName = "basic_receiver_strategies";
         String keyName = "";
 
@@ -213,7 +213,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("wrapper_resolution_strategies_for_invokers")
-    public void deregisterWrapperResolutionStrategies() {
+    public void unregisterWrapperResolutionStrategies() {
         String itemName = "wrapper_resolution_strategies_for_invokers";
         String keyName = "";
 
@@ -257,7 +257,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("invoker_receiver_creation_strategy")
-    public void deregisterInvokerCreationStrategy() {
+    public void unregisterInvokerCreationStrategy() {
         String itemName = "invoker_receiver_creation_strategy";
         String keyName = "";
 

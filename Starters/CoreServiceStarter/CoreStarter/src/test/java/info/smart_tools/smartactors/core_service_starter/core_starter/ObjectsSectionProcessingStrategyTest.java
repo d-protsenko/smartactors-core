@@ -133,10 +133,11 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
         }
 
         doThrow(ReadValueException.class).when(configMock).getValue(any());
+
         try {
             strategy.onRevertConfig(configMock);
-        } catch(ConfigurationProcessingException e) {
             fail();
+        } catch(ConfigurationProcessingException e) {
         }
     }
 

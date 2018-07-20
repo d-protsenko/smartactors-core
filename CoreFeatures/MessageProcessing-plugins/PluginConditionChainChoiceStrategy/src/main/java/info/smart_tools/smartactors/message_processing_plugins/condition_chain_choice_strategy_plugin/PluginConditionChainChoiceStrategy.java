@@ -40,7 +40,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
     }
 
     /**
-     * De-register condition chain choice strategy.
+     * Unregisters condition chain choice strategy.
      */
     @BootstrapPlugin.Item("condition_chain_choice_strategy")
     public void revertItem() {

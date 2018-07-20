@@ -142,7 +142,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("feature_management")
-    public void deregister() {
+    public void unregister() {
         String itemName = "feature_management";
         String keyName = "";
 

@@ -35,7 +35,7 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
     }
 
     /**
-     * De-register constant chain choice strategy.
+     * Unregisters constant chain choice strategy.
      */
     @ItemRevert("constant_chain_choice_strategy")
     public void revertItem() {

@@ -36,10 +36,10 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     }
 
     /**
-     * De-register {@link ReplaceReceiversChainModificationStrategy}.
+     * Unregisters {@link ReplaceReceiversChainModificationStrategy}.
      */
     @ItemRevert("chain_modification_strategies:replace_receivers")
-    public void deregisterReceiverReplaceModification() {
+    public void unregisterReceiverReplaceModification() {
         String itemName = "chain_modification_strategies:replace_receivers";
         String keyName = "chain modification: replace receivers";
 

@@ -53,7 +53,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     }
 
     @ItemRevert("wds_object_field_set_map_strategies")
-    public void deregisterFieldSetDependencies() {
+    public void unregisterFieldSetDependencies() {
         String itemName = "wds_object_field_set_map_strategies";
         String keyName;
 
@@ -84,7 +84,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     }
 
     @ItemRevert("wds_object_rules_strategy")
-    public void deregisterRulesStrategy() {
+    public void unregisterRulesStrategy() {
         String itemName = "wds_object_rules_strategy";
         String keyName = "";
 
@@ -130,7 +130,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     }
 
     @ItemRevert("wds_object_field_set_strategy")
-    public void deregisterFieldSetCreationStrategy() {
+    public void unregisterFieldSetCreationStrategy() {
         String itemName = "wds_object_field_set_strategy";
         String keyName;
 
@@ -177,7 +177,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     }
 
     @ItemRevert("wds_object")
-    public void deregisterWDSObjectCreationStrategy() {
+    public void unregisterWDSObjectCreationStrategy() {
         String itemName = "wds_object";
         String keyName = "";
 

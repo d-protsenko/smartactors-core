@@ -116,7 +116,7 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
     }
 
     @Test
-    public void Should_deregisterAndThrowsExceptionWhenResolveChains()
+    public void Should_unregisterAndThrowsExceptionWhenResolveChains()
             throws Exception {
         IChainStorage storage = new ChainStorage(new HashMap<>(), routerMock);
 
@@ -128,7 +128,7 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
         when(stateMocks[0].getCurrent()).thenReturn(chianMocks[0]);
         assertSame(chianMocks[0], storage.resolve("the_chain"));
 
-        storage.deregister("the_chain");
+        storage.unregister("the_chain");
 
         try {
             storage.resolve("the_chain");
@@ -136,9 +136,9 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
         } catch(ChainNotFoundException e) {}
 
         // here should be notified that no chain registered on this key
-        // if deregister changed to throw exception in this case
+        // if unregister changed to throw exception in this case
         // then here should be try-catch wrapper
-        storage.deregister("the_chain");
+        storage.unregister("the_chain");
     }
 
     @Test

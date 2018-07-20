@@ -31,7 +31,7 @@ public interface IRouter {
      *
      * @param targetId    the target identifier
      */
-    void deregister(Object targetId);
+    void unregister(Object targetId);
 
     /**
      * Enumerate receivers registered in this router.

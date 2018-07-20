@@ -30,7 +30,7 @@ public class NullResponseStrategyPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("null_response_strategy")
-    public void deregisterNullResponseStrategy() {
+    public void unregisterNullResponseStrategy() {
         String itemName = "null_response_strategy";
         String keyName = "null response strategy";
 

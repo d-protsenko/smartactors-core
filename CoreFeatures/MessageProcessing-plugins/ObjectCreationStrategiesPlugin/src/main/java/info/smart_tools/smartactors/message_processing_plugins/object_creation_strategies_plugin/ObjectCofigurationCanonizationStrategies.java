@@ -111,7 +111,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
     }
 
     @ItemRevert("object_configuration_canonization_strategies")
-    public void deregisterCanonizationStrategies() {
+    public void unregisterCanonizationStrategies() {
         String itemName = "object_configuration_canonization_strategies";
         String keyName = "canonize objects configuration section item filters list";
 

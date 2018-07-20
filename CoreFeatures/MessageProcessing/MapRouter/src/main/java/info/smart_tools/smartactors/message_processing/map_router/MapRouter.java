@@ -53,7 +53,7 @@ public class MapRouter implements IRouter {
     }
 
     @Override
-    public void deregister(final Object targetId) {
+    public void unregister(final Object targetId) {
         IMessageReceiver receiver = map.remove(targetId);
 
         if (null != receiver) {

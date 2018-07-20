@@ -45,11 +45,11 @@ public class MapRouterTest {
 
         assertSame(receiver1, router.route(id));
 
-        router.deregister(id);
+        router.unregister(id);
         verify(map).remove(id);
 
         when(map.remove(same(id))).thenReturn(receiver1);
-        router.deregister(id);
+        router.unregister(id);
         verify(receiver1).dispose();
     }
 

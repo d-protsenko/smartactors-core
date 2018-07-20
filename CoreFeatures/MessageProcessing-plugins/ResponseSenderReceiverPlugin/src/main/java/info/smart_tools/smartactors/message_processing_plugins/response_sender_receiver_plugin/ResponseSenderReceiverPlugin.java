@@ -31,7 +31,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("send_response_action")
-    public void deregisterResponseAction() {
+    public void unregisterResponseAction() {
         String itemName = "send_response_action";
         String keyName = "send response action";
 
@@ -50,7 +50,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     }
 
     @ItemRevert("response_sender_receiver")
-    public void deregisterResponseSenderReceiver() {
+    public void unregisterResponseSenderReceiver() {
         String itemName = "response_sender_receiver";
         String keyName = "response sender receiver";
 

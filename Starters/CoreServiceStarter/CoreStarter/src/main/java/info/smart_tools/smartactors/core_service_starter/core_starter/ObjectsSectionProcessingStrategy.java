@@ -89,7 +89,7 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
                 objDesc = sectionIterator.previous();
                 try {
                     objectName = objDesc.getValue(objectNameFieldName);
-                    router.deregister(objectName);
+                    router.unregister(objectName);
                 } catch (InvalidArgumentException | ReadValueException e) {
                     exception.addSuppressed(e);
                 }
