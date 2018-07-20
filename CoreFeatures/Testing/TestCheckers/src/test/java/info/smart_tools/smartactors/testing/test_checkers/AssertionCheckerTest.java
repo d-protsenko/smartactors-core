@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
+import info.smart_tools.smartactors.configuration_manager_plugins.configuration_manager_plugin.PluginConfigurationManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
@@ -14,9 +15,17 @@ import info.smart_tools.smartactors.iobject_extension_plugins.configuration_obje
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.message_processing_plugins.immutable_receiver_chain_plugin.PluginReceiverChain;
+import info.smart_tools.smartactors.message_processing_plugins.map_router_plugin.PluginMapRouter;
+import info.smart_tools.smartactors.message_processing_plugins.object_creation_strategies_plugin.ObjectCreationStrategiesPlugin;
+import info.smart_tools.smartactors.message_processing_plugins.receiver_chains_storage_plugin.PluginReceiverChainsStorage;
+import info.smart_tools.smartactors.message_processing_plugins.receiver_generator_plugin.InitializeReceiverGenerator;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
+import info.smart_tools.smartactors.core_service_starter.core_starter.StandardConfigSectionsPlugin;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.shutdown_plugins.root_up_counter_plugin.RootUpCounterPlugin;
+import info.smart_tools.smartactors.task_plugins.non_blocking_queue.non_blocking_queue_plugin.PluginNonlockingQueue;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.IAssertion;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -47,6 +56,16 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
         load(InitializeConfigurationObjectStrategies.class);
+        load(PluginMapRouter.class);
+        load(InitializeReceiverGenerator.class);
+        load(PluginReceiverChain.class);
+        load(PluginNonlockingQueue.class);
+        load(PluginReceiverChainsStorage.class);
+        load(ObjectCreationStrategiesPlugin.class);
+        load(RootUpCounterPlugin.class);
+        load(PluginConfigurationManager.class);
+        load(StandardConfigSectionsPlugin.class);
+
     }
 
     @Override
