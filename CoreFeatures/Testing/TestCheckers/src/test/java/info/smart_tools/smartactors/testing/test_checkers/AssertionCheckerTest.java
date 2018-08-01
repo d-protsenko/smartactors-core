@@ -1,11 +1,20 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager_plugins.configuration_manager_plugin.PluginConfigurationManager;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -22,17 +31,18 @@ import info.smart_tools.smartactors.message_processing_plugins.receiver_chains_s
 import info.smart_tools.smartactors.message_processing_plugins.receiver_generator_plugin.InitializeReceiverGenerator;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
-import info.smart_tools.smartactors.core_service_starter.core_starter.StandardConfigSectionsPlugin;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.shutdown_plugins.root_up_counter_plugin.RootUpCounterPlugin;
 import info.smart_tools.smartactors.task_plugins.non_blocking_queue.non_blocking_queue_plugin.PluginNonlockingQueue;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.IAssertion;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.exception.AssertionFailureException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,16 +66,6 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         load(PluginDSObject.class);
         load(IFieldNamePlugin.class);
         load(InitializeConfigurationObjectStrategies.class);
-        load(PluginMapRouter.class);
-        load(InitializeReceiverGenerator.class);
-        load(PluginReceiverChain.class);
-        load(PluginNonlockingQueue.class);
-        load(PluginReceiverChainsStorage.class);
-        load(ObjectCreationStrategiesPlugin.class);
-        load(RootUpCounterPlugin.class);
-        load(PluginConfigurationManager.class);
-        load(StandardConfigSectionsPlugin.class);
-
     }
 
     @Override
@@ -182,6 +182,26 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createWrapperDescription()
             throws Exception {
+        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd("expandable_strategy#resolve key for configuration object"));
+        strategy.register("in_", new ApplyFunctionToArgumentsStrategy(
+                (a) -> {
+                    try {
+                        Object obj = a[1];
+                        if (obj instanceof String) {
+                            IObject innerObject = new ConfigurationObject();
+                            innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
+                            innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }});
+                            return new ArrayList<IObject>() {{ add(innerObject); }};
+                        }
+                        return obj;
+                    } catch (Throwable e) {
+                        throw new RuntimeException(
+                                "Error in configuration 'wrapper' rule.", e
+                        );
+                    }
+                })
+        );
+
         IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1', 'value': 'message/x'}".replace('\'', '"'));
 

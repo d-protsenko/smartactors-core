@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>feature-loading-system</artifactId>
@@ -20,7 +20,7 @@
         <module>Bootstrap</module>
         <module>IPlugin</module>
         <module>FeatureManager</module>
-        <module>PluginLoaderFormJar</module>
+        <module>PluginLoaderFromJar</module>
         <module>IPluginCreator</module>
         <module>IBootstrap</module>
         <module>BootstrapPlugin</module>

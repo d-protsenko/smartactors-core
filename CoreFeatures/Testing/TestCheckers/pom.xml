@@ -82,12 +82,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>core-service-starter.core-starter</artifactId>
-            <version>0.4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>configuration-manager-plugins.configuration-manager-plugin</artifactId>
             <version>0.4.0</version>
             <scope>test</scope>
