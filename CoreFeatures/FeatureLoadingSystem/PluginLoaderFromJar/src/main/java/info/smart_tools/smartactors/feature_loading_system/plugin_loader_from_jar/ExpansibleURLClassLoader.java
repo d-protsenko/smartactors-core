@@ -1,13 +1,23 @@
 package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar;
 
+import sun.misc.PerfCounter;
+import sun.misc.Resource;
+
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.security.CodeSigner;
+import java.security.CodeSource;
+import java.util.*;
+import java.util.jar.Manifest;
 
 /**
  * Extension of {@link URLClassLoader}
  */
 public class ExpansibleURLClassLoader extends URLClassLoader {
+
+    private ArrayList<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
 
     /**
      * Redefined constructor
@@ -18,12 +28,33 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
     }
 
     /**
+     * New constructor
+     * @param urls the URLs from which to load classes and resources
+     * @param dependsOn the list of class loaders which this class loader depends on
+     */
+    public ExpansibleURLClassLoader(final URL[] urls, final ArrayList<ClassLoader> dependsOn) {
+        super(urls);
+        this.dependsOn = dependsOn;
+    }
+
+    /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      * @param parent the parent class loader for delegation
      */
     public ExpansibleURLClassLoader(final URL[] urls, final ClassLoader parent) {
         super(urls, parent);
+    }
+
+    /**
+     * New constructor
+     * @param urls the URLs from which to load classes and resources
+     * @param parent the parent class loader for delegation
+     * @param dependsOn the list of class loaders which this class loader depends on
+     */
+    public ExpansibleURLClassLoader(final URL[] urls, final ClassLoader parent, final ArrayList<ClassLoader> dependsOn) {
+        super(urls, parent);
+        this.dependsOn = dependsOn;
     }
 
     /**
@@ -37,4 +68,38 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
         }
         addURL(url);
     }
+
+    /**
+     * Add new dependency on {@link ClassLoader} to this {@link ExpansibleURLClassLoader}
+     * @param classLoader {@link ClassLoader} which this {@link ExpansibleURLClassLoader} depends on
+     */
+    public void addDependency(ClassLoader classLoader) {
+        dependsOn.add(classLoader);
+    }
+
+    protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
+        synchronized(this.getClassLoadingLock(className)) {
+            Class clazz = this.findLoadedClass(className);
+
+            if (clazz == null) {
+                for(ClassLoader classLoader : dependsOn) {
+                    try {
+                        clazz = classLoader.loadClass(className);
+                        break;
+                    } catch (ClassNotFoundException e) { }
+                }
+
+                if (clazz == null) {
+                    clazz = super.loadClass(className, false);
+                }
+            }
+
+            if (resolve) {
+                this.resolveClass(clazz);
+            }
+
+            return clazz;
+        }
+    }
+
 }
