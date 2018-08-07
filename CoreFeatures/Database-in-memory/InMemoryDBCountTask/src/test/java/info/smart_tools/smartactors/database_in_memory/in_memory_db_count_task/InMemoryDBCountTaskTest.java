@@ -56,7 +56,7 @@ public class InMemoryDBCountTaskTest {
         ScopeProvider.setCurrentScope(mainScope);
         Map<String, IConditionVerifier> verifierMap = new HashMap<>();
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),

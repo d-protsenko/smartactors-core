@@ -61,7 +61,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                 IFieldName modeFieldName = (null == arg.getValue(modeFieldFN)) ? null :
                         IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), arg.getValue(modeFieldFN));
 
-                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                         IChainStorage.class.getCanonicalName()));
                 IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
@@ -86,12 +86,12 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             }
 
                             IMessageProcessingSequence processingSequence = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
                                     chain
                             );
                             IMessageProcessor messageProcessor = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     queue,
                                     processingSequence
                             );

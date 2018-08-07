@@ -20,9 +20,9 @@ The simplest way is to use the `new` operator.
     
 However, the recommended way to get the key is to resolve it with IOC.
 
-    IKey resolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "sample");
+    IKey resolveKey = IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "sample");
 
-`IOC.getKeyForKeyStorage()` produces the key to get the key.
+`IOC.getKeyForKeyByNameResolveStrategy()` produces the key to get the key.
     
 This magic is hidden in `Keys` class, so it's necessary just to call `Keys.getOrAdd()`.
 
@@ -38,7 +38,7 @@ So this initialization code is required (usually it's already called by the serv
     IScope scope = ScopeProvider.getScope(scopeKey);
     ScopeProvider.setCurrentScope(scope);
     scope.setValue(IOC.getIocKey(), new StrategyContainer());
-    IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
+    IOC.register(IOC.getKeyForKeyByNameResolveStrategy(), new ResolveByNameIocStrategy(
             (a) -> {
                 try {
                     return new Key((String) a[0]);

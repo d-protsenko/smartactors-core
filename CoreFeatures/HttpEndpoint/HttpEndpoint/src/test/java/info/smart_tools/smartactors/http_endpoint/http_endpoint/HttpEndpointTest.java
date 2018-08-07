@@ -90,7 +90,7 @@ public class HttpEndpointTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.getCanonicalName());

@@ -43,7 +43,7 @@ public class IObjectSimpleImplPluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("IObjectSimpleImplPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);

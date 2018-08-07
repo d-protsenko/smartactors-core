@@ -22,7 +22,14 @@ public interface IContainer {
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
      * @return instance of {@link IKey}
      */
+    @Deprecated
     IKey getKeyForKeyStorage();
+
+    /**
+     * Return specific instance of {@link IKey} for strategy of resolving key by name
+     * @return instance of {@link IKey}
+     */
+    IKey getKeyForKeyByNameResolveStrategy();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args

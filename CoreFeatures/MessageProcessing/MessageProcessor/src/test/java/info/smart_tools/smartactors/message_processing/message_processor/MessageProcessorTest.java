@@ -91,7 +91,7 @@ public class MessageProcessorTest {
 
         mockStatic(IOC.class);
 
-        when(IOC.getKeyForKeyStorage()).thenReturn(KEY_FOR_KEY_STORAGE);
+        when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(KEY_FOR_KEY_STORAGE);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "final task")).thenReturn(KEY_FOR_FINAL_TASK);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "root upcounter")).thenReturn(KEY_FOR_UP_COUNTER);
         when(IOC.resolve(KEY_FOR_KEY_STORAGE, "test signal")).thenReturn(KEY_FOR_TEST_SIGNAL);

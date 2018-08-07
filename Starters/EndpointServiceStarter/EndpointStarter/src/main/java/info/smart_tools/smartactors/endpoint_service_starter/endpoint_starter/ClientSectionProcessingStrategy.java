@@ -52,7 +52,7 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject clientObject = (IObject) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             clientObject.setValue(queueFieldName, queue);

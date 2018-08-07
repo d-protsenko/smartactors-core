@@ -79,7 +79,7 @@ public class HttpResponseHandlerTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),

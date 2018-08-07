@@ -72,7 +72,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
@@ -108,7 +108,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IOC.register(stackDepthKey, new SingletonStrategy(this.stackDepth));
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new SingletonStrategy(this.context)
         );
     }

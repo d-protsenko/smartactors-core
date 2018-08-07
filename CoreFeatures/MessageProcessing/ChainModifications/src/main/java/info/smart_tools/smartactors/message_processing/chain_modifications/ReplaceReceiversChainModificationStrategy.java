@@ -149,7 +149,7 @@ public class ReplaceReceiversChainModificationStrategy implements IResolveDepend
             for (IObject replacement : replacements) {
                 int step = ((Number) replacement.getValue(stepFN)).intValue();
                 IMessageReceiver receiver = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), replacement.getValue(dependencyFN)),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), replacement.getValue(dependencyFN)),
                         originalChain.get(step), replacement.getValue(argsFN)
                 );
 

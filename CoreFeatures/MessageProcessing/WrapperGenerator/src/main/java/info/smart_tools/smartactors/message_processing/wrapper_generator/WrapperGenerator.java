@@ -61,7 +61,7 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         try {
             instance = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper")
             );
         } catch (ResolutionException e) {
             // do nothing
@@ -80,7 +80,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
             // ToDo: replace this strategy to the future plugin for WrapperGenerator
             IOC.register(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper"),
                     new ApplyFunctionToArgumentsStrategy(
                             (arg) ->  {
                                 try {
@@ -93,7 +93,7 @@ public class WrapperGenerator implements IWrapperGenerator {
             );
 
             return IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper")
             );
             */
 

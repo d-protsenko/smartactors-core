@@ -39,7 +39,7 @@ public class FieldTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -106,7 +106,7 @@ public class FieldTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(1)).thenReturn("1");
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), String.class.getCanonicalName() + "convert"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), String.class.getCanonicalName() + "convert"),
                 strategy
         );
         IField field = new Field(new FieldName("a"));

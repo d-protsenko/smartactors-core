@@ -75,10 +75,10 @@ public class IocTest {
     }
 
     @Test
-    public void checkGetKeyForKeyStorage()
+    public void checkgetKeyForKeyByNameResolveStrategy()
             throws Exception {
-        when(container.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
-        IKey key = IOC.getKeyForKeyStorage();
+        when(container.getKeyForKeyByNameResolveStrategy()).thenReturn(mock(IKey.class));
+        IKey key = IOC.getKeyForKeyByNameResolveStrategy();
         assertNotNull(key);
     }
 

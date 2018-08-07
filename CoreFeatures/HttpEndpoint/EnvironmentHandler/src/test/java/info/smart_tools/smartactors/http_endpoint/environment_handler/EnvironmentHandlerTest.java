@@ -61,7 +61,7 @@ public class EnvironmentHandlerTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IKey keyIObjectByString = Keys.getOrAdd("IObjectByString");

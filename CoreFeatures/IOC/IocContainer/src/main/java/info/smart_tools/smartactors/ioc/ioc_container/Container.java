@@ -22,7 +22,7 @@ public class Container implements IContainer {
     /** Key for getting instance of {@link IStrategyContainer} from current scope */
     private IKey strategyContainerKey;
     /** */
-    private IKey keyForKeyStorage;
+    private IKey keyForKeyByNameResolveStrategy;
 
     /**
      * Default constructor
@@ -30,7 +30,7 @@ public class Container implements IContainer {
     public Container() {
         try {
             strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
-            keyForKeyStorage = new Key(java.util.UUID.randomUUID().toString());
+            keyForKeyByNameResolveStrategy = new Key(java.util.UUID.randomUUID().toString());
         } catch (Exception e) {
             throw new RuntimeException("Initialization of IOC container has been failed.");
         }
@@ -50,10 +50,19 @@ public class Container implements IContainer {
      * @return instance of {@link IKey}
      */
     @Override
+    @Deprecated
     public IKey getKeyForKeyStorage() {
-        return this.keyForKeyStorage;
+        return this.keyForKeyByNameResolveStrategy;
     }
 
+    /**
+     * Return specific instance of {@link IKey} for resolve dependencies from key storage
+     * @return instance of {@link IKey}
+     */
+    @Override
+    public IKey getKeyForKeyByNameResolveStrategy() {
+        return this.keyForKeyByNameResolveStrategy;
+    }
     /**
      * Resolve dependency by given given {@link IKey} instance and args
      * @param key instance of {@link IKey}

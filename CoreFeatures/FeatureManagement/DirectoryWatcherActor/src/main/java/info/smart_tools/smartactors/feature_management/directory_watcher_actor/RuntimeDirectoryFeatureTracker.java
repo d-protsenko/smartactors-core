@@ -94,10 +94,10 @@ public class RuntimeDirectoryFeatureTracker {
 
     private void resolveChainByChainName(final String chainName) throws ResolutionException, ChainNotFoundException {
         Object chainId = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"), chainName
         );
         IChainStorage chainStorage = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
         );
         this.executionChain = chainStorage.resolve(chainId);
     }
@@ -112,12 +112,12 @@ public class RuntimeDirectoryFeatureTracker {
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 stackDepth,
                 this.executionChain
         );
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 queue,
                 processingSequence);
         IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));

@@ -44,8 +44,6 @@
         <module>Task</module>
         <module>TaskBlockingQueue-plugins</module>
         <module>TaskNonBlockingQueue-plugins</module>
-        <module>FeatureLoader</module>
-        <module>FeatureLoader-plugins</module>
         <module>Database</module>
         <module>Database-plugins</module>
         <module>DatabaseNullConnectionPool-plugins</module>

@@ -78,13 +78,13 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
 
-        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeLevel");
-        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeStep");
-        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchLevel");
-        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchStep");
-        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exception");
-        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
-        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeLevel");
+        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeStep");
+        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchLevel");
+        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchStep");
+        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exception");
+        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
+        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
         stepsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack");
         chainsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack");

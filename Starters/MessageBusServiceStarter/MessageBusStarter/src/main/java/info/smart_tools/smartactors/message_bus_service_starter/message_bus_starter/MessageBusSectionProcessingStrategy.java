@@ -52,15 +52,15 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
     public MessageBusSectionProcessingStrategy()
             throws ResolutionException {
         this.name = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messageBus"
         );
         this.startChainNameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "routingChain"
         );
         this.stackDepthFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "stackDepth"
         );
     }
@@ -74,7 +74,7 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
 
             Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
 
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);

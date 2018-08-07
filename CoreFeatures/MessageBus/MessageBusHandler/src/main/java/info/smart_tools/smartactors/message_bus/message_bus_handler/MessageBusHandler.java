@@ -133,12 +133,12 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private IMessageProcessor resolveMessageProcessor(final IReceiverChain mpChain) throws ResolutionException {
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 this.stackDepth,
                 mpChain
         );
         return IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 this.taskQueue,
                 processingSequence
         );

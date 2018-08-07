@@ -72,7 +72,7 @@ public class HttpRequestHandlerTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
 

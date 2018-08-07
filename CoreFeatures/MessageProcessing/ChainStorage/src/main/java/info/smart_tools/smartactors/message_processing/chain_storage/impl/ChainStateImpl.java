@@ -66,7 +66,7 @@ public class ChainStateImpl implements IChainState {
     private IReceiverChain applyModification(final IReceiverChain chain, final IObject modification)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         return IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), modification.getValue(modificationFN)),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), modification.getValue(modificationFN)),
                 chain, modification
         );
     }

@@ -60,15 +60,15 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                 mps.goTo(currentLevel - 1, repeatStep);
                             };
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "afterExceptionAction#break"),
                                     new SingletonStrategy(breakAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#continue"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "afterExceptionAction#continue"),
                                     new SingletonStrategy(continueAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#repeat"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "afterExceptionAction#repeat"),
                                     new SingletonStrategy(repeatAction)
                             );
                         } catch (ResolutionException e) {

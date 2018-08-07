@@ -107,13 +107,13 @@ public class HttpEndpointTestRunner implements ITestRunner {
             throws InitializationException {
         try {
             this.contentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
             );
             this.chainFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of HttpEndpointTestRunner.", e);
@@ -141,14 +141,14 @@ public class HttpEndpointTestRunner implements ITestRunner {
 
         try {
             IObject sourceObject = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
             String chainName = (String) description.getValue(this.chainFieldName);
             Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"), chainName
             );
             IChainStorage chainStorage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
@@ -156,7 +156,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             sourceObject.setValue(this.callbackFieldName, callback);
             sourceObject.setValue(this.chainFieldName, testedChain);
             ISource<IObject, IObject> source = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "test_data_source")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test_data_source")
             );
             source.setSource(sourceObject);
         } catch (ChainNotFoundException | ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {

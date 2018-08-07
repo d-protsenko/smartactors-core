@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.feature_management.interfaces.ifeature;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * IFeature interface
@@ -46,6 +47,12 @@ public interface IFeature {
     IPath getFeatureLocation();
 
     /**
+     * Gets feature UUID
+     * @return the feature UUID
+     */
+    UUID getUUID();
+
+    /**
      * Sets feature name
      * @param featureName the feature name
      */
@@ -80,4 +87,5 @@ public interface IFeature {
      * @param version the feature version
      */
     void setVersion(String version);
+
 }

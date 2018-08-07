@@ -88,10 +88,10 @@ public class MainTestChain implements IReceiverChain {
         this.successReceiverArgs = successReceiverArgs;
         this.isCompleted = new AtomicBoolean(false);
         try {
-            this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-            this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+            this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             if (null == this.successReceiverArgs) {
-                this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+                this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             }
         } catch (ResolutionException e) {
             throw new InitializationException("Could not resolve dependency for IObject.", e);
@@ -125,7 +125,7 @@ public class MainTestChain implements IReceiverChain {
     public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
         IObject exceptionalChainAndEnv = null;
         try {
-            exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             exceptionalChainAndEnv.setValue(this.chainFieldName, new ExceptionalTestChain());
             if (isCompleted.compareAndSet(false, true)) {
                 completionCallback.execute(exception);

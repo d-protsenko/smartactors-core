@@ -78,7 +78,7 @@ public class MessageBusSectionProcessingStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
@@ -124,16 +124,16 @@ public class MessageBusSectionProcessingStrategyTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             return new DSObject();

@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import sun.misc.PerfCounter;
 import sun.misc.Resource;
 
@@ -73,11 +74,16 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
      * Add new dependency on {@link ClassLoader} to this {@link ExpansibleURLClassLoader}
      * @param classLoader {@link ClassLoader} which this {@link ExpansibleURLClassLoader} depends on
      */
-    public void addDependency(ClassLoader classLoader) {
+    public void addDependency(ClassLoader classLoader)
+            throws InvalidArgumentException {
+        if (null == classLoader) {
+            throw new InvalidArgumentException("Class loader can't have null dependency.");
+        }
         dependsOn.add(classLoader);
     }
 
-    protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(String className, boolean resolve)
+            throws ClassNotFoundException {
         synchronized(this.getClassLoadingLock(className)) {
             Class clazz = this.findLoadedClass(className);
 

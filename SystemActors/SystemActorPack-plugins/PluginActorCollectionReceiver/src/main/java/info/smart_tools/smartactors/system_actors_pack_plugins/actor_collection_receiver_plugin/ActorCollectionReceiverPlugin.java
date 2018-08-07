@@ -99,7 +99,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
                         }
 
                         IChildDeletionCheckStrategy deletionCheckStrategy = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyStorage(), deletionCheckStrategyKeyName),
+                                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), deletionCheckStrategyKeyName),
                                 objectConfig
                         );
 

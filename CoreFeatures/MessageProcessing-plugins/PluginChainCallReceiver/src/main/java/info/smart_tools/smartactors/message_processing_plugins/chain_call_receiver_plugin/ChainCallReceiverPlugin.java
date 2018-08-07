@@ -55,7 +55,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         try {
                             IOC.register(
                                     IOC.resolve(
-                                            IOC.getKeyForKeyStorage(),
+                                            IOC.getKeyForKeyByNameResolveStrategy(),
                                             ChainCallReceiver.class.getCanonicalName()
                                     ),
                                     new ApplyFunctionToArgumentsStrategy(
@@ -63,20 +63,20 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                 try {
                                                     IFieldName fieldName = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
                                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                             ),
                                                             "strategyDependency"
                                                     );
                                                     IChainChoiceStrategy strategy = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
                                                                     ((IObject) args[0]).getValue(fieldName)
                                                             )
                                                     );
                                                     IChainStorage storage = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
                                                                     IChainStorage.class.getCanonicalName()
                                                             )
                                                     );

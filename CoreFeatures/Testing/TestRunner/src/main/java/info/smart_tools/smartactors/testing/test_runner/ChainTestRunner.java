@@ -80,7 +80,7 @@ public class ChainTestRunner implements ITestRunner {
             throws InitializationException {
         try {
             this.chainNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of ChainTestRunner.", e);
@@ -109,14 +109,14 @@ public class ChainTestRunner implements ITestRunner {
         try {
             String chainName = (String) description.getValue(chainNameFieldName);
             Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"), chainName
             );
             IChainStorage chainStorage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
-            IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "test environment handler"));
+            IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"));
             handler.handle(description, testedChain, callback);
         } catch (ResolutionException | ReadValueException | ChainNotFoundException |
                 EnvironmentHandleException e) {

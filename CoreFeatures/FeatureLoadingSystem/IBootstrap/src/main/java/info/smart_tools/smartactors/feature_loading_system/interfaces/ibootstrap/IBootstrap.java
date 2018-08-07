@@ -20,8 +20,8 @@ public interface IBootstrap <T> {
 
     /**
      * Resolve bootstrap items dependencies,
-     * order bootstrap items and
-     * execute all processes for each bootstrap item
+     * then re-order bootstrap items correspondingly and
+     * execute item .process() action for each bootstrap item
      * @return the list of loaded items
      * @throws ProcessExecutionException if any errors occurred
      */
@@ -29,7 +29,7 @@ public interface IBootstrap <T> {
             throws ProcessExecutionException;
 
     /**
-     * Revert changes that was doing after execution start method
+     * Revert all actions done while start method was being executed
      * @throws RevertProcessExecutionException if any errors occurred
      */
     void revert()

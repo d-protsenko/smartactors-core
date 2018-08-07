@@ -57,7 +57,7 @@ public class HttpClientPluginTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
 

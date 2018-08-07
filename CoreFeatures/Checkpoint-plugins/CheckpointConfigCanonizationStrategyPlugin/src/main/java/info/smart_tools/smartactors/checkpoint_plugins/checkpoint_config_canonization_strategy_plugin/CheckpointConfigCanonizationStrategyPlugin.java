@@ -51,7 +51,7 @@ public class CheckpointConfigCanonizationStrategyPlugin extends BootstrapPlugin 
                 checkpointConfig.setValue(handlerFieldName, "enter");
 
                 checkpointConfig.setValue(wrapperFieldName, IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "configuration object"),
                         checkpointWrapperConfig
                 ));
 

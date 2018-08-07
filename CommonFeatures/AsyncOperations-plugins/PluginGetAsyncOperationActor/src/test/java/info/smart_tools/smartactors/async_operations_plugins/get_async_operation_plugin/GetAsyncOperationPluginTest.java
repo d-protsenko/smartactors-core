@@ -40,7 +40,7 @@ public class GetAsyncOperationPluginTest {
 
         IKey key = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(key);
+        when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(key);
         when(IOC.resolve(eq(key), eq("GetFormActorPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);

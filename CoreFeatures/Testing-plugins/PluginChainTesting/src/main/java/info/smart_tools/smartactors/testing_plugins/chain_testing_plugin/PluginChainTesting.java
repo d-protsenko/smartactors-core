@@ -54,7 +54,7 @@ public class PluginChainTesting implements IPlugin {
                                 try {
                                     IEnvironmentHandler testHandler = new TestEnvironmentHandler();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "test environment handler"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"),
                                             new SingletonStrategy(testHandler)
                                     );
                                 } catch (InitializationException e) {
@@ -83,12 +83,12 @@ public class PluginChainTesting implements IPlugin {
                                 try {
                                     ITestRunner chainTestRunner = new ChainTestRunner();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), ITestRunner.class.getCanonicalName() + "#chain"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), ITestRunner.class.getCanonicalName() + "#chain"),
                                             new SingletonStrategy(chainTestRunner)
                                     );
                                     ITestRunner httpEndpointTestRunner = new HttpEndpointTestRunner();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), ITestRunner.class.getCanonicalName() + "#httpEndpoint"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), ITestRunner.class.getCanonicalName() + "#httpEndpoint"),
                                             new SingletonStrategy(httpEndpointTestRunner));
                                 } catch (ResolutionException e) {
                                     throw new ActionExecuteException("TestRunners plugin can't load: can't get ioc key.", e);

@@ -95,14 +95,14 @@ public class ActorCollectionReceiverPluginTest {
                 item.executeProcess();
             }
         }
-        IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "ActorCollection"));
+        IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "ActorCollection"));
         assertNotNull(receiver);
     }
 
     private void registerKeyStorage()
             throws Exception {
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -117,7 +117,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerBrokenKeyStorage()
             throws Exception {
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy((a) -> null)
         );
     }
@@ -125,7 +125,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerIFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -141,7 +141,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerBrokenIFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a) -> null)
         );
     }

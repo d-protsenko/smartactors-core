@@ -67,7 +67,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
             List<IObject> section = (List) config.getValue(sectionNameFieldName);
 
             for (IObject obj : section) {
-                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), obj.getValue(upcounterFieldName)));
 
                 Object actionKeyName = obj.getValue(actionFieldName);
 
@@ -76,7 +76,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
                 }
 
                 upCounter.onShutdownRequest( "cfg-"+actionKeyName,
-                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionKeyName)));
+                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), actionKeyName)));
             }
         } catch (ReadValueException | InvalidArgumentException | ClassCastException | ResolutionException
                 | UpCounterCallbackExecutionException e) {
@@ -92,7 +92,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
 
             for (IObject obj : section) {
                 try {
-                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), obj.getValue(upcounterFieldName)));
 
                     Object actionKeyName = obj.getValue(actionFieldName);
 

@@ -59,7 +59,7 @@ public class MessageBusHandlerTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -71,7 +71,7 @@ public class MessageBusHandlerTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -126,17 +126,17 @@ public class MessageBusHandlerTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
@@ -169,27 +169,27 @@ public class MessageBusHandlerTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
         );
         Object chainId = mock(Object.class);
@@ -231,27 +231,27 @@ public class MessageBusHandlerTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
         );
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
@@ -295,27 +295,27 @@ public class MessageBusHandlerTest {
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
         IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
         );
         IReceiverChain chain = mock(IReceiverChain.class);

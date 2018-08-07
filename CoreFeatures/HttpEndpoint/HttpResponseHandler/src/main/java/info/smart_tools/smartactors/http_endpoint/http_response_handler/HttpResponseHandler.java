@@ -64,7 +64,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
         this.stackDepth = stackDepth;
 
         try {
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverChain);
             this.receiverChain = chainStorage.resolve(mapId);

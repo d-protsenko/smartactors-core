@@ -113,7 +113,7 @@ public class ConfigurationObject implements IObject {
             }
 
             Object canonicalValue = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "resolve key for configuration object"),
                     name,
                     body.get(name)
             );

@@ -57,7 +57,7 @@ public class HttpEndpointTestRunnerTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -68,7 +68,7 @@ public class HttpEndpointTestRunnerTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -80,7 +80,7 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -92,17 +92,17 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
                 new ApplyFunctionToArgumentsStrategy((a) -> {
                     return this.chainId;
                 })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName()),
                 new SingletonStrategy(this.chainStorage)
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "test_data_source"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test_data_source"),
                 new SingletonStrategy(this.source)
         );
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
@@ -162,7 +162,7 @@ public class HttpEndpointTestRunnerTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
         new HttpEndpointTestRunner();

@@ -48,7 +48,7 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
     public void init(final ISchedulerEntry entry, final IObject args) throws SchedulerActionInitializationException {
         try {
             Object queryExecutorDependency = args.getValue(queryExecutorFieldName);
-            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), queryExecutorDependency));
+            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), queryExecutorDependency));
 
             queryExecutor.init(entry, args);
 
@@ -64,7 +64,7 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
     public void execute(final ISchedulerEntry entry) throws SchedulerActionExecutionException {
         try {
             Object queryExecutorDependency = entry.getState().getValue(queryExecutorFieldName);
-            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), queryExecutorDependency));
+            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), queryExecutorDependency));
 
             Collection<? extends Number> data = queryExecutor.execute(entry);
             Long time = entry.getLastTime();

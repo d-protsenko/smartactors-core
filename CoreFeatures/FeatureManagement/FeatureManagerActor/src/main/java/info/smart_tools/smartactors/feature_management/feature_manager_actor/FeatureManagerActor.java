@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -26,10 +27,8 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ public class FeatureManagerActor {
     private Map<Object, IFeature> loadedFeatures;
     private Map<Object, IFeature> failedFeatures;
     private Map<Object, IFeature> processingFeatures;
+    private Map<UUID, ClassLoader> featureClassLoaders;
 
     private final IFieldName loadedFeatureFN;
     private final IFieldName failedFeatureFN;
@@ -54,6 +54,7 @@ public class FeatureManagerActor {
     private final IFieldName featureProcessFN;
     private final IFieldName featureFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
+    private final IFieldName featureClassLoaderFN;
 
     /**
      * Default constructor
@@ -68,6 +69,7 @@ public class FeatureManagerActor {
         this.loadedFeatures = new ConcurrentHashMap<>();
         this.failedFeatures = new ConcurrentHashMap<>();
         this.processingFeatures = new ConcurrentHashMap<>();
+        this.featureClassLoaders = new ConcurrentHashMap<>();
 
         this.loadedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "loadedFeatures");
         this.failedFeatureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "failedFeatures");
@@ -75,6 +77,7 @@ public class FeatureManagerActor {
         this.featureProcessFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureProcess");
         this.featureFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "feature");
         this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
+        this.featureClassLoaderFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureClassLoader");
     }
 
     /**
@@ -120,6 +123,9 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    ClassLoader featureClassLoader = new ExpansibleURLClassLoader(new URL[]{}, getClass().getClassLoader());
+                    this.featureClassLoaders.put(feature.getUUID(), featureClassLoader);
+                    context.setValue(this.featureClassLoaderFN, featureClassLoader);
                     messageProcessor.process(message, context);
                     ++count;
                 }
@@ -202,7 +208,7 @@ public class FeatureManagerActor {
             });
             checkUnresolved();
 
-        } catch (ReadValueException e) {
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new FeatureManagementException("Feature should not be null.");
         }
     }
@@ -218,18 +224,29 @@ public class FeatureManagerActor {
         try {
             feature = wrapper.getFeature();
             checkAndRunConnectedFeatures();
-            for (IFeature loadedFeature : this.loadedFeatures.values()) {
-                if (null != feature.getDependencies()) {
-                    feature.getDependencies().remove(loadedFeature.getName());
+            Set<String> featureDependencies = feature.getDependencies();
+
+            if (null != featureDependencies && !featureDependencies.isEmpty()) {
+
+                ClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
+
+                    String dependencyName = iterator.next();
+                    IFeature dependency = this.loadedFeatures.get(dependencyName);
+
+                    if (null != dependency) {
+                        ((ExpansibleURLClassLoader)featureClassLoader).addDependency(this.featureClassLoaders.get(dependency.getUUID()));
+                        iterator.remove();
+                    }
+                }
+
+                if (!featureDependencies.isEmpty()) {
+                    IMessageProcessor mp = wrapper.getMessageProcessor();
+                    mp.pauseProcess();
+                    this.featureProcess.put(mp, feature);
                 }
             }
-            if (null != feature.getDependencies() && !feature.getDependencies().isEmpty()) {
-                IMessageProcessor mp = wrapper.getMessageProcessor();
-                mp.pauseProcess();
-                //wrapper.getFeatureProcess().put(mp, feature);
-                this.featureProcess.put(mp, feature);
-            }
-        } catch (ReadValueException | AsynchronousOperationException e) {
+        } catch (ReadValueException | AsynchronousOperationException | InvalidArgumentException e) {
             throw new FeatureManagementException(e);
         }
     }
@@ -270,10 +287,16 @@ public class FeatureManagerActor {
     }
 
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature)
-            throws FeatureManagementException {
+            throws FeatureManagementException, InvalidArgumentException {
+        String loadedFeatureName = loadedFeature.getName();
+        ClassLoader loadedFeatureClassLoader = this.featureClassLoaders.get(loadedFeature.getUUID());
+
         for (IFeature feature : this.processingFeatures.values()) {
-            if (null != feature.getDependencies()) {
-                feature.getDependencies().remove(loadedFeature.getName());
+            Set<String> featureDependencies = feature.getDependencies();
+
+            if (null != featureDependencies && featureDependencies.remove(loadedFeatureName)) {
+                ClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                ((ExpansibleURLClassLoader)featureClassLoader).addDependency(loadedFeatureClassLoader);
             }
         }
     }

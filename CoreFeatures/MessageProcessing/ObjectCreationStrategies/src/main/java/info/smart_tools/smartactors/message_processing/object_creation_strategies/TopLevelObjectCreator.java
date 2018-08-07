@@ -37,7 +37,7 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException, ReceiverObjectCreatorException {
         try {
             Object object = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), config.getValue(dependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), config.getValue(dependencyFieldName)),
                     config
             );
 

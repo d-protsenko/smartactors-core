@@ -55,7 +55,7 @@ public class TestCheckersPlugin implements IPlugin {
                             () -> {
                                 try {
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#assert"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IResultChecker.class.getCanonicalName() + "#assert"),
                                             new ApplyFunctionToArgumentsStrategy((args) -> {
                                                 try {
                                                     return new AssertionChecker((List<IObject>) args[0]);
@@ -65,7 +65,7 @@ public class TestCheckersPlugin implements IPlugin {
                                             })
                                     );
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#intercept"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"),
                                             new ApplyFunctionToArgumentsStrategy((args) -> {
                                                 try {
                                                     return new ExceptionInterceptor((IObject) args[0]);

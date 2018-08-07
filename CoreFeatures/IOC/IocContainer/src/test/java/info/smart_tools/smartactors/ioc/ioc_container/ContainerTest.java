@@ -36,13 +36,13 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyStorage();
+        IKey key2 = container.getKeyForKeyByNameResolveStrategy();
         assertNotNull(key1);
         assertNotNull(key2);
         assertNotEquals(key1, key2);
         IContainer otherContainer = new Container();
         IKey otherKey1 = otherContainer.getIocKey();
-        IKey otherKey2 = otherContainer.getKeyForKeyStorage();
+        IKey otherKey2 = otherContainer.getKeyForKeyByNameResolveStrategy();
         assertNotNull(otherKey1);
         assertNotNull(otherKey2);
         assertNotEquals(otherKey1, otherKey2);
@@ -124,14 +124,14 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkGetKeyForKeyStorage()
+    public void checkgetKeyForKeyByNameResolveStrategy()
             throws InvalidArgumentException {
         IContainer container = new Container();
-        assertNotNull(container.getKeyForKeyStorage());
-        assertNotNull(container.getKeyForKeyStorage().toString());
+        assertNotNull(container.getKeyForKeyByNameResolveStrategy());
+        assertNotNull(container.getKeyForKeyByNameResolveStrategy().toString());
         IContainer container1 = new Container();
-        assertNotEquals(container.getKeyForKeyStorage(), container1.getKeyForKeyStorage());
-        assertNotEquals(container.getKeyForKeyStorage().toString(), container1.getKeyForKeyStorage().toString());
+        assertNotEquals(container.getKeyForKeyByNameResolveStrategy(), container1.getKeyForKeyByNameResolveStrategy());
+        assertNotEquals(container.getKeyForKeyByNameResolveStrategy().toString(), container1.getKeyForKeyByNameResolveStrategy().toString());
     }
 
     @Test

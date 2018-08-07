@@ -35,16 +35,16 @@ public class ExceptionInterceptor implements IResultChecker {
 
         try {
             Object expectedReceiverId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"), description
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "receiver_id_from_iobject"), description
             );
             IRouter router = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IRouter.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IRouter.class.getCanonicalName())
             );
 
             expectedReceiver = router.route(expectedReceiverId);
 
             IFieldName exceptionClassFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"
             );
             expectedExceptionClassName = String.valueOf(description.getValue(exceptionClassFieldName));
 
@@ -100,7 +100,7 @@ public class ExceptionInterceptor implements IResultChecker {
 
         try {
             receiverId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"), mp.getSequence().getCurrentReceiverArguments()
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "receiver_id_from_iobject"), mp.getSequence().getCurrentReceiverArguments()
             );
         } catch (ResolutionException e) {
             receiverId = "<cannot resolve id>";

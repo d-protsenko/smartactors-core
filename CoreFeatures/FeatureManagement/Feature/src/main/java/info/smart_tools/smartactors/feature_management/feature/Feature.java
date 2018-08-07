@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Implementation of {@link IFeature}
@@ -16,6 +17,7 @@ public class Feature implements IFeature {
     private boolean failed;
     private String groupId;
     private String version;
+    private UUID featureUUID;
 
     /**
      * Creates instance of {@link IFeature} by specific arguments
@@ -28,6 +30,7 @@ public class Feature implements IFeature {
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
+        this.featureUUID = java.util.UUID.randomUUID();
     }
 
     /**
@@ -43,6 +46,7 @@ public class Feature implements IFeature {
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
+        this.featureUUID = java.util.UUID.randomUUID();
     }
 
     @Override
@@ -58,6 +62,11 @@ public class Feature implements IFeature {
     @Override
     public IPath getFeatureLocation() {
         return this.featureLocation;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return this.featureUUID;
     }
 
     @Override
@@ -104,4 +113,5 @@ public class Feature implements IFeature {
     public void setVersion(final String version) {
         this.version = (String) version;
     }
+
 }

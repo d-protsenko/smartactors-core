@@ -45,13 +45,13 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             environmentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
             );
             messageFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
             );
             contextFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of TestEnvironmentHandler.", e);
@@ -88,21 +88,21 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                 }
             };
             MainTestChain mainTestChain = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), MainTestChain.class.getCanonicalName()),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MainTestChain.class.getCanonicalName()),
                     receiverChain,
                     completionCallback,
                     checker.getSuccessfulReceiverArguments()
             );
             IMessageProcessingSequence sequence = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                     STACK_DEPTH, mainTestChain
             );
             IQueue<ITask> taskQueue = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "task_queue")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "task_queue")
             );
 
             IMessageProcessor mp = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence
             );
             fmp[0] = mp;
             mp.process(message, context);
@@ -118,10 +118,10 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             IFieldName interceptFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "intercept"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "intercept"
             );
             IFieldName assertFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "assert"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "assert"
             );
 
             List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);
@@ -137,11 +137,11 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
 
             if (null != assertions) {
                 return (IResultChecker) IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#assert"), assertions
+                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IResultChecker.class.getCanonicalName() + "#assert"), assertions
                 );
             } else {
                 return (IResultChecker) IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#intercept"), intercept
+                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"), intercept
                 );
             }
         } catch (ResolutionException | InvalidTestDescriptionException | InvalidArgumentException | ReadValueException e) {

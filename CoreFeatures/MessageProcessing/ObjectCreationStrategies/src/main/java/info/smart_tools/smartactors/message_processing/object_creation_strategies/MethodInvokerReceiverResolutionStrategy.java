@@ -54,7 +54,7 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
             }
 
             IResolveDependencyStrategy wrapperResolutionStrategy = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), wrapperResolutionStrategyDependency),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), wrapperResolutionStrategyDependency),
                     method.getParameterTypes()[0]
             );
 

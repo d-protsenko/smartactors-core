@@ -65,7 +65,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new PluginLoader(
-                        getClass().getClassLoader(), (IAction<Class>) args[0], (IPluginLoaderVisitor) args[1]);
+                        (ClassLoader) args[0], (IAction<Class>) args[1], (IPluginLoaderVisitor) args[2]);
             } catch (InvalidArgumentException e) {
                 throw new RuntimeException(e);
             }

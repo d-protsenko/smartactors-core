@@ -65,7 +65,7 @@ public class EndpointsSectionProcessingStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
 

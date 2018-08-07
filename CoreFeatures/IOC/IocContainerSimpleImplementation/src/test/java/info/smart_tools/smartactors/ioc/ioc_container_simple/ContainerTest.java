@@ -31,7 +31,7 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyStorage();
+        IKey key2 = container.getKeyForKeyByNameResolveStrategy();
         assertNull(key1);
         assertNotNull(key2);
     }
