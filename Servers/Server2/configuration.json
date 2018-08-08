@@ -213,6 +213,18 @@
         }
       ],
       "exceptional":[]
+    },
+    {
+      "id":"stopDirectoryWatcher",
+      "steps":[
+        {
+          "handler":"stopService",
+          "wrapper":{
+          },
+          "target":"directory-watcher"
+        }
+      ],
+      "exceptional":[]
     }
   ],
   "onFeatureLoading": [
@@ -224,12 +236,21 @@
     },
     {
       "chain": "runDirectoryWatcher",
+      "revert": false,
       "messages": [
         {
           "observedDirectory": "features",
           "executionChain": "onNewFile",
           "fileNameFieldName": "fileName",
           "observedDirectoryFieldName": "observedDirectory"
+        }
+      ]
+    },
+    {
+      "chain": "stopDirectoryWatcher",
+      "revert": true,
+      "messages": [
+        {
         }
       ]
     }
