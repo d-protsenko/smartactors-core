@@ -12,10 +12,11 @@ public interface IClassGenerator<T> {
     /**
      * Compile given source to java class
      * @param source source code for compilation
+     * @param classLoader class loader to store generated class
      * @return compiled class
      * @throws ClassGenerationException if any errors occurred
      * @throws InvalidArgumentException if arguments are incorrect
      */
-    Class<?> generate(T source)
+    Class<?> generate(T source, ClassLoader classLoader)
             throws ClassGenerationException, InvalidArgumentException;
 }

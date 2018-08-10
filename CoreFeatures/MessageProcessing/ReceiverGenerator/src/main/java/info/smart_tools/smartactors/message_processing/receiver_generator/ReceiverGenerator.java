@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.receiver_generator;
 
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
@@ -30,12 +30,11 @@ public class ReceiverGenerator implements IReceiverGenerator {
     /**
      * Constructor.
      * Create new instance of {@link ReceiverGenerator} by given {@link ClassLoader}
-     * @param classLoader the instance of {@link ClassLoader}
-     * @throws InvalidArgumentException if initialization of {@link ClassGenerator} was failed
+     * @throws InvalidArgumentException if initialization of {@link FromStringClassGenerator} was failed
      */
-    public ReceiverGenerator(final ClassLoader classLoader)
+    public ReceiverGenerator()
             throws InvalidArgumentException {
-        this.classGenerator = new ClassGenerator(classLoader);
+        this.classGenerator = new FromStringClassGenerator();
     }
 
     @Override
@@ -52,6 +51,17 @@ public class ReceiverGenerator implements IReceiverGenerator {
         ) {
             throw new InvalidArgumentException("One of the arguments null or empty.");
         }
+        try {
+            Class objClass = objInstance.getClass();
+            Class<IMessageReceiver> clazz = (Class<IMessageReceiver>) objClass.getClassLoader().loadClass(
+                    objClass.getPackage().getName()+"."+objClass.getSimpleName()+"_"+methodName+"_"+"receiver"
+            );
+            return clazz.newInstance();
+
+        } catch (Throwable e) {
+            // do nothing in case if wrapper implementation was not generated yet
+        }
+
         try {
             Class<IMessageReceiver> clazz = generateClass(
                     objInstance,
@@ -151,7 +161,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .setReturnType("void")
                 .setName("dispose");
 
-        return (Class<IMessageReceiver>) classGenerator.generate(cb.buildClass().toString());
+        return (Class<IMessageReceiver>) classGenerator.generate(cb.buildClass().toString(), usersObject.getClass().getClassLoader());
     }
 
     private Class findWrapperInterface(final Object actor, final String handler) {

@@ -46,7 +46,7 @@ public class RegisterWrapperGenerator implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    IWrapperGenerator rg = new WrapperGenerator(this.getClass().getClassLoader());
+                                    IWrapperGenerator rg = new WrapperGenerator();
                                     IOC.register(
                                             IOC.resolve(
                                                     IOC.getKeyForKeyByNameResolveStrategy(),

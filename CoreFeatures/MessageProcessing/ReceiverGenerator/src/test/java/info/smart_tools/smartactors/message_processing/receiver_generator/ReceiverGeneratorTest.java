@@ -72,7 +72,7 @@ public class ReceiverGeneratorTest {
         doNothing().when(env).setValue(new FieldName("int"), 2);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(processor.getEnvironment()).thenReturn(w);
-        IReceiverGenerator rg = new ReceiverGenerator(null);
+        IReceiverGenerator rg = new ReceiverGenerator();
         assertNotNull(rg);
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve()).thenReturn(w);
@@ -86,7 +86,7 @@ public class ReceiverGeneratorTest {
     @Test(expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnNullParameter()
             throws Exception {
-        IReceiverGenerator rg = new ReceiverGenerator(null);
+        IReceiverGenerator rg = new ReceiverGenerator();
         rg.generate(null, null, null);
         fail();
     }
@@ -97,7 +97,7 @@ public class ReceiverGeneratorTest {
         CustomActor a = new CustomActor();
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
 
-        IReceiverGenerator rg = new ReceiverGenerator(null);
+        IReceiverGenerator rg = new ReceiverGenerator();
         rg.generate(a, strategy, "a");
         fail();
     }

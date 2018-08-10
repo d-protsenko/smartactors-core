@@ -46,7 +46,7 @@ public class InitializeReceiverGenerator implements IPlugin {
                     .process(
                             () -> {
                                 try {
-                                    IReceiverGenerator rg = new ReceiverGenerator(this.getClass().getClassLoader());
+                                    IReceiverGenerator rg = new ReceiverGenerator();
                                     IOC.register(
                                             Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()),
                                             new SingletonStrategy(rg)

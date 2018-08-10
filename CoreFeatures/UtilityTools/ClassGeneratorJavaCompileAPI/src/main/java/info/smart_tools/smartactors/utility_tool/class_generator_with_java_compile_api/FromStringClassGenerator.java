@@ -10,21 +10,16 @@ import java.util.regex.Pattern;
 /**
  * Implementation of {@link IClassGenerator}
  */
-public class ClassGenerator implements IClassGenerator<String> {
-
-    private InMemoryCodeCompiler compiler;
+public class FromStringClassGenerator implements IClassGenerator<String> {
 
     /**
      * Constructor.
-     * Creates new instance of {@link ClassGenerator} by given class loader
-     * @param classLoader instance of {@link ClassLoader}
+     * Creates new instance of {@link FromStringClassGenerator}
      */
-    public ClassGenerator(final ClassLoader classLoader) {
-        compiler = new InMemoryCodeCompiler(classLoader);
-    }
+    public FromStringClassGenerator() {}
 
     @Override
-    public Class<?> generate(final String source)
+    public Class<?> generate(final String source, ClassLoader classLoader)
             throws ClassGenerationException, InvalidArgumentException {
 
         if (null == source || source.isEmpty()) {
@@ -40,7 +35,7 @@ public class ClassGenerator implements IClassGenerator<String> {
         }
         try {
             String fullClassName = packageName + "." + className;
-            Class<?> compiledClass = this.compiler.compile(fullClassName, source);
+            Class<?> compiledClass = JavacToMemoryCodeCompiler.compile(fullClassName, source, classLoader);
             return compiledClass;
         } catch (Throwable e) {
             throw new ClassGenerationException("Could not generate class.", e);

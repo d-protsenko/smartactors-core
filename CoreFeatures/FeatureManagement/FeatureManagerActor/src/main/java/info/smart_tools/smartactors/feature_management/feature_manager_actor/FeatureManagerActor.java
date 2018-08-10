@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -46,7 +46,7 @@ public class FeatureManagerActor {
     private Map<Object, IFeature> loadedFeatures;
     private Map<Object, IFeature> failedFeatures;
     private Map<Object, IFeature> processingFeatures;
-    private Map<UUID, ClassLoader> featureClassLoaders;
+    private Map<UUID, ExpansibleURLClassLoader> featureClassLoaders;
 
     private final IFieldName loadedFeatureFN;
     private final IFieldName failedFeatureFN;
@@ -99,9 +99,7 @@ public class FeatureManagerActor {
             int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
-
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
-
 
             int count = 0;
             for (IFeature feature : features) {
@@ -123,7 +121,8 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    ClassLoader featureClassLoader = new ExpansibleURLClassLoader(new URL[]{}, getClass().getClassLoader());
+                    ExpansibleURLClassLoader featureClassLoader = new ExpansibleURLClassLoader(new URL[]{});
+                    featureClassLoader.setNamespace(feature.getName());
                     this.featureClassLoaders.put(feature.getUUID(), featureClassLoader);
                     context.setValue(this.featureClassLoaderFN, featureClassLoader);
                     messageProcessor.process(message, context);
@@ -226,21 +225,25 @@ public class FeatureManagerActor {
             checkAndRunConnectedFeatures();
             Set<String> featureDependencies = feature.getDependencies();
 
-            if (null != featureDependencies && !featureDependencies.isEmpty()) {
+            if (null != featureDependencies) {
 
-                ClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                ExpansibleURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
                 for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
 
                     String dependencyName = iterator.next();
                     IFeature dependency = this.loadedFeatures.get(dependencyName);
 
                     if (null != dependency) {
-                        ((ExpansibleURLClassLoader)featureClassLoader).addDependency(this.featureClassLoaders.get(dependency.getUUID()));
+                        featureClassLoader.addDependency(this.featureClassLoaders.get(dependency.getUUID()));
                         iterator.remove();
                     }
                 }
 
-                if (!featureDependencies.isEmpty()) {
+                if (featureDependencies.isEmpty()) {
+                    if (featureClassLoader.getDependencies().size() == 0) {
+                        featureClassLoader.addDependency(getClass().getClassLoader());
+                    }
+                } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
                     this.featureProcess.put(mp, feature);
@@ -289,14 +292,15 @@ public class FeatureManagerActor {
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature)
             throws FeatureManagementException, InvalidArgumentException {
         String loadedFeatureName = loadedFeature.getName();
-        ClassLoader loadedFeatureClassLoader = this.featureClassLoaders.get(loadedFeature.getUUID());
+        ExpansibleURLClassLoader loadedFeatureClassLoader = this.featureClassLoaders.get(loadedFeature.getUUID());
+        loadedFeatureClassLoader.setNamespace(loadedFeatureName);
 
         for (IFeature feature : this.processingFeatures.values()) {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies && featureDependencies.remove(loadedFeatureName)) {
-                ClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
-                ((ExpansibleURLClassLoader)featureClassLoader).addDependency(loadedFeatureClassLoader);
+                ExpansibleURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                featureClassLoader.addDependency(loadedFeatureClassLoader);
             }
         }
     }

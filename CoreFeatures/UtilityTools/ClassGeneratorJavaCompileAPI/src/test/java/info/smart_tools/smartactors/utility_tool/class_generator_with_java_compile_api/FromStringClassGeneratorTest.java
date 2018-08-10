@@ -14,14 +14,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
- * Tests for {@link ClassGenerator}
+ * Tests for {@link FromStringClassGenerator}
  */
-public class ClassGeneratorTest {
+public class FromStringClassGeneratorTest {
 
     @Test
     public void check()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
                 "public class TestClass implements TestInterface {\n" +
@@ -30,30 +30,30 @@ public class ClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class<?> clazz = classGenerator.generate(testSample);
+        Class<?> clazz = classGenerator.generate(testSample, this.getClass().getClassLoader());
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnNullArg()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
-        classGenerator.generate(null);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
+        classGenerator.generate(null, this.getClass().getClassLoader());
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnEmptyArg()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
-        classGenerator.generate("");
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
+        classGenerator.generate("", this.getClass().getClassLoader());
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnTestArgumentWithoutPackage()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample =
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
                 "public class TestClass implements TestInterface {\n" +
@@ -62,14 +62,14 @@ public class ClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        classGenerator.generate(testSample);
+        classGenerator.generate(testSample, this.getClass().getClassLoader());
         fail();
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnTestArgumentWithoutClass()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_apiTestInterface;\n" +
                 "public TestClass implements TestInterface {\n" +
@@ -78,14 +78,14 @@ public class ClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        classGenerator.generate(testSample);
+        classGenerator.generate(testSample, this.getClass().getClassLoader());
         fail();
     }
 
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        ClassGenerator classGenerator = new ClassGenerator(null);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
                 "public class TestClass implements TestInterfaceUndefined {\n" +
@@ -94,7 +94,7 @@ public class ClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        classGenerator.generate(testSample);
+        classGenerator.generate(testSample, this.getClass().getClassLoader());
         fail();
     }
 
@@ -121,7 +121,7 @@ public class ClassGeneratorTest {
 
         }
 
-        ClassGenerator classGenerator = new ClassGenerator(cl);
+        FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
                 "import info.smart_tools.smartactors.core.ifield_name.IFieldName;\n" +
@@ -131,7 +131,7 @@ public class ClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class newClass = classGenerator.generate(testSample);
+        Class newClass = classGenerator.generate(testSample, cl);
         assertNotNull(newClass);
     }
 }

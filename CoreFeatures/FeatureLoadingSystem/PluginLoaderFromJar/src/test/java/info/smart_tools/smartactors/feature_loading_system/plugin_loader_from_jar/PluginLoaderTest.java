@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
 import org.junit.Test;
 
 import java.net.URL;
@@ -27,6 +28,7 @@ public class PluginLoaderTest {
             throws Exception {
         Checker checker = new Checker();
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -65,6 +67,7 @@ public class PluginLoaderTest {
     public void checkPluginLoaderException()
             throws Exception {
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -81,6 +84,7 @@ public class PluginLoaderTest {
             throws Exception {
         Checker checker = new Checker();
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,

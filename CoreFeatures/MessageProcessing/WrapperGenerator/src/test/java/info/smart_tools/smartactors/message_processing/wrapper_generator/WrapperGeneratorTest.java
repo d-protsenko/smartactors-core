@@ -44,7 +44,7 @@ public class WrapperGeneratorTest {
     @Test
     public void checkCreationAndUsageWrapperByInterface()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapperGenerator wg = new WrapperGenerator();
         IWrapper w1 = wg.generate(IWrapper.class);
         assertNotNull(w1);
         // re-usage
@@ -56,21 +56,21 @@ public class WrapperGeneratorTest {
     @Test (expected = WrapperGeneratorException.class)
     public void checkOnIncorrectInterfaceWithoutReadValueException()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapperGenerator wg = new WrapperGenerator();
         wg.generate(IIncorrectWrapperWithoutReadValueException.class);
     }
 
     @Test (expected = WrapperGeneratorException.class)
     public void checkOnIncorrectInterfaceWithoutChangeValueException()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapperGenerator wg = new WrapperGenerator();
         wg.generate(IIncorrectWrapperWithoutChangeValueException.class);
     }
 
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnTargetInterfaceNull()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapperGenerator wg = new WrapperGenerator();
         wg.generate(null);
         fail();
     }
@@ -78,7 +78,7 @@ public class WrapperGeneratorTest {
     @Test (expected = InvalidArgumentException.class)
     public void checkInvalidArgumentExceptionOnNotInterface()
             throws Exception {
-        IWrapperGenerator wg = new WrapperGenerator(null);
+        IWrapperGenerator wg = new WrapperGenerator();
         wg.generate(TestClass.class);
         fail();
     }

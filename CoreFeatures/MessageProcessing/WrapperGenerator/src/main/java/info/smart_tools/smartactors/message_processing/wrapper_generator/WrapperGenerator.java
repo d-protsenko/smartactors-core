@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ClassGenerator;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -19,7 +18,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_gener
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.Modifiers;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -41,10 +39,9 @@ public class WrapperGenerator implements IWrapperGenerator {
     /**
      * Constructor.
      * Create new instance of {@link WrapperGenerator} by given {@link ClassLoader}
-     * @param classLoader the instance of {@link ClassLoader}
      */
-    public WrapperGenerator(final ClassLoader classLoader) {
-        this.classGenerator = new ClassGenerator(classLoader);
+    public WrapperGenerator() {
+        this.classGenerator = new FromStringClassGenerator();
     }
 
     @Override
@@ -60,47 +57,22 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            instance = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper")
+            Class<T> clazz = (Class<T>) targetInterface.getClassLoader().loadClass(
+                    targetInterface.getPackage().getName()+"."+targetInterface.getSimpleName()+"Impl"
             );
-        } catch (ResolutionException e) {
-            // do nothing
-            // ToDo: need refactoring
-        }
-        if (null != instance) {
-            return instance;
+            return clazz.newInstance();
+
+        } catch (Throwable e) {
+            // do nothing in case if wrapper implementation was not generated yet
         }
 
         try {
             Class<T> clazz = generateClass(targetInterface);
 
-            /*  This block is replaced by next one in order to prevent the registration of wrapper into IOC
-                and bypass the instance of the class directly to return
-
-            // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
-            // ToDo: replace this strategy to the future plugin for WrapperGenerator
-            IOC.register(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper"),
-                    new ApplyFunctionToArgumentsStrategy(
-                            (arg) ->  {
-                                try {
-                                    return clazz.newInstance();
-                                } catch (Throwable e) {
-                                    throw new RuntimeException("Error on creation new instance.", e);
-                                }
-                            }
-                    )
-            );
-
-            return IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), targetInterface.getCanonicalName() + "wrapper")
-            );
-            */
-
             try {
                 return clazz.newInstance();
             } catch (Throwable e) {
-                throw new RuntimeException("Error on creation new instance.", e);
+                throw new RuntimeException("Error on creation instance of wrapper.", e);
             }
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
@@ -333,7 +305,10 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .setName("iterator")
                 .addStringToBody("return null;");
 
-        return (Class<T>) classGenerator.generate(cb.buildClass().toString());
+        return (Class<T>) classGenerator.generate(
+                cb.buildClass().toString(),
+                targetInterface.getClassLoader()
+        );
     }
 }
 

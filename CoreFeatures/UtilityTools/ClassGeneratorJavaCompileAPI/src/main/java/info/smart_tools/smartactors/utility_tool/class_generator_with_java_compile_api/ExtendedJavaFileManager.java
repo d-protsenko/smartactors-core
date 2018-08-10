@@ -10,28 +10,29 @@ import java.io.IOException;
 /**
  * Class extends StandardJavaFileManager
  */
-class ExtendedStandardJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+class ExtendedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
     private CompiledCode compiledCode;
-    private DynamicClassLoader cl;
+    private ClassLoader cl;
 
     /**
      * Constructor.
-     * Creates instance of {@link ExtendedStandardJavaFileManager} by given
+     * Creates instance of {@link ExtendedJavaFileManager} by given
      * instances of {@link JavaFileManager}, {@link CompiledCode}, {@link DynamicClassLoader}
      * @param fileManager instance of {@link JavaFileManager}
      * @param compiledCode instance of {@link CompiledCode}
      * @param cl instance of {@link DynamicClassLoader}
      */
-    ExtendedStandardJavaFileManager(
+    ExtendedJavaFileManager(
             final JavaFileManager fileManager,
             final CompiledCode compiledCode,
-            final DynamicClassLoader cl
+            final ClassLoader cl
     ) {
         super(fileManager);
         this.compiledCode = compiledCode;
         this.cl = cl;
-        this.cl.setCode(compiledCode);
+//        this.cl = (ExpansibleURLClassLoader)cl;
+//        this.cl.setCode(compiledCode);
     }
 
     /**
@@ -53,9 +54,9 @@ class ExtendedStandardJavaFileManager extends ForwardingJavaFileManager<JavaFile
     }
 
     /**
-     * Get current instance of {@link DynamicClassLoader}
+     * Get current instance of {@link ExpansibleURLClassLoader}
      * @param location instance of {@link Location}
-     * @return instance of current {@link DynamicClassLoader}
+     * @return instance of current {@link ExpansibleURLClassLoader}
      */
     public ClassLoader getClassLoader(final Location location) {
         return this.cl;
