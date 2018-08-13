@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.utility_tool.class_generator_with_java_comp
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.exception.ClassGenerationException;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;
 import org.junit.Test;
 
 import java.net.URL;
@@ -16,11 +17,19 @@ import static org.junit.Assert.fail;
 /**
  * Tests for {@link FromStringClassGenerator}
  */
-public class FromStringClassGeneratorTest {
+public class FromStringClassGeneratorTest implements TestInterface {
+
+    public Integer getA() {
+        return new Integer(1);
+    }
 
     @Test
     public void check()
             throws Exception {
+        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+                new URL[]{},
+                this.getClass().getClassLoader()
+        );
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -30,7 +39,7 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class<?> clazz = classGenerator.generate(testSample, this.getClass().getClassLoader());
+        Class<?> clazz = classGenerator.generate(testSample, cl);
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
@@ -85,6 +94,10 @@ public class FromStringClassGeneratorTest {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
+        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+                new URL[]{},
+                this.getClass().getClassLoader()
+        );
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -94,7 +107,7 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        classGenerator.generate(testSample, this.getClass().getClassLoader());
+        Class clazz = classGenerator.generate(testSample, cl);
         fail();
     }
 
@@ -107,8 +120,10 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-        URLClassLoader cl = URLClassLoader.newInstance(urls);
-
+        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+                urls,
+                this.getClass().getClassLoader()
+        );
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
             if(je.isDirectory() || !je.getName().endsWith(".class")){

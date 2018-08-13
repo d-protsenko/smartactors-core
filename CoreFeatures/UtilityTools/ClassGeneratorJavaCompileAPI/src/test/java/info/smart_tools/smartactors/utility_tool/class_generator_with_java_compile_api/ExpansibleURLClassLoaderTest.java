@@ -27,8 +27,8 @@ public class ExpansibleURLClassLoaderTest {
     public void checkAdditionNewURL()
             throws Exception {
         URL url1 = new URL("http", "host", 9000, "filename1");
-        URL url2 =  new URL("http", "host", 9000, "filename2");
-        URL url3 =  new URL("http", "host", 9000, "filename1");
+        URL url2 = new URL("http", "host", 9000, "filename2");
+        URL url3 = new URL("http", "host", 9000, "filename1");
         ExpansibleURLClassLoader c0 = new ExpansibleURLClassLoader(new URL[]{});
         c0.addDependency(this.getClass().getClassLoader());
         ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{url1}, c0);
@@ -44,13 +44,39 @@ public class ExpansibleURLClassLoaderTest {
         try {
             cl.addDependency(null);
             fail();
-        } catch (InvalidArgumentException e) {}
+        } catch (InvalidArgumentException e) {
+        }
 
         try {
             Class clazz = cl.loadClass("nowhere.classNotExist");
             fail();
-        } catch (ClassNotFoundException e) {}
+        } catch (ClassNotFoundException e) {
+        }
 
         Class clazz = cl.loadClass("java.lang.String", true);
+    }
+
+    @Test
+    public void checkGettersSetters()
+            throws Exception {
+
+        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+                new URL[]{}, this.getClass().getClassLoader()
+        );
+        assertEquals(cl.getDependencies().size(), 1);
+
+        String namespace = "currentClassLoaderNamespace";
+        cl.setNamespace(namespace);
+        assertEquals(cl.getNamespace(), namespace);
+
+        Class clazz = cl.getLoadedClass("unregistered");
+        assertEquals(clazz, null);
+        byte[] byteCode = null;
+
+        try {
+            clazz = cl.addClass("newClass", byteCode);
+            fail();
+        } catch (NullPointerException e) { }
+
     }
 }

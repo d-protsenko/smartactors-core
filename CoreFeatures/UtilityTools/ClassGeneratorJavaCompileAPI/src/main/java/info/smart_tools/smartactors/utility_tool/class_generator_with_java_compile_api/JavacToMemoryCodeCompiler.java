@@ -1,5 +1,4 @@
 package info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api;
-
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;

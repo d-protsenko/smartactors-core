@@ -91,25 +91,6 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
         return this.dependsOn;
     }
 
-    /**
-     * Add instance of {@link CompiledCode} to the local storage
-     * @param cc instance of {@link CompiledCode}
-     *
-    void setCode(final CompiledCode cc) {
-        compiledCodeStorage.put(cc.getName(), cc);
-    }
-
-    @Override
-    protected Class<?> findClass(final String name)
-            throws ClassNotFoundException {
-        CompiledCode cc = compiledCodeStorage.get(name);
-        if (cc == null) {
-            return super.findClass(name);
-        }
-        byte[] byteCode = cc.getByteCode();
-        return defineClass(name, byteCode, 0, byteCode.length);
-    }
-*/
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
@@ -118,7 +99,22 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
         return this.namespace;
     }
 
+    /**
+     * Add compiled byte code of the class directly to this class loader
+     * @param className The name of the class to define
+     * @param classByteCode Compiled byte code of the class to add
+     * @return The reference to the class
+     */
     public Class<?> addClass(final String className, byte[] classByteCode) {
         return defineClass(className, classByteCode, 0, classByteCode.length);
+    }
+
+    /**
+     * Get the class from this class loader only (not from parents or dependencies)
+     * @param className The name of the class to get
+     * @return The reference to the class from this class loader
+     */
+    public final Class<?> getLoadedClass(String className) {
+        return this.findLoadedClass(className);
     }
 }

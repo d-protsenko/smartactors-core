@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -57,13 +58,15 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            Class<T> clazz = (Class<T>) targetInterface.getClassLoader().loadClass(
-                    targetInterface.getPackage().getName()+"."+targetInterface.getSimpleName()+"Impl"
+            Class<T> clazz = (Class<T>) ((ExpansibleURLClassLoader)targetInterface.getClassLoader()).getLoadedClass(
+                    targetInterface.getName()+"Impl"
             );
-            return clazz.newInstance();
+            if (null != clazz) {
+                return clazz.newInstance();
+            }
 
         } catch (Throwable e) {
-            // do nothing in case if wrapper implementation was not generated yet
+            // do nothing in case if new instance of wrapper implementation failed to be generated
         }
 
         try {
