@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -46,7 +46,7 @@ public class FeatureManagerActor {
     private Map<Object, IFeature> loadedFeatures;
     private Map<Object, IFeature> failedFeatures;
     private Map<Object, IFeature> processingFeatures;
-    private Map<UUID, ExpansibleURLClassLoader> featureClassLoaders;
+    private Map<UUID, ExtendedURLClassLoader> featureClassLoaders;
 
     private final IFieldName loadedFeatureFN;
     private final IFieldName failedFeatureFN;
@@ -121,7 +121,7 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    ExpansibleURLClassLoader featureClassLoader = new ExpansibleURLClassLoader(new URL[]{});
+                    ExtendedURLClassLoader featureClassLoader = new ExtendedURLClassLoader(new URL[]{});
                     featureClassLoader.setNamespace(feature.getName());
                     this.featureClassLoaders.put(feature.getUUID(), featureClassLoader);
                     context.setValue(this.featureClassLoaderFN, featureClassLoader);
@@ -227,7 +227,7 @@ public class FeatureManagerActor {
 
             if (null != featureDependencies) {
 
-                ExpansibleURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                ExtendedURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
                 for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
 
                     String dependencyName = iterator.next();
@@ -292,14 +292,14 @@ public class FeatureManagerActor {
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature)
             throws FeatureManagementException, InvalidArgumentException {
         String loadedFeatureName = loadedFeature.getName();
-        ExpansibleURLClassLoader loadedFeatureClassLoader = this.featureClassLoaders.get(loadedFeature.getUUID());
+        ExtendedURLClassLoader loadedFeatureClassLoader = this.featureClassLoaders.get(loadedFeature.getUUID());
         loadedFeatureClassLoader.setNamespace(loadedFeatureName);
 
         for (IFeature feature : this.processingFeatures.values()) {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies && featureDependencies.remove(loadedFeatureName)) {
-                ExpansibleURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
+                ExtendedURLClassLoader featureClassLoader = this.featureClassLoaders.get(feature.getUUID());
                 featureClassLoader.addDependency(loadedFeatureClassLoader);
             }
         }

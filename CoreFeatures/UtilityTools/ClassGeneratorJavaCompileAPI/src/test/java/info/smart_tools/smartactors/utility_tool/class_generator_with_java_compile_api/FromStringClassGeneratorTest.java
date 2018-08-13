@@ -2,11 +2,9 @@ package info.smart_tools.smartactors.utility_tool.class_generator_with_java_comp
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.exception.ClassGenerationException;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;
 import org.junit.Test;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -26,10 +24,6 @@ public class FromStringClassGeneratorTest implements TestInterface {
     @Test
     public void check()
             throws Exception {
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
-                new URL[]{},
-                this.getClass().getClassLoader()
-        );
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.utility_tool.test_class;\n" +
                 "import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -39,8 +33,12 @@ public class FromStringClassGeneratorTest implements TestInterface {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class<?> clazz = classGenerator.generate(testSample, cl);
+        Class<?> clazz = classGenerator.generate(testSample, null);
         TestInterface inst = (TestInterface) clazz.newInstance();
+        clazz = classGenerator.generate(testSample, getClass().getClassLoader());
+        inst = (TestInterface) clazz.newInstance();
+        clazz = classGenerator.generate(testSample, new ExtendedURLClassLoader(new URL[]{}, getClass().getClassLoader()));
+        inst = (TestInterface) clazz.newInstance();
     }
 
     @Test (expected = InvalidArgumentException.class)
@@ -94,7 +92,7 @@ public class FromStringClassGeneratorTest implements TestInterface {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(
                 new URL[]{},
                 this.getClass().getClassLoader()
         );
@@ -120,7 +118,7 @@ public class FromStringClassGeneratorTest implements TestInterface {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(
                 urls,
                 this.getClass().getClassLoader()
         );

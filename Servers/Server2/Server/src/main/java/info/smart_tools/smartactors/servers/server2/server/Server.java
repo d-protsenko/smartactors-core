@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
@@ -37,8 +37,8 @@ import java.util.List;
  *
  */
 public class Server implements IServer {
-    private ExpansibleURLClassLoader classLoader =
-            new ExpansibleURLClassLoader(new URL[]{});
+    private ExtendedURLClassLoader classLoader =
+            new ExtendedURLClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 

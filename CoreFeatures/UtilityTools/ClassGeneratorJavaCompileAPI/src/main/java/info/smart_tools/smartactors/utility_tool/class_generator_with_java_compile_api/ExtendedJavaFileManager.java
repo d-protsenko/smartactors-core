@@ -18,10 +18,10 @@ class ExtendedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager>
     /**
      * Constructor.
      * Creates instance of {@link ExtendedJavaFileManager} by given
-     * instances of {@link JavaFileManager}, {@link CompiledCode}, {@link DynamicClassLoader}
+     * instances of {@link JavaFileManager}, {@link CompiledCode}, {@link ClassLoader}
      * @param fileManager instance of {@link JavaFileManager}
      * @param compiledCode instance of {@link CompiledCode}
-     * @param cl instance of {@link DynamicClassLoader}
+     * @param cl instance of {@link ClassLoader}
      */
     ExtendedJavaFileManager(
             final JavaFileManager fileManager,
@@ -31,8 +31,6 @@ class ExtendedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager>
         super(fileManager);
         this.compiledCode = compiledCode;
         this.cl = cl;
-//        this.cl = (ExpansibleURLClassLoader)cl;
-//        this.cl.setCode(compiledCode);
     }
 
     /**
@@ -54,9 +52,9 @@ class ExtendedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager>
     }
 
     /**
-     * Get current instance of {@link ExpansibleURLClassLoader}
+     * Get current instance of {@link ExtendedURLClassLoader}
      * @param location instance of {@link Location}
-     * @return instance of current {@link ExpansibleURLClassLoader}
+     * @return instance of current {@link ExtendedURLClassLoader}
      */
     public ClassLoader getClassLoader(final Location location) {
         return this.cl;

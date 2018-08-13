@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Extension of {@link URLClassLoader}
  */
-public class ExpansibleURLClassLoader extends URLClassLoader {
+public class ExtendedURLClassLoader extends URLClassLoader {
 
     private String namespace = "";
     private ArrayList<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
@@ -18,7 +18,7 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    public ExpansibleURLClassLoader(final URL[] urls) {
+    public ExtendedURLClassLoader(final URL[] urls) {
         super(urls);
     }
 
@@ -27,7 +27,7 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
      * @param urls the URLs from which to load classes and resources
      * @param parent the parent class loader for delegation
      */
-    public ExpansibleURLClassLoader(final URL[] urls, final ClassLoader parent)
+    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent)
             throws InvalidArgumentException {
         super(urls, parent);
         this.addDependency(parent);
@@ -46,8 +46,8 @@ public class ExpansibleURLClassLoader extends URLClassLoader {
     }
 
     /**
-     * Add new dependency on {@link ClassLoader} to this {@link ExpansibleURLClassLoader}
-     * @param classLoader {@link ClassLoader} which this {@link ExpansibleURLClassLoader} depends on
+     * Add new dependency on {@link ClassLoader} to this {@link ExtendedURLClassLoader}
+     * @param classLoader {@link ClassLoader} which this {@link ExtendedURLClassLoader} depends on
      */
     public void addDependency(ClassLoader classLoader)
             throws InvalidArgumentException {

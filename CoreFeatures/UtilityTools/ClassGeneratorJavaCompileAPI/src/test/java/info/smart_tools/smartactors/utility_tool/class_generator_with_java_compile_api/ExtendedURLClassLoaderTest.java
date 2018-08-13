@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
 import org.junit.Test;
 
 import java.net.URL;
@@ -9,16 +8,16 @@ import java.net.URL;
 import static org.junit.Assert.*;
 
 /**
- * Tests for ExpansibleURLClassLoader
+ * Tests for ExtendedURLClassLoader
  */
-public class ExpansibleURLClassLoaderTest {
+public class ExtendedURLClassLoaderTest {
 
     @Test
     public void checkExpansibleURLClassLoaderCreation()
             throws Exception {
-        ExpansibleURLClassLoader cl1 = new ExpansibleURLClassLoader(new URL[]{});
+        ExtendedURLClassLoader cl1 = new ExtendedURLClassLoader(new URL[]{});
         assertNotNull(cl1);
-        ExpansibleURLClassLoader cl2 = new ExpansibleURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
+        ExtendedURLClassLoader cl2 = new ExtendedURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
         assertNotNull(cl2);
         assertSame(cl2.getParent(), ClassLoader.getSystemClassLoader());
     }
@@ -29,9 +28,9 @@ public class ExpansibleURLClassLoaderTest {
         URL url1 = new URL("http", "host", 9000, "filename1");
         URL url2 = new URL("http", "host", 9000, "filename2");
         URL url3 = new URL("http", "host", 9000, "filename1");
-        ExpansibleURLClassLoader c0 = new ExpansibleURLClassLoader(new URL[]{});
+        ExtendedURLClassLoader c0 = new ExtendedURLClassLoader(new URL[]{});
         c0.addDependency(this.getClass().getClassLoader());
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{url1}, c0);
+        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(new URL[]{url1}, c0);
         assertNotNull(cl);
         cl.addUrl(url2);
         cl.addUrl(url3);
@@ -60,7 +59,7 @@ public class ExpansibleURLClassLoaderTest {
     public void checkGettersSetters()
             throws Exception {
 
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(
+        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(
                 new URL[]{}, this.getClass().getClassLoader()
         );
         assertEquals(cl.getDependencies().size(), 1);

@@ -33,11 +33,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -153,6 +149,9 @@ public class FeatureManagerActorTest {
         IMessageProcessor mp2 = mock(IMessageProcessor.class);
         IMessageProcessor mp3 = mock(IMessageProcessor.class);
         AddFeatureWrapper wrapper = mock(AddFeatureWrapper.class);
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        UUID uuid3 = UUID.randomUUID();
 
         Set<IFeature> features = new HashSet<IFeature>(){{add(feature1); add(feature2);}};
         Set<IFeature> features2 = new HashSet<IFeature>(){{add(feature1); add(feature3);}};
@@ -168,9 +167,12 @@ public class FeatureManagerActorTest {
         when(this.storage.resolve(chainId)).thenReturn(this.chain);
 
         when(feature1.getName()).thenReturn("feature 1");
-        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
         when(feature2.getName()).thenReturn("feature 2");
         when(feature3.getName()).thenReturn("feature 3");
+        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
+        when(feature1.getUUID()).thenReturn(uuid1);
+        when(feature2.getUUID()).thenReturn(uuid2);
+        when(feature3.getUUID()).thenReturn(uuid3);
 
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
         when(this.getSequence.resolve(5, this.chain)).thenReturn(sequence);
@@ -217,6 +219,10 @@ public class FeatureManagerActorTest {
         when(onFeatureStepCompletedWrapper.getFeature())
                 .thenReturn(feature1)
                 .thenReturn(feature2)
+                .thenReturn(feature3)
+                .thenReturn(feature3)
+                .thenReturn(feature3)
+                .thenReturn(feature1)
                 .thenReturn(feature3);
         when(onFeatureStepCompletedWrapper.getMessageProcessor())
                 .thenReturn(mpf1)
@@ -246,6 +252,8 @@ public class FeatureManagerActorTest {
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);
+        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
+        actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);

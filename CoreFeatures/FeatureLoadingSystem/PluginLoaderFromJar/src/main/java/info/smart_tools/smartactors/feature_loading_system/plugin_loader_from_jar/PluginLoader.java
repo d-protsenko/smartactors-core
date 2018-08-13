@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +30,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
     private static final String CLASS_EXTENSION = ".class";
 
     /** ClassLoader for load classes*/
-    private ExpansibleURLClassLoader classLoader;
+    private ExtendedURLClassLoader classLoader;
 
     /** Action to create instance of given class */
     private IAction<Class> creator;
@@ -53,7 +53,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
         this.creator = action;
         this.visitor = visitor;
         try {
-            this.classLoader = (ExpansibleURLClassLoader) classLoader;
+            this.classLoader = (ExtendedURLClassLoader) classLoader;
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not cast given ClassLoader to the URLClassLoader.");
         }

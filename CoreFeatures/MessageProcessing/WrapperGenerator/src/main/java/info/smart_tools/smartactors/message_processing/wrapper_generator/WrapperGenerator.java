@@ -1,20 +1,17 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.utility_tool.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
@@ -58,15 +55,14 @@ public class WrapperGenerator implements IWrapperGenerator {
         }
 
         try {
-            Class<T> clazz = (Class<T>) ((ExpansibleURLClassLoader)targetInterface.getClassLoader()).getLoadedClass(
+            Class<T> clazz = (Class<T>) targetInterface.getClassLoader().loadClass(
                     targetInterface.getName()+"Impl"
             );
-            if (null != clazz) {
-                return clazz.newInstance();
-            }
+            return clazz.newInstance();
 
         } catch (Throwable e) {
-            // do nothing in case if new instance of wrapper implementation failed to be generated
+            // do nothing in case if wrapper implementation class failed to be loaded
+            // or new instance of wrapper implementation failed to be created
         }
 
         try {

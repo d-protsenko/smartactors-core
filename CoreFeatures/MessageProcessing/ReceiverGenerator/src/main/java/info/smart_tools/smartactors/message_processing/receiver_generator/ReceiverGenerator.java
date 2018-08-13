@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.receiver_generator;
 
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExpansibleURLClassLoader;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.class_builder.Modifiers;
@@ -54,15 +54,14 @@ public class ReceiverGenerator implements IReceiverGenerator {
         }
         try {
             Class objClass = objInstance.getClass();
-            Class<IMessageReceiver> clazz = (Class<IMessageReceiver>) ((ExpansibleURLClassLoader)objClass.getClassLoader()).getLoadedClass(
+            Class<IMessageReceiver> clazz = (Class<IMessageReceiver>) objClass.getClassLoader().loadClass(
                     objClass.getName()+"_"+methodName+"_"+"receiver"
             );
-            if (null != clazz) {
-                return clazz.newInstance();
-            }
+            return clazz.newInstance();
 
         } catch (Throwable e) {
-            // do nothing in case if new instance of receiver implementation failed to be generated
+            // do nothing in case if receiver implementation class failed to be loaded
+            // or new instance of receiver implementation failed to be created
         }
 
         try {

@@ -6,6 +6,7 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,21 +46,27 @@ class JavacToMemoryCodeCompiler {
             final ClassLoader classLoader
     )
             throws Exception {
+        ExtendedURLClassLoader cl;
+        if (null == classLoader) {
+            cl = new ExtendedURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
+        } else if (!(classLoader instanceof ExtendedURLClassLoader)) {
+            cl = new ExtendedURLClassLoader(new URL[]{}, classLoader);
+        } else {
+            cl = (ExtendedURLClassLoader)classLoader;
+        }
         try {
-            return classLoader.loadClass(className);
+            return cl.loadClass(className);
         } catch (ClassNotFoundException e) { }
         try {
             List<String> optionList = new ArrayList<>();
-            if (null != classLoader) {
-                optionList.addAll(Arrays.asList("-classpath", getClassPath(classLoader)));
-            }
+            optionList.addAll(Arrays.asList("-classpath", getClassPath(cl)));
             SourceCode sourceCode = new SourceCode(className, classSourceCode);
             CompiledCode compiledCode = new CompiledCode(className);
             List compilationUnits = Collections.singletonList(sourceCode);
             ExtendedJavaFileManager fileManager = new ExtendedJavaFileManager(
                     javac.getStandardFileManager(null, null, null),
                     compiledCode,
-                    classLoader
+                    cl
             );
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             CompilationTask task = javac.getTask(
@@ -80,10 +87,8 @@ class JavacToMemoryCodeCompiler {
                 throw new Exception("Failed to compile " + className + s.toString());
 
             }
-            return ((ExpansibleURLClassLoader)classLoader).addClass(
-                    compiledCode.getName(),
-                    compiledCode.getByteCode()
-            );
+            return cl.addClass(compiledCode.getName(), compiledCode.getByteCode());
+
         } catch (Throwable e) {
             throw new Exception(e);
         }
@@ -98,9 +103,9 @@ class JavacToMemoryCodeCompiler {
      */
     private static void addClassPathRecursively(StringBuilder buf, final ClassLoader classLoader, String separator) {
         try {
-            ExpansibleURLClassLoader cl = (ExpansibleURLClassLoader) classLoader;
+            URLClassLoader ucl = (URLClassLoader) classLoader;
 
-            URL[] urls = cl.getURLs();
+            URL[] urls = ucl.getURLs();
             for (URL url : urls) {
                 String jarPathName = url.getFile();
                 if (jarPathName.startsWith("file:")) {
@@ -112,13 +117,17 @@ class JavacToMemoryCodeCompiler {
                         .append(separator)
                         .append(jarPathName);
             }
-            for(ClassLoader dependency : cl.getDependencies()) {
-                addClassPathRecursively(buf, dependency, separator);
+            try {
+                for (ClassLoader dependency : ((ExtendedURLClassLoader) ucl).getDependencies()) {
+                    addClassPathRecursively(buf, dependency, separator);
+                }
+            } catch (Exception e) {
+                addClassPathRecursively(buf, ucl.getParent(), separator);
             }
 
         } catch (Exception e) {
             // do nothing
-            // because this try-catch check cast ClassLoader to ExpansibleURLClassLoader
+            // because this try-catch check cast ClassLoader to URLClassLoader/ExtendedURLClassLoader
         }
     }
 

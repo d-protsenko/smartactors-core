@@ -9,8 +9,12 @@ import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.net.URL;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
@@ -51,6 +55,9 @@ public class WrapperGeneratorTest {
         IWrapper w2 = wg.generate(IWrapper.class);
         assertNotNull(w2);
         assertNotSame(w1, w2);
+
+        IInnerWrapper w3 = (IInnerWrapper)wg.generate(IInnerWrapper.class);
+        assertNotNull(w3);
     }
 
     @Test (expected = WrapperGeneratorException.class)
