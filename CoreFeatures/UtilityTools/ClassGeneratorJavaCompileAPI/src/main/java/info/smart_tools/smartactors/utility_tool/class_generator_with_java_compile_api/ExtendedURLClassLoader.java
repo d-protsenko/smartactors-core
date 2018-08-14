@@ -57,6 +57,66 @@ public class ExtendedURLClassLoader extends URLClassLoader {
         dependsOn.add(classLoader);
     }
 
+    /**
+     * Search class in this class loader and each of its dependencies
+     * (if dependency is instance of ExtendedURLClassLoader)
+     * @param className The name of the class to get
+     * @return The reference to the class
+     */
+    private final Class<?> searchClassInDependencies(String className) {
+        Class clazz = this.findLoadedClass(className);
+        if (null != clazz) {
+            return clazz;
+        }
+        for(ClassLoader dependency : this.dependsOn) {
+            if (dependency instanceof ExtendedURLClassLoader) {
+                clazz = ((ExtendedURLClassLoader) dependency).searchClassInDependencies(className);
+                if (null != clazz) {
+                    return clazz;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Class<?> loadClassFromDependencies(String className, ClassLoader scl, boolean[] sclUsed )
+            throws ClassNotFoundException {
+
+        for(ClassLoader dependency : dependsOn) {
+            try {
+                if (dependency instanceof ExtendedURLClassLoader) {
+                    return ((ExtendedURLClassLoader) dependency).loadClassFromDependencies(className, scl, sclUsed);
+                } else if (dependency != scl){
+                    return dependency.loadClass(className);
+                } else if (!sclUsed[0]) {
+                    sclUsed[0] = true;
+                    return dependency.loadClass(className);
+                }
+            } catch (ClassNotFoundException e) { }
+        }
+
+        return this.findClass(className);
+    }
+
+    protected Class<?> loadClass(String className, boolean resolve)
+            throws ClassNotFoundException {
+        synchronized(this.getClassLoadingLock(className)) {
+
+            Class clazz = this.searchClassInDependencies(className);
+            if (clazz == null) {
+                boolean[] sclUsed = {false};                
+                clazz = this.loadClassFromDependencies(className, getSystemClassLoader(), sclUsed);
+            }
+
+            if (resolve) {
+                this.resolveClass(clazz);
+            }
+
+            return clazz;
+        }
+    }
+
+/*
     protected Class<?> loadClass(String className, boolean resolve)
             throws ClassNotFoundException {
         synchronized(this.getClassLoadingLock(className)) {
@@ -83,7 +143,7 @@ public class ExtendedURLClassLoader extends URLClassLoader {
             return clazz;
         }
     }
-
+*/
     /**
      * @return list of class loaders which this class loader depends on
      */
@@ -109,12 +169,4 @@ public class ExtendedURLClassLoader extends URLClassLoader {
         return defineClass(className, classByteCode, 0, classByteCode.length);
     }
 
-    /**
-     * Get the class from this class loader only (not from parents or dependencies)
-     * @param className The name of the class to get
-     * @return The reference to the class from this class loader
-     */
-    public final Class<?> getLoadedClass(String className) {
-        return this.findLoadedClass(className);
-    }
 }

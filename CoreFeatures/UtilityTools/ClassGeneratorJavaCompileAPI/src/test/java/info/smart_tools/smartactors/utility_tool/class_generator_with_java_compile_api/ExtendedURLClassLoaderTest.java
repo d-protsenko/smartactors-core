@@ -68,14 +68,11 @@ public class ExtendedURLClassLoaderTest {
         cl.setNamespace(namespace);
         assertEquals(cl.getNamespace(), namespace);
 
-        Class clazz = cl.getLoadedClass("unregistered");
-        assertEquals(clazz, null);
-        byte[] byteCode = null;
-
         try {
-            clazz = cl.addClass("newClass", byteCode);
+            byte[] byteCode = { 1, 2 };
+            Class clazz = cl.addClass("newClass", byteCode);
             fail();
-        } catch (NullPointerException e) { }
+        } catch (ClassFormatError e) { }
 
     }
 }

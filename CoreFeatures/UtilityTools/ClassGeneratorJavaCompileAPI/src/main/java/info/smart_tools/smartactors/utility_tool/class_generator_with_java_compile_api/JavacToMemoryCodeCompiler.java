@@ -49,10 +49,10 @@ class JavacToMemoryCodeCompiler {
         ExtendedURLClassLoader cl;
         if (null == classLoader) {
             cl = new ExtendedURLClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
-        } else if (!(classLoader instanceof ExtendedURLClassLoader)) {
-            cl = new ExtendedURLClassLoader(new URL[]{}, classLoader);
-        } else {
+        } else if (classLoader instanceof ExtendedURLClassLoader) {
             cl = (ExtendedURLClassLoader)classLoader;
+        } else {
+            cl = new ExtendedURLClassLoader(new URL[]{}, classLoader);
         }
         try {
             return cl.loadClass(className);
