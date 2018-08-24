@@ -116,34 +116,6 @@ public class ExtendedURLClassLoader extends URLClassLoader {
         }
     }
 
-/*
-    protected Class<?> loadClass(String className, boolean resolve)
-            throws ClassNotFoundException {
-        synchronized(this.getClassLoadingLock(className)) {
-
-            Class clazz = this.findLoadedClass(className);
-
-            if (clazz == null) {
-                for(ClassLoader classLoader : dependsOn) {
-                    try {
-                        clazz = classLoader.loadClass(className);
-                        break;
-                    } catch (ClassNotFoundException e) { }
-                }
-
-                if (clazz == null) {
-                    clazz = this.findClass(className);
-                }
-            }
-
-            if (resolve) {
-                this.resolveClass(clazz);
-            }
-
-            return clazz;
-        }
-    }
-*/
     /**
      * @return list of class loaders which this class loader depends on
      */

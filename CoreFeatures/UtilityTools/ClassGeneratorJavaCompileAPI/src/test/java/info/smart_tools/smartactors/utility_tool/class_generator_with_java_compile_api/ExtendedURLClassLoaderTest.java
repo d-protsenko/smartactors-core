@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -93,6 +94,7 @@ public class ExtendedURLClassLoaderTest {
     }
 
     @Test
+    @Ignore
     public void performanceTestForExtendedClassLoader()
             throws Exception {
         {

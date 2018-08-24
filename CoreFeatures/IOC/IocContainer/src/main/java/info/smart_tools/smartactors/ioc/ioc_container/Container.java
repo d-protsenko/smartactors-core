@@ -63,6 +63,7 @@ public class Container implements IContainer {
     public IKey getKeyForKeyByNameResolveStrategy() {
         return this.keyForKeyByNameResolveStrategy;
     }
+
     /**
      * Resolve dependency by given given {@link IKey} instance and args
      * @param key instance of {@link IKey}
