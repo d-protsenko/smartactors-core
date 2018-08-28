@@ -16,10 +16,8 @@
         <module>BootstrapItem</module>
         <module>IBootstrapItem</module>
         <module>PluginTestJar</module>
-        <module>IFeatureManager</module>
         <module>Bootstrap</module>
         <module>IPlugin</module>
-        <module>FeatureManager</module>
         <module>PluginLoaderFromJar</module>
         <module>IPluginCreator</module>
         <module>IBootstrap</module>
