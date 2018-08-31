@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.HierarchicalClassLoader;
 import org.junit.Test;
 
 import java.net.URL;
@@ -27,7 +27,7 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(new URL[]{});
+        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
         cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
@@ -45,7 +45,7 @@ public class PluginLoaderTest {
             fail();
         }
         Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-        pl.loadPlugin(files);
+        pl.loadPlugins(files);
         assertTrue(checker.wasCalled);
     }
 
@@ -66,7 +66,7 @@ public class PluginLoaderTest {
     @Test (expected = PluginLoaderException.class)
     public void checkPluginLoaderException()
             throws Exception {
-        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(new URL[]{});
+        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
         cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
@@ -75,7 +75,7 @@ public class PluginLoaderTest {
                     throw new RuntimeException("Could not create instance of IPlugin");
                 },
                 visitor);
-        pl.loadPlugin(null);
+        pl.loadPlugins(null);
         fail();
     }
 
@@ -83,7 +83,7 @@ public class PluginLoaderTest {
     public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
-        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(new URL[]{});
+        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
         cl.addDependency(this.getClass().getClassLoader());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
@@ -101,7 +101,7 @@ public class PluginLoaderTest {
             fail();
         }
         Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-        pl.loadPlugin(files);
+        pl.loadPlugins(files);
         assertTrue(checker.wasCalled);
         fail();
     }
@@ -128,7 +128,7 @@ public class PluginLoaderTest {
 //            fail();
 //        }
 //        Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-//        pl.loadPlugin(files);
+//        pl.loadPlugins(files);
 //        assertTrue(checker.wasCalled);
 //        fail();
 //    }

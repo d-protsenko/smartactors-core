@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>utility-tools.class-generator-with-java-compile-api</artifactId>
+            <artifactId>class-management.class-generator-with-java-compile-api</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>

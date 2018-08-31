@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.DynamicClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -16,12 +17,10 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +36,7 @@ import java.util.List;
  *
  */
 public class Server implements IServer {
-    private ExtendedURLClassLoader classLoader =
-            new ExtendedURLClassLoader(new URL[]{});
+    private DynamicClassLoader classLoader = new DynamicClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 
@@ -51,19 +49,14 @@ public class Server implements IServer {
     public static void main(final String[] args)
             throws Exception {
         IServer server = new Server();
+        Thread.sleep(5000);
         server.initialize();
         server.start();
     }
 
     @Override
-    public void initialize()
-            throws ServerInitializeException {
-        try {
-            classLoader.addDependency(this.getClass().getClassLoader());
-            classLoader.setNamespace("Core");
-        } catch(InvalidArgumentException e) {
-            throw new ServerInitializeException(e);
-        }
+    public void initialize() {
+        classLoader.setNamespace("Core");
     }
 
     @Override
@@ -122,7 +115,7 @@ public class Server implements IServer {
                     }
                 },
                 pluginLoaderVisitor);
-        pluginLoader.loadPlugin(jars);
+        pluginLoader.loadPlugins(jars);
         try {
             bootstrap.start();
         } catch (ProcessExecutionException e) {

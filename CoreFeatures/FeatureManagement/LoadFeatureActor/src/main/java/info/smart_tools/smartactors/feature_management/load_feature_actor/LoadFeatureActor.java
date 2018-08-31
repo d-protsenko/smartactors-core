@@ -108,7 +108,7 @@ public class LoadFeatureActor {
                     featureClassLoader,
                     classHandler,
                     pluginLoaderVisitor);
-            pluginLoader.loadPlugin(jars);
+            pluginLoader.loadPlugins(jars);
 
             try {
 

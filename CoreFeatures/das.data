@@ -2571,7 +2571,7 @@
   "version" : "0.4.0"
 }, {
   "actors" : [ {
-  "artifactId" : "utility-tools.interfaces.iclass-generator",
+  "artifactId" : "class-management.interfaces.iclass-generator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
@@ -2579,7 +2579,7 @@
   "rawName" : "IClassGenerator",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "utility-tools.class-generator-with-java-compile-api",
+  "artifactId" : "class-management.class-generator-with-java-compile-api",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
@@ -2593,8 +2593,8 @@
 } ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "utility-tools",
-  "rawName" : "UtilityTools",
+  "artifactId" : "class-management",
+  "rawName" : "ClassManagement",
   "version" : "0.4.0"
 }, {
   "actors" : [ {

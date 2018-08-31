@@ -22,7 +22,7 @@
 
     <modules>
         <module>Base</module>
-        <module>UtilityTools</module>
+        <module>ClassManagement</module>
         <module>FeatureLoadingSystem</module>
         <module>Helpers</module>
         <module>Security</module>

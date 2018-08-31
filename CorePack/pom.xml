@@ -33,7 +33,7 @@
                     <packaging>json</packaging>
                     <description>The artifact contains default feature list of server core: base, configuration-manager and plugins, core-service-starter, dumpable-interface,
                         feature-loading-system, feature-management, field and plugins, iobject and plugins, iobject-extension and plugins, ioc and plugins, ioc-strategy-pack and plugins,
-                        message-processing-interfaces, message-processing and plugins, on-feature-loading-service-starter, scope and plugins, task and plugins, utility-tools
+                        message-processing-interfaces, message-processing and plugins, on-feature-loading-service-starter, scope and plugins, task and plugins, class-management
                     </description>
                 </configuration>
             </plugin>

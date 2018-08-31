@@ -13,6 +13,6 @@ public interface IPluginLoader<T> {
      * @param plugin plugin package (for example, jar file)
      * @throws PluginLoaderException if any errors occurred
      */
-    void loadPlugin(T plugin)
+    void loadPlugins(T plugin)
             throws PluginLoaderException;
 }

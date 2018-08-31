@@ -3,11 +3,12 @@ package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_j
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.DynamicClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.utility_tool.class_generator_with_java_compile_api.ExtendedURLClassLoader;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,7 +46,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
      * @param visitor instance of {@link IPluginLoaderVisitor}
      * @throws InvalidArgumentException if incoming argument are wrong
      */
-    public PluginLoader(final ClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
+    public PluginLoader(final ExtendedURLClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
             throws InvalidArgumentException {
         if (null == action || null == classLoader || null == visitor) {
             throw new InvalidArgumentException("Incoming argument should not be null.");
@@ -53,14 +54,14 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
         this.creator = action;
         this.visitor = visitor;
         try {
-            this.classLoader = (ExtendedURLClassLoader) classLoader;
+            this.classLoader = classLoader;
         } catch (Throwable e) {
             throw new InvalidArgumentException("Could not cast given ClassLoader to the URLClassLoader.");
         }
     }
 
     @Override
-    public void loadPlugin(final Collection<IPath> files)
+    public void loadPlugins(final Collection<IPath> files)
             throws PluginLoaderException {
         try {
             for (IPath file : files) {
