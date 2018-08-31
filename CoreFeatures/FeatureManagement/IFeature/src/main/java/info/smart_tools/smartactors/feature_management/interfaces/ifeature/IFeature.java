@@ -44,19 +44,25 @@ public interface IFeature {
      * Gets feature location
      * @return the feature location
      */
-    IPath getFeatureLocation();
+    IPath getLocation();
 
     /**
-     * Gets feature UUID
-     * @return the feature UUID
+     * Gets feature ID
+     * @return the feature ID
      */
-    UUID getUUID();
+    String getID();
 
     /**
      * Sets feature name
      * @param featureName the feature name
      */
     void setName(String featureName);
+
+    /**
+     * Sets feature ID
+     * @param featureID the feature ID
+     */
+    void setID(String featureID);
 
     /**
      * Sets feature dependencies
@@ -74,7 +80,7 @@ public interface IFeature {
      * Sets feature location
      * @param location the feature location
      */
-    void setFeatureLocation(IPath location);
+    void setLocation(IPath location);
 
     /**
      * Sets feature group ID

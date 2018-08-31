@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>IClassGenerator</module>
+        <module>ISmartactorsClassLoader</module>
+        <module>ClassLoaderManagement</module>
         <module>ClassGeneratorJavaCompileAPI</module>
         <module>ClassManagementDistribution</module>
     </modules>

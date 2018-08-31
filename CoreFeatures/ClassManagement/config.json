@@ -1,4 +1,4 @@
 {
   "featureName":"info.smart_tools.smartactors:class-management",
-  "afterFeatures":[]
+  "afterFeatures":["info.smart_tools.smartactors:base"]
 }

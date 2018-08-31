@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_management.feature_creator_actor.wra
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
@@ -234,6 +233,6 @@ public class FeaturesCreatorActorTest {
         assertEquals(((IFeature) features.toArray()[0]).getName(), "test-feature");
         assertEquals(((IFeature) features.toArray()[0]).getGroupId(), null);
         assertEquals(((IFeature) features.toArray()[0]).getVersion(), null);
-        assertEquals(((IFeature) features.toArray()[0]).getFeatureLocation(), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
+        assertEquals(((IFeature) features.toArray()[0]).getLocation(), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
     }
 }

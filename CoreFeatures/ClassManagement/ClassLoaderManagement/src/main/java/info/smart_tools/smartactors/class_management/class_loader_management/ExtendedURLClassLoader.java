@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
+package info.smart_tools.smartactors.class_management.class_loader_management;
 
 import java.net.URL;
 import java.net.URLClassLoader;

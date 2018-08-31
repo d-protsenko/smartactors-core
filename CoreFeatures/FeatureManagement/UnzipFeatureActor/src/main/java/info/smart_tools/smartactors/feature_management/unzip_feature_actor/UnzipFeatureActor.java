@@ -51,9 +51,9 @@ public class UnzipFeatureActor {
             throw new UnzipFeatureException("Feature should not be null.");
         }
         try {
-            if (null == feature.getDependencies() && feature.getFeatureLocation().toString().endsWith(".zip")) {
+            if (null == feature.getDependencies() && feature.getLocation().toString().endsWith(".zip")) {
                 System.out.println("[INFO] Start unzipping feature - '" + feature.getName() + "'.");
-                File f = new File(feature.getFeatureLocation().toString());
+                File f = new File(feature.getLocation().toString());
                 File configFile = unzip0(f);
                 updateFeature(configFile, feature);
                 System.out.println("[OK] -------------- Feature '" + feature.getName() + "' has been unzipped successful.");
@@ -92,6 +92,6 @@ public class UnzipFeatureActor {
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);
-        feature.setFeatureLocation(new Path(f.getParent()));
+        feature.setLocation(new Path(f.getParent()));
     }
 }

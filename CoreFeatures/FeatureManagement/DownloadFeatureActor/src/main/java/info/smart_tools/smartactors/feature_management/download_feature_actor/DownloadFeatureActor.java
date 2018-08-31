@@ -53,8 +53,8 @@ public class DownloadFeatureActor {
         try {
             feature = wrapper.getFeature();
             if (
-                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
-                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
+                    (new File(feature.getLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
+                    (new File(feature.getLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
             ) {
                 return;
             }
@@ -107,9 +107,9 @@ public class DownloadFeatureActor {
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = new File(feature.getFeatureLocation() + File.separator + fileName);
+            File location = new File(feature.getLocation() + File.separator + fileName);
             Files.copy(artifact.toPath(), location.toPath());
-            feature.setFeatureLocation(new Path(location));
+            feature.setLocation(new Path(location));
         } catch (Throwable e) {
             throw new Exception(e);
         }

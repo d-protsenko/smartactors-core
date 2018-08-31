@@ -8,8 +8,6 @@ import info.smart_tools.smartactors.feature_management.unzip_feature_actor.excep
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrapper.UnzipFeatureWrapper;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
@@ -105,7 +103,7 @@ public class UnzipFeatureActorTest {
         when(feature.getDependencies()).thenReturn(null);
         String fileName = "target/test-classes/test-feature-VERSION-archive.zip";
         String directory = "target/test-classes/test-feature-VERSION";
-        when(feature.getFeatureLocation()).thenReturn(
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);
@@ -113,7 +111,7 @@ public class UnzipFeatureActorTest {
         verify(feature, times(1)).setDependencies(
                 new HashSet<String>(){{add("first-test-feature"); add("second-test-feature");}}
         );
-        verify(feature, times(1)).setFeatureLocation(new Path(directory));
+        verify(feature, times(1)).setLocation(new Path(directory));
     }
 
     @Test (expected = UnzipFeatureException.class)
@@ -135,7 +133,7 @@ public class UnzipFeatureActorTest {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         String fileName = "target/test-classes/unsupported-test-feature-VERSION-archive.zip";
-        when(feature.getFeatureLocation()).thenReturn(
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);
@@ -152,7 +150,7 @@ public class UnzipFeatureActorTest {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         String fileName = "target/test-classes/broken-test-feature-VERSION-archive.zip";
-        when(feature.getFeatureLocation()).thenReturn(
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);

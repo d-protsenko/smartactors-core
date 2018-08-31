@@ -17,7 +17,7 @@ public class Feature implements IFeature {
     private boolean failed;
     private String groupId;
     private String version;
-    private UUID featureUUID;
+    private String ID;
 
     /**
      * Creates instance of {@link IFeature} by specific arguments
@@ -30,7 +30,7 @@ public class Feature implements IFeature {
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
-        this.featureUUID = java.util.UUID.randomUUID();
+        this.ID = java.util.UUID.randomUUID().toString();
     }
 
     /**
@@ -46,7 +46,7 @@ public class Feature implements IFeature {
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
-        this.featureUUID = java.util.UUID.randomUUID();
+        this.ID = java.util.UUID.randomUUID().toString();
     }
 
     @Override
@@ -60,14 +60,12 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public IPath getFeatureLocation() {
+    public IPath getLocation() {
         return this.featureLocation;
     }
 
     @Override
-    public UUID getUUID() {
-        return this.featureUUID;
-    }
+    public String getID() { return this.ID; }
 
     @Override
     public boolean isFailed() {
@@ -85,12 +83,17 @@ public class Feature implements IFeature {
     }
 
     @Override
+    public void setID(final String featureID) {
+        this.ID = featureID;
+    }
+
+    @Override
     public void setDependencies(final Set<String> dependencies) {
         this.dependencies = dependencies;
     }
 
     @Override
-    public void setFeatureLocation(final IPath location) {
+    public void setLocation(final IPath location) {
         this.featureLocation = (IPath) location;
     }
 

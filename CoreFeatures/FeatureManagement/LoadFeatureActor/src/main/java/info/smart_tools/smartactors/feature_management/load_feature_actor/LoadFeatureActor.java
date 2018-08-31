@@ -4,6 +4,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -49,7 +51,6 @@ public class LoadFeatureActor {
 
     private final IFieldName featureNameFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
-    private final IFieldName featureClassLoaderFN;
 
     /**
      * Default constructor
@@ -62,7 +63,6 @@ public class LoadFeatureActor {
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
         this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
         this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
-        this.featureClassLoaderFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureClassLoader");
     }
 
     /**
@@ -81,7 +81,7 @@ public class LoadFeatureActor {
         try {
             System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
             String pattern = ".jar";
-            File file = Paths.get(((IPath) feature.getFeatureLocation()).getPath()).toFile();
+            File file = Paths.get(((IPath) feature.getLocation()).getPath()).toFile();
             File configJson = Paths.get(file.getPath(), CONFIG_FILE).toFile();
             this.updateFeature(configJson, feature);
             Collection<IPath> jars = new ArrayList<>();
@@ -102,7 +102,7 @@ public class LoadFeatureActor {
                 }
             };
 
-            ClassLoader featureClassLoader = wrapper.getFeatureClassLoader();
+            ISmartactorsClassLoader featureClassLoader = VersionControlProvider.getItemClassLoader(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
                     featureClassLoader,

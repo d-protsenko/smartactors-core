@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_j
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.DynamicClassLoader;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.ExtendedURLClassLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +30,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
     private static final String CLASS_EXTENSION = ".class";
 
     /** ClassLoader for load classes*/
-    private ExtendedURLClassLoader classLoader;
+    private ISmartactorsClassLoader classLoader;
 
     /** Action to create instance of given class */
     private IAction<Class> creator;
@@ -46,7 +45,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
      * @param visitor instance of {@link IPluginLoaderVisitor}
      * @throws InvalidArgumentException if incoming argument are wrong
      */
-    public PluginLoader(final ExtendedURLClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
+    public PluginLoader(final ISmartactorsClassLoader classLoader, final IAction<Class> action, final IPluginLoaderVisitor<String> visitor)
             throws InvalidArgumentException {
         if (null == action || null == classLoader || null == visitor) {
             throw new InvalidArgumentException("Incoming argument should not be null.");

@@ -7,14 +7,9 @@
         <artifactId>class-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>class-management.class-generator-with-java-compile-api</artifactId>
+    <artifactId>class-management.class-loader-management</artifactId>
     <version>0.4.0</version>
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.interfaces.iclass-generator</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -23,7 +18,13 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.class-loader-management</artifactId>
+            <artifactId>base.exception.invalid-argument-exception</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.interfaces.ismartactors_class_loader</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

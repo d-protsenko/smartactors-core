@@ -24,12 +24,4 @@ public interface LoadFeatureWrapper {
      */
     IQueue getAfterFeaturesCallbackQueue()
             throws ReadValueException;
-
-    /**
-     * Gets feature class loader from context
-     * @return the instance of {@link ClassLoader}
-     * @throws ReadValueException if any errors occurred on wrapper reading
-     */
-    ClassLoader getFeatureClassLoader()
-            throws ReadValueException;
 }

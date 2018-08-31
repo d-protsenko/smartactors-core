@@ -109,8 +109,7 @@
           "handler":"load",
           "wrapper":{
             "in_getFeature":"message/feature",
-            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue",
-            "in_getFeatureClassLoader": "context/featureClassLoader"
+            "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
           },
           "target":"load-feature-actor"
         },

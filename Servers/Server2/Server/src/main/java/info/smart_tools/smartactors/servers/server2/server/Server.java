@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.DynamicClassLoader;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -25,7 +25,6 @@ import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.e
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +35,6 @@ import java.util.List;
  *
  */
 public class Server implements IServer {
-    private DynamicClassLoader classLoader = new DynamicClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 
@@ -56,7 +54,7 @@ public class Server implements IServer {
 
     @Override
     public void initialize() {
-        classLoader.setNamespace("Core");
+        VersionControlProvider.addItem("CoreID", "CoreName");
     }
 
     @Override
@@ -102,7 +100,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                classLoader,
+                VersionControlProvider.getItemClassLoader("CoreID"),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {
