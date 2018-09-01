@@ -116,7 +116,7 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    VersionControlProvider.addItem(feature.getID(),feature.getName());
+                    VersionControlProvider.addItem(feature.getID());
                     messageProcessor.process(message, context);
                     ++count;
                 }
@@ -231,7 +231,7 @@ public class FeatureManagerActor {
                 }
 
                 if (featureDependencies.isEmpty()) {
-                    VersionControlProvider.finalizeItemDependencies(feature.getID(), "CoreID");
+                    VersionControlProvider.finalizeItemDependencies(feature.getID(), VersionControlProvider.coreID);
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
@@ -279,12 +279,13 @@ public class FeatureManagerActor {
     }
 
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature) {
-        String loadedFeatureName = loadedFeature.getName();
+
+        VersionControlProvider.setItemName(loadedFeature.getID(), loadedFeature.getName());
 
         for (IFeature feature : this.processingFeatures.values()) {
             Set<String> featureDependencies = feature.getDependencies();
 
-            if (null != featureDependencies && featureDependencies.remove(loadedFeatureName)) {
+            if (null != featureDependencies && featureDependencies.remove(loadedFeature.getName())) {
                 VersionControlProvider.addItemDependency(feature.getID(), loadedFeature.getID());
             }
         }

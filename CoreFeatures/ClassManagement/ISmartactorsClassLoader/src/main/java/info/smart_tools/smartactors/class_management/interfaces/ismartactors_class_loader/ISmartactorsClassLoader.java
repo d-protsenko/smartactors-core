@@ -8,33 +8,27 @@ import java.util.List;
  */
 public interface ISmartactorsClassLoader {
 
-    static void addItem(String itemID, String itemName) {}
-
-    static void addItemDependency(String itemIdDependent, String itemIdOnWhichDepend) {}
-
-    static void finalizeItemDependencies(String itemId, String defaultItemID) {}
-
-    static void setCurrentItem(String itemID) {}
-
-    static ISmartactorsClassLoader getItemClassLoader(String itemID) { return null; }
-
-    /**
-     * Add new dependency on {@link ISmartactorsClassLoader} to this {@link ISmartactorsClassLoader}
-     * @param classLoader {@link ISmartactorsClassLoader} which this {@link ISmartactorsClassLoader} depends on
-     */
-    void addDependency(ISmartactorsClassLoader classLoader);
-
-    /**
-     * Get list of dependencies for this {@link ISmartactorsClassLoader}
-     * @return list of ISmartactorsClassLoader items which this class loader depends on
-     */
-    List<ISmartactorsClassLoader> getDependencies();
-
     /**
      * Add {@link URL} to the current url class loader if url class loader doesn't contain this {@link URL} yet
      * @param url instance of {@link URL}
      */
     void addUrl(final URL url);
 
+    /**
+     * Returns the search path of URLs for loading classes and resources.
+     * This includes the original list of URLs specified to the constructor,
+     * along with any URLs subsequently appended by the addURL() method.
+     * @return the search path of URLs for loading classes and resources.
+     */
+    URL[] getURLsFromDependencies();
+
     Class<?> loadClass(String className) throws ClassNotFoundException;
+
+    /**
+     * Add compiled byte code of the class directly to this class loader
+     * @param className The name of the class to define
+     * @param classByteCode Compiled byte code of the class to add
+     * @return The reference to the class
+     */
+    Class<?> addClass(final String className, byte[] classByteCode);
 }

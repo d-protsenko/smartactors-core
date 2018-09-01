@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 import info.smart_tools.smartactors.class_management.class_loader_management.HierarchicalClassLoader;
+import info.smart_tools.smartactors.class_management.class_loader_management.SmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -48,13 +50,11 @@ class JavacToMemoryCodeCompiler {
             final ClassLoader classLoader
     )
             throws Exception {
-        HierarchicalClassLoader cl;
-        if (null == classLoader) {
-            cl = new HierarchicalClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
-        } else if (classLoader instanceof HierarchicalClassLoader) {
-            cl = (HierarchicalClassLoader)classLoader;
+        ISmartactorsClassLoader cl;
+        if (null == classLoader || !(classLoader instanceof ISmartactorsClassLoader)) {
+            throw new RuntimeException("Class loader must be not null and must be an instance of ISmartactorsClassLoader!");
         } else {
-            cl = new HierarchicalClassLoader(new URL[]{}, classLoader);
+            cl = (ISmartactorsClassLoader)classLoader;
         }
         try {
             return cl.loadClass(className);
@@ -68,7 +68,7 @@ class JavacToMemoryCodeCompiler {
             ExtendedJavaFileManager fileManager = new ExtendedJavaFileManager(
                     javac.getStandardFileManager(null, null, null),
                     compiledCode,
-                    cl
+                    classLoader
             );
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             CompilationTask task = javac.getTask(
@@ -97,51 +97,24 @@ class JavacToMemoryCodeCompiler {
     }
 
     /**
-     * Append all class paths to given {@link StringBuilder} form given {@link ClassLoader}
-     * recursively with given separator
-     * @param buf instance of {@link StringBuilder}
-     * @param classLoader instance of {@link ClassLoader}
-     * @param separator instance of {@link String}
+     * Return all class paths as instance of {@link String} form given instance of {@link ISmartactorsClassLoader} and its dependencies
+     * @param classLoader instance of {@link ISmartactorsClassLoader}
+     * @return all class paths taken from {@link ISmartactorsClassLoader} and its dependencies
      */
-    private static void addClassPathRecursively(StringBuilder buf, final ClassLoader classLoader, String separator) {
-        try {
-            URLClassLoader ucl = (URLClassLoader) classLoader;
-
-            URL[] urls = ucl.getURLs();
-            for (URL url : urls) {
-                String jarPathName = url.getFile();
-                if (jarPathName.startsWith("file:")) {
-                    jarPathName = jarPathName.substring(
-                            jarPathName.indexOf("file:") + "file:".length(), jarPathName.indexOf("!/")
-                    );
-                }
-                buf
-                        .append(separator)
-                        .append(jarPathName);
-            }
-            try {
-                for (ClassLoader dependency : ((HierarchicalClassLoader) ucl).getDependencies()) {
-                    addClassPathRecursively(buf, dependency, separator);
-                }
-            } catch (Exception e) {
-                addClassPathRecursively(buf, ucl.getParent(), separator);
-            }
-
-        } catch (Exception e) {
-            // do nothing
-            // because this try-catch check cast ClassLoader to URLClassLoader/HierarchicalClassLoader
-        }
-    }
-
-    /**
-     * Return all class paths as instance of {@link String} form given instance of {@link ClassLoader} recursively
-     * @param classLoader instance of {@link ClassLoader}
-     * @return all class paths taken from {@link ClassLoader} and its dependencies
-     */
-    private static String getClassPath(final ClassLoader classLoader) {
+    private static String getClassPath(final ISmartactorsClassLoader classLoader) {
         StringBuilder buf = new StringBuilder();
+        String separator = System.getProperty("path.separator");
         buf.append(".");
-        addClassPathRecursively(buf, classLoader, System.getProperty("path.separator"));
+        URL[] urls = classLoader.getURLsFromDependencies();
+        for (URL url : urls) {
+            String jarPathName = url.getFile();
+            if (jarPathName.startsWith("file:")) {
+                jarPathName = jarPathName.substring(
+                        jarPathName.indexOf("file:") + "file:".length(), jarPathName.indexOf("!/")
+                );
+            }
+            buf.append(separator).append(jarPathName);
+        }
         return buf.toString();
     }
 }

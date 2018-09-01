@@ -6,21 +6,28 @@ import info.smart_tools.smartactors.class_management.interfaces.ismartactors_cla
 /**
  * Class VersionControlProvider
  */
-public final class VersionControlProvider  {
+public final class VersionControlProvider {
+
+    public static final String coreID = "core-feature-id";
+    public static final String coreName = "info.smart_tools.smartactors";
 
     private VersionControlProvider() {}
 
-    public static void addItem(String itemID, String itemName) {
-        SmartactorsClassLoader.addItem(itemID, itemName);
+    public static void addItem(String itemID) {
+        SmartactorsClassLoader.addItem(itemID);
+    }
+
+    public static void setItemName(String itemID, String itemName) {
+        SmartactorsClassLoader.setItemName(itemID, itemName);
     }
 
     public static ISmartactorsClassLoader getItemClassLoader(String itemID) {
         return SmartactorsClassLoader.getItemClassLoader(itemID);
     }
 
-    public static void setCurrentItem(String itemID) {
+    /*public static void setCurrentItem(String itemID) {
         SmartactorsClassLoader.setCurrentItem(itemID);
-    }
+    }*/
 
     public static void addItemDependency(String itemIdDependent, String itemIdOnWhichDepend) {
         SmartactorsClassLoader.addItemDependency(itemIdDependent, itemIdOnWhichDepend);

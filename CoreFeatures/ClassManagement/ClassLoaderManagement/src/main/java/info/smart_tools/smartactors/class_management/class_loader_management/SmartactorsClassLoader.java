@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_loader_management;
 
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -12,46 +13,52 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
     /* This is ItemID To ClassLoader Map */
-    private static Map<String, ISmartactorsClassLoader> itemClassLoaders =
-            new ConcurrentHashMap<String, ISmartactorsClassLoader>();
+    private static Map<String, SmartactorsClassLoader> itemClassLoaders =
+            new ConcurrentHashMap<String, SmartactorsClassLoader>();
 
     /* This is ItemID To (ClassName To ClassLoader Map) Map */
-    private static Map<String,Map<String,ClassLoader>> itemClassMap =
-            new ConcurrentHashMap<String,Map<String,ClassLoader>>();
+    private static Map<String, Map<String, ClassLoader>> itemClassMap =
+            new ConcurrentHashMap<String, Map<String, ClassLoader>>();
 
     /* This is ClassName To ClassLoader Map in current Thread */
-    private static ThreadLocal<Map<String,ClassLoader>> currentClassMap =
-            new ThreadLocal<Map<String,ClassLoader>>();
+    private static ThreadLocal<Map<String, ClassLoader>> currentClassMap =
+            new ThreadLocal<Map<String, ClassLoader>>();
 
-    private ArrayList<ISmartactorsClassLoader> dependsOn = new ArrayList<ISmartactorsClassLoader>();
+    private String itemID;
+    private String itemName = null;
+    private List<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
+
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    SmartactorsClassLoader(final URL[] urls) {
+    private SmartactorsClassLoader(final URL[] urls, String itemID) {
         super(urls);
+        this.itemID = itemID;
     }
 
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param parent the parent class loader for delegation
-     */
-    public SmartactorsClassLoader(final URL[] urls, final ClassLoader parent) { super(urls, parent); }
+    static void addItem(String itemID) {
+        SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{}, itemID);
+        itemClassLoaders.put(itemID, classLoader);
 
-    static void addItem(String itemID, String itemName) {
-        SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
-        Map<String,ClassLoader> classMap = new ConcurrentHashMap<String,ClassLoader>();
-        classMap.put(itemName, classLoader);
+        Map<String, ClassLoader> classMap = new ConcurrentHashMap<String, ClassLoader>();
         itemClassMap.put(itemID, classMap);
     }
 
-    static void addItemDependency(String itemIdDependent, String itemIdOnWhichDepend) {
-        Map<String,ClassLoader> dependentMap = itemClassMap.get(itemIdDependent);
-        Map<String,ClassLoader> map = itemClassMap.get(itemIdOnWhichDepend);
-        dependentMap.putAll(map);
+    static void setItemName(String itemID, String itemName) {
+        //Map<String,ClassLoader> classMap = itemClassMap.get(itemID);
+        SmartactorsClassLoader classLoader = itemClassLoaders.get(itemID);
+        classLoader.itemName = itemName;
+        //classMap.put(itemName, classLoader);
+    }
 
-        itemClassLoaders.get(itemIdDependent).addDependency(itemClassLoaders.get(itemIdOnWhichDepend));
+    static void addItemDependency(String itemIdDependent, String itemIdOnWhichDepend) {
+        SmartactorsClassLoader classLoader = itemClassLoaders.get(itemIdOnWhichDepend);
+        itemClassLoaders.get(itemIdDependent).addDependency(classLoader);
+        Map<String,ClassLoader> dependentMap = itemClassMap.get(itemIdDependent);
+        dependentMap.put(classLoader.itemName, classLoader); //
+        //Map<String,ClassLoader> map = itemClassMap.get(itemIdOnWhichDepend);
+        //dependentMap.putAll(map);
     }
 
     static void finalizeItemDependencies(String itemID, String defaultItemID) {
@@ -64,18 +71,18 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         return itemClassLoaders.get(itemID);
     }
 
-    static void setCurrentItem(String itemID) {
+    /*static void setCurrentItem(String itemID) {
         Map<String,ClassLoader> classMap = itemClassMap.get(itemID);
         currentClassMap.set(classMap);
-    }
+    }*/
 
-    public void addDependency(ISmartactorsClassLoader classLoader) {
+    private void addDependency(SmartactorsClassLoader classLoader) {
         if (null != classLoader) {
             dependsOn.add(classLoader);
         }
     }
 
-    public List<ISmartactorsClassLoader> getDependencies() {
+    private List<ClassLoader> getDependencies() {
         return this.dependsOn;
     }
 
@@ -86,6 +93,41 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
+    /* here we collect all class loaders from dependency map recursively */
+    private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
+
+        classLoaders.add(this);
+        if (dependsOn.size() == 0) {
+            if (getParent() instanceof URLClassLoader ) {
+                classLoaders.add(getParent());
+            }
+        } else {
+            for (ClassLoader dependency : this.dependsOn) {
+                if (dependency instanceof SmartactorsClassLoader) {
+                    ((SmartactorsClassLoader) dependency).addDependenciesToSet(classLoaders);
+                } else if (dependency instanceof URLClassLoader) {
+                    classLoaders.add((ClassLoader)dependency);
+                }
+            }
+        }
+    }
+
+    public URL[] getURLsFromDependencies() {
+
+        Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+        addDependenciesToSet(classLoaders);
+
+        ArrayList<URL> urlArrayList = new ArrayList<>();
+        for( ClassLoader classLoader : classLoaders) {
+            Collections.addAll(urlArrayList,((URLClassLoader)classLoader).getURLs());
+        }
+
+        URL[] urls = new URL[urlArrayList.size()];
+        urlArrayList.toArray(urls);
+
+        return urls;
+    }
+
     protected Class<?> loadClass(String className, boolean resolve)
             throws ClassNotFoundException {
         synchronized(this.getClassLoadingLock(className)) {
@@ -93,7 +135,8 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
             Class clazz = this.findLoadedClass(className);
             if (null == clazz) {
 
-                Map<String, ClassLoader> cdm = currentClassMap.get();
+                Map<String, ClassLoader> cdm = itemClassMap.get(this.itemID); // ??? may be this is correct
+                //Map<String, ClassLoader> cdm = currentClassMap.get();       // HBZ
                 if (cdm != null) {
 
                     ClassLoader classLoader = cdm.get(className);
@@ -152,5 +195,9 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
             return clazz;
         }
+    }
+
+    public Class<?> addClass(final String className, byte[] classByteCode) {
+        return defineClass(className, classByteCode, 0, classByteCode.length);
     }
 }

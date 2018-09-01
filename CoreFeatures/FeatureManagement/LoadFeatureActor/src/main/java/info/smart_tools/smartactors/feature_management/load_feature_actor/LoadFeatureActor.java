@@ -102,10 +102,9 @@ public class LoadFeatureActor {
                 }
             };
 
-            ISmartactorsClassLoader featureClassLoader = VersionControlProvider.getItemClassLoader(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
-                    featureClassLoader,
+                    VersionControlProvider.getItemClassLoader(feature.getID()),
                     classHandler,
                     pluginLoaderVisitor);
             pluginLoader.loadPlugins(jars);

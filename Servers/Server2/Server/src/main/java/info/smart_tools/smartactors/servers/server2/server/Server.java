@@ -54,7 +54,8 @@ public class Server implements IServer {
 
     @Override
     public void initialize() {
-        VersionControlProvider.addItem("CoreID", "CoreName");
+        VersionControlProvider.addItem(VersionControlProvider.coreID);
+        VersionControlProvider.setItemName(VersionControlProvider.coreID, VersionControlProvider.coreName);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionControlProvider.getItemClassLoader("CoreID"),
+                VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {
