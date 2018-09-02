@@ -98,8 +98,12 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
         classLoaders.add(this);
         if (dependsOn.size() == 0) {
-            if (getParent() instanceof URLClassLoader ) {
-                classLoaders.add(getParent());
+            ClassLoader cl = this.getParent();
+            while(cl != null) {
+                if (cl instanceof URLClassLoader) {
+                    classLoaders.add(cl);
+                }
+                cl = cl.getParent();
             }
         } else {
             for (ClassLoader dependency : this.dependsOn) {
