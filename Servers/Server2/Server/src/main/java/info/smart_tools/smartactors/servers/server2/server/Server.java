@@ -47,7 +47,7 @@ public class Server implements IServer {
     public static void main(final String[] args)
             throws Exception {
         IServer server = new Server();
-        //Thread.sleep(5000);
+        Thread.sleep(5000);
         server.initialize();
         server.start();
     }

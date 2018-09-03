@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.class_management.interfaces.ismartactors_cla
  */
 public final class VersionControlProvider {
 
-    public static final String coreID = "core-feature-id";
+    public static final String coreID = java.util.UUID.randomUUID().toString(); // "core-feature-id";
     public static final String coreName = "info.smart_tools.smartactors";
 
     private VersionControlProvider() {}
