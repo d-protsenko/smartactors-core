@@ -81,8 +81,8 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
         Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
         classLoaders.add(this);
-        classLoaders.addAll(this.dependsOn);
-        for(ClassLoader classLoader : this.dependsOn) {
+        classLoaders.addAll(dependsOn);
+        for(ClassLoader classLoader : dependsOn) {
             ClassLoader parent = classLoader.getParent();
             while(parent != null) {
                 classLoaders.add(parent);
@@ -103,7 +103,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         return urls;
     }
 
-    private Class<?> loadClass0(String className, boolean specials)
+    private Class<?> loadClass0(String className, boolean upperLevel)
             throws ClassNotFoundException {
 
         Class clazz = this.findLoadedClass(className);
@@ -123,7 +123,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                     } catch (ClassNotFoundException e) { }
                 }
 
-                if (clazz == null && specials) {
+                if (clazz == null && upperLevel) {
                     String name = className;
                     do {
                         int index = name.lastIndexOf(".");
@@ -142,13 +142,16 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                     }
                 }
 
-                if (clazz == null && specials) {
+                if (clazz == null && upperLevel) {
                     for (SmartactorsClassLoader dependency : dependsOn) {
-                        try {
-                            clazz = dependency.loadClass0(className, false);
-                            classMap.put(className, clazz.getClassLoader());
-                            break;
-                        } catch (ClassNotFoundException e) { }
+                        if (dependency != classLoader) {
+                            try {
+                                clazz = dependency.loadClass0(className, false);
+                                classMap.put(className, clazz.getClassLoader());
+                                break;
+                            } catch (ClassNotFoundException e) {
+                            }
+                        }
                     }
                 }
 
