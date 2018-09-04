@@ -16,18 +16,11 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     private static Map<String, SmartactorsClassLoader> itemClassLoaders =
             new ConcurrentHashMap<String, SmartactorsClassLoader>();
 
-    /* This is ItemID To (ClassName To ClassLoader Map) Map */
-    private static Map<String, Map<String, ClassLoader>> itemClassMap =
-            new ConcurrentHashMap<String, Map<String, ClassLoader>>();
-
-    /* This is ClassName To ClassLoader Map in current Thread */
-    private static ThreadLocal<Map<String, ClassLoader>> currentClassMap =
-            new ThreadLocal<Map<String, ClassLoader>>();
-
     private String itemID;
     private String itemName = null;
-    private List<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
-    Map<String, ClassLoader> classMap = new ConcurrentHashMap<String, ClassLoader>();
+    Set<ClassLoader> dependsOn = new HashSet<ClassLoader>();
+    private Map<String, ClassLoader> classMap = new ConcurrentHashMap<String, ClassLoader>();
+
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
@@ -40,50 +33,42 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     static void addItem(String itemID) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{}, itemID);
         itemClassLoaders.put(itemID, classLoader);
-        itemClassMap.put(itemID, classLoader.classMap);
     }
 
-    static void setItemName(String itemID, String itemName) {
-        SmartactorsClassLoader classLoader = itemClassLoaders.get(itemID);
-        itemName = itemName.replace('/', '.');
-        itemName = itemName.replace(':', '.');
-        itemName = itemName.replace('-', '_');
-        classLoader.itemName = itemName;
-        Map<String,ClassLoader> classMap = itemClassMap.get(itemID);
-        classMap.put(itemName, classLoader);
-    }
-
-    static void addItemDependency(String itemIdDependent, String itemIdOnWhichDepend) {
-        SmartactorsClassLoader classLoader = itemClassLoaders.get(itemIdOnWhichDepend);
-        itemClassLoaders.get(itemIdDependent).dependsOn.add(classLoader);
-        Map<String,ClassLoader> dependentMap = itemClassMap.get(itemIdDependent);
-
-        Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
-        classLoaders.add(classLoader);
-        classLoader.addDependenciesToSet(classLoaders);
-        for(ClassLoader cl : classLoaders) {
-            if (cl instanceof SmartactorsClassLoader) {
-                dependentMap.put(((SmartactorsClassLoader)cl).itemName, cl); //
-            }
-        }
-        //Map<String,ClassLoader> map = itemClassMap.get(itemIdOnWhichDepend);
-        //dependentMap.putAll(map);
-    }
-
-    static void finalizeItemDependencies(String itemID, String defaultItemID) {
-        if (itemClassLoaders.get(itemID).dependsOn.size() == 0) {
-            addItemDependency(itemID, defaultItemID);
-        }
-    }
-
-    static ISmartactorsClassLoader getItemClassLoader(String itemID) {
+    static SmartactorsClassLoader getItemClassLoader(String itemID) {
         return itemClassLoaders.get(itemID);
     }
 
-    /*static void setCurrentItem(String itemID) {
-        Map<String,ClassLoader> classMap = itemClassMap.get(itemID);
-        currentClassMap.set(classMap);
-    }*/
+    static void setItemName(String itemID, String itemName) {
+        itemName = itemName.replace('/', '.');
+        itemName = itemName.replace(':', '.');
+        itemName = itemName.replace('-', '_');
+        SmartactorsClassLoader classLoader = getItemClassLoader(itemID);
+        classLoader.itemName = itemName;
+        classLoader.classMap.put(itemName, classLoader);
+    }
+
+    static void addItemDependency(String dependentItemID, String baseItemID) {
+        if (baseItemID != dependentItemID) {
+            SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
+            SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
+            if (baseClassLoader != null && dependentClassLoader != null) {
+                Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+                classLoaders.add(baseClassLoader);
+                classLoaders.addAll(baseClassLoader.dependsOn);
+                for (ClassLoader cl : classLoaders) {
+                    dependentClassLoader.classMap.put(((SmartactorsClassLoader) cl).itemName, cl);
+                }
+                dependentClassLoader.dependsOn.addAll(classLoaders);
+            }
+        }
+    }
+
+    static void finalizeItemDependencies(String itemID, String defaultItemID) {
+        if (getItemClassLoader(itemID).dependsOn.size() == 0) {
+            addItemDependency(itemID, defaultItemID);
+        }
+    }
 
     public void addUrl(final URL url) {
         URL[] urls = this.getURLs();
@@ -92,36 +77,17 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
-    /* here we collect all class loaders from dependency map recursively */
-    private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
-
-        if (dependsOn.size() == 0) {
-            ClassLoader classLoader = this.getParent();
-            while(classLoader != null) {
-                classLoaders.add(classLoader);
-                classLoader = classLoader.getParent();
-            }
-        } else {
-            for (ClassLoader dependency : this.dependsOn) {
-                classLoaders.add(dependency);
-                if (dependency instanceof SmartactorsClassLoader) {
-                    ((SmartactorsClassLoader) dependency).addDependenciesToSet(classLoaders);
-                } else  {
-                    ClassLoader classLoader = dependency.getParent();
-                    while(classLoader != null) {
-                        classLoaders.add(classLoader);
-                        classLoader = classLoader.getParent();
-                    }
-                }
-            }
-        }
-    }
-
     public URL[] getURLsFromDependencies() {
 
         Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
-        classLoaders.add(this);
-        addDependenciesToSet(classLoaders);
+        for(ClassLoader classLoader : this.dependsOn) {
+            ClassLoader parent = classLoader.getParent();
+            while(parent != null) {
+                classLoaders.add(parent);
+                parent = parent.getParent();
+            }
+        }
+        classLoaders.addAll(this.dependsOn);
 
         ArrayList<URL> urlArrayList = new ArrayList<>();
         for( ClassLoader classLoader : classLoaders) {
@@ -143,9 +109,6 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
             Class clazz = this.findLoadedClass(className);
             if (null == clazz) {
 
-                //Map<String, ClassLoader> classMap = itemClassMap.get(this.itemID); // ??? may be this is correct
-                //Map<String, ClassLoader> classMap = currentClassMap.get();       // HBZ
-                //if (classMap != null) {
                 ClassLoader classLoader = classMap.get(className);
                 if (classLoader == null) {
                     if (this.getParent() != null ) {
@@ -157,7 +120,6 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
                 if (clazz == null) {
                     String name = className;
-                    //int index;
                     while(classLoader == null) {
                         int index = name.lastIndexOf(".");
                         if (index == -1) {
@@ -169,28 +131,23 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                     if (classLoader != null && this != classLoader) {
                         try {
                             clazz = classLoader.loadClass(className);
-                            // this for case if findClass done without classMap
-                            if (classMap.get(className) == null) {
-                                classMap.put(className, classLoader);
-                            }
+                            classMap.put(className, clazz.getClassLoader());
                         } catch (ClassNotFoundException e) {}
                     }
                 }
 
-                //} else {
-                //    if (this.getParent() != null ) {
-                //        try {
-                //            clazz = this.getParent().loadClass(className);
-                //        } catch (ClassNotFoundException e) {}
-                //    }
-                //}
+                if (clazz == null) {
+                    for(ClassLoader dependency : dependsOn) {
+                        try {
+                            clazz = dependency.loadClass(className);
+                            classMap.put(className, clazz.getClassLoader());
+                            break;
+                        } catch (ClassNotFoundException e) {}
+                    }
+                }
 
                 if (clazz == null) {
                     clazz = this.findClass(className);
-
-                    if (clazz != null /*&& classMap != null*/) {
-                        classMap.put(className,this);
-                    }
                 }
             }
 

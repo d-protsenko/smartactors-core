@@ -22,7 +22,7 @@ public final class VersionControlProvider {
     }
 
     public static ISmartactorsClassLoader getItemClassLoader(String itemID) {
-        return SmartactorsClassLoader.getItemClassLoader(itemID);
+        return (ISmartactorsClassLoader)SmartactorsClassLoader.getItemClassLoader(itemID);
     }
 
     /*public static void setCurrentItem(String itemID) {
