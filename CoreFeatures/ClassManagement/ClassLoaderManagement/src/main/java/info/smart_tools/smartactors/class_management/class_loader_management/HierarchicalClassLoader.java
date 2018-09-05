@@ -1,66 +1,108 @@
 package info.smart_tools.smartactors.class_management.class_loader_management;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Extension of {@link URLClassLoader}
  */
-public class HierarchicalClassLoader extends ExtendedURLClassLoader {
+public class HierarchicalClassLoader extends ExtendedURLClassLoader implements ISmartactorsClassLoader {
 
+    /* This is ItemID To ClassLoader Map */
+    private static Map<String, HierarchicalClassLoader> itemClassLoaders =
+            new ConcurrentHashMap<String, HierarchicalClassLoader>();
+
+    private String itemName = null;
     private ArrayList<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
+
+    static void addItem(String itemID) {
+        HierarchicalClassLoader classLoader = new HierarchicalClassLoader(new URL[]{});
+        itemClassLoaders.put(itemID, classLoader);
+        if (itemID.equals(VersionControlProvider.coreID)) {
+            classLoader.dependsOn.add(classLoader.getParent());
+        }
+    }
+
+    static HierarchicalClassLoader getItemClassLoader(String itemID) {
+        return itemClassLoaders.get(itemID);
+    }
+
+    static void setItemName(String itemID, String itemName) {
+        itemName = itemName.replace('/', '.');
+        itemName = itemName.replace(':', '.');
+        itemName = itemName.replace('-', '_');
+        HierarchicalClassLoader classLoader = getItemClassLoader(itemID);
+        classLoader.itemName = itemName;
+    }
+
+    static void addItemDependency(String dependentItemID, String baseItemID) {
+        if (!baseItemID.equals(dependentItemID)) {
+            HierarchicalClassLoader baseClassLoader = getItemClassLoader(baseItemID);
+            HierarchicalClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
+            if (baseClassLoader != null && dependentClassLoader != null) {
+                dependentClassLoader.dependsOn.add(baseClassLoader);
+            }
+        }
+    }
+
+    static void finalizeItemDependencies(String itemID, String defaultItemID) {
+        if (getItemClassLoader(itemID).dependsOn.size() == 0) {
+            addItemDependency(itemID, defaultItemID);
+        }
+    }
 
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    public HierarchicalClassLoader(final URL[] urls) {
+    private HierarchicalClassLoader(final URL[] urls) {
         super(urls);
     }
 
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param uuid the UUID to associate the class loader to
-     */
-    public HierarchicalClassLoader(final URL[] urls, UUID uuid) { super(urls, uuid); }
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param parent the parent class loader for delegation
-     */
-    public HierarchicalClassLoader(final URL[] urls, final ClassLoader parent)
-            throws InvalidArgumentException {
-        super(urls, parent);
-        this.addDependency(parent);
-    }
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param parent the parent class loader for delegation
-     * @param uuid the UUID to associate the class loader to
-     */
-    public HierarchicalClassLoader(final URL[] urls, final ClassLoader parent, UUID uuid) {
-        super(urls, parent, uuid);
-    }
-
-    /**
-     * Add new dependency on {@link ClassLoader} to this {@link HierarchicalClassLoader}
-     * @param classLoader {@link ClassLoader} which this {@link HierarchicalClassLoader} depends on
-     */
-    public void addDependency(ClassLoader classLoader)
-            throws InvalidArgumentException {
-        if (null == classLoader) {
-            throw new InvalidArgumentException("Class loader can't have null dependency.");
+    private void addParentsToSet(ClassLoader classLoader, Set<ClassLoader> classLoaders) {
+        ClassLoader parent = classLoader.getParent();
+        while(parent != null) {
+            classLoaders.add(parent);
+            parent = parent.getParent();
         }
-        dependsOn.add(classLoader);
+    }
+
+    private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
+        if (dependsOn.size() == 0) {
+            addParentsToSet(this, classLoaders);
+        } else {
+            for(ClassLoader classLoader : dependsOn) {
+                classLoaders.add(classLoader);
+                if (classLoader instanceof HierarchicalClassLoader) {
+                    ((HierarchicalClassLoader) classLoader).addDependenciesToSet(classLoaders);
+                } else {
+                    addParentsToSet(classLoader, classLoaders);
+                }
+            }
+        }
+    }
+
+    public URL[] getURLsFromDependencies() {
+
+        Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+        classLoaders.add(this);
+        addDependenciesToSet(classLoaders);
+
+        ArrayList<URL> urlArrayList = new ArrayList<>();
+        for( ClassLoader classLoader : classLoaders) {
+            if (classLoader instanceof URLClassLoader) {
+                Collections.addAll(urlArrayList, ((URLClassLoader) classLoader).getURLs());
+            }
+        }
+
+        URL[] urls = new URL[urlArrayList.size()];
+        urlArrayList.toArray(urls);
+
+        return urls;
     }
 
     /**
@@ -120,13 +162,6 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader {
 
             return clazz;
         }
-    }
-
-    /**
-     * @return list of class loaders which this class loader depends on
-     */
-    public final List<ClassLoader> getDependencies() {
-        return this.dependsOn;
     }
 
 }

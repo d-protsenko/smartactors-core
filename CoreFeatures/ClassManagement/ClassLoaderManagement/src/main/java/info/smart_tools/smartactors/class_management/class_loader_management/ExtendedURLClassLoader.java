@@ -1,5 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_loader_management;
 
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -7,45 +9,31 @@ import java.util.*;
 /**
  * Extension of {@link URLClassLoader}
  */
-public class ExtendedURLClassLoader extends URLClassLoader {
+public class ExtendedURLClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private String namespace = "";
-    private UUID classLoaderUUID = java.util.UUID.randomUUID();
+    private static ExtendedURLClassLoader onlyOne = new ExtendedURLClassLoader(new URL[]{});
 
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     */
-    public ExtendedURLClassLoader(final URL[] urls) { super(urls); }
+    static void addItem(String itemID) {
+    }
 
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param uuid the UUID to associate the class loader with
-     */
-    public ExtendedURLClassLoader(final URL[] urls, UUID uuid) {
-        super(urls);
-        classLoaderUUID = uuid;
+    static ExtendedURLClassLoader getItemClassLoader(String itemID) {
+        return onlyOne;
+    }
+
+    static void setItemName(String itemID, String itemName) {
+    }
+
+    static void addItemDependency(String dependentItemID, String baseItemID) {
+    }
+
+    static void finalizeItemDependencies(String itemID, String defaultItemID) {
     }
 
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
-     * @param parent the parent class loader for delegation
      */
-    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent) {
-        super(urls, parent);
-    }
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     * @param parent the parent class loader for delegation
-     */
-    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent, UUID uuid) {
-        super(urls, parent);
-        classLoaderUUID = uuid;
-    }
+    protected ExtendedURLClassLoader(final URL[] urls) { super(urls); }
 
     /**
      * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
@@ -59,16 +47,22 @@ public class ExtendedURLClassLoader extends URLClassLoader {
         addURL(url);
     }
 
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+    public URL[] getURLsFromDependencies() {
 
-    public String getNamespace() {
-        return this.namespace;
-    }
+        ArrayList<URL> urlArrayList = new ArrayList<>();
+        Collections.addAll(urlArrayList, getURLs());
+        ClassLoader parent = getParent();
+        while(parent != null) {
+            if (parent instanceof URLClassLoader) {
+                Collections.addAll(urlArrayList, ((URLClassLoader) parent).getURLs());
+            }
+            parent = parent.getParent();
+        }
 
-    public UUID getClassLoaderUUID() {
-        return this.classLoaderUUID;
+        URL[] urls = new URL[urlArrayList.size()];
+        urlArrayList.toArray(urls);
+
+        return urls;
     }
 
     /**

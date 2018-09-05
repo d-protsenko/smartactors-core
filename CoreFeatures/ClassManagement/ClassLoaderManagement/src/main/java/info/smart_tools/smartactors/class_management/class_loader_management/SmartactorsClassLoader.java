@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Extension of {@link URLClassLoader}
  */
-public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
+public class SmartactorsClassLoader extends ExtendedURLClassLoader implements ISmartactorsClassLoader {
 
     /* This is ItemID To ClassLoader Map */
     private static Map<String, SmartactorsClassLoader> itemClassLoaders =
@@ -65,13 +65,6 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     static void finalizeItemDependencies(String itemID, String defaultItemID) {
         if (getItemClassLoader(itemID).dependsOn.size() == 0) {
             addItemDependency(itemID, defaultItemID);
-        }
-    }
-
-    public void addUrl(final URL url) {
-        URL[] urls = this.getURLs();
-        if (!Arrays.asList(urls).contains(url)) {
-            this.addURL(url);
         }
     }
 
@@ -172,9 +165,5 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
             return clazz;
         }
-    }
-
-    public Class<?> addClass(final String className, byte[] classByteCode) {
-        return defineClass(className, classByteCode, 0, classByteCode.length);
     }
 }
