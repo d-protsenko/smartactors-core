@@ -16,22 +16,20 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     private static Map<String, SmartactorsClassLoader> itemClassLoaders =
             new ConcurrentHashMap<String, SmartactorsClassLoader>();
 
-    private String itemID;
     private String itemName = null;
-    Set<SmartactorsClassLoader> dependsOn = new HashSet<SmartactorsClassLoader>();
+    private Set<SmartactorsClassLoader> dependsOn = new HashSet<SmartactorsClassLoader>();
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<String, ClassLoader>();
 
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    private SmartactorsClassLoader(final URL[] urls, String itemID) {
+    private SmartactorsClassLoader(final URL[] urls) {
         super(urls);
-        this.itemID = itemID;
     }
 
     static void addItem(String itemID) {
-        SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{}, itemID);
+        SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
     }
 
@@ -149,8 +147,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                                 clazz = dependency.loadClass0(className, false);
                                 classMap.put(className, clazz.getClassLoader());
                                 break;
-                            } catch (ClassNotFoundException e) {
-                            }
+                            } catch (ClassNotFoundException e) { }
                         }
                     }
                 }
