@@ -11,13 +11,29 @@ import java.util.*;
  */
 public class ExtendedURLClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static ExtendedURLClassLoader onlyOne = new ExtendedURLClassLoader(new URL[]{});
+    private static ExtendedURLClassLoader single = new ExtendedURLClassLoader(new URL[]{});
+    private static ExtendedURLClassLoader compilation =
+            new ExtendedURLClassLoader(new URL[]{}, single);
+
+    /**
+     * Redefined constructor
+     * @param urls the URLs from which to load classes and resources
+     */
+    ExtendedURLClassLoader(final URL[] urls) { super(urls); }
+
+    /**
+     * Redefined constructor
+     * @param urls the URLs from which to load classes and resources
+     */
+    private ExtendedURLClassLoader(final URL[] urls, ClassLoader parent) {
+        super(urls, parent);
+    }
 
     static void addItem(String itemID) {
     }
 
     static ExtendedURLClassLoader getItemClassLoader(String itemID) {
-        return onlyOne;
+        return single;
     }
 
     static void setItemName(String itemID, String itemName) {
@@ -28,12 +44,6 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
 
     static void finalizeItemDependencies(String itemID, String defaultItemID) {
     }
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     */
-    protected ExtendedURLClassLoader(final URL[] urls) { super(urls); }
 
     /**
      * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
@@ -75,4 +85,5 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
         return defineClass(className, classByteCode, 0, classByteCode.length);
     }
 
+    public ClassLoader getCompilationClassLoader() { return compilation; }
 }

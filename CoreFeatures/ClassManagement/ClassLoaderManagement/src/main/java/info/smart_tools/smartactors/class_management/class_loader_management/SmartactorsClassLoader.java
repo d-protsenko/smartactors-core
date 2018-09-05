@@ -166,4 +166,6 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
             return clazz;
         }
     }
+
+    public ClassLoader getCompilationClassLoader() { return this; }
 }

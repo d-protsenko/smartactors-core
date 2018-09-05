@@ -164,4 +164,5 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
         }
     }
 
+    public ClassLoader getCompilationClassLoader() { return this; }
 }

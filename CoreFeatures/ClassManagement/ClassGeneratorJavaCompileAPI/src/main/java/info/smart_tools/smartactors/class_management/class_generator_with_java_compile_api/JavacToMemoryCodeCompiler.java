@@ -68,7 +68,7 @@ class JavacToMemoryCodeCompiler {
             ExtendedJavaFileManager fileManager = new ExtendedJavaFileManager(
                     javac.getStandardFileManager(null, null, null),
                     compiledCode,
-                    classLoader
+                    cl.getCompilationClassLoader()
             );
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             CompilationTask task = javac.getTask(

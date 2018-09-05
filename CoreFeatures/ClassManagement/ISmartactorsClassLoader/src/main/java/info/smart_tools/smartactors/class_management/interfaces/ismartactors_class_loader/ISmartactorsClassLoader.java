@@ -31,4 +31,6 @@ public interface ISmartactorsClassLoader {
      * @return The reference to the class
      */
     Class<?> addClass(final String className, byte[] classByteCode);
+
+    ClassLoader getCompilationClassLoader();
 }
