@@ -12,7 +12,7 @@ public interface ISmartactorsClassLoader {
      * Add {@link URL} to the current url class loader if url class loader doesn't contain this {@link URL} yet
      * @param url instance of {@link URL}
      */
-    void addUrl(final URL url);
+    public void addURL(final URL url);
 
     /**
      * Returns the search path of URLs for loading classes and resources.

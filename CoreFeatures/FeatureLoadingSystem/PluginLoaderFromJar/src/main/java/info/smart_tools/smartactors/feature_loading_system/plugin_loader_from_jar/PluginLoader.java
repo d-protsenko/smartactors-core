@@ -65,7 +65,7 @@ public class PluginLoader implements IPluginLoader<Collection<IPath>> {
         try {
             for (IPath file : files) {
                 URL url = new URL("jar:file:" + file.getPath() + "!/");
-                this.classLoader.addUrl(url);
+                this.classLoader.addURL(url);
             }
         } catch (Throwable e) {
             throw new PluginLoaderException("Malformed file name.", e);

@@ -14,26 +14,22 @@ public final class VersionControlProvider {
     private VersionControlProvider() {}
 
     public static void addItem(String itemID) {
-        ExtendedURLClassLoader.addItem(itemID);
+        HierarchicalClassLoader.addItem(itemID);
     }
 
     public static void setItemName(String itemID, String itemName) {
-        ExtendedURLClassLoader.setItemName(itemID, itemName);
+        HierarchicalClassLoader.setItemName(itemID, itemName);
     }
 
     public static ISmartactorsClassLoader getItemClassLoader(String itemID) {
-        return (ISmartactorsClassLoader)ExtendedURLClassLoader.getItemClassLoader(itemID);
+        return (ISmartactorsClassLoader)HierarchicalClassLoader.getItemClassLoader(itemID);
     }
 
-    /*public static void setCurrentItem(String itemID) {
-        ExtendedURLClassLoader.setCurrentItem(itemID);
-    }*/
-
     public static void addItemDependency(String dependentItemID, String baseItemID) {
-        ExtendedURLClassLoader.addItemDependency(dependentItemID, baseItemID);
+        HierarchicalClassLoader.addItemDependency(dependentItemID, baseItemID);
     }
 
     public static void finalizeItemDependencies(String itemID, String defaultItemID) {
-        ExtendedURLClassLoader.finalizeItemDependencies(itemID, defaultItemID);
+        HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
     }
 }

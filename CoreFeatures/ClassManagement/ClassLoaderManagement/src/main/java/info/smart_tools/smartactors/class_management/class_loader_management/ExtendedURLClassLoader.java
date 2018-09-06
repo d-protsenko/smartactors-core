@@ -54,12 +54,8 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
      * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
      * @param url instance of {@link URL}
      */
-    public void addUrl(final URL url) {
-        URL[] urls = getURLs();
-        if (Arrays.asList(urls).contains(url)) {
-            return;
-        }
-        addURL(url);
+    public void addURL(final URL url) {
+        super.addURL(url);
     }
 
     public URL[] getURLsFromDependencies() {
