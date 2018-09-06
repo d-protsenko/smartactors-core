@@ -11,9 +11,8 @@ import java.util.*;
  */
 public class ExtendedURLClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static ExtendedURLClassLoader single = new ExtendedURLClassLoader(new URL[]{});
-    private static ExtendedURLClassLoader compilation =
-            new ExtendedURLClassLoader(new URL[]{}, single);
+    private static ExtendedURLClassLoader single = null;
+    private static ExtendedURLClassLoader compilation = null;
 
     /**
      * Redefined constructor
@@ -30,6 +29,12 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
     }
 
     static void addItem(String itemID) {
+        if (single == null) {
+            single = new ExtendedURLClassLoader(new URL[]{});
+        }
+        if (compilation == null) {
+            compilation = new ExtendedURLClassLoader(new URL[]{}, single);
+        }
     }
 
     static ExtendedURLClassLoader getItemClassLoader(String itemID) {
