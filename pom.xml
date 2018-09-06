@@ -22,7 +22,6 @@
 
     <modules>
         <module>CoreFeatures</module>
-        <module>Starters</module>
         <module>Servers/Server2</module>
         <module>SystemActors</module>
     </modules>

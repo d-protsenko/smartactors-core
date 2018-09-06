@@ -84,6 +84,13 @@
         <module>DatabasePostgresqlAsyncOpsCollection</module>
         <module>DatabasePostgresqlCachedCollection</module>
         <module>MessageBus-plugins</module>
+        <module>CoreServiceStarter</module>
+        <module>InMemoryDatabaseServiceStarter</module>
+        <module>MessageBusServiceStarter</module>
+        <module>OnFeatureLoadingServiceStarter</module>
+        <module>GlobalConstantsServiceStarter</module>
+        <module>EndpointServiceStarter</module>
+        <module>DatabaseServiceStarter</module>
     </modules>
 
     <build>
