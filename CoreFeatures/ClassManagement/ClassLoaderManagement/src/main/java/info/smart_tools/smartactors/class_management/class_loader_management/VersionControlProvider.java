@@ -10,6 +10,8 @@ public final class VersionControlProvider {
 
     public static final String coreID = java.util.UUID.randomUUID().toString(); // "core-feature-id";
     public static final String coreName = "info.smart_tools.smartactors";
+    private static ThreadLocal<String> currentItemID = new ThreadLocal<String>();
+
 
     private VersionControlProvider() {}
 
@@ -31,5 +33,13 @@ public final class VersionControlProvider {
 
     public static void finalizeItemDependencies(String itemID, String defaultItemID) {
         HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
+    }
+
+    public static void setCurrentItemID(String itemID) {
+        currentItemID.set(itemID);
+    }
+
+    public static String getCurrentItemID() {
+        return currentItemID.get();
     }
 }

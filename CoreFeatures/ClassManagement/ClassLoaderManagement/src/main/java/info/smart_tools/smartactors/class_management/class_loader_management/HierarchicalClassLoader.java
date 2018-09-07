@@ -17,14 +17,11 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
             new ConcurrentHashMap<String, HierarchicalClassLoader>();
 
     private String itemName = null;
-    private ArrayList<ClassLoader> dependsOn = new ArrayList<ClassLoader>();
+    private ArrayList<HierarchicalClassLoader> dependsOn = new ArrayList<HierarchicalClassLoader>();
 
     static void addItem(String itemID) {
         HierarchicalClassLoader classLoader = new HierarchicalClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
-        if (itemID.equals(VersionControlProvider.coreID)) {
-            classLoader.dependsOn.add(classLoader.getParent());
-        }
     }
 
     static HierarchicalClassLoader getItemClassLoader(String itemID) {
@@ -63,25 +60,17 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
         super(urls);
     }
 
-    private void addParentsToSet(ClassLoader classLoader, Set<ClassLoader> classLoaders) {
-        ClassLoader parent = classLoader.getParent();
-        while(parent != null) {
-            classLoaders.add(parent);
-            parent = parent.getParent();
-        }
-    }
-
     private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
+        classLoaders.add(this);
         if (dependsOn.size() == 0) {
-            addParentsToSet(this, classLoaders);
+            ClassLoader parent = this.getParent();
+            while(parent != null) {
+                classLoaders.add(parent);
+                parent = parent.getParent();
+            }
         } else {
-            for(ClassLoader classLoader : dependsOn) {
-                classLoaders.add(classLoader);
-                if (classLoader instanceof HierarchicalClassLoader) {
-                    ((HierarchicalClassLoader) classLoader).addDependenciesToSet(classLoaders);
-                } else {
-                    addParentsToSet(classLoader, classLoaders);
-                }
+            for(HierarchicalClassLoader classLoader : dependsOn) {
+                classLoader.addDependenciesToSet(classLoaders);
             }
         }
     }
@@ -89,7 +78,6 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
     public URL[] getURLsFromDependencies() {
 
         Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
-        classLoaders.add(this);
         addDependenciesToSet(classLoaders);
 
         ArrayList<URL> urlArrayList = new ArrayList<>();
@@ -113,36 +101,41 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
      */
     private final Class<?> searchClassInDependencies(String className) {
         Class clazz = this.findLoadedClass(className);
-        if (null != clazz) {
-            return clazz;
-        }
-        for(ClassLoader dependency : this.dependsOn) {
-            if (dependency instanceof HierarchicalClassLoader) {
-                clazz = ((HierarchicalClassLoader) dependency).searchClassInDependencies(className);
-                if (null != clazz) {
-                    return clazz;
+        if (null == clazz) {
+            for(HierarchicalClassLoader dependency : this.dependsOn) {
+                clazz = dependency.searchClassInDependencies(className);
+                if (clazz != null) {
+                    break;
                 }
             }
         }
-        return null;
+        return clazz;
     }
 
-    private Class<?> loadClassFromDependencies(String className, ClassLoader scl, boolean[] sclUsed )
+    private Class<?> loadClassFromDependencies(String className, ClassLoader scl, ClassLoader ccl, boolean[] rclUsed )
             throws ClassNotFoundException {
-
-        for(ClassLoader dependency : dependsOn) {
+        if (dependsOn.size() == 0) {
             try {
-                if (dependency instanceof HierarchicalClassLoader) {
-                    return ((HierarchicalClassLoader) dependency).loadClassFromDependencies(className, scl, sclUsed);
-                } else if (dependency != scl){
-                    return dependency.loadClass(className);
-                } else if (!sclUsed[0]) {
-                    sclUsed[0] = true;
-                    return dependency.loadClass(className);
+                ClassLoader parent = getParent();
+                if (parent != scl) {
+                    return parent.loadClass(className);
+                } else if (!rclUsed[0]) {
+                    rclUsed[0] = true;
+                    return parent.loadClass(className);
                 }
             } catch (ClassNotFoundException e) { }
+        } else {
+            for (HierarchicalClassLoader dependency : dependsOn) {
+                try {
+                    if (dependency != ccl) {
+                        return dependency.loadClassFromDependencies(className, scl, ccl, rclUsed);
+                    } else if (!rclUsed[1]) {
+                        rclUsed[1] = true;
+                        return dependency.loadClassFromDependencies(className, scl, ccl, rclUsed);
+                    }
+                } catch (ClassNotFoundException e) { }
+            }
         }
-
         return this.findClass(className);
     }
 
@@ -152,8 +145,13 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
 
             Class clazz = this.searchClassInDependencies(className);
             if (clazz == null) {
-                boolean[] sclUsed = {false};                
-                clazz = this.loadClassFromDependencies(className, getSystemClassLoader(), sclUsed);
+                boolean[] sclUsed = {false, false};
+                clazz = this.loadClassFromDependencies(
+                        className,
+                        getSystemClassLoader(),
+                        itemClassLoaders.get(VersionControlProvider.coreID),
+                        sclUsed
+                );
             }
 
             if (resolve) {

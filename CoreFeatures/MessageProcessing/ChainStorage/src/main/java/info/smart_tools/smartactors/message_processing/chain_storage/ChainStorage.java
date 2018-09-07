@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -22,7 +23,7 @@ import java.util.Map;
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
  */
 public class ChainStorage implements IChainStorage {
-    private final Map<Object, IChainState> chainStates;
+    private final Map<Object, Map<String, IChainState>> chainStates;
     private final IRouter router;
     private final Object modificationLock = new Object();
 
@@ -35,7 +36,7 @@ public class ChainStorage implements IChainStorage {
      * @throws InvalidArgumentException if router is {@code null}
      * @throws ResolutionException if error occurs resolving any dependency
      */
-    public ChainStorage(final Map<Object, IChainState> chainStates, final IRouter router)
+    public ChainStorage(final Map<Object, Map<String, IChainState>> chainStates, final IRouter router)
             throws InvalidArgumentException, ResolutionException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
@@ -50,8 +51,12 @@ public class ChainStorage implements IChainStorage {
     }
 
     private IChainState resolveState(final Object chainId) throws ChainNotFoundException {
-        IChainState state = chainStates.get(chainId);
+        Map<String, IChainState> chainVersions = chainStates.get(chainId);
+        if (null == chainVersions) {
+            throw new ChainNotFoundException(chainId);
+        }
 
+        IChainState state = chainVersions.get(VersionControlProvider.getCurrentItemID());
         if (null == state) {
             throw new ChainNotFoundException(chainId);
         }
