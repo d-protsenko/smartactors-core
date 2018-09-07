@@ -149,9 +149,9 @@ public class FeatureManagerActorTest {
         IMessageProcessor mp2 = mock(IMessageProcessor.class);
         IMessageProcessor mp3 = mock(IMessageProcessor.class);
         AddFeatureWrapper wrapper = mock(AddFeatureWrapper.class);
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        UUID uuid3 = UUID.randomUUID();
+        String uuid1 = UUID.randomUUID().toString();
+        String uuid2 = UUID.randomUUID().toString();
+        String uuid3 = UUID.randomUUID().toString();
 
         Set<IFeature> features = new HashSet<IFeature>(){{add(feature1); add(feature2);}};
         Set<IFeature> features2 = new HashSet<IFeature>(){{add(feature1); add(feature3);}};
@@ -170,9 +170,9 @@ public class FeatureManagerActorTest {
         when(feature2.getName()).thenReturn("feature 2");
         when(feature3.getName()).thenReturn("feature 3");
         when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
-        when(feature1.getUUID()).thenReturn(uuid1);
-        when(feature2.getUUID()).thenReturn(uuid2);
-        when(feature3.getUUID()).thenReturn(uuid3);
+        when(feature1.getID()).thenReturn(uuid1);
+        when(feature2.getID()).thenReturn(uuid2);
+        when(feature3.getID()).thenReturn(uuid3);
 
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
         when(this.getSequence.resolve(5, this.chain)).thenReturn(sequence);

@@ -4,11 +4,11 @@ import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.class_loader_management.HierarchicalClassLoader;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.HierarchicalClassLoader;
 import org.junit.Test;
 
 import java.net.URL;
@@ -28,8 +28,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
-        cl.addDependency(this.getClass().getClassLoader());
+        VersionControlProvider.addItem(VersionControlProvider.coreID);
+        ISmartactorsClassLoader cl = VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID);
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -57,18 +57,11 @@ public class PluginLoaderTest {
         fail();
     }
 
-    @Test (expected = InvalidArgumentException.class)
-    public void checkInvalidArgumentExceptionOnInvalidClassLoader()
-            throws Exception {
-        new PluginLoader(new ClassLoader(), (t)->{}, mock(IPluginLoaderVisitor.class));
-        fail();
-    }
-
     @Test (expected = PluginLoaderException.class)
     public void checkPluginLoaderException()
             throws Exception {
-        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
-        cl.addDependency(this.getClass().getClassLoader());
+        VersionControlProvider.addItem("cl");
+        ISmartactorsClassLoader cl = VersionControlProvider.getItemClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -84,8 +77,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
-        HierarchicalClassLoader cl = new HierarchicalClassLoader(new URL[]{});
-        cl.addDependency(this.getClass().getClassLoader());
+        VersionControlProvider.addItem("cl");
+        ISmartactorsClassLoader cl = VersionControlProvider.getItemClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,

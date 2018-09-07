@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.exception.ClassGenerationException;
 import org.junit.Test;
 
@@ -29,12 +30,9 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class<?> clazz = classGenerator.generate(testSample, null);
+        VersionControlProvider.addItem(VersionControlProvider.coreID);
+        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader)VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID));
         TestInterface inst = (TestInterface) clazz.newInstance();
-        clazz = classGenerator.generate(testSample, getClass().getClassLoader());
-        inst = (TestInterface) clazz.newInstance();
-        clazz = classGenerator.generate(testSample, new HierarchicalClassLoader(new URL[]{}, getClass().getClassLoader()));
-        inst = (TestInterface) clazz.newInstance();
     }
 
     @Test (expected = InvalidArgumentException.class)
@@ -88,10 +86,8 @@ public class FromStringClassGeneratorTest {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        HierarchicalClassLoader cl = new HierarchicalClassLoader(
-                new URL[]{},
-                this.getClass().getClassLoader()
-        );
+        VersionControlProvider.addItem("cl");
+        ClassLoader cl = (ClassLoader) VersionControlProvider.getItemClassLoader("cl");
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
                 "import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -114,10 +110,8 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-        HierarchicalClassLoader cl = new HierarchicalClassLoader(
-                urls,
-                this.getClass().getClassLoader()
-        );
+        VersionControlProvider.addItem(VersionControlProvider.coreID);
+        ClassLoader cl = (ClassLoader) VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
             if(je.isDirectory() || !je.getName().endsWith(".class")){
