@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,12 +73,22 @@ public class ChainStorage implements IChainStorage {
                     Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
                     chainId, description, this, router);
 
-            IChainState oldState;
+            IChainState oldState = null;
 
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
 
-            synchronized (modificationLock) {
-                oldState = chainStates.put(chainId, state);
+            Map<String, IChainState> chainVersions = chainStates.get(chainId);
+            if (chainVersions == null) {
+                chainVersions = new HashMap<String, IChainState>();
+                chainVersions.put(VersionControlProvider.getCurrentItemID(), state);
+                synchronized (modificationLock) {
+                    chainStates.put(chainId, chainVersions);
+                }
+            } else {
+                synchronized (modificationLock) {
+                    oldState = chainVersions.put(VersionControlProvider.getCurrentItemID(), state);
+                }
+
             }
 
             if (null != oldState) {
@@ -91,10 +102,13 @@ public class ChainStorage implements IChainStorage {
 
     @Override
     public void unregister(final Object chainId) {
-        IChainState oldState;
+        IChainState oldState = null;
+        Map<String, IChainState> chainVersions = chainStates.get(chainId);
 
-        synchronized (modificationLock) {
-            oldState = chainStates.remove(chainId);
+        if (chainVersions != null) {
+            synchronized (modificationLock) {
+                oldState = chainVersions.remove(VersionControlProvider.getCurrentItemID());
+            }
         }
 
         if (null == oldState) {
