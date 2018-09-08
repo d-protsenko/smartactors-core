@@ -55,6 +55,7 @@ public class Server implements IServer {
     public void initialize() {
         VersionControlProvider.addItem(VersionControlProvider.coreID);
         VersionControlProvider.setItemName(VersionControlProvider.coreID, VersionControlProvider.coreName);
+        VersionControlProvider.setCurrentItem(VersionControlProvider.coreID);
     }
 
     @Override

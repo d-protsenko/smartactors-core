@@ -57,7 +57,7 @@ public class ChainStorage implements IChainStorage {
             throw new ChainNotFoundException(chainId);
         }
 
-        IChainState state = chainVersions.get(VersionControlProvider.getCurrentItemID());
+        IChainState state = chainVersions.get(VersionControlProvider.getCurrentItem());
         if (null == state) {
             throw new ChainNotFoundException(chainId);
         }
@@ -80,13 +80,13 @@ public class ChainStorage implements IChainStorage {
             Map<String, IChainState> chainVersions = chainStates.get(chainId);
             if (chainVersions == null) {
                 chainVersions = new HashMap<String, IChainState>();
-                chainVersions.put(VersionControlProvider.getCurrentItemID(), state);
+                chainVersions.put(VersionControlProvider.getCurrentItem(), state);
                 synchronized (modificationLock) {
                     chainStates.put(chainId, chainVersions);
                 }
             } else {
                 synchronized (modificationLock) {
-                    oldState = chainVersions.put(VersionControlProvider.getCurrentItemID(), state);
+                    oldState = chainVersions.put(VersionControlProvider.getCurrentItem(), state);
                 }
 
             }
@@ -107,7 +107,7 @@ public class ChainStorage implements IChainStorage {
 
         if (chainVersions != null) {
             synchronized (modificationLock) {
-                oldState = chainVersions.remove(VersionControlProvider.getCurrentItemID());
+                oldState = chainVersions.remove(VersionControlProvider.getCurrentItem());
             }
         }
 

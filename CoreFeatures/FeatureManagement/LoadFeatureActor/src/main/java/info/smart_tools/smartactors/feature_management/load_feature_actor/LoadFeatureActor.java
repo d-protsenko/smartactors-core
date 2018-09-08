@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
-import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -50,6 +49,7 @@ public class LoadFeatureActor {
     private final IConfigurationManager configurationManager;
 
     private final IFieldName featureNameFN;
+    private final IFieldName featureVersionFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
 
     /**
@@ -62,6 +62,7 @@ public class LoadFeatureActor {
         this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
         this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureVersion");
         this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
@@ -101,7 +102,7 @@ public class LoadFeatureActor {
                     throw new ActionExecuteException(e);
                 }
             };
-
+            VersionControlProvider.setCurrentItem(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
                     VersionControlProvider.getItemClassLoader(feature.getID()),
@@ -146,7 +147,9 @@ public class LoadFeatureActor {
             String content = new Scanner(f).useDelimiter("\\Z").next();
             IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
             String featureName = (String) config.getValue(this.featureNameFN);
+            String featureVersion = (String) config.getValue(this.featureVersionFN);
             feature.setName(featureName);
+            feature.setVersion(featureVersion);
         }
     }
 }

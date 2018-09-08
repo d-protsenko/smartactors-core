@@ -35,11 +35,11 @@ public final class VersionControlProvider {
         HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
     }
 
-    public static void setCurrentItemID(String itemID) {
+    public static void setCurrentItem(String itemID) {
         currentItemID.set(itemID);
     }
 
-    public static String getCurrentItemID() {
+    public static String getCurrentItem() {
         return currentItemID.get();
     }
 }
