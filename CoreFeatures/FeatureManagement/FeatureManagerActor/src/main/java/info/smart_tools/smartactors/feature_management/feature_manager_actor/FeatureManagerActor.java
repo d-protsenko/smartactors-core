@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -116,7 +116,7 @@ public class FeatureManagerActor {
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    VersionControlProvider.addItem(feature.getID());
+                    VersionManager.addItem(feature.getID());
                     messageProcessor.process(message, context);
                     ++count;
                 }
@@ -225,13 +225,13 @@ public class FeatureManagerActor {
                     IFeature dependency = this.loadedFeatures.get(dependencyName);
 
                     if (null != dependency) {
-                        VersionControlProvider.addItemDependency(feature.getID(),dependency.getID());
+                        VersionManager.addItemDependency(feature.getID(),dependency.getID());
                         iterator.remove();
                     }
                 }
 
                 if (featureDependencies.isEmpty()) {
-                    VersionControlProvider.finalizeItemDependencies(feature.getID(), VersionControlProvider.coreID);
+                    VersionManager.finalizeItemDependencies(feature.getID(), VersionManager.coreID);
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
@@ -280,13 +280,13 @@ public class FeatureManagerActor {
 
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature) {
 
-        VersionControlProvider.setItemName(loadedFeature.getID(), loadedFeature.getName());
+        VersionManager.setItemName(loadedFeature.getID(), loadedFeature.getName());
 
         for (IFeature feature : this.processingFeatures.values()) {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies && featureDependencies.remove(loadedFeature.getName())) {
-                VersionControlProvider.addItemDependency(feature.getID(), loadedFeature.getID());
+                VersionManager.addItemDependency(feature.getID(), loadedFeature.getID());
             }
         }
     }

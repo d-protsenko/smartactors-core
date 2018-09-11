@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -46,6 +46,7 @@ public class Server implements IServer {
      */
     public static void main(final String[] args)
             throws Exception {
+        Thread.sleep(3500);
         IServer server = new Server();
         server.initialize();
         server.start();
@@ -53,9 +54,9 @@ public class Server implements IServer {
 
     @Override
     public void initialize() {
-        VersionControlProvider.addItem(VersionControlProvider.coreID);
-        VersionControlProvider.setItemName(VersionControlProvider.coreID, VersionControlProvider.coreName);
-        VersionControlProvider.setCurrentItem(VersionControlProvider.coreID);
+        VersionManager.addItem(VersionManager.coreID);
+        VersionManager.setItemName(VersionManager.coreID, VersionManager.coreName);
+        //VersionManager.setCurrentItemID(VersionManager.coreID);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID),
+                VersionManager.getItemClassLoader(VersionManager.coreID),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {

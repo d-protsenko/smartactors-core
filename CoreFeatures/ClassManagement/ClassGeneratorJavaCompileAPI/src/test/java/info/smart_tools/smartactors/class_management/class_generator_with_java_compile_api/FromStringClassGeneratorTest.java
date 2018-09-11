@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.exception.ClassGenerationException;
 import org.junit.Test;
 
@@ -30,8 +30,8 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        VersionControlProvider.addItem(VersionControlProvider.coreID);
-        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader)VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID));
+        VersionManager.addItem(VersionManager.coreID);
+        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) VersionManager.getItemClassLoader(VersionManager.coreID));
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
@@ -86,8 +86,8 @@ public class FromStringClassGeneratorTest {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        VersionControlProvider.addItem("cl");
-        ClassLoader cl = (ClassLoader) VersionControlProvider.getItemClassLoader("cl");
+        VersionManager.addItem("cl");
+        ClassLoader cl = (ClassLoader) VersionManager.getItemClassLoader("cl");
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
                 "import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -110,8 +110,8 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-        VersionControlProvider.addItem(VersionControlProvider.coreID);
-        ClassLoader cl = (ClassLoader) VersionControlProvider.getItemClassLoader(VersionControlProvider.coreID);
+        VersionManager.addItem(VersionManager.coreID);
+        ClassLoader cl = (ClassLoader) VersionManager.getItemClassLoader(VersionManager.coreID);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
             if(je.isDirectory() || !je.getName().endsWith(".class")){

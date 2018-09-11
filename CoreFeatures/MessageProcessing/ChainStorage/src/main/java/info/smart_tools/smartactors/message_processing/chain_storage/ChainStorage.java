@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionControlProvider;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -16,7 +15,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +22,7 @@ import java.util.Map;
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
  */
 public class ChainStorage implements IChainStorage {
-    private final Map<Object, Map<String, IChainState>> chainStates;
+    private final Map<Object, IChainState> chainStates;
     private final IRouter router;
     private final Object modificationLock = new Object();
 
@@ -37,7 +35,7 @@ public class ChainStorage implements IChainStorage {
      * @throws InvalidArgumentException if router is {@code null}
      * @throws ResolutionException if error occurs resolving any dependency
      */
-    public ChainStorage(final Map<Object, Map<String, IChainState>> chainStates, final IRouter router)
+    public ChainStorage(final Map<Object, IChainState> chainStates, final IRouter router)
             throws InvalidArgumentException, ResolutionException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
@@ -52,12 +50,8 @@ public class ChainStorage implements IChainStorage {
     }
 
     private IChainState resolveState(final Object chainId) throws ChainNotFoundException {
-        Map<String, IChainState> chainVersions = chainStates.get(chainId);
-        if (null == chainVersions) {
-            throw new ChainNotFoundException(chainId);
-        }
+        IChainState state = chainStates.get(chainId);
 
-        IChainState state = chainVersions.get(VersionControlProvider.getCurrentItem());
         if (null == state) {
             throw new ChainNotFoundException(chainId);
         }
@@ -73,22 +67,12 @@ public class ChainStorage implements IChainStorage {
                     Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
                     chainId, description, this, router);
 
-            IChainState oldState = null;
+            IChainState oldState;
 
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
 
-            Map<String, IChainState> chainVersions = chainStates.get(chainId);
-            if (chainVersions == null) {
-                chainVersions = new HashMap<String, IChainState>();
-                chainVersions.put(VersionControlProvider.getCurrentItem(), state);
-                synchronized (modificationLock) {
-                    chainStates.put(chainId, chainVersions);
-                }
-            } else {
-                synchronized (modificationLock) {
-                    oldState = chainVersions.put(VersionControlProvider.getCurrentItem(), state);
-                }
-
+            synchronized (modificationLock) {
+                oldState = chainStates.put(chainId, state);
             }
 
             if (null != oldState) {
@@ -102,13 +86,10 @@ public class ChainStorage implements IChainStorage {
 
     @Override
     public void unregister(final Object chainId) {
-        IChainState oldState = null;
-        Map<String, IChainState> chainVersions = chainStates.get(chainId);
+        IChainState oldState;
 
-        if (chainVersions != null) {
-            synchronized (modificationLock) {
-                oldState = chainVersions.remove(VersionControlProvider.getCurrentItem());
-            }
+        synchronized (modificationLock) {
+            oldState = chainStates.remove(chainId);
         }
 
         if (null == oldState) {
