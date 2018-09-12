@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.task.thread_pool;
 
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadPool implements IThreadPool {
     private final Queue<ThreadImpl> threadsQueue;
     private IScope scope;
+    private String featureID;
     private boolean terminating = false;
 
     /**
@@ -35,6 +37,7 @@ public class ThreadPool implements IThreadPool {
         } catch (ScopeProviderException e) {
             this.scope = null;
         }
+        this.featureID = VersionManager.getCurrentItemID();
     }
 
     @Override
@@ -74,5 +77,9 @@ public class ThreadPool implements IThreadPool {
 
     IScope getScope() {
         return this.scope;
+    }
+
+    String getFeatureID() {
+        return this.featureID;
     }
 }

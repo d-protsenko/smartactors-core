@@ -26,10 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -56,7 +54,7 @@ public class Server implements IServer {
     public void initialize() {
         VersionManager.addItem(VersionManager.coreID);
         VersionManager.setItemName(VersionManager.coreID, VersionManager.coreName);
-        //VersionManager.setCurrentItemID(VersionManager.coreID);
+        VersionManager.setCurrentItemID(VersionManager.coreID);
     }
 
     @Override

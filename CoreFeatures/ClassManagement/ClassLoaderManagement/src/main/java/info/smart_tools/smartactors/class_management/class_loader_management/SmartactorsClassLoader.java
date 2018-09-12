@@ -13,12 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SmartactorsClassLoader extends ExtendedURLClassLoader implements ISmartactorsClassLoader {
 
     /* This is ItemID To ClassLoader Map */
-    private static Map<String, SmartactorsClassLoader> itemClassLoaders =
-            new ConcurrentHashMap<String, SmartactorsClassLoader>();
+    private static Map<String, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
     private String itemName = null;
-    private Set<SmartactorsClassLoader> dependsOn = new HashSet<SmartactorsClassLoader>();
-    private Map<String, ClassLoader> classMap = new ConcurrentHashMap<String, ClassLoader>();
+    private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
+    private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
 
     /**
      * Redefined constructor

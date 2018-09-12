@@ -102,7 +102,7 @@ public class LoadFeatureActor {
                     throw new ActionExecuteException(e);
                 }
             };
-            //VersionManager.setCurrentItemID(feature.getID()); ?? is it necessary?
+            VersionManager.setCurrentItemID(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
                     VersionManager.getItemClassLoader(feature.getID()),
