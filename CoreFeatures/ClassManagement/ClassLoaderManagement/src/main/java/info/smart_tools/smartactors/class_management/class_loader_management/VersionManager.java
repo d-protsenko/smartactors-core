@@ -1,10 +1,13 @@
 package info.smart_tools.smartactors.class_management.class_loader_management;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,7 +24,103 @@ public final class VersionManager {
     private static Map<String, String> itemNames = new ConcurrentHashMap<>();
     private static Map<String, String> itemVersions = new ConcurrentHashMap<>();
 
+    private static Map<String, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
+    private static Map<String, List<String>> chainVersions = new ConcurrentHashMap<>();
+    private static Map<String, Map<String, String>> chainItemIDs = new ConcurrentHashMap<>();
+
     private VersionManager() {}
+
+    public static void registerVersionResolutionStrategy(String chainID, String version, IResolveDependencyStrategy strategy)
+            throws InvalidArgumentException {
+        if (chainID == null || version == null) {
+            throw new InvalidArgumentException("Key and version of chain cannot be null.");
+        }
+        if (strategy == null) {
+            throw new InvalidArgumentException("Cannot register null version resolution strategy.");
+        }
+        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainID);
+        if (strategies == null) {
+            strategies = Collections.synchronizedList(new LinkedList<>());
+            versionStrategies.put(chainID, strategies);
+        }
+        List<String> versions = chainVersions.get(chainID);
+        if (versions == null) {
+            versions = Collections.synchronizedList(new LinkedList<>());
+            chainVersions.put(chainID, versions);
+        }
+        int i;
+        for(i = 0; i < versions.size(); i++) {
+            int res = versions.get(i).compareTo(version);
+            if (res == 0) {
+                versions.remove(i);
+                break;
+            }
+            if (res < 0 ) {
+                break;
+            }
+        }
+        versions.add(i, version);
+        strategies.add(i, strategy);
+    }
+
+    public static <T> T applyVersionResolutionStrategy(final Object ... args)
+            throws InvalidArgumentException, ResolveDependencyStrategyException {
+        String chainID = (String)args[0];
+        if (chainID == null) {
+            throw new InvalidArgumentException("Key for version resolution strategy cannot be null.");
+        }
+        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainID);
+        if (strategies == null) {
+            throw new ResolveDependencyStrategyException("Key '"+chainID+"' is not registered.");
+        }
+        T result = null;
+        for(IResolveDependencyStrategy strategy : strategies) {
+            result = strategy.resolve(args);
+            if (result != null) {
+                return result;
+            }
+        }
+        throw new ResolveDependencyStrategyException("All strategies failed while resolving key '"+chainID+"'.");
+    }
+
+    public static void registerChainVersion(String key, String version, String itemID)
+            throws InvalidArgumentException {
+
+        if (key == null || version == null) {
+            throw new InvalidArgumentException("Key and version of chain cannot be null.");
+        }
+        Map<String, String> versions = chainItemIDs.get(key);
+        if (versions == null) {
+            versions = new ConcurrentHashMap<>();
+            chainItemIDs.put(key, versions);
+        }
+        String previous = versions.put(version, itemID);
+        if (null != previous) {
+            System.out.println(
+                "[WARNING] Replacing chain "+key+"-"+version+" registered from feature "+
+                getItemName(previous)+"-"+getItemVersion(previous)+" by chain from feature "+
+                getItemName(itemID)+"-"+getItemVersion(itemID)
+            );
+            versionStrategies.put(key, Collections.synchronizedList(new LinkedList<>()));
+            chainVersions.put(key, Collections.synchronizedList(new LinkedList<>());
+        }
+        registerVersionResolutionStrategy(key, version, new ApplyFunctionToArgumentsStrategy(args -> {
+            String chainID = (String) args[0];
+            return chainVersions.get(chainID).get(0);
+        }));
+    }
+
+    public static String getItemIDByChainVersion(final String chainID, final String version)
+            throws InvalidArgumentException, ResolveDependencyStrategyException {
+        if (chainID == null || version == null) {
+            throw new InvalidArgumentException("Key and version of chain cannot be null.");
+        }
+        Map<String, String> versions = chainItemIDs.get(chainID);
+        if (versions == null) {
+            return null;
+        }
+        return versions.get(version);
+    }
 
     public static void addItem(String itemID) {
         if (dependencies.get(itemID) == null) {
