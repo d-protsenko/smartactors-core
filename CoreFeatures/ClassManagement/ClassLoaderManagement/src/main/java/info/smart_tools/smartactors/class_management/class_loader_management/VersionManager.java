@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,19 +19,20 @@ public final class VersionManager {
     public static final String coreName = "info.smart_tools.smartactors";
     public static final String coreVersion = " 0.4.0";
     public static final String coreID = coreName+coreVersion;
-    private static ThreadLocal<String> currentItemID = new ThreadLocal<String>();
+    private static ThreadLocal<String> currentItemID = new ThreadLocal<>();
+    private static ThreadLocal<IObject> currentContext = new ThreadLocal<>();
 
     private static Map<String, Set<String>> dependencies = new ConcurrentHashMap<>();
     private static Map<String, String> itemNames = new ConcurrentHashMap<>();
     private static Map<String, String> itemVersions = new ConcurrentHashMap<>();
 
-    private static Map<String, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
-    private static Map<String, List<String>> chainVersions = new ConcurrentHashMap<>();
-    private static Map<String, Map<String, String>> chainItemIDs = new ConcurrentHashMap<>();
+    private static Map<Object, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
+    private static Map<Object, List<Object>> chainVersions = new ConcurrentHashMap<>();
+    private static Map<Object, Map<Object, String>> chainItemIDs = new ConcurrentHashMap<>();
 
     private VersionManager() {}
 
-    public static void registerVersionResolutionStrategy(String chainID, String version, IResolveDependencyStrategy strategy)
+    public static void registerVersionResolutionStrategy(Object chainID, Object version, IResolveDependencyStrategy strategy)
             throws InvalidArgumentException {
         if (chainID == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
@@ -43,14 +45,14 @@ public final class VersionManager {
             strategies = Collections.synchronizedList(new LinkedList<>());
             versionStrategies.put(chainID, strategies);
         }
-        List<String> versions = chainVersions.get(chainID);
+        List<Object> versions = chainVersions.get(chainID);
         if (versions == null) {
             versions = Collections.synchronizedList(new LinkedList<>());
             chainVersions.put(chainID, versions);
         }
         int i;
         for(i = 0; i < versions.size(); i++) {
-            int res = versions.get(i).compareTo(version);
+            int res = String.valueOf(versions.get(i)).compareTo(String.valueOf(version));
             if (res == 0) {
                 versions.remove(i);
                 break;
@@ -83,39 +85,39 @@ public final class VersionManager {
         throw new ResolveDependencyStrategyException("All strategies failed while resolving key '"+chainID+"'.");
     }
 
-    public static void registerChainVersion(String key, String version, String itemID)
+    public static void registerChainVersion(Object chainID, Object version, String itemID)
             throws InvalidArgumentException {
 
-        if (key == null || version == null) {
+        if (chainID == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<String, String> versions = chainItemIDs.get(key);
+        Map<Object, String> versions = chainItemIDs.get(chainID);
         if (versions == null) {
             versions = new ConcurrentHashMap<>();
-            chainItemIDs.put(key, versions);
+            chainItemIDs.put(chainID, versions);
         }
         String previous = versions.put(version, itemID);
         if (null != previous) {
             System.out.println(
-                "[WARNING] Replacing chain "+key+"-"+version+" registered from feature "+
+                "[WARNING] Replacing chain "+chainID+"-"+version+" registered from feature "+
                 getItemName(previous)+"-"+getItemVersion(previous)+" by chain from feature "+
                 getItemName(itemID)+"-"+getItemVersion(itemID)
             );
-            versionStrategies.put(key, Collections.synchronizedList(new LinkedList<>()));
-            chainVersions.put(key, Collections.synchronizedList(new LinkedList<>());
+            versionStrategies.put(chainID, Collections.synchronizedList(new LinkedList<>()));
+            chainVersions.put(chainID, Collections.synchronizedList(new LinkedList<>()));
         }
-        registerVersionResolutionStrategy(key, version, new ApplyFunctionToArgumentsStrategy(args -> {
-            String chainID = (String) args[0];
-            return chainVersions.get(chainID).get(0);
+        registerVersionResolutionStrategy(chainID, version, new ApplyFunctionToArgumentsStrategy(args -> {
+            Object argumentChainID = args[0];
+            return chainVersions.get(argumentChainID).get(0);
         }));
     }
 
-    public static String getItemIDByChainVersion(final String chainID, final String version)
+    public static String getItemIDByChainVersion(final Object chainID, final Object version)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
         if (chainID == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<String, String> versions = chainItemIDs.get(chainID);
+        Map<Object, String> versions = chainItemIDs.get(chainID);
         if (versions == null) {
             return null;
         }
@@ -172,6 +174,12 @@ public final class VersionManager {
         }
     }
 
+    public static void setCurrentContext(IObject context) {
+        currentContext.set(context);
+    }
+
+    public static IObject getCurrentContext() { return currentContext.get(); }
+
     public static void setCurrentItemID(String itemID) {
         currentItemID.set(itemID);
     }
@@ -203,5 +211,14 @@ public final class VersionManager {
 
     public static <T> T getFromMap(Map<String, T> objects) {
         return getFromMap(getCurrentItemID(), objects);
+    }
+
+    public static String getItemIDByChainID(Object chainID)
+            throws InvalidArgumentException, ResolveDependencyStrategyException {
+        String itemID = null;
+        Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainID, VersionManager.getCurrentContext());
+        itemID = VersionManager.getItemIDByChainVersion(chainID, chainVersion);
+
+        return itemID;
     }
 }

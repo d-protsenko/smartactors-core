@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
@@ -57,7 +59,17 @@ public class ChainStorage implements IChainStorage {
             throw new ChainNotFoundException(chainId);
         }
 
-        IChainState state = VersionManager.getFromMap(chainVersions);
+        String itemID = null;
+        try {
+            //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentContext());
+            //VersionManager.setCurrentItemID(VersionManager.getItemIDByChainVersion(chainId, chainVersion));
+            //IChainState state = VersionManager.getFromMap(chainVersions);
+            itemID = VersionManager.getItemIDByChainID(chainId);
+        } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
+            throw new ChainNotFoundException("Cannot resolve item ID on chainID '"+chainId+"'.");
+        }
+        IChainState state = chainVersions.get(itemID);
+
         if (null == state) {
             throw new ChainNotFoundException(chainId);
         }
@@ -79,7 +91,7 @@ public class ChainStorage implements IChainStorage {
 
             Map<String, IChainState> chainVersions = chainStates.get(chainId);
             if (chainVersions == null) {
-                chainVersions = new HashMap<String, IChainState>();
+                chainVersions = new ConcurrentHashMap<>();
                 chainVersions.put(VersionManager.getCurrentItemID(), state);
                 synchronized (modificationLock) {
                     chainStates.put(chainId, chainVersions);
@@ -90,12 +102,13 @@ public class ChainStorage implements IChainStorage {
                 }
 
             }
+            VersionManager.registerChainVersion(chainId, VersionManager.getCurrentItemVersion(), VersionManager.getCurrentItemID());
 
             if (null != oldState) {
                 System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
                         oldState.getCurrent().toString(), chainId.toString(), newChain.toString()));
             }
-        } catch (ResolutionException  e) {
+        } catch (ResolutionException | InvalidArgumentException e) {
             throw new ChainCreationException(MessageFormat.format("Could not create a chain ''{0}''", chainId.toString()), e);
         }
     }

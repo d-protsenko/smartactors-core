@@ -102,6 +102,10 @@ public class LoadFeatureActor {
                     throw new ActionExecuteException(e);
                 }
             };
+            feature.setID(feature.getName()+":"+feature.getVersion());
+            VersionManager.addItem(feature.getID());
+            VersionManager.setItemName(feature.getID(), feature.getName());
+            VersionManager.setItemVersion(feature.getID(), feature.getVersion());
             VersionManager.setCurrentItemID(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
