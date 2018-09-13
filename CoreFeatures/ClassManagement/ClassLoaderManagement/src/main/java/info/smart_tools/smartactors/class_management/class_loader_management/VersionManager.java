@@ -33,6 +33,121 @@ public final class VersionManager {
 
     private VersionManager() {}
 
+    public static String addItem(String itemName, String itemVersion)
+            throws InvalidArgumentException {
+        if (itemName == null || itemVersion == null || itemName.equals("")) {
+            throw new InvalidArgumentException("Item name or version cannot be null");
+        }
+
+        String itemID = itemName+":"+itemVersion;
+        if (dependencies.get(itemID) == null) {
+            HierarchicalClassLoader.addItem(itemID);
+            HierarchicalClassLoader.setItemName(itemID, itemName);
+            dependencies.put(itemID, Collections.synchronizedSet(new HashSet<>()));
+            itemNames.put(itemID, itemName);
+            itemVersions.put(itemID, itemVersion);
+        } else {
+            System.out.println("[WARNING] Item "+itemID+" has already been defined.\n");
+        }
+        return itemID;
+    }
+
+    public static String getItemName(String itemID) {
+        return itemNames.get(itemID);
+    }
+
+    public static String getItemVersion(String itemID) {
+        return itemVersions.get(itemID);
+    }
+
+    public static ISmartactorsClassLoader getItemClassLoader(String itemID) {
+        return HierarchicalClassLoader.getItemClassLoader(itemID);
+    }
+
+    public static void addItemDependency(String dependentItemID, String baseItemID) {
+        if (baseItemID != null && dependentItemID != null && dependentItemID != baseItemID) {
+            Set<String> itemIDs = dependencies.get(baseItemID);
+            Set<String> dependsOn = dependencies.get(dependentItemID);
+            // it is based on ConcurrentHashMap, so it is thread safe
+            dependsOn.add(baseItemID);
+            dependsOn.addAll(itemIDs);
+
+            HierarchicalClassLoader.addItemDependency(dependentItemID, baseItemID);
+        }
+    }
+
+    public static void finalizeItemDependencies(String itemID, String defaultItemID) {
+        if (itemID != null) {
+            HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
+            Set<String> dependsOn = dependencies.get(itemID);
+            if (dependsOn.size() == 0 && defaultItemID != null) {
+                dependsOn.add(defaultItemID);
+            }
+        }
+    }
+
+    public static void setCurrentContext(IObject context) {
+        currentContext.set(context);
+    }
+
+    public static IObject getCurrentContext() { return currentContext.get(); }
+
+    public static void setCurrentItemID(String itemID) {
+        currentItemID.set(itemID);
+    }
+
+    public static String getCurrentItemID() {
+        return currentItemID.get();
+    }
+
+    public static String getCurrentItemVersion() {
+        return itemVersions.get(getCurrentItemID());
+    }
+
+    public static <T> T getFromMap(String itemID, Map<String, T> objects) {
+        T object = objects.get(itemID);
+        if (object == null) {
+            for(String dependency : dependencies.get(itemID)) {
+                object = objects.get(dependency);
+                if (object != null) {
+                    break;
+                }
+            }
+        }
+        return object;
+    }
+
+    public static <T> T getFromMap(Map<String, T> objects) {
+        return getFromMap(getCurrentItemID(), objects);
+    }
+
+    public static void registerChainVersion(Object chainID, Object version, String itemID)
+            throws InvalidArgumentException {
+
+        if (chainID == null || version == null) {
+            throw new InvalidArgumentException("Key and version of chain cannot be null.");
+        }
+        Map<Object, String> versions = chainItemIDs.get(chainID);
+        if (versions == null) {
+            versions = new ConcurrentHashMap<>();
+            chainItemIDs.put(chainID, versions);
+        }
+        String previous = versions.put(version, itemID);
+        if (null != previous) {
+            System.out.println(
+                    "[WARNING] Replacing chain "+chainID+"-"+version+" registered from feature "+
+                            getItemName(previous)+"-"+getItemVersion(previous)+" by chain from feature "+
+                            getItemName(itemID)+"-"+getItemVersion(itemID)
+            );
+            versionStrategies.put(chainID, Collections.synchronizedList(new LinkedList<>()));
+            chainVersions.put(chainID, Collections.synchronizedList(new LinkedList<>()));
+        }
+        registerVersionResolutionStrategy(chainID, version, new ApplyFunctionToArgumentsStrategy(args -> {
+            Object argumentChainID = args[0];
+            return chainVersions.get(argumentChainID).get(0);
+        }));
+    }
+
     public static void registerVersionResolutionStrategy(Object chainID, Object version, IResolveDependencyStrategy strategy)
             throws InvalidArgumentException {
         if (chainID == null || version == null) {
@@ -86,35 +201,8 @@ public final class VersionManager {
         throw new ResolveDependencyStrategyException("All strategies failed while resolving key '"+chainID+"'.");
     }
 
-    public static void registerChainVersion(Object chainID, Object version, String itemID)
-            throws InvalidArgumentException {
-
-        if (chainID == null || version == null) {
-            throw new InvalidArgumentException("Key and version of chain cannot be null.");
-        }
-        Map<Object, String> versions = chainItemIDs.get(chainID);
-        if (versions == null) {
-            versions = new ConcurrentHashMap<>();
-            chainItemIDs.put(chainID, versions);
-        }
-        String previous = versions.put(version, itemID);
-        if (null != previous) {
-            System.out.println(
-                "[WARNING] Replacing chain "+chainID+"-"+version+" registered from feature "+
-                getItemName(previous)+"-"+getItemVersion(previous)+" by chain from feature "+
-                getItemName(itemID)+"-"+getItemVersion(itemID)
-            );
-            versionStrategies.put(chainID, Collections.synchronizedList(new LinkedList<>()));
-            chainVersions.put(chainID, Collections.synchronizedList(new LinkedList<>()));
-        }
-        registerVersionResolutionStrategy(chainID, version, new ApplyFunctionToArgumentsStrategy(args -> {
-            Object argumentChainID = args[0];
-            return chainVersions.get(argumentChainID).get(0);
-        }));
-    }
-
     public static String getItemIDByChainVersion(final Object chainID, final Object version)
-            throws InvalidArgumentException, ResolveDependencyStrategyException {
+            throws InvalidArgumentException {
         if (chainID == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
@@ -123,115 +211,6 @@ public final class VersionManager {
             return null;
         }
         return versions.get(version);
-    }
-/*
-    public static void addItem(String itemID) {
-        if (dependencies.get(itemID) == null) {
-            HierarchicalClassLoader.addItem(itemID);
-            dependencies.put(itemID, (new ConcurrentHashMap<>()).newKeySet());
-        }
-    }
-*/
-    public static String addItem(String itemName, String itemVersion) {
-        if (itemName == null || itemName.equals("")) {
-            return null;
-        }
-        if (itemVersion == null) {
-            itemVersion = "";
-        }
-        String itemID = itemName+":"+itemVersion;
-        if (dependencies.get(itemID) == null) {
-            HierarchicalClassLoader.addItem(itemID);
-            HierarchicalClassLoader.setItemName(itemID, itemName);
-            dependencies.put(itemID, (new ConcurrentHashMap<>()).newKeySet());
-            itemNames.put(itemID, itemName);
-            itemVersions.put(itemID, itemVersion);
-        } else {
-            System.out.println("[WARNING] Item "+itemID+" has already been defined.\n");
-        }
-        return itemID;
-    }
-/*
-    public static void setItemName(String itemID, String itemName) {
-        HierarchicalClassLoader.setItemName(itemID, itemName);
-        itemNames.put(itemID, itemName);
-    }
-
-    public static void setItemVersion(String itemID, String itemVersion) {
-        itemVersions.put(itemID, itemVersion);
-    }
-*/
-    public static String getItemName(String itemID) {
-        return itemNames.get(itemID);
-    }
-
-    public static String getItemVersion(String itemID) {
-        return itemVersions.get(itemID);
-    }
-
-    public static ISmartactorsClassLoader getItemClassLoader(String itemID) {
-        return HierarchicalClassLoader.getItemClassLoader(itemID);
-    }
-
-    public static void addItemDependency(String dependentItemID, String baseItemID) {
-        if (baseItemID != null && dependentItemID != null && dependentItemID != baseItemID) {
-            Set<String> itemIDs = dependencies.get(baseItemID);
-            Set<String> dependsOn = dependencies.get(dependentItemID);
-            // it is based on ConcurrentHashMap, so it is thread safe
-            dependsOn.add(baseItemID);
-            dependsOn.addAll(itemIDs);
-
-            HierarchicalClassLoader.addItemDependency(dependentItemID, baseItemID);
-        }
-    }
-
-    public static void finalizeItemDependencies(String itemID, String defaultItemID) {
-        if (itemID != null) {
-            HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
-            Set<String> dependsOn = dependencies.get(itemID);
-            if (dependsOn.size() == 0 && defaultItemID != null) {
-                dependsOn.add(defaultItemID);
-            }
-        }
-    }
-
-    public static void setCurrentContext(IObject context) {
-        currentContext.set(context);
-    }
-
-    public static IObject getCurrentContext() { return currentContext.get(); }
-
-    public static void setCurrentItemID(String itemID) {
-        currentItemID.set(itemID);
-    }
-
-    public static String getCurrentItemID() {
-        return currentItemID.get();
-    }
-/*
-    public static String getCurrentItemName() {
-        return itemNames.get(getCurrentItemID());
-    }
-*/
-    public static String getCurrentItemVersion() {
-        return itemVersions.get(getCurrentItemID());
-    }
-
-    public static <T> T getFromMap(String itemID, Map<String, T> objects) {
-        T object = objects.get(itemID);
-        if (object == null) {
-            for(String dependency : dependencies.get(itemID)) {
-                object = objects.get(dependency);
-                if (object != null) {
-                    break;
-                }
-            }
-        }
-        return object;
-    }
-
-    public static <T> T getFromMap(Map<String, T> objects) {
-        return getFromMap(getCurrentItemID(), objects);
     }
 
     public static String getItemIDByChainID(Object chainID)
@@ -244,4 +223,25 @@ public final class VersionManager {
         }
         return itemID;
     }
+/*
+    public static void addItem(String itemID) {
+        if (dependencies.get(itemID) == null) {
+            HierarchicalClassLoader.addItem(itemID);
+            dependencies.put(itemID, Collections.synchronizedSet(new HashSet<>()));
+        }
+    }
+
+    public static String getCurrentItemName() {
+        return itemNames.get(getCurrentItemID());
+    }
+
+    public static void setItemName(String itemID, String itemName) {
+        HierarchicalClassLoader.setItemName(itemID, itemName);
+        itemNames.put(itemID, itemName);
+    }
+
+    public static void setItemVersion(String itemID, String itemVersion) {
+        itemVersions.put(itemID, itemVersion);
+    }
+*/
 }

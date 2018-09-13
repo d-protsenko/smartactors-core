@@ -152,7 +152,9 @@ public class LoadFeatureActor {
             try {
                 String featureVersion = (String) config.getValue(this.featureVersionFN);
                 feature.setVersion(featureVersion);
-            } catch (ReadValueException e ) { }
+            } catch (ReadValueException e ) {
+                feature.setVersion("");
+            }
         }
     }
 }

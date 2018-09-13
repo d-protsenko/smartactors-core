@@ -21,6 +21,7 @@ import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_ja
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
+import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +52,13 @@ public class Server implements IServer {
     }
 
     @Override
-    public void initialize() {
-        VersionManager.setCurrentItemID(VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion));
+    public void initialize()
+            throws ServerInitializeException {
+        try {
+            VersionManager.setCurrentItemID(VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion));
+        } catch (InvalidArgumentException e) {
+            throw new ServerInitializeException("Failed to initialize core.");
+        }
     }
 
     @Override
