@@ -30,7 +30,7 @@ public class Feature implements IFeature {
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
-        this.ID = java.util.UUID.randomUUID().toString();
+        this.ID = null;
     }
 
     /**
@@ -46,7 +46,7 @@ public class Feature implements IFeature {
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
-        this.ID = java.util.UUID.randomUUID().toString();
+        this.ID = null;
     }
 
     @Override

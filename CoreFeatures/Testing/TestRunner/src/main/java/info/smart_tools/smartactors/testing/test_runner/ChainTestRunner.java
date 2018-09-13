@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.testing.test_runner;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
@@ -114,6 +115,7 @@ public class ChainTestRunner implements ITestRunner {
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
+            VersionManager.setCurrentContext(null);
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
             IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"));

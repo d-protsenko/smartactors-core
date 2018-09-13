@@ -102,10 +102,7 @@ public class LoadFeatureActor {
                     throw new ActionExecuteException(e);
                 }
             };
-            feature.setID(feature.getName()+":"+feature.getVersion());
-            VersionManager.addItem(feature.getID());
-            VersionManager.setItemName(feature.getID(), feature.getName());
-            VersionManager.setItemVersion(feature.getID(), feature.getVersion());
+            feature.setID(VersionManager.addItem(feature.getName(), feature.getVersion()));
             VersionManager.setCurrentItemID(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
@@ -151,9 +148,11 @@ public class LoadFeatureActor {
             String content = new Scanner(f).useDelimiter("\\Z").next();
             IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
             String featureName = (String) config.getValue(this.featureNameFN);
-            String featureVersion = (String) config.getValue(this.featureVersionFN);
             feature.setName(featureName);
-            feature.setVersion(featureVersion);
+            try {
+                String featureVersion = (String) config.getValue(this.featureVersionFN);
+                feature.setVersion(featureVersion);
+            } catch (ReadValueException e ) { }
         }
     }
 }

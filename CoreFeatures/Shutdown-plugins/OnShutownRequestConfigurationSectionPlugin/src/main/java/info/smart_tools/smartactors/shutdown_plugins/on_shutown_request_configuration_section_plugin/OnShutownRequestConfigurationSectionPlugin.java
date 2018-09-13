@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -76,6 +77,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                 Integer stackDepth = stackDepth0;
 
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+                VersionManager.setCurrentContext(null);
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 return (IAction<Object>) mode -> {

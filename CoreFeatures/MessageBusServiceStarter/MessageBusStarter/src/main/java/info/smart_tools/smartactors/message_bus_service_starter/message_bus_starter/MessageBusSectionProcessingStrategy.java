@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_bus_service_starter.message_bus_sta
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -78,6 +79,7 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+            VersionManager.setCurrentContext(null);
             IReceiverChain chain = chainStorage.resolve(mapId);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));

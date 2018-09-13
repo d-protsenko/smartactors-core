@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.actions;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -125,6 +126,7 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
             context.setValue(finalActionsFN, finalActionsList);
 
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(chainFN));
+            VersionManager.setCurrentContext(null);
             IReceiverChain chain = chainStorage.resolve(chainId);
             IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()),
                     entry.getState().getValue(stackDepthFN), chain);

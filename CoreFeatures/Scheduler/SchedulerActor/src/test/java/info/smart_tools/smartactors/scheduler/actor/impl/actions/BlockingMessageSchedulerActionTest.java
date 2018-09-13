@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -99,6 +100,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
             }
         });
 
+        VersionManager.setCurrentContext(null);
         when(chainStorageMock.resolve(eq("some_chain__id"))).thenReturn(receiverChainMock);
 
         action = new BlockingMessageSchedulerAction();

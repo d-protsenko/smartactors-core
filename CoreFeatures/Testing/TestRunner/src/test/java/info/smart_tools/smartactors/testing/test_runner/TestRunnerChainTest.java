@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.testing.test_runner;
 
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -92,6 +93,7 @@ public class TestRunnerChainTest {
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"),
                 new SingletonStrategy(testHandler)
         );
+        VersionManager.setCurrentContext(null);
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 

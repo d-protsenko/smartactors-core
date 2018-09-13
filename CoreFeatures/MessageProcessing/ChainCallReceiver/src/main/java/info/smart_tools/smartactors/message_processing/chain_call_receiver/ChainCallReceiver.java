@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing.chain_call_receiver;
 
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -58,6 +59,7 @@ public class ChainCallReceiver implements IMessageReceiver {
             throws MessageReceiveException {
         try {
             Object chainId = chainChoiceStrategy.chooseChain(processor);
+            VersionManager.setCurrentContext(processor.getMessage());
             IReceiverChain chain = chainStorage.resolve(chainId);
             checkAccess(chain, processor);
             processor.getSequence().callChain(chain);

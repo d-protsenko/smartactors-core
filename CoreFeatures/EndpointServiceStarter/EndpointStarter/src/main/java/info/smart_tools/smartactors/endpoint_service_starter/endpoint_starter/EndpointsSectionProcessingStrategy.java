@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 
 import java.util.List;
 
@@ -103,6 +104,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+                VersionManager.setCurrentContext(null);
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 endpoint.setValue(startChainNameFieldName, chain);

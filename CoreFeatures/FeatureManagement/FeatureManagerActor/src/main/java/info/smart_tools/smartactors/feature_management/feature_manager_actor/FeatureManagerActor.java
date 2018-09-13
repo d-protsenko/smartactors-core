@@ -92,6 +92,7 @@ public class FeatureManagerActor {
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), scatterChainName);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
+            VersionManager.setCurrentContext(null);
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
@@ -278,8 +279,6 @@ public class FeatureManagerActor {
     }
 
     private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature) {
-
-        VersionManager.setItemName(loadedFeature.getID(), loadedFeature.getName());
 
         for (IFeature feature : this.processingFeatures.values()) {
             Set<String> featureDependencies = feature.getDependencies();

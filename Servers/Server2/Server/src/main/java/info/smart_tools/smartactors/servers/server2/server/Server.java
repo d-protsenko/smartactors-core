@@ -44,7 +44,7 @@ public class Server implements IServer {
      */
     public static void main(final String[] args)
             throws Exception {
-        Thread.sleep(3500);
+        Thread.sleep(2000);
         IServer server = new Server();
         server.initialize();
         server.start();
@@ -52,9 +52,7 @@ public class Server implements IServer {
 
     @Override
     public void initialize() {
-        VersionManager.addItem(VersionManager.coreID);
-        VersionManager.setItemName(VersionManager.coreID, VersionManager.coreName);
-        VersionManager.setCurrentItemID(VersionManager.coreID);
+        VersionManager.setCurrentItemID(VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion));
     }
 
     @Override

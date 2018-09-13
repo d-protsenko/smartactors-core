@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
@@ -96,6 +97,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
             try {
+                VersionManager.setCurrentContext(message);
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
                 mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args));
             } catch (ResolutionException e) {
@@ -398,6 +400,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
     private Object call(final Object arg)
             throws CommandExecutionException {
         try {
+            VersionManager.setCurrentContext(message);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg));
 

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.testing.test_runner;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -150,6 +151,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
+            VersionManager.setCurrentContext(null);
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
             sourceObject.setValue(this.contentFieldName, description);

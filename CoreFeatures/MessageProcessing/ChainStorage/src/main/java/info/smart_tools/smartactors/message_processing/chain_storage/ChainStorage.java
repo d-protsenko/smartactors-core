@@ -68,7 +68,7 @@ public class ChainStorage implements IChainStorage {
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
             throw new ChainNotFoundException("Cannot resolve item ID on chainID '"+chainId+"'.");
         }
-        IChainState state = chainVersions.get(itemID);
+        IChainState state = VersionManager.getFromMap(itemID, chainVersions);
 
         if (null == state) {
             throw new ChainNotFoundException(chainId);

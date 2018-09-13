@@ -17,8 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class VersionManager {
 
     public static final String coreName = "info.smart_tools.smartactors";
-    public static final String coreVersion = " 0.4.0";
-    public static final String coreID = coreName+coreVersion;
+    public static final String coreVersion = "0.4.0";
+    public static final String coreID = coreName+":"+coreVersion;
+
     private static ThreadLocal<String> currentItemID = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentContext = new ThreadLocal<>();
 
@@ -123,14 +124,34 @@ public final class VersionManager {
         }
         return versions.get(version);
     }
-
+/*
     public static void addItem(String itemID) {
         if (dependencies.get(itemID) == null) {
             HierarchicalClassLoader.addItem(itemID);
             dependencies.put(itemID, (new ConcurrentHashMap<>()).newKeySet());
         }
     }
-
+*/
+    public static String addItem(String itemName, String itemVersion) {
+        if (itemName == null || itemName.equals("")) {
+            return null;
+        }
+        if (itemVersion == null) {
+            itemVersion = "";
+        }
+        String itemID = itemName+":"+itemVersion;
+        if (dependencies.get(itemID) == null) {
+            HierarchicalClassLoader.addItem(itemID);
+            HierarchicalClassLoader.setItemName(itemID, itemName);
+            dependencies.put(itemID, (new ConcurrentHashMap<>()).newKeySet());
+            itemNames.put(itemID, itemName);
+            itemVersions.put(itemID, itemVersion);
+        } else {
+            System.out.println("[WARNING] Item "+itemID+" has already been defined.\n");
+        }
+        return itemID;
+    }
+/*
     public static void setItemName(String itemID, String itemName) {
         HierarchicalClassLoader.setItemName(itemID, itemName);
         itemNames.put(itemID, itemName);
@@ -139,7 +160,7 @@ public final class VersionManager {
     public static void setItemVersion(String itemID, String itemVersion) {
         itemVersions.put(itemID, itemVersion);
     }
-
+*/
     public static String getItemName(String itemID) {
         return itemNames.get(itemID);
     }
@@ -187,11 +208,11 @@ public final class VersionManager {
     public static String getCurrentItemID() {
         return currentItemID.get();
     }
-
+/*
     public static String getCurrentItemName() {
         return itemNames.get(getCurrentItemID());
     }
-
+*/
     public static String getCurrentItemVersion() {
         return itemVersions.get(getCurrentItemID());
     }
@@ -215,10 +236,12 @@ public final class VersionManager {
 
     public static String getItemIDByChainID(Object chainID)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        String itemID = null;
-        Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainID, VersionManager.getCurrentContext());
-        itemID = VersionManager.getItemIDByChainVersion(chainID, chainVersion);
-
+        String itemID = getCurrentItemID();
+        IObject context = getCurrentContext();
+        if (context != null || itemID == null) {
+            Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainID, context);
+            itemID = VersionManager.getItemIDByChainVersion(chainID, chainVersion);
+        }
         return itemID;
     }
 }
