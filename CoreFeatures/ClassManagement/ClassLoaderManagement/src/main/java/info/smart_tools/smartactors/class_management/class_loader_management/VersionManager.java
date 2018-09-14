@@ -105,7 +105,7 @@ public final class VersionManager {
         return itemVersions.get(getCurrentItemID());
     }
 
-    public static <T> T getFromMap(String itemID, Map<String, T> objects) {
+    public static <T> T getFromMap(String itemID, Map<Object, T> objects) {
         T object = objects.get(itemID);
         if (object == null) {
             for(String dependency : dependencies.get(itemID)) {
@@ -118,8 +118,25 @@ public final class VersionManager {
         return object;
     }
 
-    public static <T> T getFromMap(Map<String, T> objects) {
+    public static <T> T getFromMap(Map<Object, T> objects) {
         return getFromMap(getCurrentItemID(), objects);
+    }
+
+    public static <T> T removeFromMap(String itemID, Map<Object, T> objects) {
+        T object = objects.remove(itemID);
+        if (object == null) {
+            for(String dependency : dependencies.get(itemID)) {
+                object = objects.remove(dependency);
+                if (object != null) {
+                    break;
+                }
+            }
+        }
+        return object;
+    }
+
+    public static <T> T removeFromMap(Map<Object, T> objects) {
+        return removeFromMap(getCurrentItemID(), objects);
     }
 
     public static void registerChainVersion(Object chainID, Object version, String itemID)

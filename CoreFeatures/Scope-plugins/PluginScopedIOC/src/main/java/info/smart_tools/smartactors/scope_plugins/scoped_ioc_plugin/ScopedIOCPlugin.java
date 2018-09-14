@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc.versioned_strategy_container.StrategyContainer;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ScopedIOCPlugin implements IPlugin {
                         try {
                             ScopeProvider.subscribeOnCreationNewScope(scope -> {
                                 try {
-                                    scope.setValue(IOC.getIocKey(), new StrategyContainer());
+                                    scope.setValue(IOC.getIocKey(), new StrategyContainer(null));
                                 } catch (Exception e) {
                                     throw new Error(e);
                                 }

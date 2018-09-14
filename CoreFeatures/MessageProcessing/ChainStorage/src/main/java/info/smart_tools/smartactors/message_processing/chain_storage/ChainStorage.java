@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
  */
 public class ChainStorage implements IChainStorage {
-    private final Map<Object, Map<String, IChainState>> chainStates;
+    private final Map<Object, Map<Object, IChainState>> chainStates;
     private final IRouter router;
     private final Object modificationLock = new Object();
 
@@ -39,7 +39,7 @@ public class ChainStorage implements IChainStorage {
      * @throws InvalidArgumentException if router is {@code null}
      * @throws ResolutionException if error occurs resolving any dependency
      */
-    public ChainStorage(final Map<Object, Map<String, IChainState>> chainStates, final IRouter router)
+    public ChainStorage(final Map<Object, Map<Object, IChainState>> chainStates, final IRouter router)
             throws InvalidArgumentException, ResolutionException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
@@ -54,7 +54,7 @@ public class ChainStorage implements IChainStorage {
     }
 
     private IChainState resolveState(final Object chainId) throws ChainNotFoundException {
-        Map<String, IChainState> chainVersions = chainStates.get(chainId);
+        Map<Object, IChainState> chainVersions = chainStates.get(chainId);
         if (null == chainVersions) {
             throw new ChainNotFoundException(chainId);
         }
@@ -89,7 +89,7 @@ public class ChainStorage implements IChainStorage {
 
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
 
-            Map<String, IChainState> chainVersions = chainStates.get(chainId);
+            Map<Object, IChainState> chainVersions = chainStates.get(chainId);
             if (chainVersions == null) {
                 chainVersions = new ConcurrentHashMap<>();
                 chainVersions.put(VersionManager.getCurrentItemID(), state);
@@ -116,7 +116,7 @@ public class ChainStorage implements IChainStorage {
     @Override
     public void unregister(final Object chainId) {
         IChainState oldState = null;
-        Map<String, IChainState> chainVersions = chainStates.get(chainId);
+        Map<Object, IChainState> chainVersions = chainStates.get(chainId);
 
         if (chainVersions != null) {
             synchronized (modificationLock) {

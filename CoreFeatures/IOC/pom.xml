@@ -24,6 +24,7 @@
         <module>IocContainerSimpleImplementation</module>
         <module>ResolveByNameIocStrategy</module>
         <module>StringIocKey</module>
+        <module>VersionedStrategyContainer</module>
         <module>IOCDistribution</module>
     </modules>
     <build>
