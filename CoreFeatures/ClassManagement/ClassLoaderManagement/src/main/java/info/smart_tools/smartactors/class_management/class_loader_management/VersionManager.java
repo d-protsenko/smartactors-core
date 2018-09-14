@@ -35,9 +35,10 @@ public final class VersionManager {
 
     public static String addItem(String itemName, String itemVersion)
             throws InvalidArgumentException {
-        if (itemName == null || itemVersion == null || itemName.equals("")) {
+        if (itemName == null || itemName.equals("")) {
             throw new InvalidArgumentException("Item name or version cannot be null");
         }
+        if (itemVersion == null) { itemVersion = ""; }
 
         String itemID = itemName+":"+itemVersion;
         if (dependencies.get(itemID) == null) {

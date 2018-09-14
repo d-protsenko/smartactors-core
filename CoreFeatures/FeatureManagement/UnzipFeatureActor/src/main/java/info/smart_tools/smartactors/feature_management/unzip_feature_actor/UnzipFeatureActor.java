@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.feature_management.unzip_feature_actor;
 
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.exception.UnzipFeatureException;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrapper.UnzipFeatureWrapper;
@@ -26,6 +27,8 @@ import java.util.Set;
  */
 public class UnzipFeatureActor {
 
+    private final IFieldName featureNameFN;
+    private final IFieldName featureVersionFN;
     private final IFieldName dependenciesFieldName;
 
     /**
@@ -34,6 +37,8 @@ public class UnzipFeatureActor {
      */
     public UnzipFeatureActor()
             throws ResolutionException {
+        this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureVersion");
         this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
     }
 
@@ -89,6 +94,12 @@ public class UnzipFeatureActor {
             throws Exception {
         String content = new Scanner(f).useDelimiter("\\Z").next();
         IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
+        String featureName = (String) config.getValue(this.featureNameFN);
+        feature.setName(featureName);
+        String featureVersion = (String) config.getValue(this.featureVersionFN);
+        feature.setVersion(featureVersion);
+        String featureID = VersionManager.addItem(feature.getName(), feature.getVersion());
+        feature.setID(featureID);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);

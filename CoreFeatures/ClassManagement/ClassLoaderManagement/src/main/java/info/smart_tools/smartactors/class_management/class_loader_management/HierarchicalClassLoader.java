@@ -15,7 +15,7 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
     /* This is ItemID To ClassLoader Map */
     private static Map<String, HierarchicalClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
-    private String itemName = null;
+    //private String itemName = null;
     private Set<HierarchicalClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
 
     static void addItem(String itemID) {
@@ -28,11 +28,11 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
     }
 
     static void setItemName(String itemID, String itemName) {
-        itemName = itemName.replace('/', '.');
+/*        itemName = itemName.replace('/', '.');
         itemName = itemName.replace(':', '.');
         itemName = itemName.replace('-', '_');
         HierarchicalClassLoader classLoader = getItemClassLoader(itemID);
-        classLoader.itemName = itemName;
+        classLoader.itemName = itemName; */
     }
 
     static void addItemDependency(String dependentItemID, String baseItemID) {

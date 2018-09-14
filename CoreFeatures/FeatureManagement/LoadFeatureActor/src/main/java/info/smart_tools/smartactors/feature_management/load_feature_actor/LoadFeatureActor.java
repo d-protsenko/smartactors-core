@@ -48,8 +48,6 @@ public class LoadFeatureActor {
     private final IPluginCreator pluginCreator;
     private final IConfigurationManager configurationManager;
 
-    private final IFieldName featureNameFN;
-    private final IFieldName featureVersionFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
 
     /**
@@ -61,8 +59,6 @@ public class LoadFeatureActor {
         this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-        this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
-        this.featureVersionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureVersion");
         this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
@@ -83,8 +79,6 @@ public class LoadFeatureActor {
             System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
             String pattern = ".jar";
             File file = Paths.get(((IPath) feature.getLocation()).getPath()).toFile();
-            File configJson = Paths.get(file.getPath(), CONFIG_FILE).toFile();
-            this.updateFeature(configJson, feature);
             Collection<IPath> jars = new ArrayList<>();
             Stream.of(file.listFiles((item, string) ->  string.endsWith(pattern))).map(Path::new).forEach(jars::add);
 
@@ -102,7 +96,7 @@ public class LoadFeatureActor {
                     throw new ActionExecuteException(e);
                 }
             };
-            feature.setID(VersionManager.addItem(feature.getName(), feature.getVersion()));
+            // setup current feature for class loading, bootstrap and applying config
             VersionManager.setCurrentItemID(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd("plugin loader"),
@@ -139,22 +133,6 @@ public class LoadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
             e.printStackTrace(System.out);
-        }
-    }
-
-    private void updateFeature(final File f, final IFeature feature)
-            throws Exception {
-        if (f.exists()) {
-            String content = new Scanner(f).useDelimiter("\\Z").next();
-            IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), content);
-            String featureName = (String) config.getValue(this.featureNameFN);
-            feature.setName(featureName);
-            try {
-                String featureVersion = (String) config.getValue(this.featureVersionFN);
-                feature.setVersion(featureVersion);
-            } catch (ReadValueException e ) {
-                feature.setVersion("");
-            }
         }
     }
 }
