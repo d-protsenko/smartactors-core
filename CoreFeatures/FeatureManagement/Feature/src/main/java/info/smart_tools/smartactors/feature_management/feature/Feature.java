@@ -18,6 +18,7 @@ public class Feature implements IFeature {
     private String groupId;
     private String version;
     private String ID;
+    private String packageType;
 
     /**
      * Creates instance of {@link IFeature} by specific arguments
@@ -25,12 +26,13 @@ public class Feature implements IFeature {
      * @param dependencies feature dependencies
      * @param location the feature location
      */
-    public Feature(final String name, final Set<String> dependencies, final IPath location) {
+    public Feature(final String name, final Set<String> dependencies, final IPath location, final String packageType) {
         this.name = name;
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
         this.ID = null;
+        this.packageType = packageType;
     }
 
     /**
@@ -40,13 +42,20 @@ public class Feature implements IFeature {
      * @param version the feature version
      * @param featureLocation the feature location
      */
-    public Feature(final String name, final String groupId, final String version, final IPath featureLocation) {
+    public Feature(
+            final String name,
+            final String groupId,
+            final String version,
+            final IPath featureLocation,
+            final String packageType
+    ) {
         this.name = name;
         this.groupId = groupId;
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
         this.ID = null;
+        this.packageType = packageType;
     }
 
     @Override
@@ -117,4 +126,13 @@ public class Feature implements IFeature {
         this.version = (String) version;
     }
 
+    @Override
+    public String getPackageType() {
+        return this.packageType;
+    }
+
+    @Override
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
+    }
 }

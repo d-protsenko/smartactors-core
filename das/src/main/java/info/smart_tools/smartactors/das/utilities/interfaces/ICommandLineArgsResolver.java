@@ -73,6 +73,11 @@ public interface ICommandLineArgsResolver {
 
     boolean isPath();
 
+    String getPackageType()
+            throws InvalidCommandLineArgumentException;
+
+    boolean isPackageType();
+
     boolean isHelp();
 
     void printHelp();

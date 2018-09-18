@@ -12,6 +12,8 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +37,21 @@ public class AllInDirectoryFeatureTracker {
     private final IFieldName nameFN;
     private final IFieldName groupFN;
     private final IFieldName versionFN;
+    private final IFieldName packageTypeFN;
+
+    private final static String END_OF_INPUT_DELIMITER = "\\Z";
+    private final static String CONFIG_FILE_NAME = "config.json";
+    private final static String EXTENSION_SEPARATOR = ".";
+    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static String IOC_FEATURE_REPOSITORY_STORAGE_NAME = "feature-repositories";
+
+    //TODO: this parameters would be took out into the config.json as actor arguments
+    private final static String FEATURE_LIST_FILE_NAME = "features.json";
+    private final static String DEF_PACKAGE_TYPE = "jar";
+    private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
 
     /**
      * Default constructor
@@ -43,15 +60,15 @@ public class AllInDirectoryFeatureTracker {
      */
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
-        this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
-        this.featureVersionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureVersion");
-        this.afterFeaturesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
-        this.repositoriesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "repositories");
-
-        this.featuresFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "features");
-        this.nameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-        this.groupFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "group");
-        this.versionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "version");
+        this.featureNameFN =    IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureVersion");
+        this.afterFeaturesFN =  IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
+        this.repositoriesFN =   IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
+        this.featuresFN =       IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
+        this.nameFN =           IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
+        this.groupFN =          IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
+        this.versionFN =        IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
+        this.packageTypeFN =    IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
     }
 
     /**
@@ -64,23 +81,26 @@ public class AllInDirectoryFeatureTracker {
             throws FeatureTrackerException {
         try {
             String path = wrapper.getPath();
-            
-            File[] fZipped = new File(path).listFiles((item, string) -> string.endsWith(".zip"));
 
-            File downloadList = new File(path + "/features.json");
-
+            // get feature list from json file
+            File downloadList = Paths.get(path, FEATURE_LIST_FILE_NAME).toFile();
             Map<String, IFeature> features = new HashMap<>();
-
             features.putAll(this.parseFeatureList(downloadList));
 
-            Arrays.stream(fZipped).map(m -> {
-                        try {
-                            return createZippedFeature(m);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+            // get feature list from existing zip and jar files by the given path
+            File[] fZipped = new File(path).listFiles(
+                    (item, name) -> FILE_TYPE_LIST.contains(this.getExtension(new File(name)))
+            );
+            if (null != fZipped) {
+                Arrays.stream(fZipped).map(m -> {
+                            try {
+                                return createZippedFeature(m);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                         }
-                    }
-            ).forEach(i -> features.put(i.getName(), i));
+                ).forEach(i -> features.put(i.getName(), i));
+            }
 
             wrapper.setFeatures(features.values());
         } catch (Throwable e) {
@@ -90,28 +110,33 @@ public class AllInDirectoryFeatureTracker {
 
     private IFeature createFeature(final File f)
             throws Exception {
-        File jsonFile = new File(f.getPath() + "/config.json");
+        File jsonFile = Paths.get(f.getPath(), CONFIG_FILE_NAME).toFile();
         if (!jsonFile.exists()) {
             throw new Exception("File config.json not found in the folder :" + f.getPath());
         }
 
-        IObject jsonConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), new Scanner(jsonFile).useDelimiter("\\Z").next());
+        IObject jsonConfig = IOC.resolve(
+                Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME),
+                new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
+        );
 
         String name = (String) jsonConfig.getValue(this.featureNameFN);
-        Set<String> dependencies = new HashSet<>((List) jsonConfig.getValue(this.afterFeaturesFN));
+        Set<String> dependencies = new HashSet<String>((List) jsonConfig.getValue(this.afterFeaturesFN));
 
-        return new Feature(name, dependencies, new Path(f.getPath()));
+        return new Feature(name, dependencies, new Path(f.getPath()), null);
     }
 
     private IFeature createZippedFeature(final File f)
             throws Exception {
 
-        return new Feature(parseNameOfZippedFeature(f), null, new Path(f.getPath()));
+        return new Feature(
+                parseNameOfZippedFeature(f), null, new Path(f.getPath()), this.getExtension(f)
+        );
     }
 
     private String parseNameOfZippedFeature(final File f) {
 
-        return f.getName().split("-\\d\\.\\d\\.\\d-")[0];
+        return f.getName().split(FEATURE_VERSION_PATTERN)[0];
     }
 
     private Map<String, IFeature> parseFeatureList(final File jsonFile)
@@ -121,27 +146,33 @@ public class AllInDirectoryFeatureTracker {
             return features;
         }
 
-        IObject jsonConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), new Scanner(jsonFile).useDelimiter("\\Z").next());
-
+        IObject jsonConfig = IOC.resolve(
+                Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME),
+                new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
+        );
 
         List<IObject> repositories = (List<IObject>) jsonConfig.getValue(this.repositoriesFN);
-        List<IObject> repositoryStorage = IOC.resolve(Keys.getOrAdd("feature-repositories"));
+        List<IObject> repositoryStorage = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
-        for (IObject repository : repositories) {
-            repositoryStorage.add(repository);
-        }
+        repositoryStorage.addAll(repositories);
         List<IObject> featuresFromJson = (List<IObject>) jsonConfig.getValue(this.featuresFN);
         for (IObject feature : featuresFromJson) {
             String name = (String) feature.getValue(this.nameFN);
+            String packageType = (String) feature.getValue(this.packageTypeFN);
             features.put(name, new Feature(
                             (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.groupFN),
                             (String) feature.getValue(this.versionFN),
-                            new Path(jsonFile.getParent())
+                            new Path(jsonFile.getParent()),
+                            null != packageType ? packageType : DEF_PACKAGE_TYPE
                     )
             );
         }
 
         return features;
+    }
+
+    private String getExtension(final File f) {
+        return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
     }
 }

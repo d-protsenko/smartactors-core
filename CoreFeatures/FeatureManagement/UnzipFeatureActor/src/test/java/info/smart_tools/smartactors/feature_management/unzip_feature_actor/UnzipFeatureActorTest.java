@@ -92,7 +92,6 @@ public class UnzipFeatureActorTest {
         assertNotNull(actor);
     }
 
-    @Ignore
     @Test
     public void checkUnzipMethod()
             throws Exception {
@@ -101,6 +100,7 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
+        when(feature.getGroupId()).thenReturn("com.groupId");
         String fileName = "target/test-classes/test-feature-VERSION-archive.zip";
         String directory = "target/test-classes/test-feature-VERSION";
         when(feature.getLocation()).thenReturn(
@@ -109,7 +109,10 @@ public class UnzipFeatureActorTest {
         when(wrapper.getFeature()).thenReturn(feature);
         actor.unzip(wrapper);
         verify(feature, times(1)).setDependencies(
-                new HashSet<String>(){{add("first-test-feature"); add("second-test-feature");}}
+                new HashSet<String>(){{
+                    add("info.smart_tools.smartactors:first-test-feature");
+                    add("info.smart_tools.smartactors:second-test-feature");
+                }}
         );
         verify(feature, times(1)).setLocation(new Path(directory));
     }

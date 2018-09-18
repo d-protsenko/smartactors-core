@@ -22,7 +22,6 @@ import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeat
 import info.smart_tools.smartactors.feature_management.load_feature_actor.exception.LoadFeatureException;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.wrapper.LoadFeatureWrapper;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -42,13 +41,17 @@ import java.util.stream.Stream;
  */
 public class LoadFeatureActor {
 
-    private static final String CONFIG_FILE = "config.json";
 
     private IPluginLoaderVisitor<String> pluginLoaderVisitor;
     private final IPluginCreator pluginCreator;
     private final IConfigurationManager configurationManager;
 
     private final IFieldName afterFeaturesCallbackQueueFN;
+    private final static String CONFIG_FILE_NAME = "config.json";
+    private final static String LIBRARY_EXTENSION = "jar";
+    private final static String PLUGIN_LOADER_KEY = "plugin loader";
+    private final static String CONFIGURATION_OBJECT_KEY = "configuration object";
+    private final static String END_OF_INPUT_DELIMITER = "\\Z";
 
     /**
      * Default constructor
@@ -56,9 +59,9 @@ public class LoadFeatureActor {
      */
     public LoadFeatureActor()
             throws ResolutionException {
-        this.pluginLoaderVisitor = IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
-        this.pluginCreator = IOC.resolve(Keys.getOrAdd("plugin creator"));
-        configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        this.pluginLoaderVisitor =          IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
+        this.pluginCreator =                IOC.resolve(Keys.getOrAdd("plugin creator"));
+        configurationManager =              IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
         this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
@@ -77,10 +80,12 @@ public class LoadFeatureActor {
         }
         try {
             System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
-            String pattern = ".jar";
-            File file = Paths.get(((IPath) feature.getLocation()).getPath()).toFile();
+
+            File file = Paths.get((feature.getFeatureLocation()).getPath()).toFile();
             Collection<IPath> jars = new ArrayList<>();
-            Stream.of(file.listFiles((item, string) ->  string.endsWith(pattern))).map(Path::new).forEach(jars::add);
+            Stream.of(
+                    file.listFiles((item, string) ->  string.endsWith(LIBRARY_EXTENSION))
+            ).map(Path::new).forEach(jars::add);
 
             IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
             IAction<Class> classHandler = clz -> {
@@ -99,7 +104,7 @@ public class LoadFeatureActor {
             // setup current feature for class loading, bootstrap and applying config
             VersionManager.setCurrentItemID(feature.getID());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
-                    Keys.getOrAdd("plugin loader"),
+                    Keys.getOrAdd(PLUGIN_LOADER_KEY),
                     VersionManager.getItemClassLoader(feature.getID()),
                     classHandler,
                     pluginLoaderVisitor);
@@ -120,13 +125,11 @@ public class LoadFeatureActor {
                 throw e;
             }
 
-            File[] files = file.listFiles((item, string) ->  string.equals("config.json"));
+            File[] files = file.listFiles((item, string) ->  string.equals(CONFIG_FILE_NAME));
             if (null != files && files.length > 0) {
                 File configFile = files[0];
-                String configString = new Scanner(configFile).useDelimiter("\\Z").next();
-                configurationManager.applyConfig(
-                        IOC.resolve(Keys.getOrAdd("configuration object"), configString)
-                );
+                String configString = new Scanner(configFile).useDelimiter(END_OF_INPUT_DELIMITER).next();
+                configurationManager.applyConfig(IOC.resolve(Keys.getOrAdd(CONFIGURATION_OBJECT_KEY), configString));
             }
             System.out.println("[OK] -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
         } catch (Throwable e) {
