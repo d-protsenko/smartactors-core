@@ -66,9 +66,9 @@ public class FeatureManagerActor {
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-    private final static String MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
+    private final static String MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
-    private final static String MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
+    private final static String MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
 
     /**
@@ -140,10 +140,10 @@ public class FeatureManagerActor {
                 ) {
                     this.processingFeatures.put(feature.getName(), feature);
                     IMessageProcessingSequence processingSequence = IOC.resolve(
-                            Keys.getOrAdd(MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
+                            Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
                     );
                     IMessageProcessor messageProcessor = IOC.resolve(
-                            Keys.getOrAdd(MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
+                            Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
                     );
                     IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
                     message.setValue(this.loadedFeatureFN, this.loadedFeatures);
