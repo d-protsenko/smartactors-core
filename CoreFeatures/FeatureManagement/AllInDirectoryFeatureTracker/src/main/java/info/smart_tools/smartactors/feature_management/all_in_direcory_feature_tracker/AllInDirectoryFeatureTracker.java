@@ -28,6 +28,7 @@ import java.util.Set;
 public class AllInDirectoryFeatureTracker {
 
     private final IFieldName featureNameFN;
+    private final IFieldName featureVersionFN;
     private final IFieldName afterFeaturesFN;
     private final IFieldName repositoriesFN;
     private final IFieldName featuresFN;
@@ -43,6 +44,7 @@ public class AllInDirectoryFeatureTracker {
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
         this.featureNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureVersion");
         this.afterFeaturesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
         this.repositoriesFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "repositories");
 

@@ -51,13 +51,9 @@ public class StrategyContainer implements IStrategyContainer {
         Map<Object, IResolveDependencyStrategy> versions = strategyStorage.get(key);
         if (versions != null) {
             strategy = VersionManager.getFromMap(versions);
-            if (strategy == null && parent != null) {
-                strategy = parent.resolve(key);    // ask parent ONLY AFTER local resolution failed
-            }
-        } else {
-            if (parent != null) {
-                strategy = parent.resolve(key);    // ask parent ONLY AFTER local resolution failed
-            }
+        }
+        if (strategy == null && parent != null) {
+            strategy = parent.resolve(key);    // ask parent ONLY AFTER local resolution failed
         }
         return strategy;
     }
