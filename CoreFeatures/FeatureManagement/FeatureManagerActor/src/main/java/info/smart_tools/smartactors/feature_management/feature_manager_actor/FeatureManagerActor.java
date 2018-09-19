@@ -121,25 +121,20 @@ public class FeatureManagerActor {
 
             int count = 0;
             for (IFeature feature : features) {
-                Object featureId = feature.getId();
-                if (
-                        null == this.processingFeatures.get(featureId) &&
-                        null == this.loadedFeatures.get(featureId)
-                ) {
-                    this.processingFeatures.put(feature.getId(), feature);
-                    IMessageProcessingSequence processingSequence = IOC.resolve(
-                            Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
-                    );
-                    IMessageProcessor messageProcessor = IOC.resolve(
-                            Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
-                    );
-                    IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-                    message.setValue(this.featureFN, feature);
-                    message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
-                    IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-                    messageProcessor.process(message, context);
-                    ++count;
-                }
+                feature.setId(java.util.UUID.randomUUID().toString());
+                this.processingFeatures.put(feature.getId(), feature);
+                IMessageProcessingSequence processingSequence = IOC.resolve(
+                        Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
+                );
+                IMessageProcessor messageProcessor = IOC.resolve(
+                        Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
+                );
+                IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
+                message.setValue(this.featureFN, feature);
+                message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
+                IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
+                messageProcessor.process(message, context);
+                ++count;
             }
             if (count > 0) {
                 mp.pauseProcess();
@@ -176,7 +171,6 @@ public class FeatureManagerActor {
 
             } else {
                 this.loadedFeatures.put(feature.getId(), feature);
-                this.failedFeatures.remove(feature.getId());
                 for (IFeature processingFeature : this.processingFeatures.values()) {
                     removeLoadedFeaturesFromFeatureDependencies(processingFeature);
                 }
@@ -253,6 +247,17 @@ public class FeatureManagerActor {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
+                // todo:
+                Object featureId = VersionManager.addItem(
+                        feature.getGroupId() + FEATURE_NAME_DELIMITER + feature.getName(),
+                        feature.getVersion()
+                );
+                if (this.processingFeatures.get(feature.getId()) != null) {
+
+                }
+
+
+                feature.setId(featureId);
 
                 removeLoadedFeaturesFromFeatureDependencies(feature);
 

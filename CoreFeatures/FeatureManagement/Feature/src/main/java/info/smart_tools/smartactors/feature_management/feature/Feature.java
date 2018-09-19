@@ -25,12 +25,12 @@ public class Feature implements IFeature {
      * @param dependencies feature dependencies
      * @param location the feature location
      */
-    public Feature(final String name, final Set<String> dependencies, final IPath location, final String packageType) {
+    //public Feature(final String name, final Set<String> dependencies, final IPath location, final String packageType) {
         this.name = name;
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
-        this.id = null;
+        this.id = java.util.UUID.randomUUID();
         this.packageType = packageType;
     }
 
@@ -53,7 +53,7 @@ public class Feature implements IFeature {
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
-        this.id = null;
+        this.id = java.util.UUID.randomUUID();
         this.packageType = packageType;
     }
 
@@ -88,10 +88,6 @@ public class Feature implements IFeature {
     @Override
     public void setName(final String featureName) {
         this.name = featureName;
-    }
-
-    public void setId(final Object featureID) {
-        this.id = featureID;
     }
 
     @Override

@@ -65,12 +65,6 @@ public interface IFeature {
     void setName(String featureName);
 
     /**
-     * Sets feature ID
-     * @param featureId the feature ID
-     */
-    void setId(Object featureId);
-
-    /**
      * Sets feature dependencies
      * @param dependencies the feature dependencies
      */

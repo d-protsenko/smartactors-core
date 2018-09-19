@@ -213,16 +213,7 @@ public class UnzipFeatureActor {
         feature.setLocation(new Path(f.getParent()));
         feature.setName(featureNames[0]);
         feature.setGroupId(featureNames[1]);
-        if (featureNames.length > 2) {
-            feature.setVersion(featureNames[2]);
-        } else {
-            feature.setVersion("");
-        }
-        Object featureId = VersionManager.addItem(
-                feature.getGroupId() + FEATURE_NAME_DELIMITER + feature.getName(),
-                feature.getVersion()
-        );
-        feature.setId(featureId);
+        feature.setVersion(featureNames.length > 2 ? featureNames[2] : "");
     }
 
     private String getExtension(final File f) {
