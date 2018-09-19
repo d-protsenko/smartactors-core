@@ -81,7 +81,7 @@ public class LoadFeatureActor {
         try {
             System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
 
-            File file = Paths.get((feature.getFeatureLocation()).getPath()).toFile();
+            File file = Paths.get((feature.getLocation()).getPath()).toFile();
             Collection<IPath> jars = new ArrayList<>();
             Stream.of(
                     file.listFiles((item, string) ->  string.endsWith(LIBRARY_EXTENSION))
@@ -102,10 +102,10 @@ public class LoadFeatureActor {
                 }
             };
             // setup current feature for class loading, bootstrap and applying config
-            VersionManager.setCurrentItemID(feature.getID());
+            VersionManager.setCurrentItemID(feature.getId());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd(PLUGIN_LOADER_KEY),
-                    VersionManager.getItemClassLoader(feature.getID()),
+                    VersionManager.getItemClassLoader(feature.getId()),
                     classHandler,
                     pluginLoaderVisitor);
             pluginLoader.loadPlugins(jars);

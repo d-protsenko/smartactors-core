@@ -27,8 +27,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        VersionManager.addItem(VersionManager.coreID);
-        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader(VersionManager.coreID);
+        VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion);
+        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader(VersionManager.getCoreId());
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,

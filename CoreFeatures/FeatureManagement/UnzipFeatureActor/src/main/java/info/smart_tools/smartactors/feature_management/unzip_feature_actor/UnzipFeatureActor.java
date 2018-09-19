@@ -17,12 +17,9 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,9 +34,7 @@ import java.util.Set;
 public class UnzipFeatureActor {
 
     private final IFieldName featureNameFN;
-    private final IFieldName featureVersionFN;
     private final IFieldName dependenciesFieldName;
-    private final IFieldName featureNameFN;
 
     private final static String CONFIG_FILE_NAME = "config.json";
     private final static String EXTENSION_SEPARATOR = ".";
@@ -47,7 +42,7 @@ public class UnzipFeatureActor {
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
     private final static String ARCHIVE_POSTFIX = "archive";
-    private final static String GROUP_AND_NAME_DELIMITER = ":";
+    private final static String FEATURE_NAME_DELIMITER = ":";
     private final static String END_OF_INPUT_DELIMITER = "\\Z";
     private final static String NAME_OF_CHECK_FILE = ".checkfile";
 
@@ -61,7 +56,6 @@ public class UnzipFeatureActor {
             throws ResolutionException {
         this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
         this.featureNameFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
-        this.featureVersionFN =      IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureVersion");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
         this.unzipFunctions = new HashMap<String, IBiFunction<File, IFeature, File>>(){{
@@ -209,20 +203,26 @@ public class UnzipFeatureActor {
         String content = new Scanner(f).useDelimiter(END_OF_INPUT_DELIMITER).next();
         IObject config = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME), content);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
-        String featureNameWithGroup = (String) config.getValue(this.featureNameFN);
-        String featureVersion = (String) config.getValue(this.featureVersionFN);
-        String[] groupAndName = featureNameWithGroup.split(GROUP_AND_NAME_DELIMITER);
-        if (groupAndName.length < 2) {
-            throw new Exception("Unsupported attribute 'featureName' in the config.json. Should follows the pattern [groupId:featureName].");
+        String fullFeatureName = (String) config.getValue(this.featureNameFN);
+        String[] featureNames = fullFeatureName.split(FEATURE_NAME_DELIMITER);
+        if (featureNames.length < 2) {
+            throw new Exception("Wrong format of attribute 'featureName' in 'config.json' file.\nIt must follow the pattern [groupId:featureName:featureVersion].");
         }
-        String name = groupAndName[1];
-        String groupId = groupAndName[0];
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);
         feature.setLocation(new Path(f.getParent()));
-        feature.setName(name);
-        feature.setGroupId(groupId);
-        feature.setVersion(featureVersion);
+        feature.setName(featureNames[0]);
+        feature.setGroupId(featureNames[1]);
+        if (featureNames.length > 2) {
+            feature.setVersion(featureNames[2]);
+        } else {
+            feature.setVersion("");
+        }
+        Object featureId = VersionManager.addItem(
+                feature.getGroupId() + FEATURE_NAME_DELIMITER + feature.getName(),
+                feature.getVersion()
+        );
+        feature.setId(featureId);
     }
 
     private String getExtension(final File f) {

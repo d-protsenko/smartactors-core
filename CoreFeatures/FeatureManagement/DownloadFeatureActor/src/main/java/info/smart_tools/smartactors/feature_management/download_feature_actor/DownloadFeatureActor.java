@@ -70,7 +70,7 @@ public class DownloadFeatureActor {
             for(String type : FILE_TYPE_LIST) {
                 if (
                         Paths.get(
-                                feature.getFeatureLocation().getPath(),
+                                feature.getLocation().getPath(),
                                 feature.getName() + "-" + feature.getVersion() + "." + type
                         ).toFile().exists()
                 ) {
@@ -78,7 +78,7 @@ public class DownloadFeatureActor {
                 }
                 if (
                         Paths.get(
-                                feature.getFeatureLocation().getPath(),
+                                feature.getLocation().getPath(),
                                 feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
                         ).toFile().exists()
                         ) {
@@ -131,9 +131,9 @@ public class DownloadFeatureActor {
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = Paths.get(feature.getFeatureLocation().getPath(), fileName).toFile();
+            File location = Paths.get(feature.getLocation().getPath(), fileName).toFile();
             Files.copy(artifact.toPath(), location.toPath());
-            feature.setFeatureLocation(new Path(location));
+            feature.setLocation(new Path(location));
         } catch (Throwable e) {
             throw new Exception(e);
         }

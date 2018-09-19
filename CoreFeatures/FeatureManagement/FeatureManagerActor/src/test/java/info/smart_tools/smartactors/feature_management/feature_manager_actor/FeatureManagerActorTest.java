@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.feature_management.feature_manager_actor.wra
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -180,9 +179,9 @@ public class FeatureManagerActorTest {
         when(feature3.getGroupId()).thenReturn("groupId3");
         when(feature3.getName()).thenReturn("feature 3");
         when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
-        when(feature1.getID()).thenReturn(uuid1);
-        when(feature2.getID()).thenReturn(uuid2);
-        when(feature3.getID()).thenReturn(uuid3);
+        when(feature1.getId()).thenReturn(uuid1);
+        when(feature2.getId()).thenReturn(uuid2);
+        when(feature3.getId()).thenReturn(uuid3);
 
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
         when(this.getSequence.resolve(5, this.chain)).thenReturn(sequence);
@@ -241,7 +240,6 @@ public class FeatureManagerActorTest {
                 .thenReturn(mpf3)
                 .thenReturn(mpf2)
                 .thenReturn(mpf1);
-        when(onFeatureStepCompletedWrapper.getFeatureProcess()).thenReturn(featureProcess);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);

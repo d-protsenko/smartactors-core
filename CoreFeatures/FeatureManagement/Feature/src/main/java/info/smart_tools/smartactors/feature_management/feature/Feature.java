@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Implementation of {@link IFeature}
@@ -17,7 +16,7 @@ public class Feature implements IFeature {
     private boolean failed;
     private String groupId;
     private String version;
-    private String ID;
+    private Object id;
     private String packageType;
 
     /**
@@ -31,14 +30,14 @@ public class Feature implements IFeature {
         this.dependencies = dependencies;
         this.featureLocation = location;
         this.failed = false;
-        this.ID = null;
+        this.id = null;
         this.packageType = packageType;
     }
 
     /**
      * Creates instance of {@link IFeature} by specific arguments
      * @param name the feature name
-     * @param groupId the feature group ID
+     * @param groupId the feature group id
      * @param version the feature version
      * @param featureLocation the feature location
      */
@@ -54,7 +53,7 @@ public class Feature implements IFeature {
         this.version = version;
         this.featureLocation = featureLocation;
         this.failed = false;
-        this.ID = null;
+        this.id = null;
         this.packageType = packageType;
     }
 
@@ -74,7 +73,7 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public String getID() { return this.ID; }
+    public Object getId() { return this.id; }
 
     @Override
     public boolean isFailed() {
@@ -91,9 +90,8 @@ public class Feature implements IFeature {
         this.name = featureName;
     }
 
-    @Override
-    public void setID(final String featureID) {
-        this.ID = featureID;
+    public void setId(final Object featureID) {
+        this.id = featureID;
     }
 
     @Override
@@ -118,12 +116,12 @@ public class Feature implements IFeature {
 
     @Override
     public void setGroupId(final String groupId) {
-        this.groupId = (String) groupId;
+        this.groupId = groupId;
     }
 
     @Override
     public void setVersion(final String version) {
-        this.version = (String) version;
+        this.version = version;
     }
 
     @Override

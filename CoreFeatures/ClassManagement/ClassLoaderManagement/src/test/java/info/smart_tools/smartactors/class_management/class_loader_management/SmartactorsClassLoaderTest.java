@@ -6,9 +6,7 @@ import org.junit.Test;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Random;
+
 import static org.junit.Assert.*;
 
 /**
@@ -19,15 +17,15 @@ public class SmartactorsClassLoaderTest {
     @Test
     public void checkSmartactorsClassLoaderCreation()
             throws Exception {
-        VersionManager.addItem(VersionManager.coreID);
+        VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion);
         VersionManager.addItem("cl1");
         assertNotNull(VersionManager.getItemClassLoader("cl1"));
         VersionManager.addItem("cl2");
         assertNotNull(VersionManager.getItemClassLoader("cl2"));
         assertSame(((ClassLoader) VersionManager.getItemClassLoader("cl2")).getParent(), ClassLoader.getSystemClassLoader());
         VersionManager.addItemDependency("cl1", "cl2");
-        VersionManager.finalizeItemDependencies("cl1", VersionManager.coreID);
-        VersionManager.finalizeItemDependencies("cl2", VersionManager.coreID);
+        VersionManager.finalizeItemDependencies("cl1", VersionManager.getCoreId());
+        VersionManager.finalizeItemDependencies("cl2", VersionManager.getCoreId());
     }
 
     @Test

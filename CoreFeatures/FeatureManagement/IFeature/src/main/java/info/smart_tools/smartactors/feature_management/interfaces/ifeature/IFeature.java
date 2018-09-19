@@ -50,7 +50,7 @@ public interface IFeature {
      * Gets feature ID
      * @return the feature ID
      */
-    String getID();
+    Object getId();
 
     /**
      * Gets feature package type (zip, jar, etc)
@@ -66,9 +66,9 @@ public interface IFeature {
 
     /**
      * Sets feature ID
-     * @param featureID the feature ID
+     * @param featureId the feature ID
      */
-    void setID(String featureID);
+    void setId(Object featureId);
 
     /**
      * Sets feature dependencies

@@ -55,10 +55,6 @@ public class FeatureManagerActor {
     private Map<Object, IFeature> failedFeatures;
     private Map<Object, IFeature> processingFeatures;
 
-    private final IFieldName loadedFeatureFN;
-    private final IFieldName failedFeatureFN;
-    private final IFieldName processingFeatureFN;
-    private final IFieldName featureProcessFN;
     private final IFieldName featureFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
     private final IFieldName startTimeOfLoadingFeatureGroupFN;
@@ -72,6 +68,7 @@ public class FeatureManagerActor {
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
     private final static String MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
+    private final static String FEATURE_NAME_DELIMITER = ":";
 
     /**
      * Default constructor
@@ -87,18 +84,6 @@ public class FeatureManagerActor {
         this.failedFeatures = new ConcurrentHashMap<>();
         this.processingFeatures = new ConcurrentHashMap<>();
 
-        this.loadedFeatureFN =                  IOC.resolve(
-                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "loadedFeatures"
-        );
-        this.failedFeatureFN =                  IOC.resolve(
-                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "failedFeatures"
-        );
-        this.processingFeatureFN =              IOC.resolve(
-                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "processingFeatures"
-        );
-        this.featureProcessFN =                 IOC.resolve(
-                Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureProcess"
-        );
         this.featureFN =                        IOC.resolve(
                 Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
         );
@@ -136,12 +121,12 @@ public class FeatureManagerActor {
 
             int count = 0;
             for (IFeature feature : features) {
-                Object featureName = feature.getName();
+                Object featureId = feature.getId();
                 if (
-                        null == this.processingFeatures.get(featureName) &&
-                        null == this.loadedFeatures.get(featureName)
+                        null == this.processingFeatures.get(featureId) &&
+                        null == this.loadedFeatures.get(featureId)
                 ) {
-                    this.processingFeatures.put(feature.getName(), feature);
+                    this.processingFeatures.put(feature.getId(), feature);
                     IMessageProcessingSequence processingSequence = IOC.resolve(
                             Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
                     );
@@ -149,10 +134,6 @@ public class FeatureManagerActor {
                             Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
                     );
                     IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-                    message.setValue(this.loadedFeatureFN, this.loadedFeatures);
-                    message.setValue(this.failedFeatureFN, this.failedFeatures);
-                    message.setValue(this.processingFeatureFN, this.processingFeatures);
-                    message.setValue(this.featureProcessFN, this.featureProcess);
                     message.setValue(this.featureFN, feature);
                     message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                     IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
@@ -189,14 +170,16 @@ public class FeatureManagerActor {
         try {
             feature = wrapper.getFeature();
 
-            this.processingFeatures.remove(feature.getName());
+            this.processingFeatures.remove(feature.getId());
             if (feature.isFailed()) {
-                this.failedFeatures.put(feature.getName(), feature);
+                this.failedFeatures.put(feature.getId(), feature);
 
             } else {
-                this.loadedFeatures.put(feature.getName(), feature);
-                this.failedFeatures.remove(feature.getName());
-                removeLoadedFeatureFromDependencies(feature);
+                this.loadedFeatures.put(feature.getId(), feature);
+                this.failedFeatures.remove(feature.getId());
+                for (IFeature processingFeature : this.processingFeatures.values()) {
+                    removeLoadedFeaturesFromFeatureDependencies(processingFeature);
+                }
                 checkAndRunConnectedFeatures();
             }
 
@@ -271,19 +254,10 @@ public class FeatureManagerActor {
 
             if (null != featureDependencies) {
 
-                for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
-
-                    String dependencyName = iterator.next();
-                    IFeature dependency = this.loadedFeatures.get(dependencyName);
-
-                    if (null != dependency) {
-                        VersionManager.addItemDependency(feature.getID(),dependency.getID());
-                        iterator.remove();
-                    }
-                }
+                removeLoadedFeaturesFromFeatureDependencies(feature);
 
                 if (featureDependencies.isEmpty()) {
-                    VersionManager.finalizeItemDependencies(feature.getID(), VersionManager.coreID);
+                    VersionManager.finalizeItemDependencies(feature.getId(), VersionManager.getCoreId());
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
@@ -330,13 +304,35 @@ public class FeatureManagerActor {
         });
     }
 
-    private void removeLoadedFeatureFromDependencies(final IFeature loadedFeature) {
+    private void removeLoadedFeaturesFromFeatureDependencies(final IFeature feature)
+            throws FeatureManagementException {
 
-        for (IFeature feature : this.processingFeatures.values()) {
-            Set<String> featureDependencies = feature.getDependencies();
+        Set<String> featureDependencies = feature.getDependencies();
+        if (null != featureDependencies) {
+            for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
 
-            if (null != featureDependencies && featureDependencies.remove(loadedFeature.getGroupId() + ":" + loadedFeature.getName())) {
-                VersionManager.addItemDependency(feature.getID(), loadedFeature.getID());
+                String[] dependencyNames = iterator.next().split(FEATURE_NAME_DELIMITER);
+                if (dependencyNames.length < 2) {
+                    throw new FeatureManagementException("Wrong feature "+feature.getId()+" dependency format.");
+                }
+                String dependencyGroupId = dependencyNames[0];
+                String dependencyName = dependencyNames[1];
+                String dependencyVersion = (dependencyNames.length > 2 ? dependencyNames[2] : "");
+
+                IFeature baseFeature = null;
+                for(IFeature loadedFeature : this.loadedFeatures.values()) {
+                    if (    loadedFeature.getGroupId().equals(dependencyGroupId) &&
+                            loadedFeature.getName().equals(dependencyName) &&
+                            loadedFeature.getVersion().compareTo(dependencyVersion) >= 0) {
+                        if (baseFeature == null || loadedFeature.getVersion().compareTo(baseFeature.getVersion()) >= 0) {
+                            baseFeature = loadedFeature;
+                        }
+                    }
+                }
+                if (null != baseFeature) {
+                    VersionManager.addItemDependency(feature.getId(), baseFeature.getId());
+                    iterator.remove();
+                }
             }
         }
     }

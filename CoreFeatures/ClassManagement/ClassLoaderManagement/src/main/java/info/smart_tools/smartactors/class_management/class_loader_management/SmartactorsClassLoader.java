@@ -15,6 +15,7 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
     /* This is ItemID To ClassLoader Map */
     private static Map<String, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
+    private String itemId = null;
     private String itemName = null;
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
@@ -27,22 +28,19 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
         super(urls);
     }
 
-    static void addItem(String itemID) {
+    static void addItem(String itemID, String itemName) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
-    }
-
-    static SmartactorsClassLoader getItemClassLoader(String itemID) {
-        return itemClassLoaders.get(itemID);
-    }
-
-    static void setItemName(String itemID, String itemName) {
+        classLoader.itemId = itemID;
         itemName = itemName.replace('/', '.');
         itemName = itemName.replace(':', '.');
         itemName = itemName.replace('-', '_');
-        SmartactorsClassLoader classLoader = getItemClassLoader(itemID);
         classLoader.itemName = itemName;
         classLoader.classMap.put(itemName, classLoader);
+    }
+
+    static SmartactorsClassLoader getItemClassLoader(Object itemID) {
+        return itemClassLoaders.get(itemID);
     }
 
     static void addItemDependency(String dependentItemID, String baseItemID) {
@@ -53,15 +51,15 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
                 Set<SmartactorsClassLoader> classLoaders = new HashSet<SmartactorsClassLoader>();
                 classLoaders.add(baseClassLoader);
                 classLoaders.addAll(baseClassLoader.dependsOn);
-                for (ClassLoader cl : classLoaders) {
-                    dependentClassLoader.classMap.put(((SmartactorsClassLoader) cl).itemName, cl);
+                for (SmartactorsClassLoader cl : classLoaders) {
+                    dependentClassLoader.classMap.put(cl.itemName, cl);
                 }
                 dependentClassLoader.dependsOn.addAll(classLoaders);
             }
         }
     }
 
-    static void finalizeItemDependencies(String itemID, String defaultItemID) {
+    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
         if (getItemClassLoader(itemID).dependsOn.size() == 0) {
             addItemDependency(itemID, defaultItemID);
         }

@@ -62,7 +62,11 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         try {
-            VersionManager.setCurrentItemID(VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion));
+            Object coreId = VersionManager.addItem(
+                    VersionManager.coreName,
+                    VersionManager.coreVersion
+            );
+            VersionManager.setCurrentItemID(coreId);
         } catch (InvalidArgumentException e) {
             throw new ServerInitializeException("Failed to initialize core.");
         }
@@ -118,7 +122,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionManager.getItemClassLoader(VersionManager.coreID),
+                VersionManager.getItemClassLoader(VersionManager.getCoreId()),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {

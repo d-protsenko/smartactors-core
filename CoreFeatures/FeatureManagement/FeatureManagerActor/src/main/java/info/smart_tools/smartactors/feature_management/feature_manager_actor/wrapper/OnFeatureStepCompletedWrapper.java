@@ -27,12 +27,4 @@ public interface OnFeatureStepCompletedWrapper {
     IMessageProcessor getMessageProcessor()
             throws ReadValueException;
 
-    /**
-     * Gets map of frozen feature message processors
-     * @return the map of frozen feature message processors
-     * @throws ReadValueException if any errors occurred on wrapper reading
-     */
-    Map<IMessageProcessor, IFeature> getFeatureProcess()
-            throws ReadValueException;
-
 }

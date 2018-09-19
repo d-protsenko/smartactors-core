@@ -13,29 +13,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HierarchicalClassLoader extends ExtendedURLClassLoader implements ISmartactorsClassLoader {
 
     /* This is ItemID To ClassLoader Map */
-    private static Map<String, HierarchicalClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
+    private static Map<Object, HierarchicalClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
-    //private String itemName = null;
+    private Object id = null; // excess field for class loader visual identification only
     private Set<HierarchicalClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
 
-    static void addItem(String itemID) {
+    static void addItem(Object itemID, String itemName) {
         HierarchicalClassLoader classLoader = new HierarchicalClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
+        classLoader.id = itemID; // excess code for class loader visual identification only
     }
 
-    static HierarchicalClassLoader getItemClassLoader(String itemID) {
+    static HierarchicalClassLoader getItemClassLoader(Object itemID) {
         return itemClassLoaders.get(itemID);
     }
 
-    static void setItemName(String itemID, String itemName) {
-/*        itemName = itemName.replace('/', '.');
-        itemName = itemName.replace(':', '.');
-        itemName = itemName.replace('-', '_');
-        HierarchicalClassLoader classLoader = getItemClassLoader(itemID);
-        classLoader.itemName = itemName; */
-    }
-
-    static void addItemDependency(String dependentItemID, String baseItemID) {
+    static void addItemDependency(Object dependentItemID, Object baseItemID) {
         if (!baseItemID.equals(dependentItemID)) {
             HierarchicalClassLoader baseClassLoader = getItemClassLoader(baseItemID);
             HierarchicalClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
@@ -45,7 +38,7 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
         }
     }
 
-    static void finalizeItemDependencies(String itemID, String defaultItemID) {
+    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
         if (getItemClassLoader(itemID).dependsOn.size() == 0) {
             addItemDependency(itemID, defaultItemID);
         }
@@ -148,7 +141,7 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        itemClassLoaders.get(VersionManager.coreID),
+                        itemClassLoaders.get(VersionManager.getCoreId()),
                         sclUsed
                 );
             }

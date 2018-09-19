@@ -59,7 +59,7 @@ public class ChainStorage implements IChainStorage {
             throw new ChainNotFoundException(chainId);
         }
 
-        String itemID = null;
+        Object itemID = null;
         try {
             //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentContext());
             //VersionManager.setCurrentItemID(VersionManager.getItemIDByChainVersion(chainId, chainVersion));

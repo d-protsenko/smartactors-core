@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadPool implements IThreadPool {
     private final Queue<ThreadImpl> threadsQueue;
     private IScope scope;
-    private String featureID;
+    private Object featureID;
     private boolean terminating = false;
 
     /**
@@ -79,7 +79,7 @@ public class ThreadPool implements IThreadPool {
         return this.scope;
     }
 
-    String getFeatureID() {
+    Object getFeatureID() {
         return this.featureID;
     }
 }

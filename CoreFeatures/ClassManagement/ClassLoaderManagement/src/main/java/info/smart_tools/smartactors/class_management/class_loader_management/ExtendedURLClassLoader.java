@@ -28,7 +28,7 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
         super(urls, parent);
     }
 
-    static void addItem(String itemID) {
+    static void addItem(Object itemID, String itemName) {
         if (single == null) {
             single = new ExtendedURLClassLoader(new URL[]{});
         }
@@ -37,17 +37,14 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
-    static ExtendedURLClassLoader getItemClassLoader(String itemID) {
+    static ExtendedURLClassLoader getItemClassLoader(Object itemID) {
         return single;
     }
 
-    static void setItemName(String itemID, String itemName) {
+    static void addItemDependency(Object dependentItemID, Object baseItemID) {
     }
 
-    static void addItemDependency(String dependentItemID, String baseItemID) {
-    }
-
-    static void finalizeItemDependencies(String itemID, String defaultItemID) {
+    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
     }
 
     /**
