@@ -47,13 +47,13 @@ public class FeatureManagerActor {
 
     private static final DateTimeFormatter df = DateTimeFormatter.ISO_LOCAL_TIME;
 
-    private Map<IMessageProcessor, Set<IFeature>> mainProcesses;
-    private Map<IMessageProcessor, Set<IFeature>> mainProcessesForInfo;
-    private Map<IMessageProcessor, IFeature> featureProcess;
+    private Map<IMessageProcessor, Set<IFeature>> requestProcesses;
+    private Map<IMessageProcessor, Set<IFeature>> requestProcessesForInfo;
+    private Map<IMessageProcessor, IFeature> featureProcesses;
 
     private Map<Object, IFeature> loadedFeatures;
     private Map<Object, IFeature> failedFeatures;
-    private Map<Object, IFeature> processingFeatures;
+    private Map<Object, IFeature> featuresInProgress;
 
     private final IFieldName featureFN;
     private final IFieldName afterFeaturesCallbackQueueFN;
@@ -76,13 +76,13 @@ public class FeatureManagerActor {
      */
     public FeatureManagerActor()
             throws ResolutionException {
-        this.mainProcesses = new ConcurrentHashMap<>();
-        this.mainProcessesForInfo = new ConcurrentHashMap<>();
-        this.featureProcess = new ConcurrentHashMap<>();
+        this.requestProcesses = new ConcurrentHashMap<>();
+        this.requestProcessesForInfo = new ConcurrentHashMap<>();
+        this.featureProcesses = new ConcurrentHashMap<>();
 
         this.loadedFeatures = new ConcurrentHashMap<>();
         this.failedFeatures = new ConcurrentHashMap<>();
-        this.processingFeatures = new ConcurrentHashMap<>();
+        this.featuresInProgress = new ConcurrentHashMap<>();
 
         this.featureFN =                        IOC.resolve(
                 Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
@@ -121,8 +121,7 @@ public class FeatureManagerActor {
 
             int count = 0;
             for (IFeature feature : features) {
-                feature.setId(java.util.UUID.randomUUID().toString());
-                this.processingFeatures.put(feature.getId(), feature);
+                this.featuresInProgress.put(feature.getId(), feature);
                 IMessageProcessingSequence processingSequence = IOC.resolve(
                         Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
                 );
@@ -138,8 +137,8 @@ public class FeatureManagerActor {
             }
             if (count > 0) {
                 mp.pauseProcess();
-                this.mainProcesses.put(mp, features);
-                this.mainProcessesForInfo.put(mp, featuresForInfo);
+                this.requestProcesses.put(mp, features);
+                this.requestProcessesForInfo.put(mp, featuresForInfo);
             }
         } catch (
                 ReadValueException |
@@ -165,29 +164,27 @@ public class FeatureManagerActor {
         try {
             feature = wrapper.getFeature();
 
-            this.processingFeatures.remove(feature.getId());
+            this.featuresInProgress.remove(feature.getId());
             if (feature.isFailed()) {
                 this.failedFeatures.put(feature.getId(), feature);
 
             } else {
                 this.loadedFeatures.put(feature.getId(), feature);
-                for (IFeature processingFeature : this.processingFeatures.values()) {
+                for (IFeature processingFeature : this.featuresInProgress.values()) {
                     removeLoadedFeaturesFromFeatureDependencies(processingFeature);
                 }
                 checkAndRunConnectedFeatures();
             }
 
-            this.mainProcesses.forEach((k, v) -> {
+            Collection<IMessageProcessor> processesToContinue = new HashSet<>();
+            this.requestProcesses.forEach((k, v) -> {
                 v.remove(feature);
-            });
-            Collection<IMessageProcessor> needContinueProcesses = new HashSet<>();
-            this.mainProcesses.forEach((k, v) -> {
                 if (v.isEmpty()) {
-                    needContinueProcesses.add(k);
-                    this.mainProcesses.remove(k);
+                    processesToContinue.add(k);
+                    this.requestProcesses.remove(k);
                 }
             });
-            needContinueProcesses.forEach((mp) -> {
+            processesToContinue.forEach((mp) -> {
                 try {
 
                     IQueue<ITask> afterFeatureCallbackQueue = wrapper.getAfterFeaturesCallbackQueue();
@@ -210,13 +207,13 @@ public class FeatureManagerActor {
                     System.out.println("\n\n");
                     System.out.println(
                             "[INFO] Feature group has been loaded: " +
-                                    this.mainProcessesForInfo.get(mp).stream().map(
-                                            a -> "\n" + a.getName() + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
+                                    this.requestProcessesForInfo.get(mp).stream().map(
+                                            a -> "\n" + getFullFeatureName(a) + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
                                     ).collect(Collectors.toList())
                     );
                     System.out.println("[INFO] elapsed time - " + elapsedTimeToLocalTime.format(df) + ".");
                     System.out.println("\n\n");
-                    this.mainProcessesForInfo.remove(mp);
+                    this.requestProcessesForInfo.remove(mp);
                 } catch (
                         InvalidArgumentException |
                         AsynchronousOperationException |
@@ -247,17 +244,11 @@ public class FeatureManagerActor {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
-                // todo:
-                Object featureId = VersionManager.addItem(
-                        feature.getGroupId() + FEATURE_NAME_DELIMITER + feature.getName(),
-                        feature.getVersion()
+                VersionManager.addItem(
+                    feature.getId(),
+                    getEmptyIfNull(feature.getGroupId()) + FEATURE_NAME_DELIMITER + getEmptyIfNull(feature.getName()),
+                    getEmptyIfNull(feature.getVersion())
                 );
-                if (this.processingFeatures.get(feature.getId()) != null) {
-
-                }
-
-
-                feature.setId(featureId);
 
                 removeLoadedFeaturesFromFeatureDependencies(feature);
 
@@ -266,10 +257,10 @@ public class FeatureManagerActor {
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
-                    this.featureProcess.put(mp, feature);
+                    this.featureProcesses.put(mp, feature);
                 }
             }
-        } catch (ReadValueException | AsynchronousOperationException e) {
+        } catch (InvalidArgumentException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
     }
@@ -284,9 +275,9 @@ public class FeatureManagerActor {
         try {
             wrapper.setLoadedFeatures(this.loadedFeatures.values());
             wrapper.setFailedFeatures(this.failedFeatures.values());
-            wrapper.setProcessingFeatures(this.processingFeatures.values());
-            wrapper.setFrozenFeatureProcesses(this.featureProcess);
-            wrapper.setFrozenRequests(this.mainProcesses);
+            wrapper.setProcessingFeatures(this.featuresInProgress.values());
+            wrapper.setFrozenFeatureProcesses(this.featureProcesses);
+            wrapper.setFrozenRequests(this.requestProcesses);
         } catch (ChangeValueException e) {
             throw new FeatureManagementException("Could not set parameter to IObject.", e);
         }
@@ -294,10 +285,10 @@ public class FeatureManagerActor {
 
     private void checkAndRunConnectedFeatures() {
         Collection<IMessageProcessor> needContinueFeatures = new HashSet<>();
-        this.featureProcess.forEach((k, v) -> {
+        this.featureProcesses.forEach((k, v) -> {
             if (v.getDependencies().isEmpty()) {
                 needContinueFeatures.add(k);
-                this.featureProcess.remove(k);
+                this.featureProcesses.remove(k);
             }
         });
         needContinueFeatures.forEach((mp) -> {
@@ -343,7 +334,7 @@ public class FeatureManagerActor {
     }
 
     private void checkUnresolved() {
-        int minDependencies = this.processingFeatures
+        int minDependencies = this.featuresInProgress
                 .values()
                 .stream()
                 .filter(feature -> null != feature.getDependencies())
@@ -351,17 +342,17 @@ public class FeatureManagerActor {
                 .min(Integer::compareTo)
                 .orElse(0);
         if (
-                !this.processingFeatures.isEmpty()
+                !this.featuresInProgress.isEmpty()
                 && minDependencies > 0
         ) {
-            Set<String> unresolved = this.processingFeatures
+            Set<String> unresolved = this.featuresInProgress
                     .values()
                     .stream()
                     .map(IFeature::getDependencies)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
             unresolved.removeAll(
-                    this.processingFeatures
+                    this.featuresInProgress
                             .values()
                             .stream()
                             .map(f -> f.getGroupId() + ":" + f.getName())
@@ -372,5 +363,17 @@ public class FeatureManagerActor {
                     unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
             );
         }
+    }
+
+    private String getFullFeatureName(IFeature feature) {
+        return  getEmptyIfNull(feature.getGroupId()) +
+                FEATURE_NAME_DELIMITER +
+                getEmptyIfNull(feature.getName()) +
+                FEATURE_NAME_DELIMITER +
+                getEmptyIfNull(feature.getVersion());
+    }
+
+    private String getEmptyIfNull(String s) {
+        return (s == null ? "" : s);
     }
 }

@@ -28,7 +28,7 @@ public class ExtendedURLClassLoader extends URLClassLoader implements ISmartacto
         super(urls, parent);
     }
 
-    static void addItem(Object itemID, String itemName) {
+    static void addItem(Object itemID, String itemName, String itemVersion) {
         if (single == null) {
             single = new ExtendedURLClassLoader(new URL[]{});
         }

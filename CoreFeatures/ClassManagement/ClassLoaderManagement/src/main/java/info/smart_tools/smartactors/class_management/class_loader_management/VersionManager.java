@@ -18,7 +18,7 @@ public final class VersionManager {
 
     public static final String coreName = "info.smart_tools:smartactors";
     public static final String coreVersion = "0.4.1";
-    private static Object coreId = null;
+    public static final Object coreId = java.util.UUID.randomUUID();
 
     private static ThreadLocal<Object> currentItemID = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentContext = new ThreadLocal<>();
@@ -33,27 +33,22 @@ public final class VersionManager {
 
     private VersionManager() {}
 
-    public static Object addItem(final String itemName, final String itemVersion)
+    public static void addItem(final Object itemId, final String itemName, final String itemVersion)
             throws InvalidArgumentException {
-        if (itemName == null      || itemName.equals("")) {
+        if (itemName == null || itemName.equals("")) {
             throw new InvalidArgumentException("Item name cannot be null");
         }
 
         String version = (itemVersion == null ? "" : itemVersion);
-        String itemId = (version.length() == 0 ? itemName : itemName + ":" + version);
 
         if (dependencies.get(itemId) == null) {
-            HierarchicalClassLoader.addItem(itemId, itemName);
+            HierarchicalClassLoader.addItem(itemId, itemName, version);
             dependencies.put(itemId, Collections.synchronizedSet(new HashSet<>()));
             itemNames.put(itemId, itemName);
             itemVersions.put(itemId, version);
         } else {
             System.out.println("[WARNING] Item "+itemId+" already defined.\n");
         }
-        if (coreName.equals(itemName) && coreVersion.equals(itemVersion)) {
-            coreId = itemId;
-        }
-        return itemId;
     }
 
     private static String getItemName(Object itemID) {

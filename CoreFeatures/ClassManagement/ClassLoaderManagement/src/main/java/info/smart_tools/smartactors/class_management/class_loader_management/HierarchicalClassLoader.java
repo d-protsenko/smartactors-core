@@ -15,13 +15,11 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
     /* This is ItemID To ClassLoader Map */
     private static Map<Object, HierarchicalClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
-    private Object id = null; // excess field for class loader visual identification only
     private Set<HierarchicalClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
 
-    static void addItem(Object itemID, String itemName) {
+    static void addItem(Object itemID, String itemName, String itemVersion) {
         HierarchicalClassLoader classLoader = new HierarchicalClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
-        classLoader.id = itemID; // excess code for class loader visual identification only
     }
 
     static HierarchicalClassLoader getItemClassLoader(Object itemID) {

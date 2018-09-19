@@ -15,7 +15,6 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
     /* This is ItemID To ClassLoader Map */
     private static Map<String, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
-    private String itemId = null;
     private String itemName = null;
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
@@ -28,10 +27,9 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
         super(urls);
     }
 
-    static void addItem(String itemID, String itemName) {
+    static void addItem(String itemID, String itemName, String itemVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
-        classLoader.itemId = itemID;
         itemName = itemName.replace('/', '.');
         itemName = itemName.replace(':', '.');
         itemName = itemName.replace('-', '_');

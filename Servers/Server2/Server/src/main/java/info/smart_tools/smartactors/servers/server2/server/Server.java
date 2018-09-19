@@ -62,11 +62,12 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         try {
-            Object coreId = VersionManager.addItem(
+            VersionManager.addItem(
+                    VersionManager.coreId,
                     VersionManager.coreName,
                     VersionManager.coreVersion
             );
-            VersionManager.setCurrentItemID(coreId);
+            VersionManager.setCurrentItemID(VersionManager.coreId);
         } catch (InvalidArgumentException e) {
             throw new ServerInitializeException("Failed to initialize core.");
         }

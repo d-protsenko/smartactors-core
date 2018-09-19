@@ -19,20 +19,7 @@ public class Feature implements IFeature {
     private Object id;
     private String packageType;
 
-    /**
-     * Creates instance of {@link IFeature} by specific arguments
-     * @param name the feature name
-     * @param dependencies feature dependencies
-     * @param location the feature location
-     */
-    //public Feature(final String name, final Set<String> dependencies, final IPath location, final String packageType) {
-        this.name = name;
-        this.dependencies = dependencies;
-        this.featureLocation = location;
-        this.failed = false;
-        this.id = java.util.UUID.randomUUID();
-        this.packageType = packageType;
-    }
+    private final static String FEATURE_NAME_DELIMITER = ":";
 
     /**
      * Creates instance of {@link IFeature} by specific arguments
@@ -45,12 +32,14 @@ public class Feature implements IFeature {
             final String name,
             final String groupId,
             final String version,
+            final Set<String> dependencies,
             final IPath featureLocation,
             final String packageType
     ) {
         this.name = name;
         this.groupId = groupId;
         this.version = version;
+        this.dependencies = dependencies;
         this.featureLocation = featureLocation;
         this.failed = false;
         this.id = java.util.UUID.randomUUID();
@@ -58,47 +47,7 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public Set<String> getDependencies() {
-        return this.dependencies;
-    }
-
-    @Override
-    public IPath getLocation() {
-        return this.featureLocation;
-    }
-
-    @Override
-    public Object getId() { return this.id; }
-
-    @Override
-    public boolean isFailed() {
-        return this.failed;
-    }
-
-    @Override
-    public void setFailed(final boolean failed) {
-        this.failed = failed;
-    }
-
-    @Override
-    public void setName(final String featureName) {
-        this.name = featureName;
-    }
-
-    @Override
-    public void setDependencies(final Set<String> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-    @Override
-    public void setLocation(final IPath location) {
-        this.featureLocation = (IPath) location;
-    }
+    public String getName() { return this.name; }
 
     @Override
     public String getGroupId() {
@@ -111,6 +60,39 @@ public class Feature implements IFeature {
     }
 
     @Override
+    public Set<String> getDependencies() { return this.dependencies; }
+
+    @Override
+    public IPath getLocation() { return this.featureLocation; }
+
+    @Override
+    public Object getId() { return this.id; }
+
+    @Override
+    public String getPackageType() {
+        return this.packageType;
+    }
+
+    @Override
+    public boolean isFailed() { return this.failed; }
+
+    @Override
+    public void setFailed(final boolean failed) { this.failed = failed; }
+
+    @Override
+    public void setName(final String featureName) { this.name = featureName;}
+
+    @Override
+    public void setDependencies(final Set<String> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    @Override
+    public void setLocation(final IPath location) {
+        this.featureLocation = (IPath) location;
+    }
+
+    @Override
     public void setGroupId(final String groupId) {
         this.groupId = groupId;
     }
@@ -118,11 +100,6 @@ public class Feature implements IFeature {
     @Override
     public void setVersion(final String version) {
         this.version = version;
-    }
-
-    @Override
-    public String getPackageType() {
-        return this.packageType;
     }
 
     @Override
